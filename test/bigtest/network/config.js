@@ -1,1 +1,7 @@
-export default function config() {}
+import {
+  configInstances,
+} from './configs';
+
+export default function config() {
+  configInstances(this);
+}

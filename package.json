@@ -13,6 +13,7 @@
     "pluginType": "quick-marc",
     "displayName": "ui-quick-marc.meta.title",
     "okapiInterfaces": {
+      "inventory": "10.0"
     },
     "permissionSets": [
     ]
