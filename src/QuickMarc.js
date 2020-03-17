@@ -1,23 +1,27 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import {
   Switch,
   Route,
 } from 'react-router-dom';
 
-const QuickMarcEditor = () => (
-  <div>
-    QuickMarc
-  </div>
-);
+import { QuickMarcEditorContainer } from './QuickMarcEditor';
 
-const QuickMarc = ({ baseRoute }) => {
+const QuickMarc = ({ basePath, onClose }) => {
+  const QuickMarcEdit = useCallback(() => {
+    return (
+      <QuickMarcEditorContainer
+        onClose={onClose}
+      />
+    );
+  }, [onClose]);
+
   return (
     <div data-test-quick-marc>
       <Switch>
         <Route
-          component={QuickMarcEditor}
-          path={`${baseRoute}/quick-marc`}
+          path={`${basePath}/edit/:instanceId`}
+          component={QuickMarcEdit}
         />
       </Switch>
     </div>
@@ -25,7 +29,8 @@ const QuickMarc = ({ baseRoute }) => {
 };
 
 QuickMarc.propTypes = {
-  baseRoute: PropTypes.string.isRequired,
+  basePath: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default QuickMarc;

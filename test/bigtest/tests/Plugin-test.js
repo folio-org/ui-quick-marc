@@ -10,7 +10,7 @@ describe('Quick MARC plugin', () => {
   setupApplication();
 
   beforeEach(function () {
-    this.visit('/dummy/quick-marc');
+    this.visit('/dummy/edit/ads123');
   });
 
   it('should be rendered', () => {
