@@ -1,4 +1,4 @@
-# ui-quic-marc
+# ui-quick-marc
 
 Copyright (C) 2020 The Open Library Foundation
 
