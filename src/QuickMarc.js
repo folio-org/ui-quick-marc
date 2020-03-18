@@ -4,15 +4,18 @@ import {
   Switch,
   Route,
 } from 'react-router-dom';
+import { IfPermission } from '@folio/stripes/core';
 
 import { QuickMarcEditorContainer } from './QuickMarcEditor';
 
 const QuickMarc = ({ basePath, onClose }) => {
   const QuickMarcEdit = useCallback(() => {
     return (
-      <QuickMarcEditorContainer
-        onClose={onClose}
-      />
+      <IfPermission perm="records-editor.records.item.get">
+        <QuickMarcEditorContainer
+          onClose={onClose}
+        />
+      </IfPermission>
     );
   }, [onClose]);
 
