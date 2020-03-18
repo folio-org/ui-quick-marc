@@ -11,7 +11,7 @@ import { QuickMarcEditorContainer } from './QuickMarcEditor';
 const QuickMarc = ({ basePath, onClose }) => {
   const QuickMarcEdit = useCallback(() => {
     return (
-      <IfPermission perm="records-editor.records.item.get">
+      <IfPermission perm="records-editor.records.collection.get">
         <QuickMarcEditorContainer
           onClose={onClose}
         />
