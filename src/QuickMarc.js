@@ -4,6 +4,7 @@ import {
   Switch,
   Route,
 } from 'react-router-dom';
+import { IfPermission } from '@folio/stripes/core';
 
 import { QuickMarcEditorContainer } from './QuickMarcEditor';
 
@@ -19,10 +20,12 @@ const QuickMarc = ({ basePath, onClose }) => {
   return (
     <div data-test-quick-marc>
       <Switch>
-        <Route
-          path={`${basePath}/edit/:instanceId`}
-          component={QuickMarcEdit}
-        />
+        <IfPermission perm="records-editor.records.item.get">
+          <Route
+            path={`${basePath}/edit/:instanceId`}
+            component={QuickMarcEdit}
+          />
+        </IfPermission>
       </Switch>
     </div>
   );

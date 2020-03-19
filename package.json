@@ -16,6 +16,16 @@
       "inventory": "10.0"
     },
     "permissionSets": [
+      {
+        "permissionName": "records-editor.all",
+        "displayName": "quickMARC: view, edit",
+        "subPermissions": [
+          "records-editor.records.item.get",
+          "records-editor.records.item.put",
+          "inventory.instances.item.get"
+        ],
+        "visible": true
+      }
     ]
   },
   "scripts": {
