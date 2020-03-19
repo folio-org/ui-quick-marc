@@ -22,8 +22,7 @@
         "subPermissions": [
           "records-editor.records.item.get",
           "records-editor.records.item.put",
-          "ui-inventory.instance.view",
-          "ui-inventory.instance.edit"
+          "records-editor.view"
         ],
         "visible": true
       }
