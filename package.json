@@ -18,10 +18,12 @@
     "permissionSets": [
       {
         "permissionName": "records-editor.all",
-        "displayName": "QuickMarc: All permissions",
+        "displayName": "quickMARC: view, edit",
         "subPermissions": [
-          "records-editor.records.collection.get",
-          "records-editor.records.item.put"
+          "records-editor.records.item.get",
+          "records-editor.records.item.put",
+          "ui-inventory.instance.view",
+          "ui-inventory.instance.edit"
         ],
         "visible": true
       }

@@ -11,21 +11,21 @@ import { QuickMarcEditorContainer } from './QuickMarcEditor';
 const QuickMarc = ({ basePath, onClose }) => {
   const QuickMarcEdit = useCallback(() => {
     return (
-      <IfPermission perm="records-editor.records.collection.get">
         <QuickMarcEditorContainer
           onClose={onClose}
         />
-      </IfPermission>
     );
   }, [onClose]);
 
   return (
     <div data-test-quick-marc>
       <Switch>
-        <Route
-          path={`${basePath}/edit/:instanceId`}
-          component={QuickMarcEdit}
-        />
+        <IfPermission perm="records-editor.records.item.get">
+          <Route
+            path={`${basePath}/edit/:instanceId`}
+            component={QuickMarcEdit}
+          />
+        </IfPermission>
       </Switch>
     </div>
   );
