@@ -11,9 +11,9 @@ import { QuickMarcEditorContainer } from './QuickMarcEditor';
 const QuickMarc = ({ basePath, onClose }) => {
   const QuickMarcEdit = useCallback(() => {
     return (
-        <QuickMarcEditorContainer
-          onClose={onClose}
-        />
+      <QuickMarcEditorContainer
+        onClose={onClose}
+      />
     );
   }, [onClose]);
 
