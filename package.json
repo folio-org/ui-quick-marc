@@ -18,7 +18,7 @@
     "permissionSets": [
       {
         "permissionName": "ui-quick-marc.all",
-        "displayName": "quickMARC: view, edit",
+        "displayName": "quickMARC: View, edit",
         "subPermissions": [
           "records-editor.records.item.get",
           "records-editor.records.item.put",
