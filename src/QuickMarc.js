@@ -20,7 +20,7 @@ const QuickMarc = ({ basePath, onClose }) => {
   return (
     <div data-test-quick-marc>
       <Switch>
-        <IfPermission perm="records-editor.records.item.get">
+        <IfPermission perm="records-editor.records.item.put">
           <Route
             path={`${basePath}/edit/:instanceId`}
             component={QuickMarcEdit}
