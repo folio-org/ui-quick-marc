@@ -19,8 +19,12 @@ const match = {
   },
 };
 
+const messages = {
+  'ui-quick-marc.record.edit.title': '{title}',
+};
+
 const renderQuickMarcEditorContainer = ({ onClose, mutator }) => (render(
-  <IntlProvider locale="en">
+  <IntlProvider locale="en" messages={messages}>
     <MemoryRouter>
       <QuickMarcEditorContainer
         onClose={onClose}

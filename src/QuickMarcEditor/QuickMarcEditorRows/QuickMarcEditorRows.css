@@ -1,0 +1,24 @@
+.quickMarcEditorRow {
+  display: flex;
+  padding: 15px;
+
+  background: rgba(0, 0, 0, .08);
+
+  &:nth-child(odd) {
+    background: rgba(0, 0, 0, .03);
+  }
+}
+
+.quickMarcEditorRowTag {
+  width: 70px;
+  margin-right: 10px;
+}
+
+.quickMarcEditorRowIndicator {
+  width: 55px;
+  margin-right: 10px;
+}
+
+.quickMarcEditorRowContent {
+  flex: 1;
+}
