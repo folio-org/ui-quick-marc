@@ -8,17 +8,28 @@ import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcEditor from './QuickMarcEditor';
 
+jest.mock('./QuickMarcEditorRows', () => {
+  return {
+    QuickMarcEditorRows: () => <span>QuickMarcEditorRows</span>,
+  };
+});
+
 const getInstance = () => ({
   id: faker.random.uuid(),
   title: faker.lorem.sentence(),
 });
 
-const renderQuickMarcEditor = ({ instance, onClose }) => (render(
-  <IntlProvider locale="en">
+const messages = {
+  'ui-quick-marc.record.edit.title': '{title}',
+};
+
+const renderQuickMarcEditor = ({ instance, onClose, onSubmit }) => (render(
+  <IntlProvider locale="en" messages={messages}>
     <MemoryRouter>
       <QuickMarcEditor
         instance={instance}
         onClose={onClose}
+        onSubmit={onSubmit}
       />
     </MemoryRouter>
   </IntlProvider>,
@@ -29,15 +40,34 @@ describe('Given Quick Marc Editor', () => {
 
   it('Than it should display instance title in pane title', () => {
     const instance = getInstance();
-    const { getByText } = renderQuickMarcEditor({ instance, onClose: jest.fn() });
+    const { getByText } = renderQuickMarcEditor({
+      instance,
+      onClose: jest.fn(),
+      onSubmit: jest.fn(),
+    });
 
     expect(getByText(instance.title)).toBeDefined();
   });
 
   it('Than it should display pane footer', () => {
     const instance = getInstance();
-    const { getByText } = renderQuickMarcEditor({ instance, onClose: jest.fn() });
+    const { getByText } = renderQuickMarcEditor({
+      instance,
+      onClose: jest.fn(),
+      onSubmit: jest.fn(),
+    });
 
     expect(getByText('stripes-acq-components.FormFooter.cancel')).toBeDefined();
+  });
+
+  it('Than it should display QuickMarcEditorRows', () => {
+    const instance = getInstance();
+    const { getByText } = renderQuickMarcEditor({
+      instance,
+      onClose: jest.fn(),
+      onSubmit: jest.fn(),
+    });
+
+    expect(getByText('QuickMarcEditorRows')).toBeDefined();
   });
 });
