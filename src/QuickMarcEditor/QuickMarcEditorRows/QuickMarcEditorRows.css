@@ -22,3 +22,8 @@
 .quickMarcEditorRowContent {
   flex: 1;
 }
+
+.quickMarcEditorActions {
+  width: 45px;
+  margin-left: 10px;
+}

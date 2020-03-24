@@ -4,11 +4,13 @@ import { Field } from 'react-final-form';
 
 import {
   TextField,
+  IconButton,
 } from '@folio/stripes/components';
 
 import {
   isReadOnly,
   hasIndicatorException,
+  isCannotAddAfterOrDuplicateRow,
 } from './utils';
 import styles from './QuickMarcEditorRows.css';
 
@@ -23,6 +25,7 @@ const QuickMarcEditorRows = ({ fields }) => {
 
           const isDisabled = isReadOnly(recordRow);
           const withIndicators = !hasIndicatorException(recordRow);
+          const IsAvalibleToAddAfter = isCannotAddAfterOrDuplicateRow(recordRow);
 
           return (
             <div
@@ -74,6 +77,18 @@ const QuickMarcEditorRows = ({ fields }) => {
                   disabled={isDisabled}
                 />
               </div>
+              <div className={styles.quickMarcEditorActions}>
+                {
+                  !IsAvalibleToAddAfter &&
+                    <IconButton
+                      data-test-add-row
+                      icon="plus-sign"
+                      onClick={() => {
+                        fields.insert(idx + 1, {});
+                      }}
+                    />
+                }
+              </div>
             </div>
           );
         })
@@ -85,6 +100,7 @@ const QuickMarcEditorRows = ({ fields }) => {
 QuickMarcEditorRows.propTypes = {
   fields: PropTypes.shape({
     map: PropTypes.func.isRequired,
+    insert: PropTypes.func.isRequired,
     value: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.string.isRequired,
       tag: PropTypes.string.isRequired,
