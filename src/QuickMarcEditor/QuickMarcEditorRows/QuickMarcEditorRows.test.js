@@ -73,5 +73,6 @@ describe('Given Quick Marc Editor Rows', () => {
 
     isReadOnlySpy.mockRestore();
     hasIndicatorExceptionSpy.mockRestore();
+    isCannotAddAfterOrDuplicateRowSpy.mockRestore();
   });
 });

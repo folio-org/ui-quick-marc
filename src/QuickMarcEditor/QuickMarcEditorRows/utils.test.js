@@ -41,7 +41,7 @@ describe('QuickMarcEditorRows utils', () => {
     });
 
     it('shoul be false for exeptional row', () => {
-      expect(utils.isReadOnly({ tag: '010' })).toBeFalsy();
+      expect(utils.isCannotAddAfterOrDuplicateRow({ tag: '010' })).toBeFalsy();
     });
   });
 });

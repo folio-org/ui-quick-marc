@@ -98,7 +98,6 @@ const QuickMarcEditorRows = ({ fields, mutators: { insert } }) => {
 QuickMarcEditorRows.propTypes = {
   fields: PropTypes.shape({
     map: PropTypes.func.isRequired,
-    insert: PropTypes.func.isRequired,
     value: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.string.isRequired,
       tag: PropTypes.string.isRequired,
