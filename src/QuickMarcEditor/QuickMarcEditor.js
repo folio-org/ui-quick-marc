@@ -66,6 +66,9 @@ QuickMarcEditor.propTypes = {
   instance: PropTypes.object,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  form: PropTypes.shape({
+    mutators: PropTypes.object.isRequired,
+  }),
 };
 
 export default stripesFinalForm({

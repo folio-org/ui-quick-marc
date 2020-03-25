@@ -16,6 +16,7 @@ import styles from './QuickMarcEditorRows.css';
 
 const QuickMarcEditorRows = ({ fields, mutators: { insert } }) => {
   const values = fields.value;
+
   return (
     <>
       {
@@ -104,6 +105,9 @@ QuickMarcEditorRows.propTypes = {
       indicators: PropTypes.arrayOf(PropTypes.string),
       content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     })),
+  }),
+  mutators: PropTypes.shape({
+    insert: PropTypes.func.isRequired,
   }),
 };
 
