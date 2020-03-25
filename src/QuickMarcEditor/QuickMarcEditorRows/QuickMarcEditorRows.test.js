@@ -34,7 +34,7 @@ const renderQuickMarcEditorRows = ({ fields }) => (render(
           <QuickMarcEditorRows
             fields={fields}
             mutators={{
-              insert: jest.fn()
+              insert: jest.fn(),
             }}
           />
         )}
