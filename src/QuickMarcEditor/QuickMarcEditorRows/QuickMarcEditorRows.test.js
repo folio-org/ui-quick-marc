@@ -33,6 +33,7 @@ const renderQuickMarcEditorRows = ({ fields }) => (render(
         render={() => (
           <QuickMarcEditorRows
             fields={fields}
+            insert={jest.fn()}
           />
         )}
       />
@@ -57,6 +58,7 @@ describe('Given Quick Marc Editor Rows', () => {
   it('Than it should display row for each record value', () => {
     const isReadOnlySpy = jest.spyOn(utils, 'isReadOnly');
     const hasIndicatorExceptionSpy = jest.spyOn(utils, 'hasIndicatorException');
+    const isCannotAddAfterOrDuplicateRowSpy = jest.spyOn(utils, 'isCannotAddAfterOrDuplicateRow');
 
     renderQuickMarcEditorRows({
       fields: {
@@ -67,6 +69,7 @@ describe('Given Quick Marc Editor Rows', () => {
 
     expect(isReadOnlySpy.mock.calls.length > values.length).toBeTruthy();
     expect(hasIndicatorExceptionSpy.mock.calls.length > values.length).toBeTruthy();
+    expect(isCannotAddAfterOrDuplicateRowSpy.mock.calls.length > values.length).toBeTruthy();
 
     isReadOnlySpy.mockRestore();
     hasIndicatorExceptionSpy.mockRestore();

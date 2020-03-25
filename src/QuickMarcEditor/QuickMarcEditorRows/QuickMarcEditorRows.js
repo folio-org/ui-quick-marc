@@ -14,9 +14,8 @@ import {
 } from './utils';
 import styles from './QuickMarcEditorRows.css';
 
-const QuickMarcEditorRows = ({ fields }) => {
+const QuickMarcEditorRows = ({ fields, mutators: { insert } }) => {
   const values = fields.value;
-
   return (
     <>
       {
@@ -25,7 +24,7 @@ const QuickMarcEditorRows = ({ fields }) => {
 
           const isDisabled = isReadOnly(recordRow);
           const withIndicators = !hasIndicatorException(recordRow);
-          const IsAvalibleToAddAfter = isCannotAddAfterOrDuplicateRow(recordRow);
+          const isAvalibleToAddAfter = isCannotAddAfterOrDuplicateRow(recordRow);
 
           return (
             <div
@@ -79,13 +78,11 @@ const QuickMarcEditorRows = ({ fields }) => {
               </div>
               <div className={styles.quickMarcEditorActions}>
                 {
-                  !IsAvalibleToAddAfter &&
+                  !isAvalibleToAddAfter &&
                     <IconButton
                       data-test-add-row
                       icon="plus-sign"
-                      onClick={() => {
-                        fields.insert(idx + 1, {});
-                      }}
+                      onClick={() => insert('records', idx + 1, {})}
                     />
                 }
               </div>

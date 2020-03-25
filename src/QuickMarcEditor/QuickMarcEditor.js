@@ -18,7 +18,7 @@ import {
 
 import { QuickMarcEditorRows } from './QuickMarcEditorRows';
 
-const QuickMarcEditor = ({ instance, onClose, onSubmit }) => {
+const QuickMarcEditor = ({ instance, onClose, onSubmit, form: { mutators } }) => {
   const paneFooter = useMemo(() => (
     <FormFooter
       id="quick-marc-record-save"
@@ -52,6 +52,7 @@ const QuickMarcEditor = ({ instance, onClose, onSubmit }) => {
                 component={QuickMarcEditorRows}
                 id="records"
                 name="records"
+                mutators={mutators}
               />
             </Col>
           </Row>
