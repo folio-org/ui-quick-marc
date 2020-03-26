@@ -34,14 +34,14 @@ describe('QuickMarcEditorRows utils', () => {
     });
   });
 
-  describe('isCannotAddAfterOrDuplicateRow', () => {
+  describe('isAddException', () => {
     it('shoul be true for exeptional row', () => {
-      expect(utils.isCannotAddAfterOrDuplicateRow({ tag: LEADER_TAG })).toBeTruthy();
-      expect(utils.isCannotAddAfterOrDuplicateRow({ tag: '001' })).toBeTruthy();
+      expect(utils.isAddException({ tag: LEADER_TAG })).toBeTruthy();
+      expect(utils.isAddException({ tag: '001' })).toBeTruthy();
     });
 
     it('shoul be false for exeptional row', () => {
-      expect(utils.isCannotAddAfterOrDuplicateRow({ tag: '010' })).toBeFalsy();
+      expect(utils.isAddException({ tag: '010' })).toBeFalsy();
     });
   });
 });

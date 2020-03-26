@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'react-final-form';
 
@@ -10,12 +10,17 @@ import {
 import {
   isReadOnly,
   hasIndicatorException,
-  isCannotAddAfterOrDuplicateRow,
+  isAddException,
 } from './utils';
 import styles from './QuickMarcEditorRows.css';
 
 const QuickMarcEditorRows = ({ fields, mutators: { insert } }) => {
   const values = fields.value;
+
+  const addNewRow = useCallback(
+    (idx) => {
+      insert('records', idx + 1, {});
+  }, [insert]);
 
   return (
     <>
@@ -25,7 +30,7 @@ const QuickMarcEditorRows = ({ fields, mutators: { insert } }) => {
 
           const isDisabled = isReadOnly(recordRow);
           const withIndicators = !hasIndicatorException(recordRow);
-          const isAvalibleToAddAfter = isCannotAddAfterOrDuplicateRow(recordRow);
+          const isAvalibleToAddAfter = isAddException(recordRow);
 
           return (
             <div
@@ -83,7 +88,7 @@ const QuickMarcEditorRows = ({ fields, mutators: { insert } }) => {
                     <IconButton
                       data-test-add-row
                       icon="plus-sign"
-                      onClick={() => insert('records', idx + 1, {})}
+                      onClick={() => addNewRow(idx)}
                     />
                 }
               </div>
