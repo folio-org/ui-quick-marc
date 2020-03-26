@@ -66,6 +66,7 @@
     "final-form": "^4.18.2",
     "lodash": "^4.17.5",
     "prop-types": "^15.5.10",
+    "final-form-arrays": "^3.0.1",
     "react-final-form": "^6.3.0",
     "react-final-form-arrays": "^3.1.0",
     "react-final-form-listeners": "^1.0.2",

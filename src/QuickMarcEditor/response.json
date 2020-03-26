@@ -13,8 +13,9 @@
     {
       "tag": "008",
       "content": {
-        "Type": "c",
-        "BLvl": "m",
+        "Type": "f",
+        "BLvl": "b",
+        "S/L": "s",
         "Entered": "830419",
         "DtSt": "m",
         "Date1": "1955",
