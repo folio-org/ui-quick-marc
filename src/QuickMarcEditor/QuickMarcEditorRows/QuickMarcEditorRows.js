@@ -29,7 +29,7 @@ const QuickMarcEditorRows = ({ fields, mutators: { insert } }) => {
 
           const isDisabled = isReadOnly(recordRow);
           const withIndicators = !hasIndicatorException(recordRow);
-          const isAvalibleToAddAfter = isAddException(recordRow);
+          const withAddAction = isAddException(recordRow);
 
           return (
             <div
@@ -83,7 +83,7 @@ const QuickMarcEditorRows = ({ fields, mutators: { insert } }) => {
               </div>
               <div className={styles.quickMarcEditorActions}>
                 {
-                  !isAvalibleToAddAfter &&
+                  !withAddAction &&
                     <IconButton
                       data-test-add-row
                       icon="plus-sign"
