@@ -34,14 +34,14 @@ describe('QuickMarcEditorRows utils', () => {
     });
   });
 
-  describe('isAddException', () => {
+  describe('hasAddException', () => {
     it('shoul be true for exeptional row', () => {
-      expect(utils.isAddException({ tag: LEADER_TAG })).toBeTruthy();
-      expect(utils.isAddException({ tag: '001' })).toBeTruthy();
+      expect(utils.hasAddException({ tag: LEADER_TAG })).toBeTruthy();
+      expect(utils.hasAddException({ tag: '001' })).toBeTruthy();
     });
 
     it('shoul be false for exeptional row', () => {
-      expect(utils.isAddException({ tag: '010' })).toBeFalsy();
+      expect(utils.hasAddException({ tag: '010' })).toBeFalsy();
     });
   });
 });

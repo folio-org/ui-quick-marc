@@ -10,7 +10,7 @@ import {
 import {
   isReadOnly,
   hasIndicatorException,
-  isAddException,
+  hasAddException,
 } from './utils';
 import styles from './QuickMarcEditorRows.css';
 
@@ -18,7 +18,7 @@ const QuickMarcEditorRows = ({ fields, mutators: { insert } }) => {
   const values = fields.value;
 
   const addNewRow = useCallback(({ target }) => {
-    insert('records', ++target.id, {});
+    insert('records', ++target.value, {});
   }, [insert]);
 
   return (
@@ -29,7 +29,7 @@ const QuickMarcEditorRows = ({ fields, mutators: { insert } }) => {
 
           const isDisabled = isReadOnly(recordRow);
           const withIndicators = !hasIndicatorException(recordRow);
-          const withAddRowAction = isAddException(recordRow);
+          const withAddRowAction = hasAddException(recordRow);
 
           return (
             <div
@@ -86,7 +86,7 @@ const QuickMarcEditorRows = ({ fields, mutators: { insert } }) => {
                   !withAddRowAction &&
                     <IconButton
                       data-test-add-row
-                      id={idx}
+                      value={idx}
                       icon="plus-sign"
                       onClick={addNewRow}
                     />

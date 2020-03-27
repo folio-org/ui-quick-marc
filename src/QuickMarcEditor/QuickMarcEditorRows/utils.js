@@ -10,4 +10,4 @@ export const hasIndicatorException = recordRow => INDICATOR_EXEPTION_ROWS.includ
 
 const ADD_EXCEPTION_ROWS = [LEADER_TAG, '001', '005', '008'];
 
-export const isAddException = recordRow => ADD_EXCEPTION_ROWS.includes(recordRow.tag);
+export const hasAddException = recordRow => ADD_EXCEPTION_ROWS.includes(recordRow.tag);
