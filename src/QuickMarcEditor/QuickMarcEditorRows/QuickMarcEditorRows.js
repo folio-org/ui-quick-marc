@@ -29,7 +29,7 @@ const QuickMarcEditorRows = ({ fields, mutators: { insert } }) => {
 
           const isDisabled = isReadOnly(recordRow);
           const withIndicators = !hasIndicatorException(recordRow);
-          const withAddAction = isAddException(recordRow);
+          const withAddRowAction = isAddException(recordRow);
 
           return (
             <div
@@ -61,7 +61,7 @@ const QuickMarcEditorRows = ({ fields, mutators: { insert } }) => {
               </div>
               <div className={styles.quickMarcEditorRowIndicator}>
                 {
-                  withIndicators && (
+                  withAddRowAction && (
                     <Field
                       name={`${field}.indicators[1]`}
                       component={TextField}
