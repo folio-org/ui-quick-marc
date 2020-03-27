@@ -6,6 +6,7 @@ import {
   TextField,
 } from '@folio/stripes/components';
 
+import { FixedFieldFactory } from './FixedField';
 import {
   isReadOnly,
   hasIndicatorException,
@@ -66,13 +67,21 @@ const QuickMarcEditorRows = ({ fields }) => {
                 }
               </div>
               <div className={styles.quickMarcEditorRowContent}>
-                <Field
-                  name={`${field}.content`}
-                  component={TextField}
-                  marginBottom0
-                  fullWidth
-                  disabled={isDisabled}
-                />
+                {
+                  recordRow.tag === '008'
+                    ? FixedFieldFactory.getFixedField(
+                      `${field}.content`, recordRow.content.Type, recordRow.content.BLvl,
+                    )
+                    : (
+                      <Field
+                        name={`${field}.content`}
+                        component={TextField}
+                        marginBottom0
+                        fullWidth
+                        disabled={isDisabled}
+                      />
+                    )
+                }
               </div>
             </div>
           );

@@ -11,15 +11,18 @@ import * as utils from './utils';
 
 const values = [
   {
+    id: '1',
     tag: '001',
     content: '$a f',
   },
   {
+    id: '2',
     tag: '036',
     content: '$a c',
     indicators: [],
   },
   {
+    id: '3',
     tag: '999',
     content: '$b f',
   },
