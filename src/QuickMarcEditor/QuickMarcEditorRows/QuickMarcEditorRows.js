@@ -61,7 +61,7 @@ const QuickMarcEditorRows = ({ fields, mutators: { insert } }) => {
               </div>
               <div className={styles.quickMarcEditorRowIndicator}>
                 {
-                  withAddRowAction && (
+                  withIndicators && (
                     <Field
                       name={`${field}.indicators[1]`}
                       component={TextField}
@@ -83,7 +83,7 @@ const QuickMarcEditorRows = ({ fields, mutators: { insert } }) => {
               </div>
               <div className={styles.quickMarcEditorActions}>
                 {
-                  !withAddAction &&
+                  !withAddRowAction &&
                     <IconButton
                       data-test-add-row
                       icon="plus-sign"
