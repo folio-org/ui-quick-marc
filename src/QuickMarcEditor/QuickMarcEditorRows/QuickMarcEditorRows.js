@@ -69,7 +69,7 @@ const QuickMarcEditorRows = ({ fields }) => {
               <div className={styles.quickMarcEditorRowContent}>
                 {
                   recordRow.tag === '008'
-                    ? FixedFieldFactory.getFixedFied(
+                    ? FixedFieldFactory.getFixedField(
                       `${field}.content`, recordRow.content.Type, recordRow.content.BLvl,
                     )
                     : (

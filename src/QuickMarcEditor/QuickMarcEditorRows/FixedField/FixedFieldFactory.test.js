@@ -14,45 +14,45 @@ import VisualMaterialFixedField from './VisualMaterialFixedField';
 describe('FixedFieldFactory', () => {
   it('should create correct fields', () => {
     expect(
-      FixedFieldFactory.getFixedFied('records', 'a', 'c').type.displayName,
+      FixedFieldFactory.getFixedField('records', 'a', 'c').type.displayName,
     ).toBe(BookFixedField.displayName);
 
     expect(
-      FixedFieldFactory.getFixedFied('records', 'm').type.displayName,
+      FixedFieldFactory.getFixedField('records', 'm').type.displayName,
     ).toBe(ComputerFileFixedField.displayName);
 
     expect(
-      FixedFieldFactory.getFixedFied('records', 'a', 'i').type.displayName,
+      FixedFieldFactory.getFixedField('records', 'a', 'i').type.displayName,
     ).toBe(ContinuingResourceFixedField.displayName);
 
     expect(
-      FixedFieldFactory.getFixedFied('records', 'f', 'c').type.displayName,
+      FixedFieldFactory.getFixedField('records', 'f', 'c').type.displayName,
     ).toBe(MapFixedField.displayName);
 
     expect(
-      FixedFieldFactory.getFixedFied('records', 'p', 'c').type.displayName,
+      FixedFieldFactory.getFixedField('records', 'p', 'c').type.displayName,
     ).toBe(MixedMaterialFixedField.displayName);
 
     expect(
-      FixedFieldFactory.getFixedFied('records', 'c', 'c').type.displayName,
+      FixedFieldFactory.getFixedField('records', 'c', 'c').type.displayName,
     ).toBe(ScoreFixedField.displayName);
 
     expect(
-      FixedFieldFactory.getFixedFied('records', 'i', 'c').type.displayName,
+      FixedFieldFactory.getFixedField('records', 'i', 'c').type.displayName,
     ).toBe(SoundRecordingFixedField.displayName);
 
     expect(
-      FixedFieldFactory.getFixedFied('records', 'a', 'c').type.displayName,
+      FixedFieldFactory.getFixedField('records', 'a', 'c').type.displayName,
     ).toBe(BookFixedField.displayName);
 
     expect(
-      FixedFieldFactory.getFixedFied('records', 'r').type.displayName,
+      FixedFieldFactory.getFixedField('records', 'r').type.displayName,
     ).toBe(VisualMaterialFixedField.displayName);
   });
 
   it('should return null when there is no matched field', () => {
     expect(
-      FixedFieldFactory.getFixedFied('records', 'l'),
+      FixedFieldFactory.getFixedField('records', 'l'),
     ).toBe(null);
   });
 });

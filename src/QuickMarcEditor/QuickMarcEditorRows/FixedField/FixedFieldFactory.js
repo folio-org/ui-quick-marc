@@ -10,7 +10,7 @@ import SoundRecordingFixedField from './SoundRecordingFixedField';
 import VisualMaterialFixedField from './VisualMaterialFixedField';
 
 export const FixedFieldFactory = {
-  getFixedFied(name, type, blvl) {
+  getFixedField(name, type, blvl) {
     let FixedField;
 
     switch (true) {
