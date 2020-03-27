@@ -19,7 +19,7 @@ const QuickMarcEditorRows = ({ fields, mutators: { insert } }) => {
 
   const addNewRow = useCallback(({ target }) => {
     insert('records', ++target.id, {});
-  }, []);
+  }, [insert]);
 
   return (
     <>
