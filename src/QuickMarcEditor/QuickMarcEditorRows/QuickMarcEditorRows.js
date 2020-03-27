@@ -17,9 +17,9 @@ import styles from './QuickMarcEditorRows.css';
 const QuickMarcEditorRows = ({ fields, mutators: { insert } }) => {
   const values = fields.value;
 
-  const addNewRow = useCallback((idx) => {
-    insert('records', idx + 1, {});
-  }, [insert]);
+  const addNewRow = useCallback(({ target }) => {
+    insert('records', ++target.id, {});
+  }, []);
 
   return (
     <>
@@ -86,8 +86,9 @@ const QuickMarcEditorRows = ({ fields, mutators: { insert } }) => {
                   !withAddRowAction &&
                     <IconButton
                       data-test-add-row
+                      id={idx}
                       icon="plus-sign"
-                      onClick={() => addNewRow(idx)}
+                      onClick={addNewRow}
                     />
                 }
               </div>
