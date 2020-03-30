@@ -83,7 +83,7 @@ const config = {
       },
       {
         type: SUBFIELD_TYPES.BYTE,
-        name: 'LTxT',
+        name: 'LTxt',
       },
       {
         type: SUBFIELD_TYPES.BYTE,
