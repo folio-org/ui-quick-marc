@@ -17,16 +17,16 @@ const config = {
         type: SUBFIELD_TYPES.BYTE,
       },
       {
-        name: 'Srce',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'Srce',
       },
       {
         name: 'Audn',
         type: SUBFIELD_TYPES.BYTE,
       },
       {
-        name: 'Ctrl',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'Ctrl',
       },
       {
         name: 'Lang',
@@ -35,8 +35,8 @@ const config = {
     ],
     [
       {
-        name: 'BLvl',
         disabled: true,
+        name: 'BLvl',
         type: SUBFIELD_TYPES.BYTE,
       },
       {
@@ -44,17 +44,17 @@ const config = {
         type: SUBFIELD_TYPES.BYTE,
       },
       {
-        name: 'Comp',
         type: SUBFIELD_TYPES.STRING,
+        name: 'Comp',
       },
       {
+        bytes: 6,
         name: 'AccM',
         type: SUBFIELD_TYPES.BYTES,
-        bytes: 6,
       },
       {
-        name: 'MRec',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'MRec',
       },
       {
         name: 'Ctry',
@@ -68,8 +68,8 @@ const config = {
         type: SUBFIELD_TYPES.BYTE,
       },
       {
-        name: 'TrAr',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'TrAr',
       },
     ],
     [
@@ -78,24 +78,24 @@ const config = {
         type: SUBFIELD_TYPES.BYTE,
       },
       {
-        name: 'FMus',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'FMus',
       },
       {
         name: 'LTxt',
         type: SUBFIELD_TYPES.BYTE,
       },
       {
-        name: 'DtSt',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'DtSt',
       },
       {
         name: 'Date1',
         type: SUBFIELD_TYPES.STRING,
       },
       {
-        name: 'Date2',
         type: SUBFIELD_TYPES.STRING,
+        name: 'Date2',
       },
     ],
   ],

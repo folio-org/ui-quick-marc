@@ -8,52 +8,52 @@ const config = {
   fields: [
     [
       {
-        name: 'Type',
         disabled: true,
+        name: 'Type',
         type: SUBFIELD_TYPES.BYTE,
       },
       {
+        type: SUBFIELD_TYPES.BYTE,
         name: 'ELvl',
-        type: SUBFIELD_TYPES.BYTE,
       },
       {
-        name: 'Srce',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'Srce',
       },
       {
         name: 'Audn',
         type: SUBFIELD_TYPES.BYTE,
       },
       {
-        name: 'Ctrl',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'Ctrl',
       },
       {
-        name: 'Lang',
         type: SUBFIELD_TYPES.STRING,
+        name: 'Lang',
       },
     ],
     [
       {
+        disabled: true,
         name: 'BLvl',
         type: SUBFIELD_TYPES.BYTE,
-        disabled: true,
       },
       {
+        type: SUBFIELD_TYPES.BYTE,
         name: 'Form',
-        type: SUBFIELD_TYPES.BYTE,
       },
       {
-        name: 'Conf',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'Conf',
       },
       {
         name: 'Biog',
         type: SUBFIELD_TYPES.BYTE,
       },
       {
-        name: 'MRec',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'MRec',
       },
       {
         name: 'Ctry',

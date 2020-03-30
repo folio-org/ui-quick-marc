@@ -8,44 +8,44 @@ const config = {
   fields: [
     [
       {
+        type: SUBFIELD_TYPES.BYTE,
         name: 'Type',
         disabled: true,
-        type: SUBFIELD_TYPES.BYTE,
       },
       {
         name: 'ELvl',
         type: SUBFIELD_TYPES.BYTE,
       },
       {
-        name: 'Srce',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'Srce',
       },
       {
-        name: 'Audn',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'Audn',
       },
       {
         name: 'Ctrl',
         type: SUBFIELD_TYPES.BYTE,
       },
       {
-        name: 'Lang',
         type: SUBFIELD_TYPES.STRING,
+        name: 'Lang',
       },
     ],
     [
       {
+        disabled: true,
         name: 'BLvl',
         type: SUBFIELD_TYPES.BYTE,
-        disabled: true,
       },
       {
+        type: SUBFIELD_TYPES.BYTE,
         name: 'Form',
-        type: SUBFIELD_TYPES.BYTE,
       },
       {
-        name: 'GPub',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'GPub',
       },
       undefined,
       {

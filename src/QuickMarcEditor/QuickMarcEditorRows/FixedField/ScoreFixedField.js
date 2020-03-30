@@ -9,28 +9,28 @@ const config = {
     [
       {
         name: 'Type',
-        disabled: true,
         type: SUBFIELD_TYPES.BYTE,
+        disabled: true,
       },
       {
-        name: 'ELvl',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'ELvl',
       },
       {
         name: 'Srce',
         type: SUBFIELD_TYPES.BYTE,
       },
       {
-        name: 'Audn',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'Audn',
       },
       {
         name: 'Ctrl',
         type: SUBFIELD_TYPES.BYTE,
       },
       {
-        name: 'Lang',
         type: SUBFIELD_TYPES.STRING,
+        name: 'Lang',
       },
     ],
     [
@@ -40,62 +40,62 @@ const config = {
         disabled: true,
       },
       {
-        name: 'Form',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'Form',
       },
       {
         name: 'Comp',
         type: SUBFIELD_TYPES.STRING,
       },
       {
-        name: 'AccM',
         type: SUBFIELD_TYPES.BYTES,
+        name: 'AccM',
         bytes: 6,
       },
       {
-        name: 'MRec',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'MRec',
       },
       {
-        name: 'Ctry',
         type: SUBFIELD_TYPES.STRING,
+        name: 'Ctry',
       },
     ],
     [
       undefined,
       {
-        name: 'Part',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'Part',
       },
       {
-        name: 'TrAr',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'TrAr',
       },
     ],
     [
       {
-        name: 'Desc',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'Desc',
       },
       {
         name: 'FMus',
         type: SUBFIELD_TYPES.BYTE,
       },
       {
-        name: 'LTxT',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'LTxT',
       },
       {
-        name: 'DtSt',
         type: SUBFIELD_TYPES.BYTE,
+        name: 'DtSt',
       },
       {
         name: 'Date1',
         type: SUBFIELD_TYPES.STRING,
       },
       {
-        name: 'Date2',
         type: SUBFIELD_TYPES.STRING,
+        name: 'Date2',
       },
     ],
   ],
