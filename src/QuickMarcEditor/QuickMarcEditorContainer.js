@@ -11,13 +11,15 @@ import { stripesConnect } from '@folio/stripes/core';
 import { LoadingView } from '@folio/stripes/components';
 import { baseManifest } from '@folio/stripes-acq-components';
 
-import { INVENTORY_INSTANCE_API } from '../common/constants';
+import {
+  INVENTORY_INSTANCE_API,
+  MARC_RECORD_API,
+} from '../common/constants';
 
 import {
   dehydrateMarcRecordResponse,
 } from './utils';
 import QuickMarcEditor from './QuickMarcEditor';
-import response from './response.json';
 
 const QuickMarcEditorContainer = ({ mutator, match, onClose }) => {
   const instanceId = match.params.instanceId;
@@ -30,7 +32,7 @@ const QuickMarcEditorContainer = ({ mutator, match, onClose }) => {
     setIsLoading(true);
 
     const instancePromise = mutator.quickMarcEditInstance.GET();
-    const marcRecordPromise = Promise.resolve(response);
+    const marcRecordPromise = mutator.quickMarcEditMarcRecord.GET();
 
     Promise.all([instancePromise, marcRecordPromise])
       .then(([instanceResponse, marcRecordResponse]) => {
@@ -81,6 +83,12 @@ QuickMarcEditorContainer.manifest = Object.freeze({
     fetch: false,
     accumulate: true,
     path: `${INVENTORY_INSTANCE_API}/:{instanceId}`,
+  },
+  quickMarcEditMarcRecord: {
+    ...baseManifest,
+    fetch: false,
+    accumulate: true,
+    path: `${MARC_RECORD_API}/:{instanceId}`,
   },
 });
 

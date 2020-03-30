@@ -1,8 +1,9 @@
 import React, {
   useMemo,
+  useState,
+  useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
-import { FieldArray } from 'react-final-form-arrays';
 import { FormattedMessage } from 'react-intl';
 
 import stripesFinalForm from '@folio/stripes/final-form';
@@ -18,16 +19,24 @@ import {
 
 import { QuickMarcEditorRows } from './QuickMarcEditorRows';
 
-const QuickMarcEditor = ({ instance, onClose, onSubmit }) => {
+const QuickMarcEditor = ({ instance, onClose, handleSubmit, initialValues, submitting, pristine }) => {
+  const [records, setRecords] = useState([]);
+
   const paneFooter = useMemo(() => (
     <FormFooter
       id="quick-marc-record-save"
-      handleSubmit={onSubmit}
+      handleSubmit={handleSubmit}
       onCancel={onClose}
-      submitting
-      pristine
+      submitting={submitting}
+      pristine={pristine}
     />
-  ), [onClose, onSubmit]);
+  ), [onClose, handleSubmit, submitting, pristine]);
+
+  const initialRecords = initialValues?.records;
+
+  useEffect(() => {
+    if (initialRecords) setRecords(initialRecords);
+  }, [initialRecords]);
 
   return (
     <form>
@@ -37,7 +46,7 @@ const QuickMarcEditor = ({ instance, onClose, onSubmit }) => {
           dismissible
           onClose={onClose}
           defaultWidth="100%"
-          paneTitle={<FormattedMessage id="ui-quick-marc.record.edit.title" values={instance || {}} />}
+          paneTitle={instance ? <FormattedMessage id="ui-quick-marc.record.edit.title" values={instance} /> : ''}
           footer={paneFooter}
         >
           <Row>
@@ -48,9 +57,8 @@ const QuickMarcEditor = ({ instance, onClose, onSubmit }) => {
               data-test-quick-marc-editor={instance?.id}
               data-testid="quick-marc-editor"
             >
-              <FieldArray
-                component={QuickMarcEditorRows}
-                id="records"
+              <QuickMarcEditorRows
+                fields={records}
                 name="records"
               />
             </Col>
@@ -64,7 +72,10 @@ const QuickMarcEditor = ({ instance, onClose, onSubmit }) => {
 QuickMarcEditor.propTypes = {
   instance: PropTypes.object,
   onClose: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  submitting: PropTypes.bool,
+  pristine: PropTypes.bool,
+  initialValues: PropTypes.object,
 };
 
 export default stripesFinalForm({

@@ -13,15 +13,11 @@ import {
 } from './utils';
 import styles from './QuickMarcEditorRows.css';
 
-const QuickMarcEditorRows = ({ fields }) => {
-  const values = fields.value;
-
+const QuickMarcEditorRows = ({ name, fields }) => {
   return (
     <>
       {
-        fields.map((field, idx) => {
-          const recordRow = values[idx];
-
+        fields.map((recordRow, idx) => {
           const isDisabled = isReadOnly(recordRow);
           const withIndicators = !hasIndicatorException(recordRow);
 
@@ -29,11 +25,12 @@ const QuickMarcEditorRows = ({ fields }) => {
             <div
               key={recordRow.id}
               className={styles.quickMarcEditorRow}
+              data-test-quick-marc-editor-row
               data-testid="quick-marc-editorid"
             >
               <div className={styles.quickMarcEditorRowTag}>
                 <Field
-                  name={`${field}.tag`}
+                  name={`${name}[${idx}].tag`}
                   component={TextField}
                   marginBottom0
                   fullWidth
@@ -44,7 +41,7 @@ const QuickMarcEditorRows = ({ fields }) => {
                 {
                   withIndicators && (
                     <Field
-                      name={`${field}.indicators[0]`}
+                      name={`${name}[${idx}].indicators[0]`}
                       component={TextField}
                       marginBottom0
                       fullWidth
@@ -57,7 +54,7 @@ const QuickMarcEditorRows = ({ fields }) => {
                 {
                   withIndicators && (
                     <Field
-                      name={`${field}.indicators[1]`}
+                      name={`${name}[${idx}].indicators[1]`}
                       component={TextField}
                       marginBottom0
                       fullWidth
@@ -70,11 +67,11 @@ const QuickMarcEditorRows = ({ fields }) => {
                 {
                   recordRow.tag === '008'
                     ? FixedFieldFactory.getFixedField(
-                      `${field}.content`, recordRow.content.Type, recordRow.content.BLvl,
+                      `${name}[${idx}].content`, recordRow.content.Type, recordRow.content.BLvl,
                     )
                     : (
                       <Field
-                        name={`${field}.content`}
+                        name={`${name}[${idx}].content`}
                         component={TextField}
                         marginBottom0
                         fullWidth
@@ -92,15 +89,13 @@ const QuickMarcEditorRows = ({ fields }) => {
 };
 
 QuickMarcEditorRows.propTypes = {
-  fields: PropTypes.shape({
-    map: PropTypes.func.isRequired,
-    value: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      tag: PropTypes.string.isRequired,
-      indicators: PropTypes.arrayOf(PropTypes.string),
-      content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
-    })),
-  }),
+  name: PropTypes.string.isRequired,
+  fields: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    tag: PropTypes.string.isRequired,
+    indicators: PropTypes.arrayOf(PropTypes.string),
+    content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+  })),
 };
 
 export default QuickMarcEditorRows;

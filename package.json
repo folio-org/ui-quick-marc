@@ -9,11 +9,14 @@
     "node": ">=8.9.4"
   },
   "stripes": {
-    "actsAs": ["plugin"],
+    "actsAs": [
+      "plugin"
+    ],
     "pluginType": "quick-marc",
     "displayName": "ui-quick-marc.meta.title",
     "okapiInterfaces": {
-      "inventory": "10.0"
+      "inventory": "10.0",
+      "records-editor.records": "1.0"
     },
     "permissionSets": [
       {
@@ -51,6 +54,7 @@
     "@folio/stripes": "^3.0.0",
     "@folio/stripes-cli": "^1.13.0",
     "@testing-library/react": "^9.3.2",
+    "@welldone-software/why-did-you-render": "^4.0.5",
     "babel-eslint": "^9.0.0",
     "babel-jest": "^25.1.0",
     "chai": "^4.2.0",
@@ -74,9 +78,9 @@
   "dependencies": {
     "@folio/stripes-acq-components": "^2.0.0",
     "final-form": "^4.18.2",
+    "final-form-arrays": "^3.0.1",
     "lodash": "^4.17.5",
     "prop-types": "^15.5.10",
-    "final-form-arrays": "^3.0.1",
     "react-final-form": "^6.3.0",
     "react-final-form-arrays": "^3.1.0",
     "react-final-form-listeners": "^1.0.2",

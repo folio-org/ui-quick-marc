@@ -19,6 +19,12 @@ const match = {
   },
 };
 
+const record = {
+  id: faker.random.uuid(),
+  leader: faker.random.uuid(),
+  records: [],
+};
+
 const messages = {
   'ui-quick-marc.record.edit.title': '{title}',
 };
@@ -45,10 +51,21 @@ describe('Given Quick Marc Editor Container', () => {
       quickMarcEditInstance: {
         GET: () => Promise.resolve(instance),
       },
+      quickMarcEditMarcRecord: {
+        GET: jest.fn(() => Promise.resolve(record)),
+      },
     };
   });
 
   afterEach(cleanup);
+
+  it('Than it should fetch MARC record', async () => {
+    await act(async () => {
+      await renderQuickMarcEditorContainer({ mutator, onClose: jest.fn() });
+    });
+
+    expect(mutator.quickMarcEditMarcRecord.GET).toHaveBeenCalled();
+  });
 
   it('Than it should display Quick Marc Editor with fetched instance', async () => {
     let getByText;
