@@ -1,51 +1,83 @@
 import React, {
   useMemo,
+  useState,
+  useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 
+import stripesFinalForm from '@folio/stripes/final-form';
 import {
   Pane,
   Paneset,
+  Row,
+  Col,
 } from '@folio/stripes/components';
 import {
   FormFooter,
 } from '@folio/stripes-acq-components';
 
-const QuickMarcEditor = ({ instance, onClose }) => {
+import { QuickMarcEditorRows } from './QuickMarcEditorRows';
+
+const QuickMarcEditor = ({ instance, onClose, handleSubmit, initialValues, submitting, pristine }) => {
+  const [records, setRecords] = useState([]);
+
   const paneFooter = useMemo(() => (
     <FormFooter
       id="quick-marc-record-save"
-      handleSubmit={() => {}}
+      handleSubmit={handleSubmit}
       onCancel={onClose}
-      submitting
-      pristine
+      submitting={submitting}
+      pristine={pristine}
     />
-  ), [onClose]);
+  ), [onClose, handleSubmit, submitting, pristine]);
+
+  const initialRecords = initialValues?.records;
+
+  useEffect(() => {
+    if (initialRecords) setRecords(initialRecords);
+  }, [initialRecords]);
 
   return (
-    <Paneset>
-      <Pane
-        id="quick-marc-editor-pane"
-        dismissible
-        onClose={onClose}
-        defaultWidth="100%"
-        paneTitle={instance?.title || ''}
-        footer={paneFooter}
-      >
-        <div
-          data-test-quick-marc-editor={instance?.id}
-          data-testid="quick-marc-editor"
+    <form>
+      <Paneset>
+        <Pane
+          id="quick-marc-editor-pane"
+          dismissible
+          onClose={onClose}
+          defaultWidth="100%"
+          paneTitle={instance ? <FormattedMessage id="ui-quick-marc.record.edit.title" values={instance} /> : ''}
+          footer={paneFooter}
         >
-          Quick MARC Editor
-        </div>
-      </Pane>
-    </Paneset>
+          <Row>
+            <Col
+              xs={12}
+              md={8}
+              mdOffset={2}
+              data-test-quick-marc-editor={instance?.id}
+              data-testid="quick-marc-editor"
+            >
+              <QuickMarcEditorRows
+                fields={records}
+                name="records"
+              />
+            </Col>
+          </Row>
+        </Pane>
+      </Paneset>
+    </form>
   );
 };
 
 QuickMarcEditor.propTypes = {
   instance: PropTypes.object,
   onClose: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  submitting: PropTypes.bool,
+  pristine: PropTypes.bool,
+  initialValues: PropTypes.object,
 };
 
-export default QuickMarcEditor;
+export default stripesFinalForm({
+  navigationCheck: true,
+})(QuickMarcEditor);

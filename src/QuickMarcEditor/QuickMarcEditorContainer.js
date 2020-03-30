@@ -11,25 +11,37 @@ import { stripesConnect } from '@folio/stripes/core';
 import { LoadingView } from '@folio/stripes/components';
 import { baseManifest } from '@folio/stripes-acq-components';
 
-import { INVENTORY_INSTANCE_API } from '../common/constants';
+import {
+  INVENTORY_INSTANCE_API,
+  MARC_RECORD_API,
+} from '../common/constants';
 
+import {
+  dehydrateMarcRecordResponse,
+} from './utils';
 import QuickMarcEditor from './QuickMarcEditor';
 
 const QuickMarcEditorContainer = ({ mutator, match, onClose }) => {
   const instanceId = match.params.instanceId;
 
   const [instance, setInstance] = useState();
+  const [marcRecord, setMarcRecord] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setIsLoading(true);
 
-    mutator.quickMarcEditInstance.GET()
-      .then(instanceResponse => {
+    const instancePromise = mutator.quickMarcEditInstance.GET();
+    const marcRecordPromise = mutator.quickMarcEditMarcRecord.GET();
+
+    Promise.all([instancePromise, marcRecordPromise])
+      .then(([instanceResponse, marcRecordResponse]) => {
         setInstance(instanceResponse);
+        setMarcRecord(dehydrateMarcRecordResponse(marcRecordResponse));
       })
       .catch(() => {
         setInstance();
+        setMarcRecord();
       })
       .finally(() => {
         setIsLoading(false);
@@ -40,6 +52,10 @@ const QuickMarcEditorContainer = ({ mutator, match, onClose }) => {
   const closeEditor = useCallback(() => {
     onClose(instanceId);
   }, [instanceId, onClose]);
+
+  const onSubmit = useCallback(() => {
+    closeEditor();
+  }, [closeEditor]);
 
   if (isLoading) {
     return (
@@ -55,6 +71,8 @@ const QuickMarcEditorContainer = ({ mutator, match, onClose }) => {
     <QuickMarcEditor
       instance={instance}
       onClose={closeEditor}
+      initialValues={marcRecord}
+      onSubmit={onSubmit}
     />
   );
 };
@@ -65,6 +83,12 @@ QuickMarcEditorContainer.manifest = Object.freeze({
     fetch: false,
     accumulate: true,
     path: `${INVENTORY_INSTANCE_API}/:{instanceId}`,
+  },
+  quickMarcEditMarcRecord: {
+    ...baseManifest,
+    fetch: false,
+    accumulate: true,
+    path: `${MARC_RECORD_API}/:{instanceId}`,
   },
 });
 

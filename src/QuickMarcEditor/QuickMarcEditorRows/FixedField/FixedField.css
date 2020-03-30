@@ -1,0 +1,10 @@
+.fixedFieldSubFieldByte {
+  width: 30px;
+  margin-right: 2px;
+  display: inline-block;
+}
+
+.fixedFieldSubFieldString {
+  width: 80px;
+  display: inline-block;
+}
