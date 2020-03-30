@@ -113,6 +113,7 @@ const config = {
 const BookFixedField = ({ name }) => {
   return (
     <FixedField
+      data-test-book-fixed-field
       name={name}
       config={config}
     />

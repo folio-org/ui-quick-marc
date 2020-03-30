@@ -86,6 +86,7 @@ const config = {
 const ComputerFileFixedField = ({ name }) => {
   return (
     <FixedField
+      data-test-computer-file-fixed-field
       name={name}
       config={config}
     />

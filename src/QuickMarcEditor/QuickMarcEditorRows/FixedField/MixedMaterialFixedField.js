@@ -77,6 +77,7 @@ const config = {
 const MixedMaterialFixedField = ({ name }) => {
   return (
     <FixedField
+      data-test-mixed-fixed-field
       name={name}
       config={config}
     />

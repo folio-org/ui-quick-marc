@@ -104,6 +104,7 @@ const config = {
 const SoundRecordingFixedField = ({ name }) => {
   return (
     <FixedField
+      data-test-sound-fixed-field
       name={name}
       config={config}
     />

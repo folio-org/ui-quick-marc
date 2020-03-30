@@ -115,6 +115,7 @@ const config = {
 const ContinuingResourceFixedField = ({ name }) => {
   return (
     <FixedField
+      data-test-counting-resource-fixed-field
       name={name}
       config={config}
     />

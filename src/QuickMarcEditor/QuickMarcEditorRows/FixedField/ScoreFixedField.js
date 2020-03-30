@@ -104,6 +104,7 @@ const config = {
 const ScoreFixedField = ({ name }) => {
   return (
     <FixedField
+      data-test-score-fixed-field
       name={name}
       config={config}
     />

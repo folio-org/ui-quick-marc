@@ -100,6 +100,7 @@ const config = {
 const MapFixedField = ({ name }) => {
   return (
     <FixedField
+      data-test-map-fixed-field
       name={name}
       config={config}
     />

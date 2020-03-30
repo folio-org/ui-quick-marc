@@ -104,6 +104,7 @@ const config = {
 const VisualMaterialFixedField = ({ name }) => {
   return (
     <FixedField
+      data-test-visual-material-fixed-field
       name={name}
       config={config}
     />
