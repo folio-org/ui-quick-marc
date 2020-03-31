@@ -16,10 +16,10 @@ import {
 } from './utils';
 import styles from './QuickMarcEditorRows.css';
 
-const QuickMarcEditorRows = ({ name, fields, mutators: { insert } }) => {
+const QuickMarcEditorRows = ({ name, fields, mutators }) => {
   const addNewRow = useCallback(({ target }) => {
-    insert('records', ++target.value, { id: uuid });
-  }, [insert]);
+    mutators.insert('records', ++target.value, { id: uuid });
+  }, [mutators.insert]);
 
   return (
     <>
