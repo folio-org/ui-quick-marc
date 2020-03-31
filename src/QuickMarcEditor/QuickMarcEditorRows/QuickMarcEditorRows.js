@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'react-final-form';
-import uuid from 'uuid';
 
 import {
   TextField,
@@ -16,10 +15,10 @@ import {
 } from './utils';
 import styles from './QuickMarcEditorRows.css';
 
-const QuickMarcEditorRows = ({ name, fields, mutators: { insert } }) => {
+const QuickMarcEditorRows = ({ name, fields, mutators: { setNewRow } }) => {
   const addNewRow = useCallback(({ target }) => {
-    insert('records', ++target.index, { id: uuid });
-  }, [insert]);
+    setNewRow({index: target.dataset.index, fields});
+  }, [setNewRow]);
 
   return (
     <>
