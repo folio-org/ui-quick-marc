@@ -13,7 +13,7 @@ describe('QuickMarcEditor utils', () => {
       const marcRecord = {
         id: faker.random.uuid(),
         leader: faker.random.uuid(),
-        records: [
+        fields: [
           {
             tag: '001',
             content: '$a fss $b asd',

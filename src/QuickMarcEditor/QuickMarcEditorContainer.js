@@ -88,7 +88,10 @@ QuickMarcEditorContainer.manifest = Object.freeze({
     ...baseManifest,
     fetch: false,
     accumulate: true,
-    path: `${MARC_RECORD_API}/:{instanceId}`,
+    path: MARC_RECORD_API,
+    params: {
+      instanceId: ':{instanceId}',
+    },
   },
 });
 
