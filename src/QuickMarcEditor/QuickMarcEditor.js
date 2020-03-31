@@ -2,6 +2,7 @@ import React, {
   useMemo,
   useState,
   useEffect,
+  useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
@@ -40,12 +41,16 @@ const QuickMarcEditor = ({
       pristine={pristine}
     />
   ), [onClose, handleSubmit, submitting, pristine]);
-
+  const spySubscription = { values: true };
   const initialRecords = initialValues?.records;
 
   useEffect(() => {
     if (initialRecords) setRecords(initialRecords);
   }, [initialRecords]);
+
+  const addRecord = useCallback(({ values }) => {
+    setRecords(values.records);
+  }, []);
 
   return (
     <form>
@@ -72,10 +77,8 @@ const QuickMarcEditor = ({
                 mutators={mutators}
               />
               <FormSpy
-                subscription={{ values: true }}
-                onChange={({ values }) => {
-                  setRecords(values.records);
-                }}
+                subscription={spySubscription}
+                onChange={addRecord}
               />
             </Col>
           </Row>
@@ -103,8 +106,14 @@ export default stripesFinalForm({
     addRecord: ([{ fields, index }], state, tools) => {
       const records = [...fields];
       const newIndex = index + 1;
+      const emptyRow = {
+        id: uuid(),
+        tag: '',
+        content: '',
+      };
 
-      tools.changeValue(state, 'records', () => records.splice(newIndex, 0, { id: uuid() }));
+      records.splice(newIndex, 0, emptyRow);
+      tools.changeValue(state, 'records', () => records);
     },
   },
 })(QuickMarcEditor);
