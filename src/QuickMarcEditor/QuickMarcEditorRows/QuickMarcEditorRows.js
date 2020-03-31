@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'react-final-form';
-import uuid from 'uuid'
+import uuid from 'uuid';
 
 import {
   TextField,
@@ -12,13 +12,13 @@ import { FixedFieldFactory } from './FixedField';
 import {
   isReadOnly,
   hasIndicatorException,
-  hasAddException
+  hasAddException,
 } from './utils';
 import styles from './QuickMarcEditorRows.css';
 
 const QuickMarcEditorRows = ({ name, fields, mutators: { insert } }) => {
   const addNewRow = useCallback(({ target }) => {
-    insert('records', ++target.value, {id: uuid});
+    insert('records', ++target.value, { id: uuid });
   }, [insert]);
 
   return (

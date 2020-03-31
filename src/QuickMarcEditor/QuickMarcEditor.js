@@ -26,7 +26,7 @@ const QuickMarcEditor = ({
   initialValues,
   submitting,
   pristine,
-  form: { mutators }
+  form: { mutators },
 }) => {
   const [records, setRecords] = useState([]);
   const paneFooter = useMemo(() => (
