@@ -17,7 +17,7 @@ import styles from './QuickMarcEditorRows.css';
 
 const QuickMarcEditorRows = ({ name, fields, mutators: { setNewRow } }) => {
   const addNewRow = useCallback(({ target }) => {
-    setNewRow({index: target.dataset.index, fields});
+    setNewRow({ index: target.dataset.index, fields });
   }, [setNewRow]);
 
   return (
@@ -115,7 +115,7 @@ QuickMarcEditorRows.propTypes = {
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   })),
   mutators: PropTypes.shape({
-    insert: PropTypes.func.isRequired,
+    setNewRow: PropTypes.func.isRequired,
   }),
 };
 

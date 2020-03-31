@@ -17,9 +17,9 @@ import {
 import {
   FormFooter,
 } from '@folio/stripes-acq-components';
+import { FormSpy } from 'react-final-form';
 
 import { QuickMarcEditorRows } from './QuickMarcEditorRows';
-import { FormSpy } from 'react-final-form';
 
 const QuickMarcEditor = ({
   instance,
@@ -104,9 +104,8 @@ export default stripesFinalForm({
     setNewRow: (args, state, tools) => {
       const { index, fields } = args[0];
       const newIndex = index + 1;
-      console.log('fields', fields)
 
       tools.changeValue(state, 'records', () => fields.splice(newIndex, 0, { id: uuid }));
-    }
-  }
+    },
+  },
 })(QuickMarcEditor);
