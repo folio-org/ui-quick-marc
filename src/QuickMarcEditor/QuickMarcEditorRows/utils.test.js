@@ -33,4 +33,15 @@ describe('QuickMarcEditorRows utils', () => {
       expect(utils.isReadOnly({ tag: '010' })).toBeFalsy();
     });
   });
+
+  describe('hasAddException', () => {
+    it('shoul be true for exeptional row', () => {
+      expect(utils.hasAddException({ tag: LEADER_TAG })).toBeTruthy();
+      expect(utils.hasAddException({ tag: '001' })).toBeTruthy();
+    });
+
+    it('shoul be false for exeptional row', () => {
+      expect(utils.hasAddException({ tag: '010' })).toBeFalsy();
+    });
+  });
 });

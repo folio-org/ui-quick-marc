@@ -19,9 +19,16 @@ import {
 
 import { QuickMarcEditorRows } from './QuickMarcEditorRows';
 
-const QuickMarcEditor = ({ instance, onClose, handleSubmit, initialValues, submitting, pristine }) => {
+const QuickMarcEditor = ({
+  instance,
+  onClose,
+  handleSubmit,
+  initialValues,
+  submitting,
+  pristine,
+  form: { mutators }
+}) => {
   const [records, setRecords] = useState([]);
-
   const paneFooter = useMemo(() => (
     <FormFooter
       id="quick-marc-record-save"
@@ -60,6 +67,7 @@ const QuickMarcEditor = ({ instance, onClose, handleSubmit, initialValues, submi
               <QuickMarcEditorRows
                 fields={records}
                 name="records"
+                mutators={mutators}
               />
             </Col>
           </Row>
@@ -76,6 +84,9 @@ QuickMarcEditor.propTypes = {
   submitting: PropTypes.bool,
   pristine: PropTypes.bool,
   initialValues: PropTypes.object,
+  form: PropTypes.shape({
+    mutators: PropTypes.object.isRequired,
+  }),
 };
 
 export default stripesFinalForm({
