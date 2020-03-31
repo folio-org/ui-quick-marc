@@ -4,5 +4,5 @@ import faker from 'faker';
 export default Factory.extend({
   id: () => faker.random.uuid(),
   leader: () => faker.random.uuid(),
-  records: [],
+  fields: [],
 });

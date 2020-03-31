@@ -10,7 +10,7 @@ export const dehydrateMarcRecordResponse = marcRecordResponse => ({
       content: marcRecordResponse.leader,
       id: LEADER_TAG,
     },
-    ...marcRecordResponse.records.map(record => ({
+    ...marcRecordResponse.fields.map(record => ({
       ...record,
       id: uuid(),
     })),

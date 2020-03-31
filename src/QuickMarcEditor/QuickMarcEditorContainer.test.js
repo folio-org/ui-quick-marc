@@ -22,7 +22,7 @@ const match = {
 const record = {
   id: faker.random.uuid(),
   leader: faker.random.uuid(),
-  records: [],
+  fields: [],
 };
 
 const messages = {

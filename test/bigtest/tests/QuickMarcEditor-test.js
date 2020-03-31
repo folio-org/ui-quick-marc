@@ -33,7 +33,7 @@ describe('Quick MARC editor', () => {
     instance = this.server.create('instance');
     this.server.create('marcRecord', {
       id: instance.id,
-      records,
+      fields: records,
     });
 
     this.visit(`/dummy/edit/${instance.id}`);
