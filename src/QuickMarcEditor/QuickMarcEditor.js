@@ -66,18 +66,17 @@ const QuickMarcEditor = ({
               data-test-quick-marc-editor={instance?.id}
               data-testid="quick-marc-editor"
             >
+              <QuickMarcEditorRows
+                fields={records}
+                name="records"
+                mutators={mutators}
+              />
               <FormSpy
                 subscription={{ values: true }}
-              >
-                {() => (
-                  <QuickMarcEditorRows
-                    fields={records}
-                    name="records"
-                    mutators={mutators}
-                    setRecords={setRecords}
-                  />
-                )}
-              </FormSpy>
+                onChange={({ values }) => {
+                  setRecords(values.records);
+                }}
+              />
             </Col>
           </Row>
         </Pane>
@@ -101,11 +100,11 @@ QuickMarcEditor.propTypes = {
 export default stripesFinalForm({
   navigationCheck: true,
   mutators: {
-    setNewRow: (args, state, tools) => {
-      const { index, fields } = args[0];
+    addRecord: ([{ fields, index }], state, tools) => {
+      const records = [...fields];
       const newIndex = index + 1;
 
-      tools.changeValue(state, 'records', () => fields.splice(newIndex, 0, { id: uuid }));
+      tools.changeValue(state, 'records', () => records.splice(newIndex, 0, { id: uuid() }));
     },
   },
 })(QuickMarcEditor);

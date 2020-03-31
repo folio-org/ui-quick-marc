@@ -15,10 +15,10 @@ import {
 } from './utils';
 import styles from './QuickMarcEditorRows.css';
 
-const QuickMarcEditorRows = ({ name, fields, mutators: { setNewRow } }) => {
+const QuickMarcEditorRows = ({ name, fields, mutators: { addRecord } }) => {
   const addNewRow = useCallback(({ target }) => {
-    setNewRow({ index: target.dataset.index, fields });
-  }, [setNewRow]);
+    addRecord({ index: target.dataset.index, fields });
+  }, [addRecord, fields]);
 
   return (
     <>
@@ -115,7 +115,7 @@ QuickMarcEditorRows.propTypes = {
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   })),
   mutators: PropTypes.shape({
-    setNewRow: PropTypes.func.isRequired,
+    addRecord: PropTypes.func.isRequired,
   }),
 };
 
