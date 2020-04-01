@@ -51,7 +51,7 @@ const QuickMarcEditor = ({
   }, [initialRecords]);
 
   const changeRecords = useCallback(({ values }) => {
-    if (values?.records.length !== initialRecords.length) {
+    if (values?.records?.length !== initialRecords.length) {
       setRecords(values.records);
     }
   }, []);
