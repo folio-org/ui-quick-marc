@@ -1,8 +1,14 @@
 import { LEADER_TAG } from '../constants';
 
-const READ_ONLY_ROWS = [LEADER_TAG, '001', '999'];
-
-export const isReadOnly = recordRow => READ_ONLY_ROWS.includes(recordRow.tag);
+export const isReadOnly = recordRow => (
+  [LEADER_TAG, '001'].includes(recordRow.tag)
+  || (
+    recordRow.tag === '999'
+    && recordRow.indicators
+    && recordRow.indicators[0] === 'f'
+    && recordRow.indicators[0] === 'f'
+  )
+);
 
 const INDICATOR_EXEPTION_ROWS = [LEADER_TAG, '001', '002', '003', '004', '005', '006', '007', '008', '009'];
 

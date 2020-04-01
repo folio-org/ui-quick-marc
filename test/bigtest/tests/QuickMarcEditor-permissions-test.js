@@ -1,10 +1,10 @@
 import { beforeEach, describe, it } from '@bigtest/mocha';
 import { expect } from 'chai';
 
-import setupApplication from '../../helpers/setup-application';
-import { QuickMarcEditorInteractor } from '../../interactors';
+import setupApplication from '../helpers/setup-application';
+import { QuickMarcEditorInteractor } from '../interactors';
 
-describe('Organizations list without permissions', () => {
+describe('QuickMarcEditor without permissions', () => {
   setupApplication({
     hasAllPerms: false,
     permissions: {
@@ -21,7 +21,7 @@ describe('Organizations list without permissions', () => {
     this.visit(`/dummy/edit/${instance.id}`);
   });
 
-  it("Quick MARC plugin shouldn't be rendered", () => {
+  it('should not be rendered', () => {
     expect(quickMarcEditor.isPresent).to.be.false;
   });
 });

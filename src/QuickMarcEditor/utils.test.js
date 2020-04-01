@@ -22,6 +22,8 @@ describe('QuickMarcEditor utils', () => {
       };
       const dehydratedMarcRecord = utils.dehydrateMarcRecordResponse(marcRecord);
 
+      expect(dehydratedMarcRecord.fields).not.toBeDefined();
+
       expect(dehydratedMarcRecord.records[0].tag).toBe(LEADER_TAG);
       expect(dehydratedMarcRecord.records[0].id).toBe(LEADER_TAG);
       expect(dehydratedMarcRecord.records[0].content).toBe(marcRecord.leader);
@@ -55,6 +57,43 @@ describe('QuickMarcEditor utils', () => {
       const newRecords = utils.addNewRecord(insertIndex, state);
 
       expect(newRecords.length).toBe(state.formState.values.records.length + 1);
+    });
+  });
+
+  describe('validateMarcRecord', () => {
+    it('should not return error message when record is valid', () => {
+      const record = {
+        records: [{
+          tag: '245',
+        }],
+      };
+
+      expect(utils.validateMarcRecord(record)).not.toBeDefined();
+    });
+
+    it('should return error message when record is without 245 row', () => {
+      const record = {
+        records: [{
+          tag: '244',
+        }],
+      };
+
+      expect(utils.validateMarcRecord(record)).toBe('ui-quick-marc.record.error.title.empty');
+    });
+
+    it('should return error message when record has several 245 rows', () => {
+      const record = {
+        records: [
+          {
+            tag: '245',
+          },
+          {
+            tag: '245',
+          },
+        ],
+      };
+
+      expect(utils.validateMarcRecord(record)).toBe('ui-quick-marc.record.error.title.multiple');
     });
   });
 });
