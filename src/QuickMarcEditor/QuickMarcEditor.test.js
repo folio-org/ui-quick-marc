@@ -23,28 +23,20 @@ const messages = {
   'ui-quick-marc.record.edit.title': '{title}',
 };
 
-const renderQuickMarcEditor = ({ instance, onClose, onSubmit, form }) => (render(
+const renderQuickMarcEditor = ({ instance, onClose, onSubmit, mutators }) => (render(
   <IntlProvider locale="en" messages={messages}>
     <MemoryRouter>
       <QuickMarcEditor
         instance={instance}
         onClose={onClose}
         onSubmit={onSubmit}
-        form={form}
+        mutators={mutators}
       />
     </MemoryRouter>
   </IntlProvider>,
 ));
 
 describe('Given Quick Marc Editor', () => {
-  let mutators;
-
-  beforeEach(() => {
-    mutators = {
-      addRecord: jest.fn(),
-    };
-  });
-
   afterEach(cleanup);
 
   it('Than it should display instance title in pane title', () => {
@@ -53,8 +45,8 @@ describe('Given Quick Marc Editor', () => {
       instance,
       onClose: jest.fn(),
       onSubmit: jest.fn(),
-      form: {
-        mutators,
+      mutators: {
+        addRecord: jest.fn(),
       },
     });
 
@@ -67,8 +59,8 @@ describe('Given Quick Marc Editor', () => {
       instance,
       onClose: jest.fn(),
       onSubmit: jest.fn(),
-      form: {
-        mutators,
+      mutators: {
+        addRecord: jest.fn(),
       },
     });
 
@@ -81,8 +73,8 @@ describe('Given Quick Marc Editor', () => {
       instance,
       onClose: jest.fn(),
       onSubmit: jest.fn(),
-      form: {
-        mutators,
+      mutators: {
+        addRecord: jest.fn(),
       },
     });
 
