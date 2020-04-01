@@ -4,6 +4,7 @@ import { LEADER_TAG } from './constants';
 
 export const dehydrateMarcRecordResponse = marcRecordResponse => ({
   ...marcRecordResponse,
+  fields: undefined,
   records: [
     {
       tag: LEADER_TAG,
@@ -29,4 +30,18 @@ export const addNewRecord = (index, state) => {
   records.splice(newIndex, 0, emptyRow);
 
   return records;
+};
+
+export const validateMarcRecord = marcRecord => {
+  const titleRecords = (marcRecord.records || []).filter(({ tag }) => tag === '245');
+
+  if (titleRecords.length === 0) {
+    return 'ui-quick-marc.record.error.title.empty';
+  }
+
+  if (titleRecords.length > 1) {
+    return 'ui-quick-marc.record.error.title.multiple';
+  }
+
+  return undefined;
 };

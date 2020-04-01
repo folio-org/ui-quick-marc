@@ -13,13 +13,14 @@ describe('QuickMarcEditorRows utils', () => {
     });
 
     it('should be true for record end', () => {
-      expect(utils.isReadOnly({ tag: '999' })).toBeTruthy();
+      expect(utils.isReadOnly({ tag: '999', indicators: ['f', 'f'] })).toBeTruthy();
     });
 
     it('should be false for record rows', () => {
       expect(utils.isReadOnly({ tag: '002' })).toBeFalsy();
       expect(utils.isReadOnly({ tag: '050' })).toBeFalsy();
       expect(utils.isReadOnly({ tag: '998' })).toBeFalsy();
+      expect(utils.isReadOnly({ tag: '999' })).toBeFalsy();
     });
   });
 

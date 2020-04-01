@@ -9,7 +9,10 @@ import ReactRouterPropTypes from 'react-router-prop-types';
 
 import { stripesConnect } from '@folio/stripes/core';
 import { LoadingView } from '@folio/stripes/components';
-import { baseManifest } from '@folio/stripes-acq-components';
+import {
+  baseManifest,
+  useShowCallout,
+} from '@folio/stripes-acq-components';
 
 import {
   INVENTORY_INSTANCE_API,
@@ -18,6 +21,7 @@ import {
 
 import {
   dehydrateMarcRecordResponse,
+  validateMarcRecord,
 } from './utils';
 import QuickMarcEditor from './QuickMarcEditor';
 
@@ -27,6 +31,8 @@ const QuickMarcEditorContainer = ({ mutator, match, onClose }) => {
   const [instance, setInstance] = useState();
   const [marcRecord, setMarcRecord] = useState();
   const [isLoading, setIsLoading] = useState(true);
+
+  const showCallout = useShowCallout();
 
   useEffect(() => {
     setIsLoading(true);
@@ -53,8 +59,17 @@ const QuickMarcEditorContainer = ({ mutator, match, onClose }) => {
     onClose(instanceId);
   }, [instanceId, onClose]);
 
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback((formValues) => {
+    const validationErrorMessage = validateMarcRecord(formValues);
+
+    if (validationErrorMessage) {
+      showCallout({ messageId: validationErrorMessage, type: 'error' });
+
+      return;
+    }
+
     closeEditor();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [closeEditor]);
 
   if (isLoading) {
