@@ -22,6 +22,8 @@ import { FormSpy } from 'react-final-form';
 
 import { QuickMarcEditorRows } from './QuickMarcEditorRows';
 
+const spySubscription = { values: true };
+
 const QuickMarcEditor = ({
   instance,
   onClose,
@@ -41,7 +43,6 @@ const QuickMarcEditor = ({
       pristine={pristine}
     />
   ), [onClose, handleSubmit, submitting, pristine]);
-  const spySubscription = { values: true };
   const initialRecords = initialValues?.records;
 
   useEffect(() => {
@@ -50,41 +51,43 @@ const QuickMarcEditor = ({
 
   const addRecord = useCallback(({ values }) => {
     setRecords(values.records);
-  }, []);
+  }, [records.length]);
 
   return (
-    <form>
-      <Paneset>
-        <Pane
-          id="quick-marc-editor-pane"
-          dismissible
-          onClose={onClose}
-          defaultWidth="100%"
-          paneTitle={instance ? <FormattedMessage id="ui-quick-marc.record.edit.title" values={instance} /> : ''}
-          footer={paneFooter}
-        >
-          <Row>
-            <Col
-              xs={12}
-              md={8}
-              mdOffset={2}
-              data-test-quick-marc-editor={instance?.id}
-              data-testid="quick-marc-editor"
-            >
-              <QuickMarcEditorRows
-                fields={records}
-                name="records"
-                mutators={mutators}
-              />
-              <FormSpy
-                subscription={spySubscription}
-                onChange={addRecord}
-              />
-            </Col>
-          </Row>
-        </Pane>
-      </Paneset>
-    </form>
+    <>
+      <form>
+        <Paneset>
+          <Pane
+            id="quick-marc-editor-pane"
+            dismissible
+            onClose={onClose}
+            defaultWidth="100%"
+            paneTitle={instance ? <FormattedMessage id="ui-quick-marc.record.edit.title" values={instance} /> : ''}
+            footer={paneFooter}
+          >
+            <Row>
+              <Col
+                xs={12}
+                md={8}
+                mdOffset={2}
+                data-test-quick-marc-editor={instance?.id}
+                data-testid="quick-marc-editor"
+              >
+                <QuickMarcEditorRows
+                  fields={records}
+                  name="records"
+                  mutators={mutators}
+                />
+              </Col>
+            </Row>
+          </Pane>
+        </Paneset>
+      </form>
+      <FormSpy
+        subscription={spySubscription}
+        onChange={addRecord}
+      />
+    </>
   );
 };
 
@@ -103,9 +106,9 @@ QuickMarcEditor.propTypes = {
 export default stripesFinalForm({
   navigationCheck: true,
   mutators: {
-    addRecord: ([{ fields, index }], state, tools) => {
-      const records = [...fields];
-      const newIndex = index + 1;
+    addRecord: ([{ index }], state, tools) => {
+      const records = [...state.formState.values.records];
+      const newIndex = +index + 1;
       const emptyRow = {
         id: uuid(),
         tag: '',
