@@ -6,7 +6,6 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import uuid from 'uuid';
 
 import stripesFinalForm from '@folio/stripes/final-form';
 import {
@@ -21,6 +20,7 @@ import {
 import { FormSpy } from 'react-final-form';
 
 import { QuickMarcEditorRows } from './QuickMarcEditorRows';
+import { addNewRecord } from './utils';
 
 const spySubscription = { values: true };
 
@@ -50,8 +50,10 @@ const QuickMarcEditor = ({
   }, [initialRecords]);
 
   const addRecord = useCallback(({ values }) => {
-    setRecords(values.records);
-  }, [records.length]);
+    if (values.records.length > initialRecords.length) {
+      setRecords(values.records);
+    }
+  }, []);
 
   return (
     <>
@@ -107,15 +109,8 @@ export default stripesFinalForm({
   navigationCheck: true,
   mutators: {
     addRecord: ([{ index }], state, tools) => {
-      const records = [...state.formState.values.records];
-      const newIndex = +index + 1;
-      const emptyRow = {
-        id: uuid(),
-        tag: '',
-        content: '',
-      };
+      const records = addNewRecord(index, state);
 
-      records.splice(newIndex, 0, emptyRow);
       tools.changeValue(state, 'records', () => records);
     },
   },
