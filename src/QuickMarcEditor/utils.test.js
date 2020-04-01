@@ -52,7 +52,7 @@ describe('QuickMarcEditor utils', () => {
         },
       };
       const insertIndex = 1;
-      const newRecords = utils.dehydrateMarcRecordResponse(insertIndex, state);
+      const newRecords = utils.addNewRecord(insertIndex, state);
 
       expect(newRecords.length).toBe(state.formState.values.records.length + 1);
     });
