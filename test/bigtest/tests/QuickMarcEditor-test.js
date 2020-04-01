@@ -53,4 +53,14 @@ describe('Quick MARC editor', () => {
   it('should render record rows (excluding leader row)', () => {
     expect(quickMarcEditor.editorRows().length - 1).to.be.equal(records.length);
   });
+
+  describe('add new record', () => {
+    beforeEach(async function () {
+      await quickMarcEditor.addRowButton.click();
+    });
+
+    it('new record should be added (including leader row)', () => {
+      expect(quickMarcEditor.editorRows().length).to.be.equal(records.length + 2);
+    });
+  });
 });

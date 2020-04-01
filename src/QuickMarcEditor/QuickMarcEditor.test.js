@@ -23,13 +23,14 @@ const messages = {
   'ui-quick-marc.record.edit.title': '{title}',
 };
 
-const renderQuickMarcEditor = ({ instance, onClose, onSubmit }) => (render(
+const renderQuickMarcEditor = ({ instance, onClose, onSubmit, mutators }) => (render(
   <IntlProvider locale="en" messages={messages}>
     <MemoryRouter>
       <QuickMarcEditor
         instance={instance}
         onClose={onClose}
         onSubmit={onSubmit}
+        mutators={mutators}
       />
     </MemoryRouter>
   </IntlProvider>,
@@ -44,6 +45,9 @@ describe('Given Quick Marc Editor', () => {
       instance,
       onClose: jest.fn(),
       onSubmit: jest.fn(),
+      mutators: {
+        addRecord: jest.fn(),
+      },
     });
 
     expect(getByText(instance.title)).toBeDefined();
@@ -55,6 +59,9 @@ describe('Given Quick Marc Editor', () => {
       instance,
       onClose: jest.fn(),
       onSubmit: jest.fn(),
+      mutators: {
+        addRecord: jest.fn(),
+      },
     });
 
     expect(getByText('stripes-acq-components.FormFooter.cancel')).toBeDefined();
@@ -66,6 +73,9 @@ describe('Given Quick Marc Editor', () => {
       instance,
       onClose: jest.fn(),
       onSubmit: jest.fn(),
+      mutators: {
+        addRecord: jest.fn(),
+      },
     });
 
     expect(getByText('QuickMarcEditorRows')).toBeDefined();

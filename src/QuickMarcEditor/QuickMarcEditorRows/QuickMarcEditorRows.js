@@ -1,25 +1,32 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'react-final-form';
 
 import {
   TextField,
+  IconButton,
 } from '@folio/stripes/components';
 
 import { FixedFieldFactory } from './FixedField';
 import {
   isReadOnly,
   hasIndicatorException,
+  hasAddException,
 } from './utils';
 import styles from './QuickMarcEditorRows.css';
 
-const QuickMarcEditorRows = ({ name, fields }) => {
+const QuickMarcEditorRows = ({ name, fields, mutators: { addRecord } }) => {
+  const addNewRow = useCallback(({ target }) => {
+    addRecord({ index: +target.dataset.index });
+  }, [addRecord]);
+
   return (
     <>
       {
         fields.map((recordRow, idx) => {
           const isDisabled = isReadOnly(recordRow);
           const withIndicators = !hasIndicatorException(recordRow);
+          const withAddRowAction = hasAddException(recordRow);
 
           return (
             <div
@@ -80,6 +87,17 @@ const QuickMarcEditorRows = ({ name, fields }) => {
                     )
                 }
               </div>
+              <div className={styles.quickMarcEditorActions}>
+                {
+                  !withAddRowAction &&
+                    <IconButton
+                      data-test-add-row
+                      data-index={idx}
+                      icon="plus-sign"
+                      onClick={addNewRow}
+                    />
+                }
+              </div>
             </div>
           );
         })
@@ -96,6 +114,9 @@ QuickMarcEditorRows.propTypes = {
     indicators: PropTypes.arrayOf(PropTypes.string),
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   })),
+  mutators: PropTypes.shape({
+    addRecord: PropTypes.func.isRequired,
+  }),
 };
 
 export default QuickMarcEditorRows;
