@@ -15,6 +15,7 @@ export default @interactor class QuickMarcEditorInteractor {
 
   editorRows = collection('[data-test-quick-marc-editor-row]');
   leaderRow = new Interactor('[value="LDR"]');
+  addRowButton = new Interactor('[data-test-add-row]')
 
   isLoaded = isPresent('[data-test-quick-marc-editor]');
   whenLoaded() {

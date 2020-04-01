@@ -19,7 +19,7 @@ export const dehydrateMarcRecordResponse = marcRecordResponse => ({
 
 export const addNewRecord = (index, state) => {
   const records = [...state.formState.values.records];
-  const newIndex = +index + 1;
+  const newIndex = index + 1;
   const emptyRow = {
     id: uuid(),
     tag: '',

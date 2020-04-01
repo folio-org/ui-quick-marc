@@ -43,14 +43,15 @@ const QuickMarcEditor = ({
       pristine={pristine}
     />
   ), [onClose, handleSubmit, submitting, pristine]);
+
   const initialRecords = initialValues?.records;
 
   useEffect(() => {
     if (initialRecords) setRecords(initialRecords);
   }, [initialRecords]);
 
-  const addRecord = useCallback(({ values }) => {
-    if (values.records.length > initialRecords.length) {
+  const changeRecords = useCallback(({ values }) => {
+    if (values.records.length !== initialRecords.length) {
       setRecords(values.records);
     }
   }, []);
@@ -87,7 +88,7 @@ const QuickMarcEditor = ({
       </form>
       <FormSpy
         subscription={spySubscription}
-        onChange={addRecord}
+        onChange={changeRecords}
       />
     </>
   );

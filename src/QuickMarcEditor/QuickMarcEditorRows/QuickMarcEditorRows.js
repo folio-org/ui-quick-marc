@@ -17,7 +17,7 @@ import styles from './QuickMarcEditorRows.css';
 
 const QuickMarcEditorRows = ({ name, fields, mutators: { addRecord } }) => {
   const addNewRow = useCallback(({ target }) => {
-    addRecord({ index: target.dataset.index });
+    addRecord({ index: +target.dataset.index });
   }, [addRecord]);
 
   return (
