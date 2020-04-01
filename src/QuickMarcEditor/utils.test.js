@@ -29,4 +29,31 @@ describe('QuickMarcEditor utils', () => {
       expect(dehydratedMarcRecord.records[1].id).toBe('uuid');
     });
   });
+  describe('addNewRecord', () => {
+    it('should return records with new row', () => {
+      const state = {
+        formState: {
+          values: {
+            records: [
+              {
+                tag: '010',
+                content: '$a fss $b asd',
+              },
+              {
+                tag: '011',
+                content: '$a fss $b asd',
+              },
+              {
+                tag: '012',
+                content: '$a fss $b asd',
+              },
+            ],
+          },
+        },
+      };
+      const insertIndex = 1;
+      const newRecords = utils.dehydrateMarcRecordResponse(insertIndex, state);
+
+      expect(newRecords.length).toBe(state.formState.values.records.length +1);
+  })
 });
