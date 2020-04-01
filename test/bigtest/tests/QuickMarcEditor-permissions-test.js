@@ -1,8 +1,8 @@
 import { beforeEach, describe, it } from '@bigtest/mocha';
 import { expect } from 'chai';
 
-import setupApplication from '../../helpers/setup-application';
-import { QuickMarcEditorInteractor } from '../../interactors';
+import setupApplication from '../helpers/setup-application';
+import { QuickMarcEditorInteractor } from '../interactors';
 
 describe('QuickMarcEditor without permissions', () => {
   setupApplication({
