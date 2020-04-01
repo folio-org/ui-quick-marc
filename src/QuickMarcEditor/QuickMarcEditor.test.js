@@ -41,9 +41,9 @@ describe('Given Quick Marc Editor', () => {
 
   beforeEach(() => {
     mutators = {
-      addRecord: jest.fn()
-    }
-  })
+      addRecord: jest.fn(),
+    };
+  });
 
   afterEach(cleanup);
 
