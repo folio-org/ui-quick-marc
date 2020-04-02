@@ -37,7 +37,7 @@ const QuickMarcEditorRows = ({ name, fields, mutators: { addRecord, deleteRecord
   const confirmDeletion = useCallback(() => {
     deleteRecord({ index: removeIndex });
     toggleRemoveModal();
-  }, [removeIndex]);
+  }, [deleteRecord, toggleRemoveModal, removeIndex]);
 
   return (
     <>

@@ -1,1 +1,1 @@
-export * from './is999ffRow';
+export * from './isLastRecord';
