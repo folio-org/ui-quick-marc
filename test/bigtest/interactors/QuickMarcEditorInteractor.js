@@ -5,6 +5,9 @@ import {
   Interactor,
   isPresent,
 } from '@bigtest/interactor';
+import {
+  ConfirmationInteractor,
+} from '@folio/stripes-acq-components/test/bigtest/interactors';
 
 import { TIMEOUT } from './constants';
 
@@ -15,7 +18,9 @@ export default @interactor class QuickMarcEditorInteractor {
 
   editorRows = collection('[data-test-quick-marc-editor-row]');
   leaderRow = new Interactor('[value="LDR"]');
-  addRowButton = new Interactor('[data-test-add-row]')
+  addRowButton = new Interactor('[data-test-add-row]');
+  removeButton = new Interactor('[data-test-remove-row]');
+  removeConfirmation = new ConfirmationInteractor('#delete-row-confirmation');
 
   isLoaded = isPresent('[data-test-quick-marc-editor]');
   whenLoaded() {

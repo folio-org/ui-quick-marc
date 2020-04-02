@@ -22,25 +22,40 @@ describe('QuickMarcEditorRows utils', () => {
   });
 
   describe('hasIndicatorException', () => {
-    it('shoul be true for exeptional row', () => {
+    it('should be true for exeptional row', () => {
       expect(utils.hasIndicatorException({ tag: '001' })).toBeTruthy();
       expect(utils.hasIndicatorException({ tag: LEADER_TAG })).toBeTruthy();
       expect(utils.hasIndicatorException({ tag: '008' })).toBeTruthy();
     });
 
-    it('shoul be false for exeptional row', () => {
+    it('should be false for exeptional row', () => {
       expect(utils.hasIndicatorException({ tag: '010' })).toBeFalsy();
     });
   });
 
   describe('hasAddException', () => {
-    it('shoul be true for exeptional row', () => {
+    it('should be true for exeptional row', () => {
       expect(utils.hasAddException({ tag: LEADER_TAG })).toBeTruthy();
       expect(utils.hasAddException({ tag: '001' })).toBeTruthy();
     });
 
-    it('shoul be false for exeptional row', () => {
+    it('should be false for exeptional row', () => {
       expect(utils.hasAddException({ tag: '010' })).toBeFalsy();
+    });
+  });
+
+  describe('hasDeleteException', () => {
+    it('should be true for exeptional row', () => {
+      expect(utils.hasDeleteException({ tag: LEADER_TAG })).toBeTruthy();
+      expect(utils.hasDeleteException({ tag: '001' })).toBeTruthy();
+    });
+
+    it('should be true for record end', () => {
+      expect(utils.hasDeleteException({ tag: '999', indicators: ['f', 'f'] })).toBeTruthy();
+    });
+
+    it('should be false for exeptional row', () => {
+      expect(utils.hasDeleteException({ tag: '010' })).toBeFalsy();
     });
   });
 });

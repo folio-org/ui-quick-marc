@@ -46,6 +46,7 @@
 
   "record.error.title.multiple": "Record cannot be saved with more than one field 245.",
   "record.error.title.empty": "Record cannot be saved without field 245.",
+
   "record.delete.confirmLabel": "Yes",
   "record.delete.message":"Are you sure?"
 }

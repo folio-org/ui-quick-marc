@@ -47,6 +47,7 @@ describe('Given Quick Marc Editor', () => {
       onSubmit: jest.fn(),
       mutators: {
         addRecord: jest.fn(),
+        deleteRecord: jest.fn(),
       },
     });
 
@@ -61,6 +62,7 @@ describe('Given Quick Marc Editor', () => {
       onSubmit: jest.fn(),
       mutators: {
         addRecord: jest.fn(),
+        deleteRecord: jest.fn(),
       },
     });
 
@@ -75,6 +77,7 @@ describe('Given Quick Marc Editor', () => {
       onSubmit: jest.fn(),
       mutators: {
         addRecord: jest.fn(),
+        deleteRecord: jest.fn(),
       },
     });
 

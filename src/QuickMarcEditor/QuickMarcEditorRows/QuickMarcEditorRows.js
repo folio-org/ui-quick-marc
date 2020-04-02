@@ -35,7 +35,6 @@ const QuickMarcEditorRows = ({ name, fields, mutators: { addRecord, deleteRecord
   }, [setRemoveIndex]);
 
   const confirmDeletion = useCallback(() => {
-    console.log('removeIndex', removeIndex);
     deleteRecord({ index: removeIndex });
     toggleRemoveModal();
   }, [deleteRecord, toggleRemoveModal]);
@@ -122,7 +121,7 @@ const QuickMarcEditorRows = ({ name, fields, mutators: { addRecord, deleteRecord
                 {
                   !withDeleteRowAction && (
                     <IconButton
-                      data-test-add-row
+                      data-test-remove-row
                       data-index={idx}
                       icon="trash"
                       onClick={showDeleteConfirmation}
