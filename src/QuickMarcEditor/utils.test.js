@@ -120,7 +120,7 @@ describe('QuickMarcEditor utils', () => {
         },
       };
       const removeIndex = 1;
-      const newRecords = utils.addNewRecord(removeIndex, state);
+      const newRecords = utils.deleteRecordByIndex(removeIndex, state);
 
       expect(newRecords.length).toBe(state.formState.values.records.length - 1);
     });
