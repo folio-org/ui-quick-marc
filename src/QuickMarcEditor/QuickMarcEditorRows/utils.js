@@ -1,12 +1,10 @@
 import { LEADER_TAG } from '../constants';
+import { is999ffRow } from '../../common/utils';
 
 export const isReadOnly = recordRow => (
   recordRow.tag === '001'
   || (
-    recordRow.tag === '999'
-    && recordRow.indicators
-    && recordRow.indicators[0] === 'f'
-    && recordRow.indicators[0] === 'f'
+    is999ffRow(recordRow)
   )
 );
 
@@ -21,9 +19,6 @@ export const hasAddException = recordRow => ADD_AND_DELETE_EXCEPTION_ROWS.includ
 export const hasDeleteException = recordRow => (
   ADD_AND_DELETE_EXCEPTION_ROWS.includes(recordRow.tag)
   || (
-    recordRow.tag === '999'
-    && recordRow.indicators
-    && recordRow.indicators[0] === 'f'
-    && recordRow.indicators[0] === 'f'
+    is999ffRow(recordRow)
   )
 );
