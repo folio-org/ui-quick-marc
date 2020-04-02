@@ -1,7 +1,7 @@
 import { LEADER_TAG } from '../constants';
 
 export const isReadOnly = recordRow => (
-  [LEADER_TAG, '001'].includes(recordRow.tag)
+  recordRow.tag === '001'
   || (
     recordRow.tag === '999'
     && recordRow.indicators

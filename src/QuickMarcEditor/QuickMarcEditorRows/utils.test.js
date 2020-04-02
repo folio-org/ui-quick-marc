@@ -4,10 +4,6 @@ import * as utils from './utils';
 
 describe('QuickMarcEditorRows utils', () => {
   describe('isReadOnly', () => {
-    it('should be true for record leader', () => {
-      expect(utils.isReadOnly({ tag: LEADER_TAG })).toBeTruthy();
-    });
-
     it('should be true for record start', () => {
       expect(utils.isReadOnly({ tag: '001' })).toBeTruthy();
     });
@@ -17,6 +13,7 @@ describe('QuickMarcEditorRows utils', () => {
     });
 
     it('should be false for record rows', () => {
+      expect(utils.isReadOnly({ tag: LEADER_TAG })).toBeFalsy();
       expect(utils.isReadOnly({ tag: '002' })).toBeFalsy();
       expect(utils.isReadOnly({ tag: '050' })).toBeFalsy();
       expect(utils.isReadOnly({ tag: '998' })).toBeFalsy();
@@ -26,12 +23,13 @@ describe('QuickMarcEditorRows utils', () => {
 
   describe('hasIndicatorException', () => {
     it('shoul be true for exeptional row', () => {
-      expect(utils.isReadOnly({ tag: '001' })).toBeTruthy();
-      expect(utils.isReadOnly({ tag: LEADER_TAG })).toBeTruthy();
+      expect(utils.hasIndicatorException({ tag: '001' })).toBeTruthy();
+      expect(utils.hasIndicatorException({ tag: LEADER_TAG })).toBeTruthy();
+      expect(utils.hasIndicatorException({ tag: '008' })).toBeTruthy();
     });
 
     it('shoul be false for exeptional row', () => {
-      expect(utils.isReadOnly({ tag: '010' })).toBeFalsy();
+      expect(utils.hasIndicatorException({ tag: '010' })).toBeFalsy();
     });
   });
 

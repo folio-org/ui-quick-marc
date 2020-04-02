@@ -1,7 +1,6 @@
 import React, {
   useMemo,
   useState,
-  useEffect,
   useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
@@ -28,7 +27,6 @@ const QuickMarcEditor = ({
   instance,
   onClose,
   handleSubmit,
-  initialValues,
   submitting,
   pristine,
   form: { mutators },
@@ -44,17 +42,11 @@ const QuickMarcEditor = ({
     />
   ), [onClose, handleSubmit, submitting, pristine]);
 
-  const initialRecords = initialValues?.records;
-
-  useEffect(() => {
-    if (initialRecords) setRecords(initialRecords);
-  }, [initialRecords]);
-
   const changeRecords = useCallback(({ values }) => {
-    if (values?.records?.length !== initialRecords?.length) {
-      setRecords(values.records);
+    if (values?.records && values.records.length !== records.length) {
+      setTimeout(() => setRecords(values.records), 0);
     }
-  }, []);
+  }, [records]);
 
   return (
     <>
@@ -100,7 +92,6 @@ QuickMarcEditor.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   submitting: PropTypes.bool,
   pristine: PropTypes.bool,
-  initialValues: PropTypes.object,
   form: PropTypes.shape({
     mutators: PropTypes.object.isRequired,
   }),
