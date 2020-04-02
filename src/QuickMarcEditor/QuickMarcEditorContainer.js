@@ -69,8 +69,7 @@ const QuickMarcEditorContainer = ({ mutator, match, onClose }) => {
     }
 
     closeEditor();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [closeEditor]);
+  }, [closeEditor, showCallout]);
 
   if (isLoading) {
     return (

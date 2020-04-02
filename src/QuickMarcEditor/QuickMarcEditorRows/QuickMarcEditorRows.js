@@ -41,7 +41,7 @@ const QuickMarcEditorRows = ({ name, fields, mutators: { addRecord } }) => {
                   component={TextField}
                   marginBottom0
                   fullWidth
-                  disabled={isDisabled}
+                  disabled={isDisabled || !idx}
                 />
               </div>
               <div className={styles.quickMarcEditorRowIndicator}>
