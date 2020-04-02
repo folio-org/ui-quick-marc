@@ -45,3 +45,10 @@ export const validateMarcRecord = marcRecord => {
 
   return undefined;
 };
+
+export const deleteRecordByIndex = (index, state) => {
+  const records = [...state.formState.values.records];
+  records.splice(index, 1);
+
+  return records;
+};

@@ -19,7 +19,10 @@ import {
 import { FormSpy } from 'react-final-form';
 
 import { QuickMarcEditorRows } from './QuickMarcEditorRows';
-import { addNewRecord } from './utils';
+import {
+  addNewRecord,
+  deleteRecordByIndex,
+} from './utils';
 
 const spySubscription = { values: true };
 
@@ -102,6 +105,11 @@ export default stripesFinalForm({
   mutators: {
     addRecord: ([{ index }], state, tools) => {
       const records = addNewRecord(index, state);
+
+      tools.changeValue(state, 'records', () => records);
+    },
+    deleteRecord: ([{ index }], state, tools) => {
+      const records = deleteRecordByIndex(index, state);
 
       tools.changeValue(state, 'records', () => records);
     },
