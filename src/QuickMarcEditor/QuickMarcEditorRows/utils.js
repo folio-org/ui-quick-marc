@@ -1,5 +1,13 @@
 import { LEADER_TAG } from '../constants';
-import { isLastRecord } from '../../common/utils';
+
+const isLastRecord = recordRow => {
+  return (
+    recordRow.tag === '999'
+    && recordRow.indicators
+    && recordRow.indicators[0] === 'f'
+    && recordRow.indicators[0] === 'f'
+  );
+};
 
 export const isReadOnly = recordRow => (
   recordRow.tag === '001'
