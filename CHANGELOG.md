@@ -3,6 +3,8 @@
 ## (in progress)
 
 ### Stories
+* [UIQM-13](https://issues.folio.org/browse/UIQM-13) UI check for record type when saving an edited record in quickMARC
+* [UIQM-7](https://issues.folio.org/browse/UIQM-7) UI check when saving an edited record in quickMARC
 * [UIQM-4](https://issues.folio.org/browse/UIQM-4) Edit the 008 field in quickMARC
 * [UIQM-3](https://issues.folio.org/browse/UIQM-3) Edit a record in quickMARC
 * [UIQM-9](https://issues.folio.org/browse/UIQM-9) quickMARC permissions

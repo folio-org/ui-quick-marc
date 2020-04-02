@@ -33,7 +33,21 @@ export const addNewRecord = (index, state) => {
 };
 
 export const validateMarcRecord = marcRecord => {
-  const titleRecords = (marcRecord.records || []).filter(({ tag }) => tag === '245');
+  const marcRecords = marcRecord.records || [];
+
+  const recordLeader = marcRecords[0];
+  const fixedField = marcRecords.filter(({ tag }) => tag === '008')[0];
+
+  if (
+    !recordLeader
+    || !fixedField
+    || recordLeader.content[6] !== fixedField.content.Type
+    || recordLeader.content[7] !== fixedField.content.BLvl
+  ) {
+    return 'ui-quick-marc.record.error.typeIsNotMatched';
+  }
+
+  const titleRecords = marcRecords.filter(({ tag }) => tag === '245');
 
   if (titleRecords.length === 0) {
     return 'ui-quick-marc.record.error.title.empty';
