@@ -96,4 +96,33 @@ describe('QuickMarcEditor utils', () => {
       expect(utils.validateMarcRecord(record)).toBe('ui-quick-marc.record.error.title.multiple');
     });
   });
+
+  describe('deleteRecordByIndex', () => {
+    it('should return records without one row', () => {
+      const state = {
+        formState: {
+          values: {
+            records: [
+              {
+                tag: '010',
+                content: '$a fss $b asd',
+              },
+              {
+                tag: '011',
+                content: '$a fss $b asd',
+              },
+              {
+                tag: '012',
+                content: '$a fss $b asd',
+              },
+            ],
+          },
+        },
+      };
+      const removeIndex = 1;
+      const newRecords = utils.addNewRecord(removeIndex, state);
+
+      expect(newRecords.length).toBe(state.formState.values.records.length - 1);
+    });
+  });
 });
