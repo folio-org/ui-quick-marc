@@ -44,6 +44,7 @@
   "record.fixedField.CrTp": "CrTp",
   "record.fixedField.Proj": "Proj",
 
+  "record.error.typeIsNotMatched": "Record cannot be saved. Record types cannot be changed. Please check record type in Leader and field 008.",
   "record.error.title.multiple": "Record cannot be saved with more than one field 245.",
   "record.error.title.empty": "Record cannot be saved without field 245.",
 
