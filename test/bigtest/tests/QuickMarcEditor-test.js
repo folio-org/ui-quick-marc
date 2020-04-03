@@ -74,7 +74,7 @@ describe('Quick MARC editor', () => {
     });
   });
 
-  describe('pressing remove button and confirm removing', () => {
+  describe('press remove button and confirm removing', () => {
     beforeEach(async function () {
       await quickMarcEditor.removeButton.click();
       await quickMarcEditor.removeConfirmation.confirm();
