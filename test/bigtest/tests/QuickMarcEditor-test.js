@@ -63,4 +63,25 @@ describe('Quick MARC editor', () => {
       expect(quickMarcEditor.editorRows().length).to.be.equal(records.length + 2);
     });
   });
+
+  describe('after pressing remove button', () => {
+    beforeEach(async function () {
+      await quickMarcEditor.removeButton.click();
+    });
+
+    it('should be render confirmation modal', () => {
+      expect(quickMarcEditor.removeConfirmation.isPresent).to.be.true;
+    });
+  });
+
+  describe('press remove button and confirm removing', () => {
+    beforeEach(async function () {
+      await quickMarcEditor.removeButton.click();
+      await quickMarcEditor.removeConfirmation.confirm();
+    });
+
+    it('record should be removed', () => {
+      expect(quickMarcEditor.editorRows().length).to.be.equal(records.length);
+    });
+  });
 });

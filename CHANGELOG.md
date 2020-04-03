@@ -3,6 +3,8 @@
 ## (in progress)
 
 ### Stories
+* [UIQM-6](https://issues.folio.org/browse/UIQM-6) Delete a field/row in quickMARC
+* [UIQM-2](https://issues.folio.org/browse/UIQM-2) Add a field/row in quickMARC
 * [UIQM-13](https://issues.folio.org/browse/UIQM-13) UI check for record type when saving an edited record in quickMARC
 * [UIQM-7](https://issues.folio.org/browse/UIQM-7) UI check when saving an edited record in quickMARC
 * [UIQM-4](https://issues.folio.org/browse/UIQM-4) Edit the 008 field in quickMARC
