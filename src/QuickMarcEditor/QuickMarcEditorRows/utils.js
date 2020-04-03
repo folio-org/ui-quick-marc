@@ -10,10 +10,7 @@ const isLastRecord = recordRow => {
 };
 
 export const isReadOnly = recordRow => (
-  recordRow.tag === '001'
-  || (
-    isLastRecord(recordRow)
-  )
+  recordRow.tag === '001' || isLastRecord(recordRow)
 );
 
 const INDICATOR_EXEPTION_ROWS = [LEADER_TAG, '001', '002', '003', '004', '005', '006', '007', '008', '009'];
@@ -27,8 +24,5 @@ export const hasAddException = recordRow => ADD_EXCEPTION_ROWS.includes(recordRo
 const DELETE_EXCEPTION_ROWS = [LEADER_TAG, '001', '005', '008'];
 
 export const hasDeleteException = recordRow => (
-  DELETE_EXCEPTION_ROWS.includes(recordRow.tag)
-  || (
-    isLastRecord(recordRow)
-  )
+  DELETE_EXCEPTION_ROWS.includes(recordRow.tag) || isLastRecord(recordRow)
 );
