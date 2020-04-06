@@ -22,6 +22,7 @@ import { QuickMarcEditorRows } from './QuickMarcEditorRows';
 import {
   addNewRecord,
   deleteRecordByIndex,
+  reorderRecords,
 } from './utils';
 
 const spySubscription = { values: true };
@@ -110,6 +111,11 @@ export default stripesFinalForm({
     },
     deleteRecord: ([{ index }], state, tools) => {
       const records = deleteRecordByIndex(index, state);
+
+      tools.changeValue(state, 'records', () => records);
+    },
+    moveRecord: ([{ index, nearestIndex }], state, tools) => {
+      const records = reorderRecords(index, nearestIndex, state);
 
       tools.changeValue(state, 'records', () => records);
     },

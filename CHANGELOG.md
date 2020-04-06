@@ -3,6 +3,7 @@
 ## (in progress)
 
 ### Stories
+* [UIQM-5](https://issues.folio.org/browse/UIQM-5) Reorder field/row in quickMARC
 * [UIQM-6](https://issues.folio.org/browse/UIQM-6) Delete a field/row in quickMARC
 * [UIQM-2](https://issues.folio.org/browse/UIQM-2) Add a field/row in quickMARC
 * [UIQM-13](https://issues.folio.org/browse/UIQM-13) UI check for record type when saving an edited record in quickMARC

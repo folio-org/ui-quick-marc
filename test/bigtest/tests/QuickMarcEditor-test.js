@@ -20,6 +20,14 @@ const records = [
     tag: '047',
     content: '$a bds $b acv',
   },
+  {
+    tag: '048',
+    content: '$a bds $b acv',
+  },
+  {
+    tag: '049',
+    content: '$a bds $b acv',
+  },
 ];
 
 describe('Quick MARC editor', () => {
@@ -61,6 +69,17 @@ describe('Quick MARC editor', () => {
 
     it('new record should be added (including leader row)', () => {
       expect(quickMarcEditor.editorRows().length).to.be.equal(records.length + 2);
+    });
+  });
+
+  describe('reorder records by clickin on move buttons', () => {
+    beforeEach(async function () {
+      await quickMarcEditor.moveRowDownButton.click();
+      await quickMarcEditor.moveRowUpButton.click();
+    });
+
+    it('records count should not change (including leader row)', () => {
+      expect(quickMarcEditor.editorRows().length).to.be.equal(records.length + 1);
     });
   });
 

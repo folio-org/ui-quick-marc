@@ -67,3 +67,11 @@ export const deleteRecordByIndex = (index, state) => {
 
   return records;
 };
+
+export const reorderRecords = (index, nearestIndex, state) => {
+  const records = [...state.formState.values.records];
+
+  [records[index], records[nearestIndex]] = [records[nearestIndex], records[index]];
+
+  return records;
+};

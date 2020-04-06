@@ -18,10 +18,19 @@ import {
   hasIndicatorException,
   hasAddException,
   hasDeleteException,
+  hasMoveException,
 } from './utils';
 import styles from './QuickMarcEditorRows.css';
 
-const QuickMarcEditorRows = ({ name, fields, mutators: { addRecord, deleteRecord } }) => {
+const QuickMarcEditorRows = ({
+  name,
+  fields,
+  mutators: {
+    addRecord,
+    deleteRecord,
+    moveRecord,
+  },
+}) => {
   const [isRemoveModalOpened, toggleRemoveModal] = useModalToggle();
   const [removeIndex, setRemoveIndex] = useState();
 
@@ -39,6 +48,13 @@ const QuickMarcEditorRows = ({ name, fields, mutators: { addRecord, deleteRecord
     toggleRemoveModal();
   }, [deleteRecord, toggleRemoveModal, removeIndex]);
 
+  const moveRow = useCallback(({ target }) => {
+    moveRecord({
+      index: +target.dataset.index,
+      nearestIndex: +target.dataset.nearestIndex,
+    });
+  }, [moveRecord]);
+
   return (
     <>
       {
@@ -47,6 +63,8 @@ const QuickMarcEditorRows = ({ name, fields, mutators: { addRecord, deleteRecord
           const withIndicators = !hasIndicatorException(recordRow);
           const withAddRowAction = hasAddException(recordRow);
           const withDeleteRowAction = hasDeleteException(recordRow);
+          const withMoveUpRowAction = hasMoveException(recordRow, fields[idx - 1]);
+          const withMoveDownRowAction = hasMoveException(recordRow, fields[idx + 1]);
 
           return (
             <div
@@ -55,6 +73,30 @@ const QuickMarcEditorRows = ({ name, fields, mutators: { addRecord, deleteRecord
               data-test-quick-marc-editor-row
               data-testid="quick-marc-editorid"
             >
+              <div className={styles.quickMarcEditorMovingRow}>
+                {
+                  !withMoveUpRowAction && (
+                    <IconButton
+                      data-test-move-up-row
+                      data-index={idx}
+                      data-nearest-index={idx - 1}
+                      icon="arrow-up"
+                      onClick={moveRow}
+                    />
+                  )
+                }
+                {
+                  !withMoveDownRowAction && (
+                    <IconButton
+                      data-test-move-down-row
+                      data-index={idx}
+                      data-nearest-index={idx + 1}
+                      icon="arrow-down"
+                      onClick={moveRow}
+                    />
+                  )
+                }
+              </div>
               <div className={styles.quickMarcEditorRowTag}>
                 <Field
                   name={`${name}[${idx}].tag`}
@@ -158,6 +200,7 @@ QuickMarcEditorRows.propTypes = {
   mutators: PropTypes.shape({
     addRecord: PropTypes.func.isRequired,
     deleteRecord: PropTypes.func.isRequired,
+    moveRecord: PropTypes.func.isRequired,
   }),
 };
 
