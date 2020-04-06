@@ -66,7 +66,7 @@ describe('QuickMarcEditorRows utils', () => {
     });
 
     it('should be false for exeptional row', () => {
-      expect(utils.hasMoveException({ tag: '010' }, { tag: '008' })).toBeFalsy();
+      expect(utils.hasMoveException({ tag: '010' }, { tag: '011' })).toBeFalsy();
     });
   });
 });
