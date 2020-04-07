@@ -21,14 +21,16 @@ const ADD_EXCEPTION_ROWS = [LEADER_TAG, '001', '003', '005', '008'];
 
 export const hasAddException = recordRow => ADD_EXCEPTION_ROWS.includes(recordRow.tag);
 
-const DELETE_MOVE_EXCEPTION_ROWS = [LEADER_TAG, '001', '005', '008'];
+const DELETE_EXCEPTION_ROWS = [LEADER_TAG, '001', '005', '008'];
 
 export const hasDeleteException = recordRow => (
-  DELETE_MOVE_EXCEPTION_ROWS.includes(recordRow.tag) || isLastRecord(recordRow)
+  DELETE_EXCEPTION_ROWS.includes(recordRow.tag) || isLastRecord(recordRow)
 );
 
-export const hasMoveException = (recordRow, nearestRecordRow) => (
-  !nearestRecordRow
-  || DELETE_MOVE_EXCEPTION_ROWS.includes(recordRow.tag)
-  || DELETE_MOVE_EXCEPTION_ROWS.includes(nearestRecordRow.tag)
+const MOVE_EXCEPTION_ROWS = [LEADER_TAG, '001', '005', '008'];
+
+export const hasMoveException = (recordRow, sibling) => (
+  !sibling
+  || MOVE_EXCEPTION_ROWS.includes(recordRow.tag)
+  || MOVE_EXCEPTION_ROWS.includes(sibling.tag)
 );

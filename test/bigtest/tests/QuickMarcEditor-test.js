@@ -72,14 +72,30 @@ describe('Quick MARC editor', () => {
     });
   });
 
-  describe('reorder records by clickin on move buttons', () => {
+  describe('move record down by clicking on move down button', () => {
+    let siblingRow;
+
     beforeEach(async function () {
       await quickMarcEditor.moveRowDownButton.click();
-      await quickMarcEditor.moveRowUpButton.click();
+      siblingRow = quickMarcEditor.editorRows[3];
+      // await quickMarcEditor.moveRowUpButton.click();
     });
 
-    it('records count should not change (including leader row)', () => {
-      expect(quickMarcEditor.editorRows().length).to.be.equal(records.length + 1);
+    it('record should be moved down', () => {
+      expect(quickMarcEditor.editorRows[4]).to.be.equal(siblingRow);
+    });
+  });
+
+  describe('move record up by clicking on move up button', () => {
+    let siblingRow;
+
+    beforeEach(async function () {
+      await quickMarcEditor.moveRowUpButton.click();
+      siblingRow = quickMarcEditor.editorRows[4];
+    });
+
+    it('record should be moved up', () => {
+      expect(quickMarcEditor.editorRows[3]).to.be.equal(siblingRow);
     });
   });
 
