@@ -114,8 +114,8 @@ export default stripesFinalForm({
 
       tools.changeValue(state, 'records', () => records);
     },
-    moveRecord: ([{ index, nearestIndex }], state, tools) => {
-      const records = reorderRecords(index, nearestIndex, state);
+    moveRecord: ([{ index, indexToSwitch }], state, tools) => {
+      const records = reorderRecords(index, indexToSwitch, state);
 
       tools.changeValue(state, 'records', () => records);
     },

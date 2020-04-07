@@ -51,7 +51,7 @@ const QuickMarcEditorRows = ({
   const moveRow = useCallback(({ target }) => {
     moveRecord({
       index: +target.dataset.index,
-      nearestIndex: +target.dataset.nearestIndex,
+      indexToSwitch: +target.dataset.indexToSwitch,
     });
   }, [moveRecord]);
 
@@ -79,7 +79,7 @@ const QuickMarcEditorRows = ({
                     <IconButton
                       data-test-move-up-row
                       data-index={idx}
-                      data-nearest-index={idx - 1}
+                      data-index-to-switch={idx - 1}
                       icon="arrow-up"
                       onClick={moveRow}
                     />
@@ -90,7 +90,7 @@ const QuickMarcEditorRows = ({
                     <IconButton
                       data-test-move-down-row
                       data-index={idx}
-                      data-nearest-index={idx + 1}
+                      data-index-to-switch={idx + 1}
                       icon="arrow-down"
                       onClick={moveRow}
                     />

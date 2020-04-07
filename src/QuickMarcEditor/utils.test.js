@@ -211,10 +211,10 @@ describe('QuickMarcEditor utils', () => {
         },
       };
       const currentIndex = 1;
-      const nearestIndex = 2;
-      const newRecords = utils.reorderRecords(currentIndex, nearestIndex, state);
+      const indexToSwitch = 2;
+      const newRecords = utils.reorderRecords(currentIndex, indexToSwitch, state);
 
-      expect(newRecords[currentIndex].tag).toBe(state.formState.values.records[nearestIndex].tag);
+      expect(newRecords[currentIndex].tag).toBe(state.formState.values.records[indexToSwitch].tag);
     });
   });
 });
