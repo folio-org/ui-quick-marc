@@ -39,6 +39,7 @@ const renderQuickMarcEditorRows = ({ fields }) => (render(
             mutators={{
               addRecord: jest.fn(),
               deleteRecord: jest.fn(),
+              moveRecord: jest.fn(),
             }}
           />
         )}
@@ -66,6 +67,7 @@ describe('Given Quick Marc Editor Rows', () => {
     const hasIndicatorExceptionSpy = jest.spyOn(utils, 'hasIndicatorException');
     const hasAddExceptionSpy = jest.spyOn(utils, 'hasAddException');
     const hasDeleteExceptionSpy = jest.spyOn(utils, 'hasDeleteException');
+    const hasMoveExceptionSpy = jest.spyOn(utils, 'hasMoveException');
 
     renderQuickMarcEditorRows({
       fields: {
@@ -78,10 +80,12 @@ describe('Given Quick Marc Editor Rows', () => {
     expect(hasIndicatorExceptionSpy.mock.calls.length > values.length).toBeTruthy();
     expect(hasAddExceptionSpy.mock.calls.length > values.length).toBeTruthy();
     expect(hasDeleteExceptionSpy.mock.calls.length > values.length).toBeTruthy();
+    expect(hasMoveExceptionSpy.mock.calls.length > values.length).toBeTruthy();
 
     isReadOnlySpy.mockRestore();
     hasIndicatorExceptionSpy.mockRestore();
     hasAddExceptionSpy.mockRestore();
     hasDeleteExceptionSpy.mockRestore();
+    hasMoveExceptionSpy.mockRestore();
   });
 });

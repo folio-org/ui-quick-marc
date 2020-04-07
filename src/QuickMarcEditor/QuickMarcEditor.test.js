@@ -48,6 +48,7 @@ describe('Given Quick Marc Editor', () => {
       mutators: {
         addRecord: jest.fn(),
         deleteRecord: jest.fn(),
+        moveRecord: jest.fn(),
       },
     });
 
@@ -63,6 +64,7 @@ describe('Given Quick Marc Editor', () => {
       mutators: {
         addRecord: jest.fn(),
         deleteRecord: jest.fn(),
+        moveRecord: jest.fn(),
       },
     });
 
@@ -78,6 +80,7 @@ describe('Given Quick Marc Editor', () => {
       mutators: {
         addRecord: jest.fn(),
         deleteRecord: jest.fn(),
+        moveRecord: jest.fn(),
       },
     });
 

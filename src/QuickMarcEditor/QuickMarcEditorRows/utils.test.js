@@ -58,4 +58,15 @@ describe('QuickMarcEditorRows utils', () => {
       expect(utils.hasDeleteException({ tag: '010' })).toBeFalsy();
     });
   });
+
+  describe('hasMoveException', () => {
+    it('should be true for exeptional row', () => {
+      expect(utils.hasMoveException({ tag: LEADER_TAG })).toBeTruthy();
+      expect(utils.hasMoveException({ tag: '001' })).toBeTruthy();
+    });
+
+    it('should be false for common rows', () => {
+      expect(utils.hasMoveException({ tag: '010' }, { tag: '011' })).toBeFalsy();
+    });
+  });
 });

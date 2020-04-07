@@ -67,3 +67,11 @@ export const deleteRecordByIndex = (index, state) => {
 
   return records;
 };
+
+export const reorderRecords = (index, indexToSwitch, state) => {
+  const records = [...state.formState.values.records];
+
+  [records[index], records[indexToSwitch]] = [records[indexToSwitch], records[index]];
+
+  return records;
+};

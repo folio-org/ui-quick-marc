@@ -26,3 +26,11 @@ const DELETE_EXCEPTION_ROWS = [LEADER_TAG, '001', '005', '008'];
 export const hasDeleteException = recordRow => (
   DELETE_EXCEPTION_ROWS.includes(recordRow.tag) || isLastRecord(recordRow)
 );
+
+const MOVE_EXCEPTION_ROWS = [LEADER_TAG, '001', '005', '008'];
+
+export const hasMoveException = (recordRow, sibling) => (
+  !sibling
+  || MOVE_EXCEPTION_ROWS.includes(recordRow.tag)
+  || MOVE_EXCEPTION_ROWS.includes(sibling.tag)
+);

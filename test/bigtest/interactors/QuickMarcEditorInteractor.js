@@ -21,6 +21,8 @@ export default @interactor class QuickMarcEditorInteractor {
   addRowButton = new Interactor('[data-test-add-row]');
   removeButton = new Interactor('[data-test-remove-row]');
   removeConfirmation = new ConfirmationInteractor('#delete-row-confirmation');
+  moveRowUpButton = new Interactor('[data-test-move-up-row]');
+  moveRowDownButton = new Interactor('[data-test-move-down-row]');
 
   isLoaded = isPresent('[data-test-quick-marc-editor]');
   whenLoaded() {

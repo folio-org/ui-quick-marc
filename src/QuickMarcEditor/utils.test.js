@@ -31,6 +31,7 @@ describe('QuickMarcEditor utils', () => {
       expect(dehydratedMarcRecord.records[1].id).toBe('uuid');
     });
   });
+
   describe('addNewRecord', () => {
     it('should return records with new row', () => {
       const state = {
@@ -184,6 +185,36 @@ describe('QuickMarcEditor utils', () => {
       const newRecords = utils.deleteRecordByIndex(removeIndex, state);
 
       expect(newRecords.length).toBe(state.formState.values.records.length - 1);
+    });
+  });
+
+  describe('reorderRecords', () => {
+    it('should move records by indexes', () => {
+      const state = {
+        formState: {
+          values: {
+            records: [
+              {
+                tag: '010',
+                content: '$a fss $b asd',
+              },
+              {
+                tag: '011',
+                content: '$a fss $b asd',
+              },
+              {
+                tag: '012',
+                content: '$a fss $b asd',
+              },
+            ],
+          },
+        },
+      };
+      const currentIndex = 1;
+      const indexToSwitch = 2;
+      const newRecords = utils.reorderRecords(currentIndex, indexToSwitch, state);
+
+      expect(newRecords[currentIndex].tag).toBe(state.formState.values.records[indexToSwitch].tag);
     });
   });
 });

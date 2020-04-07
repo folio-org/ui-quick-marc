@@ -20,6 +20,14 @@ const records = [
     tag: '047',
     content: '$a bds $b acv',
   },
+  {
+    tag: '048',
+    content: '$a bds $b acv',
+  },
+  {
+    tag: '049',
+    content: '$a bds $b acv',
+  },
 ];
 
 describe('Quick MARC editor', () => {
@@ -61,6 +69,33 @@ describe('Quick MARC editor', () => {
 
     it('new record should be added (including leader row)', () => {
       expect(quickMarcEditor.editorRows().length).to.be.equal(records.length + 2);
+    });
+  });
+
+  describe('move record down by clicking on move down button', () => {
+    let siblingRow;
+
+    beforeEach(async function () {
+      await quickMarcEditor.moveRowDownButton.click();
+      siblingRow = quickMarcEditor.editorRows[3];
+      // await quickMarcEditor.moveRowUpButton.click();
+    });
+
+    it('record should be moved down', () => {
+      expect(quickMarcEditor.editorRows[4]).to.be.equal(siblingRow);
+    });
+  });
+
+  describe('move record up by clicking on move up button', () => {
+    let siblingRow;
+
+    beforeEach(async function () {
+      await quickMarcEditor.moveRowUpButton.click();
+      siblingRow = quickMarcEditor.editorRows[4];
+    });
+
+    it('record should be moved up', () => {
+      expect(quickMarcEditor.editorRows[3]).to.be.equal(siblingRow);
     });
   });
 
