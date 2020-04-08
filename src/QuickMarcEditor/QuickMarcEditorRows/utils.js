@@ -21,7 +21,7 @@ const ADD_EXCEPTION_ROWS = [LEADER_TAG, '001', '003', '005', '008'];
 
 export const hasAddException = recordRow => ADD_EXCEPTION_ROWS.includes(recordRow.tag);
 
-const DELETE_EXCEPTION_ROWS = [LEADER_TAG, '001', '005', '008'];
+const DELETE_EXCEPTION_ROWS = [LEADER_TAG, '001', '003', '005', '008'];
 
 export const hasDeleteException = recordRow => (
   DELETE_EXCEPTION_ROWS.includes(recordRow.tag) || isLastRecord(recordRow)
