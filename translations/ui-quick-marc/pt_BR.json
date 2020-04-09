@@ -6,7 +6,7 @@
     "record.fixedField.Srce": "Srce",
     "record.fixedField.Audn": "Audn",
     "record.fixedField.Ctrl": "Ctrl",
-    "record.fixedField.Lang": "Lang",
+    "record.fixedField.Lang": "Idioma",
     "record.fixedField.BLvl": "BLvl",
     "record.fixedField.Form": "Formulário",
     "record.fixedField.Comp": "Comp",
@@ -44,6 +44,6 @@
     "record.error.title.multiple": "O registro não pode ser salvo com mais de um campo 245.",
     "record.error.title.empty": "O registro não pode ser salvo sem o campo 245.",
     "record.error.typeIsNotMatched": "O registro não pode ser salvo. Os tipos de registro não podem ser alterados. Verifique o tipo de registro no Líder e no campo 008.",
-    "record.delete.confirmLabel": "Yes",
-    "record.delete.message": "Are you sure?"
+    "record.delete.confirmLabel": "Sim",
+    "record.delete.message": "Você tem certeza?"
 }
