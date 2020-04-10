@@ -7,7 +7,7 @@ import { QuickMarcEditorInteractor } from '../interactors';
 const records = [
   {
     tag: '001',
-    content: '$a dfd $b asd',
+    content: '$a dfdac $b asd',
   },
   {
     tag: '008',
@@ -28,6 +28,10 @@ const records = [
     tag: '049',
     content: '$a bds $b acv',
   },
+  {
+    tag: '245',
+    content: '$s hjg k',
+  },
 ];
 
 describe('Quick MARC editor', () => {
@@ -40,7 +44,8 @@ describe('Quick MARC editor', () => {
   beforeEach(async function () {
     instance = this.server.create('instance');
     this.server.create('marcRecord', {
-      id: instance.id,
+      parsedRecordId: instance.id,
+      leader: '$a dfdac $b asd',
       fields: records,
     });
 
@@ -117,6 +122,17 @@ describe('Quick MARC editor', () => {
 
     it('record should be removed', () => {
       expect(quickMarcEditor.editorRows().length).to.be.equal(records.length);
+    });
+  });
+
+  describe('after save', () => {
+    beforeEach(async function () {
+      await quickMarcEditor.moveRowDownButton.click();
+      await quickMarcEditor.saveButton.click();
+    });
+
+    it('editor should be closed', () => {
+      expect(quickMarcEditor.isPresent).to.be.false;
     });
   });
 });

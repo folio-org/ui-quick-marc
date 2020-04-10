@@ -18,6 +18,17 @@ export const dehydrateMarcRecordResponse = marcRecordResponse => ({
   ],
 });
 
+export const hydrateMarcRecord = marcRecord => ({
+  ...marcRecord,
+  leader: marcRecord.records[0].content,
+  fields: marcRecord.records.slice(1).map(record => ({
+    tag: record.tag,
+    content: record.content,
+    indicators: record.indicators,
+  })),
+  records: undefined,
+});
+
 export const addNewRecord = (index, state) => {
   const records = [...state.formState.values.records];
   const newIndex = index + 1;

@@ -21,6 +21,7 @@ import {
 
 import {
   dehydrateMarcRecordResponse,
+  hydrateMarcRecord,
   validateMarcRecord,
 } from './utils';
 import QuickMarcEditor from './QuickMarcEditor';
@@ -68,7 +69,15 @@ const QuickMarcEditorContainer = ({ mutator, match, onClose }) => {
       return;
     }
 
-    closeEditor();
+    mutator.quickMarcEditMarcRecord.PUT(hydrateMarcRecord(formValues))
+      .then(() => {
+        showCallout({ messageId: 'ui-quick-marc.record.save.success' });
+        closeEditor();
+      })
+      .catch(() => {
+        showCallout({ messageId: 'ui-quick-marc.record.save.error.generic', type: 'error' });
+      });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [closeEditor, showCallout]);
 
   if (isLoading) {
@@ -103,8 +112,14 @@ QuickMarcEditorContainer.manifest = Object.freeze({
     fetch: false,
     accumulate: true,
     path: MARC_RECORD_API,
-    params: {
-      instanceId: ':{instanceId}',
+    pk: 'parsedRecordId',
+    GET: {
+      params: {
+        instanceId: ':{instanceId}',
+      },
+    },
+    headers: {
+      accept: 'application/json',
     },
   },
 });

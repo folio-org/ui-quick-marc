@@ -5,6 +5,7 @@ import {
   Interactor,
   isPresent,
 } from '@bigtest/interactor';
+
 import {
   ConfirmationInteractor,
 } from '@folio/stripes-acq-components/test/bigtest/interactors';
@@ -23,6 +24,8 @@ export default @interactor class QuickMarcEditorInteractor {
   removeConfirmation = new ConfirmationInteractor('#delete-row-confirmation');
   moveRowUpButton = new Interactor('[data-test-move-up-row]');
   moveRowDownButton = new Interactor('[data-test-move-down-row]');
+
+  saveButton = new Interactor('#quick-marc-record-save');
 
   isLoaded = isPresent('[data-test-quick-marc-editor]');
   whenLoaded() {

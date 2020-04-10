@@ -9,7 +9,7 @@ jest.mock('uuid', () => {
 
 describe('QuickMarcEditor utils', () => {
   describe('dehydrateMarcRecordResponse', () => {
-    it('should return dehydrated marc dehydrated marc record', () => {
+    it('should return dehydrated marc record', () => {
       const marcRecord = {
         id: faker.random.uuid(),
         leader: faker.random.uuid(),
@@ -29,6 +29,32 @@ describe('QuickMarcEditor utils', () => {
       expect(dehydratedMarcRecord.records[0].content).toBe(marcRecord.leader);
 
       expect(dehydratedMarcRecord.records[1].id).toBe('uuid');
+    });
+  });
+
+  describe('hydrateMarcRecord', () => {
+    it('should return hydrated marc record from form', () => {
+      const marcRecord = {
+        records: [
+          {
+            content: '05addsdg asd hds a',
+          },
+          {
+            id: '1',
+            tag: '001',
+            content: '$a fss $b asd',
+          },
+        ],
+      };
+      const hydratedMarcRecord = utils.hydrateMarcRecord(marcRecord);
+
+      expect(hydratedMarcRecord.records).not.toBeDefined();
+
+      expect(hydratedMarcRecord.leader).toBe(marcRecord.records[0].content);
+
+      expect(hydratedMarcRecord.fields).toBeDefined();
+      expect(hydratedMarcRecord.fields.length).toBe(marcRecord.records.length - 1);
+      expect(hydratedMarcRecord.fields[0].id).not.toBeDefined();
     });
   });
 
