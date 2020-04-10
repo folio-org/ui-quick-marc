@@ -53,6 +53,7 @@ describe('Given Quick Marc Editor Container', () => {
       },
       quickMarcEditMarcRecord: {
         GET: jest.fn(() => Promise.resolve(record)),
+        PUT: jest.fn(() => Promise.resolve()),
       },
     };
   });
@@ -80,7 +81,7 @@ describe('Given Quick Marc Editor Container', () => {
   });
 
   describe('When close button is pressed', () => {
-    it('Than it should invoice onCancel', async () => {
+    it('Than it should invoke onCancel', async () => {
       let getByText;
       const onClose = jest.fn();
 
