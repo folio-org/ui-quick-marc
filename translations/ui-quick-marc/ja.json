@@ -1,5 +1,5 @@
 {
-    "meta.title": "Quick MARC",
+    "meta.title": "クイックMARC",
     "record.edit.title": "Edit MARC record - {title}",
     "record.fixedField.Type": "Type",
     "record.fixedField.ELvl": "ELvl",
@@ -45,5 +45,7 @@
     "record.error.title.empty": "Record cannot be saved without field 245.",
     "record.error.typeIsNotMatched": "Record cannot be saved. Record types cannot be changed. Please check record type in Leader and field 008.",
     "record.delete.confirmLabel": "Yes",
-    "record.delete.message": "Are you sure?"
+    "record.delete.message": "Are you sure?",
+    "record.save.success": "This record was successfully saved",
+    "record.save.error.generic": "Record not saved: Communication problem with server. Please try again."
 }
