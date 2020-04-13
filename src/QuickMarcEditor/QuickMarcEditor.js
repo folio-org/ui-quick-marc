@@ -12,6 +12,7 @@ import {
   Paneset,
   Row,
   Col,
+  HotKeys,
 } from '@folio/stripes/components';
 import {
   FormFooter,
@@ -26,6 +27,9 @@ import {
 } from './utils';
 
 const spySubscription = { values: true };
+const hotKeys = {
+  save: ['ctrl+s'],
+};
 
 const QuickMarcEditor = ({
   instance,
@@ -52,8 +56,21 @@ const QuickMarcEditor = ({
     }
   }, [records]);
 
+  const hotKeysHandlers = useMemo(() => ({
+    save: e => {
+      e.preventDefault();
+
+      if (!(pristine || submitting)) {
+        handleSubmit();
+      }
+    },
+  }), [handleSubmit, pristine, submitting]);
+
   return (
-    <>
+    <HotKeys
+      keyMap={hotKeys}
+      handlers={hotKeysHandlers}
+    >
       <form>
         <Paneset>
           <Pane
@@ -86,7 +103,7 @@ const QuickMarcEditor = ({
         subscription={spySubscription}
         onChange={changeRecords}
       />
-    </>
+    </HotKeys>
   );
 };
 

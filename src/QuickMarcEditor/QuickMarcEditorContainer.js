@@ -60,7 +60,7 @@ const QuickMarcEditorContainer = ({ mutator, match, onClose }) => {
     onClose(instanceId);
   }, [instanceId, onClose]);
 
-  const onSubmit = useCallback((formValues) => {
+  const onSubmit = useCallback(async (formValues) => {
     const validationErrorMessage = validateMarcRecord(formValues);
 
     if (validationErrorMessage) {
