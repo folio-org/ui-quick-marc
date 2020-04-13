@@ -90,7 +90,7 @@ export const reorderRecords = (index, indexToSwitch, state) => {
 
 export const isLastRecordMoved = (prevRowsValue, newRowsValue) => {
   const prevStateIndex = prevRowsValue.findIndex(row => isLastRecord(row));
-  const newStateIndex = newRowsValue.findIndex(row => isLastRecord(row));
+  const newStateIndex = newRowsValue?.findIndex(row => isLastRecord(row));
 
   return newStateIndex !== prevStateIndex;
 };
