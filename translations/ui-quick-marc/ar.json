@@ -45,5 +45,7 @@
     "record.error.title.empty": "ياا يمكن حفظ التسجيلة بدون الحقل 245",
     "record.error.typeIsNotMatched": "لا يمكن حفظ التسجيلة. لا يمكن تغيير أنواع التسجيلة. يرجى التحقق من نوع التسجيلة في الفاتح والحقل 008.",
     "record.delete.confirmLabel": "نعم",
-    "record.delete.message": "هل أنت متأكد؟"
+    "record.delete.message": "هل أنت متأكد؟",
+    "record.save.success": "تم حفظ هذه التسجيلة  بنجاح",
+    "record.save.error.generic": "لم يتم حفظ التسجيلة: توجد مشكلة في الاتصال بالخادم. يرجى إعادة المحاولة."
 }
