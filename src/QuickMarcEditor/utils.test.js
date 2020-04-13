@@ -243,4 +243,37 @@ describe('QuickMarcEditor utils', () => {
       expect(newRecords[currentIndex].tag).toBe(state.formState.values.records[indexToSwitch].tag);
     });
   });
+
+  describe('isLastRecordMoved', () => {
+    it('should return true if 999ff field moved', () => {
+      const prevRecords = [
+        {
+          tag: '008',
+          content: {
+            Type: 'a',
+            BLvl: 'c',
+          },
+        },
+        {
+          tag: '999',
+          indicators: ['f', 'f'],
+        },
+      ];
+      const newRecords = [
+        {
+          tag: '999',
+          indicators: ['f', 'f'],
+        },
+        {
+          tag: '008',
+          content: {
+            Type: 'a',
+            BLvl: 'c',
+          },
+        },
+      ];
+
+      expect(utils.isLastRecordMoved(prevRecords, newRecords)).toBeTruthy();
+    });
+  });
 });
