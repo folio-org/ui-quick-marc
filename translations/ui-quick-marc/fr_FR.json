@@ -19,8 +19,8 @@
     "record.fixedField.FMus": "FMus",
     "record.fixedField.LTxt": "LTxt",
     "record.fixedField.DtSt": "DtSt",
-    "record.fixedField.Date1": "Start date",
-    "record.fixedField.Date2": "End date",
+    "record.fixedField.Date1": "Date de début",
+    "record.fixedField.Date2": "Date de fin",
     "record.fixedField.Ills": "Ills",
     "record.fixedField.Cont": "Cont",
     "record.fixedField.Conf": "Conf",
@@ -45,5 +45,7 @@
     "record.error.title.empty": "Record cannot be saved without field 245.",
     "record.error.typeIsNotMatched": "Record cannot be saved. Record types cannot be changed. Please check record type in Leader and field 008.",
     "record.delete.confirmLabel": "Oui",
-    "record.delete.message": "Êtes-vous sûr(e)?"
+    "record.delete.message": "Êtes-vous sûr(e)?",
+    "record.save.success": "This record was successfully saved",
+    "record.save.error.generic": "Record not saved: Communication problem with server. Please try again."
 }
