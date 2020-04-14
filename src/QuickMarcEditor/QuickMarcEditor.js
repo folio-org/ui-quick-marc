@@ -24,6 +24,7 @@ import {
   addNewRecord,
   deleteRecordByIndex,
   reorderRecords,
+  isLastRecordMoved,
 } from './utils';
 
 const spySubscription = { values: true };
@@ -51,7 +52,10 @@ const QuickMarcEditor = ({
   ), [onClose, handleSubmit, submitting, pristine]);
 
   const changeRecords = useCallback(({ values }) => {
-    if (values?.records && values.records.length !== records.length) {
+    if (
+      (values?.records && values.records.length !== records.length) ||
+      isLastRecordMoved(records, values?.records)
+    ) {
       setTimeout(() => setRecords(values.records), 0);
     }
   }, [records]);

@@ -1,11 +1,11 @@
 import { LEADER_TAG } from '../constants';
 
-const isLastRecord = recordRow => {
+export const isLastRecord = recordRow => {
   return (
     recordRow.tag === '999'
     && recordRow.indicators
     && recordRow.indicators[0] === 'f'
-    && recordRow.indicators[0] === 'f'
+    && recordRow.indicators[1] === 'f'
   );
 };
 

@@ -1,5 +1,6 @@
 import uuid from 'uuid';
 
+import { isLastRecord } from './QuickMarcEditorRows/utils';
 import { LEADER_TAG } from './constants';
 
 export const dehydrateMarcRecordResponse = marcRecordResponse => ({
@@ -85,4 +86,11 @@ export const reorderRecords = (index, indexToSwitch, state) => {
   [records[index], records[indexToSwitch]] = [records[indexToSwitch], records[index]];
 
   return records;
+};
+
+export const isLastRecordMoved = (prevRowsValue, newRowsValue) => {
+  const prevStateIndex = prevRowsValue.findIndex(row => isLastRecord(row));
+  const newStateIndex = newRowsValue?.findIndex(row => isLastRecord(row));
+
+  return newStateIndex !== prevStateIndex;
 };
