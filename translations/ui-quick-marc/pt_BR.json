@@ -47,5 +47,6 @@
     "record.delete.confirmLabel": "Sim",
     "record.delete.message": "Você tem certeza?",
     "record.save.success": "Este registro foi salvo com sucesso",
-    "record.save.error.generic": "Registro não foi salvo: Problema de comunicação com o servidor. Por favor, tente novamente."
+    "record.save.error.generic": "Registro não foi salvo: Problema de comunicação com o servidor. Por favor, tente novamente.",
+    "permission.quick-marc-editor.all": "quickMARC: View, edit"
 }
