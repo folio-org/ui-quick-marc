@@ -1,6 +1,8 @@
 {
   "meta.title": "Quick MARC",
 
+  "permission.quick-marc-editor.all": "quickMARC: View, edit",
+
   "record.edit.title": "Edit MARC record - {title}",
 
   "record.fixedField.Type": "Type",
