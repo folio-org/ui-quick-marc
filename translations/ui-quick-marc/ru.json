@@ -47,5 +47,6 @@
     "record.delete.confirmLabel": "Да",
     "record.delete.message": "Вы уверены?",
     "record.save.success": "This record was successfully saved",
-    "record.save.error.generic": "Record not saved: Communication problem with server. Please try again."
+    "record.save.error.generic": "Record not saved: Communication problem with server. Please try again.",
+    "permission.quick-marc-editor.all": "quickMARC: View, edit"
 }
