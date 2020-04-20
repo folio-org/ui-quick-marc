@@ -53,8 +53,11 @@ const QuickMarcEditor = ({
 
   const changeRecords = useCallback(({ values }) => {
     if (
-      (values?.records && values.records.length !== records.length) ||
-      isLastRecordMoved(records, values?.records)
+      values?.records
+      && (
+        values.records.length !== records.length
+        || isLastRecordMoved(records, values.records)
+      )
     ) {
       setTimeout(() => setRecords(values.records), 0);
     }
