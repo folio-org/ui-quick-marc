@@ -76,59 +76,84 @@ const QuickMarcEditorRows = ({
               <div className={styles.quickMarcEditorMovingRow}>
                 {
                   !withMoveUpRowAction && (
-                    <IconButton
-                      data-test-move-up-row
-                      data-index={idx}
-                      data-index-to-switch={idx - 1}
-                      icon="arrow-up"
-                      onClick={moveRow}
-                    />
+                    <FormattedMessage id="ui-quick-marc.record.areaLabel.moveUpRow">
+                      {ariaLabel => (
+                        <IconButton
+                          ariaLabel={ariaLabel}
+                          data-test-move-up-row
+                          data-index={idx}
+                          data-index-to-switch={idx - 1}
+                          icon="arrow-up"
+                          onClick={moveRow}
+                        />
+                      )}
+                    </FormattedMessage>
                   )
                 }
                 {
                   !withMoveDownRowAction && (
-                    <IconButton
-                      data-test-move-down-row
-                      data-index={idx}
-                      data-index-to-switch={idx + 1}
-                      icon="arrow-down"
-                      onClick={moveRow}
-                    />
+                    <FormattedMessage id="ui-quick-marc.record.areaLabel.moveDownRow">
+                      {ariaLabel => (
+                        <IconButton
+                          ariaLabel={ariaLabel}
+                          data-test-move-down-row
+                          data-index={idx}
+                          data-index-to-switch={idx + 1}
+                          icon="arrow-down"
+                          onClick={moveRow}
+                        />
+                      )}
+                    </FormattedMessage>
                   )
                 }
               </div>
               <div className={styles.quickMarcEditorRowTag}>
-                <Field
-                  name={`${name}[${idx}].tag`}
-                  component={TextField}
-                  marginBottom0
-                  fullWidth
-                  disabled={isDisabled || !idx}
-                />
+                <FormattedMessage id="ui-quick-marc.record.areaLabel.field">
+                  {ariaLabel => (
+                    <Field
+                      ariaLabel={ariaLabel}
+                      name={`${name}[${idx}].tag`}
+                      component={TextField}
+                      marginBottom0
+                      fullWidth
+                      disabled={isDisabled || !idx}
+                    />
+                  )}
+                </FormattedMessage>
               </div>
               <div className={styles.quickMarcEditorRowIndicator}>
                 {
                   withIndicators && (
-                    <Field
-                      name={`${name}[${idx}].indicators[0]`}
-                      component={TextField}
-                      marginBottom0
-                      fullWidth
-                      disabled={isDisabled}
-                    />
+                    <FormattedMessage id="ui-quick-marc.record.areaLabel.indicator">
+                      {ariaLabel => (
+                        <Field
+                          ariaLabel={ariaLabel}
+                          name={`${name}[${idx}].indicators[0]`}
+                          component={TextField}
+                          marginBottom0
+                          fullWidth
+                          disabled={isDisabled}
+                        />
+                      )}
+                    </FormattedMessage>
                   )
                 }
               </div>
               <div className={styles.quickMarcEditorRowIndicator}>
                 {
                   withIndicators && (
-                    <Field
-                      name={`${name}[${idx}].indicators[1]`}
-                      component={TextField}
-                      marginBottom0
-                      fullWidth
-                      disabled={isDisabled}
-                    />
+                    <FormattedMessage id="ui-quick-marc.record.areaLabel.indicator">
+                      {ariaLabel => (
+                        <Field
+                          ariaLabel={ariaLabel}
+                          name={`${name}[${idx}].indicators[1]`}
+                          component={TextField}
+                          marginBottom0
+                          fullWidth
+                          disabled={isDisabled}
+                        />
+                      )}
+                    </FormattedMessage>
                   )
                 }
               </div>
@@ -139,35 +164,50 @@ const QuickMarcEditorRows = ({
                       `${name}[${idx}].content`, recordRow.content.Type, recordRow.content.BLvl,
                     )
                     : (
-                      <Field
-                        name={`${name}[${idx}].content`}
-                        component={TextField}
-                        marginBottom0
-                        fullWidth
-                        disabled={isDisabled}
-                      />
+                      <FormattedMessage id="ui-quick-marc.record.areaLabel.subfield">
+                        {ariaLabel => (
+                          <Field
+                            ariaLabel={ariaLabel}
+                            name={`${name}[${idx}].content`}
+                            component={TextField}
+                            marginBottom0
+                            fullWidth
+                            disabled={isDisabled}
+                          />
+                        )}
+                      </FormattedMessage>
                     )
                 }
               </div>
               <div className={styles.quickMarcEditorActions}>
                 {
                   !withAddRowAction && (
-                    <IconButton
-                      data-test-add-row
-                      data-index={idx}
-                      icon="plus-sign"
-                      onClick={addNewRow}
-                    />
+                    <FormattedMessage id="ui-quick-marc.record.areaLabel.addField">
+                      {ariaLabel => (
+                        <IconButton
+                          ariaLabel={ariaLabel}
+                          data-test-add-row
+                          data-index={idx}
+                          icon="plus-sign"
+                          onClick={addNewRow}
+                        />
+                      )}
+                    </FormattedMessage>
                   )
                 }
                 {
                   !withDeleteRowAction && (
-                    <IconButton
-                      data-test-remove-row
-                      data-index={idx}
-                      icon="trash"
-                      onClick={showDeleteConfirmation}
-                    />
+                    <FormattedMessage id="ui-quick-marc.record.areaLabel.deleteField">
+                      {ariaLabel => (
+                        <IconButton
+                          ariaLabel={ariaLabel}
+                          data-test-remove-row
+                          data-index={idx}
+                          icon="trash"
+                          onClick={showDeleteConfirmation}
+                        />
+                      )}
+                    </FormattedMessage>
                   )
                 }
               </div>

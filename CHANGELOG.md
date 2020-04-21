@@ -3,6 +3,7 @@
 ## (in progress)
 
 ### Stories
+* [UIQM-16](https://issues.folio.org/browse/UIQM-16) Edit quickMarc accessibility
 * [UIQM-15](https://issues.folio.org/browse/UIQM-15) Add permission translation
 * [UIQM-8](https://issues.folio.org/browse/UIQM-8) Save edited record in quickMARC to SRS
 * [UIQM-5](https://issues.folio.org/browse/UIQM-5) Reorder field/row in quickMARC
