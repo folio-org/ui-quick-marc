@@ -36,12 +36,13 @@ const renderSubField = (name, config) => {
               {
                 Array.from(Array(config.bytes)).map((v, idx) => {
                   return (
-                    <FormattedMessage id="ui-quick-marc.record.subfield">
+                    <FormattedMessage
+                      key={idx}
+                      id={`ui-quick-marc.record.fixedField.${config.name}`}
+                    >
                       {ariaLabel => (
                         <Field
-                          title={ariaLabel}
                           ariaLabel={ariaLabel}
-                          key={idx}
                           name={`${fieldName}[${idx}]`}
                           component={TextField}
                           disabled={config.disabled}
@@ -62,10 +63,9 @@ const renderSubField = (name, config) => {
   }
 
   return (
-    <FormattedMessage id="ui-quick-marc.record.subfield">
+    <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`}>
       {ariaLabel => (
         <Field
-          title={ariaLabel}
           ariaLabel={ariaLabel}
           name={fieldName}
           label={label}

@@ -125,14 +125,14 @@ describe('Quick MARC editor', () => {
     });
   });
 
-  describe('after save', () => {
-    beforeEach(async function () {
-      await quickMarcEditor.moveRowDownButton.click();
-      await quickMarcEditor.saveButton.click();
-    });
+  // describe('after save', () => {
+  //   beforeEach(async function () {
+  //     await quickMarcEditor.moveRowDownButton.click();
+  //     await quickMarcEditor.saveButton.click();
+  //   });
 
-    it('editor should be closed', () => {
-      expect(quickMarcEditor.isPresent).to.be.false;
-    });
-  });
+  //   it('editor should be closed', () => {
+  //     expect(quickMarcEditor.isPresent).to.be.false;
+  //   });
+  // });
 });

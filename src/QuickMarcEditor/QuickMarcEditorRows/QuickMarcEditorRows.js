@@ -113,7 +113,6 @@ const QuickMarcEditorRows = ({
                 <FormattedMessage id="ui-quick-marc.record.field">
                   {ariaLabel => (
                     <Field
-                      title={ariaLabel}
                       ariaLabel={ariaLabel}
                       name={`${name}[${idx}].tag`}
                       component={TextField}
@@ -130,7 +129,6 @@ const QuickMarcEditorRows = ({
                     <FormattedMessage id="ui-quick-marc.record.indicator">
                       {ariaLabel => (
                         <Field
-                          title={ariaLabel}
                           ariaLabel={ariaLabel}
                           name={`${name}[${idx}].indicators[0]`}
                           component={TextField}
@@ -149,7 +147,6 @@ const QuickMarcEditorRows = ({
                     <FormattedMessage id="ui-quick-marc.record.indicator">
                       {ariaLabel => (
                         <Field
-                          title={ariaLabel}
                           ariaLabel={ariaLabel}
                           name={`${name}[${idx}].indicators[1]`}
                           component={TextField}
@@ -172,7 +169,6 @@ const QuickMarcEditorRows = ({
                       <FormattedMessage id="ui-quick-marc.record.subfield">
                         {ariaLabel => (
                           <Field
-                            title={ariaLabel}
                             ariaLabel={ariaLabel}
                             name={`${name}[${idx}].content`}
                             component={TextField}
