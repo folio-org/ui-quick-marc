@@ -85,6 +85,7 @@
     "react-final-form-listeners": "^1.0.2",
     "react-hot-loader": "^4.3.12",
     "react-router-prop-types": "^1.0.4",
+    "sinon": "^9.0.2",
     "uuid": "^3.0.1"
   },
   "peerDependencies": {
