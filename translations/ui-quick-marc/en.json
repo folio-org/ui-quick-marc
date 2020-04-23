@@ -54,5 +54,13 @@
   "record.delete.message":"Are you sure?",
 
   "record.save.success": "This record was successfully saved",
-  "record.save.error.generic": "Record not saved: Communication problem with server. Please try again."
+  "record.save.error.generic": "Record not saved: Communication problem with server. Please try again.",
+
+  "record.moveUpRow": "Move field up a row",
+  "record.moveDownRow": "Move field down a row",
+  "record.field": "Field",
+  "record.indicator": "Indicator",
+  "record.subfield": "Subfield",
+  "record.addField": "Add a new field",
+  "record.deleteField": "Delete this field"
 }
