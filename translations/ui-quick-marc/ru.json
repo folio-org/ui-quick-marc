@@ -48,5 +48,12 @@
     "record.delete.message": "Вы уверены?",
     "record.save.success": "This record was successfully saved",
     "record.save.error.generic": "Record not saved: Communication problem with server. Please try again.",
-    "permission.quick-marc-editor.all": "quickMARC: View, edit"
+    "permission.quick-marc-editor.all": "quickMARC: просмотр, редактирование",
+    "record.moveUpRow": "Переместить поле на одну строку вверх",
+    "record.moveDownRow": "Переместить поле на одну строку вниз",
+    "record.field": "Поле",
+    "record.indicator": "Атрибут",
+    "record.subfield": "Подполе",
+    "record.addField": "Добавить новое поле",
+    "record.deleteField": "Удалить это поле"
 }
