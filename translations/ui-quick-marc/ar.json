@@ -49,11 +49,11 @@
     "record.save.success": "تم حفظ هذه التسجيلة  بنجاح",
     "record.save.error.generic": "لم يتم حفظ التسجيلة: توجد مشكلة في الاتصال بالخادم. يرجى إعادة المحاولة.",
     "permission.quick-marc-editor.all": "quickMARC: اعرض، حرّر",
-    "record.moveUpRow": "Move field up a row",
-    "record.moveDownRow": "Move field down a row",
-    "record.field": "Field",
-    "record.indicator": "Indicator",
-    "record.subfield": "Subfield",
-    "record.addField": "Add a new field",
-    "record.deleteField": "Delete this field"
+    "record.moveUpRow": "تحريك الحقل لأعلى صف",
+    "record.moveDownRow": "تحريك الحقل لأسفل صف",
+    "record.field": "حقل",
+    "record.indicator": "مؤشر",
+    "record.subfield": "حقل فرعي",
+    "record.addField": "إضافة حقل جديد",
+    "record.deleteField": "حذف هذا الحقل"
 }
