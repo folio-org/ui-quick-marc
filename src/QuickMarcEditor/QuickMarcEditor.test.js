@@ -21,6 +21,8 @@ const getInstance = () => ({
 
 const messages = {
   'ui-quick-marc.record.edit.title': '{title}',
+  'ui-quick-marc.record.subfield': 'Subfield',
+  'ui-quick-marc.record.field': 'Field',
 };
 
 const renderQuickMarcEditor = ({ instance, onClose, onSubmit, mutators }) => (render(
