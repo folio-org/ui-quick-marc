@@ -48,19 +48,8 @@ const fields = config.fields
     ...acc,
     ...row.filter(field => field),
   ]), []);
-const nameMessages = fields
+const messages = fields
   .reduce((acc, { name }) => ({ ...acc, [`ui-quick-marc.record.fixedField.${name}`]: name }), {});
-
-const messages = {
-  ...nameMessages,
-  'ui-quick-marc.record.moveUpRow': 'Move field up a row',
-  'ui-quick-marc.record.moveDownRow': 'Move field down a row',
-  'ui-quick-marc.record.field': 'Field',
-  'ui-quick-marc.record.indicator': 'Indicator',
-  'ui-quick-marc.record.subfield': 'Subfield',
-  'ui-quick-marc.record.addField': 'Add a new field',
-  'ui-quick-marc.record.deleteField': 'Delete this field',
-};
 
 const renderFixedField = () => (render(
   <IntlProvider locale="en" messages={messages}>
