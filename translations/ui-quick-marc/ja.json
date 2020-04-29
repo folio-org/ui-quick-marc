@@ -1,7 +1,7 @@
 {
     "meta.title": "クイックMARC",
     "record.edit.title": "Edit MARC record - {title}",
-    "record.fixedField.Type": "Type",
+    "record.fixedField.Type": "種類",
     "record.fixedField.ELvl": "ELvl",
     "record.fixedField.Srce": "Srce",
     "record.fixedField.Audn": "Audn",
@@ -44,9 +44,16 @@
     "record.error.title.multiple": "Record cannot be saved with more than one field 245.",
     "record.error.title.empty": "Record cannot be saved without field 245.",
     "record.error.typeIsNotMatched": "Record cannot be saved. Record types cannot be changed. Please check record type in Leader and field 008.",
-    "record.delete.confirmLabel": "Yes",
+    "record.delete.confirmLabel": "はい",
     "record.delete.message": "Are you sure?",
     "record.save.success": "This record was successfully saved",
     "record.save.error.generic": "Record not saved: Communication problem with server. Please try again.",
-    "permission.quick-marc-editor.all": "quickMARC: View, edit"
+    "permission.quick-marc-editor.all": "quickMARC: View, edit",
+    "record.moveUpRow": "Move field up a row",
+    "record.moveDownRow": "Move field down a row",
+    "record.field": "Field",
+    "record.indicator": "Indicator",
+    "record.subfield": "Subfield",
+    "record.addField": "Add a new field",
+    "record.deleteField": "Delete this field"
 }

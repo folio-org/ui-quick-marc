@@ -48,5 +48,12 @@
     "record.delete.message": "Are you sure?",
     "record.save.success": "Este registro fue exitosamente guardado",
     "record.save.error.generic": "Record not saved: Communication problem with server. Please try again.",
-    "permission.quick-marc-editor.all": "quickMARC: View, edit"
+    "permission.quick-marc-editor.all": "quickMARC: View, edit",
+    "record.moveUpRow": "Move field up a row",
+    "record.moveDownRow": "Move field down a row",
+    "record.field": "Field",
+    "record.indicator": "Indicator",
+    "record.subfield": "Subfield",
+    "record.addField": "Add a new field",
+    "record.deleteField": "Delete this field"
 }

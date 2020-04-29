@@ -48,5 +48,12 @@
     "record.delete.message": "Você tem certeza?",
     "record.save.success": "Este registro foi salvo com sucesso",
     "record.save.error.generic": "Registro não foi salvo: Problema de comunicação com o servidor. Por favor, tente novamente.",
-    "permission.quick-marc-editor.all": "quickMARC: View, edit"
+    "permission.quick-marc-editor.all": "quickMARC: Ver, editar",
+    "record.moveUpRow": "Mover campo para cima uma linha",
+    "record.moveDownRow": "Mover campo para baixo uma linha",
+    "record.field": "Campo",
+    "record.indicator": "Indicador",
+    "record.subfield": "Subcampo",
+    "record.addField": "Adicione um novo campo",
+    "record.deleteField": "Excluir este campo"
 }

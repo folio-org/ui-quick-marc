@@ -36,15 +36,22 @@ const renderSubField = (name, config) => {
               {
                 Array.from(Array(config.bytes)).map((v, idx) => {
                   return (
-                    <Field
+                    <FormattedMessage
                       key={idx}
-                      name={`${fieldName}[${idx}]`}
-                      component={TextField}
-                      disabled={config.disabled}
-                      className={styles.fixedFieldSubFieldByte}
-                      hasClearIcon={false}
-                      data-testid={`fixed-field-${config.type}`}
-                    />
+                      id={`ui-quick-marc.record.fixedField.${config.name}`}
+                    >
+                      {ariaLabel => (
+                        <Field
+                          ariaLabel={ariaLabel}
+                          name={`${fieldName}[${idx}]`}
+                          component={TextField}
+                          disabled={config.disabled}
+                          className={styles.fixedFieldSubFieldByte}
+                          hasClearIcon={false}
+                          data-testid={`fixed-field-${config.type}`}
+                        />
+                      )}
+                    </FormattedMessage>
                   );
                 })
               }
@@ -56,15 +63,20 @@ const renderSubField = (name, config) => {
   }
 
   return (
-    <Field
-      name={fieldName}
-      label={label}
-      component={TextField}
-      disabled={config.disabled}
-      className={styles[`fixedFieldSubField${config.type}`]}
-      hasClearIcon={config.type !== SUBFIELD_TYPES.BYTE}
-      data-testid={`fixed-field-${config.type}`}
-    />
+    <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`}>
+      {ariaLabel => (
+        <Field
+          ariaLabel={ariaLabel}
+          name={fieldName}
+          label={label}
+          component={TextField}
+          disabled={config.disabled}
+          className={styles[`fixedFieldSubField${config.type}`]}
+          hasClearIcon={config.type !== SUBFIELD_TYPES.BYTE}
+          data-testid={`fixed-field-${config.type}`}
+        />
+      )}
+    </FormattedMessage>
   );
 };
 
