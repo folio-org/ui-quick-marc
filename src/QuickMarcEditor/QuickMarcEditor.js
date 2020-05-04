@@ -91,8 +91,6 @@ const QuickMarcEditor = ({
             <Row>
               <Col
                 xs={12}
-                md={8}
-                mdOffset={2}
                 data-test-quick-marc-editor={instance?.id}
                 data-testid="quick-marc-editor"
               >

@@ -72,7 +72,7 @@ const renderSubField = (name, config) => {
           component={TextField}
           disabled={config.disabled}
           className={styles[`fixedFieldSubField${config.type}`]}
-          hasClearIcon={config.type !== SUBFIELD_TYPES.BYTE}
+          hasClearIcon={false}
           data-testid={`fixed-field-${config.type}`}
         />
       )}
@@ -92,10 +92,14 @@ const FixedField = ({ config, name }) => {
             >
               {
                 row.map((col, colIdx) => {
+                  const xsColSize = col?.size || config.colSizes[colIdx];
+                  const lgColSize = Math.ceil(xsColSize / 2);
+
                   return col
                     ? (
                       <Col
-                        xs={col.size || config.colSizes[colIdx]}
+                        xs={xsColSize}
+                        lg={lgColSize}
                         key={colIdx}
                         data-testid="fixed-field-col"
                       >
@@ -104,7 +108,8 @@ const FixedField = ({ config, name }) => {
                     )
                     : (
                       <Col
-                        xs={config.colSizes[colIdx]}
+                        xs={xsColSize}
+                        lg={lgColSize}
                         key={colIdx}
                         data-testid="fixed-field-col"
                       />

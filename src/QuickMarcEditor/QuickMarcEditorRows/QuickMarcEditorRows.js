@@ -41,6 +41,7 @@ const QuickMarcEditorRows = ({
   const showDeleteConfirmation = useCallback(({ target }) => {
     setRemoveIndex(+target.dataset.index);
     toggleRemoveModal();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setRemoveIndex]);
 
   const confirmDeletion = useCallback(() => {
@@ -68,7 +69,7 @@ const QuickMarcEditorRows = ({
 
           return (
             <div
-              key={recordRow.id}
+              key={idx}
               className={styles.quickMarcEditorRow}
               data-test-quick-marc-editor-row
               data-testid="quick-marc-editorid"
