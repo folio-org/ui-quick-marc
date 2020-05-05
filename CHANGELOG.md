@@ -3,6 +3,7 @@
 ## (in progress)
 
 ### Stories
+* [UIQM-20](https://issues.folio.org/browse/UIQM-20) Update modal label and message for delete field
 * [UIQM-18](https://issues.folio.org/browse/UIQM-18) Reduce margins and white space in quickMARC
 * [UIQM-16](https://issues.folio.org/browse/UIQM-16) Edit quickMarc accessibility
 * [UIQM-15](https://issues.folio.org/browse/UIQM-15) Add permission translation
