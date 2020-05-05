@@ -55,5 +55,6 @@
     "record.indicator": "Атрибут",
     "record.subfield": "Подполе",
     "record.addField": "Добавить новое поле",
-    "record.deleteField": "Удалить это поле"
+    "record.deleteField": "Удалить это поле",
+    "record.delete.title": "Delete field"
 }

@@ -55,5 +55,6 @@
     "record.indicator": "مؤشر",
     "record.subfield": "حقل فرعي",
     "record.addField": "إضافة حقل جديد",
-    "record.deleteField": "حذف هذا الحقل"
+    "record.deleteField": "حذف هذا الحقل",
+    "record.delete.title": "Delete field"
 }
