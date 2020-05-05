@@ -224,6 +224,7 @@ const QuickMarcEditorRows = ({
         <ConfirmationModal
           id="delete-row-confirmation"
           confirmLabel={<FormattedMessage id="ui-quick-marc.record.delete.confirmLabel" />}
+          heading={<FormattedMessage id="ui-quick-marc.record.delete.title" />}
           message={<FormattedMessage id="ui-quick-marc.record.delete.message" />}
           onCancel={toggleRemoveModal}
           onConfirm={confirmDeletion}
