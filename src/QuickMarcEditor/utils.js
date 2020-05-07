@@ -44,19 +44,35 @@ export const addNewRecord = (index, state) => {
   return records;
 };
 
+export const validateLeader = (prevLeader = '', leader = '') => {
+  const cutEditableBytes = (str) => (
+    [5, 8, 17, 18, 19].reduce((acc, byte, idx) => {
+      const position = byte - idx;
+
+      return `${acc.slice(0, position)}${acc.slice(position + 1, acc.length)}`;
+    }, str)
+  );
+
+  if (leader.length !== 24) {
+    return 'ui-quick-marc.record.error.leader.length';
+  }
+
+  if (cutEditableBytes(prevLeader) !== cutEditableBytes(leader)) {
+    return 'ui-quick-marc.record.error.leader.forbiddenBytes';
+  }
+
+  return undefined;
+};
+
 export const validateMarcRecord = marcRecord => {
   const marcRecords = marcRecord.records || [];
 
   const recordLeader = marcRecords[0];
-  const fixedField = marcRecords.filter(({ tag }) => tag === '008')[0];
 
-  if (
-    !recordLeader
-    || !fixedField
-    || recordLeader.content[6] !== fixedField.content.Type
-    || recordLeader.content[7] !== fixedField.content.BLvl
-  ) {
-    return 'ui-quick-marc.record.error.typeIsNotMatched';
+  const leaderError = validateLeader(marcRecord?.leader, recordLeader?.content);
+
+  if (leaderError) {
+    return leaderError;
   }
 
   const titleRecords = marcRecords.filter(({ tag }) => tag === '245');
