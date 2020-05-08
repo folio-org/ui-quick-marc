@@ -87,19 +87,45 @@ describe('QuickMarcEditor utils', () => {
     });
   });
 
+  describe('validateLeader', () => {
+    it('should not return error message when leader is valid', () => {
+      expect(
+        utils.validateLeader('04706cam a2200865Ii 4500', '04706cam a2200865Ii 4500'),
+      ).not.toBeDefined();
+
+      expect(
+        utils.validateLeader('04706cam a2200865Ii 4500', '04706dam a2200865nfa4500'),
+      ).not.toBeDefined();
+    });
+
+    it('should return length error message when leader is not 24 length', () => {
+      expect(
+        utils.validateLeader('04706cam a2200865Ii 4500', '04706dam a2200865nfa45'),
+      ).toBe('ui-quick-marc.record.error.leader.length');
+
+      expect(
+        utils.validateLeader('04706cam a2200865Ii 4500', '04706dam a2200865nfa45gf sdg s'),
+      ).toBe('ui-quick-marc.record.error.leader.length');
+    });
+
+    it('should return edit error message when forbidden bytes are edited', () => {
+      expect(
+        utils.validateLeader('04706cam a2200865Ii 4500', '04706cam a2200865Ii 4501'),
+      ).toBe('ui-quick-marc.record.error.leader.forbiddenBytes');
+
+      expect(
+        utils.validateLeader('14706cam a2200865Ii 4500', '04706cam a2200865Ii 4500'),
+      ).toBe('ui-quick-marc.record.error.leader.forbiddenBytes');
+    });
+  });
+
   describe('validateMarcRecord', () => {
     it('should not return error message when record is valid', () => {
       const record = {
+        leader: '04706cam a2200865Ii 4500',
         records: [
           {
-            content: '0as5s7ac',
-          },
-          {
-            tag: '008',
-            content: {
-              Type: 'a',
-              BLvl: 'c',
-            },
+            content: '04706cam a2200865Ii 4500',
           },
           {
             tag: '245',
@@ -110,45 +136,25 @@ describe('QuickMarcEditor utils', () => {
       expect(utils.validateMarcRecord(record)).not.toBeDefined();
     });
 
-    it('should return error message when record type is not matched with leader', () => {
+    it('should return error message when record is invalid', () => {
       const record = {
+        leader: '14706cam a2200865Ii 4500',
         records: [
           {
-            content: '0as5s7ac',
-          },
-          {
-            tag: '008',
-            content: {
-              Type: 'b',
-              BLvl: 'c',
-            },
+            content: '04706cam a2200865Ii 4500',
           },
         ],
       };
 
-      expect(utils.validateMarcRecord(record)).toBe('ui-quick-marc.record.error.typeIsNotMatched');
-
-      record.records[1].content = {
-        Type: 'a',
-        BLvl: 'm',
-      };
-      expect(utils.validateMarcRecord(record)).toBe('ui-quick-marc.record.error.typeIsNotMatched');
-
-      expect(utils.validateMarcRecord({})).toBe('ui-quick-marc.record.error.typeIsNotMatched');
+      expect(utils.validateMarcRecord(record)).toBeDefined();
     });
 
     it('should return error message when record is without 245 row', () => {
       const record = {
+        leader: '04706cam a2200865Ii 4500',
         records: [
           {
-            content: '0as5s7ac',
-          },
-          {
-            tag: '008',
-            content: {
-              Type: 'a',
-              BLvl: 'c',
-            },
+            content: '04706cam a2200865Ii 4500',
           },
           {
             tag: '244',
@@ -161,16 +167,10 @@ describe('QuickMarcEditor utils', () => {
 
     it('should return error message when record has several 245 rows', () => {
       const record = {
+        leader: '04706cam a2200865Ii 4500',
         records: [
           {
-            content: '0as5s7ac',
-          },
-          {
-            tag: '008',
-            content: {
-              Type: 'a',
-              BLvl: 'c',
-            },
+            content: '04706cam a2200865Ii 4500',
           },
           {
             tag: '245',

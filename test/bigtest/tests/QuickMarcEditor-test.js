@@ -45,7 +45,7 @@ describe('Quick MARC editor', () => {
     instance = this.server.create('instance');
     this.server.create('marcRecord', {
       parsedRecordId: instance.id,
-      leader: '$a dfdac $b asd',
+      leader: '04706cam a2200865Ii 4500',
       fields: records,
     });
 
