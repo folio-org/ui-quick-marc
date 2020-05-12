@@ -7,6 +7,8 @@ import {
   TextField,
   IconButton,
   ConfirmationModal,
+  Col,
+  Row,
 } from '@folio/stripes/components';
 import {
   useModalToggle,
@@ -19,6 +21,7 @@ import {
   hasAddException,
   hasDeleteException,
   hasMoveException,
+  getFields,
 } from './utils';
 import styles from './QuickMarcEditorRows.css';
 
@@ -33,6 +36,7 @@ const QuickMarcEditorRows = ({
 }) => {
   const [isRemoveModalOpened, toggleRemoveModal] = useModalToggle();
   const [removeIndex, setRemoveIndex] = useState();
+  const [isFieldCollapsed, collapseField] = useState(true);
 
   const addNewRow = useCallback(({ target }) => {
     addRecord({ index: +target.dataset.index });
@@ -55,6 +59,32 @@ const QuickMarcEditorRows = ({
       indexToSwitch: +target.dataset.indexToSwitch,
     });
   }, [moveRecord]);
+
+  const toggleFixedRow = useCallback(() => {
+    collapseField(!isFieldCollapsed);
+  }, [isFieldCollapsed]);
+
+  const getCollapsedFields = (content, type, blvl) => {
+    const configFields = getFields(type, blvl);
+
+    return configFields.map((row, rowIdx) => (
+      <Row
+        data-test-collapsed-fields
+        key={rowIdx}
+      >
+        {
+          row.map((field, fieldIdx) => {
+            return field && (
+              <Col key={fieldIdx} xs={3}>
+                <FormattedMessage id={`ui-quick-marc.record.fixedField.${field.name}`} />
+                : {content[field.name]}
+              </Col>
+            );
+          })
+        }
+      </Row>
+    ));
+  };
 
   return (
     <>
@@ -104,6 +134,23 @@ const QuickMarcEditorRows = ({
                           data-index-to-switch={idx + 1}
                           icon="arrow-down"
                           onClick={moveRow}
+                        />
+                      )}
+                    </FormattedMessage>
+                  )
+                }
+                {
+                  recordRow.tag === '008' && (
+                    <FormattedMessage id="ui-quick-marc.record.collapseRow">
+                      {ariaLabel => (
+                        <IconButton
+                          title={ariaLabel}
+                          ariaLabel={ariaLabel}
+                          data-test-collapse-row
+                          data-index={idx}
+                          data-index-to-switch={idx + 1}
+                          icon={`caret-${isFieldCollapsed ? 'down' : 'up'}`}
+                          onClick={toggleFixedRow}
                         />
                       )}
                     </FormattedMessage>
@@ -163,8 +210,19 @@ const QuickMarcEditorRows = ({
               <div className={styles.quickMarcEditorRowContent}>
                 {
                   recordRow.tag === '008'
-                    ? FixedFieldFactory.getFixedField(
-                      `${name}[${idx}].content`, recordRow.content.Type, recordRow.content.BLvl,
+                    ?
+                    (
+                      isFieldCollapsed
+                        ?
+                        (
+                          getCollapsedFields(recordRow.content, recordRow.content.Type, recordRow.content.BLvl)
+                        )
+                        :
+                        (
+                          FixedFieldFactory.getFixedField(
+                            `${name}[${idx}].content`, recordRow.content.Type, recordRow.content.BLvl,
+                          )
+                        )
                     )
                     : (
                       <FormattedMessage id="ui-quick-marc.record.subfield">

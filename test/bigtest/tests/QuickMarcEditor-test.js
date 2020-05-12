@@ -12,8 +12,27 @@ const records = [
   {
     tag: '008',
     content: {
+      Content: 'Books',
       Type: 'a',
-      BLvl: 'c',
+      BLvl: 'm',
+      Entered: '790411',
+      DtSt: 's',
+      Date1: '1977',
+      Date2: '    ',
+      Ctry: 'dcu',
+      Ills: ['a', ' ', ' ', ' '],
+      Audn: ' ',
+      Form: ' ',
+      Cont: ['b', ' ', ' ', ' '],
+      GPub: 'f',
+      Conf: '0',
+      Fest: '0',
+      Indx: '0',
+      LitF: '0',
+      Biog: ' ',
+      Lang: 'eng',
+      MRec: ' ',
+      Srce: 'd',
     },
   },
   {
@@ -122,6 +141,15 @@ describe('Quick MARC editor', () => {
 
     it('record should be removed', () => {
       expect(quickMarcEditor.editorRows().length).to.be.equal(records.length);
+    });
+  });
+
+  describe('collapse fixed fields row', () => {
+    beforeEach(async function () {
+      await quickMarcEditor.collapseRowButton.click();
+    });
+    it('fixed fields row should be uncollapsed', () => {
+      expect(quickMarcEditor.isFixedFieldsRowCollapsed).to.be.false;
     });
   });
 
