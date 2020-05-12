@@ -69,4 +69,11 @@ describe('QuickMarcEditorRows utils', () => {
       expect(utils.hasMoveException({ tag: '010' }, { tag: '011' })).toBeFalsy();
     });
   });
+
+  describe('getFields', () => {
+    it('should get fields array', () => {
+      expect(utils.getFields('a', 'c')).toBeTruthy();
+      expect(utils.getFields('2', 'l')).toBe(null);
+    });
+  });
 });
