@@ -43,7 +43,6 @@
     "record.fixedField.Proj": "项目",
     "record.error.title.multiple": "记录不能保存多个245字段。",
     "record.error.title.empty": "没有245字段不能保存记录。",
-    "record.error.typeIsNotMatched": "记录无法保存。记录类型无法更改。请检查头标和008字段中的记录类型。",
     "record.delete.confirmLabel": "是",
     "record.delete.message": "是否确定？",
     "record.save.success": "记录已成功保存",
@@ -56,5 +55,7 @@
     "record.subfield": "子字段",
     "record.addField": "添加新字段",
     "record.deleteField": "删除本字段",
-    "record.delete.title": "Delete field"
+    "record.delete.title": "Delete field",
+    "record.error.leader.length": "Record cannot be saved. The Leader must contain 24 characters, including null spaces.",
+    "record.error.leader.forbiddenBytes": "Record cannot be saved. Please check the Leader. Only positions 5, 8, 17, 18 and/or 19 can be edited in the Leader."
 }

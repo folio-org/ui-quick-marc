@@ -43,7 +43,6 @@
     "record.fixedField.Proj": "Proj",
     "record.error.title.multiple": "O registro não pode ser salvo com mais de um campo 245.",
     "record.error.title.empty": "O registro não pode ser salvo sem o campo 245.",
-    "record.error.typeIsNotMatched": "O registro não pode ser salvo. Os tipos de registro não podem ser alterados. Verifique o tipo de registro no Líder e no campo 008.",
     "record.delete.confirmLabel": "Sim",
     "record.delete.message": "Tem certeza de que deseja excluir este campo?",
     "record.save.success": "Este registro foi salvo com sucesso",
@@ -56,5 +55,7 @@
     "record.subfield": "Subcampo",
     "record.addField": "Adicione um novo campo",
     "record.deleteField": "Excluir este campo",
-    "record.delete.title": "Excluir campo"
+    "record.delete.title": "Excluir campo",
+    "record.error.leader.length": "O registro não pode ser salvo. O Líder deve conter 24 caracteres, incluindo espaços nulos.",
+    "record.error.leader.forbiddenBytes": "O registro não pode ser salvo. Por favor, verifique o Líder. Somente as posições 5, 8, 17, 18 e / ou 19 podem ser editadas no Líder."
 }

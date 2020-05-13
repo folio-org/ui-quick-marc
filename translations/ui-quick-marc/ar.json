@@ -43,7 +43,6 @@
     "record.fixedField.Proj": "مشروع",
     "record.error.title.multiple": "لا يمكن حفظ التسجيلة في حالة وجود أكثر من حقل 245",
     "record.error.title.empty": "ياا يمكن حفظ التسجيلة بدون الحقل 245",
-    "record.error.typeIsNotMatched": "لا يمكن حفظ التسجيلة. لا يمكن تغيير أنواع التسجيلة. يرجى التحقق من نوع التسجيلة في الفاتح والحقل 008.",
     "record.delete.confirmLabel": "نعم",
     "record.delete.message": "هل أنت متأكد؟",
     "record.save.success": "تم حفظ هذه التسجيلة  بنجاح",
@@ -56,5 +55,7 @@
     "record.subfield": "حقل فرعي",
     "record.addField": "إضافة حقل جديد",
     "record.deleteField": "حذف هذا الحقل",
-    "record.delete.title": "Delete field"
+    "record.delete.title": "حذف الحقل",
+    "record.error.leader.length": "لا يمكن حفظ التسجيلة. يجب أن يحتوي الفاتح على 24 حرفاً، بما في ذلك مسافات فارغة.",
+    "record.error.leader.forbiddenBytes": "لا يمكن حفظ التسجيلة. يرجى التحقق من الفاتح. يمكن تحرير المواضع 5،8، 17، 18 و19 فقط في الفاتح"
 }
