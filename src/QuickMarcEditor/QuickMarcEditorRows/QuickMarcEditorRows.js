@@ -7,8 +7,6 @@ import {
   TextField,
   IconButton,
   ConfirmationModal,
-  Col,
-  Row,
 } from '@folio/stripes/components';
 import {
   useModalToggle,
@@ -21,7 +19,6 @@ import {
   hasAddException,
   hasDeleteException,
   hasMoveException,
-  getFields,
 } from './utils';
 import styles from './QuickMarcEditorRows.css';
 
@@ -63,28 +60,6 @@ const QuickMarcEditorRows = ({
   const toggleFixedRow = useCallback(() => {
     collapseField(!isFieldCollapsed);
   }, [isFieldCollapsed]);
-
-  const getCollapsedFields = (content, type, blvl) => {
-    const configFields = getFields(type, blvl);
-
-    return configFields.map((row, rowIdx) => (
-      <Row
-        data-test-collapsed-fields
-        key={rowIdx}
-      >
-        {
-          row.map((field, fieldIdx) => {
-            return field && (
-              <Col key={fieldIdx} xs={3}>
-                <FormattedMessage id={`ui-quick-marc.record.fixedField.${field.name}`} />
-                : {content[field.name]}
-              </Col>
-            );
-          })
-        }
-      </Row>
-    ));
-  };
 
   return (
     <>
@@ -212,17 +187,9 @@ const QuickMarcEditorRows = ({
                   recordRow.tag === '008'
                     ?
                     (
-                      isFieldCollapsed
-                        ?
-                        (
-                          getCollapsedFields(recordRow.content, recordRow.content.Type, recordRow.content.BLvl)
-                        )
-                        :
-                        (
-                          FixedFieldFactory.getFixedField(
-                            `${name}[${idx}].content`, recordRow.content.Type, recordRow.content.BLvl,
-                          )
-                        )
+                      FixedFieldFactory.getFixedField(
+                        `${name}[${idx}].content`, recordRow.content.Type, recordRow.content.BLvl, isFieldCollapsed,
+                      )
                     )
                     : (
                       <FormattedMessage id="ui-quick-marc.record.subfield">

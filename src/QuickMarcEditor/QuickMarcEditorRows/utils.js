@@ -1,14 +1,4 @@
 import { LEADER_TAG } from '../constants';
-import {
-  BOOK_CONFIG,
-  COMPUTER_CONFIG,
-  CONTINUING_RESOURCE,
-  MAP_CONFIG,
-  MIXED_MATERIAL,
-  SCORE_CONFIG,
-  SOUND_RECORDING_CONFIG,
-  VISUAL_MATERIAL_CONFIG,
-} from './FixedField/constants';
 
 export const isLastRecord = recordRow => {
   return (
@@ -44,26 +34,3 @@ export const hasMoveException = (recordRow, sibling) => (
   || MOVE_EXCEPTION_ROWS.includes(recordRow.tag)
   || MOVE_EXCEPTION_ROWS.includes(sibling.tag)
 );
-
-export const getFields = (type, blvl) => {
-  switch (true) {
-    case ['a', 't'].includes(type) && ['a', 'c', 'd', 'm'].includes(blvl):
-      return BOOK_CONFIG.fields;
-    case type === 'a' && ['b', 'i', 's'].includes(blvl):
-      return CONTINUING_RESOURCE.fields;
-    case type === 'm':
-      return COMPUTER_CONFIG.fields;
-    case ['e', 'f'].includes(type):
-      return MAP_CONFIG.fields;
-    case type === 'p':
-      return MIXED_MATERIAL.fields;
-    case ['c', 'd'].includes(type):
-      return SCORE_CONFIG.fields;
-    case ['i', 'j'].includes(type):
-      return SOUND_RECORDING_CONFIG.fields;
-    case ['g', 'k', 'o', 'r'].includes(type):
-      return VISUAL_MATERIAL_CONFIG.fields;
-    default:
-      return null;
-  }
-};

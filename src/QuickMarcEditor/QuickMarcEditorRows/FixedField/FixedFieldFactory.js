@@ -10,7 +10,7 @@ import SoundRecordingFixedField from './SoundRecordingFixedField';
 import VisualMaterialFixedField from './VisualMaterialFixedField';
 
 export const FixedFieldFactory = {
-  getFixedField(name, type, blvl) {
+  getFixedField(name, type, blvl, collapsed) {
     let FixedField;
 
     switch (true) {
@@ -42,6 +42,6 @@ export const FixedFieldFactory = {
         FixedField = null;
     }
 
-    return FixedField ? <FixedField name={name} /> : null;
+    return FixedField ? <FixedField name={name} collapsed={collapsed} /> : null;
   },
 };

@@ -8,3 +8,10 @@
   width: 70px;
   display: inline-block;
 }
+
+.collapsedField [class*="formControl"] {
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+}

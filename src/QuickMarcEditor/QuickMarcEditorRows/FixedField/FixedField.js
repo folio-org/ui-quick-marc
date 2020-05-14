@@ -19,13 +19,13 @@ export const SUBFIELD_TYPES = {
   BYTES: 'Bytes',
 };
 
-const renderSubField = (name, config) => {
+const renderSubField = (name, config, collapsed) => {
   const fieldName = `${name}.${config.name}`;
   const label = <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`} />;
 
   if (config.type === SUBFIELD_TYPES.BYTES) {
     return (
-      <FieldArray name={fieldName}>
+      <FieldArray name={fieldName} className={styles.collapsedFields}>
         {() => {
           return (
             <>
@@ -45,7 +45,7 @@ const renderSubField = (name, config) => {
                           ariaLabel={ariaLabel}
                           name={`${fieldName}[${idx}]`}
                           component={TextField}
-                          disabled={config.disabled}
+                          disabled={config.disabled || collapsed}
                           className={styles.fixedFieldSubFieldByte}
                           hasClearIcon={false}
                           data-testid={`fixed-field-${config.type}`}
@@ -70,7 +70,7 @@ const renderSubField = (name, config) => {
           name={fieldName}
           label={label}
           component={TextField}
-          disabled={config.disabled}
+          disabled={config.disabled || collapsed}
           className={styles[`fixedFieldSubField${config.type}`]}
           hasClearIcon={false}
           data-testid={`fixed-field-${config.type}`}
@@ -80,7 +80,7 @@ const renderSubField = (name, config) => {
   );
 };
 
-const FixedField = ({ config, name }) => {
+const FixedField = ({ config, name, collapsed }) => {
   return (
     <>
       {
@@ -102,8 +102,9 @@ const FixedField = ({ config, name }) => {
                         lg={lgColSize}
                         key={colIdx}
                         data-testid="fixed-field-col"
+                        className={collapsed ? styles.collapsedField : ''}
                       >
-                        {renderSubField(name, col)}
+                        {renderSubField(name, col, collapsed)}
                       </Col>
                     )
                     : (
@@ -112,6 +113,7 @@ const FixedField = ({ config, name }) => {
                         lg={lgColSize}
                         key={colIdx}
                         data-testid="fixed-field-col"
+                        className={collapsed ? styles.collapsedField : ''}
                       />
                     );
                 })
@@ -127,6 +129,7 @@ const FixedField = ({ config, name }) => {
 FixedField.propTypes = {
   name: PropTypes.string.isRequired,
   config: PropTypes.object.isRequired,
+  collapsed: PropTypes.bool.isRequired,
 };
 
 export default FixedField;
