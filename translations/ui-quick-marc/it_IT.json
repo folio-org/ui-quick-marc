@@ -43,7 +43,6 @@
     "record.fixedField.Proj": "Proj",
     "record.error.title.multiple": "Record cannot be saved with more than one field 245.",
     "record.error.title.empty": "Record cannot be saved without field 245.",
-    "record.error.typeIsNotMatched": "Record cannot be saved. Record types cannot be changed. Please check record type in Leader and field 008.",
     "record.delete.confirmLabel": "Yes",
     "record.delete.message": "Are you sure you want to delete this field?",
     "record.save.success": "This record was successfully saved",
@@ -56,5 +55,7 @@
     "record.subfield": "Subfield",
     "record.addField": "Add a new field",
     "record.deleteField": "Delete this field",
-    "record.delete.title": "Delete field"
+    "record.delete.title": "Delete field",
+    "record.error.leader.length": "Record cannot be saved. The Leader must contain 24 characters, including null spaces.",
+    "record.error.leader.forbiddenBytes": "Record cannot be saved. Please check the Leader. Only positions 5, 8, 17, 18 and/or 19 can be edited in the Leader."
 }
