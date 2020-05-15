@@ -21,7 +21,7 @@ export const SUBFIELD_TYPES = {
   BYTES: 'Bytes',
 };
 
-const renderSubField = useMemo(() => (name, config, collapsed) => {
+const renderSubField = (name, config, collapsed) => {
   const fieldName = `${name}.${config.name}`;
   const label = <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`} />;
 
@@ -83,10 +83,10 @@ const renderSubField = useMemo(() => (name, config, collapsed) => {
       )}
     </FormattedMessage>
   );
-}, []);
+};
 
-const closedFields = (config, name) => {
-  return config.fields.map((row) => {
+const FixedField = ({ config, name }) => {
+  const closedFields = useMemo(() => config.fields.map((row) => {
     return (
       row.map((col, colIdx) => {
         return col
@@ -106,56 +106,55 @@ const closedFields = (config, name) => {
           );
       })
     );
-  });
-};
+  }), []);
 
-const FixedField = ({ config, name }) => {
   return (
-    <AccordionStatus>
-      <Accordion
-        // closedByDefault
-        separator={false}
-        displayWhenClosed={closedFields(config, name)}
-      >
-        {
-          config.fields.map((row, rowIdx) => {
-            return (
-              <Row
-                key={rowIdx}
-                data-testid="fixed-field-row"
-              >
-                {
-                  row.map((col, colIdx) => {
-                    const xsColSize = col?.size || config.colSizes[colIdx];
-                    const lgColSize = Math.ceil(xsColSize / 2);
+    <div className={styles.fixedFieldAccordion}>
+      <AccordionStatus>
+        <Accordion
+          separator={false}
+          displayWhenClosed={closedFields}
+        >
+          {
+            config.fields.map((row, rowIdx) => {
+              return (
+                <Row
+                  key={rowIdx}
+                  data-testid="fixed-field-row"
+                >
+                  {
+                    row.map((col, colIdx) => {
+                      const xsColSize = col?.size || config.colSizes[colIdx];
+                      const lgColSize = Math.ceil(xsColSize / 2);
 
-                    return col
-                      ? (
-                        <Col
-                          xs={xsColSize}
-                          lg={lgColSize}
-                          key={colIdx}
-                          data-testid="fixed-field-col"
-                        >
-                          {renderSubField(name, col)}
-                        </Col>
-                      )
-                      : (
-                        <Col
-                          xs={xsColSize}
-                          lg={lgColSize}
-                          key={colIdx}
-                          data-testid="fixed-field-col"
-                        />
-                      );
-                  })
-                }
-              </Row>
-            );
-          })
-        }
-      </Accordion>
-    </AccordionStatus>
+                      return col
+                        ? (
+                          <Col
+                            xs={xsColSize}
+                            lg={lgColSize}
+                            key={colIdx}
+                            data-testid="fixed-field-col"
+                          >
+                            {renderSubField(name, col)}
+                          </Col>
+                        )
+                        : (
+                          <Col
+                            xs={xsColSize}
+                            lg={lgColSize}
+                            key={colIdx}
+                            data-testid="fixed-field-col"
+                          />
+                        );
+                    })
+                  }
+                </Row>
+              );
+            })
+          }
+        </Accordion>
+      </AccordionStatus>
+    </div>
   );
 };
 
