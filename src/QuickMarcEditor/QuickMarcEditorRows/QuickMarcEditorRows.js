@@ -67,7 +67,7 @@ const QuickMarcEditorRows = ({
           const withDeleteRowAction = hasDeleteException(recordRow);
           const withMoveUpRowAction = hasMoveException(recordRow, fields[idx - 1]);
           const withMoveDownRowAction = hasMoveException(recordRow, fields[idx + 1]);
-          const withFixedField = isFixedFieldsRow(recordRow);
+          const isFixedField = isFixedFieldsRow(recordRow);
 
           return (
             <div
@@ -164,7 +164,7 @@ const QuickMarcEditorRows = ({
               </div>
               <div className={styles.quickMarcEditorRowContent}>
                 {
-                  withFixedField
+                  isFixedField
                     ?
                     (
                       FixedFieldFactory.getFixedField(
