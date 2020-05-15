@@ -19,6 +19,7 @@ import {
   hasAddException,
   hasDeleteException,
   hasMoveException,
+  isFixedFieldsRow,
 } from './utils';
 import styles from './QuickMarcEditorRows.css';
 
@@ -66,6 +67,7 @@ const QuickMarcEditorRows = ({
           const withDeleteRowAction = hasDeleteException(recordRow);
           const withMoveUpRowAction = hasMoveException(recordRow, fields[idx - 1]);
           const withMoveDownRowAction = hasMoveException(recordRow, fields[idx + 1]);
+          const isFixedField = isFixedFieldsRow(recordRow);
 
           return (
             <div
@@ -162,9 +164,12 @@ const QuickMarcEditorRows = ({
               </div>
               <div className={styles.quickMarcEditorRowContent}>
                 {
-                  recordRow.tag === '008'
-                    ? FixedFieldFactory.getFixedField(
-                      `${name}[${idx}].content`, recordRow.content.Type, recordRow.content.BLvl,
+                  isFixedField
+                    ?
+                    (
+                      FixedFieldFactory.getFixedField(
+                        `${name}[${idx}].content`, recordRow.content.Type, recordRow.content.BLvl,
+                      )
                     )
                     : (
                       <FormattedMessage id="ui-quick-marc.record.subfield">

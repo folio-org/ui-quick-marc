@@ -64,5 +64,6 @@
   "record.indicator": "Indicator",
   "record.subfield": "Subfield",
   "record.addField": "Add a new field",
-  "record.deleteField": "Delete this field"
+  "record.deleteField": "Delete this field",
+  "record.collapseRow": "Collapse row"
 }

@@ -69,4 +69,14 @@ describe('QuickMarcEditorRows utils', () => {
       expect(utils.hasMoveException({ tag: '010' }, { tag: '011' })).toBeFalsy();
     });
   });
+
+  describe('isFixedFieldsRow', () => {
+    it('should be true for exeptional row', () => {
+      expect(utils.isFixedFieldsRow({ tag: '008' })).toBeTruthy();
+    });
+
+    it('should be false for common rows', () => {
+      expect(utils.isFixedFieldsRow({ tag: '010' })).toBeFalsy();
+    });
+  });
 });

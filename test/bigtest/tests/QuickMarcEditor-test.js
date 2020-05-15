@@ -125,6 +125,15 @@ describe('Quick MARC editor', () => {
     });
   });
 
+  describe('press collapse button on fixed fields', () => {
+    beforeEach(async function () {
+      await quickMarcEditor.collapseButton.click();
+    });
+
+    it('fixed fields should be collapsed', () => {
+      expect(quickMarcEditor.isFixedFieldCollapsed).to.be.true;
+    });
+  });
   describe('after save', () => {
     beforeEach(async function () {
       await quickMarcEditor.moveRowDownButton.click();

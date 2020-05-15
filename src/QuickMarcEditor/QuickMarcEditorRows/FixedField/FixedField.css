@@ -8,3 +8,16 @@
   width: 70px;
   display: inline-block;
 }
+
+.collapsedField {
+  margin-right: 10px;
+}
+
+.fixedFieldAccordion [class*="headerWrapper"] [class*="header"] {
+  flex-basis: 0;
+}
+
+.fixedFieldAccordion [class*="headerDefaultContentRight"] {
+  flex-shrink: unset;
+  flex-wrap: wrap;
+}
