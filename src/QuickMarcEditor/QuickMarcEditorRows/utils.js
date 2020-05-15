@@ -34,3 +34,7 @@ export const hasMoveException = (recordRow, sibling) => (
   || MOVE_EXCEPTION_ROWS.includes(recordRow.tag)
   || MOVE_EXCEPTION_ROWS.includes(sibling.tag)
 );
+
+const FIXED_ROWS = ['008'];
+
+export const isFixedFieldsRow = recordRow => FIXED_ROWS.includes(recordRow.tag);
