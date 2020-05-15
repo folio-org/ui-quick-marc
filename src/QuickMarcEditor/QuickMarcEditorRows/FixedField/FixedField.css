@@ -17,7 +17,7 @@
   flex-basis: 0;
 }
 
-.accordfixedFieldAccordionion [class*="headerDefaultContentRight"] {
+.fixedFieldAccordion [class*="headerDefaultContentRight"] {
   flex-shrink: unset;
   flex-wrap: wrap;
 }
