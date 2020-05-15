@@ -83,20 +83,18 @@ const config = {
   ],
 };
 
-const ComputerFileFixedField = ({ name, collapsed }) => {
+const ComputerFileFixedField = ({ name }) => {
   return (
     <FixedField
       data-test-computer-file-fixed-field
       name={name}
       config={config}
-      collapsed={collapsed}
     />
   );
 };
 
 ComputerFileFixedField.propTypes = {
   name: PropTypes.string.isRequired,
-  collapsed: PropTypes.bool.isRequired,
 };
 
 ComputerFileFixedField.displayName = 'ComputerFileFixedField';

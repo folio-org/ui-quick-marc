@@ -9,9 +9,15 @@
   display: inline-block;
 }
 
-.collapsedField [class*="formControl"] {
-  border: none;
-  background: none;
-  padding: 0;
-  margin: 0;
+.collapsedField {
+  margin-right: 10px;
+}
+
+[class*="headerWrapper"] [class*="header"] {
+  flex-basis: 0;
+}
+
+[class*="headerDefaultContentRight"] {
+  flex-shrink: unset;
+  flex-wrap: wrap;
 }

@@ -112,20 +112,18 @@ const config = {
   ],
 };
 
-const ContinuingResourceFixedField = ({ name, collapsed }) => {
+const ContinuingResourceFixedField = ({ name }) => {
   return (
     <FixedField
       data-test-counting-resource-fixed-field
       name={name}
       config={config}
-      collapsed={collapsed}
     />
   );
 };
 
 ContinuingResourceFixedField.propTypes = {
   name: PropTypes.string.isRequired,
-  collapsed: PropTypes.bool.isRequired,
 };
 
 ContinuingResourceFixedField.displayName = 'ContinuingResourceFixedField';

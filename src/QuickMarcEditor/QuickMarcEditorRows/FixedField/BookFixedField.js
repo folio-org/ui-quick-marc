@@ -110,20 +110,18 @@ const config = {
   ],
 };
 
-const BookFixedField = ({ name, collapsed }) => {
+const BookFixedField = ({ name }) => {
   return (
     <FixedField
       data-test-book-fixed-field
       name={name}
       config={config}
-      collapsed={collapsed}
     />
   );
 };
 
 BookFixedField.propTypes = {
   name: PropTypes.string.isRequired,
-  collapsed: PropTypes.bool.isRequired,
 };
 
 BookFixedField.displayName = 'BookFixedField';

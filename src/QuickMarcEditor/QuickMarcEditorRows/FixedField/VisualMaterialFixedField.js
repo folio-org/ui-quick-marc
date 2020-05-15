@@ -101,20 +101,18 @@ const config = {
   ],
 };
 
-const VisualMaterialFixedField = ({ name, collapsed }) => {
+const VisualMaterialFixedField = ({ name }) => {
   return (
     <FixedField
       data-test-visual-material-fixed-field
       name={name}
       config={config}
-      collapsed={collapsed}
     />
   );
 };
 
 VisualMaterialFixedField.propTypes = {
   name: PropTypes.string.isRequired,
-  collapsed: PropTypes.bool.isRequired,
 };
 
 VisualMaterialFixedField.displayName = 'VisualMaterialFixedField';

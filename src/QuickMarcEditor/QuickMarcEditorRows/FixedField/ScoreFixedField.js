@@ -101,20 +101,18 @@ const config = {
   ],
 };
 
-const ScoreFixedField = ({ name, collapsed }) => {
+const ScoreFixedField = ({ name }) => {
   return (
     <FixedField
       data-test-score-fixed-field
       name={name}
       config={config}
-      collapsed={collapsed}
     />
   );
 };
 
 ScoreFixedField.propTypes = {
   name: PropTypes.string.isRequired,
-  collapsed: PropTypes.bool.isRequired,
 };
 
 ScoreFixedField.displayName = 'ScoreFixedField';

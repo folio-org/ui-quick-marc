@@ -9,6 +9,8 @@ import {
   Label,
   Row,
   TextField,
+  AccordionStatus,
+  Accordion,
 } from '@folio/stripes/components';
 
 import styles from './FixedField.css';
@@ -80,56 +82,84 @@ const renderSubField = (name, config, collapsed) => {
   );
 };
 
-const FixedField = ({ config, name, collapsed }) => {
-  return (
-    <>
-      {
-        config.fields.map((row, rowIdx) => {
-          return (
-            <Row
-              key={rowIdx}
-              data-testid="fixed-field-row"
+const closedFields = (config, name) => {
+  return config.fields.map((row) => {
+    return (
+      row.map((col, colIdx) => {
+        return col
+          ? (
+            <Col
+              className={styles.collapsedField}
+              key={colIdx}
+              data-testid="fixed-field-col"
             >
-              {
-                row.map((col, colIdx) => {
-                  const xsColSize = col?.size || config.colSizes[colIdx];
-                  const lgColSize = Math.ceil(xsColSize / 2);
-
-                  return col
-                    ? (
-                      <Col
-                        xs={xsColSize}
-                        lg={lgColSize}
-                        key={colIdx}
-                        data-testid="fixed-field-col"
-                        className={collapsed ? styles.collapsedField : ''}
-                      >
-                        {renderSubField(name, col, collapsed)}
-                      </Col>
-                    )
-                    : (
-                      <Col
-                        xs={xsColSize}
-                        lg={lgColSize}
-                        key={colIdx}
-                        data-testid="fixed-field-col"
-                        className={collapsed ? styles.collapsedField : ''}
-                      />
-                    );
-                })
-              }
-            </Row>
+              {renderSubField(name, col, true)}
+            </Col>
+          ) : (
+            <Col
+              key={colIdx}
+              data-testid="fixed-field-col"
+            />
           );
-        })
-      }
-    </>
+      })
+    );
+  });
+};
+
+const FixedField = ({ config, name }) => {
+  return (
+    <AccordionStatus>
+      <Accordion
+        // closedByDefault
+        separator={false}
+        displayWhenClosed={closedFields(config, name)}
+      >
+        {
+          config.fields.map((row, rowIdx) => {
+            return (
+              <Row
+                key={rowIdx}
+                data-testid="fixed-field-row"
+              >
+                {
+                  row.map((col, colIdx) => {
+                    const xsColSize = col?.size || config.colSizes[colIdx];
+                    const lgColSize = Math.ceil(xsColSize / 2);
+
+                    return col
+                      ? (
+                        <Col
+                          xs={xsColSize}
+                          lg={lgColSize}
+                          key={colIdx}
+                          data-testid="fixed-field-col"
+                        >
+                          {renderSubField(name, col)}
+                        </Col>
+                      )
+                      : (
+                        <Col
+                          xs={xsColSize}
+                          lg={lgColSize}
+                          key={colIdx}
+                          data-testid="fixed-field-col"
+                        />
+                      );
+                  })
+                }
+              </Row>
+            );
+          })
+        }
+      </Accordion>
+    </AccordionStatus>
   );
 };
 
 FixedField.propTypes = {
   name: PropTypes.string.isRequired,
   config: PropTypes.object.isRequired,
-  collapsed: PropTypes.bool.isRequired,
+  // collapsed: PropTypes.bool.isRequired,
 };
 
 export default FixedField;

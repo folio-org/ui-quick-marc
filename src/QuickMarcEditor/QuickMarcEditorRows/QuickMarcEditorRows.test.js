@@ -78,6 +78,7 @@ describe('Given Quick Marc Editor Rows', () => {
     const hasAddExceptionSpy = jest.spyOn(utils, 'hasAddException');
     const hasDeleteExceptionSpy = jest.spyOn(utils, 'hasDeleteException');
     const hasMoveExceptionSpy = jest.spyOn(utils, 'hasMoveException');
+    const isFixedRowSpy = jest.spyOn(utils, 'isFixedFieldsRow');
 
     renderQuickMarcEditorRows({
       fields: {
@@ -91,11 +92,13 @@ describe('Given Quick Marc Editor Rows', () => {
     expect(hasAddExceptionSpy.mock.calls.length > values.length).toBeTruthy();
     expect(hasDeleteExceptionSpy.mock.calls.length > values.length).toBeTruthy();
     expect(hasMoveExceptionSpy.mock.calls.length > values.length).toBeTruthy();
+    expect(isFixedRowSpy.mock.calls.length > values.length).toBeTruthy();
 
     isReadOnlySpy.mockRestore();
     hasIndicatorExceptionSpy.mockRestore();
     hasAddExceptionSpy.mockRestore();
     hasDeleteExceptionSpy.mockRestore();
     hasMoveExceptionSpy.mockRestore();
+    isFixedRowSpy.mockRestore();
   });
 });

@@ -97,20 +97,18 @@ const config = {
   ],
 };
 
-const MapFixedField = ({ name, collapsed }) => {
+const MapFixedField = ({ name }) => {
   return (
     <FixedField
       data-test-map-fixed-field
       name={name}
       config={config}
-      collapsed={collapsed}
     />
   );
 };
 
 MapFixedField.propTypes = {
   name: PropTypes.string.isRequired,
-  collapsed: PropTypes.bool.isRequired,
 };
 
 MapFixedField.displayName = 'MapFixedField';

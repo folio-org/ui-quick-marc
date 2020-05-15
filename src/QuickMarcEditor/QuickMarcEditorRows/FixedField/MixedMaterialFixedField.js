@@ -74,20 +74,18 @@ const config = {
   ],
 };
 
-const MixedMaterialFixedField = ({ name, collapsed }) => {
+const MixedMaterialFixedField = ({ name }) => {
   return (
     <FixedField
       data-test-mixed-fixed-field
       name={name}
       config={config}
-      collapsed={collapsed}
     />
   );
 };
 
 MixedMaterialFixedField.propTypes = {
   name: PropTypes.string.isRequired,
-  collapsed: PropTypes.bool.isRequired,
 };
 
 MixedMaterialFixedField.displayName = 'MixedMaterialFixedField';

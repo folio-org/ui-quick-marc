@@ -101,20 +101,18 @@ const config = {
   ],
 };
 
-const SoundRecordingFixedField = ({ name, collapsed }) => {
+const SoundRecordingFixedField = ({ name }) => {
   return (
     <FixedField
       data-test-sound-fixed-field
       name={name}
       config={config}
-      collapsed={collapsed}
     />
   );
 };
 
 SoundRecordingFixedField.propTypes = {
   name: PropTypes.string.isRequired,
-  collapsed: PropTypes.bool.isRequired,
 };
 
 SoundRecordingFixedField.displayName = 'SoundRecordingFixedField';
