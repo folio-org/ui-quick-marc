@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
@@ -21,13 +21,16 @@ export const SUBFIELD_TYPES = {
   BYTES: 'Bytes',
 };
 
-const renderSubField = (name, config, collapsed) => {
+const renderSubField = useMemo(() => (name, config, collapsed) => {
   const fieldName = `${name}.${config.name}`;
   const label = <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`} />;
 
   if (config.type === SUBFIELD_TYPES.BYTES) {
     return (
-      <FieldArray name={fieldName} className={styles.collapsedFields}>
+      <FieldArray
+        name={fieldName}
+        className={styles.collapsedFields}
+      >
         {() => {
           return (
             <>
@@ -80,7 +83,7 @@ const renderSubField = (name, config, collapsed) => {
       )}
     </FormattedMessage>
   );
-};
+}, []);
 
 const closedFields = (config, name) => {
   return config.fields.map((row) => {
