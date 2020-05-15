@@ -161,7 +161,6 @@ const FixedField = ({ config, name }) => {
 FixedField.propTypes = {
   name: PropTypes.string.isRequired,
   config: PropTypes.object.isRequired,
-  // collapsed: PropTypes.bool.isRequired,
 };
 
 export default FixedField;
