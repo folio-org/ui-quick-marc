@@ -134,6 +134,7 @@ describe('Quick MARC editor', () => {
       expect(quickMarcEditor.isFixedFieldCollapsed).to.be.true;
     });
   });
+
   describe('after save', () => {
     beforeEach(async function () {
       await quickMarcEditor.moveRowDownButton.click();

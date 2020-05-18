@@ -12,6 +12,7 @@ import {
   useModalToggle,
 } from '@folio/stripes-acq-components';
 
+import { ContentField } from './ContentField';
 import { FixedFieldFactory } from './FixedField';
 import {
   isReadOnly,
@@ -177,9 +178,8 @@ const QuickMarcEditorRows = ({
                           <Field
                             ariaLabel={ariaLabel}
                             name={`${name}[${idx}].content`}
-                            component={TextField}
+                            component={ContentField}
                             marginBottom0
-                            fullWidth
                             disabled={isDisabled}
                           />
                         )}

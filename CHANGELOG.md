@@ -3,6 +3,7 @@
 ## (in progress)
 
 ### Stories
+* [UIQM-26](https://issues.folio.org/browse/UIQM-26) Wrap text in quickMARC
 * [UIQM-19](https://issues.folio.org/browse/UIQM-19) Collapse 008 field in quickMARC
 * [UIQM-27](https://issues.folio.org/browse/UIQM-27) ui-quick-marc app: Update to Stripes v4
 * [UIQM-21](https://issues.folio.org/browse/UIQM-21) UI check for Leader when saving a record in quickMARC
