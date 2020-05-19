@@ -45,7 +45,7 @@
     "record.error.title.empty": "Record cannot be saved without field 245.",
     "record.delete.confirmLabel": "Oui",
     "record.delete.message": "Voulez-vous vraiment supprimer ce champ?",
-    "record.save.success": "This record was successfully saved",
+    "record.save.success": "Cet enregistrement a été enregistré avec succès",
     "record.save.error.generic": "Record not saved: Communication problem with server. Please try again.",
     "permission.quick-marc-editor.all": "quickMARC: View, edit",
     "record.moveUpRow": "Déplacer le champ d'une ligne vers le haut",
