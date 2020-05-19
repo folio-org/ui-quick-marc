@@ -126,6 +126,7 @@ describe('QuickMarcEditor utils', () => {
         records: [
           {
             content: '04706cam a2200865Ii 4500',
+            tag: '025',
           },
           {
             tag: '245',
@@ -142,22 +143,20 @@ describe('QuickMarcEditor utils', () => {
         records: [
           {
             content: '04706cam a2200865Ii 4500',
+            tag: '025',
           },
         ],
       };
 
       expect(utils.validateMarcRecord(record)).toBeDefined();
     });
-
     it('should return error message when record is without 245 row', () => {
       const record = {
         leader: '04706cam a2200865Ii 4500',
         records: [
           {
             content: '04706cam a2200865Ii 4500',
-          },
-          {
-            tag: '244',
+            tag: '025',
           },
         ],
       };
@@ -171,8 +170,6 @@ describe('QuickMarcEditor utils', () => {
         records: [
           {
             content: '04706cam a2200865Ii 4500',
-          },
-          {
             tag: '245',
           },
           {
@@ -182,6 +179,34 @@ describe('QuickMarcEditor utils', () => {
       };
 
       expect(utils.validateMarcRecord(record)).toBe('ui-quick-marc.record.error.title.multiple');
+    });
+  });
+
+  describe('validateRecordTag', () => {
+    it('should not return error message when tag is valid', () => {
+      const records = [
+        {
+          tag: '010',
+        },
+        {
+          tag: '245',
+        },
+      ];
+
+      expect(utils.validateRecordTag(records)).not.toBeDefined();
+    });
+
+    it('should  return error message when tag is not valid', () => {
+      const records = [
+        {
+          tag: '10',
+        },
+        {
+          tag: '245',
+        },
+      ];
+
+      expect(utils.validateRecordTag(records)).toBe('ui-quick-marc.record.error.tag.length');
     });
   });
 
