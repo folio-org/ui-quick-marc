@@ -58,5 +58,5 @@
     "record.delete.title": "Excluir campo",
     "record.error.leader.length": "O registro não pode ser salvo. O Líder deve conter 24 caracteres, incluindo espaços nulos.",
     "record.error.leader.forbiddenBytes": "O registro não pode ser salvo. Por favor, verifique o Líder. Somente as posições 5, 8, 17, 18 e / ou 19 podem ser editadas no Líder.",
-    "record.collapseRow": "Collapse row"
+    "record.collapseRow": "Recolher linha"
 }
