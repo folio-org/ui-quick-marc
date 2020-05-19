@@ -64,19 +64,9 @@ export const validateLeader = (prevLeader = '', leader = '') => {
   return undefined;
 };
 
-export const validateRecordTitle = marcRecords => {
-  const titleRecords = marcRecords.filter(({ tag }) => tag === '245');
-
-  if (titleRecords.length === 0) {
-    return 'ui-quick-marc.record.error.title.empty';
-  }
-
-  if (titleRecords.length > 1) {
-    return 'ui-quick-marc.record.error.title.multiple';
-  }
-
+export const validateRecordTag = marcRecords => {
   if (marcRecords.some(({ tag }) => tag.length !== 3)) {
-    return 'ui-quick-marc.record.error.title.length';
+    return 'ui-quick-marc.record.error.tag.length';
   }
 
   return undefined;
@@ -89,14 +79,24 @@ export const validateMarcRecord = marcRecord => {
 
   const leaderError = validateLeader(marcRecord?.leader, recordLeader?.content);
 
-  const titleError = validateRecordTitle(marcRecords);
+  const tagError = validateRecordTag(marcRecords);
 
   if (leaderError) {
     return leaderError;
   }
 
-  if (titleError) {
-    return titleError;
+  if (tagError) {
+    return tagError;
+  }
+
+  const titleRecords = marcRecords.filter(({ tag }) => tag === '245');
+
+  if (titleRecords.length === 0) {
+    return 'ui-quick-marc.record.error.title.empty';
+  }
+
+  if (titleRecords.length > 1) {
+    return 'ui-quick-marc.record.error.title.multiple';
   }
 
   return undefined;

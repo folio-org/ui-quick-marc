@@ -150,9 +150,39 @@ describe('QuickMarcEditor utils', () => {
 
       expect(utils.validateMarcRecord(record)).toBeDefined();
     });
+    it('should return error message when record is without 245 row', () => {
+      const record = {
+        leader: '04706cam a2200865Ii 4500',
+        records: [
+          {
+            content: '04706cam a2200865Ii 4500',
+            tag: '025',
+          },
+        ],
+      };
+
+      expect(utils.validateMarcRecord(record)).toBe('ui-quick-marc.record.error.title.empty');
+    });
+
+    it('should return error message when record has several 245 rows', () => {
+      const record = {
+        leader: '04706cam a2200865Ii 4500',
+        records: [
+          {
+            content: '04706cam a2200865Ii 4500',
+            tag: '245',
+          },
+          {
+            tag: '245',
+          },
+        ],
+      };
+
+      expect(utils.validateMarcRecord(record)).toBe('ui-quick-marc.record.error.title.multiple');
+    });
   });
 
-  describe('validateRecordTitle', () => {
+  describe('validateRecordTag', () => {
     it('should not return error message when tag is valid', () => {
       const records = [
         {
@@ -163,10 +193,10 @@ describe('QuickMarcEditor utils', () => {
         },
       ];
 
-      expect(utils.validateRecordTitle(records)).not.toBeDefined();
+      expect(utils.validateRecordTag(records)).not.toBeDefined();
     });
 
-    it('should  return error message when title is not valid', () => {
+    it('should  return error message when tag is not valid', () => {
       const records = [
         {
           tag: '10',
@@ -176,33 +206,7 @@ describe('QuickMarcEditor utils', () => {
         },
       ];
 
-      expect(utils.validateRecordTitle(records)).toBe('ui-quick-marc.record.error.title.length');
-    });
-
-    it('should return error message when record is without 245 row', () => {
-      const records = [
-        {
-          tag: '010',
-        },
-        {
-          tag: '244',
-        },
-      ];
-
-      expect(utils.validateRecordTitle(records)).toBe('ui-quick-marc.record.error.title.empty');
-    });
-
-    it('should return error message when record has several 245 rows', () => {
-      const records = [
-        {
-          tag: '245',
-        },
-        {
-          tag: '245',
-        },
-      ];
-
-      expect(utils.validateRecordTitle(records)).toBe('ui-quick-marc.record.error.title.multiple');
+      expect(utils.validateRecordTag(records)).toBe('ui-quick-marc.record.error.tag.length');
     });
   });
 
