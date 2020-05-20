@@ -37,6 +37,7 @@ export const addNewRecord = (index, state) => {
     id: uuid(),
     tag: '',
     content: '',
+    indicators: ['', ''],
   };
 
   records.splice(newIndex, 0, emptyRow);
