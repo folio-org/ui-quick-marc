@@ -24,8 +24,7 @@ export default @interactor class QuickMarcEditorInteractor {
   removeConfirmation = new ConfirmationInteractor('#delete-row-confirmation');
   moveRowUpButton = new Interactor('[data-test-move-up-row]');
   moveRowDownButton = new Interactor('[data-test-move-down-row]');
-  collapseButton = new Interactor('[class*="defaultCollapseButton"]');
-  isFixedFieldCollapsed = isPresent('[class*="collapsedField"]')
+
   saveButton = new Interactor('#quick-marc-record-save');
 
   isLoaded = isPresent('[data-test-quick-marc-editor]');

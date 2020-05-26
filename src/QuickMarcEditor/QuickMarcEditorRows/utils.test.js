@@ -70,13 +70,13 @@ describe('QuickMarcEditorRows utils', () => {
     });
   });
 
-  describe('isFixedFieldsRow', () => {
+  describe('isFixedFieldRow', () => {
     it('should be true for exeptional row', () => {
-      expect(utils.isFixedFieldsRow({ tag: '008' })).toBeTruthy();
+      expect(utils.isFixedFieldRow({ tag: '008' })).toBeTruthy();
     });
 
     it('should be false for common rows', () => {
-      expect(utils.isFixedFieldsRow({ tag: '010' })).toBeFalsy();
+      expect(utils.isFixedFieldRow({ tag: '010' })).toBeFalsy();
     });
   });
 });

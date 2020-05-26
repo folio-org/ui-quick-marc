@@ -14,7 +14,11 @@ import VisualMaterialFixedField from './VisualMaterialFixedField';
 describe('FixedFieldFactory', () => {
   it('should create correct fields', () => {
     expect(
-      FixedFieldFactory.getFixedField('records', 'a', 'c').type.displayName,
+      FixedFieldFactory.getFixedField('records', 'a').type.displayName,
+    ).toBe(BookFixedField.displayName);
+
+    expect(
+      FixedFieldFactory.getFixedField('records', 't').type.displayName,
     ).toBe(BookFixedField.displayName);
 
     expect(
@@ -22,28 +26,24 @@ describe('FixedFieldFactory', () => {
     ).toBe(ComputerFileFixedField.displayName);
 
     expect(
-      FixedFieldFactory.getFixedField('records', 'a', 'i').type.displayName,
+      FixedFieldFactory.getFixedField('records', 's').type.displayName,
     ).toBe(ContinuingResourceFixedField.displayName);
 
     expect(
-      FixedFieldFactory.getFixedField('records', 'f', 'c').type.displayName,
+      FixedFieldFactory.getFixedField('records', 'f').type.displayName,
     ).toBe(MapFixedField.displayName);
 
     expect(
-      FixedFieldFactory.getFixedField('records', 'p', 'c').type.displayName,
+      FixedFieldFactory.getFixedField('records', 'p').type.displayName,
     ).toBe(MixedMaterialFixedField.displayName);
 
     expect(
-      FixedFieldFactory.getFixedField('records', 'c', 'c').type.displayName,
+      FixedFieldFactory.getFixedField('records', 'c').type.displayName,
     ).toBe(ScoreFixedField.displayName);
 
     expect(
-      FixedFieldFactory.getFixedField('records', 'i', 'c').type.displayName,
+      FixedFieldFactory.getFixedField('records', 'i').type.displayName,
     ).toBe(SoundRecordingFixedField.displayName);
-
-    expect(
-      FixedFieldFactory.getFixedField('records', 'a', 'c').type.displayName,
-    ).toBe(BookFixedField.displayName);
 
     expect(
       FixedFieldFactory.getFixedField('records', 'r').type.displayName,

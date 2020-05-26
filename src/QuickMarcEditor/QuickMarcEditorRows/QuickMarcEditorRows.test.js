@@ -16,6 +16,16 @@ const values = [
     content: '$a f',
   },
   {
+    id: '4',
+    tag: '006',
+    content: {},
+  },
+  {
+    id: '5',
+    tag: '008',
+    content: {},
+  },
+  {
     id: '2',
     tag: '036',
     content: '$a c',
@@ -46,6 +56,8 @@ const renderQuickMarcEditorRows = ({ fields }) => (render(
         render={() => (
           <QuickMarcEditorRows
             fields={fields}
+            name="records"
+            type="a"
             mutators={{
               addRecord: jest.fn(),
               deleteRecord: jest.fn(),
@@ -69,7 +81,7 @@ describe('Given Quick Marc Editor Rows', () => {
       },
     });
 
-    expect(getAllByTestId('quick-marc-editorid').length).toBe(3);
+    expect(getAllByTestId('quick-marc-editorid').length).toBe(values.length);
   });
 
   it('Than it should display row for each record value', () => {
@@ -78,7 +90,8 @@ describe('Given Quick Marc Editor Rows', () => {
     const hasAddExceptionSpy = jest.spyOn(utils, 'hasAddException');
     const hasDeleteExceptionSpy = jest.spyOn(utils, 'hasDeleteException');
     const hasMoveExceptionSpy = jest.spyOn(utils, 'hasMoveException');
-    const isFixedRowSpy = jest.spyOn(utils, 'isFixedFieldsRow');
+    const isFixedRowSpy = jest.spyOn(utils, 'isFixedFieldRow');
+    const isMaterialCharsRecordSpy = jest.spyOn(utils, 'isMaterialCharsRecord');
 
     renderQuickMarcEditorRows({
       fields: {
@@ -93,6 +106,7 @@ describe('Given Quick Marc Editor Rows', () => {
     expect(hasDeleteExceptionSpy.mock.calls.length > values.length).toBeTruthy();
     expect(hasMoveExceptionSpy.mock.calls.length > values.length).toBeTruthy();
     expect(isFixedRowSpy.mock.calls.length > values.length).toBeTruthy();
+    expect(isMaterialCharsRecordSpy.mock.calls.length > values.length).toBeTruthy();
 
     isReadOnlySpy.mockRestore();
     hasIndicatorExceptionSpy.mockRestore();
@@ -100,5 +114,6 @@ describe('Given Quick Marc Editor Rows', () => {
     hasDeleteExceptionSpy.mockRestore();
     hasMoveExceptionSpy.mockRestore();
     isFixedRowSpy.mockRestore();
+    isMaterialCharsRecordSpy.mockRestore();
   });
 });

@@ -33,6 +33,7 @@ const renderQuickMarcEditor = ({ instance, onClose, onSubmit, mutators }) => (re
         onClose={onClose}
         onSubmit={onSubmit}
         mutators={mutators}
+        initialValues={{ leader: 'assdfgs ds sdg' }}
       />
     </MemoryRouter>
   </IntlProvider>,
