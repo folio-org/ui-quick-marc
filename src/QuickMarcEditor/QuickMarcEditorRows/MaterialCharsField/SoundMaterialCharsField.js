@@ -13,8 +13,8 @@ const config = {
       name: 'Comp',
     },
     {
-      type: SUBFIELD_TYPES.BYTE,
       name: 'FMus',
+      type: SUBFIELD_TYPES.BYTE,
     },
     {
       name: 'Part',
@@ -25,13 +25,13 @@ const config = {
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Form',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Form',
     },
     {
+      type: SUBFIELD_TYPES.BYTES,
       bytes: 6,
       name: 'AccM',
-      type: SUBFIELD_TYPES.BYTES,
     },
     {
       bytes: 2,
@@ -39,8 +39,8 @@ const config = {
       type: SUBFIELD_TYPES.BYTES,
     },
     {
-      type: SUBFIELD_TYPES.BYTE,
       name: 'TrAr',
+      type: SUBFIELD_TYPES.BYTE,
     },
   ],
 };

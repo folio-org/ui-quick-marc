@@ -9,8 +9,8 @@ import {
 const config = {
   fields: [
     {
-      type: SUBFIELD_TYPES.STRING,
       name: 'Comp',
+      type: SUBFIELD_TYPES.STRING,
     },
     {
       type: SUBFIELD_TYPES.BYTE,
@@ -21,22 +21,22 @@ const config = {
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Audn',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Audn',
     },
     {
       name: 'Form',
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      bytes: 6,
       name: 'AccM',
+      bytes: 6,
       type: SUBFIELD_TYPES.BYTES,
     },
     {
       bytes: 2,
-      name: 'LTxt',
       type: SUBFIELD_TYPES.BYTES,
+      name: 'LTxt',
     },
     {
       type: SUBFIELD_TYPES.BYTE,
