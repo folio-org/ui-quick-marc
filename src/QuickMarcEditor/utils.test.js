@@ -17,7 +17,6 @@ describe('QuickMarcEditor utils', () => {
           {
             tag: '001',
             content: '$a fss $b asd',
-            indicators: [' '],
           },
         ],
       };
@@ -30,7 +29,6 @@ describe('QuickMarcEditor utils', () => {
       expect(dehydratedMarcRecord.records[0].content).toBe(marcRecord.leader);
 
       expect(dehydratedMarcRecord.records[1].id).toBe('uuid');
-      expect(dehydratedMarcRecord.records[1].indicators[0].length).toBe(0);
     });
   });
 

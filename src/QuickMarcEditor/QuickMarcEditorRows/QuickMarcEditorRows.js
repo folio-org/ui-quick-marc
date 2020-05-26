@@ -58,6 +58,10 @@ const QuickMarcEditorRows = ({
     });
   }, [moveRecord]);
 
+  const selectContent = useCallback(({ target }) => {
+    target.select();
+  }, []);
+
   return (
     <>
       {
@@ -139,6 +143,7 @@ const QuickMarcEditorRows = ({
                           marginBottom0
                           fullWidth
                           disabled={isDisabled}
+                          onFocus={selectContent}
                         />
                       )}
                     </FormattedMessage>
@@ -157,6 +162,7 @@ const QuickMarcEditorRows = ({
                           marginBottom0
                           fullWidth
                           disabled={isDisabled}
+                          onFocus={selectContent}
                         />
                       )}
                     </FormattedMessage>

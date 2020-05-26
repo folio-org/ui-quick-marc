@@ -15,7 +15,6 @@ export const dehydrateMarcRecordResponse = marcRecordResponse => ({
     ...marcRecordResponse.fields.map(record => ({
       ...record,
       id: uuid(),
-      indicators: record?.indicators?.map(indicator => indicator.trim()),
     })),
   ],
 });
