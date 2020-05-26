@@ -13,6 +13,7 @@ import {
 } from '@folio/stripes-acq-components';
 
 import { ContentField } from './ContentField';
+import { IndicatorField } from './IndicatorField';
 import { FixedFieldFactory } from './FixedField';
 import {
   isReadOnly,
@@ -57,10 +58,6 @@ const QuickMarcEditorRows = ({
       indexToSwitch: +target.dataset.indexToSwitch,
     });
   }, [moveRecord]);
-
-  const selectContent = useCallback(({ target }) => {
-    target.select();
-  }, []);
 
   return (
     <>
@@ -139,11 +136,10 @@ const QuickMarcEditorRows = ({
                         <Field
                           ariaLabel={ariaLabel}
                           name={`${name}[${idx}].indicators[0]`}
-                          component={TextField}
+                          component={IndicatorField}
                           marginBottom0
                           fullWidth
                           disabled={isDisabled}
-                          onFocus={selectContent}
                         />
                       )}
                     </FormattedMessage>
@@ -158,11 +154,10 @@ const QuickMarcEditorRows = ({
                         <Field
                           ariaLabel={ariaLabel}
                           name={`${name}[${idx}].indicators[1]`}
-                          component={TextField}
+                          component={IndicatorField}
                           marginBottom0
                           fullWidth
                           disabled={isDisabled}
-                          onFocus={selectContent}
                         />
                       )}
                     </FormattedMessage>
