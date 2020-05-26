@@ -269,8 +269,20 @@ describe('QuickMarcEditor utils', () => {
     });
   });
 
-  describe('isLastRecordMoved', () => {
-    it('should return true if 999ff field moved', () => {
+  describe('shouldRecordsUpdate', () => {
+    it('should be false if update is not requried', () => {
+      expect(utils.shouldRecordsUpdate([{ tag: '006' }], [{ tag: '006' }])).toBeFalsy();
+    });
+
+    it('should be true if records length is not matched', () => {
+      expect(utils.shouldRecordsUpdate([], [{}])).toBeTruthy();
+    });
+
+    it('should be true if material chars fields length is not matched', () => {
+      expect(utils.shouldRecordsUpdate([{ tag: '006' }], [{ tag: '009' }])).toBeTruthy();
+    });
+
+    it('should be true if 999ff field moved', () => {
       const prevRecords = [
         {
           tag: '008',
@@ -298,7 +310,7 @@ describe('QuickMarcEditor utils', () => {
         },
       ];
 
-      expect(utils.isLastRecordMoved(prevRecords, newRecords)).toBeTruthy();
+      expect(utils.shouldRecordsUpdate(prevRecords, newRecords)).toBeTruthy();
     });
   });
 });

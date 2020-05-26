@@ -10,14 +10,14 @@ import SoundRecordingFixedField from './SoundRecordingFixedField';
 import VisualMaterialFixedField from './VisualMaterialFixedField';
 
 export const FixedFieldFactory = {
-  getFixedField(name, type, blvl) {
+  getFixedField(name, type) {
     let FixedField;
 
     switch (true) {
-      case ['a', 't'].includes(type) && ['a', 'c', 'd', 'm'].includes(blvl):
+      case ['a', 't'].includes(type):
         FixedField = BookFixedField;
         break;
-      case type === 'a' && ['b', 'i', 's'].includes(blvl):
+      case type === 's':
         FixedField = ContinuingResourceFixedField;
         break;
       case type === 'm':

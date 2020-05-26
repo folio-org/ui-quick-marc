@@ -1,6 +1,9 @@
 import uuid from 'uuid';
 
-import { isLastRecord } from './QuickMarcEditorRows/utils';
+import {
+  isLastRecord,
+  isMaterialCharsRecord,
+} from './QuickMarcEditorRows/utils';
 import { LEADER_TAG } from './constants';
 
 export const dehydrateMarcRecordResponse = marcRecordResponse => ({
@@ -119,9 +122,35 @@ export const reorderRecords = (index, indexToSwitch, state) => {
   return records;
 };
 
-export const isLastRecordMoved = (prevRowsValue, newRowsValue) => {
-  const prevStateIndex = prevRowsValue.findIndex(row => isLastRecord(row));
-  const newStateIndex = newRowsValue?.findIndex(row => isLastRecord(row));
+const getRecordsTrackChanges = (records) => {
+  const trackCHanges = {
+    lastRecordPosition: undefined,
+    physDescriptionCount: 0,
+    materiaCharCount: 0,
+  };
 
-  return newStateIndex !== prevStateIndex;
+  records.forEach((record, idx) => {
+    if (isLastRecord(record)) {
+      trackCHanges.lastRecordPosition = idx;
+    }
+
+    if (isMaterialCharsRecord(record)) {
+      trackCHanges.materiaCharCount++;
+    }
+  });
+
+  return trackCHanges;
+};
+
+export const shouldRecordsUpdate = (prevRecords, newRecords) => {
+  if (prevRecords.length !== newRecords.length) return true;
+
+  const prevTrackChanges = getRecordsTrackChanges(prevRecords);
+  const newTrackChanges = getRecordsTrackChanges(newRecords);
+
+  if (prevTrackChanges.lastRecordPosition !== newTrackChanges.lastRecordPosition) return true;
+
+  if (prevTrackChanges.materiaCharCount !== newTrackChanges.materiaCharCount) return true;
+
+  return false;
 };

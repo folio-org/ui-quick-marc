@@ -1,5 +1,3 @@
-export { default as FixedField } from './FixedField';
-export * from './FixedField';
 export * from './FixedFieldFactory';
 
 export { default as BookFixedField } from './BookFixedField';

@@ -10,6 +10,10 @@ const records = [
     content: '$a dfdac $b asd',
   },
   {
+    tag: '006',
+    content: {},
+  },
+  {
     tag: '008',
     content: {
       Type: 'a',
@@ -122,16 +126,6 @@ describe('Quick MARC editor', () => {
 
     it('record should be removed', () => {
       expect(quickMarcEditor.editorRows().length).to.be.equal(records.length);
-    });
-  });
-
-  describe('press collapse button on fixed fields', () => {
-    beforeEach(async function () {
-      await quickMarcEditor.collapseButton.click();
-    });
-
-    it('fixed fields should be collapsed', () => {
-      expect(quickMarcEditor.isFixedFieldCollapsed).to.be.true;
     });
   });
 

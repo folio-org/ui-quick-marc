@@ -24,7 +24,7 @@ import {
   addNewRecord,
   deleteRecordByIndex,
   reorderRecords,
-  isLastRecordMoved,
+  shouldRecordsUpdate,
 } from './utils';
 
 const spySubscription = { values: true };
@@ -38,6 +38,7 @@ const QuickMarcEditor = ({
   handleSubmit,
   submitting,
   pristine,
+  initialValues,
   form: { mutators },
 }) => {
   const [records, setRecords] = useState([]);
@@ -54,10 +55,7 @@ const QuickMarcEditor = ({
   const changeRecords = useCallback(({ values }) => {
     if (
       values?.records
-      && (
-        values.records.length !== records.length
-        || isLastRecordMoved(records, values.records)
-      )
+      && shouldRecordsUpdate(records, values.records)
     ) {
       setTimeout(() => setRecords(values.records), 0);
     }
@@ -98,6 +96,7 @@ const QuickMarcEditor = ({
                   fields={records}
                   name="records"
                   mutators={mutators}
+                  type={initialValues.leader[6]}
                 />
               </Col>
             </Row>
@@ -118,6 +117,7 @@ QuickMarcEditor.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   submitting: PropTypes.bool,
   pristine: PropTypes.bool,
+  initialValues: PropTypes.object.isRequired,
   form: PropTypes.shape({
     mutators: PropTypes.object.isRequired,
   }),
