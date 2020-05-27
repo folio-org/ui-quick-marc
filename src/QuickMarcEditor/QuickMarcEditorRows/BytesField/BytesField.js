@@ -5,10 +5,9 @@ import { FieldArray } from 'react-final-form-arrays';
 import { FormattedMessage } from 'react-intl';
 
 import {
-  Col,
   Label,
-  Row,
   TextField,
+  Select,
 } from '@folio/stripes/components';
 
 import styles from './BytesField.css';
@@ -17,6 +16,7 @@ export const SUBFIELD_TYPES = {
   BYTE: 'Byte',
   STRING: 'String',
   BYTES: 'Bytes',
+  SELECT: 'Select',
 };
 
 const renderSubField = (name, config) => {
@@ -64,6 +64,26 @@ const renderSubField = (name, config) => {
     );
   }
 
+  if (config.type === SUBFIELD_TYPES.SELECT) {
+    return (
+      <div className={styles.bytesFieldSubFieldSelect}>
+        <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`}>
+          {ariaLabel => (
+            <Field
+              ariaLabel={ariaLabel}
+              name={fieldName}
+              label={label}
+              component={Select}
+              disabled={config.disabled}
+              dataOptions={config.options}
+              data-testid={`fixed-field-${config.type}`}
+            />
+          )}
+        </FormattedMessage>
+      </div>
+    );
+  }
+
   return (
     <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`}>
       {ariaLabel => (
@@ -84,20 +104,20 @@ const renderSubField = (name, config) => {
 
 export const BytesField = ({ config, name }) => {
   return (
-    <Row>
+    <div className={styles.bytesFieldRow}>
       {
         config.fields.map((field, fieldIdx) => {
           return (
-            <Col
+            <div
               key={fieldIdx}
               data-testid="bytes-field-col"
             >
               {renderSubField(name, field)}
-            </Col>
+            </div>
           );
         })
       }
-    </Row>
+    </div>
   );
 };
 

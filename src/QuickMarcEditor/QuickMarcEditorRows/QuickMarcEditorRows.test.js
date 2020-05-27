@@ -21,6 +21,11 @@ const values = [
     content: {},
   },
   {
+    id: '6',
+    tag: '007',
+    content: {},
+  },
+  {
     id: '5',
     tag: '008',
     content: {},
@@ -91,7 +96,8 @@ describe('Given Quick Marc Editor Rows', () => {
     const hasDeleteExceptionSpy = jest.spyOn(utils, 'hasDeleteException');
     const hasMoveExceptionSpy = jest.spyOn(utils, 'hasMoveException');
     const isFixedRowSpy = jest.spyOn(utils, 'isFixedFieldRow');
-    const isMaterialCharsRecordSpy = jest.spyOn(utils, 'isMaterialCharsRecord');
+    const isMaterialCharsRecordSpy = jest.spyOn(utils, 'isPhysDescriptionRecord');
+    const isPhysDescriptionRecordSpy = jest.spyOn(utils, 'isMaterialCharsRecord');
 
     renderQuickMarcEditorRows({
       fields: {
@@ -107,6 +113,7 @@ describe('Given Quick Marc Editor Rows', () => {
     expect(hasMoveExceptionSpy.mock.calls.length > values.length).toBeTruthy();
     expect(isFixedRowSpy.mock.calls.length > values.length).toBeTruthy();
     expect(isMaterialCharsRecordSpy.mock.calls.length > values.length).toBeTruthy();
+    expect(isPhysDescriptionRecordSpy.mock.calls.length > values.length).toBeTruthy();
 
     isReadOnlySpy.mockRestore();
     hasIndicatorExceptionSpy.mockRestore();
@@ -115,5 +122,6 @@ describe('Given Quick Marc Editor Rows', () => {
     hasMoveExceptionSpy.mockRestore();
     isFixedRowSpy.mockRestore();
     isMaterialCharsRecordSpy.mockRestore();
+    isPhysDescriptionRecordSpy.mockRestore();
   });
 });

@@ -35,6 +35,11 @@ const config = {
       name: 'Lang',
       bytes: 3,
     },
+    {
+      type: SUBFIELD_TYPES.SELECT,
+      name: 'Mdt',
+      options: [{ value: 'a', label: 'a' }],
+    },
   ],
 };
 
@@ -82,6 +87,14 @@ describe('Given Bytes Field', () => {
     const byteFields = config.fields.filter(({ type }) => type === SUBFIELD_TYPES.BYTE);
 
     expect(getAllByTestId(`fixed-field-${SUBFIELD_TYPES.BYTE}`).length).toBe(byteFields.length);
+  });
+
+  it('Than it should display select fields from passed config', () => {
+    const { getAllByTestId } = renderFixedField();
+
+    const byteFields = config.fields.filter(({ type }) => type === SUBFIELD_TYPES.SELECT);
+
+    expect(getAllByTestId(`fixed-field-${SUBFIELD_TYPES.SELECT}`).length).toBe(byteFields.length);
   });
 
   it('Than it should display bytes fields from passed config', () => {

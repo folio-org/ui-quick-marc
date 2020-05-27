@@ -1,6 +1,14 @@
+.bytesFieldRow {
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
 .bytesFieldSubFieldByte,
 .bytesFieldSubFieldBytes,
-.bytesFieldSubFieldString
+.bytesFieldSubFieldString,
+.bytesFieldSubFieldSelect
 {
   margin-right: 5px;
   display: flex;
@@ -20,8 +28,12 @@
   display: flex;
 }
 
-.bytesFieldSubFieldString [class^="formControl"]
-{
+.bytesFieldSubFieldString [class^="formControl"] {
   width: 70px;
+  display: inline-block;
+}
+
+.bytesFieldSubFieldSelect [class^="selectWrap"] {
+  width: 40px;
   display: inline-block;
 }

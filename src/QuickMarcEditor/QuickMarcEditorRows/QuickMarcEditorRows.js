@@ -13,9 +13,11 @@ import {
 } from '@folio/stripes-acq-components';
 
 import { ContentField } from './ContentField';
+
 import { IndicatorField } from './IndicatorField';
-import { FixedFieldFactory } from './FixedField';
 import { MaterialCharsFieldFactory } from './MaterialCharsField';
+import { PhysDescriptionFieldFactory } from './PhysDescriptionField';
+import { FixedFieldFactory } from './FixedField';
 import {
   isReadOnly,
   hasIndicatorException,
@@ -24,6 +26,7 @@ import {
   hasMoveException,
 
   isMaterialCharsRecord,
+  isPhysDescriptionRecord,
   isFixedFieldRow,
 } from './utils';
 
@@ -76,8 +79,9 @@ const QuickMarcEditorRows = ({
           const withMoveDownRowAction = hasMoveException(recordRow, fields[idx + 1]);
 
           const isMaterialCharsField = isMaterialCharsRecord(recordRow);
+          const isPhysDescriptionField = isPhysDescriptionRecord(recordRow);
           const isFixedField = isFixedFieldRow(recordRow);
-          const isContentField = !(isFixedField || isMaterialCharsField);
+          const isContentField = !(isFixedField || isMaterialCharsField || isPhysDescriptionField);
 
           return (
             <div
@@ -182,20 +186,24 @@ const QuickMarcEditorRows = ({
               <div className={styles.quickMarcEditorRowContent}>
                 {
                   isMaterialCharsField && (
-                    (
-                      MaterialCharsFieldFactory.getMaterialCharsFieldField(
-                        `${name}[${idx}].content`, type,
-                      )
+                    MaterialCharsFieldFactory.getMaterialCharsFieldField(
+                      `${name}[${idx}].content`, type,
+                    )
+                  )
+                }
+
+                {
+                  isPhysDescriptionField && (
+                    PhysDescriptionFieldFactory.getPhysDescriptionField(
+                      `${name}[${idx}].content`, recordRow.content.Category,
                     )
                   )
                 }
 
                 {
                   isFixedField && (
-                    (
-                      FixedFieldFactory.getFixedField(
-                        `${name}[${idx}].content`, type,
-                      )
+                    FixedFieldFactory.getFixedField(
+                      `${name}[${idx}].content`, type,
                     )
                   )
                 }
