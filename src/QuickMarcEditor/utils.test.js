@@ -282,6 +282,19 @@ describe('QuickMarcEditor utils', () => {
       expect(utils.shouldRecordsUpdate([{ tag: '006' }], [{ tag: '009' }])).toBeTruthy();
     });
 
+    it('should be true if physical description fields length is not matched', () => {
+      expect(utils.shouldRecordsUpdate([{ tag: '007' }], [{ tag: '009' }])).toBeTruthy();
+    });
+
+    it('should be true if physical description type is not matched', () => {
+      const hasToBeUpdated = utils.shouldRecordsUpdate(
+        [{ tag: '007', content: { Category: 'a' } }],
+        [{ tag: '007', content: { Category: 'b' } }],
+      );
+
+      expect(hasToBeUpdated).toBeTruthy();
+    });
+
     it('should be true if 999ff field moved', () => {
       const prevRecords = [
         {

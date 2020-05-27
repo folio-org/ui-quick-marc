@@ -14,6 +14,10 @@ const records = [
     content: {},
   },
   {
+    tag: '007',
+    content: {},
+  },
+  {
     tag: '008',
     content: {
       Type: 'a',

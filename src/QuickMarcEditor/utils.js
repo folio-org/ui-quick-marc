@@ -3,6 +3,7 @@ import uuid from 'uuid';
 import {
   isLastRecord,
   isMaterialCharsRecord,
+  isPhysDescriptionRecord,
 } from './QuickMarcEditorRows/utils';
 import { LEADER_TAG } from './constants';
 
@@ -125,8 +126,7 @@ export const reorderRecords = (index, indexToSwitch, state) => {
 const getRecordsTrackChanges = (records) => {
   const trackCHanges = {
     lastRecordPosition: undefined,
-    physDescriptionCount: 0,
-    materiaCharCount: 0,
+    bytesFields: {},
   };
 
   records.forEach((record, idx) => {
@@ -134,8 +134,11 @@ const getRecordsTrackChanges = (records) => {
       trackCHanges.lastRecordPosition = idx;
     }
 
-    if (isMaterialCharsRecord(record)) {
-      trackCHanges.materiaCharCount++;
+    if (isMaterialCharsRecord(record) || isPhysDescriptionRecord(record)) {
+      trackCHanges.bytesFields[idx] = {
+        tag: record.tag,
+        category: record?.content?.Category,
+      };
     }
   });
 
@@ -150,7 +153,18 @@ export const shouldRecordsUpdate = (prevRecords, newRecords) => {
 
   if (prevTrackChanges.lastRecordPosition !== newTrackChanges.lastRecordPosition) return true;
 
-  if (prevTrackChanges.materiaCharCount !== newTrackChanges.materiaCharCount) return true;
+  if (
+    Object.keys(prevTrackChanges.bytesFields).length !== Object.keys(newTrackChanges.bytesFields).length
+  ) return true;
+
+  const hasBytesUpdates = Object.keys(prevTrackChanges.bytesFields).some(prevPosition => {
+    const prevField = prevTrackChanges.bytesFields[prevPosition];
+    const newField = newTrackChanges.bytesFields[prevPosition];
+
+    return prevField.tag !== newField.tag || prevField.category !== newField.category;
+  });
+
+  if (hasBytesUpdates) return true;
 
   return false;
 };
