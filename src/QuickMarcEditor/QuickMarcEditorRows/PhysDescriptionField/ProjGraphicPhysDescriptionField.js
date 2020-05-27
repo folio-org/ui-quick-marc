@@ -16,24 +16,24 @@ const config = {
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Base of emulsion',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Base of emulsion',
     },
     {
       name: 'Sound on medium or separate',
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Medium for sound',
       type: SUBFIELD_TYPES.STRING,
+      name: 'Medium for sound',
     },
     {
       name: 'Dimensions',
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Secondary support material',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Secondary support material',
     },
   ],
 };

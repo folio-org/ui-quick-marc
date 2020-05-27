@@ -12,8 +12,8 @@ const config = {
   fields: [
     ...STANDARD_PHYS_DESCR_FIELDS,
     {
-      name: 'Color',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Color',
     },
     {
       name: 'Motion picture presentation format',
@@ -24,8 +24,8 @@ const config = {
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Medium for sound',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Medium for sound',
     },
     {
       name: 'Dimensions',
@@ -36,12 +36,12 @@ const config = {
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Positive/negative aspect',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Positive/negative aspect',
     },
     {
-      name: 'Generation',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Generation',
     },
     {
       name: 'Base of film',
@@ -56,8 +56,8 @@ const config = {
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Deterioration stage',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Deterioration stage',
     },
     {
       name: 'Completeness',

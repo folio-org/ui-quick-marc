@@ -16,36 +16,36 @@ const config = {
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Dimensions',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Dimensions',
     },
     {
-      name: 'Sound',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Sound',
     },
     {
       name: 'Image bit depth',
       type: SUBFIELD_TYPES.STRING,
     },
     {
-      name: 'File formats',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'File formats',
     },
     {
       name: 'Quality assurance target(s)',
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Antecedent/ Source',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Antecedent/ Source',
     },
     {
       name: 'Level of compression',
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Reformatting quality',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Reformatting quality',
     },
   ],
 };

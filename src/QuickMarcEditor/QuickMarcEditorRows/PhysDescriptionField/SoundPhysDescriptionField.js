@@ -16,8 +16,8 @@ const config = {
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Configuration of playback channels',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Configuration of playback channels',
     },
     {
       name: 'Groove width/ groove pitch',
@@ -28,16 +28,16 @@ const config = {
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Tape width',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Tape width',
     },
     {
       name: 'Tape configuration',
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Kind of disc, cylinder, or tape',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Kind of disc, cylinder, or tape',
     },
     {
       name: 'Kind of material',
@@ -48,12 +48,12 @@ const config = {
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Special playback characteristics',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Special playback characteristics',
     },
     {
-      name: 'Capture and storage technique',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Capture and storage technique',
     },
   ],
 };

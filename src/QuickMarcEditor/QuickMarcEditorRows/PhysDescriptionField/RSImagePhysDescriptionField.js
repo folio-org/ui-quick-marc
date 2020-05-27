@@ -12,20 +12,20 @@ const config = {
   fields: [
     ...STANDARD_PHYS_DESCR_FIELDS,
     {
-      name: 'Altitude of sensor',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Altitude of sensor',
     },
     {
       name: 'Attitude of sensor',
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Cloud cover',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Cloud cover',
     },
     {
-      name: 'Platform construction type',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Platform construction type',
     },
     {
       name: 'Platform use category',
@@ -36,8 +36,8 @@ const config = {
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Data type',
       type: SUBFIELD_TYPES.STRING,
+      name: 'Data type',
     },
   ],
 };

@@ -16,16 +16,16 @@ const config = {
       type: SUBFIELD_TYPES.BYTE,
     },
     {
+      type: SUBFIELD_TYPES.BYTE,
       name: 'Videorecording format',
-      type: SUBFIELD_TYPES.BYTE,
     },
     {
+      type: SUBFIELD_TYPES.BYTE,
       name: 'Sound on medium or separate',
-      type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Medium for sound',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Medium for sound',
     },
     {
       name: 'Dimensions',

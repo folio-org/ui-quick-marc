@@ -16,16 +16,16 @@ const config = {
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Physical medium',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Physical medium',
     },
     {
       name: 'Type of reproduction',
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Production/reproduction details',
       type: SUBFIELD_TYPES.BYTE,
+      name: 'Production/reproduction details',
     },
     {
       name: 'Positive/negative aspect',
