@@ -13,6 +13,7 @@ import {
 } from '@folio/stripes-acq-components';
 
 import { ContentField } from './ContentField';
+import { IndicatorField } from './IndicatorField';
 import { FixedFieldFactory } from './FixedField';
 import { MaterialCharsFieldFactory } from './MaterialCharsField';
 import {
@@ -146,7 +147,7 @@ const QuickMarcEditorRows = ({
                         <Field
                           ariaLabel={ariaLabel}
                           name={`${name}[${idx}].indicators[0]`}
-                          component={TextField}
+                          component={IndicatorField}
                           marginBottom0
                           fullWidth
                           disabled={isDisabled}
@@ -166,7 +167,7 @@ const QuickMarcEditorRows = ({
                         <Field
                           ariaLabel={ariaLabel}
                           name={`${name}[${idx}].indicators[1]`}
-                          component={TextField}
+                          component={IndicatorField}
                           marginBottom0
                           fullWidth
                           disabled={isDisabled}
