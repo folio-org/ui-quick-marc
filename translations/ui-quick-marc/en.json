@@ -45,6 +45,9 @@
   "record.fixedField.SpFm": "SpFm",
   "record.fixedField.CrTp": "CrTp",
   "record.fixedField.Proj": "Proj",
+  "record.fixedField.Time": "Time",
+  "record.fixedField.TMat": "TMat",
+  "record.fixedField.Tech": "Tech",
 
   "record.error.leader.length": "Record cannot be saved. The Leader must contain 24 characters, including null spaces.",
   "record.error.leader.forbiddenBytes": "Record cannot be saved. Please check the Leader. Only positions 5, 8, 17, 18 and/or 19 can be edited in the Leader.",

@@ -15,19 +15,24 @@ import {
 import { ContentField } from './ContentField';
 import { IndicatorField } from './IndicatorField';
 import { FixedFieldFactory } from './FixedField';
+import { MaterialCharsFieldFactory } from './MaterialCharsField';
 import {
   isReadOnly,
   hasIndicatorException,
   hasAddException,
   hasDeleteException,
   hasMoveException,
-  isFixedFieldsRow,
+
+  isMaterialCharsRecord,
+  isFixedFieldRow,
 } from './utils';
+
 import styles from './QuickMarcEditorRows.css';
 
 const QuickMarcEditorRows = ({
   name,
   fields,
+  type,
   mutators: {
     addRecord,
     deleteRecord,
@@ -69,7 +74,10 @@ const QuickMarcEditorRows = ({
           const withDeleteRowAction = hasDeleteException(recordRow);
           const withMoveUpRowAction = hasMoveException(recordRow, fields[idx - 1]);
           const withMoveDownRowAction = hasMoveException(recordRow, fields[idx + 1]);
-          const isFixedField = isFixedFieldsRow(recordRow);
+
+          const isMaterialCharsField = isMaterialCharsRecord(recordRow);
+          const isFixedField = isFixedFieldRow(recordRow);
+          const isContentField = !(isFixedField || isMaterialCharsField);
 
           return (
             <div
@@ -114,6 +122,7 @@ const QuickMarcEditorRows = ({
                   )
                 }
               </div>
+
               <div className={styles.quickMarcEditorRowTag}>
                 <FormattedMessage id="ui-quick-marc.record.field">
                   {ariaLabel => (
@@ -124,10 +133,12 @@ const QuickMarcEditorRows = ({
                       marginBottom0
                       fullWidth
                       disabled={isDisabled || !idx}
+                      hasClearIcon={false}
                     />
                   )}
                 </FormattedMessage>
               </div>
+
               <div className={styles.quickMarcEditorRowIndicator}>
                 {
                   withIndicators && (
@@ -140,12 +151,14 @@ const QuickMarcEditorRows = ({
                           marginBottom0
                           fullWidth
                           disabled={isDisabled}
+                          hasClearIcon={false}
                         />
                       )}
                     </FormattedMessage>
                   )
                 }
               </div>
+
               <div className={styles.quickMarcEditorRowIndicator}>
                 {
                   withIndicators && (
@@ -158,36 +171,52 @@ const QuickMarcEditorRows = ({
                           marginBottom0
                           fullWidth
                           disabled={isDisabled}
+                          hasClearIcon={false}
                         />
                       )}
                     </FormattedMessage>
                   )
                 }
               </div>
+
               <div className={styles.quickMarcEditorRowContent}>
                 {
-                  isFixedField
-                    ?
+                  isMaterialCharsField && (
                     (
-                      FixedFieldFactory.getFixedField(
-                        `${name}[${idx}].content`, recordRow.content.Type, recordRow.content.BLvl,
+                      MaterialCharsFieldFactory.getMaterialCharsFieldField(
+                        `${name}[${idx}].content`, type,
                       )
                     )
-                    : (
-                      <FormattedMessage id="ui-quick-marc.record.subfield">
-                        {ariaLabel => (
-                          <Field
-                            ariaLabel={ariaLabel}
-                            name={`${name}[${idx}].content`}
-                            component={ContentField}
-                            marginBottom0
-                            disabled={isDisabled}
-                          />
-                        )}
-                      </FormattedMessage>
+                  )
+                }
+
+                {
+                  isFixedField && (
+                    (
+                      FixedFieldFactory.getFixedField(
+                        `${name}[${idx}].content`, type,
+                      )
                     )
+                  )
+                }
+
+                {
+                  isContentField && (
+                    <FormattedMessage id="ui-quick-marc.record.subfield">
+                      {ariaLabel => (
+                        <Field
+                          ariaLabel={ariaLabel}
+                          name={`${name}[${idx}].content`}
+                          component={ContentField}
+                          marginBottom0
+                          disabled={isDisabled}
+                        />
+                      )}
+                    </FormattedMessage>
+                  )
                 }
               </div>
+
               <div className={styles.quickMarcEditorActions}>
                 {
                   !withAddRowAction && (
@@ -243,6 +272,7 @@ const QuickMarcEditorRows = ({
 
 QuickMarcEditorRows.propTypes = {
   name: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
   fields: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string.isRequired,
     tag: PropTypes.string.isRequired,

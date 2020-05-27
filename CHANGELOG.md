@@ -4,6 +4,7 @@
 
 ### Stories
 * [UIQM-29](https://issues.folio.org/browse/UIQM-29) Automatically select the contents of the indicator field
+* [UIQM-22](https://issues.folio.org/browse/UIQM-22) View field 006 by byte in quickMARC
 * [UIQM-26](https://issues.folio.org/browse/UIQM-26) Wrap text in quickMARC
 * [UIQM-19](https://issues.folio.org/browse/UIQM-19) Collapse 008 field in quickMARC
 * [UIQM-27](https://issues.folio.org/browse/UIQM-27) ui-quick-marc app: Update to Stripes v4

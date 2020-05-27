@@ -9,63 +9,54 @@ import {
 const config = {
   fields: [
     {
-      name: 'Type',
-      disabled: true,
+      name: 'Freq',
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'ELvl',
+      name: 'Regl',
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Srce',
+      name: 'SrTp',
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Ctrl',
+      name: 'Orig',
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Lang',
-      type: SUBFIELD_TYPES.STRING,
-    },
-    {
-      name: 'BLvl',
       type: SUBFIELD_TYPES.BYTE,
-      disabled: true,
-    },
-    {
       name: 'Form',
+    },
+    {
+      name: 'EntW',
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'MRec',
+      name: 'Cont',
+      type: SUBFIELD_TYPES.BYTES,
+      bytes: 3,
+    },
+    {
+      type: SUBFIELD_TYPES.BYTE,
+      name: 'GPub',
+    },
+    {
+      type: SUBFIELD_TYPES.BYTE,
+      name: 'Conf',
+    },
+    {
+      name: 'Alph',
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Ctry',
-      type: SUBFIELD_TYPES.STRING,
-    },
-    {
-      name: 'Desc',
+      name: 'S/L',
       type: SUBFIELD_TYPES.BYTE,
-    },
-    {
-      name: 'DtSt',
-      type: SUBFIELD_TYPES.BYTE,
-    },
-    {
-      name: 'Date1',
-      type: SUBFIELD_TYPES.STRING,
-    },
-    {
-      name: 'Date2',
-      type: SUBFIELD_TYPES.STRING,
     },
   ],
 };
 
-const MixedMaterialFixedField = ({ name }) => {
+const ContinuingMaterialCharsField = ({ name }) => {
   return (
     <BytesField
       name={name}
@@ -74,10 +65,10 @@ const MixedMaterialFixedField = ({ name }) => {
   );
 };
 
-MixedMaterialFixedField.propTypes = {
+ContinuingMaterialCharsField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
-MixedMaterialFixedField.displayName = 'MixedMaterialFixedField';
+ContinuingMaterialCharsField.displayName = 'ContinuingMaterialCharsField';
 
-export default MixedMaterialFixedField;
+export default ContinuingMaterialCharsField;
