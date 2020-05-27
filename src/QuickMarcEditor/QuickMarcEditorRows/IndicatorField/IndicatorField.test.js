@@ -12,12 +12,12 @@ const getComponent = () => (
 );
 
 describe('Given indicator field', () => {
-  let getByTestId;
-  const select = jest.fn();
-
   afterEach(cleanup);
 
-  it('content should be focused', async () => {
+  it('should be selected after control focus', async () => {
+    let getByTestId;
+    const select = jest.fn();
+
     await act(async () => {
       getByTestId = await render(getComponent()).getByTestId;
     });
