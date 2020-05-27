@@ -60,7 +60,7 @@
     "record.error.leader.forbiddenBytes": "O registro não pode ser salvo. Por favor, verifique o Líder. Somente as posições 5, 8, 17, 18 e / ou 19 podem ser editadas no Líder.",
     "record.collapseRow": "Recolher linha",
     "record.error.tag.length": "O registro não pode ser salvo. Cada campo deve conter três caracteres na primeira caixa de texto de cada linha.",
-    "record.fixedField.Time": "Time",
+    "record.fixedField.Time": "Horário",
     "record.fixedField.TMat": "TMat",
-    "record.fixedField.Tech": "Tech"
+    "record.fixedField.Tech": "Tecnologia"
 }

@@ -60,7 +60,7 @@
     "record.error.leader.forbiddenBytes": "Record cannot be saved. Please check the Leader. Only positions 5, 8, 17, 18 and/or 19 can be edited in the Leader.",
     "record.collapseRow": "Réduire la ligne",
     "record.error.tag.length": "Record cannot be saved. Each field must contain three characters in the first text box of each row.",
-    "record.fixedField.Time": "Time",
+    "record.fixedField.Time": "Heure",
     "record.fixedField.TMat": "TMat",
     "record.fixedField.Tech": "Tech"
 }
