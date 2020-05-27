@@ -60,7 +60,7 @@
     "record.error.leader.forbiddenBytes": "Record cannot be saved. Please check the Leader. Only positions 5, 8, 17, 18 and/or 19 can be edited in the Leader.",
     "record.collapseRow": "Свернуть строку",
     "record.error.tag.length": "Запись не может быть сохранена. Каждое поле должно содержать три символа в первом текстовом окне каждой строки.",
-    "record.fixedField.Time": "Time",
+    "record.fixedField.Time": "Время",
     "record.fixedField.TMat": "TMat",
-    "record.fixedField.Tech": "Tech"
+    "record.fixedField.Tech": "Технология"
 }
