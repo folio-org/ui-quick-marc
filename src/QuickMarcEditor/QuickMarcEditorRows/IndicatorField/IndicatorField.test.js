@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, cleanup, act, fireEvent } from '@testing-library/react';
+import { render, cleanup, act, fireEvent, createEvent } from '@testing-library/react';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
@@ -13,6 +13,7 @@ const getComponent = () => (
 
 describe('Given indicator field', () => {
   let getByTestId;
+  const select = jest.fn();
 
   afterEach(cleanup);
 
@@ -20,12 +21,10 @@ describe('Given indicator field', () => {
     await act(async () => {
       getByTestId = await render(getComponent()).getByTestId;
     });
+    const selectContent = createEvent.focus(getByTestId('indicator-field'), { target: { select } });
 
-    fireEvent(getByTestId('indicator-field'), new MouseEvent('focus', {
-      bubbles: true,
-      cancelable: true,
-    }));
+    fireEvent(getByTestId('indicator-field'), selectContent);
 
-    expect(getByTestId('indicator-field')).toBeDefined();
+    expect(select).toHaveBeenCalled();
   });
 });
