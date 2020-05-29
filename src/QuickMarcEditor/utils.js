@@ -2,6 +2,7 @@ import uuid from 'uuid';
 
 import {
   isLastRecord,
+  isFixedFieldRow,
   isMaterialCharsRecord,
   isPhysDescriptionRecord,
 } from './QuickMarcEditorRows/utils';
@@ -77,6 +78,20 @@ export const validateRecordTag = marcRecords => {
   return undefined;
 };
 
+export const validateRecordMismatch = marcRecords => {
+  const leader = marcRecords[0]?.content || '';
+  const fixedField = marcRecords.find(isFixedFieldRow);
+
+  if (
+    leader[17] !== fixedField?.content?.ELvl
+    || leader[18] !== fixedField?.content?.Desc
+  ) {
+    return 'ui-quick-marc.record.error.leader.fixedFieldMismatch';
+  }
+
+  return undefined;
+};
+
 export const validateMarcRecord = marcRecord => {
   const marcRecords = marcRecord.records || [];
 
@@ -84,11 +99,17 @@ export const validateMarcRecord = marcRecord => {
 
   const leaderError = validateLeader(marcRecord?.leader, recordLeader?.content);
 
-  const tagError = validateRecordTag(marcRecords);
-
   if (leaderError) {
     return leaderError;
   }
+
+  const leaderMismatchError = validateRecordMismatch(marcRecords);
+
+  if (leaderMismatchError) {
+    return leaderMismatchError;
+  }
+
+  const tagError = validateRecordTag(marcRecords);
 
   if (tagError) {
     return tagError;

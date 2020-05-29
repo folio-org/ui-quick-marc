@@ -13,6 +13,7 @@ export const IndicatorField = (props) => {
     <TextField
       {...props}
       onFocus={selectContent}
+      maxlength={1}
       data-testid="indicator-field"
     />
   );

@@ -22,6 +22,8 @@ const records = [
     content: {
       Type: 'a',
       BLvl: 'c',
+      ELvl: 'I',
+      Desc: 'i',
     },
   },
   {
