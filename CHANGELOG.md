@@ -4,6 +4,7 @@
 
 ### Stories
 
+* [UIQM-33](https://issues.folio.org/browse/UIQM-33) UI check for Leader and 008 in quickMARC
 * [UIQM-23](https://issues.folio.org/browse/UIQM-23) View field 007 by byte in quickMARC
 * [UIQM-29](https://issues.folio.org/browse/UIQM-29) Automatically select the contents of the indicator field
 * [UIQM-22](https://issues.folio.org/browse/UIQM-22) View field 006 by byte in quickMARC

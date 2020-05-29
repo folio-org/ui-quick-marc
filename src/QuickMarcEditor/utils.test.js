@@ -129,6 +129,13 @@ describe('QuickMarcEditor utils', () => {
             tag: '025',
           },
           {
+            tag: '008',
+            content: {
+              ELvl: 'I',
+              Desc: 'i',
+            },
+          },
+          {
             tag: '245',
           },
         ],
@@ -150,6 +157,7 @@ describe('QuickMarcEditor utils', () => {
 
       expect(utils.validateMarcRecord(record)).toBeDefined();
     });
+
     it('should return error message when record is without 245 row', () => {
       const record = {
         leader: '04706cam a2200865Ii 4500',
@@ -157,6 +165,13 @@ describe('QuickMarcEditor utils', () => {
           {
             content: '04706cam a2200865Ii 4500',
             tag: '025',
+          },
+          {
+            tag: '008',
+            content: {
+              ELvl: 'I',
+              Desc: 'i',
+            },
           },
         ],
       };
@@ -173,12 +188,75 @@ describe('QuickMarcEditor utils', () => {
             tag: '245',
           },
           {
+            tag: '008',
+            content: {
+              ELvl: 'I',
+              Desc: 'i',
+            },
+          },
+          {
             tag: '245',
           },
         ],
       };
 
       expect(utils.validateMarcRecord(record)).toBe('ui-quick-marc.record.error.title.multiple');
+    });
+  });
+
+  describe('validateRecordMismatch', () => {
+    it('should return error message when 008 Elvl is not matched with leader Elvl', () => {
+      const records = [
+        {
+          content: '04706cam a2200865Ii 4500',
+          tag: '245',
+        },
+        {
+          tag: '008',
+          content: {
+            ELvl: 'A',
+            Desc: 'i',
+          },
+        },
+      ];
+
+      expect(utils.validateRecordMismatch(records)).toBe('ui-quick-marc.record.error.leader.fixedFieldMismatch');
+    });
+
+    it('should return error message when 008 Desc is not matched with leader Desc', () => {
+      const records = [
+        {
+          content: '04706cam a2200865Ii 4500',
+          tag: '245',
+        },
+        {
+          tag: '008',
+          content: {
+            ELvl: 'I',
+            Desc: 'M',
+          },
+        },
+      ];
+
+      expect(utils.validateRecordMismatch(records)).toBe('ui-quick-marc.record.error.leader.fixedFieldMismatch');
+    });
+
+    it('should return error message when tag is not valid', () => {
+      const records = [
+        {
+          content: '04706cam a2200865Ii 4500',
+          tag: '245',
+        },
+        {
+          tag: '008',
+          content: {
+            ELvl: 'I',
+            Desc: 'i',
+          },
+        },
+      ];
+
+      expect(utils.validateRecordMismatch(records)).not.toBeDefined();
     });
   });
 
@@ -196,7 +274,7 @@ describe('QuickMarcEditor utils', () => {
       expect(utils.validateRecordTag(records)).not.toBeDefined();
     });
 
-    it('should  return error message when tag is not valid', () => {
+    it('should return error message when tag is not valid', () => {
       const records = [
         {
           tag: '10',

@@ -134,6 +134,7 @@ const QuickMarcEditorRows = ({
                       ariaLabel={ariaLabel}
                       name={`${name}[${idx}].tag`}
                       component={TextField}
+                      maxlength={3}
                       marginBottom0
                       fullWidth
                       disabled={isDisabled || !idx}
