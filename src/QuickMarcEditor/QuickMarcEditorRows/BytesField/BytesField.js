@@ -43,6 +43,7 @@ const renderSubField = (name, config) => {
                       >
                         {ariaLabel => (
                           <Field
+                            dirty={false}
                             ariaLabel={ariaLabel}
                             name={`${fieldName}[${idx}]`}
                             component={TextField}
@@ -70,6 +71,7 @@ const renderSubField = (name, config) => {
         <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`}>
           {ariaLabel => (
             <Field
+              dirty={false}
               ariaLabel={ariaLabel}
               name={fieldName}
               label={label}
@@ -88,6 +90,7 @@ const renderSubField = (name, config) => {
     <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`}>
       {ariaLabel => (
         <Field
+          dirty={false}
           ariaLabel={ariaLabel}
           name={fieldName}
           label={label}
