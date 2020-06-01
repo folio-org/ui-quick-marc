@@ -96,7 +96,7 @@ const QuickMarcEditor = ({
                   fields={records}
                   name="records"
                   mutators={mutators}
-                  type={initialValues.leader[6]}
+                  type={initialValues?.leader[6]}
                 />
               </Col>
             </Row>
