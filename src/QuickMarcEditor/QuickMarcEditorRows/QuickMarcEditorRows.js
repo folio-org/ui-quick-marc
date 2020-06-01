@@ -36,6 +36,7 @@ const QuickMarcEditorRows = ({
   name,
   fields,
   type,
+  subtype,
   mutators: {
     addRecord,
     deleteRecord,
@@ -191,7 +192,7 @@ const QuickMarcEditorRows = ({
                 {
                   isMaterialCharsField && (
                     MaterialCharsFieldFactory.getMaterialCharsFieldField(
-                      `${name}[${idx}].content`, type,
+                      `${name}[${idx}].content`, type, subtype,
                     )
                   )
                 }
@@ -207,7 +208,7 @@ const QuickMarcEditorRows = ({
                 {
                   isFixedField && (
                     FixedFieldFactory.getFixedField(
-                      `${name}[${idx}].content`, type,
+                      `${name}[${idx}].content`, type, subtype,
                     )
                   )
                 }
@@ -286,6 +287,7 @@ const QuickMarcEditorRows = ({
 QuickMarcEditorRows.propTypes = {
   name: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
+  subtype: PropTypes.string.isRequired,
   fields: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string.isRequired,
     tag: PropTypes.string.isRequired,
