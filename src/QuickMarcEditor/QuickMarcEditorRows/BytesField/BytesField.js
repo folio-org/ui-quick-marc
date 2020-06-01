@@ -47,6 +47,7 @@ const renderSubField = (name, config) => {
                             ariaLabel={ariaLabel}
                             name={`${fieldName}[${idx}]`}
                             component={TextField}
+                            maxlength={1}
                             disabled={config.disabled}
                             className={styles.fixedFieldSubFieldByte}
                             hasClearIcon={false}
@@ -96,6 +97,7 @@ const renderSubField = (name, config) => {
           label={label}
           component={TextField}
           disabled={config.disabled}
+          maxlength={config.type === SUBFIELD_TYPES.BYTE ? 1 : undefined}
           className={styles[`bytesFieldSubField${config.type}`]}
           hasClearIcon={false}
           data-testid={`fixed-field-${config.type}`}

@@ -43,6 +43,10 @@ const config = {
       type: SUBFIELD_TYPES.BYTE,
     },
     {
+      name: 'GPub',
+      type: SUBFIELD_TYPES.BYTE,
+    },
+    {
       type: SUBFIELD_TYPES.BYTE,
       name: 'MRec',
     },
