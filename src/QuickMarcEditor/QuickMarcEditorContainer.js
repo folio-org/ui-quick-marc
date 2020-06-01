@@ -49,6 +49,8 @@ const QuickMarcEditorContainer = ({ mutator, match, onClose }) => {
       .catch(() => {
         setInstance();
         setMarcRecord();
+
+        showCallout({ messageId: 'ui-quick-marc.record.load.error', type: 'error' });
       })
       .finally(() => {
         setIsLoading(false);
