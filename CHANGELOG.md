@@ -4,6 +4,7 @@
 
 ### Stories
 
+* [UIQM-31](https://issues.folio.org/browse/UIQM-31) Remove highlighting from quickMARC
 * [UIQM-33](https://issues.folio.org/browse/UIQM-33) UI check for Leader and 008 in quickMARC
 * [UIQM-23](https://issues.folio.org/browse/UIQM-23) View field 007 by byte in quickMARC
 * [UIQM-29](https://issues.folio.org/browse/UIQM-29) Automatically select the contents of the indicator field
