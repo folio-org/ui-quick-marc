@@ -14,8 +14,12 @@ import VisualMaterialCharsField from './VisualMaterialCharsField';
 describe('MaterialCharsFieldFactory', () => {
   it('should create correct fields', () => {
     expect(
-      MaterialCharsFieldFactory.getMaterialCharsFieldField('records', 'a').type.displayName,
+      MaterialCharsFieldFactory.getMaterialCharsFieldField('records', 'a', 'v').type.displayName,
     ).toBe(BookMaterialCharsField.displayName);
+
+    expect(
+      MaterialCharsFieldFactory.getMaterialCharsFieldField('records', 'a', 's').type.displayName,
+    ).toBe(ContinuingMaterialCharsField.displayName);
 
     expect(
       MaterialCharsFieldFactory.getMaterialCharsFieldField('records', 'm').type.displayName,

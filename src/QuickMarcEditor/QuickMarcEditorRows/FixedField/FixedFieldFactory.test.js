@@ -14,7 +14,7 @@ import VisualMaterialFixedField from './VisualMaterialFixedField';
 describe('FixedFieldFactory', () => {
   it('should create correct fields', () => {
     expect(
-      FixedFieldFactory.getFixedField('records', 'a').type.displayName,
+      FixedFieldFactory.getFixedField('records', 'a', 'm').type.displayName,
     ).toBe(BookFixedField.displayName);
 
     expect(
@@ -24,6 +24,10 @@ describe('FixedFieldFactory', () => {
     expect(
       FixedFieldFactory.getFixedField('records', 'm').type.displayName,
     ).toBe(ComputerFileFixedField.displayName);
+
+    expect(
+      FixedFieldFactory.getFixedField('records', 'a', 's').type.displayName,
+    ).toBe(ContinuingResourceFixedField.displayName);
 
     expect(
       FixedFieldFactory.getFixedField('records', 's').type.displayName,

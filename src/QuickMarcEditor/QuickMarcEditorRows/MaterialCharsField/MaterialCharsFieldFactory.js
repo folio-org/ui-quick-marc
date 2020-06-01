@@ -10,15 +10,16 @@ import SoundMaterialCharsField from './SoundMaterialCharsField';
 import VisualMaterialCharsField from './VisualMaterialCharsField';
 
 export const MaterialCharsFieldFactory = {
-  getMaterialCharsFieldField(name, type) {
+  getMaterialCharsFieldField(name, type, subtype) {
     let MaterialCharsField;
 
     switch (true) {
-      case ['a', 't'].includes(type):
-        MaterialCharsField = BookMaterialCharsField;
-        break;
+      case type === 'a' && ['b', 'i', 's'].includes(subtype):
       case type === 's':
         MaterialCharsField = ContinuingMaterialCharsField;
+        break;
+      case ['a', 't'].includes(type):
+        MaterialCharsField = BookMaterialCharsField;
         break;
       case type === 'm':
         MaterialCharsField = ComputerFileMaterialCharsField;
