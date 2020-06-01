@@ -2,7 +2,9 @@ import uuid from 'uuid';
 
 import {
   isLastRecord,
+  isFixedFieldRow,
   isMaterialCharsRecord,
+  isPhysDescriptionRecord,
 } from './QuickMarcEditorRows/utils';
 import { LEADER_TAG } from './constants';
 
@@ -76,6 +78,20 @@ export const validateRecordTag = marcRecords => {
   return undefined;
 };
 
+export const validateRecordMismatch = marcRecords => {
+  const leader = marcRecords[0]?.content || '';
+  const fixedField = marcRecords.find(isFixedFieldRow);
+
+  if (
+    leader[17] !== fixedField?.content?.ELvl
+    || leader[18] !== fixedField?.content?.Desc
+  ) {
+    return 'ui-quick-marc.record.error.leader.fixedFieldMismatch';
+  }
+
+  return undefined;
+};
+
 export const validateMarcRecord = marcRecord => {
   const marcRecords = marcRecord.records || [];
 
@@ -83,11 +99,17 @@ export const validateMarcRecord = marcRecord => {
 
   const leaderError = validateLeader(marcRecord?.leader, recordLeader?.content);
 
-  const tagError = validateRecordTag(marcRecords);
-
   if (leaderError) {
     return leaderError;
   }
+
+  const leaderMismatchError = validateRecordMismatch(marcRecords);
+
+  if (leaderMismatchError) {
+    return leaderMismatchError;
+  }
+
+  const tagError = validateRecordTag(marcRecords);
 
   if (tagError) {
     return tagError;
@@ -125,8 +147,7 @@ export const reorderRecords = (index, indexToSwitch, state) => {
 const getRecordsTrackChanges = (records) => {
   const trackCHanges = {
     lastRecordPosition: undefined,
-    physDescriptionCount: 0,
-    materiaCharCount: 0,
+    bytesFields: {},
   };
 
   records.forEach((record, idx) => {
@@ -134,8 +155,11 @@ const getRecordsTrackChanges = (records) => {
       trackCHanges.lastRecordPosition = idx;
     }
 
-    if (isMaterialCharsRecord(record)) {
-      trackCHanges.materiaCharCount++;
+    if (isMaterialCharsRecord(record) || isPhysDescriptionRecord(record)) {
+      trackCHanges.bytesFields[idx] = {
+        tag: record.tag,
+        category: record?.content?.Category,
+      };
     }
   });
 
@@ -150,7 +174,18 @@ export const shouldRecordsUpdate = (prevRecords, newRecords) => {
 
   if (prevTrackChanges.lastRecordPosition !== newTrackChanges.lastRecordPosition) return true;
 
-  if (prevTrackChanges.materiaCharCount !== newTrackChanges.materiaCharCount) return true;
+  if (
+    Object.keys(prevTrackChanges.bytesFields).length !== Object.keys(newTrackChanges.bytesFields).length
+  ) return true;
+
+  const hasBytesUpdates = Object.keys(prevTrackChanges.bytesFields).some(prevPosition => {
+    const prevField = prevTrackChanges.bytesFields[prevPosition];
+    const newField = newTrackChanges.bytesFields[prevPosition];
+
+    return prevField.tag !== newField.tag || prevField.category !== newField.category;
+  });
+
+  if (hasBytesUpdates) return true;
 
   return false;
 };

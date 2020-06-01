@@ -13,8 +13,11 @@ import {
 } from '@folio/stripes-acq-components';
 
 import { ContentField } from './ContentField';
-import { FixedFieldFactory } from './FixedField';
+
+import { IndicatorField } from './IndicatorField';
 import { MaterialCharsFieldFactory } from './MaterialCharsField';
+import { PhysDescriptionFieldFactory } from './PhysDescriptionField';
+import { FixedFieldFactory } from './FixedField';
 import {
   isReadOnly,
   hasIndicatorException,
@@ -23,6 +26,7 @@ import {
   hasMoveException,
 
   isMaterialCharsRecord,
+  isPhysDescriptionRecord,
   isFixedFieldRow,
 } from './utils';
 
@@ -75,8 +79,9 @@ const QuickMarcEditorRows = ({
           const withMoveDownRowAction = hasMoveException(recordRow, fields[idx + 1]);
 
           const isMaterialCharsField = isMaterialCharsRecord(recordRow);
+          const isPhysDescriptionField = isPhysDescriptionRecord(recordRow);
           const isFixedField = isFixedFieldRow(recordRow);
-          const isContentField = !(isFixedField || isMaterialCharsField);
+          const isContentField = !(isFixedField || isMaterialCharsField || isPhysDescriptionField);
 
           return (
             <div
@@ -130,6 +135,7 @@ const QuickMarcEditorRows = ({
                       ariaLabel={ariaLabel}
                       name={`${name}[${idx}].tag`}
                       component={TextField}
+                      maxlength={3}
                       marginBottom0
                       fullWidth
                       disabled={isDisabled || !idx}
@@ -148,7 +154,7 @@ const QuickMarcEditorRows = ({
                           dirty={false}
                           ariaLabel={ariaLabel}
                           name={`${name}[${idx}].indicators[0]`}
-                          component={TextField}
+                          component={IndicatorField}
                           marginBottom0
                           fullWidth
                           disabled={isDisabled}
@@ -169,7 +175,7 @@ const QuickMarcEditorRows = ({
                           dirty={false}
                           ariaLabel={ariaLabel}
                           name={`${name}[${idx}].indicators[1]`}
-                          component={TextField}
+                          component={IndicatorField}
                           marginBottom0
                           fullWidth
                           disabled={isDisabled}
@@ -184,20 +190,24 @@ const QuickMarcEditorRows = ({
               <div className={styles.quickMarcEditorRowContent}>
                 {
                   isMaterialCharsField && (
-                    (
-                      MaterialCharsFieldFactory.getMaterialCharsFieldField(
-                        `${name}[${idx}].content`, type,
-                      )
+                    MaterialCharsFieldFactory.getMaterialCharsFieldField(
+                      `${name}[${idx}].content`, type,
+                    )
+                  )
+                }
+
+                {
+                  isPhysDescriptionField && (
+                    PhysDescriptionFieldFactory.getPhysDescriptionField(
+                      `${name}[${idx}].content`, recordRow.content.Category,
                     )
                   )
                 }
 
                 {
                   isFixedField && (
-                    (
-                      FixedFieldFactory.getFixedField(
-                        `${name}[${idx}].content`, type,
-                      )
+                    FixedFieldFactory.getFixedField(
+                      `${name}[${idx}].content`, type,
                     )
                   )
                 }

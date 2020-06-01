@@ -36,4 +36,5 @@ export const hasMoveException = (recordRow, sibling) => (
 );
 
 export const isMaterialCharsRecord = recordRow => recordRow.tag === '006';
+export const isPhysDescriptionRecord = recordRow => recordRow.tag === '007';
 export const isFixedFieldRow = recordRow => recordRow.tag === '008';
