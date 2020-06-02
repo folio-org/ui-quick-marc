@@ -182,7 +182,7 @@ export const shouldRecordsUpdate = (prevRecords, newRecords) => {
     const prevField = prevTrackChanges.bytesFields[prevPosition];
     const newField = newTrackChanges.bytesFields[prevPosition];
 
-    return prevField.tag !== newField.tag || prevField.category !== newField.category;
+    return prevField.tag !== newField?.tag || prevField.category !== newField?.category;
   });
 
   if (hasBytesUpdates) return true;

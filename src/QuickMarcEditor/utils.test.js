@@ -364,6 +364,16 @@ describe('QuickMarcEditor utils', () => {
       expect(utils.shouldRecordsUpdate([{ tag: '007' }], [{ tag: '009' }])).toBeTruthy();
     });
 
+    it('should be true if byte field is moved', () => {
+      expect(
+        utils.shouldRecordsUpdate([{ tag: '007' }, { tag: '009' }], [{ tag: '009' }, { tag: '007' }]),
+      ).toBeTruthy();
+
+      expect(
+        utils.shouldRecordsUpdate([{ tag: '009' }, { tag: '006' }], [{ tag: '006' }, { tag: '009' }]),
+      ).toBeTruthy();
+    });
+
     it('should be true if physical description type is not matched', () => {
       const hasToBeUpdated = utils.shouldRecordsUpdate(
         [{ tag: '007', content: { Category: 'a' } }],
