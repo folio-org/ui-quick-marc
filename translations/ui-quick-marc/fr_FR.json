@@ -115,5 +115,7 @@
     "record.fixedField.Completeness": "Compl",
     "record.fixedField.Deterioration stage": "DetSt",
     "record.fixedField.Kind of color stock or print": "KoCSoP",
-    "record.fixedField.Refined categories of color": "RCoC"
+    "record.fixedField.Refined categories of color": "RCoC",
+    "record.error.leader.fixedFieldMismatch": "Record cannot be saved. The Leader and 008 do not match.",
+    "record.load.error": "L'enregistrement ne peut pas être trouvé ou chargé."
 }
