@@ -9,9 +9,9 @@ import {
 const config = {
   fields: [
     {
-      name: 'Ills',
+      name: 'Time',
       type: SUBFIELD_TYPES.BYTES,
-      bytes: 4,
+      bytes: 3,
     },
     {
       name: 'Audn',
