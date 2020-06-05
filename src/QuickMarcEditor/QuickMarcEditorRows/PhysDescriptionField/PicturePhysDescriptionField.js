@@ -32,6 +32,10 @@ const config = {
       type: SUBFIELD_TYPES.BYTE,
     },
     {
+      name: 'Configuration of playback channels',
+      type: SUBFIELD_TYPES.BYTE,
+    },
+    {
       name: 'Production elements',
       type: SUBFIELD_TYPES.BYTE,
     },

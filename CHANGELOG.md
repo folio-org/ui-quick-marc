@@ -30,5 +30,7 @@
 * [UIQC-10](https://issues.folio.org/browse/UIQM-10) Project Setup: ui-quick-marc
 
 ### Bug fixes
+
+* [UIQM-38](https://issues.folio.org/browse/UIQM-38) Missing byte in 007
 * [UIQM-37](https://issues.folio.org/browse/UIQM-37) Byte errors in 006 and 007
 * [UIQM-34](https://issues.folio.org/browse/UIQM-34) Error when opening quickMARC
