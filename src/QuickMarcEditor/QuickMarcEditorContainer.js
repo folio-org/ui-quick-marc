@@ -73,7 +73,7 @@ const QuickMarcEditorContainer = ({ mutator, match, onClose }) => {
 
     mutator.quickMarcEditMarcRecord.PUT(hydrateMarcRecord(formValues))
       .then(() => {
-        showCallout({ messageId: 'ui-quick-marc.record.save.success' });
+        showCallout({ messageId: 'ui-quick-marc.record.save.success.processing' });
         closeEditor();
       })
       .catch(() => {

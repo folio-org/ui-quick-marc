@@ -4,6 +4,7 @@
 
 ### Stories
 
+* [UIQM-39](https://issues.folio.org/browse/UIQM-39) Save message for Change Manager queue
 * [UIQM-31](https://issues.folio.org/browse/UIQM-31) Remove highlighting from quickMARC
 * [UIQM-33](https://issues.folio.org/browse/UIQM-33) UI check for Leader and 008 in quickMARC
 * [UIQM-23](https://issues.folio.org/browse/UIQM-23) View field 007 by byte in quickMARC
