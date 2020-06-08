@@ -45,7 +45,6 @@
     "record.error.title.empty": "Record cannot be saved without field 245.",
     "record.delete.confirmLabel": "Да",
     "record.delete.message": "Вы уверены?",
-    "record.save.success": "This record was successfully saved",
     "record.save.error.generic": "Record not saved: Communication problem with server. Please try again.",
     "permission.quick-marc-editor.all": "quickMARC: просмотр, редактирование",
     "record.moveUpRow": "Переместить поле на одну строку вверх",
@@ -117,5 +116,6 @@
     "record.fixedField.Kind of color stock or print": "KoCSoP",
     "record.fixedField.Refined categories of color": "RCoC",
     "record.error.leader.fixedFieldMismatch": "Запись не может быть сохранена. Маркер записи и поле 008 не совпадают.",
-    "record.load.error": "Запись не может быть найдена или загружена."
+    "record.load.error": "Запись не может быть найдена или загружена.",
+    "record.save.success.processing": "Эта запись была успешно сохранена и находится в процессе обработки. Изменения могут появиться не сразу."
 }

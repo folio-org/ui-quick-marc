@@ -45,7 +45,6 @@
     "record.error.title.empty": "没有245字段不能保存记录。",
     "record.delete.confirmLabel": "是",
     "record.delete.message": "是否确定？",
-    "record.save.success": "记录已成功保存",
     "record.save.error.generic": "记录未保存：服务器通讯问题。请重试。",
     "permission.quick-marc-editor.all": "quickMARC: View, edit",
     "record.moveUpRow": "字段上移一行",
@@ -117,5 +116,6 @@
     "record.fixedField.Kind of color stock or print": "KoCSoP",
     "record.fixedField.Refined categories of color": "RCoC",
     "record.error.leader.fixedFieldMismatch": "Record cannot be saved. The Leader and 008 do not match.",
-    "record.load.error": "Record cannot be found or loaded."
+    "record.load.error": "Record cannot be found or loaded.",
+    "record.save.success.processing": "This record has successfully saved and is in process. Changes may not appear immediately."
 }
