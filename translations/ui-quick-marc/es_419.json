@@ -45,7 +45,6 @@
     "record.error.title.empty": "Record cannot be saved without field 245.",
     "record.delete.confirmLabel": "Yes",
     "record.delete.message": "Are you sure you want to delete this field?",
-    "record.save.success": "Este registro fue exitosamente guardado",
     "record.save.error.generic": "Record not saved: Communication problem with server. Please try again.",
     "permission.quick-marc-editor.all": "quickMARC: View, edit",
     "record.moveUpRow": "Move field up a row",
@@ -117,5 +116,6 @@
     "record.fixedField.Kind of color stock or print": "KoCSoP",
     "record.fixedField.Refined categories of color": "RCoC",
     "record.error.leader.fixedFieldMismatch": "Record cannot be saved. The Leader and 008 do not match.",
-    "record.load.error": "Record cannot be found or loaded."
+    "record.load.error": "Record cannot be found or loaded.",
+    "record.save.success.processing": "This record has successfully saved and is in process. Changes may not appear immediately."
 }

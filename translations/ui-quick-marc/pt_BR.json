@@ -45,7 +45,6 @@
     "record.error.title.empty": "O registro não pode ser salvo sem o campo 245.",
     "record.delete.confirmLabel": "Sim",
     "record.delete.message": "Tem certeza de que deseja excluir este campo?",
-    "record.save.success": "Este registro foi salvo com sucesso",
     "record.save.error.generic": "Registro não foi salvo: Problema de comunicação com o servidor. Por favor, tente novamente.",
     "permission.quick-marc-editor.all": "quickMARC: Ver, editar",
     "record.moveUpRow": "Mover campo para cima uma linha",
@@ -117,5 +116,6 @@
     "record.fixedField.Kind of color stock or print": "KoCSoP",
     "record.fixedField.Refined categories of color": "RCoC",
     "record.error.leader.fixedFieldMismatch": "O registro não pode ser salvo. O Líder e 008 não coincidem.",
-    "record.load.error": "O registro não foi encontrado ou carregado."
+    "record.load.error": "O registro não foi encontrado ou carregado.",
+    "record.save.success.processing": "Este registro foi salvo com sucesso e está em processamento. As alterações podem não aparecer imediatamente."
 }
