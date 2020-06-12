@@ -2,6 +2,8 @@
 
 ## (in progress)
 
+## [1.0.0](https://github.com/folio-org/ui-quick-marc/tree/v1.0.0) (2020-06-12)
+
 ### Stories
 
 * [UIQM-39](https://issues.folio.org/browse/UIQM-39) Save message for Change Manager queue
