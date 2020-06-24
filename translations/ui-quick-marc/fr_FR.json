@@ -78,7 +78,7 @@
     "record.fixedField.Type of reproduction": "ToRepr",
     "record.fixedField.Physical medium": "PhMedium",
     "record.fixedField.Production/reproduction details": "P/R details",
-    "record.fixedField.Positive/negative aspect": "P/N aspect",
+    "record.fixedField.Positive/negative aspect": "Aspect P / N",
     "record.fixedField.Reduction ratio range/Reduction ratio": "RRR/RR",
     "record.fixedField.Emulsion on film": "EmOnF",
     "record.fixedField.Generation": "Generation",
