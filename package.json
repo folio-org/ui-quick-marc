@@ -18,6 +18,9 @@
       "inventory": "10.0",
       "records-editor.records": "1.0"
     },
+    "stripesDeps": [
+      "@folio/stripes-acq-components"
+    ],
     "permissionSets": [
       {
         "permissionName": "ui-quick-marc.quick-marc-editor.all",
@@ -87,9 +90,6 @@
     "react-router-prop-types": "^1.0.4",
     "uuid": "^3.0.1"
   },
-  "stripesDeps": [
-    "@folio/stripes-acq-components"
-  ],
   "peerDependencies": {
     "@folio/stripes": "^4.0.0",
     "react": "*",
