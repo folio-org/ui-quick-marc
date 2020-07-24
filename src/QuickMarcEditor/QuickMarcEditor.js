@@ -19,6 +19,7 @@ import {
 } from '@folio/stripes-acq-components';
 import { FormSpy } from 'react-final-form';
 
+import { QuickMarcRecordInfo } from './QuickMarcRecordInfo';
 import { QuickMarcEditorRows } from './QuickMarcEditorRows';
 import {
   addNewRecord,
@@ -84,6 +85,12 @@ const QuickMarcEditor = ({
             onClose={onClose}
             defaultWidth="100%"
             paneTitle={instance ? <FormattedMessage id="ui-quick-marc.record.edit.title" values={instance} /> : ''}
+            paneSub={(
+              <QuickMarcRecordInfo
+                status={initialValues.updateInfo?.recordState}
+                updateDate={initialValues.updateInfo?.updateDate}
+              />
+            )}
             footer={paneFooter}
           >
             <Row>

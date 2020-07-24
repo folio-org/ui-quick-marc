@@ -5,6 +5,10 @@
 
   "record.edit.title": "Edit MARC record - {title}",
 
+  "record.status.current": "Current",
+  "record.status.progress": "In progress",
+  "record.status.error": "Error",
+
   "record.fixedField.Type": "Type",
   "record.fixedField.ELvl": "ELvl",
   "record.fixedField.Srce": "Srce",

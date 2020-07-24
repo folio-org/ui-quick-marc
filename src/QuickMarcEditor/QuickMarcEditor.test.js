@@ -14,6 +14,12 @@ jest.mock('./QuickMarcEditorRows', () => {
   };
 });
 
+jest.mock('./QuickMarcRecordInfo', () => {
+  return {
+    QuickMarcRecordInfo: () => <span>QuickMarcRecordInfo</span>,
+  };
+});
+
 const getInstance = () => ({
   id: faker.random.uuid(),
   title: faker.lorem.sentence(),

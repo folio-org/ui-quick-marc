@@ -16,6 +16,7 @@ export default @interactor class QuickMarcEditorInteractor {
   static defaultScope = '#quick-marc-editor-pane';
 
   editorInstanceId = attribute('[data-test-quick-marc-editor]', 'data-test-quick-marc-editor');
+  hasRecordInfo = isPresent('[data-test-quick-marc-record-info]');
 
   editorRows = collection('[data-test-quick-marc-editor-row]');
   leaderRow = new Interactor('[value="LDR"]');

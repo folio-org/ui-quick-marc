@@ -69,6 +69,10 @@ describe('Quick MARC editor', () => {
     expect(quickMarcEditor.editorInstanceId).to.be.equal(instance.id);
   });
 
+  it('should render record info', () => {
+    expect(quickMarcEditor.hasRecordInfo).to.be.true;
+  });
+
   it('should render leader row', () => {
     expect(quickMarcEditor.leaderRow.isPresent).to.be.true;
   });
