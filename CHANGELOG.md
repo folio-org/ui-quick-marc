@@ -5,6 +5,7 @@
 ### Stories
 
 * [UISACQCOMP-3](https://issues.folio.org/browse/UISACQCOMP-3) Handle import of stripes-acq-components to modules and platform
+* [UIQM-42](https://issues.folio.org/browse/UIQM-42) Display quickMARC record's edit status
 
 ## [1.0.0](https://github.com/folio-org/ui-quick-marc/tree/v1.0.0) (2020-06-12)
 
