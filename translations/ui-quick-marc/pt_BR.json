@@ -117,5 +117,8 @@
     "record.fixedField.Refined categories of color": "RCoC",
     "record.error.leader.fixedFieldMismatch": "O registro não pode ser salvo. O Líder e 008 não coincidem.",
     "record.load.error": "O registro não foi encontrado ou carregado.",
-    "record.save.success.processing": "Este registro foi salvo com sucesso e está em processamento. As alterações podem não aparecer imediatamente."
+    "record.save.success.processing": "Este registro foi salvo com sucesso e está em processamento. As alterações podem não aparecer imediatamente.",
+    "record.status.current": "Atual",
+    "record.status.progress": "Em andamento",
+    "record.status.error": "Erro"
 }
