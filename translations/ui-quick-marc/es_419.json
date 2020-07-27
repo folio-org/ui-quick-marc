@@ -117,5 +117,8 @@
     "record.fixedField.Refined categories of color": "RCoC",
     "record.error.leader.fixedFieldMismatch": "Record cannot be saved. The Leader and 008 do not match.",
     "record.load.error": "Record cannot be found or loaded.",
-    "record.save.success.processing": "This record has successfully saved and is in process. Changes may not appear immediately."
+    "record.save.success.processing": "This record has successfully saved and is in process. Changes may not appear immediately.",
+    "record.status.current": "Current",
+    "record.status.progress": "In progress",
+    "record.status.error": "Error"
 }

@@ -117,5 +117,8 @@
     "record.fixedField.Refined categories of color": "فئات منقحة للون",
     "record.error.leader.fixedFieldMismatch": "تعذر حفظ التسجيلة. الفاتح وحقل 008 غير متطابقين.",
     "record.load.error": "لا يمكن العثور على التسجيلة أو تحميلها",
-    "record.save.success.processing": "تم حفظ هذه التسجيلة بنجاح وهي قيد المعالجة. قد لا تظهر التغييرات على الفور."
+    "record.save.success.processing": "تم حفظ هذه التسجيلة بنجاح وهي قيد المعالجة. قد لا تظهر التغييرات على الفور.",
+    "record.status.current": "الحالي",
+    "record.status.progress": "قيد التقدم",
+    "record.status.error": "خطأ"
 }

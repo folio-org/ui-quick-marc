@@ -117,5 +117,8 @@
     "record.fixedField.Refined categories of color": "RCoC",
     "record.error.leader.fixedFieldMismatch": "Record cannot be saved. The Leader and 008 do not match.",
     "record.load.error": "L'enregistrement ne peut pas être trouvé ou chargé.",
-    "record.save.success.processing": "Cet enregistrement a été enregistré avec succès et est en cours. Les modifications peuvent ne pas apparaître immédiatement."
+    "record.save.success.processing": "Cet enregistrement a été enregistré avec succès et est en cours. Les modifications peuvent ne pas apparaître immédiatement.",
+    "record.status.current": "Current",
+    "record.status.progress": "In progress",
+    "record.status.error": "Error"
 }

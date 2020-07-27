@@ -117,5 +117,8 @@
     "record.fixedField.Refined categories of color": "RCoC(细化颜色类别)",
     "record.error.leader.fixedFieldMismatch": "记录无法保存。 头标和008不匹配。",
     "record.load.error": "记录未找到或加载。",
-    "record.save.success.processing": "本记录已成功保存，正在处理中。更改可能不会立即显示。"
+    "record.save.success.processing": "本记录已成功保存，正在处理中。更改可能不会立即显示。",
+    "record.status.current": "Current",
+    "record.status.progress": "In progress",
+    "record.status.error": "Error"
 }
