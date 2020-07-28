@@ -118,7 +118,7 @@
     "record.error.leader.fixedFieldMismatch": "Запись не может быть сохранена. Маркер записи и поле 008 не совпадают.",
     "record.load.error": "Запись не может быть найдена или загружена.",
     "record.save.success.processing": "Эта запись была успешно сохранена и находится в процессе обработки. Изменения могут появиться не сразу.",
-    "record.status.current": "Current",
-    "record.status.progress": "In progress",
+    "record.status.current": "Текущий",
+    "record.status.progress": "В обработке",
     "record.status.error": "Error"
 }
