@@ -87,8 +87,8 @@ const QuickMarcEditor = ({
             paneTitle={instance ? <FormattedMessage id="ui-quick-marc.record.edit.title" values={instance} /> : ''}
             paneSub={(
               <QuickMarcRecordInfo
-                status={initialValues.updateInfo?.recordState}
-                updateDate={initialValues.updateInfo?.updateDate}
+                status={initialValues?.updateInfo?.recordState}
+                updateDate={initialValues?.updateInfo?.updateDate}
               />
             )}
             footer={paneFooter}
