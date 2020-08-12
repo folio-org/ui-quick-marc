@@ -3,6 +3,7 @@
 ## (in progress)
 
 ### Stories
+* [UIQM-47](https://issues.folio.org/browse/UIQM-47) increment @folio/stripes to v5
 
 ## [1.1.0](https://github.com/folio-org/ui-quick-marc/tree/v1.1.0) (2020-08-07)
 
