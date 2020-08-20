@@ -120,5 +120,6 @@
     "record.save.success.processing": "Эта запись была успешно сохранена и находится в процессе обработки. Изменения могут появиться не сразу.",
     "record.status.current": "Текущий",
     "record.status.progress": "В обработке",
-    "record.status.error": "Error"
+    "record.status.error": "Error",
+    "record.save.error.illegalFixedLength": "Record not saved. Please check the character length of the fixed fields."
 }
