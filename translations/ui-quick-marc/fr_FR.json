@@ -120,5 +120,6 @@
     "record.save.success.processing": "Cet enregistrement a été enregistré avec succès et est en cours. Les modifications peuvent ne pas apparaître immédiatement.",
     "record.status.current": "Current",
     "record.status.progress": "In progress",
-    "record.status.error": "Error"
+    "record.status.error": "Error",
+    "record.save.error.illegalFixedLength": "Record not saved. Please check the character length of the fixed fields."
 }

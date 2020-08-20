@@ -120,5 +120,6 @@
     "record.save.success.processing": "本记录已成功保存，正在处理中。更改可能不会立即显示。",
     "record.status.current": "Current",
     "record.status.progress": "In progress",
-    "record.status.error": "Error"
+    "record.status.error": "Error",
+    "record.save.error.illegalFixedLength": "Record not saved. Please check the character length of the fixed fields."
 }
