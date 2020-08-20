@@ -76,8 +76,23 @@ const QuickMarcEditorContainer = ({ mutator, match, onClose }) => {
         showCallout({ messageId: 'ui-quick-marc.record.save.success.processing' });
         closeEditor();
       })
-      .catch(() => {
-        showCallout({ messageId: 'ui-quick-marc.record.save.error.generic', type: 'error' });
+      .catch(async (errorResponse) => {
+        let messageId;
+        let error;
+
+        try {
+          error = await errorResponse.json();
+        } catch (e) {
+          error = {};
+        }
+
+        if (error.code === 'ILLEGAL_FIXED_LENGTH_CONTROL_FILED') {
+          messageId = 'ui-quick-marc.record.save.error.illegalFixedLength';
+        } else {
+          messageId = 'ui-quick-marc.record.save.error.generic';
+        }
+
+        showCallout({ messageId, type: 'error' });
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [closeEditor, showCallout]);
