@@ -120,5 +120,6 @@
     "record.save.success.processing": "تم حفظ هذه التسجيلة بنجاح وهي قيد المعالجة. قد لا تظهر التغييرات على الفور.",
     "record.status.current": "الحالي",
     "record.status.progress": "قيد التقدم",
-    "record.status.error": "خطأ"
+    "record.status.error": "خطأ",
+    "record.save.error.illegalFixedLength": "لم يتم حفظ التسجيلة. يرجى التحقق من طول أحرف الحقول الثابتة."
 }
