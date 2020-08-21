@@ -4,6 +4,12 @@
 
 ### Stories
 
+## [1.1.1](https://github.com/folio-org/ui-quick-marc/tree/v1.1.1) (2020-08-21)
+
+### Bug fixes
+
+* [UIQM-48](https://issues.folio.org/browse/UIQM-48) quickMARC error message for 006 and 007 character length
+
 ## [1.1.0](https://github.com/folio-org/ui-quick-marc/tree/v1.1.0) (2020-08-07)
 
 ### Stories
