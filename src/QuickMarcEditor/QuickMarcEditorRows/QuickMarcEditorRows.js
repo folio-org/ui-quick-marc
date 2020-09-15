@@ -45,6 +45,7 @@ const QuickMarcEditorRows = ({
 }) => {
   const [isRemoveModalOpened, toggleRemoveModal] = useModalToggle();
   const [removeIndex, setRemoveIndex] = useState();
+  const [focusedRowIndex, setfocusedRowIndex] = useState();
 
   const addNewRow = useCallback(({ target }) => {
     addRecord({ index: +target.dataset.index });
@@ -68,6 +69,14 @@ const QuickMarcEditorRows = ({
     });
   }, [moveRecord]);
 
+  const focusRow = useCallback(({ target }) => {
+    setfocusedRowIndex(+target.dataset.index);
+  }, [setfocusedRowIndex]);
+
+  const blurRow = useCallback(() => {
+    setfocusedRowIndex(undefined);
+  }, [setfocusedRowIndex]);
+
   return (
     <>
       {
@@ -78,6 +87,7 @@ const QuickMarcEditorRows = ({
           const withDeleteRowAction = hasDeleteException(recordRow);
           const withMoveUpRowAction = hasMoveException(recordRow, fields[idx - 1]);
           const withMoveDownRowAction = hasMoveException(recordRow, fields[idx + 1]);
+          const isFocusedRow = focusedRowIndex === idx;
 
           const isMaterialCharsField = isMaterialCharsRecord(recordRow);
           const isPhysDescriptionField = isPhysDescriptionRecord(recordRow);
@@ -128,7 +138,7 @@ const QuickMarcEditorRows = ({
                 }
               </div>
 
-              <div className={styles.quickMarcEditorRowTag}>
+              <div className={`${styles.quickMarcEditorRowTag} ${isFocusedRow ? styles.quickMarcFocusedRow : ''}`}>
                 <FormattedMessage id="ui-quick-marc.record.field">
                   {ariaLabel => (
                     <Field
@@ -146,7 +156,7 @@ const QuickMarcEditorRows = ({
                 </FormattedMessage>
               </div>
 
-              <div className={styles.quickMarcEditorRowIndicator}>
+              <div className={`${styles.quickMarcEditorRowIndicator} ${isFocusedRow ? styles.quickMarcFocusedRow : ''}`}>
                 {
                   withIndicators && (
                     <FormattedMessage id="ui-quick-marc.record.indicator">
@@ -167,7 +177,7 @@ const QuickMarcEditorRows = ({
                 }
               </div>
 
-              <div className={styles.quickMarcEditorRowIndicator}>
+              <div className={`${styles.quickMarcEditorRowIndicator} ${isFocusedRow ? styles.quickMarcFocusedRow : ''}`}>
                 {
                   withIndicators && (
                     <FormattedMessage id="ui-quick-marc.record.indicator">
@@ -188,7 +198,7 @@ const QuickMarcEditorRows = ({
                 }
               </div>
 
-              <div className={styles.quickMarcEditorRowContent}>
+              <div className={`${styles.quickMarcEditorRowContent} ${isFocusedRow ? styles.quickMarcFocusedRow : ''}`}>
                 {
                   isMaterialCharsField && (
                     MaterialCharsFieldFactory.getMaterialCharsFieldField(
@@ -259,6 +269,8 @@ const QuickMarcEditorRows = ({
                           data-index={idx}
                           icon="trash"
                           onClick={showDeleteConfirmation}
+                          onFocus={focusRow}
+                          onBlur={blurRow}
                         />
                       )}
                     </FormattedMessage>
