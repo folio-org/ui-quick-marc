@@ -1,3 +1,5 @@
+@import "@folio/stripes-components/lib/variables.css";
+
 .quickMarcEditorRow {
   display: flex;
   padding: 8px;
@@ -34,5 +36,8 @@
 }
 
 .quickMarcFocusedRow {
-  background: rgba(114, 150, 226, 0.3);
+  display: flex;
+  padding: 8px;
+
+  background: var(--color-fill-focus);
 }

@@ -45,7 +45,7 @@ const QuickMarcEditorRows = ({
 }) => {
   const [isRemoveModalOpened, toggleRemoveModal] = useModalToggle();
   const [removeIndex, setRemoveIndex] = useState();
-  const [focusedRowIndex, setfocusedRowIndex] = useState();
+  const [focusedRowIndex, setFocusedRowIndex] = useState();
 
   const addNewRow = useCallback(({ target }) => {
     addRecord({ index: +target.dataset.index });
@@ -54,13 +54,21 @@ const QuickMarcEditorRows = ({
   const showDeleteConfirmation = useCallback(({ target }) => {
     setRemoveIndex(+target.dataset.index);
     toggleRemoveModal();
+    setFocusedRowIndex(+target.dataset.index);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setRemoveIndex]);
 
   const confirmDeletion = useCallback(() => {
     deleteRecord({ index: removeIndex });
     toggleRemoveModal();
+    setFocusedRowIndex(undefined);
   }, [deleteRecord, toggleRemoveModal, removeIndex]);
+
+  const onCloseDeleteConfirmation = useCallback(() => {
+    toggleRemoveModal();
+    setFocusedRowIndex(undefined);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const moveRow = useCallback(({ target }) => {
     moveRecord({
@@ -68,14 +76,6 @@ const QuickMarcEditorRows = ({
       indexToSwitch: +target.dataset.indexToSwitch,
     });
   }, [moveRecord]);
-
-  const focusRow = useCallback(({ target }) => {
-    setfocusedRowIndex(+target.dataset.index);
-  }, [setfocusedRowIndex]);
-
-  const blurRow = useCallback(() => {
-    setfocusedRowIndex(undefined);
-  }, [setfocusedRowIndex]);
 
   return (
     <>
@@ -97,7 +97,7 @@ const QuickMarcEditorRows = ({
           return (
             <div
               key={idx}
-              className={styles.quickMarcEditorRow}
+              className={isFocusedRow ? styles.quickMarcFocusedRow : styles.quickMarcEditorRow}
               data-test-quick-marc-editor-row
               data-testid="quick-marc-editorid"
             >
@@ -138,7 +138,7 @@ const QuickMarcEditorRows = ({
                 }
               </div>
 
-              <div className={`${styles.quickMarcEditorRowTag} ${isFocusedRow ? styles.quickMarcFocusedRow : ''}`}>
+              <div className={styles.quickMarcEditorRowTag}>
                 <FormattedMessage id="ui-quick-marc.record.field">
                   {ariaLabel => (
                     <Field
@@ -156,7 +156,7 @@ const QuickMarcEditorRows = ({
                 </FormattedMessage>
               </div>
 
-              <div className={`${styles.quickMarcEditorRowIndicator} ${isFocusedRow ? styles.quickMarcFocusedRow : ''}`}>
+              <div className={styles.quickMarcEditorRowIndicator}>
                 {
                   withIndicators && (
                     <FormattedMessage id="ui-quick-marc.record.indicator">
@@ -177,7 +177,7 @@ const QuickMarcEditorRows = ({
                 }
               </div>
 
-              <div className={`${styles.quickMarcEditorRowIndicator} ${isFocusedRow ? styles.quickMarcFocusedRow : ''}`}>
+              <div className={styles.quickMarcEditorRowIndicator}>
                 {
                   withIndicators && (
                     <FormattedMessage id="ui-quick-marc.record.indicator">
@@ -198,7 +198,7 @@ const QuickMarcEditorRows = ({
                 }
               </div>
 
-              <div className={`${styles.quickMarcEditorRowContent} ${isFocusedRow ? styles.quickMarcFocusedRow : ''}`}>
+              <div className={styles.quickMarcEditorRowContent}>
                 {
                   isMaterialCharsField && (
                     MaterialCharsFieldFactory.getMaterialCharsFieldField(
@@ -269,8 +269,6 @@ const QuickMarcEditorRows = ({
                           data-index={idx}
                           icon="trash"
                           onClick={showDeleteConfirmation}
-                          onFocus={focusRow}
-                          onBlur={blurRow}
                         />
                       )}
                     </FormattedMessage>
@@ -287,7 +285,7 @@ const QuickMarcEditorRows = ({
           confirmLabel={<FormattedMessage id="ui-quick-marc.record.delete.confirmLabel" />}
           heading={<FormattedMessage id="ui-quick-marc.record.delete.title" />}
           message={<FormattedMessage id="ui-quick-marc.record.delete.message" />}
-          onCancel={toggleRemoveModal}
+          onCancel={onCloseDeleteConfirmation}
           onConfirm={confirmDeletion}
           open
         />

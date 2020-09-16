@@ -22,7 +22,7 @@ jest.mock('./QuickMarcRecordInfo', () => {
 
 const getInstance = () => ({
   id: faker.random.uuid(),
-  title: faker.lorem.sentence(),
+  title: 'ui-quick-marc.record.edit.title',
 });
 
 const messages = {

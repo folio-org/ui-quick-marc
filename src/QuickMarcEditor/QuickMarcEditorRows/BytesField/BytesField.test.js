@@ -77,7 +77,7 @@ describe('Given Bytes Field', () => {
 
     config.fields
       .forEach(({ name }) => {
-        expect(getByText(name)).toBeDefined();
+        expect(getByText(`ui-quick-marc.record.fixedField.${name}`)).toBeDefined();
       });
   });
 

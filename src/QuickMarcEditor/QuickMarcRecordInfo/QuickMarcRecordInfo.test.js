@@ -27,13 +27,12 @@ describe('Given Quick Marc Record Info', () => {
   it('Than it should display record status', () => {
     const { getByText } = renderQuickMarcRecordInfo();
 
-    expect(getByText(RECORD_STATUS_CURRENT)).toBeDefined();
+    expect(getByText('ui-quick-marc.record.status.current')).toBeDefined();
   });
 
   it('Than it should display record updated date', () => {
     const { getByText } = renderQuickMarcRecordInfo();
 
-    expect(getByText('7/14/2020', { exact: false })).toBeDefined();
-    expect(getByText('12:20 PM', { exact: false })).toBeDefined();
+    expect(getByText('stripes-components.metaSection.recordLastUpdated', { exact: false })).toBeDefined();
   });
 });
