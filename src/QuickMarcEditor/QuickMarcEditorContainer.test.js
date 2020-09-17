@@ -1,7 +1,6 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { render, cleanup, act, fireEvent } from '@testing-library/react';
-import { IntlProvider } from 'react-intl';
 import faker from 'faker';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
@@ -10,7 +9,7 @@ import QuickMarcEditorContainer from './QuickMarcEditorContainer';
 
 const getInstance = () => ({
   id: faker.random.uuid(),
-  title: faker.lorem.sentence(),
+  title: 'ui-quick-marc.record.edit.title',
 });
 
 const match = {
@@ -25,22 +24,14 @@ const record = {
   fields: [],
 };
 
-const messages = {
-  'ui-quick-marc.record.edit.title': '{title}',
-  'ui-quick-marc.record.subfield': 'Subfield',
-  'ui-quick-marc.record.field': 'Field',
-};
-
 const renderQuickMarcEditorContainer = ({ onClose, mutator }) => (render(
-  <IntlProvider locale="en" messages={messages}>
-    <MemoryRouter>
-      <QuickMarcEditorContainer
-        onClose={onClose}
-        match={match}
-        mutator={mutator}
-      />
-    </MemoryRouter>
-  </IntlProvider>,
+  <MemoryRouter>
+    <QuickMarcEditorContainer
+      onClose={onClose}
+      match={match}
+      mutator={mutator}
+    />
+  </MemoryRouter>,
 ));
 
 describe('Given Quick Marc Editor Container', () => {

@@ -1,7 +1,6 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { render, cleanup } from '@testing-library/react';
-import { IntlProvider } from 'react-intl';
 import faker from 'faker';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
@@ -22,27 +21,19 @@ jest.mock('./QuickMarcRecordInfo', () => {
 
 const getInstance = () => ({
   id: faker.random.uuid(),
-  title: faker.lorem.sentence(),
+  title: 'ui-quick-marc.record.edit.title',
 });
 
-const messages = {
-  'ui-quick-marc.record.edit.title': '{title}',
-  'ui-quick-marc.record.subfield': 'Subfield',
-  'ui-quick-marc.record.field': 'Field',
-};
-
 const renderQuickMarcEditor = ({ instance, onClose, onSubmit, mutators }) => (render(
-  <IntlProvider locale="en" messages={messages}>
-    <MemoryRouter>
-      <QuickMarcEditor
-        instance={instance}
-        onClose={onClose}
-        onSubmit={onSubmit}
-        mutators={mutators}
-        initialValues={{ leader: 'assdfgs ds sdg' }}
-      />
-    </MemoryRouter>
-  </IntlProvider>,
+  <MemoryRouter>
+    <QuickMarcEditor
+      instance={instance}
+      onClose={onClose}
+      onSubmit={onSubmit}
+      mutators={mutators}
+      initialValues={{ leader: 'assdfgs ds sdg' }}
+    />
+  </MemoryRouter>,
 ));
 
 describe('Given Quick Marc Editor', () => {
