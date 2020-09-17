@@ -2,7 +2,6 @@ import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { render, cleanup } from '@testing-library/react';
 import { Form } from 'react-final-form';
-import { IntlProvider } from 'react-intl';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
@@ -43,36 +42,24 @@ const values = [
   },
 ];
 
-const messages = {
-  'ui-quick-marc.record.moveUpRow': 'Move field up a row',
-  'ui-quick-marc.record.moveDownRow': 'Move field down a row',
-  'ui-quick-marc.record.field': 'Field',
-  'ui-quick-marc.record.indicator': 'Indicator',
-  'ui-quick-marc.record.subfield': 'Subfield',
-  'ui-quick-marc.record.addField': 'Add a new field',
-  'ui-quick-marc.record.deleteField': 'Delete this field',
-};
-
 const renderQuickMarcEditorRows = ({ fields }) => (render(
-  <IntlProvider locale="en" messages={messages}>
-    <MemoryRouter>
-      <Form
-        onSubmit={jest.fn()}
-        render={() => (
-          <QuickMarcEditorRows
-            fields={fields}
-            name="records"
-            type="a"
-            mutators={{
-              addRecord: jest.fn(),
-              deleteRecord: jest.fn(),
-              moveRecord: jest.fn(),
-            }}
-          />
-        )}
-      />
-    </MemoryRouter>
-  </IntlProvider>,
+  <MemoryRouter>
+    <Form
+      onSubmit={jest.fn()}
+      render={() => (
+        <QuickMarcEditorRows
+          fields={fields}
+          name="records"
+          type="a"
+          mutators={{
+            addRecord: jest.fn(),
+            deleteRecord: jest.fn(),
+            moveRecord: jest.fn(),
+          }}
+        />
+      )}
+    />
+  </MemoryRouter>,
 ));
 
 describe('Given Quick Marc Editor Rows', () => {

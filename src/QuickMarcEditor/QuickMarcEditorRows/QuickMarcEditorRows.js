@@ -64,11 +64,10 @@ const QuickMarcEditorRows = ({
     setFocusedRowIndex(undefined);
   }, [deleteRecord, toggleRemoveModal, removeIndex]);
 
-  const onCloseDeleteConfirmation = useCallback(() => {
+  const closeDeleteConfirmation = useCallback(() => {
     toggleRemoveModal();
     setFocusedRowIndex(undefined);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [toggleRemoveModal]);
 
   const moveRow = useCallback(({ target }) => {
     moveRecord({
@@ -97,7 +96,7 @@ const QuickMarcEditorRows = ({
           return (
             <div
               key={idx}
-              className={isFocusedRow ? styles.quickMarcFocusedRow : styles.quickMarcEditorRow}
+              className={`${styles.quickMarcEditorRow} ${isFocusedRow ? styles.quickMarcFocusedRow : ''}`}
               data-test-quick-marc-editor-row
               data-testid="quick-marc-editorid"
             >
@@ -285,7 +284,7 @@ const QuickMarcEditorRows = ({
           confirmLabel={<FormattedMessage id="ui-quick-marc.record.delete.confirmLabel" />}
           heading={<FormattedMessage id="ui-quick-marc.record.delete.title" />}
           message={<FormattedMessage id="ui-quick-marc.record.delete.message" />}
-          onCancel={onCloseDeleteConfirmation}
+          onCancel={closeDeleteConfirmation}
           onConfirm={confirmDeletion}
           open
         />

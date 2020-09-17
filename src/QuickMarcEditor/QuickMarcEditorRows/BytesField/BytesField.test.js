@@ -3,7 +3,6 @@ import { MemoryRouter } from 'react-router-dom';
 import { render, cleanup } from '@testing-library/react';
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
-import { IntlProvider } from 'react-intl';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
@@ -43,24 +42,19 @@ const config = {
   ],
 };
 
-const messages = config.fields
-  .reduce((acc, { name }) => ({ ...acc, [`ui-quick-marc.record.fixedField.${name}`]: name }), {});
-
 const renderFixedField = () => (render(
-  <IntlProvider locale="en" messages={messages}>
-    <MemoryRouter>
-      <Form
-        onSubmit={jest.fn()}
-        mutators={{ ...arrayMutators }}
-        render={() => (
-          <BytesField
-            name="records"
-            config={config}
-          />
-        )}
-      />
-    </MemoryRouter>
-  </IntlProvider>,
+  <MemoryRouter>
+    <Form
+      onSubmit={jest.fn()}
+      mutators={{ ...arrayMutators }}
+      render={() => (
+        <BytesField
+          name="records"
+          config={config}
+        />
+      )}
+    />
+  </MemoryRouter>,
 ));
 
 describe('Given Bytes Field', () => {
