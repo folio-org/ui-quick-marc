@@ -61,12 +61,12 @@ const QuickMarcEditorRows = ({
   const confirmDeletion = useCallback(() => {
     deleteRecord({ index: removeIndex });
     toggleRemoveModal();
-    setFocusedRowIndex(undefined);
+    setFocusedRowIndex(null);
   }, [deleteRecord, toggleRemoveModal, removeIndex]);
 
   const closeDeleteConfirmation = useCallback(() => {
     toggleRemoveModal();
-    setFocusedRowIndex(undefined);
+    setFocusedRowIndex(null);
   }, [toggleRemoveModal]);
 
   const moveRow = useCallback(({ target }) => {
