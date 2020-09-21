@@ -44,7 +44,7 @@
     "record.error.title.multiple": "لا يمكن حفظ التسجيلة في حالة وجود أكثر من حقل 245",
     "record.error.title.empty": "ياا يمكن حفظ التسجيلة بدون الحقل 245",
     "record.delete.confirmLabel": "نعم",
-    "record.delete.message": "هل أنت متأكد؟",
+    "record.delete.message": "هل أنت متأكد من أنك تريد حذف هذا الحقل؟",
     "record.save.error.generic": "لم يتم حفظ التسجيلة: توجد مشكلة في الاتصال بالخادم. يرجى إعادة المحاولة.",
     "permission.quick-marc-editor.all": "quickMARC: اعرض، حرّر",
     "record.moveUpRow": "تحريك الحقل لأعلى صف",
