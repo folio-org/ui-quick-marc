@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   FormattedMessage,
-  FormattedDate,
-  FormattedTime,
 } from 'react-intl';
 
 import {
   Badge,
+  FormattedDate,
+  FormattedTime,
 } from '@folio/stripes/components';
 
 import {
