@@ -6,6 +6,7 @@
 * [UIQM-50](https://issues.folio.org/browse/UIQM-50) Highlight rows when trash icon selected
 * [UIQM-47](https://issues.folio.org/browse/UIQM-47) increment @folio/stripes to v5
 * [UIQM-51](https://issues.folio.org/browse/UIQM-51) Quick-Marc | Consume {{FormattedDate}} and {{FormattedTime}} via stripes-component
+* Remove bigtest
 
 ## [1.1.1](https://github.com/folio-org/ui-quick-marc/tree/v1.1.1) (2020-08-21)
 

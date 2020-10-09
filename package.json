@@ -38,10 +38,7 @@
     "build": "stripes build --output ./output",
     "lint": "eslint .",
     "start": "stripes serve",
-    "test:unit": "jest --ci --coverage --passWithNoTests",
-    "test:e2e": "stripes test karma --karma.singleRun --karma.browsers ChromeDocker --karma.reporters mocha junit --coverage",
-    "test:e2e:dev": "stripes test karma --karma.browsers ChromeDocker",
-    "test": "yarn run test:e2e && yarn run test:unit"
+    "test": "jest --ci --coverage"
   },
   "devDependencies": {
     "@babel/core": "^7.8.0",
@@ -50,9 +47,6 @@
     "@babel/plugin-transform-runtime": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.7.4",
-    "@bigtest/interactor": "^0.9.3",
-    "@bigtest/mocha": "^0.5.1",
-    "@bigtest/react": "^0.1.2",
     "@folio/eslint-config-stripes": "^5.0.0",
     "@folio/stripes": "^5.0.0",
     "@folio/stripes-cli": "^1.13.0",
@@ -60,7 +54,6 @@
     "@testing-library/react": "^11.0.4",
     "babel-eslint": "^10.0.0",
     "babel-jest": "^26.3.0",
-    "chai": "^4.2.0",
     "core-js": "^3.6.1",
     "eslint": "^6.2.1",
     "eslint-plugin-filenames": "^1.3.2",
@@ -70,7 +63,6 @@
     "jest": "^26.4.2",
     "jest-css-modules": "^2.1.0",
     "jest-junit": "^11.1.0",
-    "miragejs": "^0.1.32",
     "react": "^16.5.1",
     "react-dom": "^16.5.1",
     "react-intl": "^5.8.1",
