@@ -2,6 +2,9 @@
 
 ## (in progress)
 
+## [2.0.0](https://github.com/folio-org/ui-quick-marc/tree/v2.0.0) (2020-10-15)
+[Full Changelog](https://github.com/folio-org/ui-quick-marc/compare/v1.1.0...v2.0.0)
+
 ### Stories
 * [UIQM-50](https://issues.folio.org/browse/UIQM-50) Highlight rows when trash icon selected
 * [UIQM-47](https://issues.folio.org/browse/UIQM-47) increment @folio/stripes to v5
@@ -9,12 +12,14 @@
 * Remove bigtest
 
 ## [1.1.1](https://github.com/folio-org/ui-quick-marc/tree/v1.1.1) (2020-08-21)
+[Full Changelog](https://github.com/folio-org/ui-quick-marc/compare/v1.1.0...v1.1.1)
 
 ### Bug fixes
 
 * [UIQM-48](https://issues.folio.org/browse/UIQM-48) quickMARC error message for 006 and 007 character length
 
 ## [1.1.0](https://github.com/folio-org/ui-quick-marc/tree/v1.1.0) (2020-08-07)
+[Full Changelog](https://github.com/folio-org/ui-quick-marc/compare/v1.0.0...v1.1.0)
 
 ### Stories
 
