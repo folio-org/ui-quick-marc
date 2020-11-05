@@ -43,7 +43,7 @@
     "record.fixedField.Proj": "Proj",
     "record.error.title.multiple": "Record cannot be saved with more than one field 245.",
     "record.error.title.empty": "Record cannot be saved without field 245.",
-    "record.delete.confirmLabel": "Yes",
+    "record.delete.confirmLabel": "Si",
     "record.delete.message": "Are you sure you want to delete this field?",
     "record.save.error.generic": "Record not saved: Communication problem with server. Please try again.",
     "permission.quick-marc-editor.all": "quickMARC: View, edit",
