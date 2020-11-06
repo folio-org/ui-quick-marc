@@ -2,6 +2,8 @@
 
 ## (in progress)
 
+* [UIQM-61](https://issues.folio.org/browse/UIQM-61) Make field 005 not editable
+
 ## [2.0.0](https://github.com/folio-org/ui-quick-marc/tree/v2.0.0) (2020-10-15)
 [Full Changelog](https://github.com/folio-org/ui-quick-marc/compare/v1.1.0...v2.0.0)
 
