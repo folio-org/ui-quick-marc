@@ -9,30 +9,32 @@ export const isLastRecord = recordRow => {
   );
 };
 
+const READ_ONLY_ROWS = new Set(['001', '005']);
+
 export const isReadOnly = recordRow => (
-  recordRow.tag === '001' || isLastRecord(recordRow)
+  READ_ONLY_ROWS.has(recordRow.tag) || isLastRecord(recordRow)
 );
 
-const INDICATOR_EXEPTION_ROWS = [LEADER_TAG, '001', '002', '003', '004', '005', '006', '007', '008', '009'];
+const INDICATOR_EXEPTION_ROWS = new Set([LEADER_TAG, '001', '002', '003', '004', '005', '006', '007', '008', '009']);
 
-export const hasIndicatorException = recordRow => INDICATOR_EXEPTION_ROWS.includes(recordRow.tag);
+export const hasIndicatorException = recordRow => INDICATOR_EXEPTION_ROWS.has(recordRow.tag);
 
-const ADD_EXCEPTION_ROWS = [LEADER_TAG, '001', '003', '005', '008'];
+const ADD_EXCEPTION_ROWS = new Set([LEADER_TAG, '001', '003', '005', '008']);
 
-export const hasAddException = recordRow => ADD_EXCEPTION_ROWS.includes(recordRow.tag);
+export const hasAddException = recordRow => ADD_EXCEPTION_ROWS.has(recordRow.tag);
 
-const DELETE_EXCEPTION_ROWS = [LEADER_TAG, '001', '003', '005', '008'];
+const DELETE_EXCEPTION_ROWS = new Set([LEADER_TAG, '001', '003', '005', '008']);
 
 export const hasDeleteException = recordRow => (
-  DELETE_EXCEPTION_ROWS.includes(recordRow.tag) || isLastRecord(recordRow)
+  DELETE_EXCEPTION_ROWS.has(recordRow.tag) || isLastRecord(recordRow)
 );
 
-const MOVE_EXCEPTION_ROWS = [LEADER_TAG, '001', '005', '008'];
+const MOVE_EXCEPTION_ROWS = new Set([LEADER_TAG, '001', '005', '008']);
 
 export const hasMoveException = (recordRow, sibling) => (
   !sibling
-  || MOVE_EXCEPTION_ROWS.includes(recordRow.tag)
-  || MOVE_EXCEPTION_ROWS.includes(sibling.tag)
+  || MOVE_EXCEPTION_ROWS.has(recordRow.tag)
+  || MOVE_EXCEPTION_ROWS.has(sibling.tag)
 );
 
 export const isMaterialCharsRecord = recordRow => recordRow.tag === '006';
