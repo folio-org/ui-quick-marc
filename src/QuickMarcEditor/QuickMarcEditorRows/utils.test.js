@@ -8,6 +8,10 @@ describe('QuickMarcEditorRows utils', () => {
       expect(utils.isReadOnly({ tag: '001' })).toBeTruthy();
     });
 
+    it('should be true for tag 005 (Date and Time of Latest Transaction)', () => {
+      expect(utils.isReadOnly({ tag: '005' })).toBeTruthy();
+    });
+
     it('should be true for record end', () => {
       expect(utils.isReadOnly({ tag: '999', indicators: ['f', 'f'] })).toBeTruthy();
     });
