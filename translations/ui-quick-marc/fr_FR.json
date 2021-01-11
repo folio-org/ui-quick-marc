@@ -1,6 +1,6 @@
 {
     "meta.title": "Quick MARC",
-    "record.edit.title": "Edit MARC record - {title}",
+    "record.edit.title": "Modifier la notice MARC - {title}",
     "record.fixedField.Type": "Type",
     "record.fixedField.ELvl": "ELvl",
     "record.fixedField.Srce": "Srce",
