@@ -5,6 +5,7 @@
 
   "record.edit.title": "Edit MARC record - {title}",
 
+  "record.status": "Record status:",
   "record.status.current": "Current",
   "record.status.progress": "In progress",
   "record.status.error": "Error",
