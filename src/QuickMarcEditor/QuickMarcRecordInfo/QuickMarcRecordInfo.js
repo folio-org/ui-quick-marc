@@ -23,7 +23,6 @@ export const QuickMarcRecordInfo = ({ status, updateDate }) => {
       data-test-quick-marc-record-info
     >
       <FormattedMessage id="ui-quick-marc.record.status" />
-      {" "}
       {RECORD_STATUS_LABELS[status]}
       {
         Boolean(updateDate) && (
