@@ -1,7 +1,5 @@
 .quickMarcRecordInfoWrapper {
   & > span {
-    vertical-align: middle;
-    display: inline-block;
-    margin-right: 10px;
+    margin: 0 3px;
   }
 }

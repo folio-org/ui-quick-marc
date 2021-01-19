@@ -5,12 +5,6 @@ export const RECORD_STATUS_CURRENT = 'ACTUAL';
 export const RECORD_STATUS_PROGRESS = 'IN_PROGRESS';
 export const RECORD_STATUS_ERROR = 'ERROR';
 
-export const RECORD_STATUS_COLORS = {
-  [RECORD_STATUS_CURRENT]: 'primary',
-  [RECORD_STATUS_PROGRESS]: 'primary',
-  [RECORD_STATUS_ERROR]: 'red',
-};
-
 export const RECORD_STATUS_LABELS = {
   [RECORD_STATUS_CURRENT]: <FormattedMessage id="ui-quick-marc.record.status.current" />,
   [RECORD_STATUS_PROGRESS]: <FormattedMessage id="ui-quick-marc.record.status.progress" />,
