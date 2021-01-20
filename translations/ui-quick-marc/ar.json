@@ -121,5 +121,6 @@
     "record.status.current": "الحالي",
     "record.status.progress": "قيد التقدم",
     "record.status.error": "خطأ",
-    "record.save.error.illegalFixedLength": "لم يتم حفظ التسجيلة. يرجى التحقق من طول أحرف الحقول الثابتة."
+    "record.save.error.illegalFixedLength": "لم يتم حفظ التسجيلة. يرجى التحقق من طول أحرف الحقول الثابتة.",
+    "record.status": "حالة التسجيلة:"
 }

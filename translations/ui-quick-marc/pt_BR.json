@@ -121,5 +121,6 @@
     "record.status.current": "Atual",
     "record.status.progress": "Em andamento",
     "record.status.error": "Erro",
-    "record.save.error.illegalFixedLength": "Registro não salvo. Verifique o comprimento dos caracteres dos campos fixos."
+    "record.save.error.illegalFixedLength": "Registro não salvo. Verifique o comprimento dos caracteres dos campos fixos.",
+    "record.status": "Status do registro:"
 }
