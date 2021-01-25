@@ -22,7 +22,9 @@ export const QuickMarcRecordInfo = ({ status, updateDate }) => {
       className={styles.quickMarcRecordInfoWrapper}
       data-test-quick-marc-record-info
     >
-      <FormattedMessage id="ui-quick-marc.record.status" />
+      <span>
+        <FormattedMessage id="ui-quick-marc.record.status" />
+      </span>
       {RECORD_STATUS_LABELS[status]}
       {
         Boolean(updateDate) && (
