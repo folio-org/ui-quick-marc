@@ -121,5 +121,6 @@
     "record.status.current": "現在",
     "record.status.progress": "In progress",
     "record.status.error": "エラー",
-    "record.save.error.illegalFixedLength": "Record not saved. Please check the character length of the fixed fields."
+    "record.save.error.illegalFixedLength": "Record not saved. Please check the character length of the fixed fields.",
+    "record.status": "Record status:"
 }

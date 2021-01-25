@@ -121,5 +121,6 @@
     "record.status.current": "Actual",
     "record.status.progress": "En progreso",
     "record.status.error": "Error",
-    "record.save.error.illegalFixedLength": "Registro no guardado. Compruebe la longitud de los caracteres de los campos fijos."
+    "record.save.error.illegalFixedLength": "Registro no guardado. Compruebe la longitud de los caracteres de los campos fijos.",
+    "record.status": "Record status:"
 }

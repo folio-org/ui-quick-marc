@@ -121,5 +121,6 @@
     "record.status.current": "当前",
     "record.status.progress": "进行中",
     "record.status.error": "错误",
-    "record.save.error.illegalFixedLength": "记录未保存。请检查定长字段的字符长度。"
+    "record.save.error.illegalFixedLength": "记录未保存。请检查定长字段的字符长度。",
+    "record.status": "Record status:"
 }

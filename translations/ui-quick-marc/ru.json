@@ -121,5 +121,6 @@
     "record.status.current": "Текущий",
     "record.status.progress": "В обработке",
     "record.status.error": "Error",
-    "record.save.error.illegalFixedLength": "Record not saved. Please check the character length of the fixed fields."
+    "record.save.error.illegalFixedLength": "Record not saved. Please check the character length of the fixed fields.",
+    "record.status": "Record status:"
 }
