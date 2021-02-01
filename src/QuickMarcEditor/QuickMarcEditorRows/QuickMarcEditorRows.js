@@ -1,16 +1,16 @@
-import React, { useCallback, useState } from 'react';
+import React, {
+  useCallback,
+} from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'react-final-form';
-import { FormattedMessage } from 'react-intl';
+import {
+  useIntl,
+} from 'react-intl';
 
 import {
   TextField,
   IconButton,
-  ConfirmationModal,
 } from '@folio/stripes/components';
-import {
-  useModalToggle,
-} from '@folio/stripes-acq-components';
 
 import { ContentField } from './ContentField';
 
@@ -37,37 +37,23 @@ const QuickMarcEditorRows = ({
   fields,
   type,
   subtype,
+  setDeletedRecords,
   mutators: {
     addRecord,
     deleteRecord,
     moveRecord,
   },
 }) => {
-  const [isRemoveModalOpened, toggleRemoveModal] = useModalToggle();
-  const [removeIndex, setRemoveIndex] = useState();
-  const [focusedRowIndex, setFocusedRowIndex] = useState();
+  const intl = useIntl();
 
   const addNewRow = useCallback(({ target }) => {
     addRecord({ index: +target.dataset.index });
   }, [addRecord]);
 
-  const showDeleteConfirmation = useCallback(({ target }) => {
-    setRemoveIndex(+target.dataset.index);
-    toggleRemoveModal();
-    setFocusedRowIndex(+target.dataset.index);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setRemoveIndex]);
-
-  const confirmDeletion = useCallback(() => {
-    deleteRecord({ index: removeIndex });
-    toggleRemoveModal();
-    setFocusedRowIndex(null);
-  }, [deleteRecord, toggleRemoveModal, removeIndex]);
-
-  const closeDeleteConfirmation = useCallback(() => {
-    toggleRemoveModal();
-    setFocusedRowIndex(null);
-  }, [toggleRemoveModal]);
+  const deleteRow = useCallback(({ target }) => {
+    deleteRecord({ index: +target.dataset.index });
+    setDeletedRecords(prevDeletedItems => prevDeletedItems + 1);
+  }, [deleteRecord]);
 
   const moveRow = useCallback(({ target }) => {
     moveRecord({
@@ -86,7 +72,6 @@ const QuickMarcEditorRows = ({
           const withDeleteRowAction = hasDeleteException(recordRow);
           const withMoveUpRowAction = hasMoveException(recordRow, fields[idx - 1]);
           const withMoveDownRowAction = hasMoveException(recordRow, fields[idx + 1]);
-          const isFocusedRow = focusedRowIndex === idx;
 
           const isMaterialCharsField = isMaterialCharsRecord(recordRow);
           const isPhysDescriptionField = isPhysDescriptionRecord(recordRow);
@@ -96,82 +81,66 @@ const QuickMarcEditorRows = ({
           return (
             <div
               key={idx}
-              className={`${styles.quickMarcEditorRow} ${isFocusedRow ? styles.quickMarcFocusedRow : ''}`}
-              data-test-quick-marc-editor-row
+              className={styles.quickMarcEditorRow}
               data-testid="quick-marc-editorid"
             >
               <div className={styles.quickMarcEditorMovingRow}>
                 {
                   !withMoveUpRowAction && (
-                    <FormattedMessage id="ui-quick-marc.record.moveUpRow">
-                      {ariaLabel => (
-                        <IconButton
-                          title={ariaLabel}
-                          ariaLabel={ariaLabel}
-                          data-test-move-up-row
-                          data-index={idx}
-                          data-index-to-switch={idx - 1}
-                          icon="arrow-up"
-                          onClick={moveRow}
-                        />
-                      )}
-                    </FormattedMessage>
+                    <IconButton
+                      title={intl.formatMessage({ id: 'ui-quick-marc.record.moveUpRow' })}
+                      ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.moveUpRow' })}
+                      data-test-move-up-row
+                      data-index={idx}
+                      data-index-to-switch={idx - 1}
+                      icon="arrow-up"
+                      onClick={moveRow}
+                    />
                   )
                 }
                 {
                   !withMoveDownRowAction && (
-                    <FormattedMessage id="ui-quick-marc.record.moveDownRow">
-                      {ariaLabel => (
-                        <IconButton
-                          title={ariaLabel}
-                          ariaLabel={ariaLabel}
-                          data-test-move-down-row
-                          data-index={idx}
-                          data-index-to-switch={idx + 1}
-                          icon="arrow-down"
-                          onClick={moveRow}
-                        />
-                      )}
-                    </FormattedMessage>
+                    <IconButton
+                      title={intl.formatMessage({ id: 'ui-quick-marc.record.moveDownRow' })}
+                      ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.moveDownRow' })}
+                      data-test-move-down-row
+                      data-index={idx}
+                      data-index-to-switch={idx + 1}
+                      icon="arrow-down"
+                      onClick={moveRow}
+                    />
                   )
                 }
               </div>
 
               <div className={styles.quickMarcEditorRowTag}>
-                <FormattedMessage id="ui-quick-marc.record.field">
-                  {ariaLabel => (
-                    <Field
-                      dirty={false}
-                      ariaLabel={ariaLabel}
-                      name={`${name}[${idx}].tag`}
-                      component={TextField}
-                      maxlength={3}
-                      marginBottom0
-                      fullWidth
-                      disabled={isDisabled || !idx}
-                      hasClearIcon={false}
-                    />
-                  )}
-                </FormattedMessage>
+                <Field
+                  dirty={false}
+                  ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.field' })}
+                  name={`${name}[${idx}].tag`}
+                  component={TextField}
+                  maxLength={3}
+                  marginBottom0
+                  fullWidth
+                  disabled={isDisabled || !idx}
+                  hasClearIcon={false}
+                />
+                />
               </div>
 
               <div className={styles.quickMarcEditorRowIndicator}>
                 {
                   withIndicators && (
-                    <FormattedMessage id="ui-quick-marc.record.indicator">
-                      {ariaLabel => (
-                        <Field
-                          dirty={false}
-                          ariaLabel={ariaLabel}
-                          name={`${name}[${idx}].indicators[0]`}
-                          component={IndicatorField}
-                          marginBottom0
-                          fullWidth
-                          disabled={isDisabled}
-                          hasClearIcon={false}
-                        />
-                      )}
-                    </FormattedMessage>
+                    <Field
+                      dirty={false}
+                      ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.indicator' })}
+                      name={`${name}[${idx}].indicators[0]`}
+                      component={IndicatorField}
+                      marginBottom0
+                      fullWidth
+                      disabled={isDisabled}
+                      hasClearIcon={false}
+                    />
                   )
                 }
               </div>
@@ -179,20 +148,16 @@ const QuickMarcEditorRows = ({
               <div className={styles.quickMarcEditorRowIndicator}>
                 {
                   withIndicators && (
-                    <FormattedMessage id="ui-quick-marc.record.indicator">
-                      {ariaLabel => (
-                        <Field
-                          dirty={false}
-                          ariaLabel={ariaLabel}
-                          name={`${name}[${idx}].indicators[1]`}
-                          component={IndicatorField}
-                          marginBottom0
-                          fullWidth
-                          disabled={isDisabled}
-                          hasClearIcon={false}
-                        />
-                      )}
-                    </FormattedMessage>
+                    <Field
+                      dirty={false}
+                      ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.indicator' })}
+                      name={`${name}[${idx}].indicators[1]`}
+                      component={IndicatorField}
+                      marginBottom0
+                      fullWidth
+                      disabled={isDisabled}
+                      hasClearIcon={false}
+                    />
                   )
                 }
               </div>
@@ -224,18 +189,14 @@ const QuickMarcEditorRows = ({
 
                 {
                   isContentField && (
-                    <FormattedMessage id="ui-quick-marc.record.subfield">
-                      {ariaLabel => (
-                        <Field
-                          dirty={false}
-                          ariaLabel={ariaLabel}
-                          name={`${name}[${idx}].content`}
-                          component={ContentField}
-                          marginBottom0
-                          disabled={isDisabled}
-                        />
-                      )}
-                    </FormattedMessage>
+                    <Field
+                      dirty={false}
+                      aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
+                      name={`${name}[${idx}].content`}
+                      component={ContentField}
+                      marginBottom0
+                      disabled={isDisabled}
+                    />
                   )
                 }
               </div>
@@ -243,34 +204,26 @@ const QuickMarcEditorRows = ({
               <div className={styles.quickMarcEditorActions}>
                 {
                   !withAddRowAction && (
-                    <FormattedMessage id="ui-quick-marc.record.addField">
-                      {ariaLabel => (
-                        <IconButton
-                          title={ariaLabel}
-                          ariaLabel={ariaLabel}
-                          data-test-add-row
-                          data-index={idx}
-                          icon="plus-sign"
-                          onClick={addNewRow}
-                        />
-                      )}
-                    </FormattedMessage>
+                    <IconButton
+                      title={intl.formatMessage({ id: 'ui-quick-marc.record.addField' })}
+                      ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.addField' })}
+                      data-test-add-row
+                      data-index={idx}
+                      icon="plus-sign"
+                      onClick={addNewRow}
+                    />
                   )
                 }
                 {
                   !withDeleteRowAction && (
-                    <FormattedMessage id="ui-quick-marc.record.deleteField">
-                      {ariaLabel => (
-                        <IconButton
-                          title={ariaLabel}
-                          ariaLabel={ariaLabel}
-                          data-test-remove-row
-                          data-index={idx}
-                          icon="trash"
-                          onClick={showDeleteConfirmation}
-                        />
-                      )}
-                    </FormattedMessage>
+                    <IconButton
+                      title={intl.formatMessage({ id: 'ui-quick-marc.record.deleteField' })}
+                      ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.deleteField' })}
+                      data-testid={`data-test-remove-row-${idx}`}
+                      data-index={idx}
+                      icon="trash"
+                      onClick={deleteRow}
+                    />
                   )
                 }
               </div>
@@ -278,17 +231,6 @@ const QuickMarcEditorRows = ({
           );
         })
       }
-      {isRemoveModalOpened && (
-        <ConfirmationModal
-          id="delete-row-confirmation"
-          confirmLabel={<FormattedMessage id="ui-quick-marc.record.delete.confirmLabel" />}
-          heading={<FormattedMessage id="ui-quick-marc.record.delete.title" />}
-          message={<FormattedMessage id="ui-quick-marc.record.delete.message" />}
-          onCancel={closeDeleteConfirmation}
-          onConfirm={confirmDeletion}
-          open
-        />
-      )}
     </>
   );
 };
@@ -303,6 +245,7 @@ QuickMarcEditorRows.propTypes = {
     indicators: PropTypes.arrayOf(PropTypes.string),
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   })),
+  setDeletedRecords: PropTypes.func.isRequired,
   mutators: PropTypes.shape({
     addRecord: PropTypes.func.isRequired,
     deleteRecord: PropTypes.func.isRequired,

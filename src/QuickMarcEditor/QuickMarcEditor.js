@@ -13,10 +13,12 @@ import {
   Row,
   Col,
   HotKeys,
+  ConfirmationModal,
+  PaneFooter,
+  Button,
 } from '@folio/stripes/components';
-import {
-  FormFooter,
-} from '@folio/stripes-acq-components';
+import SafeHTMLMessage from '@folio/react-intl-safe-html';
+
 import { FormSpy } from 'react-final-form';
 
 import { QuickMarcRecordInfo } from './QuickMarcRecordInfo';
@@ -40,18 +42,70 @@ const QuickMarcEditor = ({
   submitting,
   pristine,
   initialValues,
-  form: { mutators },
+  form: {
+    mutators,
+    reset,
+  },
 }) => {
   const [records, setRecords] = useState([]);
-  const paneFooter = useMemo(() => (
-    <FormFooter
-      id="quick-marc-record-save"
-      handleSubmit={handleSubmit}
-      onCancel={onClose}
-      submitting={submitting}
-      pristine={pristine}
+  const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
+  const [deletedRecords, setDeletedRecords] = useState(0);
+
+  const confirmSubmit = (props) => {
+    if (deletedRecords) {
+      setIsDeleteModalOpened(true);
+      return;
+    }
+
+    handleSubmit(props);
+  };
+
+  const paneFooter = useMemo(() => {
+    const start = (
+      <Button
+        buttonStyle="default mega"
+        onClick={onClose}
+      >
+        <FormattedMessage id="stripes-acq-components.FormFooter.cancel" />
+      </Button>
+    );
+
+    const end = (
+      <Button
+        buttonStyle="primary mega"
+        disabled={pristine || submitting}
+        id="quick-marc-record-save"
+        onClick={confirmSubmit}
+      >
+        <FormattedMessage id="stripes-acq-components.FormFooter.save" />
+      </Button>
+    );
+
+    return (
+      <PaneFooter
+        renderStart={start}
+        renderEnd={end}
+      />
+    )
+  }, [onClose, confirmSubmit, pristine, submitting]);
+
+  const confirmModalMessage = () => (
+    <SafeHTMLMessage
+      id="ui-quick-marc.record.delete.message"
+      values={{ count: deletedRecords }}
     />
-  ), [onClose, handleSubmit, submitting, pristine]);
+  );
+
+  const onConfirmModal = (props) => {
+    setIsDeleteModalOpened(false);
+    handleSubmit(props);
+  };
+
+  const onCancelModal = () => {
+    setIsDeleteModalOpened(false);
+    setDeletedRecords(0);
+    reset();
+  };
 
   const changeRecords = useCallback(({ values }) => {
     if (
@@ -105,12 +159,22 @@ const QuickMarcEditor = ({
                   mutators={mutators}
                   type={initialValues?.leader[6]}
                   subtype={initialValues?.leader[7]}
+                  setDeletedRecords={setDeletedRecords}
                 />
               </Col>
             </Row>
           </Pane>
         </Paneset>
       </form>
+      <ConfirmationModal
+        id="quick-marc-confirm-modal"
+        open={isDeleteModalOpened}
+        heading={<FormattedMessage id="ui-quick-marc.record.delete.title" />}
+        message={confirmModalMessage()}
+        confirmLabel={<FormattedMessage id="ui-quick-marc.record.delete.confirmLabel" />}
+        onConfirm={onConfirmModal}
+        onCancel={onCancelModal}
+      />
       <FormSpy
         subscription={spySubscription}
         onChange={changeRecords}
