@@ -53,7 +53,7 @@ const QuickMarcEditorRows = ({
   const deleteRow = useCallback(({ target }) => {
     deleteRecord({ index: +target.dataset.index });
     setDeletedRecords(prevDeletedItems => prevDeletedItems + 1);
-  }, [deleteRecord]);
+  }, [deleteRecord, setDeletedRecords]);
 
   const moveRow = useCallback(({ target }) => {
     moveRecord({
@@ -124,7 +124,6 @@ const QuickMarcEditorRows = ({
                   fullWidth
                   disabled={isDisabled || !idx}
                   hasClearIcon={false}
-                />
                 />
               </div>
 

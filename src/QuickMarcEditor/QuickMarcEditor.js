@@ -51,14 +51,15 @@ const QuickMarcEditor = ({
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const [deletedRecords, setDeletedRecords] = useState(0);
 
-  const confirmSubmit = (props) => {
+  const confirmSubmit = useCallback((props) => {
     if (deletedRecords) {
       setIsDeleteModalOpened(true);
+
       return;
     }
 
     handleSubmit(props);
-  };
+  }, [deletedRecords]);
 
   const paneFooter = useMemo(() => {
     const start = (
@@ -86,7 +87,7 @@ const QuickMarcEditor = ({
         renderStart={start}
         renderEnd={end}
       />
-    )
+    );
   }, [onClose, confirmSubmit, pristine, submitting]);
 
   const confirmModalMessage = () => (
@@ -192,6 +193,7 @@ QuickMarcEditor.propTypes = {
   initialValues: PropTypes.object.isRequired,
   form: PropTypes.shape({
     mutators: PropTypes.object.isRequired,
+    reset: PropTypes.func.isRequired,
   }),
 };
 
