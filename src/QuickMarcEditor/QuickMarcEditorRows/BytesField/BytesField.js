@@ -10,6 +10,8 @@ import {
   Select,
 } from '@folio/stripes/components';
 
+import { FIXED_FIELD_MAX_LENGTH } from '../../../common/constants';
+
 import styles from './BytesField.css';
 
 export const SUBFIELD_TYPES = {
@@ -47,7 +49,7 @@ const renderSubField = (name, config) => {
                             ariaLabel={ariaLabel}
                             name={`${fieldName}[${idx}]`}
                             component={TextField}
-                            maxlength={1}
+                            maxlength={FIXED_FIELD_MAX_LENGTH}
                             disabled={config.disabled}
                             className={styles.fixedFieldSubFieldByte}
                             hasClearIcon={false}
@@ -87,6 +89,8 @@ const renderSubField = (name, config) => {
     );
   }
 
+  const getMaxLengthByType = () => (config.type === SUBFIELD_TYPES.BYTE ? FIXED_FIELD_MAX_LENGTH : undefined);
+
   return (
     <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`}>
       {ariaLabel => (
@@ -97,7 +101,7 @@ const renderSubField = (name, config) => {
           label={label}
           component={TextField}
           disabled={config.disabled}
-          maxlength={config.type === SUBFIELD_TYPES.BYTE ? 1 : undefined}
+          maxlength={getMaxLengthByType()}
           className={styles[`bytesFieldSubField${config.type}`]}
           hasClearIcon={false}
           data-testid={`fixed-field-${config.type}`}

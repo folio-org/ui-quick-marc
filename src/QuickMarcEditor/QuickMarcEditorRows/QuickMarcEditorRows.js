@@ -13,7 +13,6 @@ import {
 } from '@folio/stripes/components';
 
 import { ContentField } from './ContentField';
-
 import { IndicatorField } from './IndicatorField';
 import { MaterialCharsFieldFactory } from './MaterialCharsField';
 import { PhysDescriptionFieldFactory } from './PhysDescriptionField';
@@ -24,11 +23,11 @@ import {
   hasAddException,
   hasDeleteException,
   hasMoveException,
-
   isMaterialCharsRecord,
   isPhysDescriptionRecord,
   isFixedFieldRow,
 } from './utils';
+import { TAG_FIELD_MAX_LENGTH } from '../../common/constants';
 
 import styles from './QuickMarcEditorRows.css';
 
@@ -37,7 +36,7 @@ const QuickMarcEditorRows = ({
   fields,
   type,
   subtype,
-  setDeletedRecords,
+  setDeletedRecordsCount,
   mutators: {
     addRecord,
     deleteRecord,
@@ -47,18 +46,18 @@ const QuickMarcEditorRows = ({
   const intl = useIntl();
 
   const addNewRow = useCallback(({ target }) => {
-    addRecord({ index: +target.dataset.index });
+    addRecord({ index: parseInt(target.dataset.index, 10) });
   }, [addRecord]);
 
   const deleteRow = useCallback(({ target }) => {
-    deleteRecord({ index: +target.dataset.index });
-    setDeletedRecords(prevDeletedItems => prevDeletedItems + 1);
-  }, [deleteRecord, setDeletedRecords]);
+    deleteRecord({ index: parseInt(target.dataset.index, 10) });
+    setDeletedRecordsCount(prevDeletedItems => prevDeletedItems + 1);
+  }, [deleteRecord, setDeletedRecordsCount]);
 
   const moveRow = useCallback(({ target }) => {
     moveRecord({
       index: +target.dataset.index,
-      indexToSwitch: +target.dataset.indexToSwitch,
+      indexToSwitch: parseInt(target.dataset.indexToSwitch, 10),
     });
   }, [moveRecord]);
 
@@ -119,7 +118,7 @@ const QuickMarcEditorRows = ({
                   ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.field' })}
                   name={`${name}[${idx}].tag`}
                   component={TextField}
-                  maxLength={3}
+                  maxLength={TAG_FIELD_MAX_LENGTH}
                   marginBottom0
                   fullWidth
                   disabled={isDisabled || !idx}
@@ -244,7 +243,7 @@ QuickMarcEditorRows.propTypes = {
     indicators: PropTypes.arrayOf(PropTypes.string),
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   })),
-  setDeletedRecords: PropTypes.func.isRequired,
+  setDeletedRecordsCount: PropTypes.func.isRequired,
   mutators: PropTypes.shape({
     addRecord: PropTypes.func.isRequired,
     deleteRecord: PropTypes.func.isRequired,

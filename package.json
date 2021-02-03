@@ -72,7 +72,6 @@
   },
   "dependencies": {
     "@folio/stripes-acq-components": "^2.1.0",
-    "@folio/react-intl-safe-html": "^3.0.0",
     "final-form": "^4.18.2",
     "final-form-arrays": "^3.0.1",
     "lodash": "^4.17.5",

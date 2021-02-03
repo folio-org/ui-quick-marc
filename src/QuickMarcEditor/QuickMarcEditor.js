@@ -17,7 +17,6 @@ import {
   PaneFooter,
   Button,
 } from '@folio/stripes/components';
-import SafeHTMLMessage from '@folio/react-intl-safe-html';
 
 import { FormSpy } from 'react-final-form';
 
@@ -49,17 +48,17 @@ const QuickMarcEditor = ({
 }) => {
   const [records, setRecords] = useState([]);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
-  const [deletedRecords, setDeletedRecords] = useState(0);
+  const [deletedRecordsCount, setDeletedRecordsCount] = useState(0);
 
   const confirmSubmit = useCallback((props) => {
-    if (deletedRecords) {
+    if (deletedRecordsCount) {
       setIsDeleteModalOpened(true);
 
       return;
     }
 
     handleSubmit(props);
-  }, [deletedRecords]);
+  }, [deletedRecordsCount]);
 
   const paneFooter = useMemo(() => {
     const start = (
@@ -91,9 +90,9 @@ const QuickMarcEditor = ({
   }, [onClose, confirmSubmit, pristine, submitting]);
 
   const confirmModalMessage = () => (
-    <SafeHTMLMessage
+    <FormattedMessage
       id="ui-quick-marc.record.delete.message"
-      values={{ count: deletedRecords }}
+      values={{ count: deletedRecordsCount }}
     />
   );
 
@@ -104,7 +103,7 @@ const QuickMarcEditor = ({
 
   const onCancelModal = () => {
     setIsDeleteModalOpened(false);
-    setDeletedRecords(0);
+    setDeletedRecordsCount(0);
     reset();
   };
 
@@ -160,7 +159,7 @@ const QuickMarcEditor = ({
                   mutators={mutators}
                   type={initialValues?.leader[6]}
                   subtype={initialValues?.leader[7]}
-                  setDeletedRecords={setDeletedRecords}
+                  setDeletedRecordsCount={setDeletedRecordsCount}
                 />
               </Col>
             </Row>
