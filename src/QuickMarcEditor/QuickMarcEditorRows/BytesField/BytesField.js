@@ -89,7 +89,7 @@ const renderSubField = (name, config) => {
     );
   }
 
-  const getMaxLengthByType = () => (config.type === SUBFIELD_TYPES.BYTE ? FIXED_FIELD_MAX_LENGTH : undefined);
+  const getMaxLengthByType = config.type === SUBFIELD_TYPES.BYTE ? FIXED_FIELD_MAX_LENGTH : undefined;
 
   return (
     <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`}>
@@ -101,7 +101,7 @@ const renderSubField = (name, config) => {
           label={label}
           component={TextField}
           disabled={config.disabled}
-          maxlength={getMaxLengthByType()}
+          maxlength={getMaxLengthByType}
           className={styles[`bytesFieldSubField${config.type}`]}
           hasClearIcon={false}
           data-testid={`fixed-field-${config.type}`}
