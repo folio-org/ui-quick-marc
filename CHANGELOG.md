@@ -2,6 +2,7 @@
 
 ## (in progress)
 * [UIQM-67](https://issues.folio.org/browse/UIQM-61) Update display of record status
+* [UIQM-72](https://issues.folio.org/browse/UIQM-72) Change delete row behavior
 
 ## [2.0.1](https://github.com/folio-org/ui-quick-marc/tree/v2.0.1) (2020-11-11)
 [Full Changelog](https://github.com/folio-org/ui-quick-marc/compare/v2.0.0...v2.0.1)
