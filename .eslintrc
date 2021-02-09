@@ -1,4 +1,4 @@
 {
   "parser": "babel-eslint",
-  "extends": ["./node_modules/@folio/stripes-acq-components/.eslintrc"]
+  "extends": ["@folio/eslint-config-stripes/acquisitions"]
 }

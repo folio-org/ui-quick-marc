@@ -58,7 +58,7 @@ const QuickMarcEditor = ({
     }
 
     handleSubmit(props);
-  }, [deletedRecordsCount]);
+  }, [deletedRecordsCount, handleSubmit]);
 
   const paneFooter = useMemo(() => {
     const start = (
