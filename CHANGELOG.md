@@ -3,6 +3,8 @@
 ## (in progress)
 * [UIQM-67](https://issues.folio.org/browse/UIQM-61) Update display of record status
 * [UIQM-72](https://issues.folio.org/browse/UIQM-72) Change delete row behavior
+* [UIQM-70](https://issues.folio.org/browse/UIQM-70) Update stripes to v6.0.0
+* [UIQM-75](https://issues.folio.org/browse/UIQM-75) Update stripes-cli to v2
 
 ## [2.0.1](https://github.com/folio-org/ui-quick-marc/tree/v2.0.1) (2020-11-11)
 [Full Changelog](https://github.com/folio-org/ui-quick-marc/compare/v2.0.0...v2.0.1)
