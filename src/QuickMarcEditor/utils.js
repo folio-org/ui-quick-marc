@@ -6,7 +6,12 @@ import {
   isMaterialCharsRecord,
   isPhysDescriptionRecord,
 } from './QuickMarcEditorRows/utils';
-import { LEADER_TAG } from './constants';
+import {
+  LEADER_TAG,
+  FIELD_TAGS_TO_REMOVE,
+  QUICK_MARC_ACTIONS,
+} from './constants';
+import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 
 export const dehydrateMarcRecordResponse = marcRecordResponse => ({
   ...marcRecordResponse,
@@ -23,6 +28,49 @@ export const dehydrateMarcRecordResponse = marcRecordResponse => ({
     })),
   ],
 });
+
+const removeMarcRecordFieldContentForDuplication = marcRecord => {
+  const shouldRemoveFieldContent = (field) => {
+    if (!FIELD_TAGS_TO_REMOVE.includes(field.tag)) {
+      return false;
+    }
+
+    const [firstIndicator, secondIndicator] = (field.indicators || []);
+    if (field.tag === '999') {
+      if (firstIndicator === 'f' && secondIndicator === 'f') {
+        return true;
+      }
+
+      return false;
+    }
+
+    return true;
+  };
+
+  return {
+    ...marcRecord,
+    records: marcRecord.records.map(field => shouldRemoveFieldContent(field)
+      ? {
+        ...field,
+        content: '',
+      }
+      : field
+    ),
+  };
+};
+
+export const formatMarcRecordByQuickMarcAction = (marcRecord, action) => {
+  if (action === QUICK_MARC_ACTIONS.EDIT) {
+    return marcRecord;
+  } else if (action === QUICK_MARC_ACTIONS.DUPLICATE) {
+    return {
+      ...removeMarcRecordFieldContentForDuplication(marcRecord),
+      updateInfo: {
+        recordState: RECORD_STATUS_NEW,
+      },
+    };
+  }
+};
 
 export const hydrateMarcRecord = marcRecord => ({
   ...marcRecord,

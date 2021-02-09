@@ -4,8 +4,10 @@
   "permission.quick-marc-editor.all": "quickMARC: View, edit",
 
   "record.edit.title": "Edit MARC record - {title}",
+  "record.duplicate.title": "Create a new MARC bib record",
 
   "record.status": "Record status:",
+  "record.status.new": "New",
   "record.status.current": "Current",
   "record.status.progress": "In progress",
   "record.status.error": "Error",

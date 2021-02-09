@@ -34,6 +34,7 @@ const hotKeys = {
 };
 
 const QuickMarcEditor = ({
+  action,
   instance,
   onClose,
   handleSubmit,
@@ -84,7 +85,10 @@ const QuickMarcEditor = ({
             dismissible
             onClose={onClose}
             defaultWidth="100%"
-            paneTitle={instance ? <FormattedMessage id="ui-quick-marc.record.edit.title" values={instance} /> : ''}
+            paneTitle={instance
+              ? <FormattedMessage id={`ui-quick-marc.record.${action}.title`} values={instance} />
+              : ''
+            }
             paneSub={(
               <QuickMarcRecordInfo
                 status={initialValues?.updateInfo?.recordState}
@@ -120,6 +124,7 @@ const QuickMarcEditor = ({
 };
 
 QuickMarcEditor.propTypes = {
+  action: PropTypes.string.isRequired,
   instance: PropTypes.object,
   onClose: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,

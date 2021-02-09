@@ -21,12 +21,19 @@ import {
 
 import {
   dehydrateMarcRecordResponse,
+  formatMarcRecordByQuickMarcAction,
   hydrateMarcRecord,
   validateMarcRecord,
 } from './utils';
+import { QUICK_MARC_ACTIONS } from './constants'
 import QuickMarcEditor from './QuickMarcEditor';
 
-const QuickMarcEditorContainer = ({ mutator, match, onClose }) => {
+const QuickMarcEditorContainer = ({
+  mutator,
+  match,
+  onClose,
+  action = QUICK_MARC_ACTIONS.EDIT,
+}) => {
   const instanceId = match.params.instanceId;
 
   const [instance, setInstance] = useState();
@@ -43,8 +50,10 @@ const QuickMarcEditorContainer = ({ mutator, match, onClose }) => {
 
     Promise.all([instancePromise, marcRecordPromise])
       .then(([instanceResponse, marcRecordResponse]) => {
+        const marcRecord = formatMarcRecordByQuickMarcAction(dehydrateMarcRecordResponse(marcRecordResponse), action);
+        
         setInstance(instanceResponse);
-        setMarcRecord(dehydrateMarcRecordResponse(marcRecordResponse));
+        setMarcRecord(marcRecord);
       })
       .catch(() => {
         setInstance();
@@ -113,6 +122,7 @@ const QuickMarcEditorContainer = ({ mutator, match, onClose }) => {
       onClose={closeEditor}
       initialValues={marcRecord}
       onSubmit={onSubmit}
+      action={action}
     />
   );
 };
@@ -142,6 +152,7 @@ QuickMarcEditorContainer.manifest = Object.freeze({
 });
 
 QuickMarcEditorContainer.propTypes = {
+  action: PropTypes.string,
   mutator: PropTypes.object.isRequired,
   match: ReactRouterPropTypes.match.isRequired,
   onClose: PropTypes.func.isRequired,
