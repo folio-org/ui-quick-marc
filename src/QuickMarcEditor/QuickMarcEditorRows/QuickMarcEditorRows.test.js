@@ -1,6 +1,10 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { render, cleanup } from '@testing-library/react';
+import {
+  render,
+  cleanup,
+  fireEvent,
+} from '@testing-library/react';
 import { Form } from 'react-final-form';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
@@ -42,6 +46,8 @@ const values = [
   },
 ];
 
+const setDeletedRecordsCount = jest.fn();
+
 const renderQuickMarcEditorRows = ({ fields }) => (render(
   <MemoryRouter>
     <Form
@@ -56,6 +62,8 @@ const renderQuickMarcEditorRows = ({ fields }) => (render(
             deleteRecord: jest.fn(),
             moveRecord: jest.fn(),
           }}
+          subtype="test"
+          setDeletedRecordsCount={setDeletedRecordsCount}
         />
       )}
     />
@@ -110,5 +118,26 @@ describe('Given Quick Marc Editor Rows', () => {
     isFixedRowSpy.mockRestore();
     isMaterialCharsRecordSpy.mockRestore();
     isPhysDescriptionRecordSpy.mockRestore();
+  });
+
+  describe('Deleting rows', () => {
+    it('should call setDeletedRecords 2 times', () => {
+      const { getAllByTestId } = renderQuickMarcEditorRows({
+        fields: {
+          map: cb => values.map((value, idx) => cb(`records[${idx}]`, idx)),
+          value: values,
+        },
+      });
+
+      const testIdx1 = 0;
+      const testIdx2 = 1;
+      const deleteIcon1 = getAllByTestId(`data-test-remove-row-${testIdx1}`);
+      const deleteIcon2 = getAllByTestId(`data-test-remove-row-${testIdx2}`);
+
+      fireEvent.click(deleteIcon1[1]);
+      fireEvent.click(deleteIcon2[1]);
+
+      expect(setDeletedRecordsCount).toHaveBeenCalledTimes(2);
+    });
   });
 });

@@ -54,7 +54,7 @@
     "record.subfield": "Подполе",
     "record.addField": "Добавить новое поле",
     "record.deleteField": "Удалить это поле",
-    "record.delete.title": "Delete field",
+    "record.delete.title": "Delete fields",
     "record.error.leader.length": "Запись не может быть сохранена. Маркер записи должен содержать 24 символа, включая символы пробела.",
     "record.error.leader.forbiddenBytes": "Запись не может быть сохранена. Пожалуйста, проверьте Маркер записи. Доступны для редактирования только позиции 5, 8, 17, 18 и/или 19 Маркера записи.",
     "record.collapseRow": "Свернуть строку",
