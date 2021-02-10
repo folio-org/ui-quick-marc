@@ -36,6 +36,7 @@ const removeMarcRecordFieldContentForDuplication = marcRecord => {
     }
 
     const [firstIndicator, secondIndicator] = (field.indicators || []);
+
     if (field.tag === '999') {
       if (firstIndicator === 'f' && secondIndicator === 'f') {
         return true;
@@ -49,20 +50,18 @@ const removeMarcRecordFieldContentForDuplication = marcRecord => {
 
   return {
     ...marcRecord,
-    records: marcRecord.records.map(field => shouldRemoveFieldContent(field)
+    records: marcRecord.records.map(field => (shouldRemoveFieldContent(field)
       ? {
         ...field,
         content: '',
       }
       : field
-    ),
+    )),
   };
 };
 
 export const formatMarcRecordByQuickMarcAction = (marcRecord, action) => {
-  if (action === QUICK_MARC_ACTIONS.EDIT) {
-    return marcRecord;
-  } else if (action === QUICK_MARC_ACTIONS.DUPLICATE) {
+  if (action === QUICK_MARC_ACTIONS.DUPLICATE) {
     return {
       ...removeMarcRecordFieldContentForDuplication(marcRecord),
       updateInfo: {
@@ -70,6 +69,8 @@ export const formatMarcRecordByQuickMarcAction = (marcRecord, action) => {
       },
     };
   }
+
+  return marcRecord;
 };
 
 export const hydrateMarcRecord = marcRecord => ({

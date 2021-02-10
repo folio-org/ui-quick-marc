@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {
   Switch,
@@ -11,6 +11,7 @@ import {
 import {
   QUICK_MARC_ACTIONS,
 } from './QuickMarcEditor/constants';
+
 const QuickMarc = ({ basePath, onClose }) => {
   const routesConfig = [
     {
@@ -18,7 +19,7 @@ const QuickMarc = ({ basePath, onClose }) => {
       permission: 'records-editor.records.item.put',
       props: {
         action: QUICK_MARC_ACTIONS.EDIT,
-      }
+      },
     },
     {
       path: `${basePath}/duplicate/:instanceId`,
@@ -51,9 +52,11 @@ const QuickMarc = ({ basePath, onClose }) => {
     </div>
   );
 };
+
 QuickMarc.propTypes = {
   basePath: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   action: PropTypes.string,
 };
+
 export default QuickMarc;

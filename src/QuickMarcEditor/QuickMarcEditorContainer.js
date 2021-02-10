@@ -25,7 +25,7 @@ import {
   hydrateMarcRecord,
   validateMarcRecord,
 } from './utils';
-import { QUICK_MARC_ACTIONS } from './constants'
+import { QUICK_MARC_ACTIONS } from './constants';
 import QuickMarcEditor from './QuickMarcEditor';
 
 const QuickMarcEditorContainer = ({
@@ -50,10 +50,11 @@ const QuickMarcEditorContainer = ({
 
     Promise.all([instancePromise, marcRecordPromise])
       .then(([instanceResponse, marcRecordResponse]) => {
-        const marcRecord = formatMarcRecordByQuickMarcAction(dehydrateMarcRecordResponse(marcRecordResponse), action);
-        
+        const dehydratedMarcRecord = dehydrateMarcRecordResponse(marcRecordResponse);
+        const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, action);
+
         setInstance(instanceResponse);
-        setMarcRecord(marcRecord);
+        setMarcRecord(formattedMarcRecord);
       })
       .catch(() => {
         setInstance();

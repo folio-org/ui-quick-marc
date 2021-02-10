@@ -27,6 +27,7 @@ const getInstance = () => ({
 const renderQuickMarcEditor = ({ instance, onClose, onSubmit, mutators }) => (render(
   <MemoryRouter>
     <QuickMarcEditor
+      action="edit"
       instance={instance}
       onClose={onClose}
       onSubmit={onSubmit}
