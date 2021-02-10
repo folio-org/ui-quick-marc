@@ -5,12 +5,8 @@ import {
   Route,
 } from 'react-router-dom';
 import { IfPermission } from '@folio/stripes/core';
-import {
-  QuickMarcEditorContainer,
-} from './QuickMarcEditor';
-import {
-  QUICK_MARC_ACTIONS,
-} from './QuickMarcEditor/constants';
+import { QuickMarcEditorContainer } from './QuickMarcEditor';
+import { QUICK_MARC_ACTIONS } from './QuickMarcEditor/constants';
 
 const QuickMarc = ({ basePath, onClose }) => {
   const routesConfig = [
