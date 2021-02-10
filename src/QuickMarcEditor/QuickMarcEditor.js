@@ -76,6 +76,7 @@ const QuickMarcEditor = ({
         buttonStyle="primary mega"
         disabled={pristine || submitting}
         id="quick-marc-record-save"
+        data-testid="quick-marc-record-save"
         onClick={confirmSubmit}
       >
         <FormattedMessage id="stripes-acq-components.FormFooter.save" />

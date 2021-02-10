@@ -34,7 +34,7 @@ const QuickMarc = ({ basePath, onClose }) => {
     <div data-test-quick-marc>
       <Switch>
         {
-          routesConfig.map(({ path, permission, props: routeProps = {} }) => ((
+          routesConfig.map(({ path, permission, props: routeProps = {} }) => (
             <Route
               path={path}
               render={() => (
@@ -46,7 +46,7 @@ const QuickMarc = ({ basePath, onClose }) => {
                 </IfPermission>
               )}
             />
-          )))
+          ))
         }
       </Switch>
     </div>
@@ -56,7 +56,6 @@ const QuickMarc = ({ basePath, onClose }) => {
 QuickMarc.propTypes = {
   basePath: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
-  action: PropTypes.string,
 };
 
 export default QuickMarc;
