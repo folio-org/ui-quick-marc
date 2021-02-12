@@ -50,7 +50,7 @@ const removeMarcRecordFieldContentForDuplication = marcRecord => {
 
   return {
     ...marcRecord,
-    records: marcRecord.records.map(field => (shouldRemoveFieldContent(field)
+    records: marcRecord.records.map((field) => (shouldRemoveFieldContent(field)
       ? {
         ...field,
         content: '',

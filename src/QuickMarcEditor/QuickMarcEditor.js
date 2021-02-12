@@ -140,7 +140,12 @@ const QuickMarcEditor = ({
             onClose={onClose}
             defaultWidth="100%"
             paneTitle={instance
-              ? <FormattedMessage id={`ui-quick-marc.record.${action}.title`} values={instance} />
+              ? (
+                <FormattedMessage
+                  id={`ui-quick-marc.record.${action}.title`}
+                  values={instance}
+                />
+              )
               : ''
             }
             paneSub={(

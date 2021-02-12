@@ -41,7 +41,12 @@ const getInstance = () => ({
   title: 'ui-quick-marc.record.edit.title',
 });
 
-const renderQuickMarcEditor = ({ instance, onClose, onSubmit, mutators }) => (render(
+const renderQuickMarcEditor = ({
+  instance,
+  onClose,
+  onSubmit,
+  mutators,
+}) => (render(
   <MemoryRouter>
     <QuickMarcEditor
       action="edit"
@@ -108,7 +113,10 @@ describe('Given Quick Marc Editor', () => {
   describe('When deleting a row', () => {
     it('Then it should not display ConfirmationModal', () => {
       const instance = getInstance();
-      const { getByText, queryByText } = renderQuickMarcEditor({
+      const {
+        getByText,
+        queryByText,
+      } = renderQuickMarcEditor({
         instance,
         onClose: jest.fn(),
         onSubmit: jest.fn(),

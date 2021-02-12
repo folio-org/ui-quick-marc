@@ -2,7 +2,10 @@
 
 import React from 'react';
 import { Router } from 'react-router-dom';
-import { render, cleanup } from '@testing-library/react';
+import {
+  render,
+  cleanup,
+} from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
@@ -15,7 +18,11 @@ jest.mock('./QuickMarcEditor', () => {
   };
 });
 
-const renderQuickMarc = ({ basePath, onClose, history }) => (render(
+const renderQuickMarc = ({
+  basePath,
+  onClose,
+  history,
+}) => (render(
   <Router history={history}>
     <QuickMarc
       onClose={onClose}

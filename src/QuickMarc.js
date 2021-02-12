@@ -30,7 +30,11 @@ const QuickMarc = ({ basePath, onClose }) => {
     <div data-test-quick-marc>
       <Switch>
         {
-          routesConfig.map(({ path, permission, props: routeProps = {} }) => (
+          routesConfig.map(({
+            path,
+            permission,
+            props: routeProps = {},
+          }) => (
             <Route
               path={path}
               render={() => (
