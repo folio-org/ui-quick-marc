@@ -1,6 +1,10 @@
 import faker from 'faker';
 
-import { LEADER_TAG } from './constants';
+import {
+  LEADER_TAG,
+  QUICK_MARC_ACTIONS,
+} from './constants';
+import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import * as utils from './utils';
 
 jest.mock('uuid', () => {
@@ -412,6 +416,64 @@ describe('QuickMarcEditor utils', () => {
       ];
 
       expect(utils.shouldRecordsUpdate(prevRecords, newRecords)).toBeTruthy();
+    });
+  });
+
+  describe('formatMarcRecordByQuickMarcAction', () => {
+    it('should return original record if action is not "duplicate"', () => {
+      const record = {
+        records: [{
+          tag: '001',
+          content: 'some content',
+        }],
+      };
+
+      expect(utils.formatMarcRecordByQuickMarcAction(record, QUICK_MARC_ACTIONS.EDIT)).toEqual(record);
+    });
+
+    it('should return record without 001, 005 and 999ff fields and no updateInfo if action is "duplicate"', () => {
+      const record = {
+        records: [{
+          tag: '001',
+          content: 'some content',
+        }, {
+          tag: '005',
+          content: 'some content',
+        }, {
+          tag: '201',
+          content: 'some content',
+        }, {
+          tag: '999',
+          indicators: ['f', 'f'],
+          content: 'some content',
+        }],
+        updateInfo: {
+          recordState: 'actual',
+          updateDate: '01/01/1970',
+        },
+      };
+
+      const expectedRecord = {
+        records: [{
+          tag: '001',
+          content: '',
+        }, {
+          tag: '005',
+          content: '',
+        }, {
+          tag: '201',
+          content: 'some content',
+        }, {
+          tag: '999',
+          indicators: ['f', 'f'],
+          content: '',
+        }],
+        updateInfo: {
+          recordState: RECORD_STATUS_NEW,
+        },
+      };
+
+      expect(utils.formatMarcRecordByQuickMarcAction(record, QUICK_MARC_ACTIONS.DUPLICATE)).toEqual(expectedRecord);
     });
   });
 });

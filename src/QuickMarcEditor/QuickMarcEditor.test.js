@@ -1,15 +1,32 @@
+/* eslint-disable react/prop-types */
+
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { render, cleanup } from '@testing-library/react';
+import { render, cleanup, fireEvent } from '@testing-library/react';
 import faker from 'faker';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcEditor from './QuickMarcEditor';
 
+jest.mock('@folio/stripes/components', () => ({
+  ...jest.requireActual('@folio/stripes/components'),
+  ConfirmationModal: jest.fn(({ open }) => (open ? <span>Confirmation modal</span> : null)),
+}));
+
 jest.mock('./QuickMarcEditorRows', () => {
   return {
-    QuickMarcEditorRows: () => <span>QuickMarcEditorRows</span>,
+    QuickMarcEditorRows: ({ setDeletedRecordsCount }) => (
+      <>
+        <span>QuickMarcEditorRows</span>
+        <button
+          type="button"
+          onClick={() => setDeletedRecordsCount(1)}
+        >
+          Delete row
+        </button>
+      </>
+    ),
   };
 });
 
@@ -24,9 +41,15 @@ const getInstance = () => ({
   title: 'ui-quick-marc.record.edit.title',
 });
 
-const renderQuickMarcEditor = ({ instance, onClose, onSubmit, mutators }) => (render(
+const renderQuickMarcEditor = ({
+  instance,
+  onClose,
+  onSubmit,
+  mutators,
+}) => (render(
   <MemoryRouter>
     <QuickMarcEditor
+      action="edit"
       instance={instance}
       onClose={onClose}
       onSubmit={onSubmit}
@@ -85,5 +108,28 @@ describe('Given Quick Marc Editor', () => {
     });
 
     expect(getByText('QuickMarcEditorRows')).toBeDefined();
+  });
+
+  describe('When deleting a row', () => {
+    it('Then it should not display ConfirmationModal', () => {
+      const instance = getInstance();
+      const {
+        getByText,
+        queryByText,
+      } = renderQuickMarcEditor({
+        instance,
+        onClose: jest.fn(),
+        onSubmit: jest.fn(),
+        mutators: {
+          addRecord: jest.fn(),
+          deleteRecord: jest.fn(),
+          moveRecord: jest.fn(),
+        },
+      });
+
+      fireEvent.click(getByText('Delete row'));
+
+      expect(queryByText('Confirmation modal')).toBeNull();
+    });
   });
 });

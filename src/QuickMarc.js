@@ -1,31 +1,53 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {
   Switch,
   Route,
 } from 'react-router-dom';
 import { IfPermission } from '@folio/stripes/core';
-
 import { QuickMarcEditorContainer } from './QuickMarcEditor';
+import { QUICK_MARC_ACTIONS } from './QuickMarcEditor/constants';
 
 const QuickMarc = ({ basePath, onClose }) => {
-  const QuickMarcEdit = useCallback(() => {
-    return (
-      <QuickMarcEditorContainer
-        onClose={onClose}
-      />
-    );
-  }, [onClose]);
+  const routesConfig = [
+    {
+      path: `${basePath}/edit/:instanceId`,
+      permission: 'records-editor.records.item.put',
+      props: {
+        action: QUICK_MARC_ACTIONS.EDIT,
+      },
+    },
+    {
+      path: `${basePath}/duplicate/:instanceId`,
+      permission: 'records-editor.records.item.post',
+      props: {
+        action: QUICK_MARC_ACTIONS.DUPLICATE,
+      },
+    },
+  ];
 
   return (
     <div data-test-quick-marc>
       <Switch>
-        <IfPermission perm="records-editor.records.item.put">
-          <Route
-            path={`${basePath}/edit/:instanceId`}
-            component={QuickMarcEdit}
-          />
-        </IfPermission>
+        {
+          routesConfig.map(({
+            path,
+            permission,
+            props: routeProps = {},
+          }) => (
+            <Route
+              path={path}
+              render={() => (
+                <IfPermission perm={permission}>
+                  <QuickMarcEditorContainer
+                    onClose={onClose}
+                    {...routeProps}
+                  />
+                </IfPermission>
+              )}
+            />
+          ))
+        }
       </Switch>
     </div>
   );
