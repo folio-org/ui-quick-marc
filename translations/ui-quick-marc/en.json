@@ -121,7 +121,7 @@
 
   "record.delete.confirmLabel": "Continue with save",
   "record.delete.title": "Delete fields",
-  "record.delete.message": "By selecting <b>Continue with save</b>, then <b>{count}</b> will be deleted and this record will be update. Are you sure you want to continue?",
+  "record.delete.message": "By selecting <b>Continue with save</b>, then <b>{count} field(s)</b> will be deleted and this record will be updated. Are you sure you want to continue?",
 
   "record.save.success.processing": "This record has successfully saved and is in process. Changes may not appear immediately.",
   "record.save.error.illegalFixedLength": "Record not saved. Please check the character length of the fixed fields.",
