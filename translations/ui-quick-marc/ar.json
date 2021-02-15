@@ -122,5 +122,7 @@
     "record.status.progress": "قيد التقدم",
     "record.status.error": "خطأ",
     "record.save.error.illegalFixedLength": "لم يتم حفظ التسجيلة. يرجى التحقق من طول أحرف الحقول الثابتة.",
-    "record.status": "حالة التسجيلة:"
+    "record.status": "حالة التسجيلة:",
+    "record.duplicate.title": "Create a new MARC bib record",
+    "record.status.new": "New"
 }

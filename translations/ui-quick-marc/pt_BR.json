@@ -122,5 +122,7 @@
     "record.status.progress": "Em andamento",
     "record.status.error": "Erro",
     "record.save.error.illegalFixedLength": "Registro não salvo. Verifique o comprimento dos caracteres dos campos fixos.",
-    "record.status": "Status do registro:"
+    "record.status": "Status do registro:",
+    "record.duplicate.title": "Create a new MARC bib record",
+    "record.status.new": "New"
 }
