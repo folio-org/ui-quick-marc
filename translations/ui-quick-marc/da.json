@@ -44,7 +44,7 @@
     "record.error.title.multiple": "Posten kan ikke gemmes med mere end ét felt 245.",
     "record.error.title.empty": "Posten kan ikke gemmes uden felt 245.",
     "record.delete.confirmLabel": "Continue with save",
-    "record.delete.message": "By selecting <b>Continue with save</b>, then <b>{count}</b> will be deleted and this record will be update. Are you sure you want to continue?",
+    "record.delete.message": "By selecting <b>Continue with save</b>, then <b>{count} field(s)</b> will be deleted and this record will be updated. Are you sure you want to continue?",
     "record.save.error.generic": "Post ikke gemt: Kommunikationsproblem med serveren. Prøv igen.",
     "permission.quick-marc-editor.all": "quickMARC: Se, og rediger",
     "record.moveUpRow": "Move field up a row",
@@ -122,5 +122,7 @@
     "record.status.progress": "In progress",
     "record.status.error": "Error",
     "record.save.error.illegalFixedLength": "Posten blev ikke gemt. Kontroller antallet af tegn for de fast definerede felter.",
-    "record.status": "Record status:"
+    "record.status": "Record status:",
+    "record.duplicate.title": "Create a new MARC bib record",
+    "record.status.new": "New"
 }

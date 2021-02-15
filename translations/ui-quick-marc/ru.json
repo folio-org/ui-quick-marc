@@ -122,5 +122,7 @@
     "record.status.progress": "В обработке",
     "record.status.error": "Error",
     "record.save.error.illegalFixedLength": "Record not saved. Please check the character length of the fixed fields.",
-    "record.status": "Record status:"
+    "record.status": "Record status:",
+    "record.duplicate.title": "Create a new MARC bib record",
+    "record.status.new": "New"
 }
