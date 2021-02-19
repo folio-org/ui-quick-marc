@@ -2,6 +2,7 @@
   "meta.title": "Quick MARC",
 
   "permission.quick-marc-editor.all": "quickMARC: View, edit",
+  "permission.quick-marc-editor.duplicate": "quickMARC: Duplicate and create a new MARC bibliographic record",
 
   "record.edit.title": "Edit MARC record - {title}",
   "record.duplicate.title": "Create a new MARC bib record",
