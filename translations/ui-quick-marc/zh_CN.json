@@ -124,5 +124,6 @@
     "record.save.error.illegalFixedLength": "记录未保存。请检查定长字段的字符长度。",
     "record.status": "记录状态：",
     "record.duplicate.title": "Create a new MARC bib record",
-    "record.status.new": "New"
+    "record.status.new": "New",
+    "permission.quick-marc-editor.duplicate": "quickMARC: Duplicate and create a new MARC bibliographic record"
 }

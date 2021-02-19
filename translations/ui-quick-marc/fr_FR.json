@@ -124,5 +124,6 @@
     "record.save.error.illegalFixedLength": "Enregistrement non enregistré. Veuillez vérifier la longueur des caractères des champs fixes.",
     "record.status": "Record status:",
     "record.duplicate.title": "Create a new MARC bib record",
-    "record.status.new": "New"
+    "record.status.new": "New",
+    "permission.quick-marc-editor.duplicate": "quickMARC: Duplicate and create a new MARC bibliographic record"
 }
