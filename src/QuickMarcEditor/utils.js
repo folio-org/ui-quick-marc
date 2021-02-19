@@ -193,6 +193,14 @@ export const reorderRecords = (index, indexToSwitch, state) => {
   return records;
 };
 
+export const restoreRecordAtIndex = (index, record, state) => {
+  const records = [...state.formState.values.records];
+
+  records.splice(index, 0, record);
+
+  return records;
+};
+
 const getRecordsTrackChanges = (records) => {
   const trackCHanges = {
     lastRecordPosition: undefined,

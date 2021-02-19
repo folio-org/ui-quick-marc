@@ -16,12 +16,15 @@ jest.mock('@folio/stripes/components', () => ({
 
 jest.mock('./QuickMarcEditorRows', () => {
   return {
-    QuickMarcEditorRows: ({ setDeletedRecordsCount }) => (
+    QuickMarcEditorRows: ({ setDeletedRecords }) => (
       <>
         <span>QuickMarcEditorRows</span>
         <button
           type="button"
-          onClick={() => setDeletedRecordsCount(1)}
+          onClick={() => setDeletedRecords({
+            index: 1,
+            record: {},
+          })}
         >
           Delete row
         </button>
