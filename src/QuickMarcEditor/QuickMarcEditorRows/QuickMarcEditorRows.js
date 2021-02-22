@@ -36,7 +36,7 @@ const QuickMarcEditorRows = ({
   fields,
   type,
   subtype,
-  setDeletedRecordsCount,
+  setDeletedRecords,
   mutators: {
     addRecord,
     deleteRecord,
@@ -50,9 +50,17 @@ const QuickMarcEditorRows = ({
   }, [addRecord]);
 
   const deleteRow = useCallback(({ target }) => {
-    deleteRecord({ index: parseInt(target.dataset.index, 10) });
-    setDeletedRecordsCount(prevDeletedItems => prevDeletedItems + 1);
-  }, [deleteRecord, setDeletedRecordsCount]);
+    const index = parseInt(target.dataset.index, 10);
+
+    deleteRecord({ index });
+    setDeletedRecords((prevDeletedRecords) => [
+      ...prevDeletedRecords,
+      {
+        index,
+        record: fields[index],
+      },
+    ]);
+  }, [deleteRecord, setDeletedRecords, fields]);
 
   const moveRow = useCallback(({ target }) => {
     moveRecord({
@@ -243,7 +251,7 @@ QuickMarcEditorRows.propTypes = {
     indicators: PropTypes.arrayOf(PropTypes.string),
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   })),
-  setDeletedRecordsCount: PropTypes.func.isRequired,
+  setDeletedRecords: PropTypes.func.isRequired,
   mutators: PropTypes.shape({
     addRecord: PropTypes.func.isRequired,
     deleteRecord: PropTypes.func.isRequired,

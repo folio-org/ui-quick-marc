@@ -46,7 +46,7 @@ const values = [
   },
 ];
 
-const setDeletedRecordsCount = jest.fn();
+const setDeletedRecords = jest.fn();
 
 const renderQuickMarcEditorRows = ({ fields }) => (render(
   <MemoryRouter>
@@ -63,7 +63,7 @@ const renderQuickMarcEditorRows = ({ fields }) => (render(
             moveRecord: jest.fn(),
           }}
           subtype="test"
-          setDeletedRecordsCount={setDeletedRecordsCount}
+          setDeletedRecords={setDeletedRecords}
         />
       )}
     />
@@ -137,7 +137,7 @@ describe('Given Quick Marc Editor Rows', () => {
       fireEvent.click(deleteIcon1[1]);
       fireEvent.click(deleteIcon2[1]);
 
-      expect(setDeletedRecordsCount).toHaveBeenCalledTimes(2);
+      expect(setDeletedRecords).toHaveBeenCalledTimes(2);
     });
   });
 });

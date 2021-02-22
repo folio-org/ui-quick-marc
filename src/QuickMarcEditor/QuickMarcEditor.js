@@ -27,6 +27,7 @@ import {
   deleteRecordByIndex,
   reorderRecords,
   shouldRecordsUpdate,
+  restoreRecordAtIndex,
 } from './utils';
 
 const spySubscription = { values: true };
@@ -49,17 +50,17 @@ const QuickMarcEditor = ({
 }) => {
   const [records, setRecords] = useState([]);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
-  const [deletedRecordsCount, setDeletedRecordsCount] = useState(0);
+  const [deletedRecords, setDeletedRecords] = useState([]);
 
   const confirmSubmit = useCallback((props) => {
-    if (deletedRecordsCount) {
+    if (deletedRecords.length) {
       setIsDeleteModalOpened(true);
 
       return;
     }
 
     handleSubmit(props);
-  }, [deletedRecordsCount, handleSubmit]);
+  }, [deletedRecords, handleSubmit]);
 
   const paneFooter = useMemo(() => {
     const start = (
@@ -93,9 +94,14 @@ const QuickMarcEditor = ({
   const confirmModalMessage = () => (
     <FormattedMessage
       id="ui-quick-marc.record.delete.message"
-      values={{ count: deletedRecordsCount }}
+      values={{ count: deletedRecords.length }}
     />
   );
+
+  const restoreDeletedRecords = () => {
+    deletedRecords.forEach(mutators.restoreRecord);
+    setDeletedRecords([]);
+  };
 
   const onConfirmModal = (props) => {
     setIsDeleteModalOpened(false);
@@ -104,8 +110,12 @@ const QuickMarcEditor = ({
 
   const onCancelModal = () => {
     setIsDeleteModalOpened(false);
-    setDeletedRecordsCount(0);
-    reset();
+
+    if (deletedRecords.length) {
+      restoreDeletedRecords();
+    } else {
+      reset();
+    }
   };
 
   const changeRecords = useCallback(({ values }) => {
@@ -168,7 +178,7 @@ const QuickMarcEditor = ({
                   mutators={mutators}
                   type={initialValues?.leader[6]}
                   subtype={initialValues?.leader[7]}
-                  setDeletedRecordsCount={setDeletedRecordsCount}
+                  setDeletedRecords={setDeletedRecords}
                 />
               </Col>
             </Row>
@@ -221,6 +231,11 @@ export default stripesFinalForm({
     },
     moveRecord: ([{ index, indexToSwitch }], state, tools) => {
       const records = reorderRecords(index, indexToSwitch, state);
+
+      tools.changeValue(state, 'records', () => records);
+    },
+    restoreRecord: ([{ index, record }], state, tools) => {
+      const records = restoreRecordAtIndex(index, record, state);
 
       tools.changeValue(state, 'records', () => records);
     },

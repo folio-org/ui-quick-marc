@@ -91,6 +91,40 @@ describe('QuickMarcEditor utils', () => {
     });
   });
 
+  describe('restoreRecordAtIndex', () => {
+    it('should return records with new row', () => {
+      const state = {
+        formState: {
+          values: {
+            records: [
+              {
+                tag: '010',
+                content: '$a fss $b asd',
+              },
+              {
+                tag: '011',
+                content: '$a fss $b asd',
+              },
+              {
+                tag: '012',
+                content: '$a fss $b asd',
+              },
+            ],
+          },
+        },
+      };
+
+      const insertIndex = 1;
+      const insertedRecord = {
+        tag: '013',
+        content: '$a fss $b asd',
+      };
+      const newRecords = utils.restoreRecordAtIndex(insertIndex, insertedRecord, state);
+
+      expect(newRecords[1]).toBe(insertedRecord);
+    });
+  });
+
   describe('validateLeader', () => {
     it('should not return error message when leader is valid', () => {
       expect(
