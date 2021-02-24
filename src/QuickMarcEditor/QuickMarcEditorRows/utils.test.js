@@ -1,4 +1,7 @@
-import { LEADER_TAG } from '../constants';
+import {
+  LEADER_TAG,
+  QUICK_MARC_ACTIONS,
+} from '../constants';
 
 import * as utils from './utils';
 
@@ -22,6 +25,10 @@ describe('QuickMarcEditorRows utils', () => {
       expect(utils.isReadOnly({ tag: '050' })).toBeFalsy();
       expect(utils.isReadOnly({ tag: '998' })).toBeFalsy();
       expect(utils.isReadOnly({ tag: '999' })).toBeFalsy();
+    });
+
+    it('should be true for tag LDR on duplicate page', () => {
+      expect(utils.isReadOnly({ tag: '005' }, QUICK_MARC_ACTIONS.DUPLICATE)).toBeTruthy();
     });
   });
 
@@ -67,6 +74,10 @@ describe('QuickMarcEditorRows utils', () => {
     it('should be true for exeptional row', () => {
       expect(utils.hasMoveException({ tag: LEADER_TAG })).toBeTruthy();
       expect(utils.hasMoveException({ tag: '001' })).toBeTruthy();
+    });
+
+    it('should be true for 003 tag for duplicate action', () => {
+      expect(utils.hasMoveException({ tag: '003' }, { tag: '014' }, QUICK_MARC_ACTIONS.DUPLICATE)).toBeTruthy();
     });
 
     it('should be false for common rows', () => {

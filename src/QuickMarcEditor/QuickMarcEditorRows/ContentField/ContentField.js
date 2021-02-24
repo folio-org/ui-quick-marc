@@ -12,6 +12,7 @@ import { getResizeStyles } from './utils';
 
 export const ContentField = ({
   input,
+  id,
   ...props
 }) => {
   const ref = useRef();
@@ -33,12 +34,13 @@ export const ContentField = ({
       {...props}
       input={input}
       inputRef={ref}
-      data-testid="content-field"
+      data-testid={id}
     />
   );
 };
 
 ContentField.propTypes = {
+  id: PropTypes.string.isRequired,
   input: PropTypes.shape({
     value: PropTypes.string,
   }),

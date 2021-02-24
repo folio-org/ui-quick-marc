@@ -6,6 +6,8 @@ import faker from 'faker';
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcEditorContainer from './QuickMarcEditorContainer';
+import QuickMarcEditWrapper from './QuickMarcEditWrapper';
+import { QUICK_MARC_ACTIONS } from './constants';
 
 const getInstance = () => ({
   id: faker.random.uuid(),
@@ -24,12 +26,19 @@ const record = {
   fields: [],
 };
 
-const renderQuickMarcEditorContainer = ({ onClose, mutator }) => (render(
+const renderQuickMarcEditorContainer = ({
+  onClose,
+  mutator,
+  action,
+  wrapper,
+}) => (render(
   <MemoryRouter>
     <QuickMarcEditorContainer
       onClose={onClose}
       match={match}
       mutator={mutator}
+      wrapper={wrapper}
+      action={action}
     />
   </MemoryRouter>,
 ));
@@ -55,7 +64,12 @@ describe('Given Quick Marc Editor Container', () => {
 
   it('Than it should fetch MARC record', async () => {
     await act(async () => {
-      await renderQuickMarcEditorContainer({ mutator, onClose: jest.fn() });
+      await renderQuickMarcEditorContainer({
+        mutator,
+        onClose: jest.fn(),
+        action: QUICK_MARC_ACTIONS.EDIT,
+        wrapper: QuickMarcEditWrapper,
+      });
     });
 
     expect(mutator.quickMarcEditMarcRecord.GET).toHaveBeenCalled();
@@ -65,7 +79,12 @@ describe('Given Quick Marc Editor Container', () => {
     let getByText;
 
     await act(async () => {
-      const renderer = await renderQuickMarcEditorContainer({ mutator, onClose: jest.fn() });
+      const renderer = await renderQuickMarcEditorContainer({
+        mutator,
+        onClose: jest.fn(),
+        action: QUICK_MARC_ACTIONS.EDIT,
+        wrapper: QuickMarcEditWrapper,
+      });
 
       getByText = renderer.getByText;
     });
@@ -79,7 +98,12 @@ describe('Given Quick Marc Editor Container', () => {
       const onClose = jest.fn();
 
       await act(async () => {
-        const renderer = await renderQuickMarcEditorContainer({ mutator, onClose });
+        const renderer = await renderQuickMarcEditorContainer({
+          mutator,
+          onClose,
+          action: QUICK_MARC_ACTIONS.EDIT,
+          wrapper: QuickMarcEditWrapper,
+        });
 
         getByText = renderer.getByText;
       });

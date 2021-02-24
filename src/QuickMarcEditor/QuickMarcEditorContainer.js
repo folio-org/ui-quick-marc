@@ -17,22 +17,31 @@ import {
 import {
   INVENTORY_INSTANCE_API,
   MARC_RECORD_API,
+  MARC_RECORD_STATUS_API,
 } from '../common/constants';
 
 import {
   dehydrateMarcRecordResponse,
   formatMarcRecordByQuickMarcAction,
-  hydrateMarcRecord,
-  validateMarcRecord,
 } from './utils';
 import { QUICK_MARC_ACTIONS } from './constants';
-import QuickMarcEditor from './QuickMarcEditor';
+
+const propTypes = {
+  action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
+  onClose: PropTypes.func.isRequired,
+  history: ReactRouterPropTypes.history.isRequired,
+  mutator: PropTypes.object.isRequired,
+  match: ReactRouterPropTypes.match.isRequired,
+  wrapper: PropTypes.func.isRequired,
+};
 
 const QuickMarcEditorContainer = ({
+  action,
   mutator,
   match,
   onClose,
-  action = QUICK_MARC_ACTIONS.EDIT,
+  wrapper: Wrapper,
+  history,
 }) => {
   const instanceId = match.params.instanceId;
 
@@ -72,41 +81,6 @@ const QuickMarcEditorContainer = ({
     onClose(instanceId);
   }, [instanceId, onClose]);
 
-  const onSubmit = useCallback(async (formValues) => {
-    const validationErrorMessage = validateMarcRecord(formValues);
-
-    if (validationErrorMessage) {
-      showCallout({ messageId: validationErrorMessage, type: 'error' });
-
-      return;
-    }
-
-    mutator.quickMarcEditMarcRecord.PUT(hydrateMarcRecord(formValues))
-      .then(() => {
-        showCallout({ messageId: 'ui-quick-marc.record.save.success.processing' });
-        closeEditor();
-      })
-      .catch(async (errorResponse) => {
-        let messageId;
-        let error;
-
-        try {
-          error = await errorResponse.json();
-        } catch (e) {
-          error = {};
-        }
-
-        if (error.code === 'ILLEGAL_FIXED_LENGTH_CONTROL_FILED') {
-          messageId = 'ui-quick-marc.record.save.error.illegalFixedLength';
-        } else {
-          messageId = 'ui-quick-marc.record.save.error.generic';
-        }
-
-        showCallout({ messageId, type: 'error' });
-      });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [closeEditor, showCallout]);
-
   if (isLoading) {
     return (
       <LoadingView
@@ -118,12 +92,13 @@ const QuickMarcEditorContainer = ({
   }
 
   return (
-    <QuickMarcEditor
+    <Wrapper
       instance={instance}
       onClose={closeEditor}
       initialValues={marcRecord}
-      onSubmit={onSubmit}
       action={action}
+      mutator={mutator}
+      history={history}
     />
   );
 };
@@ -150,13 +125,14 @@ QuickMarcEditorContainer.manifest = Object.freeze({
       accept: 'application/json',
     },
   },
+  quickMarcRecordStatus: {
+    ...baseManifest,
+    fetch: false,
+    accumulate: true,
+    path: MARC_RECORD_STATUS_API,
+  },
 });
 
-QuickMarcEditorContainer.propTypes = {
-  action: PropTypes.string,
-  mutator: PropTypes.object.isRequired,
-  match: ReactRouterPropTypes.match.isRequired,
-  onClose: PropTypes.func.isRequired,
-};
+QuickMarcEditorContainer.propTypes = propTypes;
 
 export default withRouter(stripesConnect(QuickMarcEditorContainer));

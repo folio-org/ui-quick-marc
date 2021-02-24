@@ -11,6 +11,7 @@ const getComponent = (value) => (
     name="content"
     meta={{}}
     input={{ value }}
+    id="content-field-0"
   />
 );
 

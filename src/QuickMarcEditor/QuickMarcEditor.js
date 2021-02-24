@@ -5,6 +5,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
+import noop from 'lodash/noop';
 
 import stripesFinalForm from '@folio/stripes/final-form';
 import {
@@ -22,6 +23,7 @@ import { FormSpy } from 'react-final-form';
 
 import { QuickMarcRecordInfo } from './QuickMarcRecordInfo';
 import { QuickMarcEditorRows } from './QuickMarcEditorRows';
+import { QUICK_MARC_ACTIONS } from './constants';
 import {
   addNewRecord,
   deleteRecordByIndex,
@@ -47,10 +49,15 @@ const QuickMarcEditor = ({
     mutators,
     reset,
   },
+  getCancellationModal,
 }) => {
   const [records, setRecords] = useState([]);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const [deletedRecords, setDeletedRecords] = useState([]);
+
+  const isFormClean = action === QUICK_MARC_ACTIONS.EDIT
+    ? pristine || submitting
+    : false;
 
   const confirmSubmit = useCallback((props) => {
     if (deletedRecords.length) {
@@ -67,6 +74,7 @@ const QuickMarcEditor = ({
       <Button
         buttonStyle="default mega"
         onClick={onClose}
+        marginBottom0
       >
         <FormattedMessage id="stripes-acq-components.FormFooter.cancel" />
       </Button>
@@ -75,9 +83,10 @@ const QuickMarcEditor = ({
     const end = (
       <Button
         buttonStyle="primary mega"
-        disabled={pristine || submitting}
+        disabled={isFormClean}
         id="quick-marc-record-save"
         onClick={confirmSubmit}
+        marginBottom0
       >
         <FormattedMessage id="stripes-acq-components.FormFooter.save" />
       </Button>
@@ -89,9 +98,9 @@ const QuickMarcEditor = ({
         renderEnd={end}
       />
     );
-  }, [onClose, confirmSubmit, pristine, submitting]);
+  }, [confirmSubmit, isFormClean, onClose]);
 
-  const confirmModalMessage = () => (
+  const getConfirmModalMessage = () => (
     <FormattedMessage
       id="ui-quick-marc.record.delete.message"
       values={{ count: deletedRecords.length }}
@@ -131,11 +140,11 @@ const QuickMarcEditor = ({
     save: e => {
       e.preventDefault();
 
-      if (!(pristine || submitting)) {
+      if (!isFormClean) {
         handleSubmit();
       }
     },
-  }), [handleSubmit, pristine, submitting]);
+  }), [handleSubmit, isFormClean]);
 
   return (
     <HotKeys
@@ -173,6 +182,7 @@ const QuickMarcEditor = ({
                 data-testid="quick-marc-editor"
               >
                 <QuickMarcEditorRows
+                  action={action}
                   fields={records}
                   name="records"
                   mutators={mutators}
@@ -189,11 +199,12 @@ const QuickMarcEditor = ({
         id="quick-marc-confirm-modal"
         open={isDeleteModalOpened}
         heading={<FormattedMessage id="ui-quick-marc.record.delete.title" />}
-        message={confirmModalMessage()}
+        message={getConfirmModalMessage()}
         confirmLabel={<FormattedMessage id="ui-quick-marc.record.delete.confirmLabel" />}
         onConfirm={onConfirmModal}
         onCancel={onCancelModal}
       />
+      {getCancellationModal()}
       <FormSpy
         subscription={spySubscription}
         onChange={changeRecords}
@@ -203,8 +214,9 @@ const QuickMarcEditor = ({
 };
 
 QuickMarcEditor.propTypes = {
-  action: PropTypes.string.isRequired,
+  action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
   instance: PropTypes.object,
+  getCancellationModal: PropTypes.func,
   onClose: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   submitting: PropTypes.bool,
@@ -214,6 +226,10 @@ QuickMarcEditor.propTypes = {
     mutators: PropTypes.object.isRequired,
     reset: PropTypes.func.isRequired,
   }),
+};
+
+QuickMarcEditor.defaultProps = {
+  getCancellationModal: noop,
 };
 
 export default stripesFinalForm({
