@@ -43,8 +43,8 @@
     "record.fixedField.Proj": "项目",
     "record.error.title.multiple": "记录不能保存多个245字段。",
     "record.error.title.empty": "没有245字段不能保存记录。",
-    "record.delete.confirmLabel": "是",
-    "record.delete.message": "确定要删除此字段？",
+    "record.delete.confirmLabel": "保存并继续",
+    "record.delete.message": "通过选择<b>保存并继续</b>，然后<b> {count}字段</b>将被删除，并更新该记录。确定要继续吗？",
     "record.save.error.generic": "记录未保存：服务器通讯问题。请重试。",
     "permission.quick-marc-editor.all": "快速MARC：查看、编辑",
     "record.moveUpRow": "字段上移一行",
@@ -123,7 +123,7 @@
     "record.status.error": "错误",
     "record.save.error.illegalFixedLength": "记录未保存。请检查定长字段的字符长度。",
     "record.status": "记录状态：",
-    "record.duplicate.title": "Create a new MARC bib record",
-    "record.status.new": "New",
-    "permission.quick-marc-editor.duplicate": "quickMARC: Duplicate and create a new MARC bibliographic record"
+    "record.duplicate.title": "创建新的MARC书目记录",
+    "record.status.new": "新建",
+    "permission.quick-marc-editor.duplicate": "quickMARC：复制并创建新的MARC书目记录"
 }
