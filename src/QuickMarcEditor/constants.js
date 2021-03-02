@@ -5,4 +5,4 @@ export const QUICK_MARC_ACTIONS = {
   DUPLICATE: 'duplicate',
 };
 
-export const FIELD_TAGS_TO_REMOVE = ['001', '005', '999'];
+export const FIELD_TAGS_TO_REMOVE = ['001', '005', '019', '035', '999'];
