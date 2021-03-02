@@ -8,6 +8,7 @@
 * [UIIN-1407](https://issues.folio.org/browse/UIIN-1407) Add Duplicate MARC bib record view
 * [UIQM-68](https://issues.folio.org/browse/UIQM-68) Permission: Duplicate and create a new MARC bibliographic record
 * [UIQM-76](https://issues.folio.org/browse/UIQM-76) Restore deleted fields when cancelling Save & close.
+* [UIQM-78](https://issues.folio.org/browse/UIQM-78) Derive New MARC bib record: Do not copy over 035 and 019 values
 
 ## [2.0.1](https://github.com/folio-org/ui-quick-marc/tree/v2.0.1) (2020-11-11)
 [Full Changelog](https://github.com/folio-org/ui-quick-marc/compare/v2.0.0...v2.0.1)
