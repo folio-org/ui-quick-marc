@@ -48,7 +48,7 @@ describe('Given Content Field', () => {
       getByTestId = await render(getComponent('$a dg')).getByTestId;
     });
 
-    expect(getByTestId('content-field').style.height).toBe(height);
+    expect(getByTestId('content-field-0').style.height).toBe(height);
   });
 
   it('Than it should calculate resize styles after input value change', async () => {

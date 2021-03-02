@@ -1,6 +1,10 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { render, cleanup, act, fireEvent } from '@testing-library/react';
+import {
+  render,
+  cleanup,
+  fireEvent,
+} from '@testing-library/react';
 import faker from 'faker';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
@@ -67,14 +71,13 @@ describe('Given QuickMarcDuplicateWrapper', () => {
 
   describe('when click on cancel pane button', () => {
     it('Than it should display pane footer', () => {
-      const instance = getInstance();
       const { getByText } = renderQuickMarcDuplicateWrapper({
         instance,
         mutator,
         history,
         onClose: jest.fn(),
       });
-  
+
       fireEvent.click(getByText('stripes-acq-components.FormFooter.cancel'));
 
       expect('Confirmation modal').toBeDefined();
