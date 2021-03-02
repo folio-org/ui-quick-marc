@@ -14,7 +14,27 @@ import { QUICK_MARC_ACTIONS } from './constants';
 
 jest.mock('@folio/stripes/components', () => ({
   ...jest.requireActual('@folio/stripes/components'),
-  ConfirmationModal: jest.fn(({ open }) => (open ? <span>Confirmation modal</span> : null)),
+  ConfirmationModal: jest.fn(({
+    open,
+    onCancel,
+    onConfirm,
+  }) => (open ? (
+    <div>
+      <span>Confirmation modal</span>
+      <button
+        type="button"
+        onClick={onCancel}
+      >
+        Close
+      </button>
+      <button
+        type="button"
+        onClick={onConfirm}
+      >
+        Keep editing
+      </button>
+    </div>
+  ) : null)),
 }));
 
 const getInstance = () => ({
@@ -70,17 +90,35 @@ describe('Given QuickMarcDuplicateWrapper', () => {
   afterEach(cleanup);
 
   describe('when click on cancel pane button', () => {
+    const onClose = jest.fn();
+
     it('Than it should display pane footer', () => {
       const { getByText } = renderQuickMarcDuplicateWrapper({
         instance,
         mutator,
         history,
-        onClose: jest.fn(),
+        onClose,
       });
 
       fireEvent.click(getByText('stripes-acq-components.FormFooter.cancel'));
 
       expect('Confirmation modal').toBeDefined();
+    });
+
+    describe('when click on close modal button', () => {
+      it('than onClose action should be handled', () => {
+        const { getByText } = renderQuickMarcDuplicateWrapper({
+          instance,
+          mutator,
+          history,
+          onClose,
+        });
+
+        fireEvent.click(getByText('stripes-acq-components.FormFooter.cancel'));
+        fireEvent.click(getByText('Close'));
+
+        expect(onClose).toHaveBeenCalled();
+      });
     });
   });
 });
