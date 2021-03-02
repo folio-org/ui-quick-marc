@@ -24,7 +24,7 @@
     "permissionSets": [
       {
         "permissionName": "ui-quick-marc.quick-marc-editor.all",
-        "displayName": "quickMARC: View, edit",
+        "displayName": "quickMARC: View, edit MARC bibliographic record",
         "subPermissions": [
           "records-editor.records.item.get",
           "records-editor.records.item.put",
