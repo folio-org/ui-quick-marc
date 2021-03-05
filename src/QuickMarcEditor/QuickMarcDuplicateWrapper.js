@@ -5,7 +5,6 @@ import React, {
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import ReactRouterPropTypes from 'react-router-prop-types';
-import omit from 'lodash/omit';
 
 import {
   useShowCallout,
@@ -18,10 +17,11 @@ import QuickMarcEditor from './QuickMarcEditor';
 import { QUICK_MARC_ACTIONS } from './constants';
 import {
   hydrateMarcRecord,
+  removeFieldsForDuplicate,
   validateMarcRecord,
 } from './utils';
 
-const QM_RECORD_STATUS_TIMEOUT = 15000;
+const QM_RECORD_STATUS_TIMEOUT = 10000;
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
@@ -65,7 +65,7 @@ const QuickMarcDuplicateWrapper = ({
   };
 
   const onSubmit = useCallback(async (formValues) => {
-    const formValuesForDuplicate = omit(formValues, 'updateInfo');
+    const formValuesForDuplicate = removeFieldsForDuplicate(formValues);
     const validationErrorMessage = validateMarcRecord(formValuesForDuplicate);
 
     if (validationErrorMessage) {

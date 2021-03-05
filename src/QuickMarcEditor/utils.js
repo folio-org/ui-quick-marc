@@ -1,4 +1,5 @@
 import uuid from 'uuid';
+import omit from 'lodash/omit';
 
 import {
   isLastRecord,
@@ -245,4 +246,21 @@ export const shouldRecordsUpdate = (prevRecords, newRecords) => {
   if (hasBytesUpdates) return true;
 
   return false;
+};
+
+export const removeFieldsForDuplicate = (formValues) => {
+  const records = formValues.records;
+
+  const filteredRecords = records.filter(recordRow => {
+    if (isLastRecord(recordRow) || recordRow.tag === '001' || recordRow.tag === '005') {
+      return false;
+    }
+
+    return true;
+  });
+
+  return {
+    ...omit(formValues, 'updateInfo'),
+    records: filteredRecords,
+  };
 };
