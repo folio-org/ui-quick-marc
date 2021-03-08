@@ -46,7 +46,7 @@
     "record.delete.confirmLabel": "Oui",
     "record.delete.message": "Voulez-vous vraiment supprimer ce champ?",
     "record.save.error.generic": "Enregistrement non enregistré: problème de communication avec le serveur. Veuillez réessayer.",
-    "permission.quick-marc-editor.all": "quickMARC: View, edit",
+    "permission.quick-marc-editor.all": "quickMARC: View, edit MARC bibliographic record",
     "record.moveUpRow": "Déplacer le champ d'une ligne vers le haut",
     "record.moveDownRow": "Déplacer le champ vers le bas d'une ligne",
     "record.field": "Champ",
@@ -125,5 +125,5 @@
     "record.status": "Record status:",
     "record.duplicate.title": "Create a new MARC bib record",
     "record.status.new": "New",
-    "permission.quick-marc-editor.duplicate": "quickMARC: Duplicate and create a new MARC bibliographic record"
+    "permission.quick-marc-editor.duplicate": "quickMARC: Derive new MARC bibliographic record"
 }
