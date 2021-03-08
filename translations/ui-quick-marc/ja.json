@@ -46,7 +46,7 @@
     "record.delete.confirmLabel": "はい",
     "record.delete.message": "By selecting <b>Continue with save</b>, then <b>{count} field(s)</b> will be deleted and this record will be updated. Are you sure you want to continue?",
     "record.save.error.generic": "Record not saved: Communication problem with server. Please try again.",
-    "permission.quick-marc-editor.all": "quickMARC: View, edit",
+    "permission.quick-marc-editor.all": "quickMARC: View, edit MARC bibliographic record",
     "record.moveUpRow": "Move field up a row",
     "record.moveDownRow": "Move field down a row",
     "record.field": "Field",
@@ -125,5 +125,5 @@
     "record.status": "Record status:",
     "record.duplicate.title": "Create a new MARC bib record",
     "record.status.new": "New",
-    "permission.quick-marc-editor.duplicate": "quickMARC: Duplicate and create a new MARC bibliographic record"
+    "permission.quick-marc-editor.duplicate": "quickMARC: Derive new MARC bibliographic record"
 }
