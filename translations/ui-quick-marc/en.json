@@ -5,7 +5,7 @@
   "permission.quick-marc-editor.duplicate": "quickMARC: Derive new MARC bibliographic record",
 
   "record.edit.title": "Edit MARC record - {title}",
-  "record.duplicate.title": " Derive a new MARC bib record",
+  "record.duplicate.title": "Derive a new MARC bib record",
 
   "record.status": "Record status:",
   "record.status.new": "New",
