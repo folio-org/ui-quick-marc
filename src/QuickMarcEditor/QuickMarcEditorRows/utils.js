@@ -1,4 +1,7 @@
-import { LEADER_TAG } from '../constants';
+import {
+  LEADER_TAG,
+  QUICK_MARC_ACTIONS,
+} from '../constants';
 
 export const isLastRecord = recordRow => {
   return (
@@ -11,9 +14,15 @@ export const isLastRecord = recordRow => {
 
 const READ_ONLY_ROWS = new Set(['001', '005']);
 
-export const isReadOnly = recordRow => (
-  READ_ONLY_ROWS.has(recordRow.tag) || isLastRecord(recordRow)
-);
+const READ_ONLY_ROWS_FOR_DUPLICATE = new Set([LEADER_TAG, '001', '005']);
+
+export const isReadOnly = (recordRow, action = QUICK_MARC_ACTIONS.EDIT) => {
+  const rows = action === QUICK_MARC_ACTIONS.DUPLICATE
+    ? READ_ONLY_ROWS_FOR_DUPLICATE
+    : READ_ONLY_ROWS;
+
+  return rows.has(recordRow.tag) || isLastRecord(recordRow);
+};
 
 const INDICATOR_EXEPTION_ROWS = new Set([LEADER_TAG, '001', '002', '003', '004', '005', '006', '007', '008', '009']);
 
@@ -31,11 +40,19 @@ export const hasDeleteException = recordRow => (
 
 const MOVE_EXCEPTION_ROWS = new Set([LEADER_TAG, '001', '005', '008']);
 
-export const hasMoveException = (recordRow, sibling) => (
-  !sibling
-  || MOVE_EXCEPTION_ROWS.has(recordRow.tag)
-  || MOVE_EXCEPTION_ROWS.has(sibling.tag)
-);
+const MOVE_EXCEPTION_ROWS_FOR_DUPLICATE = new Set([LEADER_TAG, '001', '003', '005', '008']);
+
+export const hasMoveException = (recordRow, sibling, action = QUICK_MARC_ACTIONS.EDIT) => {
+  const rows = action === QUICK_MARC_ACTIONS.DUPLICATE
+    ? MOVE_EXCEPTION_ROWS_FOR_DUPLICATE
+    : MOVE_EXCEPTION_ROWS;
+
+  return (
+    !sibling
+    || rows.has(recordRow.tag)
+    || rows.has(sibling.tag)
+  );
+};
 
 export const isMaterialCharsRecord = recordRow => recordRow.tag === '006';
 export const isPhysDescriptionRecord = recordRow => recordRow.tag === '007';

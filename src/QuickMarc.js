@@ -5,7 +5,11 @@ import {
   Route,
 } from 'react-router-dom';
 import { IfPermission } from '@folio/stripes/core';
-import { QuickMarcEditorContainer } from './QuickMarcEditor';
+import {
+  QuickMarcEditorContainer,
+  QuickMarcDuplicateWrapper,
+  QuickMarcEditWrapper,
+} from './QuickMarcEditor';
 import { QUICK_MARC_ACTIONS } from './QuickMarcEditor/constants';
 
 const QuickMarc = ({ basePath, onClose }) => {
@@ -15,6 +19,7 @@ const QuickMarc = ({ basePath, onClose }) => {
       permission: 'records-editor.records.item.put',
       props: {
         action: QUICK_MARC_ACTIONS.EDIT,
+        wrapper: QuickMarcEditWrapper,
       },
     },
     {
@@ -22,6 +27,7 @@ const QuickMarc = ({ basePath, onClose }) => {
       permission: 'records-editor.records.item.post',
       props: {
         action: QUICK_MARC_ACTIONS.DUPLICATE,
+        wrapper: QuickMarcDuplicateWrapper,
       },
     },
   ];
@@ -37,6 +43,7 @@ const QuickMarc = ({ basePath, onClose }) => {
           }) => (
             <Route
               path={path}
+              key={path}
               render={() => (
                 <IfPermission perm={permission}>
                   <QuickMarcEditorContainer

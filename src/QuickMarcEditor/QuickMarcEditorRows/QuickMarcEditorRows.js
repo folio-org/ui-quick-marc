@@ -27,11 +27,13 @@ import {
   isPhysDescriptionRecord,
   isFixedFieldRow,
 } from './utils';
+import { QUICK_MARC_ACTIONS } from '../constants';
 import { TAG_FIELD_MAX_LENGTH } from '../../common/constants';
 
 import styles from './QuickMarcEditorRows.css';
 
 const QuickMarcEditorRows = ({
+  action,
   name,
   fields,
   type,
@@ -73,7 +75,7 @@ const QuickMarcEditorRows = ({
     <>
       {
         fields.map((recordRow, idx) => {
-          const isDisabled = isReadOnly(recordRow);
+          const isDisabled = isReadOnly(recordRow, action);
           const withIndicators = !hasIndicatorException(recordRow);
           const withAddRowAction = hasAddException(recordRow);
           const withDeleteRowAction = hasDeleteException(recordRow);
@@ -202,6 +204,7 @@ const QuickMarcEditorRows = ({
                       component={ContentField}
                       marginBottom0
                       disabled={isDisabled}
+                      id={`content-field-${idx}`}
                     />
                   )
                 }
@@ -242,6 +245,7 @@ const QuickMarcEditorRows = ({
 };
 
 QuickMarcEditorRows.propTypes = {
+  action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
   name: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   subtype: PropTypes.string.isRequired,
