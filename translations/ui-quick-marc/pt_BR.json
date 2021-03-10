@@ -125,5 +125,10 @@
     "record.status": "Status do registro:",
     "record.duplicate.title": "Criar um novo registro do bibliográfico MARC",
     "record.status.new": "Novo",
-    "permission.quick-marc-editor.duplicate": "quickMARC: Derive um novo registro bibliográfico MARC"
+    "permission.quick-marc-editor.duplicate": "quickMARC: Derive um novo registro bibliográfico MARC",
+    "record.cancellationModal.title": "Você tem certeza?",
+    "record.cancellationModal.message": "Existem alterações não salvas",
+    "record.cancellationModal.cancel": "Fechar sem salvar",
+    "record.cancellationModal.confirm": "Continuar editando",
+    "record.duplicate.notification.success": "This record has successfully saved and is in process. Changes may not appear immediately."
 }
