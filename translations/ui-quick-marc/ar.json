@@ -125,5 +125,10 @@
     "record.status": "حالة التسجيلة:",
     "record.duplicate.title": "إنشاء تسجيلة مارك بيبلوغرافية جديدة",
     "record.status.new": "جديد",
-    "permission.quick-marc-editor.duplicate": "quickMARC: كرّر وأنشئ تسجيلة مارك بيبلوغرافية جديدة"
+    "permission.quick-marc-editor.duplicate": "quickMARC: كرّر وأنشئ تسجيلة مارك بيبلوغرافية جديدة",
+    "record.cancellationModal.title": "هل أنت متأكد؟",
+    "record.cancellationModal.message": "هناك تغييرات غير محفوظة",
+    "record.cancellationModal.cancel": "إغلاق بدون حفظ",
+    "record.cancellationModal.confirm": "استمر في التحرير",
+    "record.duplicate.notification.success": "تم حفظ هذه التسجيلة بنجاح وهي قيد المعالجة. قد لا تظهر التغييرات على الفور."
 }

@@ -125,5 +125,10 @@
     "record.status": "记录状态：",
     "record.duplicate.title": "创建新的MARC书目记录",
     "record.status.new": "新建",
-    "permission.quick-marc-editor.duplicate": "quickMARC：复制并创建新的MARC书目记录"
+    "permission.quick-marc-editor.duplicate": "quickMARC：复制并创建新的MARC书目记录",
+    "record.cancellationModal.title": "Are you sure?",
+    "record.cancellationModal.message": "There are unsaved changes",
+    "record.cancellationModal.cancel": "Close without saving",
+    "record.cancellationModal.confirm": "Keep editing",
+    "record.duplicate.notification.success": "This record has successfully saved and is in process. Changes may not appear immediately."
 }

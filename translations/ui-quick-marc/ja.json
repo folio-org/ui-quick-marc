@@ -123,7 +123,12 @@
     "record.status.error": "エラー",
     "record.save.error.illegalFixedLength": "Record not saved. Please check the character length of the fixed fields.",
     "record.status": "Record status:",
-    "record.duplicate.title": "Create a new MARC bib record",
+    "record.duplicate.title": "Derive a new MARC bib record",
     "record.status.new": "New",
-    "permission.quick-marc-editor.duplicate": "quickMARC: Derive new MARC bibliographic record"
+    "permission.quick-marc-editor.duplicate": "quickMARC: Derive new MARC bibliographic record",
+    "record.cancellationModal.title": "Are you sure?",
+    "record.cancellationModal.message": "There are unsaved changes",
+    "record.cancellationModal.cancel": "Close without saving",
+    "record.cancellationModal.confirm": "Keep editing",
+    "record.duplicate.notification.success": "This record has successfully saved and is in process. Changes may not appear immediately."
 }
