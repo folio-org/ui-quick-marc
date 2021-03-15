@@ -43,7 +43,7 @@
     "record.fixedField.Proj": "Proj",
     "record.error.title.multiple": "L'enregistrement ne peut pas être sauvegardé avec plus d'un champ 245.",
     "record.error.title.empty": "L'enregistrement ne peut pas être sauvegardé sans le champ 245.",
-    "record.delete.confirmLabel": "Oui",
+    "record.delete.confirmLabel": "Continuer avec enregistrer",
     "record.delete.message": "Voulez-vous vraiment supprimer ce champ?",
     "record.save.error.generic": "Enregistrement non enregistré: problème de communication avec le serveur. Veuillez réessayer.",
     "permission.quick-marc-editor.all": "quickMARC: View, edit MARC bibliographic record",
