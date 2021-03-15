@@ -1,6 +1,6 @@
 # Change history for ui-quick-marc
 
-## (in progress)
+## [3.0.0](https://github.com/folio-org/ui-quick-marc/tree/v3.0.0) (2021-03-15)
 * [UIQM-67](https://issues.folio.org/browse/UIQM-61) Update display of record status
 * [UIQM-72](https://issues.folio.org/browse/UIQM-72) Change delete row behavior
 * [UIQM-70](https://issues.folio.org/browse/UIQM-70) Update stripes to v6.0.0
