@@ -1,5 +1,8 @@
 # Change history for ui-quick-marc
 
+## (in progress)
+* [UIQM-83](https://issues.folio.org/browse/UIQM-83) Do not duplicate fields with empty content
+
 ## [3.0.0](https://github.com/folio-org/ui-quick-marc/tree/v3.0.0) (2021-03-15)
 * [UIQM-67](https://issues.folio.org/browse/UIQM-61) Update display of record status
 * [UIQM-72](https://issues.folio.org/browse/UIQM-72) Change delete row behavior

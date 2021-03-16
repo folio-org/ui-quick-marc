@@ -256,6 +256,10 @@ export const removeFieldsForDuplicate = (formValues) => {
       return false;
     }
 
+    if (!recordRow.content) {
+      return false;
+    }
+
     return true;
   });
 
