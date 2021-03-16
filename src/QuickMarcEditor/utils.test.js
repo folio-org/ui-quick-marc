@@ -544,6 +544,11 @@ describe('QuickMarcEditor utils', () => {
         tag: '841',
       }, {
         content: '',
+        id: '2247ab92-91c0-47f7-8a35-cdd8b54604c2',
+        indicators: [],
+        tag: '035',
+      }, {
+        content: '',
         id: '6a6582ea-746e-4058-a35b-8130e4f6d277',
         indicators: ['f', 'f'],
         tag: '999',
