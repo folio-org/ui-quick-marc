@@ -30,6 +30,7 @@ const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
   onClose: PropTypes.func.isRequired,
   history: ReactRouterPropTypes.history.isRequired,
+  location: ReactRouterPropTypes.location.isRequired,
   mutator: PropTypes.object.isRequired,
   match: ReactRouterPropTypes.match.isRequired,
   wrapper: PropTypes.func.isRequired,
@@ -42,6 +43,7 @@ const QuickMarcEditorContainer = ({
   onClose,
   wrapper: Wrapper,
   history,
+  location,
 }) => {
   const instanceId = match.params.instanceId;
 
@@ -99,6 +101,7 @@ const QuickMarcEditorContainer = ({
       action={action}
       mutator={mutator}
       history={history}
+      location={location}
     />
   );
 };
