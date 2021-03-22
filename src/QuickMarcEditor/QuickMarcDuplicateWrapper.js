@@ -21,7 +21,7 @@ import {
   validateMarcRecord,
 } from './utils';
 
-const QM_RECORD_STATUS_TIMEOUT = 5000;
+const QM_RECORD_STATUS_TIMEOUT = 10000;
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
@@ -62,35 +62,35 @@ const QuickMarcDuplicateWrapper = ({
 
     function makeRequest() {
       mutator.quickMarcRecordStatus.GET({ params: { qmRecordId } })
-      .then(({ instanceId, status }) => {
-        if (status === 'ERROR') {
-          showCallout({
-            messageId: 'ui-quick-marc.record.saveNew.error',
-            type: 'error',
-          });
-        }
-
-        if (status === 'IN_PROGRESS') {
-          if (!isFirstRequest) {
-            showCallout({ messageId: 'ui-quick-marc.record.saveNew.delay' });
+        .then(({ instanceId, status }) => {
+          if (status === 'ERROR') {
+            showCallout({
+              messageId: 'ui-quick-marc.record.saveNew.error',
+              type: 'error',
+            });
           }
 
-          if (instanceId === null && isFirstRequest) {
-            isFirstRequest = false;
+          if (status === 'IN_PROGRESS') {
+            if (!isFirstRequest) {
+              showCallout({ messageId: 'ui-quick-marc.record.saveNew.delay' });
+            }
 
-            setTimeout(makeRequest, QM_RECORD_STATUS_TIMEOUT);
+            if (instanceId === null && isFirstRequest) {
+              isFirstRequest = false;
+
+              setTimeout(makeRequest, QM_RECORD_STATUS_TIMEOUT);
+            }
           }
-        }
 
-        if (instanceId !== null) {
-          showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
+          if (instanceId !== null) {
+            showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
 
-          history.push({
-            pathname: `/inventory/view/${instanceId}`,
-            search: location.search,
-          });
-        }
-      });
+            history.push({
+              pathname: `/inventory/view/${instanceId}`,
+              search: location.search,
+            });
+          }
+        });
     }
 
     makeRequest();
