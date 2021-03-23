@@ -1,16 +1,103 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import {
+  act,
   render,
   cleanup,
   fireEvent,
 } from '@testing-library/react';
 import faker from 'faker';
+import noop from 'lodash/noop';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcDuplicateWrapper from './QuickMarcDuplicateWrapper';
 import { QUICK_MARC_ACTIONS } from './constants';
+
+jest.mock('react-final-form', () => ({
+  ...jest.requireActual('react-final-form'),
+  FormSpy: jest.fn(() => (<span>FormSpy</span>)),
+}));
+
+const mockFormValues = jest.fn(() => ({
+  fields: undefined,
+  instanceId: '17064f9d-0362-468d-8317-5984b7efd1b5',
+  leader: '02949cama2200517Kii50000',
+  parsedRecordDtoId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
+  parsedRecordId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
+  records: [
+    {
+      tag: 'LDR',
+      content: '02949cama2200517Kii50000',
+      id: 'LDR',
+    }, {
+      tag: '001',
+      content: '',
+      indicators: [],
+      id: '595a98e6-8e59-448d-b866-cd039b990423',
+    }, {
+      tag: '008',
+      content: {
+        Audn: '\\',
+        BLvl: 'm',
+        Biog: '\\',
+        Conf: '0',
+        Cont: ['b', '\\', '\\', '\\'],
+        Ctry: 'miu',
+        Date1: '2009',
+        Date2: '\\\\',
+        Desc: 'i',
+        DtSt: 's',
+        ELvl: 'i',
+        Entered: '130325',
+        Fest: '0',
+        Form: 'o',
+        GPub: '\\',
+        Ills: ['\\', '\\', '\\', '\\'],
+        Indx: '1',
+        Lang: 'eng',
+        LitF: '0',
+        MRec: '\\',
+        Srce: 'd',
+        Type: 'a',
+      },
+      indicators: [],
+      id: '93213747-46fb-4861-b8e8-8774bf4a46a4',
+    }, {
+      tag: '050',
+      content: '$a BS1545.53 $b .J46 2009eb',
+      indicators: [],
+      id: '6abdaf9b-ac58-4f83-9687-73c939c3c21a',
+    }, {
+      content: '$a (derived2)/Ezekiel / $c Robert W. Jenson.',
+      id: '5aa1a643-b9f2-47e8-bb68-6c6457b5c9c5',
+      indicators: ['1', '0'],
+      tag: '245',
+    }, {
+      tag: '999',
+      content: '',
+      indicators: [],
+      id: '4a844042-5c7e-4e71-823e-599582a5d7ab',
+    },
+  ],
+  suppressDiscovery: false,
+  updateInfo: { recordState: 'NEW' },
+}));
+
+jest.mock('@folio/stripes/final-form', () => () => (Component) => ({ onSubmit, ...props }) => {
+  const formValues = mockFormValues();
+
+  return (
+    <Component
+      handleSubmit={() => onSubmit(formValues)}
+      form={{
+        mutators: {},
+        reset: jest.fn(),
+      }}
+      {...props}
+    />
+  );
+});
 
 jest.mock('@folio/stripes/components', () => ({
   ...jest.requireActual('@folio/stripes/components'),
@@ -37,6 +124,25 @@ jest.mock('@folio/stripes/components', () => ({
   ) : null)),
 }));
 
+const mockShowCallout = jest.fn();
+
+jest.mock('@folio/stripes-acq-components', () => ({
+  ...jest.requireActual('@folio/stripes-acq-components'),
+  useShowCallout: jest.fn(() => mockShowCallout),
+}));
+
+jest.mock('./QuickMarcEditorRows', () => {
+  return {
+    QuickMarcEditorRows: () => (<span>QuickMarcEditorRows</span>),
+  };
+});
+
+jest.mock('./QuickMarcRecordInfo', () => {
+  return {
+    QuickMarcRecordInfo: () => <span>QuickMarcRecordInfo</span>,
+  };
+});
+
 const getInstance = () => ({
   id: faker.random.uuid(),
   title: 'ui-quick-marc.record.edit.title',
@@ -50,9 +156,10 @@ const record = {
 
 const renderQuickMarcDuplicateWrapper = ({
   instance,
-  onClose,
+  onClose = noop,
   mutator,
   history,
+  location,
 }) => (render(
   <MemoryRouter>
     <QuickMarcDuplicateWrapper
@@ -62,6 +169,7 @@ const renderQuickMarcDuplicateWrapper = ({
       action={QUICK_MARC_ACTIONS.DUPLICATE}
       initialValues={{ leader: 'assdfgs ds sdg' }}
       history={history}
+      location={location}
     />
   </MemoryRouter>,
 ));
@@ -70,6 +178,7 @@ describe('Given QuickMarcDuplicateWrapper', () => {
   let mutator;
   let instance;
   let history;
+  let location;
 
   beforeEach(() => {
     instance = getInstance();
@@ -79,11 +188,17 @@ describe('Given QuickMarcDuplicateWrapper', () => {
       },
       quickMarcEditMarcRecord: {
         GET: jest.fn(() => Promise.resolve(record)),
-        PUT: jest.fn(() => Promise.resolve()),
+        POST: jest.fn(() => Promise.resolve()),
+      },
+      quickMarcRecordStatus: {
+        GET: jest.fn(),
       },
     };
     history = {
       push: jest.fn(),
+    };
+    location = {
+      search: '?filters=source.MARC',
     };
   });
 
@@ -92,12 +207,13 @@ describe('Given QuickMarcDuplicateWrapper', () => {
   describe('when click on cancel pane button', () => {
     const onClose = jest.fn();
 
-    it('Than it should display pane footer', () => {
+    it('should display pane footer', () => {
       const { getByText } = renderQuickMarcDuplicateWrapper({
         instance,
         mutator,
         history,
         onClose,
+        location,
       });
 
       fireEvent.click(getByText('stripes-acq-components.FormFooter.cancel'));
@@ -106,18 +222,142 @@ describe('Given QuickMarcDuplicateWrapper', () => {
     });
 
     describe('when click on close modal button', () => {
-      it('than onClose action should be handled', () => {
+      it('should handle onClose action', () => {
         const { getByText } = renderQuickMarcDuplicateWrapper({
           instance,
           mutator,
           history,
           onClose,
+          location,
         });
 
         fireEvent.click(getByText('stripes-acq-components.FormFooter.cancel'));
         fireEvent.click(getByText('Close'));
 
         expect(onClose).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('when click on save button', () => {
+    it('should show on save message and redirect on load page', async () => {
+      let getByText;
+
+      await act(async () => {
+        getByText = renderQuickMarcDuplicateWrapper({
+          instance,
+          mutator,
+          history,
+          location,
+        }).getByText;
+      });
+
+      await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+
+      expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.onSave' });
+      setTimeout(() => {
+        expect(history.push).toHaveBeenCalledWith({
+          pathname: '/inventory/view/id',
+          search: location.search,
+        });
+      }, 1000);
+    });
+
+    describe('when form is valid and status is created', () => {
+      it('should show success toast notification', async () => {
+        let getByText;
+        const instanceId = faker.random.uuid();
+
+        mutator.quickMarcRecordStatus.GET = jest.fn(() => Promise.resolve({
+          instanceId,
+          jobExecutionId: faker.random.uuid(),
+          status: 'CREATED',
+        }));
+
+        await act(async () => {
+          getByText = renderQuickMarcDuplicateWrapper({
+            instance,
+            mutator,
+            history,
+            location,
+          }).getByText;
+        });
+
+        await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+
+        setTimeout(() => {
+          expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
+          expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.success' });
+          expect(history.push).toHaveBeenCalledWith({
+            pathname: `/inventory/view/${instanceId}`,
+            search: location.search,
+          });
+        }, 10000);
+      });
+    });
+
+    describe('when form is valid and status is error', () => {
+      it('should show error toast notification', async () => {
+        let getByText;
+
+        mutator.quickMarcRecordStatus.GET = jest.fn(() => Promise.resolve({
+          instanceId: null,
+          jobExecutionId: faker.random.uuid(),
+          status: 'ERROR',
+        }));
+
+        await act(async () => {
+          getByText = renderQuickMarcDuplicateWrapper({
+            instance,
+            mutator,
+            history,
+            location,
+          }).getByText;
+        });
+
+        await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+
+        setTimeout(() => {
+          expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
+          expect(mockShowCallout).toHaveBeenCalledWith({
+            messageId: 'ui-quick-marc.record.saveNew.error',
+            type: 'error',
+          });
+        }, 10000);
+      });
+    });
+
+    describe('when form is valid and status is in progress more than 20 seconds', () => {
+      it('should show toast notification with delay message', async () => {
+        let getByText;
+
+        mutator.quickMarcRecordStatus.GET = jest.fn(() => Promise.resolve({
+          instanceId: null,
+          jobExecutionId: faker.random.uuid(),
+          status: 'IN_PROGRESS',
+        }));
+
+        await act(async () => {
+          getByText = renderQuickMarcDuplicateWrapper({
+            instance,
+            mutator,
+            history,
+            location,
+          }).getByText;
+        });
+
+        await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+
+        expect(mutator.quickMarcEditMarcRecord.POST).toHaveBeenCalled();
+
+        setTimeout(() => {
+          expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
+
+          setTimeout(() => {
+            expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
+            expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.delay' });
+          }, 10000);
+        }, 10000);
       });
     });
   });
