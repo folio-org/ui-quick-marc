@@ -14,14 +14,15 @@ import {
 } from '@folio/stripes/components';
 
 import QuickMarcEditor from './QuickMarcEditor';
-import { QUICK_MARC_ACTIONS } from './constants';
+import {
+  QUICK_MARC_ACTIONS,
+  QM_RECORD_STATUS_TIMEOUT,
+} from './constants';
 import {
   hydrateMarcRecord,
   removeFieldsForDuplicate,
   validateMarcRecord,
 } from './utils';
-
-const QM_RECORD_STATUS_TIMEOUT = 10000;
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,

@@ -143,6 +143,11 @@ jest.mock('./QuickMarcRecordInfo', () => {
   };
 });
 
+jest.mock('./constants', () => ({
+  ...jest.requireActual('./constants'),
+  QM_RECORD_STATUS_TIMEOUT: 10,
+}));
+
 const getInstance = () => ({
   id: faker.random.uuid(),
   title: 'ui-quick-marc.record.edit.title',
@@ -188,10 +193,10 @@ describe('Given QuickMarcDuplicateWrapper', () => {
       },
       quickMarcEditMarcRecord: {
         GET: jest.fn(() => Promise.resolve(record)),
-        POST: jest.fn(() => Promise.resolve()),
+        POST: jest.fn(() => Promise.resolve({})),
       },
       quickMarcRecordStatus: {
-        GET: jest.fn(),
+        GET: jest.fn(() => Promise.resolve({})),
       },
     };
     history = {
@@ -255,13 +260,18 @@ describe('Given QuickMarcDuplicateWrapper', () => {
       await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
       expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.onSave' });
-      setTimeout(() => {
-        expect(history.push).toHaveBeenCalledWith({
-          pathname: '/inventory/view/id',
-          search: location.search,
-        });
-      }, 1000);
-    });
+
+      await new Promise(resolve => {
+        setTimeout(() => {
+          expect(history.push).toHaveBeenCalledWith({
+            pathname: '/inventory/view/id',
+            search: location.search,
+          });
+
+          resolve();
+        }, 10);
+      });
+    }, 100);
 
     describe('when form is valid and status is created', () => {
       it('should show success toast notification', async () => {
@@ -285,15 +295,19 @@ describe('Given QuickMarcDuplicateWrapper', () => {
 
         await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
-        setTimeout(() => {
-          expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
-          expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.success' });
-          expect(history.push).toHaveBeenCalledWith({
-            pathname: `/inventory/view/${instanceId}`,
-            search: location.search,
-          });
-        }, 10000);
-      });
+        await new Promise(resolve => {
+          setTimeout(() => {
+            expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
+            expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.success' });
+            expect(history.push).toHaveBeenCalledWith({
+              pathname: `/inventory/view/${instanceId}`,
+              search: location.search,
+            });
+
+            resolve();
+          }, 10);
+        });
+      }, 20);
     });
 
     describe('when form is valid and status is error', () => {
@@ -317,14 +331,18 @@ describe('Given QuickMarcDuplicateWrapper', () => {
 
         await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
-        setTimeout(() => {
-          expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
-          expect(mockShowCallout).toHaveBeenCalledWith({
-            messageId: 'ui-quick-marc.record.saveNew.error',
-            type: 'error',
-          });
-        }, 10000);
-      });
+        await new Promise(resolve => {
+          setTimeout(() => {
+            expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
+            expect(mockShowCallout).toHaveBeenCalledWith({
+              messageId: 'ui-quick-marc.record.saveNew.error',
+              type: 'error',
+            });
+
+            resolve();
+          }, 10);
+        });
+      }, 20);
     });
 
     describe('when form is valid and fetch is failed', () => {
@@ -344,14 +362,18 @@ describe('Given QuickMarcDuplicateWrapper', () => {
 
         await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
-        setTimeout(() => {
-          expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
-          expect(mockShowCallout).toHaveBeenCalledWith({
-            messageId: 'ui-quick-marc.record.saveNew.error',
-            type: 'error',
-          });
-        }, 10000);
-      });
+        await new Promise(resolve => {
+          setTimeout(() => {
+            expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
+            expect(mockShowCallout).toHaveBeenCalledWith({
+              messageId: 'ui-quick-marc.record.saveNew.error',
+              type: 'error',
+            });
+
+            resolve();
+          }, 10);
+        });
+      }, 100);
     });
 
     describe('when form is valid and status is in progress more than 20 seconds', () => {
@@ -377,15 +399,19 @@ describe('Given QuickMarcDuplicateWrapper', () => {
 
         expect(mutator.quickMarcEditMarcRecord.POST).toHaveBeenCalled();
 
-        setTimeout(() => {
-          expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
-
+        await new Promise(resolve => {
           setTimeout(() => {
             expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
-            expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.delay' });
-          }, 10000);
-        }, 10000);
-      });
+
+            setTimeout(() => {
+              expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
+              expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.delay' });
+
+              resolve();
+            }, 10);
+          }, 10);
+        });
+      }, 100);
     });
   });
 });
