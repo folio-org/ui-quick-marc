@@ -327,6 +327,33 @@ describe('Given QuickMarcDuplicateWrapper', () => {
       });
     });
 
+    describe('when form is valid and fetch is failed', () => {
+      it('should show error toast notification', async () => {
+        let getByText;
+
+        mutator.quickMarcRecordStatus.GET = jest.fn(() => Promise.reject());
+
+        await act(async () => {
+          getByText = renderQuickMarcDuplicateWrapper({
+            instance,
+            mutator,
+            history,
+            location,
+          }).getByText;
+        });
+
+        await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+
+        setTimeout(() => {
+          expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
+          expect(mockShowCallout).toHaveBeenCalledWith({
+            messageId: 'ui-quick-marc.record.saveNew.error',
+            type: 'error',
+          });
+        }, 10000);
+      });
+    });
+
     describe('when form is valid and status is in progress more than 20 seconds', () => {
       it('should show toast notification with delay message', async () => {
         let getByText;

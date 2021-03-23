@@ -90,6 +90,12 @@ const QuickMarcDuplicateWrapper = ({
               search: location.search,
             });
           }
+        })
+        .catch(() => {
+          showCallout({
+            messageId: 'ui-quick-marc.record.saveNew.error',
+            type: 'error',
+          });
         });
     }
 
