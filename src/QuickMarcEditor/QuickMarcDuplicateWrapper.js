@@ -14,20 +14,22 @@ import {
 } from '@folio/stripes/components';
 
 import QuickMarcEditor from './QuickMarcEditor';
-import { QUICK_MARC_ACTIONS } from './constants';
+import {
+  QUICK_MARC_ACTIONS,
+  QM_RECORD_STATUS_TIMEOUT,
+} from './constants';
 import {
   hydrateMarcRecord,
   removeFieldsForDuplicate,
   validateMarcRecord,
 } from './utils';
 
-const QM_RECORD_STATUS_TIMEOUT = 10000;
-
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
   history: ReactRouterPropTypes.history.isRequired,
   initialValues: PropTypes.object.isRequired,
   instance: PropTypes.object,
+  location: ReactRouterPropTypes.location.isRequired,
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
 };
@@ -39,6 +41,7 @@ const QuickMarcDuplicateWrapper = ({
   initialValues,
   mutator,
   history,
+  location,
 }) => {
   const [isCancellationModalOpened, setIsCancellationModalOpened] = useState(false);
 
@@ -56,12 +59,48 @@ const QuickMarcDuplicateWrapper = ({
   };
 
   const getQuickMarcRecordStatus = (qmRecordId) => {
-    mutator.quickMarcRecordStatus.GET({ params: { qmRecordId } })
-      .then(({ instanceId }) => {
-        history.push({
-          pathname: `/inventory/view/${instanceId}`,
+    let isFirstRequest = true;
+
+    function makeRequest() {
+      mutator.quickMarcRecordStatus.GET({ params: { qmRecordId } })
+        .then(({ instanceId, status }) => {
+          if (status === 'ERROR') {
+            showCallout({
+              messageId: 'ui-quick-marc.record.saveNew.error',
+              type: 'error',
+            });
+          }
+
+          if (status === 'IN_PROGRESS') {
+            if (!isFirstRequest) {
+              showCallout({ messageId: 'ui-quick-marc.record.saveNew.delay' });
+            }
+
+            if (instanceId === null && isFirstRequest) {
+              isFirstRequest = false;
+
+              setTimeout(makeRequest, QM_RECORD_STATUS_TIMEOUT);
+            }
+          }
+
+          if (instanceId !== null) {
+            showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
+
+            history.push({
+              pathname: `/inventory/view/${instanceId}`,
+              search: location.search,
+            });
+          }
+        })
+        .catch(() => {
+          showCallout({
+            messageId: 'ui-quick-marc.record.saveNew.error',
+            type: 'error',
+          });
         });
-      });
+    }
+
+    makeRequest();
   };
 
   const onSubmit = useCallback(async (formValues) => {
@@ -74,9 +113,14 @@ const QuickMarcDuplicateWrapper = ({
       return;
     }
 
+    showCallout({ messageId: 'ui-quick-marc.record.saveNew.onSave' });
+
     mutator.quickMarcEditMarcRecord.POST(hydrateMarcRecord(formValuesForDuplicate))
       .then(({ qmRecordId }) => {
-        showCallout({ messageId: 'ui-quick-marc.record.save.success.processing' });
+        history.push({
+          pathname: '/inventory/view/id',
+          search: location.search,
+        });
 
         setTimeout(() => { getQuickMarcRecordStatus(qmRecordId); }, QM_RECORD_STATUS_TIMEOUT);
       })

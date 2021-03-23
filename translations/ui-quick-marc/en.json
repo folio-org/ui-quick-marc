@@ -128,6 +128,11 @@
   "record.save.error.illegalFixedLength": "Record not saved. Please check the character length of the fixed fields.",
   "record.save.error.generic": "Record not saved: Communication problem with server. Please try again.",
 
+  "record.saveNew.onSave": "Creating record may take several seconds.",
+  "record.saveNew.success": "Record created.",
+  "record.saveNew.error": "Unable to create record due to system error. Please try again or contact support.",
+  "record.saveNew.delay": "Creating this record is taking longer than expected. Please check back later if record is available or contact support.",
+
   "record.moveUpRow": "Move field up a row",
   "record.moveDownRow": "Move field down a row",
   "record.field": "Field",
