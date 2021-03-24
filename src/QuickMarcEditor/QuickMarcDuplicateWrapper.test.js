@@ -145,7 +145,8 @@ jest.mock('./QuickMarcRecordInfo', () => {
 
 jest.mock('./constants', () => ({
   ...jest.requireActual('./constants'),
-  QM_RECORD_STATUS_TIMEOUT: 10,
+  QM_RECORD_STATUS_TIMEOUT: 5,
+  QM_RECORD_STATUS_BAIL_TIME: 20,
 }));
 
 const getInstance = () => ({

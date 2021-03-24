@@ -17,6 +17,7 @@ import QuickMarcEditor from './QuickMarcEditor';
 import {
   QUICK_MARC_ACTIONS,
   QM_RECORD_STATUS_TIMEOUT,
+  QM_RECORD_STATUS_BAIL_TIME,
 } from './constants';
 import {
   hydrateMarcRecord,
@@ -59,6 +60,7 @@ const QuickMarcDuplicateWrapper = ({
   };
 
   const getQuickMarcRecordStatus = (qmRecordId) => {
+    const maxRequestAttempts = QM_RECORD_STATUS_BAIL_TIME / QM_RECORD_STATUS_TIMEOUT;
     let requestCount = 1;
     let intervalId;
 
@@ -74,7 +76,7 @@ const QuickMarcDuplicateWrapper = ({
           }
 
           if (status === 'IN_PROGRESS') {
-            if (requestCount === 4) {
+            if (requestCount === maxRequestAttempts) {
               clearInterval(intervalId);
               showCallout({ messageId: 'ui-quick-marc.record.saveNew.delay' });
             } else {
