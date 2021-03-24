@@ -145,7 +145,8 @@ jest.mock('./QuickMarcRecordInfo', () => {
 
 jest.mock('./constants', () => ({
   ...jest.requireActual('./constants'),
-  QM_RECORD_STATUS_TIMEOUT: 10,
+  QM_RECORD_STATUS_TIMEOUT: 5,
+  QM_RECORD_STATUS_BAIL_TIME: 20,
 }));
 
 const getInstance = () => ({
@@ -401,15 +402,10 @@ describe('Given QuickMarcDuplicateWrapper', () => {
 
         await new Promise(resolve => {
           setTimeout(() => {
-            expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
+            expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.delay' });
 
-            setTimeout(() => {
-              expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
-              expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.delay' });
-
-              resolve();
-            }, 10);
-          }, 10);
+            resolve();
+          }, 40);
         });
       }, 100);
     });

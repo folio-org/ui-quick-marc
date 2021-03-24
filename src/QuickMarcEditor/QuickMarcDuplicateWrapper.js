@@ -17,6 +17,7 @@ import QuickMarcEditor from './QuickMarcEditor';
 import {
   QUICK_MARC_ACTIONS,
   QM_RECORD_STATUS_TIMEOUT,
+  QM_RECORD_STATUS_BAIL_TIME,
 } from './constants';
 import {
   hydrateMarcRecord,
@@ -59,12 +60,15 @@ const QuickMarcDuplicateWrapper = ({
   };
 
   const getQuickMarcRecordStatus = (qmRecordId) => {
-    let isFirstRequest = true;
+    const maxRequestAttempts = QM_RECORD_STATUS_BAIL_TIME / QM_RECORD_STATUS_TIMEOUT;
+    let requestCount = 1;
+    let intervalId;
 
     function makeRequest() {
       mutator.quickMarcRecordStatus.GET({ params: { qmRecordId } })
         .then(({ instanceId, status }) => {
           if (status === 'ERROR') {
+            clearInterval(intervalId);
             showCallout({
               messageId: 'ui-quick-marc.record.saveNew.error',
               type: 'error',
@@ -72,18 +76,16 @@ const QuickMarcDuplicateWrapper = ({
           }
 
           if (status === 'IN_PROGRESS') {
-            if (!isFirstRequest) {
+            if (requestCount === maxRequestAttempts) {
+              clearInterval(intervalId);
               showCallout({ messageId: 'ui-quick-marc.record.saveNew.delay' });
-            }
-
-            if (instanceId === null && isFirstRequest) {
-              isFirstRequest = false;
-
-              setTimeout(makeRequest, QM_RECORD_STATUS_TIMEOUT);
+            } else {
+              requestCount++;
             }
           }
 
-          if (instanceId !== null) {
+          if (instanceId !== null && status === 'CREATED') {
+            clearInterval(intervalId);
             showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
 
             history.push({
@@ -101,6 +103,8 @@ const QuickMarcDuplicateWrapper = ({
     }
 
     makeRequest();
+
+    intervalId = setInterval(makeRequest, QM_RECORD_STATUS_TIMEOUT);
   };
 
   const onSubmit = useCallback(async (formValues) => {
@@ -122,7 +126,7 @@ const QuickMarcDuplicateWrapper = ({
           search: location.search,
         });
 
-        setTimeout(() => { getQuickMarcRecordStatus(qmRecordId); }, QM_RECORD_STATUS_TIMEOUT);
+        getQuickMarcRecordStatus(qmRecordId);
       })
       .catch(async (errorResponse) => {
         let messageId;
