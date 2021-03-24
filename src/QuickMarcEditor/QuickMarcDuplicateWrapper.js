@@ -59,12 +59,14 @@ const QuickMarcDuplicateWrapper = ({
   };
 
   const getQuickMarcRecordStatus = (qmRecordId) => {
-    let isFirstRequest = true;
+    let requestCount = 1;
+    let intervalId;
 
     function makeRequest() {
       mutator.quickMarcRecordStatus.GET({ params: { qmRecordId } })
         .then(({ instanceId, status }) => {
           if (status === 'ERROR') {
+            clearInterval(intervalId);
             showCallout({
               messageId: 'ui-quick-marc.record.saveNew.error',
               type: 'error',
@@ -72,18 +74,16 @@ const QuickMarcDuplicateWrapper = ({
           }
 
           if (status === 'IN_PROGRESS') {
-            if (!isFirstRequest) {
+            if (requestCount === 4) {
+              clearInterval(intervalId);
               showCallout({ messageId: 'ui-quick-marc.record.saveNew.delay' });
-            }
-
-            if (instanceId === null && isFirstRequest) {
-              isFirstRequest = false;
-
-              setTimeout(makeRequest, QM_RECORD_STATUS_TIMEOUT);
+            } else {
+              requestCount++;
             }
           }
 
-          if (instanceId !== null) {
+          if (instanceId !== null && status === 'CREATED') {
+            clearInterval(intervalId);
             showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
 
             history.push({
@@ -101,6 +101,8 @@ const QuickMarcDuplicateWrapper = ({
     }
 
     makeRequest();
+
+    intervalId = setInterval(makeRequest, QM_RECORD_STATUS_TIMEOUT);
   };
 
   const onSubmit = useCallback(async (formValues) => {
@@ -122,7 +124,7 @@ const QuickMarcDuplicateWrapper = ({
           search: location.search,
         });
 
-        setTimeout(() => { getQuickMarcRecordStatus(qmRecordId); }, QM_RECORD_STATUS_TIMEOUT);
+        getQuickMarcRecordStatus(qmRecordId);
       })
       .catch(async (errorResponse) => {
         let messageId;

@@ -401,15 +401,10 @@ describe('Given QuickMarcDuplicateWrapper', () => {
 
         await new Promise(resolve => {
           setTimeout(() => {
-            expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
+            expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.delay' });
 
-            setTimeout(() => {
-              expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
-              expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.delay' });
-
-              resolve();
-            }, 10);
-          }, 10);
+            resolve();
+          }, 40);
         });
       }, 100);
     });
