@@ -55,9 +55,9 @@ const QuickMarcEditor = ({
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const [deletedRecords, setDeletedRecords] = useState([]);
 
-  const isFormClean = action === QUICK_MARC_ACTIONS.EDIT
+  const saveFormDisabled = action === QUICK_MARC_ACTIONS.EDIT
     ? pristine || submitting
-    : false;
+    : submitting;
 
   const confirmSubmit = useCallback((props) => {
     if (deletedRecords.length) {
@@ -83,7 +83,7 @@ const QuickMarcEditor = ({
     const end = (
       <Button
         buttonStyle="primary mega"
-        disabled={isFormClean}
+        disabled={saveFormDisabled}
         id="quick-marc-record-save"
         onClick={confirmSubmit}
         marginBottom0
@@ -98,7 +98,7 @@ const QuickMarcEditor = ({
         renderEnd={end}
       />
     );
-  }, [confirmSubmit, isFormClean, onClose]);
+  }, [confirmSubmit, saveFormDisabled, onClose]);
 
   const getConfirmModalMessage = () => (
     <FormattedMessage
@@ -140,11 +140,11 @@ const QuickMarcEditor = ({
     save: e => {
       e.preventDefault();
 
-      if (!isFormClean) {
+      if (!saveFormDisabled) {
         handleSubmit();
       }
     },
-  }), [handleSubmit, isFormClean]);
+  }), [handleSubmit, saveFormDisabled]);
 
   return (
     <HotKeys

@@ -36,6 +36,7 @@
         "permissionName": "ui-quick-marc.quick-marc-editor.duplicate",
         "displayName": "quickMARC: Derive new MARC bibliographic record",
         "subPermissions": [
+          "records-editor.records.status.item.get",
           "records-editor.records.item.get",
           "records-editor.records.item.post",
           "inventory.instances.item.get"
