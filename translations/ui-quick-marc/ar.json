@@ -130,5 +130,9 @@
     "record.cancellationModal.message": "هناك تغييرات غير محفوظة",
     "record.cancellationModal.cancel": "إغلاق بدون حفظ",
     "record.cancellationModal.confirm": "استمر في التحرير",
-    "record.duplicate.notification.success": "تم حفظ هذه التسجيلة بنجاح وهي قيد المعالجة. قد لا تظهر التغييرات على الفور."
+    "record.duplicate.notification.success": "تم حفظ هذه التسجيلة بنجاح وهي قيد المعالجة. قد لا تظهر التغييرات على الفور.",
+    "record.saveNew.onSave": "قد يستغرق إنشاء تسجيلة عدة ثوان.",
+    "record.saveNew.success": "تم إنشاء التسجيلة.",
+    "record.saveNew.error": "تعذر إنشاء تسجيلة بسبب خطأ في النظام. يرجى المحاولة مرة أخرى أو الاتصال بالدعم.",
+    "record.saveNew.delay": "يستغرق إنشاء هذه التسجيلة وقتًا أطول من المتوقع. يرجى التحقق مرة أخرى لاحقًا إذا كانت التسجيلة متاحة أو الاتصال بالدعم."
 }

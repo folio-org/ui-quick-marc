@@ -130,5 +130,9 @@
     "record.cancellationModal.message": "Existem alterações não salvas",
     "record.cancellationModal.cancel": "Fechar sem salvar",
     "record.cancellationModal.confirm": "Continuar editando",
-    "record.duplicate.notification.success": "This record has successfully saved and is in process. Changes may not appear immediately."
+    "record.duplicate.notification.success": "This record has successfully saved and is in process. Changes may not appear immediately.",
+    "record.saveNew.onSave": "Creating record may take several seconds.",
+    "record.saveNew.success": "Record created.",
+    "record.saveNew.error": "Unable to create record due to system error. Please try again or contact support.",
+    "record.saveNew.delay": "Creating this record is taking longer than expected. Please check back later if record is available or contact support."
 }
