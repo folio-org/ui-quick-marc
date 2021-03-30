@@ -46,7 +46,7 @@
     "record.delete.confirmLabel": "Continuer avec enregistrer",
     "record.delete.message": "En sélectionnant <b> Continuer avec l'enregistrement </b> , alors <b> {count} champ (s) </b> sera supprimé et cet enregistrement sera mis à jour. Etes-vous sûr(e) de vouloir continuer?",
     "record.save.error.generic": "Enregistrement non enregistré: problème de communication avec le serveur. Veuillez réessayer.",
-    "permission.quick-marc-editor.all": "quickMARC: View, edit MARC bibliographic record",
+    "permission.quick-marc-editor.all": "quickMARC: afficher, modifier la notice bibliographique MARC",
     "record.moveUpRow": "Déplacer le champ d'une ligne vers le haut",
     "record.moveDownRow": "Déplacer le champ vers le bas d'une ligne",
     "record.field": "Champ",
@@ -122,7 +122,7 @@
     "record.status.progress": "En cours",
     "record.status.error": "Erreur",
     "record.save.error.illegalFixedLength": "Enregistrement non enregistré. Veuillez vérifier la longueur des caractères des champs fixes.",
-    "record.status": "Record status:",
+    "record.status": "Statut d'enregistrement:",
     "record.duplicate.title": "Créer une nouvelle notice MARC bibliographique",
     "record.status.new": "Nouveau",
     "permission.quick-marc-editor.duplicate": "quickMARC : créer une nouvelle notice MARC bibliographique",
@@ -130,5 +130,9 @@
     "record.cancellationModal.message": "Il y a des modifications non enregistrées",
     "record.cancellationModal.cancel": "Fermer sans sauvegarder",
     "record.cancellationModal.confirm": "Continuer l'édition",
-    "record.duplicate.notification.success": "This record has successfully saved and is in process. Changes may not appear immediately."
+    "record.duplicate.notification.success": "This record has successfully saved and is in process. Changes may not appear immediately.",
+    "record.saveNew.onSave": "La création d'un enregistrement peut prendre plusieurs secondes.",
+    "record.saveNew.success": "Enregistrement créé.",
+    "record.saveNew.error": "Impossible de créer un enregistrement en raison d'une erreur système. Veuillez réessayer ou contacter l'assistance.",
+    "record.saveNew.delay": "La création de cet enregistrement prend plus de temps que prévu. Veuillez vérifier plus tard si l'enregistrement est disponible ou contacter le support."
 }
