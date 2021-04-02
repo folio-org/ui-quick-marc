@@ -130,9 +130,9 @@
     "record.cancellationModal.message": "Existem alterações não salvas",
     "record.cancellationModal.cancel": "Fechar sem salvar",
     "record.cancellationModal.confirm": "Continuar editando",
-    "record.duplicate.notification.success": "This record has successfully saved and is in process. Changes may not appear immediately.",
-    "record.saveNew.onSave": "Creating record may take several seconds.",
-    "record.saveNew.success": "Record created.",
-    "record.saveNew.error": "Unable to create record due to system error. Please try again or contact support.",
-    "record.saveNew.delay": "Creating this record is taking longer than expected. Please check back later if record is available or contact support."
+    "record.duplicate.notification.success": "Este registro foi salvo com sucesso e está em processamento. As alterações podem não aparecer imediatamente.",
+    "record.saveNew.onSave": "A criação do registro pode levar vários segundos.",
+    "record.saveNew.success": "Registro criado.",
+    "record.saveNew.error": "Não é possível criar registro devido a um erro do sistema. Por favor, tente novamente ou entre em contato com o suporte.",
+    "record.saveNew.delay": "A criação deste registro está demorando mais do que o esperado. Verifique novamente mais tarde se o registro está disponível ou entre em contato com o suporte."
 }
