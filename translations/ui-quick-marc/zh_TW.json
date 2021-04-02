@@ -126,13 +126,13 @@
     "record.duplicate.title": "Derive a new MARC bib record",
     "record.status.new": "New",
     "permission.quick-marc-editor.duplicate": "quickMARC: Derive new MARC bibliographic record",
-    "record.cancellationModal.title": "Are you sure?",
-    "record.cancellationModal.message": "There are unsaved changes",
-    "record.cancellationModal.cancel": "Close without saving",
+    "record.cancellationModal.title": "您確定嗎 ？",
+    "record.cancellationModal.message": "有未儲存的更改",
+    "record.cancellationModal.cancel": "關閉而不儲存",
     "record.cancellationModal.confirm": "Keep editing",
     "record.duplicate.notification.success": "This record has successfully saved and is in process. Changes may not appear immediately.",
-    "record.saveNew.onSave": "Creating record may take several seconds.",
-    "record.saveNew.success": "Record created.",
+    "record.saveNew.onSave": "建立記錄可能需要幾秒鐘。",
+    "record.saveNew.success": "建立記錄",
     "record.saveNew.error": "Unable to create record due to system error. Please try again or contact support.",
     "record.saveNew.delay": "Creating this record is taking longer than expected. Please check back later if record is available or contact support."
 }
