@@ -129,10 +129,10 @@
     "record.cancellationModal.title": "您確定嗎 ？",
     "record.cancellationModal.message": "有未儲存的更改",
     "record.cancellationModal.cancel": "關閉而不儲存",
-    "record.cancellationModal.confirm": "Keep editing",
-    "record.duplicate.notification.success": "This record has successfully saved and is in process. Changes may not appear immediately.",
+    "record.cancellationModal.confirm": "繼續編輯",
+    "record.duplicate.notification.success": "該記錄已成功儲存，正在處理中。更改可能不會立即顯示。",
     "record.saveNew.onSave": "建立記錄可能需要幾秒鐘。",
     "record.saveNew.success": "建立記錄",
-    "record.saveNew.error": "Unable to create record due to system error. Please try again or contact support.",
-    "record.saveNew.delay": "Creating this record is taking longer than expected. Please check back later if record is available or contact support."
+    "record.saveNew.error": "由於系統錯誤，無法建立記錄。請重試或聯絡協助人員。",
+    "record.saveNew.delay": "新增此筆記錄比預期的長。如果記錄可用，請稍晚回來檢查，或請聯絡協助人員。"
 }
