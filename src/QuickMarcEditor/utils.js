@@ -10,6 +10,7 @@ import {
 import {
   LEADER_TAG,
   FIELD_TAGS_TO_REMOVE,
+  FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS,
   QUICK_MARC_ACTIONS,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
@@ -30,28 +31,33 @@ export const dehydrateMarcRecordResponse = marcRecordResponse => ({
   ],
 });
 
+const fieldMatchesDescription = (field, descriptionArray) => {
+  let match = false;
+
+  descriptionArray.forEach(description => {
+    if (field.tag !== description.tag) {
+      match = match || false;
+
+      return;
+    }
+
+    if (field.indicators && description.indicators) {
+      match = match || (field.indicators[0] === description.indicators[0]
+        && field.indicators[1] === description.indicators[1]);
+
+      return;
+    }
+
+    match = match || true;
+  });
+
+  return match;
+};
+
 const removeMarcRecordFieldContentForDuplication = marcRecord => {
-  const shouldRemoveFieldContent = (field) => {
-    if (!FIELD_TAGS_TO_REMOVE.includes(field.tag)) {
-      return false;
-    }
-
-    const [firstIndicator, secondIndicator] = (field.indicators || []);
-
-    if (field.tag === '999') {
-      if (firstIndicator === 'f' && secondIndicator === 'f') {
-        return true;
-      }
-
-      return false;
-    }
-
-    return true;
-  };
-
   return {
     ...marcRecord,
-    records: marcRecord.records.map((field) => (shouldRemoveFieldContent(field)
+    records: marcRecord.records.map((field) => (fieldMatchesDescription(field, FIELD_TAGS_TO_REMOVE)
       ? {
         ...field,
         content: '',
@@ -91,7 +97,7 @@ export const addNewRecord = (index, state) => {
   const emptyRow = {
     id: uuid(),
     tag: '',
-    content: '',
+    content: '$a ',
     indicators: ['', ''],
   };
 
@@ -249,10 +255,12 @@ export const shouldRecordsUpdate = (prevRecords, newRecords) => {
 };
 
 export const removeFieldsForDuplicate = (formValues) => {
-  const records = formValues.records;
+  const { records } = formValues;
 
   const filteredRecords = records.filter(recordRow => {
-    if (isLastRecord(recordRow) || recordRow.tag === '001' || recordRow.tag === '005') {
+    const idFields = [{ tag: '001' }, { tag: '005' }];
+
+    if (isLastRecord(recordRow) || fieldMatchesDescription(recordRow, idFields)) {
       return false;
     }
 
@@ -266,5 +274,27 @@ export const removeFieldsForDuplicate = (formValues) => {
   return {
     ...omit(formValues, 'updateInfo'),
     records: filteredRecords,
+  };
+};
+
+export const autopopulateSubfieldSection = (formValues) => {
+  const { records } = formValues;
+
+  const recordsWithSubfieds = records.reduce((acc, field) => {
+    if (fieldMatchesDescription(field, FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS)) {
+      return [...acc, field];
+    }
+
+    const contentHasSubfield = /^\$[a-z0-9]*/.test(field.content);
+
+    return [...acc, {
+      ...field,
+      content: contentHasSubfield ? field.content : `$a ${field.content}`,
+    }];
+  }, []);
+
+  return {
+    ...formValues,
+    records: recordsWithSubfieds,
   };
 };
