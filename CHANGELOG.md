@@ -4,7 +4,8 @@
 * [UIQM-83](https://issues.folio.org/browse/UIQM-83) Do not duplicate fields with empty content
 * [UIQM-82](https://issues.folio.org/browse/UIQM-82) Add onsave behavior for deriving new MARC bib record
 * [UIQM-89](https://issues.folio.org/browse/UIQM-89) Add missing status permission to Derive new MARC bib record permission
- 
+* [UIQM-90](https://issues.folio.org/browse/UIQM-90) Add shortcut keys to save a record and to move on search pane.
+
 ## [3.0.0](https://github.com/folio-org/ui-quick-marc/tree/v3.0.0) (2021-03-15)
 * [UIQM-67](https://issues.folio.org/browse/UIQM-61) Update display of record status
 * [UIQM-72](https://issues.folio.org/browse/UIQM-72) Change delete row behavior
