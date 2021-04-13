@@ -34,7 +34,8 @@ import {
 
 const spySubscription = { values: true };
 const hotKeys = {
-  save: ['ctrl+s'],
+  save: ['mod+s'],
+  close: ['mod+alt+h'],
 };
 
 const QuickMarcEditor = ({
@@ -143,6 +144,10 @@ const QuickMarcEditor = ({
       if (!saveFormDisabled) {
         handleSubmit();
       }
+    },
+    close: e => {
+      e.preventDefault();
+      onClose();
     },
   }), [handleSubmit, saveFormDisabled]);
 
