@@ -583,4 +583,46 @@ describe('QuickMarcEditor utils', () => {
 
     expect(utils.removeFieldsForDuplicate(formValues)).toEqual(expectedFormValues);
   });
+
+  describe('autopopulateSubfieldSection', () => {
+    it('should return record with added subfield', () => {
+      const record = {
+        records: [{
+          tag: '001',
+          content: 'some content',
+        }, {
+          tag: '240',
+          content: 'some content',
+        }, {
+          tag: '998',
+          indicators: ['f', 'f'],
+          content: '$c some content',
+        }],
+        updateInfo: {
+          recordState: 'actual',
+          updateDate: '01/01/1970',
+        },
+      };
+
+      const expectedRecord = {
+        records: [{
+          tag: '001',
+          content: 'some content',
+        }, {
+          tag: '240',
+          content: '$a some content',
+        }, {
+          tag: '998',
+          indicators: ['f', 'f'],
+          content: '$c some content',
+        }],
+        updateInfo: {
+          recordState: 'actual',
+          updateDate: '01/01/1970',
+        },
+      };
+
+      expect(utils.autopopulateSubfieldSection(record)).toEqual(expectedRecord);
+    });
+  });
 });
