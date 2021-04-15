@@ -142,7 +142,7 @@ const QuickMarcEditor = ({
       e.preventDefault();
 
       if (!saveFormDisabled) {
-        handleSubmit();
+        confirmSubmit();
       }
     },
     close: e => {
