@@ -22,6 +22,7 @@ import {
 import {
   hydrateMarcRecord,
   removeFieldsForDuplicate,
+  autopopulateSubfieldSection,
   validateMarcRecord,
 } from './utils';
 
@@ -108,7 +109,7 @@ const QuickMarcDuplicateWrapper = ({
   };
 
   const onSubmit = useCallback(async (formValues) => {
-    const formValuesForDuplicate = removeFieldsForDuplicate(formValues);
+    const formValuesForDuplicate = autopopulateSubfieldSection(removeFieldsForDuplicate(formValues));
     const validationErrorMessage = validateMarcRecord(formValuesForDuplicate);
 
     if (validationErrorMessage) {
