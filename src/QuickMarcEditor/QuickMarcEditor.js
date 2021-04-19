@@ -176,6 +176,8 @@ const QuickMarcEditor = ({
               <QuickMarcRecordInfo
                 status={initialValues?.updateInfo?.recordState}
                 updateDate={initialValues?.updateInfo?.updateDate}
+                updatedBy={initialValues?.updateInfo?.updatedBy}
+                isEditAction={action === QUICK_MARC_ACTIONS.EDIT}
               />
             )}
             footer={paneFooter}
