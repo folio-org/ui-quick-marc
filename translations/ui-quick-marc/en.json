@@ -1,5 +1,6 @@
 {
   "meta.title": "Quick MARC",
+  "meta.source.system": "System",
 
   "permission.quick-marc-editor.all": "quickMARC: View, edit MARC bibliographic record",
   "permission.quick-marc-editor.duplicate": "quickMARC: Derive new MARC bibliographic record",

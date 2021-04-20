@@ -3,6 +3,8 @@
 ## [3.1.0](in progress)
 * [UIQM-86](https://issues.folio.org/browse/UIQM-86) Auto-populate a subfield section with leading $a when no leading subfield is present
 * [UIQM-90](https://issues.folio.org/browse/UIQM-90) Add shortcut keys to save a record and to move on search pane.
+* [UIQM-92](https://issues.folio.org/browse/UIQM-92) Compile translation files into AST format
+* [UIQM-94](https://issues.folio.org/browse/UIQM-94) Display person who last edited quickMARC record.
 * [UIQM-95](https://issues.folio.org/browse/UIQM-90) Auto-populate a subfield for 035 and 019 fields when deriving a new record.
 
 ## [3.0.1](https://github.com/folio-org/ui-quick-marc/tree/v3.0.1) (2021-04-01)
