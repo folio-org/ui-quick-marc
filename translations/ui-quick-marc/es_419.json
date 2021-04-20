@@ -44,7 +44,7 @@
     "record.error.title.multiple": "El registro no se puede guardar con más de un campo 245.",
     "record.error.title.empty": "El registro no se puede guardar sin el campo 245.",
     "record.delete.confirmLabel": "Sí",
-    "record.delete.message": "¿Está seguro de que desea eliminar este campo?",
+    "record.delete.message": "Al seleccionar <b>Continuar con guardar</b> , <b> {count} campos</b> y se actualizará este registro. ¿Estás seguro de que quieres continuar?",
     "record.save.error.generic": "Registro no guardado: problema de comunicación con el servidor. Inténtalo de nuevo.",
     "permission.quick-marc-editor.all": "quickMARC: Ver, editar",
     "record.moveUpRow": "Mover el campo una fila hacia arriba",
@@ -132,7 +132,7 @@
     "record.cancellationModal.confirm": "Seguir editando",
     "record.duplicate.notification.success": "This record has successfully saved and is in process. Changes may not appear immediately.",
     "record.saveNew.onSave": "Creating record may take several seconds.",
-    "record.saveNew.success": "Record created.",
+    "record.saveNew.success": "Registro creado.",
     "record.saveNew.error": "Unable to create record due to system error. Please try again or contact support.",
     "record.saveNew.delay": "Creating this record is taking longer than expected. Please check back later if record is available or contact support."
 }

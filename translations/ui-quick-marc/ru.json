@@ -44,7 +44,7 @@
     "record.error.title.multiple": "Record cannot be saved with more than one field 245.",
     "record.error.title.empty": "Record cannot be saved without field 245.",
     "record.delete.confirmLabel": "Да",
-    "record.delete.message": "Вы уверены?",
+    "record.delete.message": "By selecting <b>Continue with save</b>, then <b>{count} field(s)</b> will be deleted and this record will be updated. Are you sure you want to continue?",
     "record.save.error.generic": "Record not saved: Communication problem with server. Please try again.",
     "permission.quick-marc-editor.all": "quickMARC: просмотр, редактирование",
     "record.moveUpRow": "Переместить поле на одну строку вверх",
