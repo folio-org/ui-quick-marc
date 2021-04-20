@@ -2,6 +2,7 @@
 
 ## [3.1.0](in progress)
 * [UIQM-86](https://issues.folio.org/browse/UIQM-86) Auto-populate a subfield section with leading $a when no leading subfield is present
+* [UIQM-92](https://issues.folio.org/browse/UIQM-92) Compile translation files into AST format
 * [UIQM-94](https://issues.folio.org/browse/UIQM-94) Display person who last edited quickMARC record.
 
 ## [3.0.1](https://github.com/folio-org/ui-quick-marc/tree/v3.0.1) (2021-04-01)
