@@ -44,7 +44,7 @@
     "record.error.title.multiple": "只能有一個 245 段位，無法儲存紀錄。",
     "record.error.title.empty": "缺少 245 段位，無法儲存紀錄。",
     "record.delete.confirmLabel": "是",
-    "record.delete.message": "你確定嗎 ？",
+    "record.delete.message": "By selecting <b>Continue with save</b>, then <b>{count} field(s)</b> will be deleted and this record will be updated. Are you sure you want to continue?",
     "record.save.error.generic": "紀錄尚未儲存：伺服器連線問題，請再試一次。",
     "permission.quick-marc-editor.all": "quickMARC：查看、編輯",
     "record.moveUpRow": "Move field up a row",
