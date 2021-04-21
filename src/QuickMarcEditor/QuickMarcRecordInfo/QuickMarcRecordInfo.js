@@ -25,7 +25,7 @@ export const QuickMarcRecordInfo = ({
   const getSourceLabel = () => {
     const source = updatedBy
       ? `${updatedBy.lastName}, ${updatedBy.firstName}`
-      : <FormattedMessage id="ui.quick-marc.meta.source.system" />;
+      : <FormattedMessage id="ui-quick-marc.meta.source.system" />;
 
     return (
       <>
