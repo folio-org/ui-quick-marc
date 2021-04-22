@@ -134,5 +134,6 @@
     "record.saveNew.onSave": "La création d'un enregistrement peut prendre plusieurs secondes.",
     "record.saveNew.success": "Enregistrement créé.",
     "record.saveNew.error": "Impossible de créer un enregistrement en raison d'une erreur système. Veuillez réessayer ou contacter l'assistance.",
-    "record.saveNew.delay": "La création de cet enregistrement prend plus de temps que prévu. Veuillez vérifier plus tard si l'enregistrement est disponible ou contacter le support."
+    "record.saveNew.delay": "La création de cet enregistrement prend plus de temps que prévu. Veuillez vérifier plus tard si l'enregistrement est disponible ou contacter le support.",
+    "meta.source.system": "Système"
 }
