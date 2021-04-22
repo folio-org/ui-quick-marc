@@ -134,5 +134,6 @@
     "record.saveNew.onSave": "建立記錄可能需要幾秒鐘。",
     "record.saveNew.success": "建立記錄",
     "record.saveNew.error": "由於系統錯誤，無法建立記錄。請重試或聯絡協助人員。",
-    "record.saveNew.delay": "新增此筆記錄比預期的長。如果記錄可用，請稍晚回來檢查，或請聯絡協助人員。"
+    "record.saveNew.delay": "新增此筆記錄比預期的長。如果記錄可用，請稍晚回來檢查，或請聯絡協助人員。",
+    "meta.source.system": "System"
 }
