@@ -5,7 +5,9 @@
 * [UIQM-90](https://issues.folio.org/browse/UIQM-90) Add shortcut keys to save a record and to move on search pane.
 * [UIQM-92](https://issues.folio.org/browse/UIQM-92) Compile translation files into AST format
 * [UIQM-94](https://issues.folio.org/browse/UIQM-94) Display person who last edited quickMARC record.
-* [UIQM-95](https://issues.folio.org/browse/UIQM-90) Auto-populate a subfield for 035 and 019 fields when deriving a new record.
+* [UIQM-95](https://issues.folio.org/browse/UIQM-95) Auto-populate a subfield for 035 and 019 fields when deriving a new record.
+* [UIQM-96](https://issues.folio.org/browse/UIQM-96) Update Delete field(s) modal's Cancel button label
+
 
 ## [3.0.1](https://github.com/folio-org/ui-quick-marc/tree/v3.0.1) (2021-04-01)
 * [UIQM-83](https://issues.folio.org/browse/UIQM-83) Do not duplicate fields with empty content
