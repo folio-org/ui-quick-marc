@@ -208,6 +208,7 @@ const QuickMarcEditor = ({
         heading={<FormattedMessage id="ui-quick-marc.record.delete.title" />}
         message={getConfirmModalMessage()}
         confirmLabel={<FormattedMessage id="ui-quick-marc.record.delete.confirmLabel" />}
+        cancelLabel={<FormattedMessage id="ui-quick-marc.record.delete.cancelLabel" />}
         onConfirm={onConfirmModal}
         onCancel={onCancelModal}
       />

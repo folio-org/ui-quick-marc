@@ -122,6 +122,7 @@
   "record.error.tag.length": "Record cannot be saved. Each field must contain three characters in the first text box of each row.",
 
   "record.delete.confirmLabel": "Continue with save",
+  "record.delete.cancelLabel": "Restore deleted field(s)",
   "record.delete.title": "Delete fields",
   "record.delete.message": "By selecting <b>Continue with save</b>, then <b>{count} field(s)</b> will be deleted and this record will be updated. Are you sure you want to continue?",
 
