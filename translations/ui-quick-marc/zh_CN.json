@@ -135,5 +135,6 @@
     "record.saveNew.success": "记录已创建。",
     "record.saveNew.error": "由于系统错误，无法创建记录。请重试或联系支持人员。",
     "record.saveNew.delay": "创建此记录所花费的时间比预期要长。如果有记录，请稍后再回来查看，或者与支持人员联系。",
-    "meta.source.system": "System"
+    "meta.source.system": "系统",
+    "record.delete.cancelLabel": "恢复已删除字段"
 }

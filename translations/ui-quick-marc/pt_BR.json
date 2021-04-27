@@ -135,5 +135,6 @@
     "record.saveNew.success": "Registro criado.",
     "record.saveNew.error": "Não é possível criar registro devido a um erro do sistema. Por favor, tente novamente ou entre em contato com o suporte.",
     "record.saveNew.delay": "A criação deste registro está demorando mais do que o esperado. Verifique novamente mais tarde se o registro está disponível ou entre em contato com o suporte.",
-    "meta.source.system": "System"
+    "meta.source.system": "Sistema",
+    "record.delete.cancelLabel": "Restaurar o(s) campo(s) apagado(s)"
 }
