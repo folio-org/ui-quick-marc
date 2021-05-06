@@ -609,6 +609,9 @@ describe('QuickMarcEditor utils', () => {
           tag: '035',
           content: '$a',
         }, {
+          tag: '035',
+          content: '',
+        }, {
           tag: '998',
           indicators: ['f', 'f'],
           content: '$c some content',
