@@ -2,6 +2,7 @@
 
 ## [3.1.0](in progress)
 * [UIQM-86](https://issues.folio.org/browse/UIQM-86) Auto-populate a subfield section with leading $a when no leading subfield is present
+* [UIQM-99](https://issues.folio.org/browse/UIQM-99) Remove a row that only has a subfield and no text.
 
 ## [3.0.1](https://github.com/folio-org/ui-quick-marc/tree/v3.0.1) (2021-04-01)
 * [UIQM-83](https://issues.folio.org/browse/UIQM-83) Do not duplicate fields with empty content

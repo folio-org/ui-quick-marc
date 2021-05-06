@@ -1,5 +1,6 @@
 import uuid from 'uuid';
 import omit from 'lodash/omit';
+import compact from 'lodash/compact';
 
 import {
   isLastRecord,
@@ -277,10 +278,22 @@ export const removeFieldsForDuplicate = (formValues) => {
   };
 };
 
+const checkIsEmptyContent = (field) => {
+  if (typeof field.content === 'string') {
+    return compact(field.content.split(' ')).every(content => /^\$[a-z0-9]*/.test(content));
+  }
+
+  return false;
+}
+
 export const autopopulateSubfieldSection = (formValues) => {
   const { records } = formValues;
 
   const recordsWithSubfieds = records.reduce((acc, field) => {
+    if (checkIsEmptyContent(field)) {
+      return acc;
+    }
+
     if (fieldMatchesDescription(field, FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS)) {
       return [...acc, field];
     }
