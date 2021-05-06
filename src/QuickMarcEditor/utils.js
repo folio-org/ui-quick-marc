@@ -292,7 +292,7 @@ const checkIsEmptyContent = (field) => {
   }
 
   return false;
-}
+};
 
 export const autopopulateSubfieldSection = (formValues) => {
   const { records } = formValues;
