@@ -55,13 +55,21 @@ const fieldMatchesDescription = (field, descriptionArray) => {
   return match;
 };
 
+const getEmptyContent = (field) => {
+  if (field.tag === '035' || field.tag === '019') {
+    return '$a';
+  }
+
+  return '';
+};
+
 const removeMarcRecordFieldContentForDuplication = marcRecord => {
   return {
     ...marcRecord,
     records: marcRecord.records.map((field) => (fieldMatchesDescription(field, FIELD_TAGS_TO_REMOVE)
       ? {
         ...field,
-        content: '',
+        content: getEmptyContent(field),
       }
       : field
     )),

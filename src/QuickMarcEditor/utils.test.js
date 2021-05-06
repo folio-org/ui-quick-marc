@@ -474,6 +474,12 @@ describe('QuickMarcEditor utils', () => {
           tag: '005',
           content: 'some content',
         }, {
+          tag: '019',
+          content: 'some content',
+        }, {
+          tag: '035',
+          content: 'some content',
+        }, {
           tag: '201',
           content: 'some content',
         }, {
@@ -494,6 +500,12 @@ describe('QuickMarcEditor utils', () => {
         }, {
           tag: '005',
           content: '',
+        }, {
+          tag: '019',
+          content: '$a',
+        }, {
+          tag: '035',
+          content: '$a',
         }, {
           tag: '201',
           content: 'some content',

@@ -176,6 +176,8 @@ const QuickMarcEditor = ({
               <QuickMarcRecordInfo
                 status={initialValues?.updateInfo?.recordState}
                 updateDate={initialValues?.updateInfo?.updateDate}
+                updatedBy={initialValues?.updateInfo?.updatedBy}
+                isEditAction={action === QUICK_MARC_ACTIONS.EDIT}
               />
             )}
             footer={paneFooter}
@@ -206,6 +208,7 @@ const QuickMarcEditor = ({
         heading={<FormattedMessage id="ui-quick-marc.record.delete.title" />}
         message={getConfirmModalMessage()}
         confirmLabel={<FormattedMessage id="ui-quick-marc.record.delete.confirmLabel" />}
+        cancelLabel={<FormattedMessage id="ui-quick-marc.record.delete.cancelLabel" />}
         onConfirm={onConfirmModal}
         onCancel={onCancelModal}
       />
