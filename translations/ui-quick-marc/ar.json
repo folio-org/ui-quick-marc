@@ -44,7 +44,7 @@
     "record.error.title.multiple": "لا يمكن حفظ التسجيلة في حالة وجود أكثر من حقل 245",
     "record.error.title.empty": "ياا يمكن حفظ التسجيلة بدون الحقل 245",
     "record.delete.confirmLabel": "متابعة الحفظ",
-    "record.delete.message": "هل أنت متأكد من أنك تريد حذف هذا الحقل؟",
+    "record.delete.message": "بتحديد <b>متابعة مع الحفظ</b>، سيتم حذف <b>{count} حقلاً</b> وسيتم تحديث هذه التسجيلة. هل أنت متأكد من أنك تريد الاستمرار؟",
     "record.save.error.generic": "لم يتم حفظ التسجيلة: توجد مشكلة في الاتصال بالخادم. يرجى إعادة المحاولة.",
     "permission.quick-marc-editor.all": "quickMARC: اعرض، حرّر تسجيلة مارك البيبلوغرافية",
     "record.moveUpRow": "تحريك الحقل لأعلى صف",
@@ -135,5 +135,6 @@
     "record.saveNew.success": "تم إنشاء التسجيلة.",
     "record.saveNew.error": "تعذر إنشاء تسجيلة بسبب خطأ في النظام. يرجى المحاولة مرة أخرى أو الاتصال بالدعم.",
     "record.saveNew.delay": "يستغرق إنشاء هذه التسجيلة وقتًا أطول من المتوقع. يرجى التحقق مرة أخرى لاحقًا إذا كانت التسجيلة متاحة أو الاتصال بالدعم.",
-    "meta.source.system": "النظام"
+    "meta.source.system": "النظام",
+    "record.delete.cancelLabel": "استعادة الحقول المحذوفة"
 }
