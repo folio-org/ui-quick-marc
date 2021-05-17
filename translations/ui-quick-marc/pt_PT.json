@@ -135,6 +135,6 @@
     "record.saveNew.success": "Record created.",
     "record.saveNew.error": "Unable to create record due to system error. Please try again or contact support.",
     "record.saveNew.delay": "Creating this record is taking longer than expected. Please check back later if record is available or contact support.",
-    "meta.source.system": "System",
+    "meta.source.system": "Sistema",
     "record.delete.cancelLabel": "Restore deleted field(s)"
 }
