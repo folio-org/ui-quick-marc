@@ -1,5 +1,8 @@
 # Change history for ui-quick-marc
 
+## [3.1.0](in progress)
+* [UIQM-105](https://issues.folio.org/browse/UIQM-105) Display MARC Tag 006/00.
+
 ## [3.0.1](https://github.com/folio-org/ui-quick-marc/tree/v3.0.1) (2021-04-01)
 * [UIQM-83](https://issues.folio.org/browse/UIQM-83) Do not duplicate fields with empty content
 * [UIQM-82](https://issues.folio.org/browse/UIQM-82) Add onsave behavior for deriving new MARC bib record

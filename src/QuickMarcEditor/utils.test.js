@@ -179,7 +179,7 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record)).not.toBeDefined();
+      expect(utils.validateMarcRecord(record, {})).not.toBeDefined();
     });
 
     it('should return error message when record is invalid', () => {
@@ -193,7 +193,7 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record)).toBeDefined();
+      expect(utils.validateMarcRecord(record, {})).toBeDefined();
     });
 
     it('should return error message when record is without 245 row', () => {
@@ -214,7 +214,7 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record)).toBe('ui-quick-marc.record.error.title.empty');
+      expect(utils.validateMarcRecord(record, {})).toBe('ui-quick-marc.record.error.title.empty');
     });
 
     it('should return error message when record has several 245 rows', () => {
@@ -238,7 +238,39 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record)).toBe('ui-quick-marc.record.error.title.multiple');
+      expect(utils.validateMarcRecord(record, {})).toBe('ui-quick-marc.record.error.title.multiple');
+    });
+
+    it('should return error message when record has new 006 row', () => {
+      const records = {
+        leader: '04706cam a2200865Ii 4500',
+        records: [
+          {
+            content: '04706cam a2200865Ii 4500',
+            tag: '025',
+          },
+          {
+            tag: '008',
+            content: {
+              ELvl: 'I',
+              Desc: 'i',
+            },
+          },
+          {
+            tag: '245',
+          },
+          {
+            tag: '006',
+            content: {
+              Form: '0',
+              Freq: '\\',
+            },
+            id: '2',
+          },
+        ],
+      };
+
+      expect(utils.validateMarcRecord(records, {})).toBe('ui-quick-marc.record.error.materialChars');
     });
   });
 
@@ -323,6 +355,57 @@ describe('QuickMarcEditor utils', () => {
       ];
 
       expect(utils.validateRecordTag(records)).toBe('ui-quick-marc.record.error.tag.length');
+    });
+  });
+
+  describe('validateMaterialCharsField', () => {
+    it('should return error message when 006 created by the user', () => {
+      const records = [
+        {
+          content: '04706cam a2200865Ii 4500',
+          tag: '245',
+          id: '1',
+        },
+        {
+          tag: '006',
+          content: {
+            Form: '0',
+            Freq: '\\',
+          },
+          id: '2',
+        },
+      ];
+
+      const initialRecords = [
+        {
+          content: '04706cam a2200865Ii 4500',
+          tag: '245',
+          id: '1',
+        },
+      ];
+
+      expect(utils.validateMaterialCharsField(records, initialRecords)).toBe('ui-quick-marc.record.error.materialChars');
+    });
+
+    it('should  not return error message when 006 created by the user', () => {
+      const initialRecords = [
+        {
+          content: '04706cam a2200865Ii 4500',
+          tag: '245',
+          id: '1',
+        },
+        {
+          tag: '006',
+          content: {
+            Form: '0',
+            Freq: '\\',
+          },
+          id: '2',
+        },
+      ];
+      const records = initialRecords;
+
+      expect(utils.validateMaterialCharsField(records, initialRecords)).toBeUndefined();
     });
   });
 

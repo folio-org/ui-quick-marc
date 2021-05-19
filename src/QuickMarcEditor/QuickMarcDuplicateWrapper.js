@@ -109,7 +109,7 @@ const QuickMarcDuplicateWrapper = ({
 
   const onSubmit = useCallback(async (formValues) => {
     const formValuesForDuplicate = removeFieldsForDuplicate(formValues);
-    const validationErrorMessage = validateMarcRecord(formValuesForDuplicate);
+    const validationErrorMessage = validateMarcRecord(formValuesForDuplicate, initialValues);
 
     if (validationErrorMessage) {
       showCallout({ messageId: validationErrorMessage, type: 'error' });

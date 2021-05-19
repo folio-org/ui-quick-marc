@@ -142,9 +142,24 @@ export const validateRecordMismatch = marcRecords => {
   return undefined;
 };
 
-export const validateMarcRecord = marcRecord => {
-  const marcRecords = marcRecord.records || [];
+export const validateMaterialCharsField = (marcRecords, initialMarcRecords) => {
+  const initialMaterialCharsField = initialMarcRecords.find(isMaterialCharsRecord);
 
+  if (marcRecords.find(isMaterialCharsRecord)) {
+    const materialCharsRecords = marcRecords.filter(isMaterialCharsRecord);
+    const hasNewMaterialCharsRecord = materialCharsRecords.some(record => record.id !== initialMaterialCharsField?.id);
+
+    return hasNewMaterialCharsRecord
+      ? 'ui-quick-marc.record.error.materialChars'
+      : undefined;
+  }
+
+  return undefined;
+};
+
+export const validateMarcRecord = (marcRecord, initialMarcRecord) => {
+  const marcRecords = marcRecord.records || [];
+  const initialMarcRecords = initialMarcRecord.records || [];
   const recordLeader = marcRecords[0];
 
   const leaderError = validateLeader(marcRecord?.leader, recordLeader?.content);
@@ -157,6 +172,12 @@ export const validateMarcRecord = marcRecord => {
 
   if (leaderMismatchError) {
     return leaderMismatchError;
+  }
+
+  const materialCharsError = validateMaterialCharsField(marcRecords, initialMarcRecords);
+
+  if (materialCharsError) {
+    return materialCharsError;
   }
 
   const tagError = validateRecordTag(marcRecords);
