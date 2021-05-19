@@ -136,5 +136,6 @@
     "record.saveNew.error": "Impossible de créer un enregistrement en raison d'une erreur système. Veuillez réessayer ou contacter l'assistance.",
     "record.saveNew.delay": "La création de cet enregistrement prend plus de temps que prévu. Veuillez vérifier plus tard si l'enregistrement est disponible ou contacter le support.",
     "meta.source.system": "Système",
-    "record.delete.cancelLabel": "Restaurer les champs supprimés"
+    "record.delete.cancelLabel": "Restaurer les champs supprimés",
+    "record.error.materialChars": "Unable to save record. MARC Tag 006 can only be added through data import."
 }
