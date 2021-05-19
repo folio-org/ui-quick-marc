@@ -19,6 +19,7 @@ export const FIELD_TAGS_TO_REMOVE = [
 export const FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS = [
   { tag: LEADER_TAG },
   ...FIELD_TAGS_TO_REMOVE,
+  { tag: '003' },
   { tag: '006' },
   { tag: '007' },
   { tag: '008' },
