@@ -136,5 +136,6 @@
     "record.saveNew.error": "Unable to create record due to system error. Please try again or contact support.",
     "record.saveNew.delay": "Creating this record is taking longer than expected. Please check back later if record is available or contact support.",
     "meta.source.system": "System",
-    "record.delete.cancelLabel": "Restore deleted field(s)"
+    "record.delete.cancelLabel": "Restore deleted field(s)",
+    "record.error.materialChars": "Unable to save record. MARC Tag 006 can only be added through data import."
 }
