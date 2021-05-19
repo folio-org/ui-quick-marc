@@ -686,6 +686,9 @@ describe('QuickMarcEditor utils', () => {
           tag: '001',
           content: 'some content',
         }, {
+          tag: '003',
+          content: 'some content',
+        }, {
           tag: '240',
           content: 'some content',
         }, {
@@ -708,6 +711,9 @@ describe('QuickMarcEditor utils', () => {
       const expectedRecord = {
         records: [{
           tag: '001',
+          content: 'some content',
+        }, {
+          tag: '003',
           content: 'some content',
         }, {
           tag: '240',
