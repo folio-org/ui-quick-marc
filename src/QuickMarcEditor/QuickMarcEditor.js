@@ -149,7 +149,7 @@ const QuickMarcEditor = ({
       e.preventDefault();
       onClose();
     },
-  }), [handleSubmit, saveFormDisabled]);
+  }), [saveFormDisabled, confirmSubmit, onClose]);
 
   return (
     <HotKeys
