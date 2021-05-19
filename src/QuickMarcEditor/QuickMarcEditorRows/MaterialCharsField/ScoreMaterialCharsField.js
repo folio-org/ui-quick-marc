@@ -9,6 +9,11 @@ import {
 const config = {
   fields: [
     {
+      type: SUBFIELD_TYPES.BYTE,
+      name: 'Form',
+      disabled: true,
+    },
+    {
       name: 'Comp',
       type: SUBFIELD_TYPES.STRING,
     },

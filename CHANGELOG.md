@@ -9,6 +9,7 @@
 * [UIQM-96](https://issues.folio.org/browse/UIQM-96) Update Delete field(s) modal's Cancel button label
 * [UIQM-99](https://issues.folio.org/browse/UIQM-99) Remove a row that only has a subfield and no text.
 * [UIQM-102](https://issues.folio.org/browse/UIQM-102) Do not auto-populate the 003 field with a leading $a.
+* [UIQM-105](https://issues.folio.org/browse/UIQM-105) Display MARC Tag 006/00.
 
 ## [3.0.1](https://github.com/folio-org/ui-quick-marc/tree/v3.0.1) (2021-04-01)
 * [UIQM-83](https://issues.folio.org/browse/UIQM-83) Do not duplicate fields with empty content

@@ -120,6 +120,7 @@
   "record.error.title.multiple": "Record cannot be saved with more than one field 245.",
   "record.error.title.empty": "Record cannot be saved without field 245.",
   "record.error.tag.length": "Record cannot be saved. Each field must contain three characters in the first text box of each row.",
+  "record.error.materialChars": "Unable to save record. MARC Tag 006 can only be added through data import.",
 
   "record.delete.confirmLabel": "Continue with save",
   "record.delete.cancelLabel": "Restore deleted field(s)",
