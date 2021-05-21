@@ -10,7 +10,7 @@ const config = {
   fields: [
     {
       type: SUBFIELD_TYPES.BYTE,
-      name: 'Form',
+      name: 'Type',
       disabled: true,
     },
     {
