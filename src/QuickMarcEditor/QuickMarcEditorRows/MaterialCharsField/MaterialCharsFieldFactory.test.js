@@ -10,6 +10,7 @@ import MixedMaterialCharsField from './MixedMaterialCharsField';
 import ScoreMaterialCharsField from './ScoreMaterialCharsField';
 import SoundMaterialCharsField from './SoundMaterialCharsField';
 import VisualMaterialCharsField from './VisualMaterialCharsField';
+import UnknownMaterialCharsField from './UnknownMaterialCharsField';
 
 describe('MaterialCharsFieldFactory', () => {
   it('should create correct fields', () => {
@@ -52,7 +53,7 @@ describe('MaterialCharsFieldFactory', () => {
 
   it('should return null when there is no matched field', () => {
     expect(
-      MaterialCharsFieldFactory.getMaterialCharsFieldField('records', 'l'),
-    ).toBe(null);
+      MaterialCharsFieldFactory.getMaterialCharsFieldField('records', 'l').type.displayName,
+    ).toBe(UnknownMaterialCharsField.displayName);
   });
 });

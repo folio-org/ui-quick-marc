@@ -5,64 +5,65 @@ import {
   BytesField,
   SUBFIELD_TYPES,
 } from '../BytesField';
+import useStandardFields from './useStandardFields';
 
-const config = {
-  fields: [
-    {
-      type: SUBFIELD_TYPES.BYTE,
-      name: 'Type',
-      disabled: true,
-    },
-    {
-      name: 'Ills',
-      type: SUBFIELD_TYPES.BYTES,
-      bytes: 4,
-    },
-    {
-      name: 'Audn',
-      type: SUBFIELD_TYPES.BYTE,
-    },
-    {
-      type: SUBFIELD_TYPES.BYTE,
-      name: 'Form',
-    },
-    {
-      name: 'Cont',
-      type: SUBFIELD_TYPES.BYTES,
-      bytes: 4,
-    },
-    {
-      name: 'GPub',
-      type: SUBFIELD_TYPES.BYTE,
-    },
-    {
-      type: SUBFIELD_TYPES.BYTE,
-      name: 'Conf',
-    },
-    {
-      name: 'Fest',
-      type: SUBFIELD_TYPES.BYTE,
-    },
-    {
-      name: 'Indx',
-      type: SUBFIELD_TYPES.BYTE,
-    },
-    {
-      name: 'LitF',
-      type: SUBFIELD_TYPES.BYTE,
-    },
-    {
-      name: 'Biog',
-      type: SUBFIELD_TYPES.BYTE,
-    },
-  ],
-};
+const configFields = [
+  {
+    name: 'Ills',
+    type: SUBFIELD_TYPES.BYTES,
+    bytes: 4,
+  },
+  {
+    name: 'Audn',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+  {
+    name: 'Form',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+  {
+    name: 'Cont',
+    type: SUBFIELD_TYPES.BYTES,
+    bytes: 4,
+  },
+  {
+    name: 'GPub',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+  {
+    name: 'Conf',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+  {
+    name: 'Fest',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+  {
+    name: 'Indx',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+  {
+    name: 'LitF',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+  {
+    name: 'Biog',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+];
 
 const BookMaterialCharsField = ({ name }) => {
+  const standardFields = useStandardFields();
+
   return (
     <BytesField
       name={name}
-      config={config}
+      config={{
+        fields: [
+          ...standardFields,
+          ...configFields,
+        ],
+      }}
     />
   );
 };

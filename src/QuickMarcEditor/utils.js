@@ -234,10 +234,17 @@ const getRecordsTrackChanges = (records) => {
       trackCHanges.lastRecordPosition = idx;
     }
 
-    if (isMaterialCharsRecord(record) || isPhysDescriptionRecord(record)) {
+    if (isPhysDescriptionRecord(record)) {
       trackCHanges.bytesFields[idx] = {
         tag: record.tag,
         category: record?.content?.Category,
+      };
+    }
+
+    if (isMaterialCharsRecord(record)) {
+      trackCHanges.bytesFields[idx] = {
+        tag: record.tag,
+        type: record?.content?.Type,
       };
     }
   });
@@ -261,7 +268,9 @@ export const shouldRecordsUpdate = (prevRecords, newRecords) => {
     const prevField = prevTrackChanges.bytesFields[prevPosition];
     const newField = newTrackChanges.bytesFields[prevPosition];
 
-    return prevField.tag !== newField?.tag || prevField.category !== newField?.category;
+    return prevField.tag !== newField?.tag
+      || prevField.category !== newField?.category
+      || prevField.type !== newField?.type;
   });
 
   if (hasBytesUpdates) return true;
