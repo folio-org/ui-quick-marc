@@ -8,6 +8,7 @@ import MixedMaterialCharsField from './MixedMaterialCharsField';
 import ScoreMaterialCharsField from './ScoreMaterialCharsField';
 import SoundMaterialCharsField from './SoundMaterialCharsField';
 import VisualMaterialCharsField from './VisualMaterialCharsField';
+import UnknownMaterialCharsField from './UnknownMaterialCharsField';
 
 export const MaterialCharsFieldFactory = {
   getMaterialCharsFieldField(name, type, subtype) {
@@ -40,9 +41,9 @@ export const MaterialCharsFieldFactory = {
         MaterialCharsField = VisualMaterialCharsField;
         break;
       default:
-        MaterialCharsField = null;
+        MaterialCharsField = UnknownMaterialCharsField;
     }
 
-    return MaterialCharsField ? <MaterialCharsField name={name} /> : null;
+    return <MaterialCharsField name={name} />;
   },
 };

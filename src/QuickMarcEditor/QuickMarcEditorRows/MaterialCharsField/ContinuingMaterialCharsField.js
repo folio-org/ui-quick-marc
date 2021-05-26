@@ -5,67 +5,68 @@ import {
   BytesField,
   SUBFIELD_TYPES,
 } from '../BytesField';
+import useStandardFields from './useStandardFields';
 
-const config = {
-  fields: [
-    {
-      type: SUBFIELD_TYPES.BYTE,
-      name: 'Type',
-      disabled: true,
-    },
-    {
-      name: 'Freq',
-      type: SUBFIELD_TYPES.BYTE,
-    },
-    {
-      name: 'Regl',
-      type: SUBFIELD_TYPES.BYTE,
-    },
-    {
-      name: 'SrTp',
-      type: SUBFIELD_TYPES.BYTE,
-    },
-    {
-      name: 'Orig',
-      type: SUBFIELD_TYPES.BYTE,
-    },
-    {
-      type: SUBFIELD_TYPES.BYTE,
-      name: 'Form',
-    },
-    {
-      name: 'EntW',
-      type: SUBFIELD_TYPES.BYTE,
-    },
-    {
-      name: 'Cont',
-      type: SUBFIELD_TYPES.BYTES,
-      bytes: 3,
-    },
-    {
-      type: SUBFIELD_TYPES.BYTE,
-      name: 'GPub',
-    },
-    {
-      type: SUBFIELD_TYPES.BYTE,
-      name: 'Conf',
-    },
-    {
-      name: 'Alph',
-      type: SUBFIELD_TYPES.BYTE,
-    },
-    {
-      name: 'S/L',
-      type: SUBFIELD_TYPES.BYTE,
-    },
-  ],
-};
+const configFields = [
+  {
+    name: 'Freq',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+  {
+    name: 'Regl',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+  {
+    name: 'Orig',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+  {
+    name: 'Form',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+  {
+    name: 'EntW',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+  {
+    name: 'Cont',
+    type: SUBFIELD_TYPES.BYTES,
+    bytes: 3,
+  },
+  {
+    name: 'SrTP',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+  {
+    name: 'GPub',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+  {
+    name: 'Conf',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+  {
+    name: 'Alph',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+  {
+    name: 'S/L',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+];
 
 const ContinuingMaterialCharsField = ({ name }) => {
+  const standardFields = useStandardFields();
+
   return (
     <BytesField
       name={name}
-      config={config}
+      config={{
+        fields: [
+          ...standardFields,
+          ...configFields,
+        ],
+      }}
     />
   );
 };
