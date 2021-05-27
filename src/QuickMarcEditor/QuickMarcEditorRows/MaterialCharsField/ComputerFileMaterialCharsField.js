@@ -32,6 +32,7 @@ const ComputerFileMaterialCharsField = ({ name }) => {
   return (
     <BytesField
       name={name}
+      id="computer-file-material-chars-field"
       config={{
         fields: [
           ...standardFields,
@@ -45,7 +46,5 @@ const ComputerFileMaterialCharsField = ({ name }) => {
 ComputerFileMaterialCharsField.propTypes = {
   name: PropTypes.string.isRequired,
 };
-
-ComputerFileMaterialCharsField.displayName = 'ComputerFileMaterialCharsField';
 
 export default ComputerFileMaterialCharsField;

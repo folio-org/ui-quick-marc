@@ -47,6 +47,7 @@ const MapMaterialCharsField = ({ name }) => {
   return (
     <BytesField
       name={name}
+      id="map-material-chars-field"
       config={{
         fields: [
           ...standardFields,
@@ -60,7 +61,5 @@ const MapMaterialCharsField = ({ name }) => {
 MapMaterialCharsField.propTypes = {
   name: PropTypes.string.isRequired,
 };
-
-MapMaterialCharsField.displayName = 'MapMaterialCharsField';
 
 export default MapMaterialCharsField;

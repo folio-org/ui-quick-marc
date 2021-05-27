@@ -5,17 +5,15 @@ import ComputerFileMaterialCharsField from './ComputerFileMaterialCharsField';
 import ContinuingMaterialCharsField from './ContinuingMaterialCharsField';
 import MapMaterialCharsField from './MapMaterialCharsField';
 import MixedMaterialCharsField from './MixedMaterialCharsField';
-import ScoreMaterialCharsField from './ScoreMaterialCharsField';
-import SoundMaterialCharsField from './SoundMaterialCharsField';
+import MediaMaterialCharsField from './MediaMaterialCharsField';
 import VisualMaterialCharsField from './VisualMaterialCharsField';
 import UnknownMaterialCharsField from './UnknownMaterialCharsField';
 
 export const MaterialCharsFieldFactory = {
-  getMaterialCharsFieldField(name, type, subtype) {
+  getMaterialCharsFieldField(name, type) {
     let MaterialCharsField;
 
     switch (true) {
-      case type === 'a' && ['b', 'i', 's'].includes(subtype):
       case type === 's':
         MaterialCharsField = ContinuingMaterialCharsField;
         break;
@@ -31,11 +29,8 @@ export const MaterialCharsFieldFactory = {
       case type === 'p':
         MaterialCharsField = MixedMaterialCharsField;
         break;
-      case ['c', 'd'].includes(type):
-        MaterialCharsField = ScoreMaterialCharsField;
-        break;
-      case ['i', 'j'].includes(type):
-        MaterialCharsField = SoundMaterialCharsField;
+      case ['c', 'd', 'i', 'j'].includes(type):
+        MaterialCharsField = MediaMaterialCharsField;
         break;
       case ['g', 'k', 'o', 'r'].includes(type):
         MaterialCharsField = VisualMaterialCharsField;

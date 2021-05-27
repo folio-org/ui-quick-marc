@@ -111,9 +111,12 @@ const renderSubField = (name, config) => {
   );
 };
 
-export const BytesField = ({ config, name }) => {
+export const BytesField = ({ config, name, id }) => {
   return (
-    <div className={styles.bytesFieldRow}>
+    <div
+      className={styles.bytesFieldRow}
+      data-testid={id || `row-${name}`}
+    >
       {
         config.fields.map((field, fieldIdx) => {
           return (
@@ -133,4 +136,9 @@ export const BytesField = ({ config, name }) => {
 BytesField.propTypes = {
   name: PropTypes.string.isRequired,
   config: PropTypes.object.isRequired,
+  id: PropTypes.string,
+};
+
+BytesField.defaultProps = {
+  id: '',
 };

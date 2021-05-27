@@ -45,12 +45,13 @@ const configFields = [
   },
 ];
 
-const ScoreMaterialCharsField = ({ name }) => {
+const MediaMaterialCharsField = ({ name }) => {
   const standardFields = useStandardFields();
 
   return (
     <BytesField
       name={name}
+      id="media-material-chars-field"
       config={{
         fields: [
           ...standardFields,
@@ -61,10 +62,8 @@ const ScoreMaterialCharsField = ({ name }) => {
   );
 };
 
-ScoreMaterialCharsField.propTypes = {
+MediaMaterialCharsField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
-ScoreMaterialCharsField.displayName = 'ScoreMaterialCharsField';
-
-export default ScoreMaterialCharsField;
+export default MediaMaterialCharsField;
