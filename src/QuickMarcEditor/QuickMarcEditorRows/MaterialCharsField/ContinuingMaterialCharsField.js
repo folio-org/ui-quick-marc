@@ -61,6 +61,7 @@ const ContinuingMaterialCharsField = ({ name }) => {
   return (
     <BytesField
       name={name}
+      id="continuing-material-chars-field"
       config={{
         fields: [
           ...standardFields,
@@ -74,7 +75,5 @@ const ContinuingMaterialCharsField = ({ name }) => {
 ContinuingMaterialCharsField.propTypes = {
   name: PropTypes.string.isRequired,
 };
-
-ContinuingMaterialCharsField.displayName = 'ContinuingMaterialCharsField';
 
 export default ContinuingMaterialCharsField;

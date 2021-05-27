@@ -10,6 +10,7 @@ const UnknownMaterialCharsField = ({ name }) => {
   return (
     <BytesField
       name={name}
+      id="unknown-material-chars-field"
       config={{
         fields: standardFields,
       }}
@@ -20,7 +21,5 @@ const UnknownMaterialCharsField = ({ name }) => {
 UnknownMaterialCharsField.propTypes = {
   name: PropTypes.string.isRequired,
 };
-
-UnknownMaterialCharsField.displayName = 'UnknownMaterialCharsField';
 
 export default UnknownMaterialCharsField;

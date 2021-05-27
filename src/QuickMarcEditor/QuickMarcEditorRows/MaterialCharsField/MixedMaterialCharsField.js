@@ -20,6 +20,7 @@ const MixedMaterialCharsField = ({ name }) => {
   return (
     <BytesField
       name={name}
+      id="mixed-material-chars-field"
       config={{
         fields: [
           ...standardFields,
@@ -33,7 +34,5 @@ const MixedMaterialCharsField = ({ name }) => {
 MixedMaterialCharsField.propTypes = {
   name: PropTypes.string.isRequired,
 };
-
-MixedMaterialCharsField.displayName = 'MixedMaterialCharsField';
 
 export default MixedMaterialCharsField;

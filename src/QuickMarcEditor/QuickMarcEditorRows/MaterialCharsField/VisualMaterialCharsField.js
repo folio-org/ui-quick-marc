@@ -41,6 +41,7 @@ const VisualMaterialCharsField = ({ name }) => {
   return (
     <BytesField
       name={name}
+      id="visual-material-chars-field"
       config={{
         fields: [
           ...standardFields,
@@ -54,7 +55,5 @@ const VisualMaterialCharsField = ({ name }) => {
 VisualMaterialCharsField.propTypes = {
   name: PropTypes.string.isRequired,
 };
-
-VisualMaterialCharsField.displayName = 'VisualMaterialCharsField';
 
 export default VisualMaterialCharsField;

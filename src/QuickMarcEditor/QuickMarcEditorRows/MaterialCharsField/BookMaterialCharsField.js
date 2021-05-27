@@ -58,6 +58,7 @@ const BookMaterialCharsField = ({ name }) => {
   return (
     <BytesField
       name={name}
+      id="book-material-chars-field"
       config={{
         fields: [
           ...standardFields,
@@ -71,7 +72,5 @@ const BookMaterialCharsField = ({ name }) => {
 BookMaterialCharsField.propTypes = {
   name: PropTypes.string.isRequired,
 };
-
-BookMaterialCharsField.displayName = 'BookMaterialCharsField';
 
 export default BookMaterialCharsField;
