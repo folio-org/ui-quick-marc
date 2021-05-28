@@ -9,15 +9,20 @@ import useStandardFields from './useStandardFields';
 
 const configFields = [
   {
-    name: 'Freq',
+    name: 'Comp',
+    type: SUBFIELD_TYPES.STRING,
+    bytes: 2,
+  },
+  {
+    name: 'FMus',
     type: SUBFIELD_TYPES.BYTE,
   },
   {
-    name: 'Regl',
+    name: 'Part',
     type: SUBFIELD_TYPES.BYTE,
   },
   {
-    name: 'Orig',
+    name: 'Audn',
     type: SUBFIELD_TYPES.BYTE,
   },
   {
@@ -25,43 +30,28 @@ const configFields = [
     type: SUBFIELD_TYPES.BYTE,
   },
   {
-    name: 'EntW',
-    type: SUBFIELD_TYPES.BYTE,
-  },
-  {
-    name: 'Cont',
+    name: 'AccM',
     type: SUBFIELD_TYPES.BYTES,
-    bytes: 3,
+    bytes: 6,
   },
   {
-    name: 'SrTP',
-    type: SUBFIELD_TYPES.BYTE,
+    name: 'LTxt',
+    type: SUBFIELD_TYPES.BYTES,
+    bytes: 2,
   },
   {
-    name: 'GPub',
-    type: SUBFIELD_TYPES.BYTE,
-  },
-  {
-    name: 'Conf',
-    type: SUBFIELD_TYPES.BYTE,
-  },
-  {
-    name: 'Alph',
-    type: SUBFIELD_TYPES.BYTE,
-  },
-  {
-    name: 'S/L',
+    name: 'TrAr',
     type: SUBFIELD_TYPES.BYTE,
   },
 ];
 
-const ContinuingMaterialCharsField = ({ name }) => {
+const MediaMaterialCharsField = ({ name }) => {
   const standardFields = useStandardFields();
 
   return (
     <BytesField
       name={name}
-      id="continuing-material-chars-field"
+      id="media-material-chars-field"
       config={{
         fields: [
           ...standardFields,
@@ -72,8 +62,8 @@ const ContinuingMaterialCharsField = ({ name }) => {
   );
 };
 
-ContinuingMaterialCharsField.propTypes = {
+MediaMaterialCharsField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
-export default ContinuingMaterialCharsField;
+export default MediaMaterialCharsField;

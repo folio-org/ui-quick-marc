@@ -5,38 +5,40 @@ import {
   BytesField,
   SUBFIELD_TYPES,
 } from '../BytesField';
+import useStandardFields from './useStandardFields';
 
-const config = {
-  fields: [
-    {
-      type: SUBFIELD_TYPES.BYTE,
-      name: 'Type',
-      disabled: true,
-    },
-    {
-      type: SUBFIELD_TYPES.BYTE,
-      name: 'Audn',
-    },
-    {
-      type: SUBFIELD_TYPES.BYTE,
-      name: 'Form',
-    },
-    {
-      name: 'File',
-      type: SUBFIELD_TYPES.BYTE,
-    },
-    {
-      type: SUBFIELD_TYPES.BYTE,
-      name: 'GPub',
-    },
-  ],
-};
+const configFields = [
+  {
+    name: 'Audn',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+  {
+    name: 'Form',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+  {
+    name: 'File',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+  {
+    name: 'GPub',
+    type: SUBFIELD_TYPES.BYTE,
+  },
+];
 
 const ComputerFileMaterialCharsField = ({ name }) => {
+  const standardFields = useStandardFields();
+
   return (
     <BytesField
       name={name}
-      config={config}
+      id="computer-file-material-chars-field"
+      config={{
+        fields: [
+          ...standardFields,
+          ...configFields,
+        ],
+      }}
     />
   );
 };
@@ -44,7 +46,5 @@ const ComputerFileMaterialCharsField = ({ name }) => {
 ComputerFileMaterialCharsField.propTypes = {
   name: PropTypes.string.isRequired,
 };
-
-ComputerFileMaterialCharsField.displayName = 'ComputerFileMaterialCharsField';
 
 export default ComputerFileMaterialCharsField;

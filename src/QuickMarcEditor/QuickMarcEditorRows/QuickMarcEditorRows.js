@@ -174,7 +174,7 @@ const QuickMarcEditorRows = ({
                 {
                   isMaterialCharsField && (
                     MaterialCharsFieldFactory.getMaterialCharsFieldField(
-                      `${name}[${idx}].content`, type, subtype,
+                      `${name}[${idx}].content`, recordRow.content.Type,
                     )
                   )
                 }
