@@ -166,5 +166,21 @@
   "record.materialChars.materialType.p": "Mixed material",
   "record.materialChars.materialType.r": "Three-dimensional artifact or naturally occurring object",
   "record.materialChars.materialType.s": "Serial/Integrating resource",
-  "record.materialChars.materialType.t": "Manuscript language material"
+  "record.materialChars.materialType.t": "Manuscript language material",
+
+  "record.physDescription.categoryOfMaterial.a": "Map",
+  "record.physDescription.categoryOfMaterial.c": "Electronic resource",
+  "record.physDescription.categoryOfMaterial.d": "Globe",
+  "record.physDescription.categoryOfMaterial.f": "Tactile material",
+  "record.physDescription.categoryOfMaterial.g": "Projected graphic",
+  "record.physDescription.categoryOfMaterial.h": "Microform",
+  "record.physDescription.categoryOfMaterial.k": "Nonprojected graphic",
+  "record.physDescription.categoryOfMaterial.m": "Motion picture",
+  "record.physDescription.categoryOfMaterial.o": "Kit",
+  "record.physDescription.categoryOfMaterial.q": "Notated music",
+  "record.physDescription.categoryOfMaterial.r": "Remote-sensing image",
+  "record.physDescription.categoryOfMaterial.s": "Sound recording",
+  "record.physDescription.categoryOfMaterial.t": "Text",
+  "record.physDescription.categoryOfMaterial.v": "Videorecording",
+  "record.physDescription.categoryOfMaterial.z": "Unspecified"
 }

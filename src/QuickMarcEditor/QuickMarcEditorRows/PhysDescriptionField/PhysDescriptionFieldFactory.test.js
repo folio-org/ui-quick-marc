@@ -1,91 +1,149 @@
+import React from 'react';
+import { Form } from 'react-final-form';
+import arrayMutators from 'final-form-arrays';
+
+import { render } from '@testing-library/react';
+
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import { PhysDescriptionFieldFactory } from './PhysDescriptionFieldFactory';
 
-import MapPhysDescriptionField from './MapPhysDescriptionField';
-import ElResourcePhysDescriptionField from './ElResourcePhysDescriptionField';
-import GlobePhysDescriptionField from './GlobePhysDescriptionField';
-import TactilePhysDescriptionField from './TactilePhysDescriptionField';
-import ProjGraphicPhysDescriptionField from './ProjGraphicPhysDescriptionField';
-import MicroformDescriptionField from './MicroformDescriptionField';
-import NonProjGraphicPhysDescriptionField from './NonProjGraphicPhysDescriptionField';
-import PicturePhysDescriptionField from './PicturePhysDescriptionField';
-import KitPhysDescriptionField from './KitPhysDescriptionField';
-import MusicPhysDescriptionField from './MusicPhysDescriptionField';
-import RSImagePhysDescriptionField from './RSImagePhysDescriptionField';
-import SoundPhysDescriptionField from './SoundPhysDescriptionField';
-import TextPhysDescriptionField from './TextPhysDescriptionField';
-import VideoPhysDescriptionField from './VideoPhysDescriptionField';
-import UnspecifiedPhysDescriptionField from './UnspecifiedPhysDescriptionField';
-import UnknownPhysDescriptionField from './UnknownPhysDescriptionField';
+const renderPhysDescriptionFieldFactory = (component) => render(
+  <Form
+    onSubmit={() => {}}
+    mutators={arrayMutators}
+    render={() => component}
+  />,
+);
 
 describe('PhysDescriptionFieldFactory', () => {
-  it('should create correct fields', () => {
-    expect(
-      PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'a').type.displayName,
-    ).toBe(MapPhysDescriptionField.displayName);
+  let component;
 
-    expect(
-      PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'c').type.displayName,
-    ).toBe(ElResourcePhysDescriptionField.displayName);
+  it('should render MapPhysDescriptionField', () => {
+    component = PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'a');
 
-    expect(
-      PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'd').type.displayName,
-    ).toBe(GlobePhysDescriptionField.displayName);
+    const { getByTestId } = renderPhysDescriptionFieldFactory(component);
 
-    expect(
-      PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'f').type.displayName,
-    ).toBe(TactilePhysDescriptionField.displayName);
+    expect(getByTestId('map-phys-description-field')).toBeDefined();
+  });
 
-    expect(
-      PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'g').type.displayName,
-    ).toBe(ProjGraphicPhysDescriptionField.displayName);
+  it('should render ElResourcePhysDescriptionField', () => {
+    component = PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'c');
 
-    expect(
-      PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'h').type.displayName,
-    ).toBe(MicroformDescriptionField.displayName);
+    const { getByTestId } = renderPhysDescriptionFieldFactory(component);
 
-    expect(
-      PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'k').type.displayName,
-    ).toBe(NonProjGraphicPhysDescriptionField.displayName);
+    expect(getByTestId('el-resource-phys-description-field')).toBeDefined();
+  });
 
-    expect(
-      PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'm').type.displayName,
-    ).toBe(PicturePhysDescriptionField.displayName);
+  it('should render GlobePhysDescriptionField', () => {
+    component = PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'd');
 
-    expect(
-      PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'o').type.displayName,
-    ).toBe(KitPhysDescriptionField.displayName);
+    const { getByTestId } = renderPhysDescriptionFieldFactory(component);
 
-    expect(
-      PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'q').type.displayName,
-    ).toBe(MusicPhysDescriptionField.displayName);
+    expect(getByTestId('globe-phys-description-field')).toBeDefined();
+  });
 
-    expect(
-      PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'r').type.displayName,
-    ).toBe(RSImagePhysDescriptionField.displayName);
+  it('should render TactilePhysDescriptionField', () => {
+    component = PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'f');
 
-    expect(
-      PhysDescriptionFieldFactory.getPhysDescriptionField('records', 's').type.displayName,
-    ).toBe(SoundPhysDescriptionField.displayName);
+    const { getByTestId } = renderPhysDescriptionFieldFactory(component);
 
-    expect(
-      PhysDescriptionFieldFactory.getPhysDescriptionField('records', 't').type.displayName,
-    ).toBe(TextPhysDescriptionField.displayName);
+    expect(getByTestId('tactile-phys-description-field')).toBeDefined();
+  });
 
-    expect(
-      PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'v').type.displayName,
-    ).toBe(VideoPhysDescriptionField.displayName);
+  it('should render ProjGraphicPhysDescriptionField', () => {
+    component = PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'g');
 
-    expect(
-      PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'z').type.displayName,
-    ).toBe(UnspecifiedPhysDescriptionField.displayName);
+    const { getByTestId } = renderPhysDescriptionFieldFactory(component);
 
-    expect(
-      PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'j').type.displayName,
-    ).toBe(UnknownPhysDescriptionField.displayName);
-    expect(
-      PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'w').type.displayName,
-    ).toBe(UnknownPhysDescriptionField.displayName);
+    expect(getByTestId('proj-graphic-phys-description-field')).toBeDefined();
+  });
+
+  it('should render MicroformDescriptionField', () => {
+    component = PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'h');
+
+    const { getByTestId } = renderPhysDescriptionFieldFactory(component);
+
+    expect(getByTestId('microform-phys-description-field')).toBeDefined();
+  });
+
+  it('should render NonProjGraphicPhysDescriptionField', () => {
+    component = PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'k');
+
+    const { getByTestId } = renderPhysDescriptionFieldFactory(component);
+
+    expect(getByTestId('non-proj-graphic-phys-description-field')).toBeDefined();
+  });
+
+  it('should render PicturePhysDescriptionField', () => {
+    component = PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'm');
+
+    const { getByTestId } = renderPhysDescriptionFieldFactory(component);
+
+    expect(getByTestId('picture-phys-description-field')).toBeDefined();
+  });
+
+  it('should render KitPhysDescriptionField', () => {
+    component = PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'o');
+
+    const { getByTestId } = renderPhysDescriptionFieldFactory(component);
+
+    expect(getByTestId('kit-phys-description-field')).toBeDefined();
+  });
+
+  it('should render MusicPhysDescriptionField', () => {
+    component = PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'q');
+
+    const { getByTestId } = renderPhysDescriptionFieldFactory(component);
+
+    expect(getByTestId('music-phys-description-field')).toBeDefined();
+  });
+
+  it('should render RSImagePhysDescriptionField', () => {
+    component = PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'r');
+
+    const { getByTestId } = renderPhysDescriptionFieldFactory(component);
+
+    expect(getByTestId('rsimage-phys-description-field')).toBeDefined();
+  });
+
+  it('should render SoundPhysDescriptionField', () => {
+    component = PhysDescriptionFieldFactory.getPhysDescriptionField('records', 's');
+
+    const { getByTestId } = renderPhysDescriptionFieldFactory(component);
+
+    expect(getByTestId('sound-phys-description-field')).toBeDefined();
+  });
+
+  it('should render TextPhysDescriptionField', () => {
+    component = PhysDescriptionFieldFactory.getPhysDescriptionField('records', 't');
+
+    const { getByTestId } = renderPhysDescriptionFieldFactory(component);
+
+    expect(getByTestId('text-phys-description-field')).toBeDefined();
+  });
+
+  it('should render VideoPhysDescriptionField', () => {
+    component = PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'v');
+
+    const { getByTestId } = renderPhysDescriptionFieldFactory(component);
+
+    expect(getByTestId('video-phys-description-field')).toBeDefined();
+  });
+
+  it('should render UnspecifiedPhysDescriptionField', () => {
+    component = PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'z');
+
+    const { getByTestId } = renderPhysDescriptionFieldFactory(component);
+
+    expect(getByTestId('unspecified-phys-description-field')).toBeDefined();
+  });
+
+  it('should render UnknownPhysDescriptionField', () => {
+    component = PhysDescriptionFieldFactory.getPhysDescriptionField('records', 'j');
+
+    const { getByTestId } = renderPhysDescriptionFieldFactory(component);
+
+    expect(getByTestId('unknown-phys-description-field')).toBeDefined();
   });
 });
