@@ -137,5 +137,20 @@
     "record.saveNew.delay": "يستغرق إنشاء هذه التسجيلة وقتًا أطول من المتوقع. يرجى التحقق مرة أخرى لاحقًا إذا كانت التسجيلة متاحة أو الاتصال بالدعم.",
     "meta.source.system": "النظام",
     "record.delete.cancelLabel": "استعادة الحقول المحذوفة",
-    "record.error.materialChars": "تعذر حفظ التسجيلة. يمكن إضافة وسم مارك 006 فقط عبر استيراد البيانات."
+    "record.error.materialChars": "تعذر حفظ التسجيلة. يمكن إضافة وسم مارك 006 فقط عبر استيراد البيانات.",
+    "record.materialChars.materialType.a": "مادة لغة",
+    "record.materialChars.materialType.c": "موسيقى ذات نوتة",
+    "record.materialChars.materialType.d": "مخطوطة موسيقى ذات نوتة",
+    "record.materialChars.materialType.e": "مادة رسم الخرائط",
+    "record.materialChars.materialType.f": "مخطوطة مادة رسم الخرائط",
+    "record.materialChars.materialType.g": "وسيط إسقاط ضوئي",
+    "record.materialChars.materialType.i": "تسجيل صوتي غير موسيقي",
+    "record.materialChars.materialType.j": "تسجيل صوتي موسيقي",
+    "record.materialChars.materialType.k": "رسم ثنائي الأبعاد غير قابل للإسقاط",
+    "record.materialChars.materialType.m": "ملف كمبيوتر/مورد إلكتروني",
+    "record.materialChars.materialType.o": "عدة",
+    "record.materialChars.materialType.p": "مواد مختلطة",
+    "record.materialChars.materialType.r": "أداة ثلاثية الأبعاد أو كائن متكون بشكل طبيعي",
+    "record.materialChars.materialType.s": "مورد تسلسلي/متكامل",
+    "record.materialChars.materialType.t": "مخطوطة مادة لغة"
 }
