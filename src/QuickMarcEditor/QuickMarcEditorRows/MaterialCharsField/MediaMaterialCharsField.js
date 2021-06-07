@@ -10,7 +10,7 @@ import useStandardFields from './useStandardFields';
 const configFields = [
   {
     name: 'Comp',
-    type: SUBFIELD_TYPES.STRING,
+    type: SUBFIELD_TYPES.BYTES,
     bytes: 2,
   },
   {

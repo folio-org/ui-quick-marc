@@ -32,7 +32,7 @@ const QuickMarcEditWrapper = ({
   const showCallout = useShowCallout();
 
   const onSubmit = useCallback(async (formValues) => {
-    const validationErrorMessage = validateMarcRecord(formValues, initialValues);
+    const validationErrorMessage = validateMarcRecord(formValues);
 
     if (validationErrorMessage) {
       showCallout({ messageId: validationErrorMessage, type: 'error' });
