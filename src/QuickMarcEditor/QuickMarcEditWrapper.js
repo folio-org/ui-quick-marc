@@ -34,7 +34,7 @@ const QuickMarcEditWrapper = ({
 
   const onSubmit = useCallback(async (formValues) => {
     const formValuesForEdit = autopopulateSubfieldSection(formValues);
-    const validationErrorMessage = validateMarcRecord(formValuesForEdit, initialValues);
+    const validationErrorMessage = validateMarcRecord(formValuesForEdit);
 
     if (validationErrorMessage) {
       showCallout({ messageId: validationErrorMessage, type: 'error' });
