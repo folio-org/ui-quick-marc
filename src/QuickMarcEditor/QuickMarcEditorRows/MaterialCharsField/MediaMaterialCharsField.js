@@ -10,8 +10,7 @@ import useStandardFields from './useStandardFields';
 const configFields = [
   {
     name: 'Comp',
-    type: SUBFIELD_TYPES.BYTES,
-    bytes: 2,
+    type: SUBFIELD_TYPES.STRING,
   },
   {
     name: 'FMus',

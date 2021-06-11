@@ -70,7 +70,8 @@ const config = {
     },
     {
       name: 'Proj',
-      type: SUBFIELD_TYPES.BYTE,
+      type: SUBFIELD_TYPES.BYTES,
+      bytes: 2,
     },
     {
       name: 'DtSt',

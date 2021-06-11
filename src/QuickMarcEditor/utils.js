@@ -1,6 +1,7 @@
 import uuid from 'uuid';
 import omit from 'lodash/omit';
 import compact from 'lodash/compact';
+import isString from 'lodash/isString';
 
 import {
   isLastRecord,
@@ -321,6 +322,40 @@ export const autopopulateSubfieldSection = (formValues) => {
       content: contentHasSubfield ? field.content : `$a ${field.content}`,
     }];
   }, []);
+
+  return {
+    ...formValues,
+    records: recordsWithSubfieds,
+  };
+};
+
+export const fillWithSlashEmptyBytesFields = (formValues) => {
+  const { records } = formValues;
+
+  const recordsWithSubfieds = records.map((field) => {
+    if (isString(field.content)) {
+      return field;
+    }
+
+    const content = Object.entries(field.content).reduce((acc, [key, value]) => {
+      if (isString(value)) {
+        return {
+          ...acc,
+          [key]: value,
+        };
+      }
+
+      return {
+        ...acc,
+        [key]: value.map(item => item || '\\'),
+      };
+    }, {});
+
+    return {
+      ...field,
+      content,
+    };
+  });
 
   return {
     ...formValues,
