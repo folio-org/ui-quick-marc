@@ -12,6 +12,7 @@ import { QUICK_MARC_ACTIONS } from './constants';
 import {
   hydrateMarcRecord,
   validateMarcRecord,
+  fillWithSlashEmptyBytesFields,
 } from './utils';
 
 const propTypes = {
@@ -32,7 +33,8 @@ const QuickMarcEditWrapper = ({
   const showCallout = useShowCallout();
 
   const onSubmit = useCallback(async (formValues) => {
-    const validationErrorMessage = validateMarcRecord(formValues);
+    const formValuesForEdit = fillWithSlashEmptyBytesFields(formValues);
+    const validationErrorMessage = validateMarcRecord(formValuesForEdit);
 
     if (validationErrorMessage) {
       showCallout({ messageId: validationErrorMessage, type: 'error' });
@@ -40,7 +42,7 @@ const QuickMarcEditWrapper = ({
       return;
     }
 
-    mutator.quickMarcEditMarcRecord.PUT(hydrateMarcRecord(formValues))
+    mutator.quickMarcEditMarcRecord.PUT(hydrateMarcRecord(formValuesForEdit))
       .then(() => {
         showCallout({ messageId: 'ui-quick-marc.record.save.success.processing' });
         onClose();

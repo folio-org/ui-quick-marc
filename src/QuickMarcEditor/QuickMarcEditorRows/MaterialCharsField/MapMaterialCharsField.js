@@ -15,11 +15,11 @@ const configFields = [
   },
   {
     name: 'Proj',
-    type: SUBFIELD_TYPES.STRING,
+    type: SUBFIELD_TYPES.BYTES,
     bytes: 2,
   },
   {
-    name: 'CrTP',
+    name: 'CrTp',
     type: SUBFIELD_TYPES.BYTE,
   },
   {

@@ -308,7 +308,7 @@ describe('Given QuickMarcDuplicateWrapper', () => {
             resolve();
           }, 10);
         });
-      }, 20);
+      }, 100);
     });
 
     describe('when form is valid and status is error', () => {
@@ -343,7 +343,7 @@ describe('Given QuickMarcDuplicateWrapper', () => {
             resolve();
           }, 10);
         });
-      }, 20);
+      }, 100);
     });
 
     describe('when form is valid and fetch is failed', () => {

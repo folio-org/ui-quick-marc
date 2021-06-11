@@ -1,5 +1,6 @@
 import uuid from 'uuid';
 import omit from 'lodash/omit';
+import isString from 'lodash/isString';
 
 import {
   isLastRecord,
@@ -274,5 +275,39 @@ export const removeFieldsForDuplicate = (formValues) => {
   return {
     ...omit(formValues, 'updateInfo'),
     records: filteredRecords,
+  };
+};
+
+export const fillWithSlashEmptyBytesFields = (formValues) => {
+  const { records } = formValues;
+
+  const recordsWithSubfieds = records.map((field) => {
+    if (isString(field.content)) {
+      return field;
+    }
+
+    const content = Object.entries(field.content).reduce((acc, [key, value]) => {
+      if (isString(value)) {
+        return {
+          ...acc,
+          [key]: value,
+        };
+      }
+
+      return {
+        ...acc,
+        [key]: value.map(item => item || '\\'),
+      };
+    }, {});
+
+    return {
+      ...field,
+      content,
+    };
+  });
+
+  return {
+    ...formValues,
+    records: recordsWithSubfieds,
   };
 };

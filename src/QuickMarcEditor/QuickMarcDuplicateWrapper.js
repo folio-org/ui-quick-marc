@@ -23,6 +23,7 @@ import {
   hydrateMarcRecord,
   removeFieldsForDuplicate,
   validateMarcRecord,
+  fillWithSlashEmptyBytesFields,
 } from './utils';
 
 const propTypes = {
@@ -108,7 +109,7 @@ const QuickMarcDuplicateWrapper = ({
   };
 
   const onSubmit = useCallback(async (formValues) => {
-    const formValuesForDuplicate = removeFieldsForDuplicate(formValues);
+    const formValuesForDuplicate = fillWithSlashEmptyBytesFields(removeFieldsForDuplicate(formValues));
     const validationErrorMessage = validateMarcRecord(formValuesForDuplicate);
 
     if (validationErrorMessage) {
