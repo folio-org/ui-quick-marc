@@ -36,10 +36,8 @@
     "record.fixedField.EntW": "EntW 作品性质",
     "record.fixedField.Regl": "Regl 定期",
     "record.fixedField.Alph": "Alph 题名原字母或文字",
-    "record.fixedField.SrTp": "SrTp 连续性资源类型",
     "record.fixedField.Relf": "Relf 地势",
     "record.fixedField.SpFm": "SpFm 专用格式特征",
-    "record.fixedField.CrTp": "CrTp 地图资料类型",
     "record.fixedField.Proj": "项目",
     "record.error.title.multiple": "记录不能保存多个245字段。",
     "record.error.title.empty": "没有245字段不能保存记录。",
@@ -137,7 +135,6 @@
     "record.saveNew.delay": "创建此记录所花费的时间比预期要长。如果有记录，请稍后再回来查看，或者与支持人员联系。",
     "meta.source.system": "系统",
     "record.delete.cancelLabel": "恢复已删除字段",
-    "record.error.materialChars": "无法保存记录。 MARC字段006只能通过数据导入添加。",
     "record.materialChars.materialType.a": "Language material",
     "record.materialChars.materialType.c": "Notated music",
     "record.materialChars.materialType.d": "Manuscript notated music",
@@ -152,5 +149,7 @@
     "record.materialChars.materialType.p": "Mixed material",
     "record.materialChars.materialType.r": "Three-dimensional artifact or naturally occurring object",
     "record.materialChars.materialType.s": "Serial/Integrating resource",
-    "record.materialChars.materialType.t": "Manuscript language material"
+    "record.materialChars.materialType.t": "Manuscript language material",
+    "record.fixedField.SrTP": "SrTP",
+    "record.fixedField.CrTP": "CrTP"
 }
