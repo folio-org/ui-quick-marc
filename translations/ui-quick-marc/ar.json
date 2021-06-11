@@ -36,10 +36,8 @@
     "record.fixedField.EntW": "EntW",
     "record.fixedField.Regl": "Regl",
     "record.fixedField.Alph": "Alph",
-    "record.fixedField.SrTp": "SrTp",
     "record.fixedField.Relf": "Relf",
     "record.fixedField.SpFm": "SpFm",
-    "record.fixedField.CrTp": "CrTp",
     "record.fixedField.Proj": "مشروع",
     "record.error.title.multiple": "لا يمكن حفظ التسجيلة في حالة وجود أكثر من حقل 245",
     "record.error.title.empty": "ياا يمكن حفظ التسجيلة بدون الحقل 245",
@@ -137,7 +135,6 @@
     "record.saveNew.delay": "يستغرق إنشاء هذه التسجيلة وقتًا أطول من المتوقع. يرجى التحقق مرة أخرى لاحقًا إذا كانت التسجيلة متاحة أو الاتصال بالدعم.",
     "meta.source.system": "النظام",
     "record.delete.cancelLabel": "استعادة الحقول المحذوفة",
-    "record.error.materialChars": "تعذر حفظ التسجيلة. يمكن إضافة وسم مارك 006 فقط عبر استيراد البيانات.",
     "record.materialChars.materialType.a": "مادة لغة",
     "record.materialChars.materialType.c": "موسيقى ذات نوتة",
     "record.materialChars.materialType.d": "مخطوطة موسيقى ذات نوتة",
@@ -152,5 +149,7 @@
     "record.materialChars.materialType.p": "مواد مختلطة",
     "record.materialChars.materialType.r": "أداة ثلاثية الأبعاد أو كائن متكون بشكل طبيعي",
     "record.materialChars.materialType.s": "مورد تسلسلي/متكامل",
-    "record.materialChars.materialType.t": "مخطوطة مادة لغة"
+    "record.materialChars.materialType.t": "مخطوطة مادة لغة",
+    "record.fixedField.SrTP": "SrTp",
+    "record.fixedField.CrTP": "CrTp"
 }
