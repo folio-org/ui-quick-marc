@@ -36,10 +36,8 @@
     "record.fixedField.EntW": "EntW 作品性质",
     "record.fixedField.Regl": "Regl 定期",
     "record.fixedField.Alph": "Alph 题名原字母或文字",
-    "record.fixedField.SrTp": "SrTp 连续性资源类型",
     "record.fixedField.Relf": "Relf 地势",
     "record.fixedField.SpFm": "SpFm 专用格式特征",
-    "record.fixedField.CrTp": "地圖資料",
     "record.fixedField.Proj": "放映性資料",
     "record.error.title.multiple": "只能有一個 245 段位，無法儲存紀錄。",
     "record.error.title.empty": "缺少 245 段位，無法儲存紀錄。",
@@ -137,7 +135,6 @@
     "record.saveNew.delay": "新增此筆記錄比預期的長。如果記錄可用，請稍晚回來檢查，或請聯絡協助人員。",
     "meta.source.system": "System",
     "record.delete.cancelLabel": "Restore deleted field(s)",
-    "record.error.materialChars": "Unable to save record. MARC Tag 006 can only be added through data import.",
     "record.materialChars.materialType.a": "Language material",
     "record.materialChars.materialType.c": "Notated music",
     "record.materialChars.materialType.d": "Manuscript notated music",
@@ -152,5 +149,7 @@
     "record.materialChars.materialType.p": "Mixed material",
     "record.materialChars.materialType.r": "Three-dimensional artifact or naturally occurring object",
     "record.materialChars.materialType.s": "Serial/Integrating resource",
-    "record.materialChars.materialType.t": "Manuscript language material"
+    "record.materialChars.materialType.t": "Manuscript language material",
+    "record.fixedField.SrTP": "SrTP",
+    "record.fixedField.CrTP": "CrTP"
 }

@@ -36,10 +36,8 @@
     "record.fixedField.EntW": "EntW",
     "record.fixedField.Regl": "Regl",
     "record.fixedField.Alph": "Alph",
-    "record.fixedField.SrTp": "SrTp",
     "record.fixedField.Relf": "Relf",
     "record.fixedField.SpFm": "SpFm",
-    "record.fixedField.CrTp": "CrTp",
     "record.fixedField.Proj": "Proj",
     "record.error.title.multiple": "Rekord nie może być zapisany z więcej niż jednym polem 245.",
     "record.error.title.empty": "Rekord nie może być zapisany bez pola 245.",
@@ -137,7 +135,6 @@
     "record.saveNew.delay": "Creating this record is taking longer than expected. Please check back later if record is available or contact support.",
     "meta.source.system": "System",
     "record.delete.cancelLabel": "Restore deleted field(s)",
-    "record.error.materialChars": "Unable to save record. MARC Tag 006 can only be added through data import.",
     "record.materialChars.materialType.a": "Language material",
     "record.materialChars.materialType.c": "Notated music",
     "record.materialChars.materialType.d": "Manuscript notated music",
@@ -152,5 +149,7 @@
     "record.materialChars.materialType.p": "Mixed material",
     "record.materialChars.materialType.r": "Three-dimensional artifact or naturally occurring object",
     "record.materialChars.materialType.s": "Serial/Integrating resource",
-    "record.materialChars.materialType.t": "Manuscript language material"
+    "record.materialChars.materialType.t": "Manuscript language material",
+    "record.fixedField.SrTP": "SrTP",
+    "record.fixedField.CrTP": "CrTP"
 }
