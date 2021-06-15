@@ -14,7 +14,6 @@ const configFields = [
   {
     name: 'Comp',
     type: SUBFIELD_TYPES.STRING,
-    bytes: 2,
   },
   {
     name: 'FMus',

@@ -37,7 +37,7 @@ const configFields = [
     bytes: 3,
   },
   {
-    name: 'SrTP',
+    name: 'SrTp',
     type: SUBFIELD_TYPES.BYTE,
   },
   {
