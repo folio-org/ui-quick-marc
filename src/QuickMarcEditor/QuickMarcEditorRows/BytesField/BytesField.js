@@ -54,6 +54,8 @@ const renderSubField = (name, config) => {
                             className={styles.fixedFieldSubFieldByte}
                             hasClearIcon={false}
                             data-testid={`fixed-field-${config.type}`}
+                            parse={value => value || '\\'}
+                            defaultValue=""
                           />
                         )}
                       </FormattedMessage>
