@@ -57,7 +57,7 @@ const QuickMarcEditWrapper = ({
           error = {};
         }
 
-        if (error.code === 'ILLEGAL_FIXED_LENGTH_CONTROL_FILED') {
+        if (error.code === 'ILLEGAL_FIXED_LENGTH_CONTROL_FIELD') {
           messageId = 'ui-quick-marc.record.save.error.illegalFixedLength';
         } else {
           messageId = 'ui-quick-marc.record.save.error.generic';
