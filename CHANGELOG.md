@@ -1,5 +1,8 @@
 # Change history for ui-quick-marc
 
+## [3.2.0](IN PROGRESS)
+* [UIQM-104](https://issues.folio.org/browse/UIQM-104) Update 007 Type dropdown to display category of material values.
+
 ## [3.1.0](https://github.com/folio-org/ui-quick-marc/tree/v3.1.0) (2021-06-17)
 * [UIQM-86](https://issues.folio.org/browse/UIQM-86) Auto-populate a subfield section with leading $a when no leading subfield is present
 * [UIQM-90](https://issues.folio.org/browse/UIQM-90) Add shortcut keys to save a record and to move on search pane.
@@ -13,7 +16,6 @@
 ## [3.0.2](https://github.com/folio-org/ui-quick-marc/tree/v3.0.2) (2021-06-17)
 * [UIQM-105](https://issues.folio.org/browse/UIQM-105) Display MARC Tag 006/00.
 * [UIQM-101](https://issues.folio.org/browse/UIQM-101) Updates for editing MARC tag 006 via quickMARC.
-* [UIQM-104](https://issues.folio.org/browse/UIQM-104) Update 007 Type dropdown to display category of material values.
 
 ## [3.0.1](https://github.com/folio-org/ui-quick-marc/tree/v3.0.1) (2021-04-01)
 * [UIQM-83](https://issues.folio.org/browse/UIQM-83) Do not duplicate fields with empty content
