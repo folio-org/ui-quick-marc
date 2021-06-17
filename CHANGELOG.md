@@ -1,6 +1,6 @@
 # Change history for ui-quick-marc
 
-## [3.1.0](in progress)
+## [3.0.2](https://github.com/folio-org/ui-quick-marc/tree/v3.0.2) (2021-06-17)
 * [UIQM-105](https://issues.folio.org/browse/UIQM-105) Display MARC Tag 006/00.
 * [UIQM-101](https://issues.folio.org/browse/UIQM-101) Updates for editing MARC tag 006 via quickMARC.
 
