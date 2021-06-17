@@ -2,10 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
+  TYPE_SELECT_FIELD_PROPS,
+} from './constants';
+import {
   BytesField,
   SUBFIELD_TYPES,
 } from '../BytesField';
-import useStandardFields from './useStandardFields';
+import useSelectField from '../useSelectField';
 
 const configFields = [
   {
@@ -56,7 +59,7 @@ const configFields = [
 ];
 
 const ContinuingMaterialCharsField = ({ name }) => {
-  const standardFields = useStandardFields();
+  const selectField = useSelectField(TYPE_SELECT_FIELD_PROPS);
 
   return (
     <BytesField
@@ -64,7 +67,7 @@ const ContinuingMaterialCharsField = ({ name }) => {
       id="continuing-material-chars-field"
       config={{
         fields: [
-          ...standardFields,
+          selectField,
           ...configFields,
         ],
       }}

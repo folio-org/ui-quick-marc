@@ -1,18 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import {
+  TYPE_SELECT_FIELD_PROPS,
+} from './constants';
 import { BytesField } from '../BytesField';
-import useStandardFields from './useStandardFields';
+import useSelectField from '../useSelectField';
 
 const UnknownMaterialCharsField = ({ name }) => {
-  const standardFields = useStandardFields();
+  const selectField = useSelectField(TYPE_SELECT_FIELD_PROPS);
 
   return (
     <BytesField
       name={name}
       id="unknown-material-chars-field"
       config={{
-        fields: standardFields,
+        fields: [selectField],
       }}
     />
   );
