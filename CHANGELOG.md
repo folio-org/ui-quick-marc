@@ -1,6 +1,6 @@
 # Change history for ui-quick-marc
 
-## [3.1.0](in progress)
+## [3.1.0](https://github.com/folio-org/ui-quick-marc/tree/v3.1.0) (2021-06-17)
 * [UIQM-86](https://issues.folio.org/browse/UIQM-86) Auto-populate a subfield section with leading $a when no leading subfield is present
 * [UIQM-90](https://issues.folio.org/browse/UIQM-90) Add shortcut keys to save a record and to move on search pane.
 * [UIQM-92](https://issues.folio.org/browse/UIQM-92) Compile translation files into AST format
