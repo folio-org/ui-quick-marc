@@ -150,6 +150,21 @@
     "record.materialChars.materialType.r": "أداة ثلاثية الأبعاد أو كائن متكون بشكل طبيعي",
     "record.materialChars.materialType.s": "مورد تسلسلي/متكامل",
     "record.materialChars.materialType.t": "مخطوطة مادة لغة",
-    "record.fixedField.SrTP": "SrTp",
-    "record.fixedField.CrTP": "CrTp"
+    "record.fixedField.SrTp": "SrTp",
+    "record.fixedField.CrTp": "CrTp",
+    "record.physDescription.categoryOfMaterial.a": "خريطة",
+    "record.physDescription.categoryOfMaterial.c": "مورد إلكتروني",
+    "record.physDescription.categoryOfMaterial.d": "كرة أرضية",
+    "record.physDescription.categoryOfMaterial.f": "مادة لمسية",
+    "record.physDescription.categoryOfMaterial.g": "رسم مسقط ضوئياً",
+    "record.physDescription.categoryOfMaterial.h": "ميكروفورم",
+    "record.physDescription.categoryOfMaterial.k": "رسم غير مسقط ضوئياً",
+    "record.physDescription.categoryOfMaterial.m": "صورة متحركة",
+    "record.physDescription.categoryOfMaterial.o": "عدة",
+    "record.physDescription.categoryOfMaterial.q": "موسيقى ذات نوتة",
+    "record.physDescription.categoryOfMaterial.r": "صورة استشعار عن بعد",
+    "record.physDescription.categoryOfMaterial.s": "تسجيل صوتي",
+    "record.physDescription.categoryOfMaterial.t": "نص",
+    "record.physDescription.categoryOfMaterial.v": "تسجيل فيديو",
+    "record.physDescription.categoryOfMaterial.z": "غير محدد"
 }
