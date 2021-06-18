@@ -214,6 +214,7 @@ const QuickMarcEditorRows = ({
                 {
                   !withAddRowAction && (
                     <IconButton
+                      className="quickMarcEditorAddField"
                       title={intl.formatMessage({ id: 'ui-quick-marc.record.addField' })}
                       ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.addField' })}
                       data-test-add-row
