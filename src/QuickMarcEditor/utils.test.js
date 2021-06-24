@@ -312,7 +312,7 @@ describe('QuickMarcEditor utils', () => {
       expect(utils.validateRecordTag(records)).not.toBeDefined();
     });
 
-    it('should return error message when tag is not valid', () => {
+    it('should return error message when tag is not valid (invalid length)', () => {
       const records = [
         {
           tag: '10',
@@ -323,6 +323,19 @@ describe('QuickMarcEditor utils', () => {
       ];
 
       expect(utils.validateRecordTag(records)).toBe('ui-quick-marc.record.error.tag.length');
+    });
+
+    it('should return error message when tag is not valid (non-digit characters)', () => {
+      const records = [
+        {
+          tag: '01a',
+        },
+        {
+          tag: '245',
+        },
+      ];
+
+      expect(utils.validateRecordTag(records)).toBe('ui-quick-marc.record.error.tag.nonDigits');
     });
   });
 

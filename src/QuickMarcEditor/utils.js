@@ -141,6 +141,12 @@ export const validateRecordTag = marcRecords => {
     return 'ui-quick-marc.record.error.tag.length';
   }
 
+  const marcRecordsWithoutLDR = marcRecords.filter(record => record.tag !== LEADER_TAG);
+
+  if (marcRecordsWithoutLDR.some(({ tag }) => !tag.match(/\d{3}/))) {
+    return 'ui-quick-marc.record.error.tag.nonDigits';
+  }
+
   return undefined;
 };
 
