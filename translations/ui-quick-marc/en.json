@@ -120,7 +120,7 @@
   "record.error.title.multiple": "Record cannot be saved with more than one field 245.",
   "record.error.title.empty": "Record cannot be saved without field 245.",
   "record.error.tag.length": "Record cannot be saved. Each field must contain three characters in the first text box of each row.",
-  "record.error.tag.nonDigits": "TBD",
+  "record.error.tag.nonDigits": "Invalid MARC tag. Please try again.",
 
   "record.delete.confirmLabel": "Continue with save",
   "record.delete.cancelLabel": "Restore deleted field(s)",
