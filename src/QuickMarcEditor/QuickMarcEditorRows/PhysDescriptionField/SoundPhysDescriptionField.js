@@ -80,4 +80,6 @@ SoundPhysDescriptionField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+SoundPhysDescriptionField.configFields = configFields;
+
 export default SoundPhysDescriptionField;

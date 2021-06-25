@@ -10,7 +10,7 @@ import VisualMaterialCharsField from './VisualMaterialCharsField';
 import UnknownMaterialCharsField from './UnknownMaterialCharsField';
 
 export const MaterialCharsFieldFactory = {
-  getMaterialCharsFieldField(name, type) {
+  getMaterialCharsFieldByType(type) {
     let MaterialCharsField;
 
     switch (true) {
@@ -38,6 +38,11 @@ export const MaterialCharsFieldFactory = {
       default:
         MaterialCharsField = UnknownMaterialCharsField;
     }
+
+    return MaterialCharsField;
+  },
+  getMaterialCharsFieldField(name, type) {
+    const MaterialCharsField = this.getMaterialCharsFieldByType(type);
 
     return <MaterialCharsField name={name} />;
   },

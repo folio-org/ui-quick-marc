@@ -60,4 +60,6 @@ ProjGraphicPhysDescriptionField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+ProjGraphicPhysDescriptionField.configFields = configFields;
+
 export default ProjGraphicPhysDescriptionField;

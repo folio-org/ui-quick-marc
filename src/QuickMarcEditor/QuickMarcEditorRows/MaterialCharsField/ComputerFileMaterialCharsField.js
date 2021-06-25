@@ -50,4 +50,6 @@ ComputerFileMaterialCharsField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+ComputerFileMaterialCharsField.configFields = configFields;
+
 export default ComputerFileMaterialCharsField;

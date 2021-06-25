@@ -33,4 +33,6 @@ MusicPhysDescriptionField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+MusicPhysDescriptionField.configFields = configFields;
+
 export default MusicPhysDescriptionField;

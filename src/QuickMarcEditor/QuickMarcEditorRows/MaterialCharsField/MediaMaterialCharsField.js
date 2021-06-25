@@ -68,4 +68,6 @@ MediaMaterialCharsField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+MediaMaterialCharsField.configFields = configFields;
+
 export default MediaMaterialCharsField;

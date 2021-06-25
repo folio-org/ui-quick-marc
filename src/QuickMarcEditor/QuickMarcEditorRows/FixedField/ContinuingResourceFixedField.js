@@ -120,5 +120,6 @@ ContinuingResourceFixedField.propTypes = {
 };
 
 ContinuingResourceFixedField.displayName = 'ContinuingResourceFixedField';
+ContinuingResourceFixedField.configFields = config.fields;
 
 export default ContinuingResourceFixedField;

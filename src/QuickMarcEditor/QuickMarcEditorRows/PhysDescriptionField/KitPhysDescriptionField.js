@@ -33,4 +33,6 @@ KitPhysDescriptionField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+KitPhysDescriptionField.configFields = configFields;
+
 export default KitPhysDescriptionField;

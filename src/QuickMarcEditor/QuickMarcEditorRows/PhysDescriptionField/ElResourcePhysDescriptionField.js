@@ -72,4 +72,6 @@ ElResourcePhysDescriptionField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+ElResourcePhysDescriptionField.configFields = configFields;
+
 export default ElResourcePhysDescriptionField;

@@ -33,4 +33,6 @@ TextPhysDescriptionField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+TextPhysDescriptionField.configFields = configFields;
+
 export default TextPhysDescriptionField;

@@ -18,7 +18,7 @@ import UnspecifiedPhysDescriptionField from './UnspecifiedPhysDescriptionField';
 import UnknownPhysDescriptionField from './UnknownPhysDescriptionField';
 
 export const PhysDescriptionFieldFactory = {
-  getPhysDescriptionField(name, type) {
+  getPhysDescriptionFieldByType(type) {
     let PhysDescriptionField;
 
     switch (type) {
@@ -70,6 +70,11 @@ export const PhysDescriptionFieldFactory = {
       default:
         PhysDescriptionField = UnknownPhysDescriptionField;
     }
+
+    return PhysDescriptionField;
+  },
+  getPhysDescriptionField(name, type) {
+    const PhysDescriptionField = this.getPhysDescriptionFieldByType(type);
 
     return <PhysDescriptionField name={name} />;
   },

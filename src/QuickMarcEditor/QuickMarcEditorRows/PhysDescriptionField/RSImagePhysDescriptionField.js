@@ -64,4 +64,6 @@ RSImagePhysDescriptionField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+RSImagePhysDescriptionField.configFields = configFields;
+
 export default RSImagePhysDescriptionField;

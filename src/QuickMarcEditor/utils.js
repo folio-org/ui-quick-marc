@@ -16,6 +16,9 @@ import {
   QUICK_MARC_ACTIONS,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
+import { MaterialCharsFieldFactory } from './QuickMarcEditorRows/MaterialCharsField';
+import { PhysDescriptionFieldFactory } from './QuickMarcEditorRows/PhysDescriptionField';
+import { FixedFieldFactory } from './QuickMarcEditorRows/FixedField';
 
 export const dehydrateMarcRecordResponse = marcRecordResponse => ({
   ...marcRecordResponse,
@@ -335,12 +338,26 @@ export const autopopulateSubfieldSection = (formValues) => {
   };
 };
 
-export const fillWithSlashEmptyBytesFields = (formValues) => {
+export const cleanBytesFields = (formValues, initialValues) => {
   const { records } = formValues;
 
-  const recordsWithSubfieds = records.map((field) => {
+  const cleanedRecords = records.map((field) => {
     if (isString(field.content)) {
       return field;
+    }
+
+    let fieldByType;
+
+    if (isMaterialCharsRecord(field)) {
+      fieldByType = MaterialCharsFieldFactory.getMaterialCharsFieldByType(field.content.Type);
+    }
+
+    if (isPhysDescriptionRecord(field)) {
+      fieldByType = PhysDescriptionFieldFactory.getPhysDescriptionFieldByType(field.content.Category);
+    }
+
+    if (isFixedFieldRow(field)) {
+      fieldByType = FixedFieldFactory.getFixedFieldByType(field.content.Type, initialValues?.leader[7]);
     }
 
     const content = Object.entries(field.content).reduce((acc, [key, value]) => {
@@ -351,10 +368,20 @@ export const fillWithSlashEmptyBytesFields = (formValues) => {
         };
       }
 
-      return {
-        ...acc,
-        [key]: value.map(item => item || '\\'),
-      };
+      const fieldConfig = fieldByType.configFields.find(({ name }) => (name === key));
+
+      if (fieldConfig) {
+        const updatedValue = value.map(item => item || '\\');
+
+        updatedValue.length = fieldConfig.bytes;
+
+        return {
+          ...acc,
+          [key]: updatedValue,
+        };
+      }
+
+      return acc;
     }, {});
 
     return {
@@ -365,6 +392,6 @@ export const fillWithSlashEmptyBytesFields = (formValues) => {
 
   return {
     ...formValues,
-    records: recordsWithSubfieds,
+    records: cleanedRecords,
   };
 };

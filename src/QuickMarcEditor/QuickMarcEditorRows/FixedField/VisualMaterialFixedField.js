@@ -100,5 +100,6 @@ VisualMaterialFixedField.propTypes = {
 };
 
 VisualMaterialFixedField.displayName = 'VisualMaterialFixedField';
+VisualMaterialFixedField.configFields = config.fields;
 
 export default VisualMaterialFixedField;

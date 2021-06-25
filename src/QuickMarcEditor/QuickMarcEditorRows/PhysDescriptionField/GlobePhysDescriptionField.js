@@ -48,4 +48,6 @@ GlobePhysDescriptionField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+GlobePhysDescriptionField.configFields = configFields;
+
 export default GlobePhysDescriptionField;

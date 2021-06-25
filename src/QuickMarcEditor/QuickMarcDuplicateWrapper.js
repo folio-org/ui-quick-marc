@@ -24,7 +24,7 @@ import {
   removeFieldsForDuplicate,
   autopopulateSubfieldSection,
   validateMarcRecord,
-  fillWithSlashEmptyBytesFields,
+  cleanBytesFields,
 } from './utils';
 
 const propTypes = {
@@ -111,7 +111,7 @@ const QuickMarcDuplicateWrapper = ({
 
   const onSubmit = useCallback(async (formValues) => {
     const autopopulatedFormValues = autopopulateSubfieldSection(removeFieldsForDuplicate(formValues));
-    const formValuesForDuplicate = fillWithSlashEmptyBytesFields(autopopulatedFormValues);
+    const formValuesForDuplicate = cleanBytesFields(autopopulatedFormValues, initialValues);
     const validationErrorMessage = validateMarcRecord(formValuesForDuplicate);
 
     if (validationErrorMessage) {

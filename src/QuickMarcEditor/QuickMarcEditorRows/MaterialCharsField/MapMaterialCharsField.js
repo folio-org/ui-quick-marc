@@ -65,4 +65,6 @@ MapMaterialCharsField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+MapMaterialCharsField.configFields = configFields;
+
 export default MapMaterialCharsField;

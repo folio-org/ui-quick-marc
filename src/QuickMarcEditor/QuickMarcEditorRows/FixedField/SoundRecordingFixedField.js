@@ -109,5 +109,6 @@ SoundRecordingFixedField.propTypes = {
 };
 
 SoundRecordingFixedField.displayName = 'SoundRecordingFixedField';
+SoundRecordingFixedField.configFields = config.fields;
 
 export default SoundRecordingFixedField;

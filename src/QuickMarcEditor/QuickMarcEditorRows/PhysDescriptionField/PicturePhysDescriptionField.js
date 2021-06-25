@@ -96,4 +96,6 @@ PicturePhysDescriptionField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+PicturePhysDescriptionField.configFields = configFields;
+
 export default PicturePhysDescriptionField;

@@ -91,5 +91,6 @@ ComputerFileFixedField.propTypes = {
 };
 
 ComputerFileFixedField.displayName = 'ComputerFileFixedField';
+ComputerFileFixedField.configFields = config.fields;
 
 export default ComputerFileFixedField;

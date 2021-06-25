@@ -117,5 +117,6 @@ BookFixedField.propTypes = {
 };
 
 BookFixedField.displayName = 'BookFixedField';
+BookFixedField.configFields = config.fields;
 
 export default BookFixedField;

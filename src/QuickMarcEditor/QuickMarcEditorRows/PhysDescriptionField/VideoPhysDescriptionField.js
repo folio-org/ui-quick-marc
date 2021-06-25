@@ -60,4 +60,6 @@ VideoPhysDescriptionField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+VideoPhysDescriptionField.configFields = configFields;
+
 export default VideoPhysDescriptionField;
