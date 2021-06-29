@@ -38,4 +38,6 @@ MixedMaterialCharsField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+MixedMaterialCharsField.configFields = configFields;
+
 export default MixedMaterialCharsField;

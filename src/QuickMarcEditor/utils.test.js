@@ -662,4 +662,123 @@ describe('QuickMarcEditor utils', () => {
       expect(utils.autopopulateSubfieldSection(record)).toEqual(expectedRecord);
     });
   });
+
+  describe('cleanBytesFields', () => {
+    it('should return cleaded records', () => {
+      const record = {
+        records: [{
+          tag: '001',
+          content: 'some content',
+        }, {
+          tag: '006',
+          content: {
+            Alph: '\\',
+            Conf: '\\',
+            Cont: ['a', '', null, '\\'],
+            Type: 's',
+            Ills: ['a'],
+          },
+        }, {
+          tag: '007',
+          content: {
+            Category: 'c',
+            Color: 'n',
+            Dimensions: 'z',
+            'File formats': 'a',
+            'Image bit depth': 'nnn',
+            'Level of compression': 'a',
+            'Quality assurance target(s)': 'u',
+            'Reformatting quality': 'n',
+            SMD: 'z',
+            Sound: 'a',
+          },
+        }, {
+          tag: '008',
+          content: {
+            Audn: '\\',
+            BLvl: 'm',
+            Ctry: 'nyu',
+            Date1: '2010',
+            Date2: '\\\\\\\\',
+            Desc: 'a',
+            DtSt: 's',
+            ELvl: 'I',
+            Entered: '101027',
+            Form: '\\',
+            GPub: '\\',
+            Lang: 'zxx',
+            MRec: '\\',
+            Srce: 'd',
+            TMat: 'r',
+            Tech: 'n',
+            Time: ['n', 'n', 'n'],
+            Type: 'r',
+          },
+        }],
+        updateInfo: {
+          recordState: 'actual',
+          updateDate: '01/01/1970',
+        },
+      };
+      const initialValues = {
+        leader: '01577crm\\a2200397Ia\\4500',
+      };
+      const expectedRecord = {
+        records: [{
+          tag: '001',
+          content: 'some content',
+        }, {
+          tag: '006',
+          content: {
+            Alph: '\\',
+            Conf: '\\',
+            Cont: ['a', '\\', '\\'],
+            Type: 's',
+          },
+        }, {
+          tag: '007',
+          content: {
+            Category: 'c',
+            Color: 'n',
+            Dimensions: 'z',
+            'File formats': 'a',
+            'Image bit depth': 'nnn',
+            'Level of compression': 'a',
+            'Quality assurance target(s)': 'u',
+            'Reformatting quality': 'n',
+            SMD: 'z',
+            Sound: 'a',
+          },
+        }, {
+          tag: '008',
+          content: {
+            Audn: '\\',
+            BLvl: 'm',
+            Ctry: 'nyu',
+            Date1: '2010',
+            Date2: '\\\\\\\\',
+            Desc: 'a',
+            DtSt: 's',
+            ELvl: 'I',
+            Entered: '101027',
+            Form: '\\',
+            GPub: '\\',
+            Lang: 'zxx',
+            MRec: '\\',
+            Srce: 'd',
+            TMat: 'r',
+            Tech: 'n',
+            Time: ['n', 'n', 'n'],
+            Type: 'r',
+          },
+        }],
+        updateInfo: {
+          recordState: 'actual',
+          updateDate: '01/01/1970',
+        },
+      };
+
+      expect(utils.cleanBytesFields(record, initialValues)).toEqual(expectedRecord);
+    });
+  });
 });

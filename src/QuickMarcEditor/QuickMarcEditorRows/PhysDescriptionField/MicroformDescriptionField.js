@@ -64,4 +64,6 @@ MicroformDescriptionField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+MicroformDescriptionField.configFields = configFields;
+
 export default MicroformDescriptionField;

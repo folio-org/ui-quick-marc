@@ -52,4 +52,6 @@ TactilePhysDescriptionField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+TactilePhysDescriptionField.configFields = configFields;
+
 export default TactilePhysDescriptionField;

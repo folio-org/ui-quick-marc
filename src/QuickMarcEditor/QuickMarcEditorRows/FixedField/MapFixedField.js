@@ -106,5 +106,6 @@ MapFixedField.propTypes = {
 };
 
 MapFixedField.displayName = 'MapFixedField';
+MapFixedField.configFields = config.fields;
 
 export default MapFixedField;

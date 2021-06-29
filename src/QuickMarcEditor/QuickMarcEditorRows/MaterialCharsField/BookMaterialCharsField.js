@@ -76,4 +76,6 @@ BookMaterialCharsField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+BookMaterialCharsField.configFields = configFields;
+
 export default BookMaterialCharsField;

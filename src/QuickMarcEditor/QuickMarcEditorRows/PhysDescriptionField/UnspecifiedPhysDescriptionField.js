@@ -33,4 +33,6 @@ UnspecifiedPhysDescriptionField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+UnspecifiedPhysDescriptionField.configFields = configFields;
+
 export default UnspecifiedPhysDescriptionField;

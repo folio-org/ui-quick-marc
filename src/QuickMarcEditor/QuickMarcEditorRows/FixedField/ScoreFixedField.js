@@ -109,5 +109,6 @@ ScoreFixedField.propTypes = {
 };
 
 ScoreFixedField.displayName = 'ScoreFixedField';
+ScoreFixedField.configFields = config.fields;
 
 export default ScoreFixedField;

@@ -79,4 +79,6 @@ ContinuingMaterialCharsField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+ContinuingMaterialCharsField.configFields = configFields;
+
 export default ContinuingMaterialCharsField;

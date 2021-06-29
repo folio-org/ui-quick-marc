@@ -48,4 +48,6 @@ NonProjGraphicPhysDescriptionField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+NonProjGraphicPhysDescriptionField.configFields = configFields;
+
 export default NonProjGraphicPhysDescriptionField;

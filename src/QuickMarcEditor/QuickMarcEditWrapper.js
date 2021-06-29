@@ -13,7 +13,7 @@ import {
   hydrateMarcRecord,
   validateMarcRecord,
   autopopulateSubfieldSection,
-  fillWithSlashEmptyBytesFields,
+  cleanBytesFields,
 } from './utils';
 
 const propTypes = {
@@ -35,7 +35,7 @@ const QuickMarcEditWrapper = ({
 
   const onSubmit = useCallback(async (formValues) => {
     const autopopulateFormValues = autopopulateSubfieldSection(formValues);
-    const formValuesForEdit = fillWithSlashEmptyBytesFields(autopopulateFormValues);
+    const formValuesForEdit = cleanBytesFields(autopopulateFormValues, initialValues);
     const validationErrorMessage = validateMarcRecord(formValuesForEdit);
 
     if (validationErrorMessage) {

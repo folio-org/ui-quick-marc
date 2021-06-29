@@ -79,5 +79,6 @@ MixedMaterialFixedField.propTypes = {
 };
 
 MixedMaterialFixedField.displayName = 'MixedMaterialFixedField';
+MixedMaterialFixedField.configFields = config.fields;
 
 export default MixedMaterialFixedField;

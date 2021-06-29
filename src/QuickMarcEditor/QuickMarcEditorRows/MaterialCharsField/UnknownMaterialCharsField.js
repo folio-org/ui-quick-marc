@@ -25,4 +25,6 @@ UnknownMaterialCharsField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+UnknownMaterialCharsField.configFields = [];
+
 export default UnknownMaterialCharsField;

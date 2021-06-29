@@ -56,4 +56,6 @@ MapPhysDescriptionField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+MapPhysDescriptionField.configFields = configFields;
+
 export default MapPhysDescriptionField;

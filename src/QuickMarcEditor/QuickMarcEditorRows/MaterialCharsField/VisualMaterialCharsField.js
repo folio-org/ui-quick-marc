@@ -59,4 +59,6 @@ VisualMaterialCharsField.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+VisualMaterialCharsField.configFields = configFields;
+
 export default VisualMaterialCharsField;
