@@ -315,7 +315,7 @@ const checkIsEmptyContent = (field) => {
 export const autopopulateSubfieldSection = (formValues) => {
   const { records } = formValues;
 
-  const recordsWithSubfieds = records.reduce((acc, field) => {
+  const recordsWithSubfields = records.reduce((acc, field) => {
     if (checkIsEmptyContent(field)) {
       return acc;
     }
@@ -324,17 +324,21 @@ export const autopopulateSubfieldSection = (formValues) => {
       return [...acc, field];
     }
 
-    const contentHasSubfield = /^\$[a-z0-9]*/.test(field.content);
+    const fieldContentWithoutLeadingSpaces = field.content.trimStart();
+
+    const contentHasSubfield = /^\$[a-z0-9]*/.test(fieldContentWithoutLeadingSpaces);
 
     return [...acc, {
       ...field,
-      content: contentHasSubfield ? field.content : `$a ${field.content}`,
+      content: contentHasSubfield
+        ? fieldContentWithoutLeadingSpaces
+        : `$a ${fieldContentWithoutLeadingSpaces}`,
     }];
   }, []);
 
   return {
     ...formValues,
-    records: recordsWithSubfieds,
+    records: recordsWithSubfields,
   };
 };
 
