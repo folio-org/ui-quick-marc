@@ -167,5 +167,5 @@
     "record.physDescription.categoryOfMaterial.t": "Texto",
     "record.physDescription.categoryOfMaterial.v": "Gravação de vídeo",
     "record.physDescription.categoryOfMaterial.z": "Não especificado",
-    "record.error.tag.nonDigits": "Invalid MARC tag. Please try again."
+    "record.error.tag.nonDigits": "Tag MARC inválida. Por favor, tente novamente."
 }

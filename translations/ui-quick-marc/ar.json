@@ -122,7 +122,7 @@
     "record.save.error.illegalFixedLength": "لم يتم حفظ التسجيلة. يرجى التحقق من طول أحرف الحقول الثابتة.",
     "record.status": "حالة التسجيلة:",
     "record.duplicate.title": "اشتقاق تسجيلة مارك بيبلوغرافية جديدة",
-    "record.status.new": "جديد",
+    "record.status.new": "جديدة",
     "permission.quick-marc-editor.duplicate": "quickMARC: اشتق تسجيلة مارك بيبلوغرافية جديدة",
     "record.cancellationModal.title": "هل أنت متأكد؟",
     "record.cancellationModal.message": "هناك تغييرات غير محفوظة",
