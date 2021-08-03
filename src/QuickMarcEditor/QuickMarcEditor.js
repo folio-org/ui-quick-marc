@@ -28,7 +28,6 @@ import {
   addNewRecord,
   deleteRecordByIndex,
   reorderRecords,
-  shouldRecordsUpdate,
   restoreRecordAtIndex,
 } from './utils';
 
@@ -129,13 +128,10 @@ const QuickMarcEditor = ({
   };
 
   const changeRecords = useCallback(({ values }) => {
-    if (
-      values?.records
-      && shouldRecordsUpdate(records, values.records)
-    ) {
+    if (values?.records) {
       setTimeout(() => setRecords(values.records), 0);
     }
-  }, [records]);
+  }, []);
 
   const hotKeysHandlers = useMemo(() => ({
     save: e => {
