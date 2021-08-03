@@ -226,61 +226,6 @@ export const restoreRecordAtIndex = (index, record, state) => {
   return records;
 };
 
-const getRecordsTrackChanges = (records) => {
-  const trackCHanges = {
-    lastRecordPosition: undefined,
-    bytesFields: {},
-  };
-
-  records.forEach((record, idx) => {
-    if (isLastRecord(record)) {
-      trackCHanges.lastRecordPosition = idx;
-    }
-
-    if (isPhysDescriptionRecord(record)) {
-      trackCHanges.bytesFields[idx] = {
-        tag: record.tag,
-        category: record?.content?.Category,
-      };
-    }
-
-    if (isMaterialCharsRecord(record)) {
-      trackCHanges.bytesFields[idx] = {
-        tag: record.tag,
-        type: record?.content?.Type,
-      };
-    }
-  });
-
-  return trackCHanges;
-};
-
-export const shouldRecordsUpdate = (prevRecords, newRecords) => {
-  if (prevRecords.length !== newRecords.length) return true;
-
-  const prevTrackChanges = getRecordsTrackChanges(prevRecords);
-  const newTrackChanges = getRecordsTrackChanges(newRecords);
-
-  if (prevTrackChanges.lastRecordPosition !== newTrackChanges.lastRecordPosition) return true;
-
-  if (
-    Object.keys(prevTrackChanges.bytesFields).length !== Object.keys(newTrackChanges.bytesFields).length
-  ) return true;
-
-  const hasBytesUpdates = Object.keys(prevTrackChanges.bytesFields).some(prevPosition => {
-    const prevField = prevTrackChanges.bytesFields[prevPosition];
-    const newField = newTrackChanges.bytesFields[prevPosition];
-
-    return prevField.tag !== newField?.tag
-      || prevField.category !== newField?.category
-      || prevField.type !== newField?.type;
-  });
-
-  if (hasBytesUpdates) return true;
-
-  return false;
-};
-
 export const removeFieldsForDuplicate = (formValues) => {
   const { records } = formValues;
 

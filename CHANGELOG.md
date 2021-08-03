@@ -5,6 +5,7 @@
 * [UIQM-118](https://issues.folio.org/browse/UIQM-118) MARC record does NOT open after saving an invalid field.
 * [UIQM-120](https://issues.folio.org/browse/UIQM-120) Fix bug with saving 006 field with type 's'.
 * [UIQM-128](https://issues.folio.org/browse/UIQM-128) Remove leading spaces at the beginning when adding MARC field.
+* [UIQM-119](https://issues.folio.org/browse/UIQM-119) Fix removed deleted record value.
 
 ## [3.1.0](https://github.com/folio-org/ui-quick-marc/tree/v3.1.0) (2021-06-17)
 * [UIQM-86](https://issues.folio.org/browse/UIQM-86) Auto-populate a subfield section with leading $a when no leading subfield is present
