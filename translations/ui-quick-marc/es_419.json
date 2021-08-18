@@ -121,7 +121,7 @@
     "record.status.error": "Error",
     "record.save.error.illegalFixedLength": "Registro no guardado. Compruebe la longitud de los caracteres de los campos fijos.",
     "record.status": "Record status:",
-    "record.duplicate.title": "Derive a new MARC bib record",
+    "record.duplicate.title": "Derivar un nuevo registro de bibliográfico MARC",
     "record.status.new": "Nuevo",
     "permission.quick-marc-editor.duplicate": "quickMARC: Derive new MARC bibliographic record",
     "record.cancellationModal.title": "¿Estás seguro?",
