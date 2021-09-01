@@ -59,14 +59,14 @@ const QuickMarcEditor = ({
     ? pristine || submitting
     : submitting;
 
-  const confirmSubmit = useCallback((props) => {
+  const confirmSubmit = useCallback((e) => {
     if (deletedRecords.length) {
       setIsDeleteModalOpened(true);
 
       return;
     }
 
-    handleSubmit(props);
+    handleSubmit(e);
   }, [deletedRecords, handleSubmit]);
 
   const paneFooter = useMemo(() => {
@@ -112,9 +112,9 @@ const QuickMarcEditor = ({
     setDeletedRecords([]);
   };
 
-  const onConfirmModal = (props) => {
+  const onConfirmModal = (e) => {
     setIsDeleteModalOpened(false);
-    handleSubmit(props);
+    handleSubmit(e);
   };
 
   const onCancelModal = () => {
