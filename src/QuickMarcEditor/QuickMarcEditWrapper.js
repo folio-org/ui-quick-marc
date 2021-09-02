@@ -41,10 +41,10 @@ const QuickMarcEditWrapper = ({
     if (validationErrorMessage) {
       showCallout({ messageId: validationErrorMessage, type: 'error' });
 
-      return;
+      return null;
     }
 
-    mutator.quickMarcEditMarcRecord.PUT(hydrateMarcRecord(formValuesForEdit))
+    return mutator.quickMarcEditMarcRecord.PUT(hydrateMarcRecord(formValuesForEdit))
       .then(() => {
         showCallout({ messageId: 'ui-quick-marc.record.save.success.processing' });
         onClose();
