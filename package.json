@@ -33,6 +33,16 @@
         "visible": true
       },
       {
+        "permissionName": "ui-quick-marc.quick-marc-holdings-editor.all",
+        "displayName": "quickMARC: View, edit MARC holdings record",
+        "subPermissions": [
+          "records-editor.records.item.get",
+          "records-editor.records.item.put",
+          "inventory.instances.item.get"
+        ],
+        "visible": true
+      },
+      {
         "permissionName": "ui-quick-marc.quick-marc-editor.duplicate",
         "displayName": "quickMARC: Derive new MARC bibliographic record",
         "subPermissions": [
