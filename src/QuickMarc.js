@@ -15,7 +15,7 @@ import { QUICK_MARC_ACTIONS } from './QuickMarcEditor/constants';
 const QuickMarc = ({ basePath, onClose }) => {
   const routesConfig = [
     {
-      path: `${basePath}/edit/:instanceId`,
+      path: `${basePath}/edit/:externalId`,
       permission: 'records-editor.records.item.put',
       props: {
         action: QUICK_MARC_ACTIONS.EDIT,
@@ -23,7 +23,7 @@ const QuickMarc = ({ basePath, onClose }) => {
       },
     },
     {
-      path: `${basePath}/duplicate/:instanceId`,
+      path: `${basePath}/duplicate/:externalId`,
       permission: 'records-editor.records.item.post',
       props: {
         action: QUICK_MARC_ACTIONS.DUPLICATE,

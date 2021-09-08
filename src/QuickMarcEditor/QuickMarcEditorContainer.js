@@ -45,7 +45,7 @@ const QuickMarcEditorContainer = ({
   history,
   location,
 }) => {
-  const instanceId = match.params.instanceId;
+  const { externalId } = match.params;
 
   const [instance, setInstance] = useState();
   const [marcRecord, setMarcRecord] = useState();
@@ -77,11 +77,11 @@ const QuickMarcEditorContainer = ({
         setIsLoading(false);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [instanceId]);
+  }, [externalId]);
 
   const closeEditor = useCallback(() => {
-    onClose(instanceId);
-  }, [instanceId, onClose]);
+    onClose(externalId);
+  }, [externalId, onClose]);
 
   if (isLoading) {
     return (
@@ -111,7 +111,7 @@ QuickMarcEditorContainer.manifest = Object.freeze({
     ...baseManifest,
     fetch: false,
     accumulate: true,
-    path: `${INVENTORY_INSTANCE_API}/:{instanceId}`,
+    path: `${INVENTORY_INSTANCE_API}/:{externalId}`,
   },
   quickMarcEditMarcRecord: {
     ...baseManifest,
@@ -121,7 +121,7 @@ QuickMarcEditorContainer.manifest = Object.freeze({
     pk: 'parsedRecordId',
     GET: {
       params: {
-        instanceId: ':{instanceId}',
+        externalId: ':{externalId}',
       },
     },
     headers: {

@@ -16,7 +16,7 @@ const getInstance = () => ({
 
 const match = {
   params: {
-    instanceId: faker.random.uuid(),
+    externalId: faker.random.uuid(),
   },
 };
 
