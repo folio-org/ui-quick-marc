@@ -339,6 +339,47 @@ describe('QuickMarcEditor utils', () => {
     });
   });
 
+  describe('validateSubfield', () => {
+    it('should not return error message when indicators are present', () => {
+      const records = [
+        {
+          indicators: ['\\', '\\'],
+        },
+        {
+          indicators: ['\\', '7'],
+        },
+      ];
+
+      expect(utils.validateSubfield(records)).not.toBeDefined();
+    });
+
+    it('should return error message when indicators are undefined (invalid length)', () => {
+      const records = [
+        {
+          indicators: ['\\', '\\'],
+        },
+        {
+          indicators: [undefined, undefined],
+        },
+      ];
+
+      expect(utils.validateSubfield(records)).toBe('ui-quick-marc.record.error.subfield');
+    });
+
+    it('should return error message when tag is not valid (non-digit characters)', () => {
+      const records = [
+        {
+          tag: '01a',
+        },
+        {
+          tag: '245',
+        },
+      ];
+
+      expect(utils.validateRecordTag(records)).toBe('ui-quick-marc.record.error.tag.nonDigits');
+    });
+  });
+
   describe('deleteRecordByIndex', () => {
     it('should return records without one row', () => {
       const state = {
