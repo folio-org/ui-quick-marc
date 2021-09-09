@@ -261,6 +261,10 @@ export const autopopulateSubfieldSection = (formValues) => {
   const { records } = formValues;
 
   const recordsWithSubfields = records.reduce((acc, field) => {
+    if (!field.content && field.indicators && field.indicators.every(value => !value)) {
+      return acc;
+    }
+
     if (checkIsEmptyContent(field)) {
       return acc;
     }

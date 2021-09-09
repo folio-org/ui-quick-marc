@@ -9,6 +9,7 @@
 * [UIQM-133](https://issues.folio.org/browse/UIQM-133) Edit/Derive quickMARC: Show a toast notification upon clicking Save & Close.
 * [UIQM-125](https://issues.folio.org/browse/UIQM-125) Add permission for view, edit MARC holdings record.
 * [UIQM-136](https://issues.folio.org/browse/UIQM-136) Update according to API change.
+* [UIQM-134](https://issues.folio.org/browse/UIQM-134) Remove field with empty subfield and content.
 
 ## [3.1.0](https://github.com/folio-org/ui-quick-marc/tree/v3.1.0) (2021-06-17)
 * [UIQM-86](https://issues.folio.org/browse/UIQM-86) Auto-populate a subfield section with leading $a when no leading subfield is present
