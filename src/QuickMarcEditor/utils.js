@@ -153,6 +153,20 @@ export const validateRecordTag = marcRecords => {
   return undefined;
 };
 
+export const validateSubfield = marcRecords => {
+  const marcRecordsWithSubfields = marcRecords.filter(marcRecord => marcRecord.indicators);
+
+  const isEmptySubfield = marcRecordsWithSubfields.some(marcRecord => {
+    return marcRecord.indicators.some(value => value === undefined);
+  });
+
+  if (isEmptySubfield) {
+    return 'ui-quick-marc.record.error.subfield';
+  }
+
+  return undefined;
+};
+
 export const validateRecordMismatch = marcRecords => {
   const leader = marcRecords[0]?.content || '';
   const fixedField = marcRecords.find(isFixedFieldRow);
@@ -187,6 +201,12 @@ export const validateMarcRecord = (marcRecord) => {
 
   if (tagError) {
     return tagError;
+  }
+
+  const subfieldError = validateSubfield(marcRecords);
+
+  if (subfieldError) {
+    return subfieldError;
   }
 
   const titleRecords = marcRecords.filter(({ tag }) => tag === '245');

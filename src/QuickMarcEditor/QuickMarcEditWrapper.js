@@ -34,15 +34,16 @@ const QuickMarcEditWrapper = ({
   const showCallout = useShowCallout();
 
   const onSubmit = useCallback(async (formValues) => {
-    const autopopulateFormValues = autopopulateSubfieldSection(formValues);
-    const formValuesForEdit = cleanBytesFields(autopopulateFormValues, initialValues);
-    const validationErrorMessage = validateMarcRecord(formValuesForEdit);
+    const validationErrorMessage = validateMarcRecord(formValues);
 
     if (validationErrorMessage) {
       showCallout({ messageId: validationErrorMessage, type: 'error' });
 
       return null;
     }
+
+    const autopopulateFormValues = autopopulateSubfieldSection(formValues);
+    const formValuesForEdit = cleanBytesFields(autopopulateFormValues, initialValues);
 
     return mutator.quickMarcEditMarcRecord.PUT(hydrateMarcRecord(formValuesForEdit))
       .then(() => {
