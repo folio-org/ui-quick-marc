@@ -167,5 +167,6 @@
     "record.physDescription.categoryOfMaterial.t": "نص",
     "record.physDescription.categoryOfMaterial.v": "تسجيل فيديو",
     "record.physDescription.categoryOfMaterial.z": "غير محدد",
-    "record.error.tag.nonDigits": "وسم مارك غير صالح. يرجى إعادة المحاولة مرة أخرى."
+    "record.error.tag.nonDigits": "وسم مارك غير صالح. يرجى إعادة المحاولة مرة أخرى.",
+    "record.error.subfield": "قيمة حقل فرعي لوسم مارك مفقودة"
 }

@@ -167,5 +167,6 @@
     "record.physDescription.categoryOfMaterial.t": "文本",
     "record.physDescription.categoryOfMaterial.v": "录像",
     "record.physDescription.categoryOfMaterial.z": "未指定",
-    "record.error.tag.nonDigits": "无效MARC 字段。请再试一次。"
+    "record.error.tag.nonDigits": "无效MARC 字段。请再试一次。",
+    "record.error.subfield": "Missing a subfield value for a MARC tag"
 }
