@@ -755,7 +755,7 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.cleanBytesFields(record, initialValues)).toEqual(expectedRecord);
+      expect(utils.cleanBytesFields(record, initialValues, 'bib')).toEqual(expectedRecord);
     });
   });
 });

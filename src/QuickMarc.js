@@ -11,23 +11,35 @@ import {
   QuickMarcEditWrapper,
 } from './QuickMarcEditor';
 import { QUICK_MARC_ACTIONS } from './QuickMarcEditor/constants';
+import { MARC_TYPES } from './common/constants';
 
 const QuickMarc = ({ basePath, onClose }) => {
   const routesConfig = [
     {
-      path: `${basePath}/edit/:externalId`,
-      permission: 'records-editor.records.item.put',
+      path: `${basePath}/edit-bib/:externalId`,
+      permission: 'ui-quick-marc.quick-marc-editor.all',
       props: {
         action: QUICK_MARC_ACTIONS.EDIT,
         wrapper: QuickMarcEditWrapper,
+        marcType: MARC_TYPES.BIB,
       },
     },
     {
-      path: `${basePath}/duplicate/:externalId`,
-      permission: 'records-editor.records.item.post',
+      path: `${basePath}/duplicate-bib/:externalId`,
+      permission: 'ui-quick-marc.quick-marc-editor.duplicate',
       props: {
         action: QUICK_MARC_ACTIONS.DUPLICATE,
         wrapper: QuickMarcDuplicateWrapper,
+        marcType: MARC_TYPES.BIB,
+      },
+    },
+    {
+      path: `${basePath}/edit-holdings/:instanceId/:externalId`,
+      permission: 'ui-quick-marc.quick-marc-holdings-editor.all',
+      props: {
+        action: QUICK_MARC_ACTIONS.EDIT,
+        wrapper: QuickMarcEditWrapper,
+        marcType: MARC_TYPES.HOLDINGS,
       },
     },
   ];

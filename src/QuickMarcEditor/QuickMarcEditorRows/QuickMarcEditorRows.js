@@ -28,7 +28,10 @@ import {
   isFixedFieldRow,
 } from './utils';
 import { QUICK_MARC_ACTIONS } from '../constants';
-import { TAG_FIELD_MAX_LENGTH } from '../../common/constants';
+import {
+  MARC_TYPES,
+  TAG_FIELD_MAX_LENGTH,
+} from '../../common/constants';
 
 import styles from './QuickMarcEditorRows.css';
 
@@ -44,6 +47,7 @@ const QuickMarcEditorRows = ({
     deleteRecord,
     moveRecord,
   },
+  marcType,
 }) => {
   const intl = useIntl();
 
@@ -190,7 +194,7 @@ const QuickMarcEditorRows = ({
                 {
                   isFixedField && (
                     FixedFieldFactory.getFixedField(
-                      `${name}[${idx}].content`, type, subtype,
+                      `${name}[${idx}].content`, type, subtype, marcType,
                     )
                   )
                 }
@@ -262,6 +266,7 @@ QuickMarcEditorRows.propTypes = {
     deleteRecord: PropTypes.func.isRequired,
     moveRecord: PropTypes.func.isRequired,
   }),
+  marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
 };
 
 export default QuickMarcEditorRows;

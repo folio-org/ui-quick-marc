@@ -19,6 +19,7 @@ import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import { MaterialCharsFieldFactory } from './QuickMarcEditorRows/MaterialCharsField';
 import { PhysDescriptionFieldFactory } from './QuickMarcEditorRows/PhysDescriptionField';
 import { FixedFieldFactory } from './QuickMarcEditorRows/FixedField';
+import { MARC_TYPES } from '../common/constants';
 
 export const dehydrateMarcRecordResponse = marcRecordResponse => ({
   ...marcRecordResponse,
@@ -119,9 +120,13 @@ export const addNewRecord = (index, state) => {
   return records;
 };
 
-export const validateLeader = (prevLeader = '', leader = '') => {
+export const validateLeader = (prevLeader = '', leader = '', marcType) => {
+  const editableBytes = marcType === MARC_TYPES.BIB
+    ? [5, 8, 17, 18, 19]
+    : [5, 6, 17, 18];
+
   const cutEditableBytes = (str) => (
-    [5, 8, 17, 18, 19].reduce((acc, byte, idx) => {
+    editableBytes.reduce((acc, byte, idx) => {
       const position = byte - idx;
 
       return `${acc.slice(0, position)}${acc.slice(position + 1, acc.length)}`;
@@ -181,20 +186,32 @@ export const validateRecordMismatch = marcRecords => {
   return undefined;
 };
 
-export const validateMarcRecord = (marcRecord) => {
+export const validateMarcRecord = (marcRecord, marcType = MARC_TYPES.BIB) => {
   const marcRecords = marcRecord.records || [];
   const recordLeader = marcRecords[0];
 
-  const leaderError = validateLeader(marcRecord?.leader, recordLeader?.content);
+  const leaderError = validateLeader(marcRecord?.leader, recordLeader?.content, marcType);
 
   if (leaderError) {
     return leaderError;
   }
 
-  const leaderMismatchError = validateRecordMismatch(marcRecords);
+  if (marcType === MARC_TYPES.BIB) {
+    const leaderMismatchError = validateRecordMismatch(marcRecords);
 
-  if (leaderMismatchError) {
-    return leaderMismatchError;
+    if (leaderMismatchError) {
+      return leaderMismatchError;
+    }
+
+    const titleRecords = marcRecords.filter(({ tag }) => tag === '245');
+
+    if (titleRecords.length === 0) {
+      return 'ui-quick-marc.record.error.title.empty';
+    }
+
+    if (titleRecords.length > 1) {
+      return 'ui-quick-marc.record.error.title.multiple';
+    }
   }
 
   const tagError = validateRecordTag(marcRecords);
@@ -207,16 +224,6 @@ export const validateMarcRecord = (marcRecord) => {
 
   if (subfieldError) {
     return subfieldError;
-  }
-
-  const titleRecords = marcRecords.filter(({ tag }) => tag === '245');
-
-  if (titleRecords.length === 0) {
-    return 'ui-quick-marc.record.error.title.empty';
-  }
-
-  if (titleRecords.length > 1) {
-    return 'ui-quick-marc.record.error.title.multiple';
   }
 
   return undefined;
@@ -311,7 +318,7 @@ export const autopopulateSubfieldSection = (formValues) => {
   };
 };
 
-export const cleanBytesFields = (formValues, initialValues) => {
+export const cleanBytesFields = (formValues, initialValues, marcType) => {
   const { records } = formValues;
 
   const cleanedRecords = records.map((field) => {
@@ -330,7 +337,7 @@ export const cleanBytesFields = (formValues, initialValues) => {
     }
 
     if (isFixedFieldRow(field)) {
-      fieldByType = FixedFieldFactory.getFixedFieldByType(field.content.Type, initialValues?.leader[7]);
+      fieldByType = FixedFieldFactory.getFixedFieldByType(field.content.Type, initialValues?.leader[7], marcType);
     }
 
     const content = Object.entries(field.content).reduce((acc, [key, value]) => {

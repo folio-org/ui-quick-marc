@@ -6,6 +6,8 @@ import React, {
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import noop from 'lodash/noop';
+import find from 'lodash/find';
+import isEqual from 'lodash/isEqual';
 
 import stripesFinalForm from '@folio/stripes/final-form';
 import {
@@ -24,6 +26,7 @@ import { FormSpy } from 'react-final-form';
 import { QuickMarcRecordInfo } from './QuickMarcRecordInfo';
 import { QuickMarcEditorRows } from './QuickMarcEditorRows';
 import { QUICK_MARC_ACTIONS } from './constants';
+import { MARC_TYPES } from '../common/constants';
 import {
   addNewRecord,
   deleteRecordByIndex,
@@ -50,6 +53,8 @@ const QuickMarcEditor = ({
     reset,
   },
   getCancellationModal,
+  marcType,
+  locations,
 }) => {
   const [records, setRecords] = useState([]);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
@@ -107,6 +112,30 @@ const QuickMarcEditor = ({
     />
   );
 
+  const getPaneTitle = () => {
+    let formattedMessageValues = {};
+
+    if (marcType === MARC_TYPES.HOLDINGS) {
+      formattedMessageValues = {
+        location: find(locations.records, { id: instance?.effectiveLocationId })?.name,
+        callNumber: instance?.callNumber,
+      };
+    } else {
+      if (!instance) {
+        return '';
+      }
+
+      formattedMessageValues = instance;
+    }
+
+    return (
+      <FormattedMessage
+        id={`ui-quick-marc.${marcType}-record.${action}.title`}
+        values={formattedMessageValues}
+      />
+    );
+  };
+
   const restoreDeletedRecords = () => {
     deletedRecords.forEach(mutators.restoreRecord);
     setDeletedRecords([]);
@@ -159,15 +188,7 @@ const QuickMarcEditor = ({
             dismissible
             onClose={onClose}
             defaultWidth="100%"
-            paneTitle={instance
-              ? (
-                <FormattedMessage
-                  id={`ui-quick-marc.record.${action}.title`}
-                  values={instance}
-                />
-              )
-              : ''
-            }
+            paneTitle={getPaneTitle()}
             paneSub={(
               <QuickMarcRecordInfo
                 status={initialValues?.updateInfo?.recordState}
@@ -192,6 +213,7 @@ const QuickMarcEditor = ({
                   type={initialValues?.leader[6]}
                   subtype={initialValues?.leader[7]}
                   setDeletedRecords={setDeletedRecords}
+                  marcType={marcType}
                 />
               </Col>
             </Row>
@@ -229,6 +251,10 @@ QuickMarcEditor.propTypes = {
   form: PropTypes.shape({
     mutators: PropTypes.object.isRequired,
     reset: PropTypes.func.isRequired,
+  }),
+  marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
+  locations: PropTypes.shape({
+    records: PropTypes.array.isRequired,
   }),
 };
 
