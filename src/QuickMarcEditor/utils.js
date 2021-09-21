@@ -138,7 +138,21 @@ export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYP
   }
 
   if (cutEditableBytes(prevLeader) !== cutEditableBytes(leader)) {
-    return 'ui-quick-marc.record.error.leader.forbiddenBytes';
+    return `ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}`;
+  }
+
+  if (marcType === MARC_TYPES.HOLDINGS) {
+    if (!['c', 'd', 'n'].includes(leader[5])) {
+      return '005 invalid';
+    }
+
+    if (!['u', 'v', 'x', 'y'].includes(leader[6])) {
+      return '005 invalid';
+    }
+
+    if (!['1', '2', '3', '4', '5', 'm', 'u', 'z'].includes(leader[17])) {
+      return '005 invalid';
+    }
   }
 
   return undefined;
@@ -186,6 +200,26 @@ export const validateRecordMismatch = marcRecords => {
   return undefined;
 };
 
+const validateMarcBibRecord = (marcRecords) => {
+  const leaderMismatchError = validateRecordMismatch(marcRecords);
+
+  if (leaderMismatchError) {
+    return leaderMismatchError;
+  }
+
+  const titleRecords = marcRecords.filter(({ tag }) => tag === '245');
+
+  if (titleRecords.length === 0) {
+    return 'ui-quick-marc.record.error.title.empty';
+  }
+
+  if (titleRecords.length > 1) {
+    return 'ui-quick-marc.record.error.title.multiple';
+  }
+
+  return undefined;
+};
+
 export const validateMarcRecord = (marcRecord, marcType = MARC_TYPES.BIB) => {
   const marcRecords = marcRecord.records || [];
   const recordLeader = marcRecords[0];
@@ -196,22 +230,14 @@ export const validateMarcRecord = (marcRecord, marcType = MARC_TYPES.BIB) => {
     return leaderError;
   }
 
+  let validationResult = null;
+
   if (marcType === MARC_TYPES.BIB) {
-    const leaderMismatchError = validateRecordMismatch(marcRecords);
+    validationResult = validateMarcBibRecord(marcRecords);
+  }
 
-    if (leaderMismatchError) {
-      return leaderMismatchError;
-    }
-
-    const titleRecords = marcRecords.filter(({ tag }) => tag === '245');
-
-    if (titleRecords.length === 0) {
-      return 'ui-quick-marc.record.error.title.empty';
-    }
-
-    if (titleRecords.length > 1) {
-      return 'ui-quick-marc.record.error.title.multiple';
-    }
+  if (validationResult) {
+    return validationResult;
   }
 
   const tagError = validateRecordTag(marcRecords);
