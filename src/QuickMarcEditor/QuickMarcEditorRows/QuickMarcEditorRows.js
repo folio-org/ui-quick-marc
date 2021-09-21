@@ -194,7 +194,7 @@ const QuickMarcEditorRows = ({
                 {
                   isFixedField && (
                     FixedFieldFactory.getFixedField(
-                      `${name}[${idx}].content`, type, subtype, marcType,
+                      `${name}[${idx}].content`, marcType, type, subtype,
                     )
                   )
                 }

@@ -13,7 +13,7 @@ import VisualMaterialFixedField from './VisualMaterialFixedField';
 import HoldingsFixedField from './HoldingsFixedField';
 
 export const FixedFieldFactory = {
-  getFixedFieldByType(type, subtype, marcType) {
+  getFixedFieldByType(marcType, type, subtype) {
     let FixedField;
 
     switch (true) {
@@ -51,8 +51,8 @@ export const FixedFieldFactory = {
 
     return FixedField;
   },
-  getFixedField(name, type, subtype, marcType) {
-    const FixedField = this.getFixedFieldByType(type, subtype, marcType);
+  getFixedField(name, marcType, type, subtype) {
+    const FixedField = this.getFixedFieldByType(marcType, type, subtype);
 
     return FixedField ? <FixedField name={name} /> : null;
   },

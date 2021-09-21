@@ -167,5 +167,6 @@
     "record.physDescription.categoryOfMaterial.t": "Texto",
     "record.physDescription.categoryOfMaterial.v": "Videograbación",
     "record.physDescription.categoryOfMaterial.z": "Sin especificar",
-    "record.error.tag.nonDigits": "Etiqueta MARC inválida. Por favor, intente de nuevo."
+    "record.error.tag.nonDigits": "Etiqueta MARC inválida. Por favor, intente de nuevo.",
+    "record.error.subfield": "Missing a subfield value for a MARC tag"
 }

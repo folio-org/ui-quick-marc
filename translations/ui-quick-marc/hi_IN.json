@@ -167,5 +167,6 @@
     "record.physDescription.categoryOfMaterial.t": "Text",
     "record.physDescription.categoryOfMaterial.v": "Videorecording",
     "record.physDescription.categoryOfMaterial.z": "Unspecified",
-    "record.error.tag.nonDigits": "Invalid MARC tag. Please try again."
+    "record.error.tag.nonDigits": "Invalid MARC tag. Please try again.",
+    "record.error.subfield": "Missing a subfield value for a MARC tag"
 }

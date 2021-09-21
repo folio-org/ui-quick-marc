@@ -167,5 +167,6 @@
     "record.physDescription.categoryOfMaterial.t": "Texte",
     "record.physDescription.categoryOfMaterial.v": "Enregistrement video",
     "record.physDescription.categoryOfMaterial.z": "Non spécifié",
-    "record.error.tag.nonDigits": "Balise MARC non valide. Veuillez réessayer."
+    "record.error.tag.nonDigits": "Balise MARC non valide. Veuillez réessayer.",
+    "record.error.subfield": "Missing a subfield value for a MARC tag"
 }
