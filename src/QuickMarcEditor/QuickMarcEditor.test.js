@@ -41,14 +41,27 @@ jest.mock('./QuickMarcRecordInfo', () => {
 
 const getInstance = () => ({
   id: faker.random.uuid(),
-  title: 'ui-quick-marc.record.edit.title',
+  effectiveLocationId: 'locationId-1',
+  title: 'Test title',
+  callNumber: 'call number',
 });
+
+const locations = {
+  records: [{
+    id: 'locationId-1',
+    name: 'Location 1',
+  }, {
+    id: 'locationId-2',
+    name: 'Location 2',
+  }],
+};
 
 const renderQuickMarcEditor = ({
   instance,
   onClose,
   onSubmit,
   mutators,
+  marcType = 'bib',
 }) => (render(
   <MemoryRouter>
     <QuickMarcEditor
@@ -58,6 +71,8 @@ const renderQuickMarcEditor = ({
       onSubmit={onSubmit}
       mutators={mutators}
       initialValues={{ leader: 'assdfgs ds sdg' }}
+      marcType={marcType}
+      locations={locations}
     />
   </MemoryRouter>,
 ));
@@ -65,7 +80,7 @@ const renderQuickMarcEditor = ({
 describe('Given Quick Marc Editor', () => {
   afterEach(cleanup);
 
-  it('Than it should display instance title in pane title', () => {
+  it('should display instance title in pane title', () => {
     const instance = getInstance();
     const { getByText } = renderQuickMarcEditor({
       instance,
@@ -78,10 +93,10 @@ describe('Given Quick Marc Editor', () => {
       },
     });
 
-    expect(getByText(instance.title)).toBeDefined();
+    expect(getByText('ui-quick-marc.bib-record.edit.title')).toBeDefined();
   });
 
-  it('Than it should display pane footer', () => {
+  it('should display pane footer', () => {
     const instance = getInstance();
     const { getByText } = renderQuickMarcEditor({
       instance,
@@ -97,7 +112,7 @@ describe('Given Quick Marc Editor', () => {
     expect(getByText('stripes-acq-components.FormFooter.cancel')).toBeDefined();
   });
 
-  it('Than it should display QuickMarcEditorRows', () => {
+  it('should display QuickMarcEditorRows', () => {
     const instance = getInstance();
     const { getByText } = renderQuickMarcEditor({
       instance,
@@ -114,7 +129,7 @@ describe('Given Quick Marc Editor', () => {
   });
 
   describe('When deleting a row', () => {
-    it('Then it should not display ConfirmationModal', () => {
+    it('should not display ConfirmationModal', () => {
       const instance = getInstance();
       const {
         getByText,
@@ -133,6 +148,25 @@ describe('Given Quick Marc Editor', () => {
       fireEvent.click(getByText('Delete row'));
 
       expect(queryByText('Confirmation modal')).toBeNull();
+    });
+  });
+
+  describe('when marc record is of type HOLDINGS', () => {
+    it('should display holdings record pane title', () => {
+      const instance = getInstance();
+      const { getByText } = renderQuickMarcEditor({
+        instance,
+        onClose: jest.fn(),
+        onSubmit: jest.fn(),
+        mutators: {
+          addRecord: jest.fn(),
+          deleteRecord: jest.fn(),
+          moveRecord: jest.fn(),
+        },
+        marcType: 'holdings',
+      });
+
+      expect(getByText('ui-quick-marc.holdings-record.edit.title')).toBeDefined();
     });
   });
 });

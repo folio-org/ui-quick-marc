@@ -120,7 +120,7 @@ export const addNewRecord = (index, state) => {
   return records;
 };
 
-export const validateLeader = (prevLeader = '', leader = '', marcType) => {
+export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYPES.BIB) => {
   const editableBytes = marcType === MARC_TYPES.BIB
     ? [5, 8, 17, 18, 19]
     : [5, 6, 17, 18];

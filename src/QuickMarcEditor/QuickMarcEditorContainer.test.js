@@ -11,12 +11,13 @@ import { QUICK_MARC_ACTIONS } from './constants';
 
 const getInstance = () => ({
   id: faker.random.uuid(),
-  title: 'ui-quick-marc.record.edit.title',
+  title: 'ui-quick-marc.bib-record.edit.title',
 });
 
 const match = {
   params: {
-    externalId: faker.random.uuid(),
+    externalId: 'external-id',
+    instanceId: 'instance-id',
   },
 };
 
@@ -25,6 +26,8 @@ const record = {
   leader: faker.random.uuid(),
   fields: [],
 };
+
+const locations = {};
 
 const renderQuickMarcEditorContainer = ({
   onClose,
@@ -39,6 +42,7 @@ const renderQuickMarcEditorContainer = ({
       mutator={mutator}
       wrapper={wrapper}
       action={action}
+      marcType="bib"
     />
   </MemoryRouter>,
 ));
@@ -50,6 +54,9 @@ describe('Given Quick Marc Editor Container', () => {
   beforeEach(() => {
     instance = getInstance();
     mutator = {
+      externalInstanceApi: {
+        update: jest.fn(),
+      },
       quickMarcEditInstance: {
         GET: () => Promise.resolve(instance),
       },
@@ -57,12 +64,15 @@ describe('Given Quick Marc Editor Container', () => {
         GET: jest.fn(() => Promise.resolve(record)),
         PUT: jest.fn(() => Promise.resolve()),
       },
+      locations: {
+        GET: () => Promise.resolve(locations),
+      },
     };
   });
 
   afterEach(cleanup);
 
-  it('Than it should fetch MARC record', async () => {
+  it('should fetch MARC record', async () => {
     await act(async () => {
       await renderQuickMarcEditorContainer({
         mutator,
@@ -75,7 +85,7 @@ describe('Given Quick Marc Editor Container', () => {
     expect(mutator.quickMarcEditMarcRecord.GET).toHaveBeenCalled();
   });
 
-  it('Than it should display Quick Marc Editor with fetched instance', async () => {
+  it('should display Quick Marc Editor with fetched instance', async () => {
     let getByText;
 
     await act(async () => {
@@ -93,7 +103,7 @@ describe('Given Quick Marc Editor Container', () => {
   });
 
   describe('When close button is pressed', () => {
-    it('Than it should invoke onCancel', async () => {
+    it('should invoke onClose', async () => {
       let getByText;
       const onClose = jest.fn();
 

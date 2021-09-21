@@ -179,7 +179,7 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record, {})).not.toBeDefined();
+      expect(utils.validateMarcRecord(record)).not.toBeDefined();
     });
 
     it('should return error message when record is invalid', () => {
@@ -193,7 +193,7 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record, {})).toBeDefined();
+      expect(utils.validateMarcRecord(record)).toBeDefined();
     });
 
     it('should return error message when record is without 245 row', () => {
@@ -214,7 +214,7 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record, {})).toBe('ui-quick-marc.record.error.title.empty');
+      expect(utils.validateMarcRecord(record)).toBe('ui-quick-marc.record.error.title.empty');
     });
 
     it('should return error message when record has several 245 rows', () => {
@@ -238,7 +238,7 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record, {})).toBe('ui-quick-marc.record.error.title.multiple');
+      expect(utils.validateMarcRecord(record)).toBe('ui-quick-marc.record.error.title.multiple');
     });
   });
 

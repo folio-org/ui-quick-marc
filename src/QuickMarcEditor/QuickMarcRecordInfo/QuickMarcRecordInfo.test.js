@@ -32,19 +32,19 @@ const renderQuickMarcRecordInfo = (props = {}) => render(
 describe('Given Quick Marc Record Info', () => {
   afterEach(cleanup);
 
-  it('Then it should display record status', () => {
+  it('should display record status', () => {
     const { getByText } = renderQuickMarcRecordInfo();
 
     expect(getByText('ui-quick-marc.record.status.current', { exact: false })).toBeDefined();
   });
 
-  it('Then it should display record updated date', () => {
+  it('should display record updated date', () => {
     const { getByText } = renderQuickMarcRecordInfo();
 
     expect(getByText('stripes-components.metaSection.recordLastUpdated', { exact: false })).toBeDefined();
   });
 
-  it('Then it should display person who last edited', () => {
+  it('should display person who last edited', () => {
     const { getByText } = renderQuickMarcRecordInfo();
 
     expect(getByText('stripes-components.metaSection.source', { exact: false })).toBeDefined();
