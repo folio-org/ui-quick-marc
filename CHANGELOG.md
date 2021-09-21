@@ -11,6 +11,7 @@
 * [UIQM-136](https://issues.folio.org/browse/UIQM-136) Update according to API change.
 * [UIQM-135](https://issues.folio.org/browse/UIQM-135) Add validation for empty indicators fields.
 * [UIQM-134](https://issues.folio.org/browse/UIQM-134) Remove field with empty subfield and content.
+* [UIQM-140](https://issues.folio.org/browse/UIQM-140) Auto-populate indicator box with a backslash when Edit or Derive quickMARC record.
 
 ## [3.1.0](https://github.com/folio-org/ui-quick-marc/tree/v3.1.0) (2021-06-17)
 * [UIQM-86](https://issues.folio.org/browse/UIQM-86) Auto-populate a subfield section with leading $a when no leading subfield is present

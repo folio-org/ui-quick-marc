@@ -111,7 +111,7 @@ export const addNewRecord = (index, state) => {
     id: uuid(),
     tag: '',
     content: '$a ',
-    indicators: ['', ''],
+    indicators: ['\\', '\\'],
   };
 
   records.splice(newIndex, 0, emptyRow);
