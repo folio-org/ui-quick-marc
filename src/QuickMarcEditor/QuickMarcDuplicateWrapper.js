@@ -118,7 +118,7 @@ const QuickMarcDuplicateWrapper = ({
     const validationErrorMessage = validateMarcRecord(formValuesForDuplicate);
 
     if (validationErrorMessage) {
-      showCallout({ messageId: validationErrorMessage, type: 'error' });
+      showCallout({ message: validationErrorMessage, type: 'error' });
 
       return null;
     }

@@ -1,4 +1,11 @@
+import { MARC_TYPES } from '../common/constants';
+
 export const LEADER_TAG = 'LDR';
+
+export const LEADER_EDITABLE_BYTES = {
+  [MARC_TYPES.BIB]: [5, 8, 17, 18, 19],
+  [MARC_TYPES.HOLDINGS]: [5, 6, 17, 18],
+};
 
 export const QUICK_MARC_ACTIONS = {
   EDIT: 'edit',

@@ -138,22 +138,36 @@ describe('QuickMarcEditor utils', () => {
 
     it('should return length error message when leader is not 24 length', () => {
       expect(
-        utils.validateLeader('04706cam a2200865Ii 4500', '04706dam a2200865nfa45'),
+        utils.validateLeader('04706cam a2200865Ii 4500', '04706dam a2200865nfa45').props.id,
       ).toBe('ui-quick-marc.record.error.leader.length');
 
       expect(
-        utils.validateLeader('04706cam a2200865Ii 4500', '04706dam a2200865nfa45gf sdg s'),
+        utils.validateLeader('04706cam a2200865Ii 4500', '04706dam a2200865nfa45gf sdg s').props.id,
       ).toBe('ui-quick-marc.record.error.leader.length');
     });
 
     it('should return edit error message when forbidden bytes are edited', () => {
       expect(
-        utils.validateLeader('04706cam a2200865Ii 4500', '04706cam a2200865Ii 4501'),
-      ).toBe('ui-quick-marc.record.error.leader.forbiddenBytes');
+        utils.validateLeader('04706cam a2200865Ii 4500', '04706cam a2200865Ii 4501').props.id,
+      ).toBe('ui-quick-marc.record.error.leader.forbiddenBytes.bib');
 
       expect(
-        utils.validateLeader('14706cam a2200865Ii 4500', '04706cam a2200865Ii 4500'),
-      ).toBe('ui-quick-marc.record.error.leader.forbiddenBytes');
+        utils.validateLeader('14706cam a2200865Ii 4500', '04706cam a2200865Ii 4500').props.id,
+      ).toBe('ui-quick-marc.record.error.leader.forbiddenBytes.bib');
+    });
+
+    it('should return edit error message when unsupported bytes are found', () => {
+      expect(
+        utils.validateLeader('00194cx  a22000851  4500', '00194ax  a22000851  4500', 'holdings').props.id,
+      ).toBe('ui-quick-marc.record.error.leader.invalidPositionValue');
+
+      expect(
+        utils.validateLeader('00194cx  a22000851  4500', '00194cb  a22000851  4500', 'holdings').props.id,
+      ).toBe('ui-quick-marc.record.error.leader.invalidPositionValue');
+
+      expect(
+        utils.validateLeader('00194cx  a22000851  4500', '00194cx  a22000856  4500', 'holdings').props.id,
+      ).toBe('ui-quick-marc.record.error.leader.invalidPositionValue');
     });
   });
 
@@ -214,7 +228,7 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record)).toBe('ui-quick-marc.record.error.title.empty');
+      expect(utils.validateMarcRecord(record).props.id).toBe('ui-quick-marc.record.error.title.empty');
     });
 
     it('should return error message when record has several 245 rows', () => {
@@ -238,7 +252,7 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record)).toBe('ui-quick-marc.record.error.title.multiple');
+      expect(utils.validateMarcRecord(record).props.id).toBe('ui-quick-marc.record.error.title.multiple');
     });
   });
 
@@ -258,7 +272,7 @@ describe('QuickMarcEditor utils', () => {
         },
       ];
 
-      expect(utils.validateRecordMismatch(records)).toBe('ui-quick-marc.record.error.leader.fixedFieldMismatch');
+      expect(utils.validateRecordMismatch(records).props.id).toBe('ui-quick-marc.record.error.leader.fixedFieldMismatch');
     });
 
     it('should return error message when 008 Desc is not matched with leader Desc', () => {
@@ -276,7 +290,7 @@ describe('QuickMarcEditor utils', () => {
         },
       ];
 
-      expect(utils.validateRecordMismatch(records)).toBe('ui-quick-marc.record.error.leader.fixedFieldMismatch');
+      expect(utils.validateRecordMismatch(records).props.id).toBe('ui-quick-marc.record.error.leader.fixedFieldMismatch');
     });
 
     it('should return error message when tag is not valid', () => {
@@ -322,7 +336,7 @@ describe('QuickMarcEditor utils', () => {
         },
       ];
 
-      expect(utils.validateRecordTag(records)).toBe('ui-quick-marc.record.error.tag.length');
+      expect(utils.validateRecordTag(records).props.id).toBe('ui-quick-marc.record.error.tag.length');
     });
 
     it('should return error message when tag is not valid (non-digit characters)', () => {
@@ -335,7 +349,7 @@ describe('QuickMarcEditor utils', () => {
         },
       ];
 
-      expect(utils.validateRecordTag(records)).toBe('ui-quick-marc.record.error.tag.nonDigits');
+      expect(utils.validateRecordTag(records).props.id).toBe('ui-quick-marc.record.error.tag.nonDigits');
     });
   });
 
@@ -363,7 +377,7 @@ describe('QuickMarcEditor utils', () => {
         },
       ];
 
-      expect(utils.validateSubfield(records)).toBe('ui-quick-marc.record.error.subfield');
+      expect(utils.validateSubfield(records).props.id).toBe('ui-quick-marc.record.error.subfield');
     });
 
     it('should return error message when tag is not valid (non-digit characters)', () => {
@@ -376,7 +390,7 @@ describe('QuickMarcEditor utils', () => {
         },
       ];
 
-      expect(utils.validateRecordTag(records)).toBe('ui-quick-marc.record.error.tag.nonDigits');
+      expect(utils.validateRecordTag(records).props.id).toBe('ui-quick-marc.record.error.tag.nonDigits');
     });
   });
 

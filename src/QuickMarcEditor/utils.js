@@ -1,7 +1,9 @@
+import React from 'react';
 import uuid from 'uuid';
 import omit from 'lodash/omit';
 import compact from 'lodash/compact';
 import isString from 'lodash/isString';
+import { FormattedMessage } from 'react-intl';
 
 import {
   isLastRecord,
@@ -14,6 +16,7 @@ import {
   FIELD_TAGS_TO_REMOVE,
   FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS,
   QUICK_MARC_ACTIONS,
+  LEADER_EDITABLE_BYTES,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import { MaterialCharsFieldFactory } from './QuickMarcEditorRows/MaterialCharsField';
@@ -121,12 +124,8 @@ export const addNewRecord = (index, state) => {
 };
 
 export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYPES.BIB) => {
-  const editableBytes = marcType === MARC_TYPES.BIB
-    ? [5, 8, 17, 18, 19]
-    : [5, 6, 17, 18];
-
   const cutEditableBytes = (str) => (
-    editableBytes.reduce((acc, byte, idx) => {
+    LEADER_EDITABLE_BYTES[marcType].reduce((acc, byte, idx) => {
       const position = byte - idx;
 
       return `${acc.slice(0, position)}${acc.slice(position + 1, acc.length)}`;
@@ -134,24 +133,39 @@ export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYP
   );
 
   if (leader.length !== 24) {
-    return 'ui-quick-marc.record.error.leader.length';
+    return <FormattedMessage id="ui-quick-marc.record.error.leader.length" />;
   }
 
   if (cutEditableBytes(prevLeader) !== cutEditableBytes(leader)) {
-    return `ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}`;
+    return <FormattedMessage id={`ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}`} />;
   }
 
   if (marcType === MARC_TYPES.HOLDINGS) {
     if (!['c', 'd', 'n'].includes(leader[5])) {
-      return '005 invalid';
+      return (
+        <FormattedMessage
+          id="ui-quick-marc.record.error.leader.invalidPositionValue"
+          values={{ position: 5 }}
+        />
+      );
     }
 
     if (!['u', 'v', 'x', 'y'].includes(leader[6])) {
-      return '005 invalid';
+      return (
+        <FormattedMessage
+          id="ui-quick-marc.record.error.leader.invalidPositionValue"
+          values={{ position: 6 }}
+        />
+      );
     }
 
     if (!['1', '2', '3', '4', '5', 'm', 'u', 'z'].includes(leader[17])) {
-      return '005 invalid';
+      return (
+        <FormattedMessage
+          id="ui-quick-marc.record.error.leader.invalidPositionValue"
+          values={{ position: 17 }}
+        />
+      );
     }
   }
 
@@ -160,13 +174,13 @@ export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYP
 
 export const validateRecordTag = marcRecords => {
   if (marcRecords.some(({ tag }) => tag.length !== 3)) {
-    return 'ui-quick-marc.record.error.tag.length';
+    return <FormattedMessage id="ui-quick-marc.record.error.tag.length" />;
   }
 
   const marcRecordsWithoutLDR = marcRecords.filter(record => record.tag !== LEADER_TAG);
 
   if (marcRecordsWithoutLDR.some(({ tag }) => !tag.match(/\d{3}/))) {
-    return 'ui-quick-marc.record.error.tag.nonDigits';
+    return <FormattedMessage id="ui-quick-marc.record.error.tag.nonDigits" />;
   }
 
   return undefined;
@@ -180,7 +194,7 @@ export const validateSubfield = marcRecords => {
   });
 
   if (isEmptySubfield) {
-    return 'ui-quick-marc.record.error.subfield';
+    return <FormattedMessage id="ui-quick-marc.record.error.subfield" />;
   }
 
   return undefined;
@@ -194,7 +208,7 @@ export const validateRecordMismatch = marcRecords => {
     leader[17] !== fixedField?.content?.ELvl
     || leader[18] !== fixedField?.content?.Desc
   ) {
-    return 'ui-quick-marc.record.error.leader.fixedFieldMismatch';
+    return <FormattedMessage id="ui-quick-marc.record.error.leader.fixedFieldMismatch" />;
   }
 
   return undefined;
@@ -210,11 +224,11 @@ const validateMarcBibRecord = (marcRecords) => {
   const titleRecords = marcRecords.filter(({ tag }) => tag === '245');
 
   if (titleRecords.length === 0) {
-    return 'ui-quick-marc.record.error.title.empty';
+    return <FormattedMessage id="ui-quick-marc.record.error.title.empty" />;
   }
 
   if (titleRecords.length > 1) {
-    return 'ui-quick-marc.record.error.title.multiple';
+    return <FormattedMessage id="ui-quick-marc.record.error.title.multiple" />;
   }
 
   return undefined;
