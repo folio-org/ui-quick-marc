@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import noop from 'lodash/noop';
 import find from 'lodash/find';
-import isEqual from 'lodash/isEqual';
 
 import stripesFinalForm from '@folio/stripes/final-form';
 import {

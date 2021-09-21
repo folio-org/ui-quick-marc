@@ -112,7 +112,7 @@ export const addNewRecord = (index, state) => {
     id: uuid(),
     tag: '',
     content: '$a ',
-    indicators: ['', ''],
+    indicators: ['\\', '\\'],
   };
 
   records.splice(newIndex, 0, emptyRow);
@@ -337,7 +337,7 @@ export const cleanBytesFields = (formValues, initialValues, marcType) => {
     }
 
     if (isFixedFieldRow(field)) {
-      fieldByType = FixedFieldFactory.getFixedFieldByType(field.content.Type, initialValues?.leader[7], marcType);
+      fieldByType = FixedFieldFactory.getFixedFieldByType(marcType, field.content.Type, initialValues?.leader[7]);
     }
 
     const content = Object.entries(field.content).reduce((acc, [key, value]) => {
