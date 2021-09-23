@@ -340,20 +340,22 @@ describe('QuickMarcEditor utils', () => {
   });
 
   describe('validateSubfield', () => {
-    it('should not return error message when indicators are present', () => {
+    it('should not return error message when indicators are present and content is not empty', () => {
       const records = [
         {
           indicators: ['\\', '\\'],
+          content: 'test',
         },
         {
           indicators: ['\\', '7'],
+          content: 'test',
         },
       ];
 
       expect(utils.validateSubfield(records)).not.toBeDefined();
     });
 
-    it('should return error message when indicators are undefined (invalid length)', () => {
+    it('should return error message when content is empty', () => {
       const records = [
         {
           indicators: ['\\', '\\'],
@@ -364,19 +366,6 @@ describe('QuickMarcEditor utils', () => {
       ];
 
       expect(utils.validateSubfield(records)).toBe('ui-quick-marc.record.error.subfield');
-    });
-
-    it('should return error message when tag is not valid (non-digit characters)', () => {
-      const records = [
-        {
-          tag: '01a',
-        },
-        {
-          tag: '245',
-        },
-      ];
-
-      expect(utils.validateRecordTag(records)).toBe('ui-quick-marc.record.error.tag.nonDigits');
     });
   });
 
