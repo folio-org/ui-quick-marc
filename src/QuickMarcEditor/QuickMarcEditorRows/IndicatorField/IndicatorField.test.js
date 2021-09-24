@@ -8,23 +8,30 @@ import { IndicatorField } from './IndicatorField';
 const getComponent = () => (
   <IndicatorField
     name="content"
+    label="test-label"
   />
 );
 
 describe('Given indicator field', () => {
   afterEach(cleanup);
 
-  it('should be selected after control focus', async () => {
-    let getByTestId;
-    const select = jest.fn();
+  it('should render the field', () => {
+    const { getByLabelText } = render(getComponent());
 
-    await act(async () => {
-      getByTestId = await render(getComponent()).getByTestId;
-    });
-    const selectContent = createEvent.focus(getByTestId('indicator-field'), { target: { select } });
-
-    fireEvent(getByTestId('indicator-field'), selectContent);
-
-    expect(select).toHaveBeenCalled();
+    expect(getByLabelText('test-label')).toBeDefined();
   });
+
+  // it('should be selected after control focus', async () => {
+  //   let getByTestId;
+  //   const select = jest.fn();
+
+  //   await act(async () => {
+  //     getByTestId = await render(getComponent()).getByTestId;
+  //   });
+  //   const selectContent = createEvent.focus(getByTestId('indicator-field'), { target: { select } });
+
+  //   fireEvent(getByTestId('indicator-field'), selectContent);
+
+  //   expect(select).toHaveBeenCalled();
+  // });
 });

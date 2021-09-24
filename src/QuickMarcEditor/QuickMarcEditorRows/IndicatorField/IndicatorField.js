@@ -17,7 +17,7 @@ export const IndicatorField = (props) => {
     <TextField
       {...props}
       onFocus={selectContent}
-      maxlength={INDICATOR_FIELD_MAX_LENGTH}
+      maxLength={INDICATOR_FIELD_MAX_LENGTH}
       data-testid="indicator-field"
     />
   );
