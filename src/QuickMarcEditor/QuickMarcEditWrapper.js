@@ -42,7 +42,7 @@ const QuickMarcEditWrapper = ({
     const validationErrorMessage = validateMarcRecord(formValues, marcType);
 
     if (validationErrorMessage) {
-      showCallout({ messageId: validationErrorMessage, type: 'error' });
+      showCallout({ message: validationErrorMessage, type: 'error' });
 
       return null;
     }
