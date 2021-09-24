@@ -47,7 +47,7 @@ const QuickMarcEditWrapper = ({
       return null;
     }
 
-    const autopopulateFormValues = autopopulateSubfieldSection(formValues);
+    const autopopulateFormValues = autopopulateSubfieldSection(formValues, marcType);
     const formValuesForEdit = cleanBytesFields(autopopulateFormValues, initialValues, marcType);
 
     return mutator.quickMarcEditMarcRecord.PUT(hydrateMarcRecord(formValuesForEdit))

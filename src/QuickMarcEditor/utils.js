@@ -324,7 +324,7 @@ const checkIsEmptyContent = (field) => {
   return false;
 };
 
-export const autopopulateSubfieldSection = (formValues) => {
+export const autopopulateSubfieldSection = (formValues, marcType = MARC_TYPES.BIB) => {
   const { records } = formValues;
 
   const recordsWithSubfields = records.reduce((acc, field) => {
@@ -336,7 +336,7 @@ export const autopopulateSubfieldSection = (formValues) => {
       return acc;
     }
 
-    if (fieldMatchesDescription(field, FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS)) {
+    if (fieldMatchesDescription(field, FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS[marcType])) {
       return [...acc, field];
     }
 

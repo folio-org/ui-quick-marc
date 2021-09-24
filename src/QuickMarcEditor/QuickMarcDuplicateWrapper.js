@@ -113,7 +113,7 @@ const QuickMarcDuplicateWrapper = ({
   };
 
   const onSubmit = useCallback(async (formValues) => {
-    const autopopulatedFormValues = autopopulateSubfieldSection(removeFieldsForDuplicate(formValues));
+    const autopopulatedFormValues = autopopulateSubfieldSection(removeFieldsForDuplicate(formValues), marcType);
     const formValuesForDuplicate = cleanBytesFields(autopopulatedFormValues, initialValues, marcType);
     const validationErrorMessage = validateMarcRecord(formValuesForDuplicate);
 
