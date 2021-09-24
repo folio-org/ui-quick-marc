@@ -40,7 +40,7 @@ export const FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS = {
     { tag: '006' },
     { tag: '007' },
     { tag: '008' },
-  ]
+  ],
 };
 
 export const QM_RECORD_STATUS_TIMEOUT = 5000;

@@ -188,10 +188,7 @@ export const validateRecordTag = marcRecords => {
 
 export const validateSubfield = marcRecords => {
   const marcRecordsWithSubfields = marcRecords.filter(marcRecord => marcRecord.indicators);
-
-  const isEmptySubfield = marcRecordsWithSubfields.some(marcRecord => {
-    return marcRecord.indicators.some(value => value === undefined);
-  });
+  const isEmptySubfield = marcRecordsWithSubfields.some(marcRecord => !marcRecord.content);
 
   if (isEmptySubfield) {
     return <FormattedMessage id="ui-quick-marc.record.error.subfield" />;
