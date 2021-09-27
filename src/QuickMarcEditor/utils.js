@@ -1,7 +1,9 @@
+import React from 'react';
 import uuid from 'uuid';
 import omit from 'lodash/omit';
 import compact from 'lodash/compact';
 import isString from 'lodash/isString';
+import { FormattedMessage } from 'react-intl';
 
 import {
   isLastRecord,
@@ -14,11 +16,13 @@ import {
   FIELD_TAGS_TO_REMOVE,
   FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS,
   QUICK_MARC_ACTIONS,
+  LEADER_EDITABLE_BYTES,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import { MaterialCharsFieldFactory } from './QuickMarcEditorRows/MaterialCharsField';
 import { PhysDescriptionFieldFactory } from './QuickMarcEditorRows/PhysDescriptionField';
 import { FixedFieldFactory } from './QuickMarcEditorRows/FixedField';
+import { MARC_TYPES } from '../common/constants';
 
 export const dehydrateMarcRecordResponse = marcRecordResponse => ({
   ...marcRecordResponse,
@@ -119,9 +123,9 @@ export const addNewRecord = (index, state) => {
   return records;
 };
 
-export const validateLeader = (prevLeader = '', leader = '') => {
+export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYPES.BIB) => {
   const cutEditableBytes = (str) => (
-    [5, 8, 17, 18, 19].reduce((acc, byte, idx) => {
+    LEADER_EDITABLE_BYTES[marcType].reduce((acc, byte, idx) => {
       const position = byte - idx;
 
       return `${acc.slice(0, position)}${acc.slice(position + 1, acc.length)}`;
@@ -129,11 +133,40 @@ export const validateLeader = (prevLeader = '', leader = '') => {
   );
 
   if (leader.length !== 24) {
-    return 'ui-quick-marc.record.error.leader.length';
+    return <FormattedMessage id="ui-quick-marc.record.error.leader.length" />;
   }
 
   if (cutEditableBytes(prevLeader) !== cutEditableBytes(leader)) {
-    return 'ui-quick-marc.record.error.leader.forbiddenBytes';
+    return <FormattedMessage id={`ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}`} />;
+  }
+
+  if (marcType === MARC_TYPES.HOLDINGS) {
+    if (!['c', 'd', 'n'].includes(leader[5])) {
+      return (
+        <FormattedMessage
+          id="ui-quick-marc.record.error.leader.invalidPositionValue"
+          values={{ position: 5 }}
+        />
+      );
+    }
+
+    if (!['u', 'v', 'x', 'y'].includes(leader[6])) {
+      return (
+        <FormattedMessage
+          id="ui-quick-marc.record.error.leader.invalidPositionValue"
+          values={{ position: 6 }}
+        />
+      );
+    }
+
+    if (!['1', '2', '3', '4', '5', 'm', 'u', 'z'].includes(leader[17])) {
+      return (
+        <FormattedMessage
+          id="ui-quick-marc.record.error.leader.invalidPositionValue"
+          values={{ position: 17 }}
+        />
+      );
+    }
   }
 
   return undefined;
@@ -141,13 +174,13 @@ export const validateLeader = (prevLeader = '', leader = '') => {
 
 export const validateRecordTag = marcRecords => {
   if (marcRecords.some(({ tag }) => tag.length !== 3)) {
-    return 'ui-quick-marc.record.error.tag.length';
+    return <FormattedMessage id="ui-quick-marc.record.error.tag.length" />;
   }
 
   const marcRecordsWithoutLDR = marcRecords.filter(record => record.tag !== LEADER_TAG);
 
   if (marcRecordsWithoutLDR.some(({ tag }) => !tag.match(/\d{3}/))) {
-    return 'ui-quick-marc.record.error.tag.nonDigits';
+    return <FormattedMessage id="ui-quick-marc.record.error.tag.nonDigits" />;
   }
 
   return undefined;
@@ -158,7 +191,7 @@ export const validateSubfield = marcRecords => {
   const isEmptySubfield = marcRecordsWithSubfields.some(marcRecord => !marcRecord.content);
 
   if (isEmptySubfield) {
-    return 'ui-quick-marc.record.error.subfield';
+    return <FormattedMessage id="ui-quick-marc.record.error.subfield" />;
   }
 
   return undefined;
@@ -172,26 +205,50 @@ export const validateRecordMismatch = marcRecords => {
     leader[17] !== fixedField?.content?.ELvl
     || leader[18] !== fixedField?.content?.Desc
   ) {
-    return 'ui-quick-marc.record.error.leader.fixedFieldMismatch';
+    return <FormattedMessage id="ui-quick-marc.record.error.leader.fixedFieldMismatch" />;
   }
 
   return undefined;
 };
 
-export const validateMarcRecord = (marcRecord) => {
+const validateMarcBibRecord = (marcRecords) => {
+  const leaderMismatchError = validateRecordMismatch(marcRecords);
+
+  if (leaderMismatchError) {
+    return leaderMismatchError;
+  }
+
+  const titleRecords = marcRecords.filter(({ tag }) => tag === '245');
+
+  if (titleRecords.length === 0) {
+    return <FormattedMessage id="ui-quick-marc.record.error.title.empty" />;
+  }
+
+  if (titleRecords.length > 1) {
+    return <FormattedMessage id="ui-quick-marc.record.error.title.multiple" />;
+  }
+
+  return undefined;
+};
+
+export const validateMarcRecord = (marcRecord, marcType = MARC_TYPES.BIB) => {
   const marcRecords = marcRecord.records || [];
   const recordLeader = marcRecords[0];
 
-  const leaderError = validateLeader(marcRecord?.leader, recordLeader?.content);
+  const leaderError = validateLeader(marcRecord?.leader, recordLeader?.content, marcType);
 
   if (leaderError) {
     return leaderError;
   }
 
-  const leaderMismatchError = validateRecordMismatch(marcRecords);
+  let validationResult = null;
 
-  if (leaderMismatchError) {
-    return leaderMismatchError;
+  if (marcType === MARC_TYPES.BIB) {
+    validationResult = validateMarcBibRecord(marcRecords);
+  }
+
+  if (validationResult) {
+    return validationResult;
   }
 
   const tagError = validateRecordTag(marcRecords);
@@ -204,16 +261,6 @@ export const validateMarcRecord = (marcRecord) => {
 
   if (subfieldError) {
     return subfieldError;
-  }
-
-  const titleRecords = marcRecords.filter(({ tag }) => tag === '245');
-
-  if (titleRecords.length === 0) {
-    return 'ui-quick-marc.record.error.title.empty';
-  }
-
-  if (titleRecords.length > 1) {
-    return 'ui-quick-marc.record.error.title.multiple';
   }
 
   return undefined;
@@ -274,7 +321,7 @@ const checkIsEmptyContent = (field) => {
   return false;
 };
 
-export const autopopulateSubfieldSection = (formValues) => {
+export const autopopulateSubfieldSection = (formValues, marcType = MARC_TYPES.BIB) => {
   const { records } = formValues;
 
   const recordsWithSubfields = records.reduce((acc, field) => {
@@ -286,7 +333,7 @@ export const autopopulateSubfieldSection = (formValues) => {
       return acc;
     }
 
-    if (fieldMatchesDescription(field, FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS)) {
+    if (fieldMatchesDescription(field, FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS[marcType])) {
       return [...acc, field];
     }
 
@@ -308,7 +355,7 @@ export const autopopulateSubfieldSection = (formValues) => {
   };
 };
 
-export const cleanBytesFields = (formValues, initialValues) => {
+export const cleanBytesFields = (formValues, initialValues, marcType) => {
   const { records } = formValues;
 
   const cleanedRecords = records.map((field) => {
@@ -327,7 +374,7 @@ export const cleanBytesFields = (formValues, initialValues) => {
     }
 
     if (isFixedFieldRow(field)) {
-      fieldByType = FixedFieldFactory.getFixedFieldByType(field.content.Type, initialValues?.leader[7]);
+      fieldByType = FixedFieldFactory.getFixedFieldByType(marcType, field.content.Type, initialValues?.leader[7]);
     }
 
     const content = Object.entries(field.content).reduce((acc, [key, value]) => {

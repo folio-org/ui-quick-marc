@@ -15,9 +15,10 @@ import {
 } from '@folio/stripes-acq-components';
 
 import {
-  INVENTORY_INSTANCE_API,
+  EXTERNAL_INSTANCE_APIS,
   MARC_RECORD_API,
   MARC_RECORD_STATUS_API,
+  MARC_TYPES,
 } from '../common/constants';
 
 import {
@@ -31,6 +32,7 @@ const propTypes = {
   onClose: PropTypes.func.isRequired,
   history: ReactRouterPropTypes.history.isRequired,
   location: ReactRouterPropTypes.location.isRequired,
+  marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   mutator: PropTypes.object.isRequired,
   match: ReactRouterPropTypes.match.isRequired,
   wrapper: PropTypes.func.isRequired,
@@ -44,28 +46,41 @@ const QuickMarcEditorContainer = ({
   wrapper: Wrapper,
   history,
   location,
+  marcType,
 }) => {
-  const { externalId } = match.params;
+  const {
+    externalId,
+    instanceId,
+  } = match.params;
 
   const [instance, setInstance] = useState();
   const [marcRecord, setMarcRecord] = useState();
+  const [locations, setLocations] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
   const showCallout = useShowCallout();
+
+  useEffect(() => {
+    mutator.externalInstanceApi.update({
+      _path: EXTERNAL_INSTANCE_APIS[marcType],
+    });
+  }, []);
 
   useEffect(() => {
     setIsLoading(true);
 
     const instancePromise = mutator.quickMarcEditInstance.GET();
     const marcRecordPromise = mutator.quickMarcEditMarcRecord.GET();
+    const locationsPromise = mutator.locations.GET();
 
-    Promise.all([instancePromise, marcRecordPromise])
-      .then(([instanceResponse, marcRecordResponse]) => {
+    Promise.all([instancePromise, marcRecordPromise, locationsPromise])
+      .then(([instanceResponse, marcRecordResponse, locationsResponse]) => {
         const dehydratedMarcRecord = dehydrateMarcRecordResponse(marcRecordResponse);
         const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, action);
 
         setInstance(instanceResponse);
         setMarcRecord(formattedMarcRecord);
+        setLocations(locationsResponse);
       })
       .catch(() => {
         setInstance();
@@ -80,7 +95,11 @@ const QuickMarcEditorContainer = ({
   }, [externalId]);
 
   const closeEditor = useCallback(() => {
-    onClose(externalId);
+    if (marcType === MARC_TYPES.BIB) {
+      onClose(externalId);
+    } else {
+      onClose(`${instanceId}/${externalId}`);
+    }
   }, [externalId, onClose]);
 
   if (isLoading) {
@@ -102,16 +121,19 @@ const QuickMarcEditorContainer = ({
       mutator={mutator}
       history={history}
       location={location}
+      locations={locations}
+      marcType={marcType}
     />
   );
 };
 
 QuickMarcEditorContainer.manifest = Object.freeze({
+  externalInstanceApi: {},
   quickMarcEditInstance: {
     ...baseManifest,
     fetch: false,
     accumulate: true,
-    path: `${INVENTORY_INSTANCE_API}/:{externalId}`,
+    path: '%{externalInstanceApi._path}/:{externalId}',
   },
   quickMarcEditMarcRecord: {
     ...baseManifest,
@@ -131,8 +153,15 @@ QuickMarcEditorContainer.manifest = Object.freeze({
   quickMarcRecordStatus: {
     ...baseManifest,
     fetch: false,
-    accumulate: true,
     path: MARC_RECORD_STATUS_API,
+    accumulate: true,
+  },
+  locations: {
+    type: 'okapi',
+    records: 'locations',
+    path: 'locations?limit=1000',
+    accumulate: true,
+    fetch: false,
   },
 });
 

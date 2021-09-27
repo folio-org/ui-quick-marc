@@ -19,6 +19,7 @@ import {
   QM_RECORD_STATUS_TIMEOUT,
   QM_RECORD_STATUS_BAIL_TIME,
 } from './constants';
+import { MARC_TYPES } from '../common/constants';
 import {
   hydrateMarcRecord,
   removeFieldsForDuplicate,
@@ -33,6 +34,7 @@ const propTypes = {
   initialValues: PropTypes.object.isRequired,
   instance: PropTypes.object,
   location: ReactRouterPropTypes.location.isRequired,
+  marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
 };
@@ -45,6 +47,7 @@ const QuickMarcDuplicateWrapper = ({
   mutator,
   history,
   location,
+  marcType,
 }) => {
   const [isCancellationModalOpened, setIsCancellationModalOpened] = useState(false);
 
@@ -110,12 +113,12 @@ const QuickMarcDuplicateWrapper = ({
   };
 
   const onSubmit = useCallback(async (formValues) => {
-    const autopopulatedFormValues = autopopulateSubfieldSection(removeFieldsForDuplicate(formValues));
-    const formValuesForDuplicate = cleanBytesFields(autopopulatedFormValues, initialValues);
+    const autopopulatedFormValues = autopopulateSubfieldSection(removeFieldsForDuplicate(formValues), marcType);
+    const formValuesForDuplicate = cleanBytesFields(autopopulatedFormValues, initialValues, marcType);
     const validationErrorMessage = validateMarcRecord(formValuesForDuplicate);
 
     if (validationErrorMessage) {
-      showCallout({ messageId: validationErrorMessage, type: 'error' });
+      showCallout({ message: validationErrorMessage, type: 'error' });
 
       return null;
     }
@@ -173,6 +176,7 @@ const QuickMarcDuplicateWrapper = ({
       onSubmit={onSubmit}
       action={action}
       getCancellationModal={getCancellationModal}
+      marcType={marcType}
     />
   );
 };

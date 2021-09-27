@@ -9,6 +9,7 @@ import {
 
 import QuickMarcEditor from './QuickMarcEditor';
 import { QUICK_MARC_ACTIONS } from './constants';
+import { MARC_TYPES } from '../common/constants';
 import {
   hydrateMarcRecord,
   validateMarcRecord,
@@ -20,8 +21,10 @@ const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
   initialValues: PropTypes.object.isRequired,
   instance: PropTypes.object,
+  marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
+  locations: PropTypes.object,
 };
 
 const QuickMarcEditWrapper = ({
@@ -30,20 +33,22 @@ const QuickMarcEditWrapper = ({
   onClose,
   initialValues,
   mutator,
+  marcType,
+  locations,
 }) => {
   const showCallout = useShowCallout();
 
   const onSubmit = useCallback(async (formValues) => {
-    const validationErrorMessage = validateMarcRecord(formValues);
+    const validationErrorMessage = validateMarcRecord(formValues, marcType);
 
     if (validationErrorMessage) {
-      showCallout({ messageId: validationErrorMessage, type: 'error' });
+      showCallout({ message: validationErrorMessage, type: 'error' });
 
       return null;
     }
 
-    const autopopulateFormValues = autopopulateSubfieldSection(formValues);
-    const formValuesForEdit = cleanBytesFields(autopopulateFormValues, initialValues);
+    const autopopulateFormValues = autopopulateSubfieldSection(formValues, marcType);
+    const formValuesForEdit = cleanBytesFields(autopopulateFormValues, initialValues, marcType);
 
     return mutator.quickMarcEditMarcRecord.PUT(hydrateMarcRecord(formValuesForEdit))
       .then(() => {
@@ -78,6 +83,8 @@ const QuickMarcEditWrapper = ({
       initialValues={initialValues}
       onSubmit={onSubmit}
       action={action}
+      marcType={marcType}
+      locations={locations}
     />
   );
 };

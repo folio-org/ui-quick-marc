@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { MARC_TYPES } from '../../../common/constants';
+
 import BookFixedField from './BookFixedField';
 import ComputerFileFixedField from './ComputerFileFixedField';
 import ContinuingResourceFixedField from './ContinuingResourceFixedField';
@@ -8,12 +10,16 @@ import MixedMaterialFixedField from './MixedMaterialFixedField';
 import ScoreFixedField from './ScoreFixedField';
 import SoundRecordingFixedField from './SoundRecordingFixedField';
 import VisualMaterialFixedField from './VisualMaterialFixedField';
+import HoldingsFixedField from './HoldingsFixedField';
 
 export const FixedFieldFactory = {
-  getFixedFieldByType(type, subtype) {
+  getFixedFieldByType(marcType, type, subtype) {
     let FixedField;
 
     switch (true) {
+      case marcType === MARC_TYPES.HOLDINGS:
+        FixedField = HoldingsFixedField;
+        break;
       case type === 'a' && ['b', 'i', 's'].includes(subtype):
       case type === 's':
         FixedField = ContinuingResourceFixedField;
@@ -45,8 +51,8 @@ export const FixedFieldFactory = {
 
     return FixedField;
   },
-  getFixedField(name, type, subtype) {
-    const FixedField = this.getFixedFieldByType(type, subtype);
+  getFixedField(name, marcType, type, subtype) {
+    const FixedField = this.getFixedFieldByType(marcType, type, subtype);
 
     return FixedField ? <FixedField name={name} /> : null;
   },

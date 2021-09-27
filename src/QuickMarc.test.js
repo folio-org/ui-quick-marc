@@ -41,10 +41,10 @@ describe('Given Quick Marc', () => {
 
   describe('When visiting "duplicate" route', () => {
     beforeEach(() => {
-      history.push('/some-path/duplicate/1234');
+      history.push('/some-path/duplicate-bib/1234');
     });
 
-    it('Then it should display correct route', () => {
+    it('should display correct route', () => {
       const { getByText } = renderQuickMarc({
         onClose: jest.fn(),
         basePath: '/some-path',
@@ -57,10 +57,10 @@ describe('Given Quick Marc', () => {
 
   describe('When visiting "edit" route', () => {
     beforeEach(() => {
-      history.push('/some-path/edit/1234');
+      history.push('/some-path/edit-bib/1234');
     });
 
-    it('Then it should display correct route', () => {
+    it('should display correct route', () => {
       const { getByText } = renderQuickMarc({
         onClose: jest.fn(),
         basePath: '/some-path',
