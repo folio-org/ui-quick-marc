@@ -14,6 +14,7 @@
 * [UIQM-140](https://issues.folio.org/browse/UIQM-140) Auto-populate indicator box with a backslash when Edit or Derive quickMARC record.
 * [UIQM-130](https://issues.folio.org/browse/UIQM-130) increment stripes to v7 and react to v17
 * [UIQM-124](https://issues.folio.org/browse/UIQM-124) Edit MARC Holdings via quickMARC.
+* [UIQM-126](https://issues.folio.org/browse/UIQM-126) Permission: quickMARC:  Create a new MARC holdings record.
 
 ## [3.1.0](https://github.com/folio-org/ui-quick-marc/tree/v3.1.0) (2021-06-17)
 * [UIQM-86](https://issues.folio.org/browse/UIQM-86) Auto-populate a subfield section with leading $a when no leading subfield is present
