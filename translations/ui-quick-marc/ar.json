@@ -182,5 +182,7 @@
     "record.fixedField.Sep/comp": "Sep/comp",
     "record.error.leader.forbiddenBytes.bib": "لا يمكن حفظ التسجيلة. يرجى التحقق من الفاتح. يمكن تحرير المواضع 5،8، 17، 18 و19 فقط في الفاتح.",
     "record.error.leader.forbiddenBytes.holdings": "لا يمكن حفظ التسجيلة. يرجى التحقق من الفاتح. يمكن تحرير المواضع 5، 6، 17 و 18 فقط في الفاتح.",
-    "record.error.leader.invalidPositionValue": "تم إدخال قيمة غير صالحة للفاتح {position}"
+    "record.error.leader.invalidPositionValue": "تم إدخال قيمة غير صالحة للفاتح {position}",
+    "permission.quick-marc-holdings-editor.all": "quickMARC: اعرض، وحرر تسجيلة مقتنيات مارك",
+    "permission.quick-marc-holdings-editor.create": "quickMARC : أنشئ تسجيلة مقتنيات مارك جديدة"
 }
