@@ -1,6 +1,7 @@
 # Change history for ui-quick-marc
 
-## [4.0.0](IN PROGRESS)
+## [4.0.0](https://github.com/folio-org/ui-quick-marc/tree/v4.0.0) (2021-10-06)
+
 * [UIQM-104](https://issues.folio.org/browse/UIQM-104) Update 007 Type dropdown to display category of material values.
 * [UIQM-118](https://issues.folio.org/browse/UIQM-118) MARC record does NOT open after saving an invalid field.
 * [UIQM-120](https://issues.folio.org/browse/UIQM-120) Fix bug with saving 006 field with type 's'.
@@ -17,6 +18,7 @@
 * [UIQM-126](https://issues.folio.org/browse/UIQM-126) Permission: quickMARC:  Create a new MARC holdings record.
 
 ## [3.1.0](https://github.com/folio-org/ui-quick-marc/tree/v3.1.0) (2021-06-17)
+
 * [UIQM-86](https://issues.folio.org/browse/UIQM-86) Auto-populate a subfield section with leading $a when no leading subfield is present
 * [UIQM-90](https://issues.folio.org/browse/UIQM-90) Add shortcut keys to save a record and to move on search pane.
 * [UIQM-92](https://issues.folio.org/browse/UIQM-92) Compile translation files into AST format
@@ -27,15 +29,18 @@
 * [UIQM-102](https://issues.folio.org/browse/UIQM-102) Do not auto-populate the 003 field with a leading $a.
 
 ## [3.0.2](https://github.com/folio-org/ui-quick-marc/tree/v3.0.2) (2021-06-17)
+
 * [UIQM-105](https://issues.folio.org/browse/UIQM-105) Display MARC Tag 006/00.
 * [UIQM-101](https://issues.folio.org/browse/UIQM-101) Updates for editing MARC tag 006 via quickMARC.
 
 ## [3.0.1](https://github.com/folio-org/ui-quick-marc/tree/v3.0.1) (2021-04-01)
+
 * [UIQM-83](https://issues.folio.org/browse/UIQM-83) Do not duplicate fields with empty content
 * [UIQM-82](https://issues.folio.org/browse/UIQM-82) Add onsave behavior for deriving new MARC bib record
 * [UIQM-89](https://issues.folio.org/browse/UIQM-89) Add missing status permission to Derive new MARC bib record permission
 
 ## [3.0.0](https://github.com/folio-org/ui-quick-marc/tree/v3.0.0) (2021-03-15)
+
 * [UIQM-67](https://issues.folio.org/browse/UIQM-61) Update display of record status
 * [UIQM-72](https://issues.folio.org/browse/UIQM-72) Change delete row behavior
 * [UIQM-70](https://issues.folio.org/browse/UIQM-70) Update stripes to v6.0.0
