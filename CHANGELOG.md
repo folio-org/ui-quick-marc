@@ -1,5 +1,10 @@
 # Change history for ui-quick-marc
 
+## [4.0.1](IN PROGRESS)
+
+* [UIQM-154](https://issues.folio.org/browse/UIQM-154) Add records-editor.records 1.4 interface version
+
+
 ## [4.0.0](https://github.com/folio-org/ui-quick-marc/tree/v4.0.0) (2021-10-06)
 
 * [UIQM-104](https://issues.folio.org/browse/UIQM-104) Update 007 Type dropdown to display category of material values.
