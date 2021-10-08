@@ -2,6 +2,7 @@ import {
   LEADER_TAG,
   QUICK_MARC_ACTIONS,
 } from '../constants';
+import { MARC_TYPES } from '../../common/constants';
 
 export const isLastRecord = recordRow => {
   return (
@@ -16,10 +17,22 @@ const READ_ONLY_ROWS = new Set(['001', '005']);
 
 const READ_ONLY_ROWS_FOR_DUPLICATE = new Set([LEADER_TAG, '001', '005']);
 
-export const isReadOnly = (recordRow, action = QUICK_MARC_ACTIONS.EDIT) => {
-  const rows = action === QUICK_MARC_ACTIONS.DUPLICATE
-    ? READ_ONLY_ROWS_FOR_DUPLICATE
-    : READ_ONLY_ROWS;
+const READ_ONLY_ROWS_FOR_HOLDINGS = new Set(['001', '004', '005']);
+
+export const isReadOnly = (
+  recordRow,
+  action = QUICK_MARC_ACTIONS.EDIT,
+  marcType = MARC_TYPES.BIB,
+) => {
+  let rows;
+
+  if (marcType === MARC_TYPES.BIB) {
+    rows = action === QUICK_MARC_ACTIONS.DUPLICATE
+      ? READ_ONLY_ROWS_FOR_DUPLICATE
+      : READ_ONLY_ROWS;
+  } else {
+    rows = READ_ONLY_ROWS_FOR_HOLDINGS;
+  }
 
   return rows.has(recordRow.tag) || isLastRecord(recordRow);
 };
@@ -34,9 +47,15 @@ export const hasAddException = recordRow => ADD_EXCEPTION_ROWS.has(recordRow.tag
 
 const DELETE_EXCEPTION_ROWS = new Set([LEADER_TAG, '001', '003', '005', '008']);
 
-export const hasDeleteException = recordRow => (
-  DELETE_EXCEPTION_ROWS.has(recordRow.tag) || isLastRecord(recordRow)
-);
+const DELETE_EXCEPTION_ROWS_FOR_HOLDINGS = new Set([LEADER_TAG, '001', '003', '004', '005', '008']);
+
+export const hasDeleteException = (recordRow, marcType = MARC_TYPES.BIB) => {
+  const rows = marcType === MARC_TYPES.HOLDINGS
+    ? DELETE_EXCEPTION_ROWS_FOR_HOLDINGS
+    : DELETE_EXCEPTION_ROWS;
+
+  return rows.has(recordRow.tag) || isLastRecord(recordRow);
+};
 
 const MOVE_EXCEPTION_ROWS = new Set([LEADER_TAG, '001', '005', '008']);
 
