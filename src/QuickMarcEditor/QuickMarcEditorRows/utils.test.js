@@ -2,6 +2,7 @@ import {
   LEADER_TAG,
   QUICK_MARC_ACTIONS,
 } from '../constants';
+import { MARC_TYPES } from '../../common/constants';
 
 import * as utils from './utils';
 
@@ -9,6 +10,22 @@ describe('QuickMarcEditorRows utils', () => {
   describe('isReadOnly', () => {
     it('should be true for record start', () => {
       expect(utils.isReadOnly({ tag: '001' })).toBeTruthy();
+    });
+
+    describe('when record type equals BIB', () => {
+      it('should be true for tag 004', () => {
+        expect(utils.isReadOnly({ tag: '004' })).toBeFalsy();
+      });
+    });
+
+    describe('when record type equals HOLDINGS', () => {
+      it('should be true for tag 004', () => {
+        expect(utils.isReadOnly(
+          { tag: '004' },
+          QUICK_MARC_ACTIONS.EDIT,
+          MARC_TYPES.HOLDINGS,
+        )).toBeTruthy();
+      });
     });
 
     it('should be true for tag 005 (Date and Time of Latest Transaction)', () => {
@@ -68,6 +85,18 @@ describe('QuickMarcEditorRows utils', () => {
     it('should be false for exeptional row', () => {
       expect(utils.hasDeleteException({ tag: '010' })).toBeFalsy();
     });
+
+    describe('when record type equals BIB', () => {
+      it('should be true for tag 004', () => {
+        expect(utils.hasDeleteException({ tag: '004' }, MARC_TYPES.BIB)).toBeFalsy();
+      });
+    });
+
+    describe('when record type equals HOLDINGS', () => {
+      it('should be true for tag 004', () => {
+        expect(utils.hasDeleteException({ tag: '004' }, MARC_TYPES.HOLDINGS)).toBeTruthy();
+      });
+    });
   });
 
   describe('hasMoveException', () => {
@@ -82,6 +111,26 @@ describe('QuickMarcEditorRows utils', () => {
 
     it('should be false for common rows', () => {
       expect(utils.hasMoveException({ tag: '010' }, { tag: '011' })).toBeFalsy();
+    });
+  });
+
+  describe('isMaterialCharsRecord', () => {
+    it('should be true for exeptional row', () => {
+      expect(utils.isMaterialCharsRecord({ tag: '006' })).toBeTruthy();
+    });
+
+    it('should be false for common rows', () => {
+      expect(utils.isMaterialCharsRecord({ tag: '010' })).toBeFalsy();
+    });
+  });
+
+  describe('isPhysDescriptionRecord', () => {
+    it('should be true for exeptional row', () => {
+      expect(utils.isPhysDescriptionRecord({ tag: '007' })).toBeTruthy();
+    });
+
+    it('should be false for common rows', () => {
+      expect(utils.isPhysDescriptionRecord({ tag: '010' })).toBeFalsy();
     });
   });
 
