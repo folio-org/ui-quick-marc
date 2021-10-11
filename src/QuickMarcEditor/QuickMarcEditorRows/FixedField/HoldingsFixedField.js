@@ -54,7 +54,7 @@ const config = {
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'ReptDate',
+      name: 'Rept date',
       type: SUBFIELD_TYPES.STRING,
     },
   ],
