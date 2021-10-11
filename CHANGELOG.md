@@ -5,6 +5,7 @@
 * [UIQM-154](https://issues.folio.org/browse/UIQM-154) Add records-editor.records 1.4 interface version
 * [UIQM-144](https://issues.folio.org/browse/UIQM-144) Make 004 field read only when edit a holdings record via quickMARC.
 * [UIQM-152](https://issues.folio.org/browse/UIQM-152) Fix 008 `Rept date` field.
+* [UIQM-148](https://issues.folio.org/browse/UIQM-148) Change error message when MARC tag does not contain 3 digits.
 
 ## [4.0.0](https://github.com/folio-org/ui-quick-marc/tree/v4.0.0) (2021-10-06)
 
