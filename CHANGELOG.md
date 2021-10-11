@@ -1,5 +1,9 @@
 # Change history for ui-quick-marc
 
+## [4.0.1](IN PROGRESS)
+
+* [UIQM-156](https://issues.folio.org/browse/UIQM-156) Infinite loading after Deriving a new MARC bib record
+
 ## [4.0.0](https://github.com/folio-org/ui-quick-marc/tree/v4.0.0) (2021-10-06)
 
 * [UIQM-104](https://issues.folio.org/browse/UIQM-104) Update 007 Type dropdown to display category of material values.
