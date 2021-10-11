@@ -71,7 +71,7 @@ const QuickMarcDuplicateWrapper = ({
 
     function makeRequest() {
       mutator.quickMarcRecordStatus.GET({ params: { qmRecordId } })
-        .then(({ externalId, status }) => {
+        .then(({ instanceId, status }) => {
           if (status === 'ERROR') {
             clearInterval(intervalId);
             showCallout({
@@ -89,12 +89,12 @@ const QuickMarcDuplicateWrapper = ({
             }
           }
 
-          if (externalId !== null && status === 'CREATED') {
+          if (instanceId !== null && status === 'CREATED') {
             clearInterval(intervalId);
             showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
 
             history.push({
-              pathname: `/inventory/view/${externalId}`,
+              pathname: `/inventory/view/${instanceId}`,
               search: location.search,
             });
           }
