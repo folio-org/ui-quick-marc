@@ -79,10 +79,10 @@ const QuickMarcEditorRows = ({
     <>
       {
         fields.map((recordRow, idx) => {
-          const isDisabled = isReadOnly(recordRow, action);
+          const isDisabled = isReadOnly(recordRow, action, marcType);
           const withIndicators = !hasIndicatorException(recordRow);
           const withAddRowAction = hasAddException(recordRow);
-          const withDeleteRowAction = hasDeleteException(recordRow);
+          const withDeleteRowAction = hasDeleteException(recordRow, marcType);
           const withMoveUpRowAction = hasMoveException(recordRow, fields[idx - 1]);
           const withMoveDownRowAction = hasMoveException(recordRow, fields[idx + 1]);
 
