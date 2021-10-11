@@ -21,7 +21,7 @@ jest.mock('react-final-form', () => ({
 
 const mockFormValues = jest.fn(() => ({
   fields: undefined,
-  externalId: '17064f9d-0362-468d-8317-5984b7efd1b5',
+  instanceId: '17064f9d-0362-468d-8317-5984b7efd1b5',
   leader: '02949cama2200517Kii50000',
   parsedRecordDtoId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
   parsedRecordId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
@@ -277,10 +277,10 @@ describe('Given QuickMarcDuplicateWrapper', () => {
     describe('when form is valid and status is created', () => {
       it('should show success toast notification', async () => {
         let getByText;
-        const externalId = faker.random.uuid();
+        const instanceId = faker.random.uuid();
 
         mutator.quickMarcRecordStatus.GET = jest.fn(() => Promise.resolve({
-          externalId,
+          instanceId,
           jobExecutionId: faker.random.uuid(),
           status: 'CREATED',
         }));
@@ -301,7 +301,7 @@ describe('Given QuickMarcDuplicateWrapper', () => {
             expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
             expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.success' });
             expect(history.push).toHaveBeenCalledWith({
-              pathname: `/inventory/view/${externalId}`,
+              pathname: `/inventory/view/${instanceId}`,
               search: location.search,
             });
 
@@ -316,7 +316,7 @@ describe('Given QuickMarcDuplicateWrapper', () => {
         let getByText;
 
         mutator.quickMarcRecordStatus.GET = jest.fn(() => Promise.resolve({
-          externalId: null,
+          instanceId: null,
           jobExecutionId: faker.random.uuid(),
           status: 'ERROR',
         }));
@@ -382,7 +382,7 @@ describe('Given QuickMarcDuplicateWrapper', () => {
         let getByText;
 
         mutator.quickMarcRecordStatus.GET = jest.fn(() => Promise.resolve({
-          externalId: null,
+          instanceId: null,
           jobExecutionId: faker.random.uuid(),
           status: 'IN_PROGRESS',
         }));
