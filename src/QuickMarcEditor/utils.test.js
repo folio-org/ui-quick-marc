@@ -515,7 +515,7 @@ describe('QuickMarcEditor utils', () => {
   describe('removeFieldsForDuplicate', () => {
     const formValues = {
       fields: undefined,
-      instanceId: 'c58ed340-5123-4c2c-8a99-add5db68c71f',
+      externalId: 'c58ed340-5123-4c2c-8a99-add5db68c71f',
       leader: '01897cas\\a2200493\\a\\4500',
       parsedRecordDtoId: '73f23ed5-4981-4cb2-8cdf-1ec644bd8f34',
       parsedRecordId: '3f75732f-53b9-44ed-b097-0cd14e5867b2',
@@ -560,7 +560,7 @@ describe('QuickMarcEditor utils', () => {
 
     const expectedFormValues = {
       fields: undefined,
-      instanceId: 'c58ed340-5123-4c2c-8a99-add5db68c71f',
+      externalId: 'c58ed340-5123-4c2c-8a99-add5db68c71f',
       leader: '01897cas\\a2200493\\a\\4500',
       parsedRecordDtoId: '73f23ed5-4981-4cb2-8cdf-1ec644bd8f34',
       parsedRecordId: '3f75732f-53b9-44ed-b097-0cd14e5867b2',

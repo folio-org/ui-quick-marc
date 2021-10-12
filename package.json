@@ -1,6 +1,6 @@
 {
   "name": "@folio/quick-marc",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "Quick MARC editor",
   "main": "index.js",
   "repository": "",
@@ -16,7 +16,7 @@
     "displayName": "ui-quick-marc.meta.title",
     "okapiInterfaces": {
       "inventory": "10.0 11.0",
-      "records-editor.records": "1.4 2.0"
+      "records-editor.records": "3.0"
     },
     "stripesDeps": [
       "@folio/stripes-acq-components"
