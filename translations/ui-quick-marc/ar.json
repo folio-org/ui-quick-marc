@@ -54,7 +54,7 @@
     "record.delete.title": "حذف الحقول",
     "record.error.leader.length": "لا يمكن حفظ التسجيلة. يجب أن يحتوي الفاتح على 24 حرفاً، بما في ذلك مسافات فارغة.",
     "record.collapseRow": "طي الصف",
-    "record.error.tag.length": "لا يمكن حفظ التسجيلة. يجب أن يحتوي كل حقل على ثلاثة أحرف في مربع النص الأول من كل صف",
+    "record.error.tag.length": "لا يمكن حفظ التسجيلة. يجب أن يحتوي وسم مارك على ثلاثة أحرف.",
     "record.fixedField.Time": "الوقت",
     "record.fixedField.TMat": "TMat",
     "record.fixedField.Tech": "تقنية",
