@@ -173,7 +173,7 @@ export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYP
 };
 
 export const validateRecordTag = marcRecords => {
-  if (marcRecords.some(({ tag }) => tag.length !== 3)) {
+  if (marcRecords.some(({ tag }) => !tag || tag.length !== 3)) {
     return <FormattedMessage id="ui-quick-marc.record.error.tag.length" />;
   }
 
