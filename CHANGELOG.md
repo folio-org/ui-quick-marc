@@ -5,6 +5,7 @@
 * [UIQM-152](https://issues.folio.org/browse/UIQM-152) Fix 008 `Rept date` field.
 * [UIQM-148](https://issues.folio.org/browse/UIQM-148) Change error message when MARC tag does not contain 3 digits.
 * [UIQM-155](https://issues.folio.org/browse/UIQM-155) Update according changed logic for deriving
+* [UIQM-153](https://issues.folio.org/browse/UIQM-153) Optimistic locking: update payload when update a marc record
 
 ## [4.0.1](https://github.com/folio-org/ui-quick-marc/tree/v4.0.1) (2021-10-19)
 
