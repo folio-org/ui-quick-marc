@@ -1,6 +1,5 @@
-import React, {
-  useCallback,
-} from 'react';
+import React, { useCallback } from 'react';
+import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 
 import {
@@ -37,6 +36,9 @@ const QuickMarcEditWrapper = ({
   locations,
 }) => {
   const showCallout = useShowCallout();
+  const location = useLocation();
+
+  const searchParams = new URLSearchParams(location.search);
 
   const onSubmit = useCallback(async (formValues) => {
     const validationErrorMessage = validateMarcRecord(formValues, marcType);
@@ -50,7 +52,11 @@ const QuickMarcEditWrapper = ({
     const autopopulateFormValues = autopopulateSubfieldSection(formValues, marcType);
     const formValuesForEdit = cleanBytesFields(autopopulateFormValues, initialValues, marcType);
 
-    return mutator.quickMarcEditMarcRecord.PUT(hydrateMarcRecord(formValuesForEdit))
+    const marcRecord = hydrateMarcRecord(formValuesForEdit);
+
+    marcRecord.relatedRecordVersion = searchParams.get('relatedRecordVersion');
+
+    return mutator.quickMarcEditMarcRecord.PUT(marcRecord)
       .then(() => {
         showCallout({ messageId: 'ui-quick-marc.record.save.success.processing' });
         onClose();
