@@ -157,7 +157,7 @@ const QuickMarcEditor = ({
 
   const changeRecords = useCallback(({ values }) => {
     if (values?.records) {
-      setTimeout(() => setRecords(values.records), 0);
+      setRecords(values.records);
     }
   }, []);
 
