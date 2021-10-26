@@ -70,6 +70,10 @@ describe('QuickMarcEditorRows utils', () => {
     it('should be false for exeptional row', () => {
       expect(utils.hasAddException({ tag: '010' })).toBeFalsy();
     });
+
+    it('should be true for MARC holdigns tag 004', () => {
+      expect(utils.hasAddException({ tag: '004' }, MARC_TYPES.HOLDINGS)).toBeTruthy();
+    });
   });
 
   describe('hasDeleteException', () => {
