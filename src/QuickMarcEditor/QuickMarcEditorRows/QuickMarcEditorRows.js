@@ -15,7 +15,7 @@ import {
 import { ContentField } from './ContentField';
 import { IndicatorField } from './IndicatorField';
 import { MaterialCharsFieldFactory } from './MaterialCharsField';
-import { PhysDescriptionFieldFactory } from './PhysDescriptionField';
+import { PhysDescriptionField } from './PhysDescriptionField';
 import { FixedFieldFactory } from './FixedField';
 import {
   isReadOnly,
@@ -185,9 +185,10 @@ const QuickMarcEditorRows = ({
 
                 {
                   isPhysDescriptionField && (
-                    PhysDescriptionFieldFactory.getPhysDescriptionField(
-                      `${name}[${idx}].content`, recordRow.content.Category,
-                    )
+                    <PhysDescriptionField
+                      name={`${name}[${idx}].content`}
+                      type={recordRow.content.Category}
+                    />
                   )
                 }
 
