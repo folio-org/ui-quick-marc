@@ -1,4 +1,3 @@
-
 import MapPhysDescriptionFieldConfig from './MapPhysDescriptionFieldConfig';
 import ElResourcePhysDescriptionFieldConfig from './ElResourcePhysDescriptionFieldConfig';
 import GlobePhysDescriptionFieldConfig from './GlobePhysDescriptionFieldConfig';
