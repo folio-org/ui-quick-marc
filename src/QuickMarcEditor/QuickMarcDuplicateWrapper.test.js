@@ -409,5 +409,37 @@ describe('Given QuickMarcDuplicateWrapper', () => {
         });
       }, 100);
     });
+
+    describe('when there is an error during POST request', () => {
+      it('should show an error message', async () => {
+        let getByText;
+
+        await act(async () => {
+          getByText = renderQuickMarcDuplicateWrapper({
+            instance,
+            mutator,
+            history,
+            location,
+          }).getByText;
+        });
+
+        mutator.quickMarcEditMarcRecord.POST = jest.fn(() => Promise.reject());
+
+        await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+
+        expect(mutator.quickMarcEditMarcRecord.POST).toHaveBeenCalled();
+
+        await new Promise(resolve => {
+          setTimeout(() => {
+            expect(mockShowCallout).toHaveBeenCalledWith({
+              messageId: 'ui-quick-marc.record.save.error.generic',
+              type: 'error',
+            });
+
+            resolve();
+          }, 10);
+        });
+      }, 100);
+    });
   });
 });

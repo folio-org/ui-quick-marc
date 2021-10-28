@@ -5,10 +5,9 @@ import ReactRouterPropTypes from 'react-router-prop-types';
 import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
+import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
 import {
   QUICK_MARC_ACTIONS,
-  QM_RECORD_STATUS_TIMEOUT,
-  QM_RECORD_STATUS_BAIL_TIME,
 } from './constants';
 import { MARC_TYPES } from '../common/constants';
 import {
@@ -42,54 +41,6 @@ const QuickMarcCreateWrapper = ({
 }) => {
   const showCallout = useShowCallout();
 
-  const getQuickMarcRecordStatus = ({ qmRecordId, instanceId }) => {
-    const maxRequestAttempts = QM_RECORD_STATUS_BAIL_TIME / QM_RECORD_STATUS_TIMEOUT;
-    let requestCount = 1;
-    let intervalId;
-
-    function makeRequest() {
-      mutator.quickMarcRecordStatus.GET({ params: { qmRecordId } })
-        .then(({ externalId, status }) => {
-          if (status === 'ERROR') {
-            clearInterval(intervalId);
-            showCallout({
-              messageId: 'ui-quick-marc.record.saveNew.error',
-              type: 'error',
-            });
-          }
-
-          if (status === 'IN_PROGRESS') {
-            if (requestCount === maxRequestAttempts) {
-              clearInterval(intervalId);
-              showCallout({ messageId: 'ui-quick-marc.record.saveNew.delay' });
-            } else {
-              requestCount++;
-            }
-          }
-
-          if (externalId !== null && status === 'CREATED') {
-            clearInterval(intervalId);
-            showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
-
-            history.push({
-              pathname: `/inventory/view/${instanceId}/${externalId}`,
-              search: location.search,
-            });
-          }
-        })
-        .catch(() => {
-          showCallout({
-            messageId: 'ui-quick-marc.record.saveNew.error',
-            type: 'error',
-          });
-        });
-    }
-
-    makeRequest();
-
-    intervalId = setInterval(makeRequest, QM_RECORD_STATUS_TIMEOUT);
-  };
-
   const onSubmit = useCallback(async (formValues) => {
     const autopopulatedFormValues = autopopulateSubfieldSection(removeFieldsForDuplicate(formValues), marcType);
     const formValuesForDuplicate = cleanBytesFields(autopopulatedFormValues, initialValues, marcType);
@@ -107,9 +58,18 @@ const QuickMarcCreateWrapper = ({
       .then(({ qmRecordId }) => {
         const instanceId = formValues.externalId;
 
-        getQuickMarcRecordStatus({ qmRecordId, instanceId });
+        getQuickMarcRecordStatus({
+          mutator,
+          qmRecordId,
+          showCallout,
+          history,
+          location,
+          instanceId,
+        });
       })
       .catch(async (errorResponse) => {
+        console.log('errorResponse', errorResponse);
+
         let messageId;
         let error;
 
