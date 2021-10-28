@@ -7,7 +7,8 @@
 * [UIQM-155](https://issues.folio.org/browse/UIQM-155) Update according changed logic for deriving.
 * [UIQM-153](https://issues.folio.org/browse/UIQM-153) Optimistic locking: update payload when update a marc record.
 * [UIQM-161](https://issues.folio.org/browse/UIQM-161) Remove add button for MARC holdings tag 004.
-* [UIQM-169](https://issues.folio.org/browse/UIQM-169) Changing 007 type dropdown value does not enable the Save button
+* [UIQM-169](https://issues.folio.org/browse/UIQM-169) Changing 007 type dropdown value does not enable the Save button.
+* [UIQM-157](https://issues.folio.org/browse/UIQM-157) Fix validation for new row of quickMarc record.
 * [UIQM-132](https://issues.folio.org/browse/UIQM-132) Create a MARC Holdings Record.
 
 ## [4.0.1](https://github.com/folio-org/ui-quick-marc/tree/v4.0.1) (2021-10-19)

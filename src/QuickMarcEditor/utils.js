@@ -236,9 +236,17 @@ export const validateRecordTag = marcRecords => {
   return undefined;
 };
 
-export const validateSubfield = marcRecords => {
+export const checkIsInitialRecord = (initialMarcRecord, marcRecordId) => {
+  const initialMarcRecordIds = new Set(initialMarcRecord.map(record => record.id));
+
+  return initialMarcRecordIds.has(marcRecordId);
+};
+
+export const validateSubfield = (marcRecords, initialMarcRecords) => {
   const marcRecordsWithSubfields = marcRecords.filter(marcRecord => marcRecord.indicators);
-  const isEmptySubfield = marcRecordsWithSubfields.some(marcRecord => !marcRecord.content);
+  const isEmptySubfield = marcRecordsWithSubfields.some(marcRecord => {
+    return !marcRecord.content && checkIsInitialRecord(initialMarcRecords, marcRecord.id);
+  });
 
   if (isEmptySubfield) {
     return <FormattedMessage id="ui-quick-marc.record.error.subfield" />;
@@ -295,8 +303,9 @@ const validateMarcHoldingsRecord = (marcRecords) => {
   return undefined;
 };
 
-export const validateMarcRecord = (marcRecord, marcType = MARC_TYPES.BIB) => {
+export const validateMarcRecord = (marcRecord, initialValues, marcType = MARC_TYPES.BIB) => {
   const marcRecords = marcRecord.records || [];
+  const initialMarcRecords = initialValues.records;
   const recordLeader = marcRecords[0];
 
   const leaderError = validateLeader(marcRecord?.leader, recordLeader?.content, marcType);
@@ -319,7 +328,7 @@ export const validateMarcRecord = (marcRecord, marcType = MARC_TYPES.BIB) => {
     return tagError;
   }
 
-  const subfieldError = validateSubfield(marcRecords);
+  const subfieldError = validateSubfield(marcRecords, initialMarcRecords);
 
   if (subfieldError) {
     return subfieldError;
@@ -383,11 +392,16 @@ const checkIsEmptyContent = (field) => {
   return false;
 };
 
-export const autopopulateSubfieldSection = (formValues, marcType = MARC_TYPES.BIB) => {
+export const autopopulateSubfieldSection = (formValues, initialValues, marcType = MARC_TYPES.BIB) => {
   const { records } = formValues;
+  const { records: initialMarcRecords } = initialValues;
 
   const recordsWithSubfields = records.reduce((acc, field) => {
     if (!field.content && field.indicators && field.indicators.every(value => !value)) {
+      return acc;
+    }
+
+    if (!field.content && !checkIsInitialRecord(initialMarcRecords, field.id)) {
       return acc;
     }
 

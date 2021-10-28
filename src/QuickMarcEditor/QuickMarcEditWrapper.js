@@ -41,7 +41,7 @@ const QuickMarcEditWrapper = ({
   const searchParams = new URLSearchParams(location.search);
 
   const onSubmit = useCallback(async (formValues) => {
-    const validationErrorMessage = validateMarcRecord(formValues, marcType);
+    const validationErrorMessage = validateMarcRecord(formValues, initialValues, marcType);
 
     if (validationErrorMessage) {
       showCallout({ message: validationErrorMessage, type: 'error' });
@@ -49,7 +49,7 @@ const QuickMarcEditWrapper = ({
       return null;
     }
 
-    const autopopulateFormValues = autopopulateSubfieldSection(formValues, marcType);
+    const autopopulateFormValues = autopopulateSubfieldSection(formValues, initialValues, marcType);
     const formValuesForEdit = cleanBytesFields(autopopulateFormValues, initialValues, marcType);
 
     const marcRecord = hydrateMarcRecord(formValuesForEdit);
