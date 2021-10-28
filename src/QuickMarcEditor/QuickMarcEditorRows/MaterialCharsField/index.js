@@ -1,10 +1,10 @@
-export * from './MaterialCharsFieldFactory';
+export * from './MaterialCharsField';
 
-export { default as BookMaterialCharsField } from './BookMaterialCharsField';
-export { default as ComputerFileMaterialCharsField } from './ComputerFileMaterialCharsField';
-export { default as ContinuingMaterialCharsField } from './ContinuingMaterialCharsField';
-export { default as MapMaterialCharsField } from './MapMaterialCharsField';
-export { default as MixedMaterialCharsField } from './MixedMaterialCharsField';
-export { default as MediaMaterialCharsField } from './MediaMaterialCharsField';
-export { default as VisualMaterialCharsField } from './VisualMaterialCharsField';
-export { default as UnknownMaterialCharsField } from './UnknownMaterialCharsField';
+export { default as BookMaterialCharsField } from './BookMaterialCharsFieldConfig';
+export { default as ComputerFileMaterialCharsField } from './ComputerFileMaterialCharsFieldConfig';
+export { default as ContinuingMaterialCharsField } from './ContinuingMaterialCharsFieldConfig';
+export { default as MapMaterialCharsField } from './MapMaterialCharsFieldConfig';
+export { default as MixedMaterialCharsField } from './MixedMaterialCharsFieldConfig';
+export { default as MediaMaterialCharsField } from './MediaMaterialCharsFieldConfig';
+export { default as VisualMaterialCharsField } from './VisualMaterialCharsFieldConfig';
+export { default as UnknownMaterialCharsField } from './UnknownMaterialCharsFieldConfig';

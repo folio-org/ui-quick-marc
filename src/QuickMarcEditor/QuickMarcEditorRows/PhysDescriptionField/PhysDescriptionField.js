@@ -1,12 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {
-  CATEGORY_SELECT_FIELD_PROPS,
-} from './constants';
-import {
-  BytesField,
-} from '../BytesField';
+import { CATEGORY_SELECT_FIELD_PROPS } from './constants';
+import { BytesField } from '../BytesField';
 import useSelectField from '../useSelectField';
 import getPhysDescriptionFieldConfig from './getPhysDescriptionFieldConfig';
 
