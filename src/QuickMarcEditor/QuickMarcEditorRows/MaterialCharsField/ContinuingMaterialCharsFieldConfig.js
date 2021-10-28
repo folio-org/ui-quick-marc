@@ -2,11 +2,11 @@ import { SUBFIELD_TYPES } from '../BytesField';
 
 const ContinuingMaterialCharsFieldConfig = [
   {
-    name: 'Freq',
+    name: 'Regl',
     type: SUBFIELD_TYPES.BYTE,
   },
   {
-    name: 'Regl',
+    name: 'Freq',
     type: SUBFIELD_TYPES.BYTE,
   },
   {
@@ -14,11 +14,11 @@ const ContinuingMaterialCharsFieldConfig = [
     type: SUBFIELD_TYPES.BYTE,
   },
   {
-    name: 'Form',
+    name: 'EntW',
     type: SUBFIELD_TYPES.BYTE,
   },
   {
-    name: 'EntW',
+    name: 'Form',
     type: SUBFIELD_TYPES.BYTE,
   },
   {
