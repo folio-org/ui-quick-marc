@@ -61,11 +61,12 @@ const renderQuickMarcEditor = ({
   onClose,
   onSubmit,
   mutators,
+  action = 'edit',
   marcType = 'bib',
 }) => (render(
   <MemoryRouter>
     <QuickMarcEditor
-      action="edit"
+      action={action}
       instance={instance}
       onClose={onClose}
       onSubmit={onSubmit}
@@ -152,21 +153,43 @@ describe('Given Quick Marc Editor', () => {
   });
 
   describe('when marc record is of type HOLDINGS', () => {
-    it('should display holdings record pane title', () => {
-      const instance = getInstance();
-      const { getByText } = renderQuickMarcEditor({
-        instance,
-        onClose: jest.fn(),
-        onSubmit: jest.fn(),
-        mutators: {
-          addRecord: jest.fn(),
-          deleteRecord: jest.fn(),
-          moveRecord: jest.fn(),
-        },
-        marcType: 'holdings',
-      });
+    describe('when action is create', () => {
+      it('should display create holdings record pane title', () => {
+        const instance = getInstance();
+        const { getByText } = renderQuickMarcEditor({
+          instance,
+          onClose: jest.fn(),
+          onSubmit: jest.fn(),
+          mutators: {
+            addRecord: jest.fn(),
+            deleteRecord: jest.fn(),
+            moveRecord: jest.fn(),
+          },
+          action: 'create',
+          marcType: 'holdings',
+        });
 
-      expect(getByText('ui-quick-marc.holdings-record.edit.title')).toBeDefined();
+        expect(getByText('ui-quick-marc.holdings-record.create.title')).toBeDefined();
+      });
+    });
+
+    describe('when action is edit', () => {
+      it('should display edit holdings record pane title', () => {
+        const instance = getInstance();
+        const { getByText } = renderQuickMarcEditor({
+          instance,
+          onClose: jest.fn(),
+          onSubmit: jest.fn(),
+          mutators: {
+            addRecord: jest.fn(),
+            deleteRecord: jest.fn(),
+            moveRecord: jest.fn(),
+          },
+          marcType: 'holdings',
+        });
+
+        expect(getByText('ui-quick-marc.holdings-record.edit.title')).toBeDefined();
+      });
     });
   });
 });

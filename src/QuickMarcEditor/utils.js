@@ -40,6 +40,45 @@ export const dehydrateMarcRecordResponse = marcRecordResponse => ({
   ],
 });
 
+const CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE = '00000nu\\\\\\2200000un\\4500';
+
+const CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS = ['001', '004', '005', '999'];
+
+const getCreateMarcRecordDefaultFields = (marcRecord) => {
+  return CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS.map(tag => {
+    const field = {
+      tag,
+      id: uuid(),
+    };
+
+    if (tag === '004') {
+      field.content = marcRecord.externalHrid;
+    }
+
+    if (tag === '999') {
+      field.indicators = ['f', 'f'];
+    }
+
+    return field;
+  });
+};
+
+export const getCreateMarcRecordResponse = (marcRecordResponse) => {
+  return {
+    ...marcRecordResponse,
+    leader: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+    fields: undefined,
+    records: [
+      {
+        tag: LEADER_TAG,
+        content: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+        id: LEADER_TAG,
+      },
+      ...getCreateMarcRecordDefaultFields(marcRecordResponse),
+    ],
+  };
+};
+
 const fieldMatchesDescription = (field, descriptionArray) => {
   let match = false;
 
@@ -88,6 +127,17 @@ export const formatMarcRecordByQuickMarcAction = (marcRecord, action) => {
   if (action === QUICK_MARC_ACTIONS.DUPLICATE) {
     return {
       ...removeMarcRecordFieldContentForDuplication(marcRecord),
+      updateInfo: {
+        recordState: RECORD_STATUS_NEW,
+      },
+    };
+  }
+
+  if (action === QUICK_MARC_ACTIONS.CREATE) {
+    return {
+      ...marcRecord,
+      relatedRecordVersion: 1,
+      marcFormat: MARC_TYPES.HOLDINGS.toUpperCase(),
       updateInfo: {
         recordState: RECORD_STATUS_NEW,
       },
@@ -231,6 +281,20 @@ const validateMarcBibRecord = (marcRecords) => {
   return undefined;
 };
 
+const validateMarcHoldingsRecord = (marcRecords) => {
+  const locationRecords = marcRecords.filter(({ tag }) => tag === '852');
+
+  if (locationRecords.length === 0) {
+    return <FormattedMessage id="ui-quick-marc.record.error.location.empty" />;
+  }
+
+  if (locationRecords.length > 1) {
+    return <FormattedMessage id="ui-quick-marc.record.error.location.multiple" />;
+  }
+
+  return undefined;
+};
+
 export const validateMarcRecord = (marcRecord, marcType = MARC_TYPES.BIB) => {
   const marcRecords = marcRecord.records || [];
   const recordLeader = marcRecords[0];
@@ -241,11 +305,9 @@ export const validateMarcRecord = (marcRecord, marcType = MARC_TYPES.BIB) => {
     return leaderError;
   }
 
-  let validationResult = null;
-
-  if (marcType === MARC_TYPES.BIB) {
-    validationResult = validateMarcBibRecord(marcRecords);
-  }
+  const validationResult = marcType === MARC_TYPES.BIB
+    ? validateMarcBibRecord(marcRecords)
+    : validateMarcHoldingsRecord(marcRecords);
 
   if (validationResult) {
     return validationResult;

@@ -8,6 +8,7 @@ export const LEADER_EDITABLE_BYTES = {
 };
 
 export const QUICK_MARC_ACTIONS = {
+  CREATE: 'create',
   EDIT: 'edit',
   DUPLICATE: 'duplicate',
 };

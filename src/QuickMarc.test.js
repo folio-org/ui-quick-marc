@@ -70,4 +70,20 @@ describe('Given Quick Marc', () => {
       expect(getByText('QuickMarcEditorContainer edit')).toBeDefined();
     });
   });
+
+  describe('When visiting "create" route', () => {
+    beforeEach(() => {
+      history.push('/some-path/create-holdings/1234');
+    });
+
+    it('should display correct route', () => {
+      const { getByText } = renderQuickMarc({
+        onClose: jest.fn(),
+        basePath: '/some-path',
+        history,
+      });
+
+      expect(getByText('QuickMarcEditorContainer create')).toBeDefined();
+    });
+  });
 });

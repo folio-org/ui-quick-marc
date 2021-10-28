@@ -23,6 +23,7 @@ import {
 
 import {
   dehydrateMarcRecordResponse,
+  getCreateMarcRecordResponse,
   formatMarcRecordByQuickMarcAction,
 } from './utils';
 import { QUICK_MARC_ACTIONS } from './constants';
@@ -61,8 +62,12 @@ const QuickMarcEditorContainer = ({
   const showCallout = useShowCallout();
 
   useEffect(() => {
+    const path = marcType === MARC_TYPES.BIB || action === QUICK_MARC_ACTIONS.CREATE
+      ? EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]
+      : EXTERNAL_INSTANCE_APIS[MARC_TYPES.HOLDINGS];
+
     mutator.externalInstanceApi.update({
-      _path: EXTERNAL_INSTANCE_APIS[marcType],
+      _path: path,
     });
   }, []);
 
@@ -75,7 +80,10 @@ const QuickMarcEditorContainer = ({
 
     Promise.all([instancePromise, marcRecordPromise, locationsPromise])
       .then(([instanceResponse, marcRecordResponse, locationsResponse]) => {
-        const dehydratedMarcRecord = dehydrateMarcRecordResponse(marcRecordResponse);
+        const dehydratedMarcRecord = action === QUICK_MARC_ACTIONS.CREATE
+          ? getCreateMarcRecordResponse(marcRecordResponse)
+          : dehydrateMarcRecordResponse(marcRecordResponse);
+
         const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, action);
 
         setInstance(instanceResponse);
@@ -95,7 +103,7 @@ const QuickMarcEditorContainer = ({
   }, [externalId]);
 
   const closeEditor = useCallback(() => {
-    if (marcType === MARC_TYPES.BIB) {
+    if (marcType === MARC_TYPES.BIB || action === QUICK_MARC_ACTIONS.CREATE) {
       onClose(externalId);
     } else {
       onClose(`${instanceId}/${externalId}`);

@@ -114,7 +114,7 @@ const QuickMarcEditor = ({
   const getPaneTitle = () => {
     let formattedMessageValues = {};
 
-    if (marcType === MARC_TYPES.HOLDINGS) {
+    if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
       formattedMessageValues = {
         location: find(locations.records, { id: instance?.effectiveLocationId })?.name,
         callNumber: instance?.callNumber,
