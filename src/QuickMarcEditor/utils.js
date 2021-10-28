@@ -19,7 +19,7 @@ import {
   LEADER_EDITABLE_BYTES,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
-import { MaterialCharsFieldFactory } from './QuickMarcEditorRows/MaterialCharsField';
+import getMaterialCharsFieldConfig from './QuickMarcEditorRows/MaterialCharsField/getMaterialCharsFieldConfig';
 import getPhysDescriptionFieldConfig from './QuickMarcEditorRows/PhysDescriptionField/getPhysDescriptionFieldConfig';
 import { FixedFieldFactory } from './QuickMarcEditorRows/FixedField';
 import { MARC_TYPES } from '../common/constants';
@@ -380,8 +380,7 @@ export const cleanBytesFields = (formValues, initialValues, marcType) => {
     let fieldConfigByType;
 
     if (isMaterialCharsRecord(field)) {
-      fieldConfigByType = MaterialCharsFieldFactory
-        .getMaterialCharsFieldByType(field.content.Type).configFields;
+      fieldConfigByType = getMaterialCharsFieldConfig(field.content.Type);
     }
 
     if (isPhysDescriptionRecord(field)) {
