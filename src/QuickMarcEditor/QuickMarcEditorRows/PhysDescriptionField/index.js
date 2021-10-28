@@ -1,1 +1,1 @@
-export * from './PhysDescriptionFieldFactory';
+export * from './PhysDescriptionField';

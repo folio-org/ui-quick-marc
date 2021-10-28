@@ -1,17 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import { STANDARD_PHYS_DESCR_FIELDS } from './constants';
+import { SUBFIELD_TYPES } from '../BytesField';
 
-import {
-  CATEGORY_SELECT_FIELD_PROPS,
-  STANDARD_PHYS_DESCR_FIELDS,
-} from './constants';
-import {
-  BytesField,
-  SUBFIELD_TYPES,
-} from '../BytesField';
-import useSelectField from '../useSelectField';
-
-const configFields = [
+const PicturePhysDescriptionFieldConfig = [
   ...STANDARD_PHYS_DESCR_FIELDS,
   {
     type: SUBFIELD_TYPES.BYTE,
@@ -75,27 +65,4 @@ const configFields = [
   },
 ];
 
-const PicturePhysDescriptionField = ({ name }) => {
-  const selectField = useSelectField(CATEGORY_SELECT_FIELD_PROPS);
-
-  return (
-    <BytesField
-      name={name}
-      id="picture-phys-description-field"
-      config={{
-        fields: [
-          selectField,
-          ...configFields,
-        ],
-      }}
-    />
-  );
-};
-
-PicturePhysDescriptionField.propTypes = {
-  name: PropTypes.string.isRequired,
-};
-
-PicturePhysDescriptionField.configFields = configFields;
-
-export default PicturePhysDescriptionField;
+export default PicturePhysDescriptionFieldConfig;
