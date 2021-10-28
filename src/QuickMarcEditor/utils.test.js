@@ -173,6 +173,7 @@ describe('QuickMarcEditor utils', () => {
 
   describe('validateMarcRecord', () => {
     it('should not return error message when record is valid', () => {
+      const initialValues = { records: [] };
       const record = {
         leader: '04706cam a2200865Ii 4500',
         records: [
@@ -193,10 +194,11 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record)).not.toBeDefined();
+      expect(utils.validateMarcRecord(record, initialValues)).not.toBeDefined();
     });
 
     it('should return error message when record is invalid', () => {
+      const initialValues = { records: [] };
       const record = {
         leader: '14706cam a2200865Ii 4500',
         records: [
@@ -207,10 +209,11 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record)).toBeDefined();
+      expect(utils.validateMarcRecord(record, initialValues)).toBeDefined();
     });
 
     it('should return error message when record is without 245 row', () => {
+      const initialValues = { records: [] };
       const record = {
         leader: '04706cam a2200865Ii 4500',
         records: [
@@ -228,10 +231,11 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record).props.id).toBe('ui-quick-marc.record.error.title.empty');
+      expect(utils.validateMarcRecord(record, initialValues).props.id).toBe('ui-quick-marc.record.error.title.empty');
     });
 
     it('should return error message when record has several 245 rows', () => {
+      const initialValues = { records: [] };
       const record = {
         leader: '04706cam a2200865Ii 4500',
         records: [
@@ -252,7 +256,7 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record).props.id).toBe('ui-quick-marc.record.error.title.multiple');
+      expect(utils.validateMarcRecord(record, initialValues).props.id).toBe('ui-quick-marc.record.error.title.multiple');
     });
   });
 
@@ -353,33 +357,85 @@ describe('QuickMarcEditor utils', () => {
     });
   });
 
+  describe('checkIsInitialRecord', () => {
+    it('should return true if this record row is initial', () => {
+      const initialRecords = [
+        {
+          id: 'id1',
+        },
+        {
+          id: 'id2',
+        },
+      ];
+
+      const recordId = 'id2';
+
+      expect(utils.checkIsInitialRecord(initialRecords, recordId)).toBeTruthy();
+    });
+
+    it('should return false if this record row is not initial', () => {
+      const initialRecords = [
+        {
+          id: 'id1',
+        },
+        {
+          id: 'id2',
+        },
+      ];
+
+      const recordId = 'id3';
+
+      expect(utils.checkIsInitialRecord(initialRecords, recordId)).toBeFalsy();
+    });
+  });
+
   describe('validateSubfield', () => {
     it('should not return error message when indicators are present and content is not empty', () => {
+      const initialRecords = [
+        {
+          id: 'id1',
+        },
+        {
+          id: 'id2',
+        },
+      ];
       const records = [
         {
           indicators: ['\\', '\\'],
           content: 'test',
+          id: 'id1',
         },
         {
           indicators: ['\\', '7'],
           content: 'test',
+          id: 'id2',
         },
       ];
 
-      expect(utils.validateSubfield(records)).not.toBeDefined();
+      expect(utils.validateSubfield(records, initialRecords)).not.toBeDefined();
     });
 
     it('should return error message when content is empty', () => {
+      const initialRecords = [
+        {
+          id: 'id1',
+        },
+        {
+          id: 'id2',
+        },
+      ];
       const records = [
         {
           indicators: ['\\', '\\'],
+          id: 'id1',
         },
         {
           indicators: [undefined, undefined],
+          id: 'id2',
         },
       ];
 
-      expect(utils.validateSubfield(records).props.id).toBe('ui-quick-marc.record.error.subfield');
+      expect(utils.validateSubfield(records, initialRecords).props.id).toBe('ui-quick-marc.record.error.subfield');
     });
   });
 
@@ -587,30 +643,53 @@ describe('QuickMarcEditor utils', () => {
 
   describe('autopopulateSubfieldSection', () => {
     it('should return record with added subfield', () => {
+      const initialValues = {
+        records: [{
+          tag: '001',
+          id: 'id001',
+        }, {
+          tag: '003',
+          id: 'id003',
+        }, {
+          tag: '240',
+          id: 'id240',
+        }],
+      };
       const record = {
         records: [{
           tag: '001',
           content: 'some content',
+          id: 'id001',
         }, {
           tag: '003',
           content: 'some content',
+          id: 'id003',
         }, {
           tag: '240',
           content: 'some content',
+          id: 'id240',
         }, {
           tag: '035',
           content: '$a',
+          id: 'id0351',
         }, {
           tag: '035',
           content: '',
+          id: 'id0352',
         }, {
           tag: '035',
           content: '',
           indicators: ['', ''],
+          id: 'id0353',
+        }, {
+          tag: '500',
+          content: '',
+          id: 'id500',
         }, {
           tag: '998',
           indicators: ['f', 'f'],
           content: '$c some content',
+          id: 'id998',
         }],
         updateInfo: {
           recordState: 'actual',
@@ -622,16 +701,20 @@ describe('QuickMarcEditor utils', () => {
         records: [{
           tag: '001',
           content: 'some content',
+          id: 'id001',
         }, {
           tag: '003',
           content: 'some content',
+          id: 'id003',
         }, {
           tag: '240',
           content: '$a some content',
+          id: 'id240',
         }, {
           tag: '998',
           indicators: ['f', 'f'],
           content: '$c some content',
+          id: 'id998',
         }],
         updateInfo: {
           recordState: 'actual',
@@ -639,7 +722,7 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.autopopulateSubfieldSection(record)).toEqual(expectedRecord);
+      expect(utils.autopopulateSubfieldSection(record, initialValues)).toEqual(expectedRecord);
     });
   });
 
