@@ -3,36 +3,35 @@ import PropTypes from 'prop-types';
 
 import {
   CATEGORY_SELECT_FIELD_PROPS,
-  STANDARD_PHYS_DESCR_FIELDS,
 } from './constants';
 import {
   BytesField,
 } from '../BytesField';
 import useSelectField from '../useSelectField';
+import getPhysDescriptionFieldConfig from './getPhysDescriptionFieldConfig';
 
-const configFields = [...STANDARD_PHYS_DESCR_FIELDS];
+const propTypes = {
+  name: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+};
 
-const TextPhysDescriptionField = ({ name }) => {
+const PhysDescriptionField = ({ name, type }) => {
   const selectField = useSelectField(CATEGORY_SELECT_FIELD_PROPS);
 
   return (
     <BytesField
       name={name}
-      id="text-phys-description-field"
+      id="phys-description-field"
       config={{
         fields: [
           selectField,
-          ...configFields,
+          ...getPhysDescriptionFieldConfig(type),
         ],
       }}
     />
   );
 };
 
-TextPhysDescriptionField.propTypes = {
-  name: PropTypes.string.isRequired,
-};
+PhysDescriptionField.propTypes = propTypes;
 
-TextPhysDescriptionField.configFields = configFields;
-
-export default TextPhysDescriptionField;
+export { PhysDescriptionField };

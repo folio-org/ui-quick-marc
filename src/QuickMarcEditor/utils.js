@@ -20,7 +20,7 @@ import {
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import { MaterialCharsFieldFactory } from './QuickMarcEditorRows/MaterialCharsField';
-import { PhysDescriptionFieldFactory } from './QuickMarcEditorRows/PhysDescriptionField';
+import getPhysDescriptionFieldConfig from './QuickMarcEditorRows/PhysDescriptionField/getPhysDescriptionFieldConfig';
 import { FixedFieldFactory } from './QuickMarcEditorRows/FixedField';
 import { MARC_TYPES } from '../common/constants';
 
@@ -377,18 +377,20 @@ export const cleanBytesFields = (formValues, initialValues, marcType) => {
       return field;
     }
 
-    let fieldByType;
+    let fieldConfigByType;
 
     if (isMaterialCharsRecord(field)) {
-      fieldByType = MaterialCharsFieldFactory.getMaterialCharsFieldByType(field.content.Type);
+      fieldConfigByType = MaterialCharsFieldFactory
+        .getMaterialCharsFieldByType(field.content.Type).configFields;
     }
 
     if (isPhysDescriptionRecord(field)) {
-      fieldByType = PhysDescriptionFieldFactory.getPhysDescriptionFieldByType(field.content.Category);
+      fieldConfigByType = getPhysDescriptionFieldConfig(field.content.Category);
     }
 
     if (isFixedFieldRow(field)) {
-      fieldByType = FixedFieldFactory.getFixedFieldByType(marcType, field.content.Type, initialValues?.leader[7]);
+      fieldConfigByType = FixedFieldFactory
+        .getFixedFieldByType(marcType, field.content.Type, initialValues?.leader[7]).configFields;
     }
 
     const content = Object.entries(field.content).reduce((acc, [key, value]) => {
@@ -399,7 +401,7 @@ export const cleanBytesFields = (formValues, initialValues, marcType) => {
         };
       }
 
-      const fieldConfig = fieldByType.configFields.find(({ name }) => (name === key));
+      const fieldConfig = fieldConfigByType.find(({ name }) => (name === key));
 
       if (fieldConfig) {
         const updatedValue = value.map(item => item || '\\');
