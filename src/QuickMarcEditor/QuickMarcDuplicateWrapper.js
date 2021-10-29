@@ -1,17 +1,12 @@
 import React, {
-  useState,
   useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
 import ReactRouterPropTypes from 'react-router-prop-types';
 
 import {
   useShowCallout,
 } from '@folio/stripes-acq-components';
-import {
-  ConfirmationModal,
-} from '@folio/stripes/components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 import {
@@ -49,20 +44,7 @@ const QuickMarcDuplicateWrapper = ({
   location,
   marcType,
 }) => {
-  const [isCancellationModalOpened, setIsCancellationModalOpened] = useState(false);
-
   const showCallout = useShowCallout();
-
-  const closeEditor = () => setIsCancellationModalOpened(true);
-
-  const onConfirmCancellationModal = () => {
-    setIsCancellationModalOpened(false);
-  };
-
-  const onCloseCancellationModal = () => {
-    setIsCancellationModalOpened(false);
-    onClose();
-  };
 
   const getQuickMarcRecordStatus = (qmRecordId) => {
     const maxRequestAttempts = QM_RECORD_STATUS_BAIL_TIME / QM_RECORD_STATUS_TIMEOUT;
@@ -160,27 +142,13 @@ const QuickMarcDuplicateWrapper = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onClose, showCallout]);
 
-  const getCancellationModal = () => (
-    <ConfirmationModal
-      id="quick-marc-cancallation-modal"
-      open={isCancellationModalOpened}
-      onConfirm={onConfirmCancellationModal}
-      onCancel={onCloseCancellationModal}
-      heading={<FormattedMessage id="ui-quick-marc.record.cancellationModal.title" />}
-      message={<FormattedMessage id="ui-quick-marc.record.cancellationModal.message" />}
-      cancelLabel={<FormattedMessage id="ui-quick-marc.record.cancellationModal.cancel" />}
-      confirmLabel={<FormattedMessage id="ui-quick-marc.record.cancellationModal.confirm" />}
-    />
-  );
-
   return (
     <QuickMarcEditor
       instance={instance}
-      onClose={closeEditor}
+      onClose={onClose}
       initialValues={initialValues}
       onSubmit={onSubmit}
       action={action}
-      getCancellationModal={getCancellationModal}
       marcType={marcType}
     />
   );
