@@ -108,7 +108,11 @@ const QuickMarcDuplicateWrapper = ({
 
     showCallout({ messageId: 'ui-quick-marc.record.saveNew.onSave' });
 
-    return mutator.quickMarcEditMarcRecord.POST(hydrateMarcRecord(formValuesForDuplicate))
+    const marcRecord = hydrateMarcRecord(formValuesForDuplicate);
+
+    marcRecord.relatedRecordVersion = 1;
+
+    return mutator.quickMarcEditMarcRecord.POST(marcRecord)
       .then(({ qmRecordId }) => {
         history.push({
           pathname: '/inventory/view/id',
