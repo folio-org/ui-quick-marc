@@ -21,17 +21,6 @@ jest.mock('./constants', () => ({
   QM_RECORD_STATUS_BAIL_TIME: 20,
 }));
 
-const getInstance = () => ({
-  id: faker.random.uuid(),
-  title: 'ui-inventory.instanceRecordTitle',
-});
-
-const record = {
-  id: faker.random.uuid(),
-  leader: faker.random.uuid(),
-  fields: [],
-};
-
 const history = {
   push: jest.fn(),
 };
@@ -41,23 +30,10 @@ const location = {
 };
 
 describe('Given getQuickMarcRecordStatus', () => {
-  let mutator;
-  let instance;
+  let quickMarcRecordStatusGETRequest;
 
   beforeEach(() => {
-    instance = getInstance();
-    mutator = {
-      quickMarcEditInstance: {
-        GET: () => Promise.resolve(instance),
-      },
-      quickMarcEditMarcRecord: {
-        GET: jest.fn(() => Promise.resolve(record)),
-        POST: jest.fn(() => Promise.resolve({})),
-      },
-      quickMarcRecordStatus: {
-        GET: jest.fn(() => Promise.resolve({})),
-      },
-    };
+    quickMarcRecordStatusGETRequest = jest.fn(() => Promise.resolve({}));
   });
 
   afterEach(cleanup);
@@ -67,7 +43,7 @@ describe('Given getQuickMarcRecordStatus', () => {
       it('should show success toast notification and redirect to the right page', async () => {
         const externalId = faker.random.uuid();
 
-        mutator.quickMarcRecordStatus.GET = jest.fn(() => Promise.resolve({
+        quickMarcRecordStatusGETRequest = jest.fn(() => Promise.resolve({
           externalId,
           jobExecutionId: faker.random.uuid(),
           status: 'CREATED',
@@ -75,7 +51,7 @@ describe('Given getQuickMarcRecordStatus', () => {
 
         await act(async () => {
           getQuickMarcRecordStatus({
-            mutator,
+            quickMarcRecordStatusGETRequest,
             showCallout: mockShowCallout,
             history,
             location,
@@ -85,7 +61,7 @@ describe('Given getQuickMarcRecordStatus', () => {
 
         await new Promise(resolve => {
           setTimeout(() => {
-            expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
+            expect(quickMarcRecordStatusGETRequest).toHaveBeenCalled();
             expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.success' });
             expect(history.push).toHaveBeenCalledWith({
               pathname: `/inventory/view/instance-id/${externalId}`,
@@ -102,7 +78,7 @@ describe('Given getQuickMarcRecordStatus', () => {
       it('should show success toast notification and redirect to the right page', async () => {
         const externalId = faker.random.uuid();
 
-        mutator.quickMarcRecordStatus.GET = jest.fn(() => Promise.resolve({
+        quickMarcRecordStatusGETRequest = jest.fn(() => Promise.resolve({
           externalId,
           jobExecutionId: faker.random.uuid(),
           status: 'CREATED',
@@ -110,7 +86,7 @@ describe('Given getQuickMarcRecordStatus', () => {
 
         await act(async () => {
           getQuickMarcRecordStatus({
-            mutator,
+            quickMarcRecordStatusGETRequest,
             showCallout: mockShowCallout,
             history,
             location,
@@ -119,7 +95,7 @@ describe('Given getQuickMarcRecordStatus', () => {
 
         await new Promise(resolve => {
           setTimeout(() => {
-            expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
+            expect(quickMarcRecordStatusGETRequest).toHaveBeenCalled();
             expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.success' });
             expect(history.push).toHaveBeenCalledWith({
               pathname: `/inventory/view/${externalId}`,
@@ -135,7 +111,7 @@ describe('Given getQuickMarcRecordStatus', () => {
 
   describe('when form is valid and status is error', () => {
     it('should show error toast notification', async () => {
-      mutator.quickMarcRecordStatus.GET = jest.fn(() => Promise.resolve({
+      quickMarcRecordStatusGETRequest = jest.fn(() => Promise.resolve({
         externalId: null,
         jobExecutionId: faker.random.uuid(),
         status: 'ERROR',
@@ -143,7 +119,7 @@ describe('Given getQuickMarcRecordStatus', () => {
 
       await act(async () => {
         getQuickMarcRecordStatus({
-          mutator,
+          quickMarcRecordStatusGETRequest,
           showCallout: mockShowCallout,
           history,
           location,
@@ -152,7 +128,7 @@ describe('Given getQuickMarcRecordStatus', () => {
 
       await new Promise(resolve => {
         setTimeout(() => {
-          expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
+          expect(quickMarcRecordStatusGETRequest).toHaveBeenCalled();
           expect(mockShowCallout).toHaveBeenCalledWith({
             messageId: 'ui-quick-marc.record.saveNew.error',
             type: 'error',
@@ -166,11 +142,11 @@ describe('Given getQuickMarcRecordStatus', () => {
 
   describe('when form is valid and fetch is failed', () => {
     it('should show error toast notification', async () => {
-      mutator.quickMarcRecordStatus.GET = jest.fn(() => Promise.reject());
+      quickMarcRecordStatusGETRequest = jest.fn(() => Promise.reject());
 
       await act(async () => {
         getQuickMarcRecordStatus({
-          mutator,
+          quickMarcRecordStatusGETRequest,
           showCallout: mockShowCallout,
           history,
           location,
@@ -179,7 +155,7 @@ describe('Given getQuickMarcRecordStatus', () => {
 
       await new Promise(resolve => {
         setTimeout(() => {
-          expect(mutator.quickMarcRecordStatus.GET).toHaveBeenCalled();
+          expect(quickMarcRecordStatusGETRequest).toHaveBeenCalled();
           expect(mockShowCallout).toHaveBeenCalledWith({
             messageId: 'ui-quick-marc.record.saveNew.error',
             type: 'error',
