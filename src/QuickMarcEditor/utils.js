@@ -44,7 +44,7 @@ const CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE = '00000nu\\\\\\2200000un\\4500';
 
 const CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS = ['001', '004', '005', '999'];
 
-const getCreateMarcRecordDefaultFields = (marcRecord) => {
+const getCreateMarcRecordDefaultFields = (instanceRecord) => {
   return CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS.map(tag => {
     const field = {
       tag,
@@ -52,7 +52,7 @@ const getCreateMarcRecordDefaultFields = (marcRecord) => {
     };
 
     if (tag === '004') {
-      field.content = marcRecord.externalHrid;
+      field.content = instanceRecord.hrid;
     }
 
     if (tag === '999') {
@@ -63,9 +63,11 @@ const getCreateMarcRecordDefaultFields = (marcRecord) => {
   });
 };
 
-export const getCreateMarcRecordResponse = (marcRecordResponse) => {
+export const getCreateMarcRecordResponse = (instanceResponse) => {
+  const instanceId = instanceResponse.id;
+
   return {
-    ...marcRecordResponse,
+    externalId: instanceId,
     leader: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
     fields: undefined,
     records: [
@@ -74,8 +76,9 @@ export const getCreateMarcRecordResponse = (marcRecordResponse) => {
         content: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
         id: LEADER_TAG,
       },
-      ...getCreateMarcRecordDefaultFields(marcRecordResponse),
+      ...getCreateMarcRecordDefaultFields(instanceResponse),
     ],
+    parsedRecordDtoId: instanceId,
   };
 };
 
@@ -138,6 +141,7 @@ export const formatMarcRecordByQuickMarcAction = (marcRecord, action) => {
       ...marcRecord,
       relatedRecordVersion: 1,
       marcFormat: MARC_TYPES.HOLDINGS.toUpperCase(),
+      // suppressDiscovery: false,
       updateInfo: {
         recordState: RECORD_STATUS_NEW,
       },

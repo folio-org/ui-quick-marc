@@ -42,9 +42,13 @@ const QuickMarcCreateWrapper = ({
   const showCallout = useShowCallout();
 
   const onSubmit = useCallback(async (formValues) => {
-    const autopopulatedFormValues = autopopulateSubfieldSection(removeFieldsForDuplicate(formValues), marcType);
-    const formValuesForDuplicate = cleanBytesFields(autopopulatedFormValues, initialValues, marcType);
-    const validationErrorMessage = validateMarcRecord(formValuesForDuplicate, marcType);
+    const autopopulatedFormValues = autopopulateSubfieldSection(
+      removeFieldsForDuplicate(formValues),
+      initialValues,
+      marcType,
+    );
+    const formValuesForCreate = cleanBytesFields(autopopulatedFormValues, initialValues, marcType);
+    const validationErrorMessage = validateMarcRecord(formValuesForCreate, initialValues, marcType);
 
     if (validationErrorMessage) {
       showCallout({ message: validationErrorMessage, type: 'error' });
@@ -54,12 +58,12 @@ const QuickMarcCreateWrapper = ({
 
     showCallout({ messageId: 'ui-quick-marc.record.save.success.processing' });
 
-    return mutator.quickMarcEditMarcRecord.POST(hydrateMarcRecord(formValuesForDuplicate))
+    return mutator.quickMarcEditMarcRecord.POST(hydrateMarcRecord(formValuesForCreate))
       .then(({ qmRecordId }) => {
         const instanceId = formValues.externalId;
 
         getQuickMarcRecordStatus({
-          mutator,
+          quickMarcRecordStatusGETRequest: mutator.quickMarcRecordStatus.GET,
           qmRecordId,
           showCallout,
           history,
@@ -68,8 +72,6 @@ const QuickMarcCreateWrapper = ({
         });
       })
       .catch(async (errorResponse) => {
-        console.log('errorResponse', errorResponse);
-
         let messageId;
         let error;
 

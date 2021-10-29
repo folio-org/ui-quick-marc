@@ -9,6 +9,9 @@ import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcEditor from './QuickMarcEditor';
 
+import { QUICK_MARC_ACTIONS } from './constants';
+import { MARC_TYPES } from '../common/constants';
+
 jest.mock('@folio/stripes/components', () => ({
   ...jest.requireActual('@folio/stripes/components'),
   ConfirmationModal: jest.fn(({ open }) => (open ? <span>Confirmation modal</span> : null)),
@@ -61,8 +64,8 @@ const renderQuickMarcEditor = ({
   onClose,
   onSubmit,
   mutators,
-  action = 'edit',
-  marcType = 'bib',
+  action = QUICK_MARC_ACTIONS.EDIT,
+  marcType = MARC_TYPES.BIB,
 }) => (render(
   <MemoryRouter>
     <QuickMarcEditor

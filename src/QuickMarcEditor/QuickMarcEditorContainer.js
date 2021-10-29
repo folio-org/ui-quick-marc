@@ -75,13 +75,15 @@ const QuickMarcEditorContainer = ({
     setIsLoading(true);
 
     const instancePromise = mutator.quickMarcEditInstance.GET();
-    const marcRecordPromise = mutator.quickMarcEditMarcRecord.GET();
+    const marcRecordPromise = action === QUICK_MARC_ACTIONS.CREATE
+      ? Promise.resolve({})
+      : mutator.quickMarcEditMarcRecord.GET();
     const locationsPromise = mutator.locations.GET();
 
     Promise.all([instancePromise, marcRecordPromise, locationsPromise])
       .then(([instanceResponse, marcRecordResponse, locationsResponse]) => {
         const dehydratedMarcRecord = action === QUICK_MARC_ACTIONS.CREATE
-          ? getCreateMarcRecordResponse(marcRecordResponse)
+          ? getCreateMarcRecordResponse(instanceResponse)
           : dehydrateMarcRecordResponse(marcRecordResponse);
 
         const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, action);

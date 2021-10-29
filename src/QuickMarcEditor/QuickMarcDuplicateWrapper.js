@@ -85,7 +85,7 @@ const QuickMarcDuplicateWrapper = ({
         });
 
         getQuickMarcRecordStatus({
-          mutator,
+          quickMarcRecordStatusGETRequest: mutator.quickMarcRecordStatus.GET,
           qmRecordId,
           showCallout,
           history,

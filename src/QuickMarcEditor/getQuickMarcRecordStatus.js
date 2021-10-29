@@ -4,7 +4,7 @@ import {
 } from './constants';
 
 const getQuickMarcRecordStatus = ({
-  mutator,
+  quickMarcRecordStatusGETRequest,
   qmRecordId,
   instanceId,
   showCallout,
@@ -16,7 +16,7 @@ const getQuickMarcRecordStatus = ({
   let intervalId;
 
   function makeRequest() {
-    mutator.quickMarcRecordStatus.GET({ params: { qmRecordId } })
+    quickMarcRecordStatusGETRequest({ params: { qmRecordId } })
       .then(({ externalId, status }) => {
         if (status === 'ERROR') {
           clearInterval(intervalId);
