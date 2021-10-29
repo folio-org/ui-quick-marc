@@ -141,7 +141,7 @@ export const formatMarcRecordByQuickMarcAction = (marcRecord, action) => {
       ...marcRecord,
       relatedRecordVersion: 1,
       marcFormat: MARC_TYPES.HOLDINGS.toUpperCase(),
-      // suppressDiscovery: false,
+      suppressDiscovery: false,
       updateInfo: {
         recordState: RECORD_STATUS_NEW,
       },
