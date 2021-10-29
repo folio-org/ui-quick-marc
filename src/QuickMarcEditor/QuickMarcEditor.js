@@ -5,7 +5,6 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import noop from 'lodash/noop';
 import find from 'lodash/find';
 
 import stripesFinalForm from '@folio/stripes/final-form';
@@ -51,7 +50,6 @@ const QuickMarcEditor = ({
     mutators,
     reset,
   },
-  getCancellationModal,
   marcType,
   locations,
 }) => {
@@ -229,7 +227,6 @@ const QuickMarcEditor = ({
         onConfirm={onConfirmModal}
         onCancel={onCancelModal}
       />
-      {getCancellationModal()}
       <FormSpy
         subscription={spySubscription}
         onChange={changeRecords}
@@ -241,7 +238,6 @@ const QuickMarcEditor = ({
 QuickMarcEditor.propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
   instance: PropTypes.object,
-  getCancellationModal: PropTypes.func,
   onClose: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   submitting: PropTypes.bool,
@@ -255,10 +251,6 @@ QuickMarcEditor.propTypes = {
   locations: PropTypes.shape({
     records: PropTypes.array.isRequired,
   }),
-};
-
-QuickMarcEditor.defaultProps = {
-  getCancellationModal: noop,
 };
 
 export default stripesFinalForm({

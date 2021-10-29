@@ -226,23 +226,6 @@ describe('Given QuickMarcDuplicateWrapper', () => {
 
       expect('Confirmation modal').toBeDefined();
     });
-
-    describe('when click on close modal button', () => {
-      it('should handle onClose action', () => {
-        const { getByText } = renderQuickMarcDuplicateWrapper({
-          instance,
-          mutator,
-          history,
-          onClose,
-          location,
-        });
-
-        fireEvent.click(getByText('stripes-acq-components.FormFooter.cancel'));
-        fireEvent.click(getByText('Close'));
-
-        expect(onClose).toHaveBeenCalled();
-      });
-    });
   });
 
   describe('when click on save button', () => {
