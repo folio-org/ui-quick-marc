@@ -1,17 +1,12 @@
 import React, {
-  useState,
   useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
 import ReactRouterPropTypes from 'react-router-prop-types';
 
 import {
   useShowCallout,
 } from '@folio/stripes-acq-components';
-import {
-  ConfirmationModal,
-} from '@folio/stripes/components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
@@ -48,20 +43,7 @@ const QuickMarcDuplicateWrapper = ({
   location,
   marcType,
 }) => {
-  const [isCancellationModalOpened, setIsCancellationModalOpened] = useState(false);
-
   const showCallout = useShowCallout();
-
-  const closeEditor = () => setIsCancellationModalOpened(true);
-
-  const onConfirmCancellationModal = () => {
-    setIsCancellationModalOpened(false);
-  };
-
-  const onCloseCancellationModal = () => {
-    setIsCancellationModalOpened(false);
-    onClose();
-  };
 
   const onSubmit = useCallback(async (formValues) => {
     const clearFormValues = removeFieldsForDuplicate(formValues);
@@ -77,7 +59,11 @@ const QuickMarcDuplicateWrapper = ({
 
     showCallout({ messageId: 'ui-quick-marc.record.saveNew.onSave' });
 
-    return mutator.quickMarcEditMarcRecord.POST(hydrateMarcRecord(formValuesForDuplicate))
+    const marcRecord = hydrateMarcRecord(formValuesForDuplicate);
+
+    marcRecord.relatedRecordVersion = 1;
+
+    return mutator.quickMarcEditMarcRecord.POST(marcRecord)
       .then(({ qmRecordId }) => {
         history.push({
           pathname: '/inventory/view/id',
@@ -113,27 +99,13 @@ const QuickMarcDuplicateWrapper = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onClose, showCallout]);
 
-  const getCancellationModal = () => (
-    <ConfirmationModal
-      id="quick-marc-cancallation-modal"
-      open={isCancellationModalOpened}
-      onConfirm={onConfirmCancellationModal}
-      onCancel={onCloseCancellationModal}
-      heading={<FormattedMessage id="ui-quick-marc.record.cancellationModal.title" />}
-      message={<FormattedMessage id="ui-quick-marc.record.cancellationModal.message" />}
-      cancelLabel={<FormattedMessage id="ui-quick-marc.record.cancellationModal.cancel" />}
-      confirmLabel={<FormattedMessage id="ui-quick-marc.record.cancellationModal.confirm" />}
-    />
-  );
-
   return (
     <QuickMarcEditor
       instance={instance}
-      onClose={closeEditor}
+      onClose={onClose}
       initialValues={initialValues}
       onSubmit={onSubmit}
       action={action}
-      getCancellationModal={getCancellationModal}
       marcType={marcType}
     />
   );

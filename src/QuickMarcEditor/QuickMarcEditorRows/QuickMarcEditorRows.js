@@ -14,7 +14,7 @@ import {
 
 import { ContentField } from './ContentField';
 import { IndicatorField } from './IndicatorField';
-import { MaterialCharsFieldFactory } from './MaterialCharsField';
+import { MaterialCharsField } from './MaterialCharsField';
 import { PhysDescriptionField } from './PhysDescriptionField';
 import { FixedFieldFactory } from './FixedField';
 import {
@@ -177,9 +177,10 @@ const QuickMarcEditorRows = ({
               <div className={styles.quickMarcEditorRowContent}>
                 {
                   isMaterialCharsField && (
-                    MaterialCharsFieldFactory.getMaterialCharsFieldField(
-                      `${name}[${idx}].content`, recordRow.content.Type,
-                    )
+                    <MaterialCharsField
+                      name={`${name}[${idx}].content`}
+                      type={recordRow.content.Type}
+                    />
                   )
                 }
 
