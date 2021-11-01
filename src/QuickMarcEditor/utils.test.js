@@ -156,18 +156,28 @@ describe('QuickMarcEditor utils', () => {
       ).toBe('ui-quick-marc.record.error.leader.forbiddenBytes.bib');
     });
 
-    it('should return edit error message when unsupported bytes are found', () => {
-      expect(
-        utils.validateLeader('00194cx  a22000851  4500', '00194ax  a22000851  4500', 'holdings').props.id,
-      ).toBe('ui-quick-marc.record.error.leader.invalidPositionValue');
+    describe('when marcType is bib', () => {
+      it('should return edit error message when unsupported bytes are found', () => {
+        expect(
+          utils.validateLeader('00194cx  a22000851  4500', '00194ox  a22000851  4500').props.id,
+        ).toBe('ui-quick-marc.record.error.bib.leader.invalid005PositionValue');
+      });
+    });
 
-      expect(
-        utils.validateLeader('00194cx  a22000851  4500', '00194cb  a22000851  4500', 'holdings').props.id,
-      ).toBe('ui-quick-marc.record.error.leader.invalidPositionValue');
+    describe('when marcType is holdings', () => {
+      it('should return edit error message when unsupported bytes are found', () => {
+        expect(
+          utils.validateLeader('00194cx  a22000851  4500', '00194ax  a22000851  4500', 'holdings').props.id,
+        ).toBe('ui-quick-marc.record.error.leader.invalidPositionValue');
 
-      expect(
-        utils.validateLeader('00194cx  a22000851  4500', '00194cx  a22000856  4500', 'holdings').props.id,
-      ).toBe('ui-quick-marc.record.error.leader.invalidPositionValue');
+        expect(
+          utils.validateLeader('00194cx  a22000851  4500', '00194cb  a22000851  4500', 'holdings').props.id,
+        ).toBe('ui-quick-marc.record.error.leader.invalidPositionValue');
+
+        expect(
+          utils.validateLeader('00194cx  a22000851  4500', '00194cx  a22000856  4500', 'holdings').props.id,
+        ).toBe('ui-quick-marc.record.error.leader.invalidPositionValue');
+      });
     });
   });
 

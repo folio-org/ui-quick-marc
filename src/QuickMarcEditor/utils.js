@@ -140,6 +140,14 @@ export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYP
     return <FormattedMessage id={`ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}`} />;
   }
 
+  if (marcType === MARC_TYPES.BIB) {
+    if (!['a', 'c', 'd', 'n', 'p'].includes(leader[5])) {
+      return (
+        <FormattedMessage id="ui-quick-marc.record.error.bib.leader.invalid005PositionValue" />
+      );
+    }
+  }
+
   if (marcType === MARC_TYPES.HOLDINGS) {
     if (!['c', 'd', 'n'].includes(leader[5])) {
       return (
