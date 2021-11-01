@@ -180,5 +180,6 @@
     "record.error.leader.invalidPositionValue": "Valor inválido inserido para o líder {position}",
     "permission.quick-marc-holdings-editor.all": "quickMARC: Ver, editar registros MARC Holdings",
     "permission.quick-marc-holdings-editor.create": "quickMARC: Criar um novo registro MARC Holdings",
-    "record.fixedField.Rept date": "Data rept"
+    "record.fixedField.Rept date": "Data rept",
+    "record.error.bib.leader.invalid005PositionValue": "Record cannot be saved. Invalid value entered for position 5."
 }

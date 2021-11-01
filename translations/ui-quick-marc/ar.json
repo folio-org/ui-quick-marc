@@ -180,5 +180,6 @@
     "record.error.leader.invalidPositionValue": "تم إدخال قيمة غير صالحة للفاتح {position}",
     "permission.quick-marc-holdings-editor.all": "quickMARC: اعرض، وحرر تسجيلة مقتنيات مارك",
     "permission.quick-marc-holdings-editor.create": "quickMARC : أنشئ تسجيلة مقتنيات مارك جديدة",
-    "record.fixedField.Rept date": "Rept date"
+    "record.fixedField.Rept date": "Rept date",
+    "record.error.bib.leader.invalid005PositionValue": "Record cannot be saved. Invalid value entered for position 5."
 }

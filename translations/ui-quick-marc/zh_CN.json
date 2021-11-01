@@ -180,5 +180,6 @@
     "record.error.leader.invalidPositionValue": "由头标{position}输入的值无效",
     "permission.quick-marc-holdings-editor.all": "quickMARC：查看、编辑MARC馆藏记录",
     "permission.quick-marc-holdings-editor.create": "quickMARC：创建新MARC馆藏记录",
-    "record.fixedField.Rept date": "Rept date"
+    "record.fixedField.Rept date": "Rept date",
+    "record.error.bib.leader.invalid005PositionValue": "Record cannot be saved. Invalid value entered for position 5."
 }
