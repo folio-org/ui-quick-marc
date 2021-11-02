@@ -1,17 +1,17 @@
 # Change history for ui-quick-marc
 
-## [4.0.2](IN PROGRESS)
+## [4.0.2](https://github.com/folio-org/ui-quick-marc/tree/v4.0.2) (2021-11-02)
 
 * [UIQM-161](https://issues.folio.org/browse/UIQM-161) Remove add button for MARC holdings tag 004.
 * [UIQM-169](https://issues.folio.org/browse/UIQM-169) Changing 007 type dropdown value does not enable the Save button
 * [UIQM-172](https://issues.folio.org/browse/UIQM-172) Changing 006 type dropdown value does not enable the Save button
+* [UIQM-152](https://issues.folio.org/browse/UIQM-152) Fix 008 `Rept date` field.
 
 ## [4.0.1](https://github.com/folio-org/ui-quick-marc/tree/v4.0.1) (2021-10-19)
 
 * [UIQM-156](https://issues.folio.org/browse/UIQM-156) Infinite loading after Deriving a new MARC bib record
 * [UIQM-144](https://issues.folio.org/browse/UIQM-144) Make 004 field read only when edit a holdings record via quickMARC.
 * [UIQM-154](https://issues.folio.org/browse/UIQM-154) Add records-editor.records 1.4 interface version
-* [UIQM-152](https://issues.folio.org/browse/UIQM-152) Fix 008 `Rept date` field.
 
 ## [4.0.0](https://github.com/folio-org/ui-quick-marc/tree/v4.0.0) (2021-10-06)
 
