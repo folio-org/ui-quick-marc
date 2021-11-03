@@ -4,6 +4,7 @@ import {
   LEADER_TAG,
   QUICK_MARC_ACTIONS,
 } from './constants';
+import { MARC_TYPES } from '../common/constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import * as utils from './utils';
 
@@ -189,7 +190,7 @@ describe('QuickMarcEditor utils', () => {
         records: [
           {
             content: '04706cam a2200865Ii 4500',
-            tag: '025',
+            tag: 'LDR',
           },
           {
             tag: '008',
@@ -214,7 +215,7 @@ describe('QuickMarcEditor utils', () => {
         records: [
           {
             content: '04706cam a2200865Ii 4500',
-            tag: '025',
+            tag: 'LDR',
           },
         ],
       };
@@ -229,7 +230,7 @@ describe('QuickMarcEditor utils', () => {
         records: [
           {
             content: '04706cam a2200865Ii 4500',
-            tag: '025',
+            tag: 'LDR',
           },
           {
             tag: '008',
@@ -251,7 +252,7 @@ describe('QuickMarcEditor utils', () => {
         records: [
           {
             content: '04706cam a2200865Ii 4500',
-            tag: '245',
+            tag: 'LDR',
           },
           {
             tag: '008',
@@ -263,10 +264,48 @@ describe('QuickMarcEditor utils', () => {
           {
             tag: '245',
           },
+          {
+            tag: '245',
+          },
         ],
       };
 
       expect(utils.validateMarcRecord(record, initialValues).props.id).toBe('ui-quick-marc.record.error.title.multiple');
+    });
+
+    describe('when record is MARC Holdings record', () => {
+      it('should not return error message when record is valid', () => {
+        const initialValues = { records: [] };
+        const record = {
+          leader: '04706cxm a22008651i 4500',
+          records: [
+            {
+              content: '04706cxm a22008651i 4500',
+              tag: 'LDR',
+            },
+            {
+              tag: '852',
+            },
+          ],
+        };
+
+        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS)).not.toBeDefined();
+      });
+
+      it('should return error message when record is without 852 row', () => {
+        const initialValues = { records: [] };
+        const record = {
+          leader: '04706cxm a22008651i 4500',
+          records: [
+            {
+              content: '04706cxm a22008651i 4500',
+              tag: 'LDR',
+            },
+          ],
+        };
+
+        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS).props.id).toBe('ui-quick-marc.record.error.location.empty');
+      });
     });
   });
 
