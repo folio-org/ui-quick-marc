@@ -121,10 +121,6 @@
     "record.status": "记录状态：",
     "record.status.new": "新建",
     "permission.quick-marc-editor.duplicate": "quickMARC：衍生新MARC书目记录",
-    "record.cancellationModal.title": "您確定嗎 ？",
-    "record.cancellationModal.message": "有未儲存的更改",
-    "record.cancellationModal.cancel": "不儲存就關閉",
-    "record.cancellationModal.confirm": "繼續編輯",
     "record.duplicate.notification.success": "該記錄已成功儲存，正在處理中。更改可能不會立即顯示。",
     "record.saveNew.onSave": "建立記錄可能需要幾秒鐘。",
     "record.saveNew.success": "建立記錄",
@@ -184,5 +180,6 @@
     "record.error.leader.invalidPositionValue": "Invalid value entered for the Leader {position}",
     "permission.quick-marc-holdings-editor.all": "quickMARC: View, edit MARC holdings record",
     "permission.quick-marc-holdings-editor.create": "quickMARC: Create a new MARC holdings record",
-    "record.fixedField.Rept date": "Rept date"
+    "record.fixedField.Rept date": "Rept date",
+    "record.error.bib.leader.invalid005PositionValue": "Record cannot be saved. Invalid value entered for position 5."
 }

@@ -121,10 +121,6 @@
     "record.status": "Record status:",
     "record.status.new": "Nuevo",
     "permission.quick-marc-editor.duplicate": "quickMARC: Derive new MARC bibliographic record",
-    "record.cancellationModal.title": "¿Estás seguro?",
-    "record.cancellationModal.message": "Hay cambios sin guardar",
-    "record.cancellationModal.cancel": "Cerrar sin guardar",
-    "record.cancellationModal.confirm": "Seguir editando",
     "record.duplicate.notification.success": "Este registro se ha guardado con éxito y está en proceso. Es posible que los cambios no aparezcan inmediatamente.",
     "record.saveNew.onSave": "La creación de un registro puede tardar varios segundos.",
     "record.saveNew.success": "Registro creado.",
@@ -184,5 +180,6 @@
     "record.error.leader.invalidPositionValue": "Invalid value entered for the Leader {position}",
     "permission.quick-marc-holdings-editor.all": "quickMARC: View, edit MARC holdings record",
     "permission.quick-marc-holdings-editor.create": "quickMARC: Create a new MARC holdings record",
-    "record.fixedField.Rept date": "Rept date"
+    "record.fixedField.Rept date": "Rept date",
+    "record.error.bib.leader.invalid005PositionValue": "Record cannot be saved. Invalid value entered for position 5."
 }

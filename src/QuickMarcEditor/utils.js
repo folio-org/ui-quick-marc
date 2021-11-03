@@ -194,6 +194,14 @@ export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYP
     return <FormattedMessage id={`ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}`} />;
   }
 
+  if (marcType === MARC_TYPES.BIB) {
+    if (!['a', 'c', 'd', 'n', 'p'].includes(leader[5])) {
+      return (
+        <FormattedMessage id="ui-quick-marc.record.error.bib.leader.invalid005PositionValue" />
+      );
+    }
+  }
+
   if (marcType === MARC_TYPES.HOLDINGS) {
     if (!['c', 'd', 'n'].includes(leader[5])) {
       return (
@@ -296,12 +304,8 @@ const validateMarcBibRecord = (marcRecords) => {
 const validateMarcHoldingsRecord = (marcRecords) => {
   const locationRecords = marcRecords.filter(({ tag }) => tag === '852');
 
-  if (locationRecords.length === 0) {
+  if (!locationRecords.length) {
     return <FormattedMessage id="ui-quick-marc.record.error.location.empty" />;
-  }
-
-  if (locationRecords.length > 1) {
-    return <FormattedMessage id="ui-quick-marc.record.error.location.multiple" />;
   }
 
   return undefined;
