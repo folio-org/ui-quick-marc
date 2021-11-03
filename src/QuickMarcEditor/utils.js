@@ -231,6 +231,16 @@ const validateMarcBibRecord = (marcRecords) => {
   return undefined;
 };
 
+const validateMarcHoldingsRecord = (marcRecords) => {
+  const locationRecords = marcRecords.filter(({ tag }) => tag === '852');
+
+  if (!locationRecords.length) {
+    return <FormattedMessage id="ui-quick-marc.record.error.location.empty" />;
+  }
+
+  return undefined;
+};
+
 export const validateMarcRecord = (marcRecord, marcType = MARC_TYPES.BIB) => {
   const marcRecords = marcRecord.records || [];
   const recordLeader = marcRecords[0];
@@ -245,6 +255,10 @@ export const validateMarcRecord = (marcRecord, marcType = MARC_TYPES.BIB) => {
 
   if (marcType === MARC_TYPES.BIB) {
     validationResult = validateMarcBibRecord(marcRecords);
+  }
+
+  if (marcType === MARC_TYPES.HOLDINGS) {
+    validationResult = validateMarcHoldingsRecord(marcRecords);
   }
 
   if (validationResult) {
