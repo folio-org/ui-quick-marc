@@ -250,7 +250,7 @@ const validateMarcBibRecord = (marcRecords) => {
 const validateMarcHoldingsRecord = (marcRecords) => {
   const locationRecords = marcRecords.filter(({ tag }) => tag === '852');
 
-  if (locationRecords.length === 0) {
+  if (!locationRecords.length) {
     return <FormattedMessage id="ui-quick-marc.record.error.location.empty" />;
   }
 
