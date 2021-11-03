@@ -136,6 +136,7 @@
   "record.error.bib.leader.invalid005PositionValue": "Record cannot be saved. Invalid value entered for position 5.",
   "record.error.title.multiple": "Record cannot be saved with more than one field 245.",
   "record.error.title.empty": "Record cannot be saved without field 245.",
+  "record.error.location.empty": "Record cannot be saved. An 852 is required.",
   "record.error.tag.length": "Record cannot be saved. A MARC tag must contain three characters.",
   "record.error.tag.nonDigits": "Invalid MARC tag. Please try again.",
   "record.error.subfield": "Missing a subfield value for a MARC tag",
