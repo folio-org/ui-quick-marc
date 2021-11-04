@@ -1,8 +1,10 @@
 import faker from 'faker';
 
+import uuid from 'uuid';
 import {
   LEADER_TAG,
   QUICK_MARC_ACTIONS,
+  CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
 } from './constants';
 import { MARC_TYPES } from '../common/constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
@@ -548,7 +550,7 @@ describe('QuickMarcEditor utils', () => {
   });
 
   describe('formatMarcRecordByQuickMarcAction', () => {
-    it('should return original record if action is not "duplicate"', () => {
+    it('should return original record if action is not "duplicate" or "create"', () => {
       const record = {
         records: [{
           tag: '001',
@@ -614,6 +616,48 @@ describe('QuickMarcEditor utils', () => {
       };
 
       expect(utils.formatMarcRecordByQuickMarcAction(record, QUICK_MARC_ACTIONS.DUPLICATE)).toEqual(expectedRecord);
+    });
+
+    it('should return record with additional fields and no updateInfo if action is "create"', () => {
+      const instanceId = 'instanceId';
+
+      const record = {
+        externalId: instanceId,
+        leader: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+        fields: undefined,
+        records: [{
+          tag: LEADER_TAG,
+          content: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+          id: LEADER_TAG,
+        }, {
+          tag: '001',
+          id: uuid(),
+        }, {
+          tag: '004',
+          id: uuid(),
+          content: 'instanceHrid',
+        }, {
+          tag: '005',
+          id: uuid(),
+        }, {
+          tag: '999',
+          id: uuid(),
+          indicators: ['f', 'f'],
+        }],
+        parsedRecordDtoId: instanceId,
+      };
+
+      const expectedRecord = {
+        ...record,
+        relatedRecordVersion: 1,
+        marcFormat: 'HOLDINGS',
+        suppressDiscovery: false,
+        updateInfo: {
+          recordState: RECORD_STATUS_NEW,
+        },
+      };
+
+      expect(utils.formatMarcRecordByQuickMarcAction(record, QUICK_MARC_ACTIONS.CREATE)).toEqual(expectedRecord);
     });
   });
 
@@ -891,6 +935,48 @@ describe('QuickMarcEditor utils', () => {
       };
 
       expect(utils.cleanBytesFields(record, initialValues, 'bib')).toEqual(expectedRecord);
+    });
+  });
+
+  describe('getCreateMarcRecordResponse', () => {
+    it('should return correct response for creating MARC Holdings record', () => {
+      const instanceResponse = {
+        id: 'instanceId',
+        hrid: 'instanceHrid',
+      };
+
+      const defaultFields = [{
+        tag: '001',
+        id: uuid(),
+      }, {
+        tag: '004',
+        id: uuid(),
+        content: instanceResponse.hrid,
+      }, {
+        tag: '005',
+        id: uuid(),
+      }, {
+        tag: '999',
+        id: uuid(),
+        indicators: ['f', 'f'],
+      }];
+
+      const expectedResult = {
+        externalId: instanceResponse.id,
+        leader: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+        fields: undefined,
+        records: [
+          {
+            tag: LEADER_TAG,
+            content: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+            id: LEADER_TAG,
+          },
+          ...defaultFields,
+        ],
+        parsedRecordDtoId: instanceResponse.id,
+      };
+
+      expect(utils.getCreateMarcRecordResponse(instanceResponse)).toEqual(expectedResult);
     });
   });
 });

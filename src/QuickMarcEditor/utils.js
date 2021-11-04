@@ -17,6 +17,8 @@ import {
   FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS,
   QUICK_MARC_ACTIONS,
   LEADER_EDITABLE_BYTES,
+  CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+  CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import getMaterialCharsFieldConfig from './QuickMarcEditorRows/MaterialCharsField/getMaterialCharsFieldConfig';
@@ -39,10 +41,6 @@ export const dehydrateMarcRecordResponse = marcRecordResponse => ({
     })),
   ],
 });
-
-const CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE = '00000nu\\\\\\2200000un\\4500';
-
-const CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS = ['001', '004', '005', '999'];
 
 const getCreateMarcRecordDefaultFields = (instanceRecord) => {
   return CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS.map(tag => {
