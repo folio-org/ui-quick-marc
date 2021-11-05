@@ -8,6 +8,7 @@ import { IfPermission } from '@folio/stripes/core';
 import {
   QuickMarcEditorContainer,
   QuickMarcDuplicateWrapper,
+  QuickMarcCreateWrapper,
   QuickMarcEditWrapper,
 } from './QuickMarcEditor';
 import { QUICK_MARC_ACTIONS } from './QuickMarcEditor/constants';
@@ -31,6 +32,15 @@ const QuickMarc = ({ basePath, onClose }) => {
         action: QUICK_MARC_ACTIONS.DUPLICATE,
         wrapper: QuickMarcDuplicateWrapper,
         marcType: MARC_TYPES.BIB,
+      },
+    },
+    {
+      path: `${basePath}/create-holdings/:externalId`,
+      permission: 'ui-quick-marc.quick-marc-holdings-editor.create',
+      props: {
+        action: QUICK_MARC_ACTIONS.CREATE,
+        wrapper: QuickMarcCreateWrapper,
+        marcType: MARC_TYPES.HOLDINGS,
       },
     },
     {

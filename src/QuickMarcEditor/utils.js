@@ -17,6 +17,8 @@ import {
   FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS,
   QUICK_MARC_ACTIONS,
   LEADER_EDITABLE_BYTES,
+  CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+  CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import getMaterialCharsFieldConfig from './QuickMarcEditorRows/MaterialCharsField/getMaterialCharsFieldConfig';
@@ -39,6 +41,44 @@ export const dehydrateMarcRecordResponse = marcRecordResponse => ({
     })),
   ],
 });
+
+const getCreateMarcRecordDefaultFields = (instanceRecord) => {
+  return CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS.map(tag => {
+    const field = {
+      tag,
+      id: uuid(),
+    };
+
+    if (tag === '004') {
+      field.content = instanceRecord.hrid;
+    }
+
+    if (tag === '999') {
+      field.indicators = ['f', 'f'];
+    }
+
+    return field;
+  });
+};
+
+export const getCreateMarcRecordResponse = (instanceResponse) => {
+  const instanceId = instanceResponse.id;
+
+  return {
+    externalId: instanceId,
+    leader: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+    fields: undefined,
+    records: [
+      {
+        tag: LEADER_TAG,
+        content: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+        id: LEADER_TAG,
+      },
+      ...getCreateMarcRecordDefaultFields(instanceResponse),
+    ],
+    parsedRecordDtoId: instanceId,
+  };
+};
 
 const fieldMatchesDescription = (field, descriptionArray) => {
   let match = false;
@@ -88,6 +128,18 @@ export const formatMarcRecordByQuickMarcAction = (marcRecord, action) => {
   if (action === QUICK_MARC_ACTIONS.DUPLICATE) {
     return {
       ...removeMarcRecordFieldContentForDuplication(marcRecord),
+      updateInfo: {
+        recordState: RECORD_STATUS_NEW,
+      },
+    };
+  }
+
+  if (action === QUICK_MARC_ACTIONS.CREATE) {
+    return {
+      ...marcRecord,
+      relatedRecordVersion: 1,
+      marcFormat: MARC_TYPES.HOLDINGS.toUpperCase(),
+      suppressDiscovery: false,
       updateInfo: {
         recordState: RECORD_STATUS_NEW,
       },
@@ -268,15 +320,9 @@ export const validateMarcRecord = (marcRecord, initialValues, marcType = MARC_TY
     return leaderError;
   }
 
-  let validationResult = null;
-
-  if (marcType === MARC_TYPES.BIB) {
-    validationResult = validateMarcBibRecord(marcRecords);
-  }
-
-  if (marcType === MARC_TYPES.HOLDINGS) {
-    validationResult = validateMarcHoldingsRecord(marcRecords);
-  }
+  const validationResult = marcType === MARC_TYPES.BIB
+    ? validateMarcBibRecord(marcRecords)
+    : validateMarcHoldingsRecord(marcRecords);
 
   if (validationResult) {
     return validationResult;

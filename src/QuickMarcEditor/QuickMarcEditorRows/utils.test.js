@@ -71,7 +71,7 @@ describe('QuickMarcEditorRows utils', () => {
       expect(utils.hasAddException({ tag: '010' })).toBeFalsy();
     });
 
-    it('should be true for MARC holdigns tag 004', () => {
+    it('should be true for MARC holdings tag 004', () => {
       expect(utils.hasAddException({ tag: '004' }, MARC_TYPES.HOLDINGS)).toBeTruthy();
     });
   });

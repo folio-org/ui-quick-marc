@@ -8,6 +8,7 @@ export const LEADER_EDITABLE_BYTES = {
 };
 
 export const QUICK_MARC_ACTIONS = {
+  CREATE: 'create',
   EDIT: 'edit',
   DUPLICATE: 'duplicate',
 };
@@ -42,6 +43,10 @@ export const FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS = {
     { tag: '008' },
   ],
 };
+
+export const CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE = '00000nu\\\\\\2200000un\\4500';
+
+export const CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS = ['001', '004', '005', '999'];
 
 export const QM_RECORD_STATUS_TIMEOUT = 5000;
 

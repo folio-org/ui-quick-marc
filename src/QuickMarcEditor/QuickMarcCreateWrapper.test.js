@@ -11,7 +11,8 @@ import noop from 'lodash/noop';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
-import QuickMarcDuplicateWrapper from './QuickMarcDuplicateWrapper';
+import QuickMarcCreateWrapper from './QuickMarcCreateWrapper';
+import { MARC_TYPES } from '../common/constants';
 import { QUICK_MARC_ACTIONS } from './constants';
 
 jest.mock('react-final-form', () => ({
@@ -21,65 +22,44 @@ jest.mock('react-final-form', () => ({
 
 const mockFormValues = jest.fn(() => ({
   fields: undefined,
+  externalHrid: 'in00000000022',
   externalId: '17064f9d-0362-468d-8317-5984b7efd1b5',
-  leader: '02949cama2200517Kii50000',
+  leader: '00000nu\\\\\\2200000un\\4500',
+  marcFormat: 'HOLDINGS',
   parsedRecordDtoId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
   parsedRecordId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
   records: [
     {
       tag: 'LDR',
-      content: '02949cama2200517Kii50000',
+      content: '00000nu\\\\\\2200000un\\4500',
       id: 'LDR',
     }, {
       tag: '001',
-      content: '',
-      indicators: [],
       id: '595a98e6-8e59-448d-b866-cd039b990423',
     }, {
-      tag: '008',
-      content: {
-        Audn: '\\',
-        BLvl: 'm',
-        Biog: '\\',
-        Conf: '0',
-        Cont: ['b', '\\', '\\', '\\'],
-        Ctry: 'miu',
-        Date1: '2009',
-        Date2: '\\\\',
-        Desc: 'i',
-        DtSt: 's',
-        ELvl: 'i',
-        Entered: '130325',
-        Fest: '0',
-        Form: 'o',
-        GPub: '\\',
-        Ills: ['\\', '\\', '\\', '\\'],
-        Indx: '1',
-        Lang: 'eng',
-        LitF: '0',
-        MRec: '\\',
-        Srce: 'd',
-        Type: 'a',
-      },
-      indicators: [],
+      tag: '004',
+      content: 'in00000000022',
       id: '93213747-46fb-4861-b8e8-8774bf4a46a4',
     }, {
-      tag: '050',
-      content: '$a BS1545.53 $b .J46 2009eb',
-      indicators: [],
+      tag: '852',
+      content: '$b KU/CC/DI/A$t3$hM3$i.M93 1955$m+$xRec\'d in Music Lib ;',
+      indicators: ['0', '1'],
       id: '6abdaf9b-ac58-4f83-9687-73c939c3c21a',
     }, {
-      content: '$a (derived2)/Ezekiel / $c Robert W. Jenson.',
+      tag: '014',
+      content: '$a ABS3966CU004',
+      indicators: ['1', '\\'],
       id: '5aa1a643-b9f2-47e8-bb68-6c6457b5c9c5',
-      indicators: ['1', '0'],
-      tag: '245',
+    }, {
+      tag: '005',
+      id: '5aa1a643-b9f2-47e8-bb68-6c6457b5c9c5',
     }, {
       tag: '999',
-      content: '',
-      indicators: [],
+      indicators: ['f', 'f'],
       id: '4a844042-5c7e-4e71-823e-599582a5d7ab',
     },
   ],
+  relatedRecordVersion: 1,
   suppressDiscovery: false,
   updateInfo: { recordState: 'NEW' },
 }));
@@ -98,31 +78,6 @@ jest.mock('@folio/stripes/final-form', () => () => (Component) => ({ onSubmit, .
     />
   );
 });
-
-jest.mock('@folio/stripes/components', () => ({
-  ...jest.requireActual('@folio/stripes/components'),
-  ConfirmationModal: jest.fn(({
-    open,
-    onCancel,
-    onConfirm,
-  }) => (open ? (
-    <div>
-      <span>Confirmation modal</span>
-      <button
-        type="button"
-        onClick={onCancel}
-      >
-        Close
-      </button>
-      <button
-        type="button"
-        onClick={onConfirm}
-      >
-        Keep editing
-      </button>
-    </div>
-  ) : null)),
-}));
 
 const mockShowCallout = jest.fn();
 
@@ -151,7 +106,7 @@ jest.mock('./constants', () => ({
 
 const getInstance = () => ({
   id: faker.random.uuid(),
-  title: 'ui-quick-marc.record.edit.title',
+  title: 'ui-inventory.instanceRecordTitle',
 });
 
 const record = {
@@ -160,7 +115,7 @@ const record = {
   fields: [],
 };
 
-const renderQuickMarcDuplicateWrapper = ({
+const renderQuickMarcCreateWrapper = ({
   instance,
   onClose = noop,
   mutator,
@@ -168,19 +123,20 @@ const renderQuickMarcDuplicateWrapper = ({
   location,
 }) => (render(
   <MemoryRouter>
-    <QuickMarcDuplicateWrapper
+    <QuickMarcCreateWrapper
       onClose={onClose}
       instance={instance}
       mutator={mutator}
-      action={QUICK_MARC_ACTIONS.DUPLICATE}
+      action={QUICK_MARC_ACTIONS.CREATE}
       initialValues={{ leader: 'assdfgs ds sdg' }}
       history={history}
       location={location}
+      marcType={MARC_TYPES.HOLDINGS}
     />
   </MemoryRouter>,
 ));
 
-describe('Given QuickMarcDuplicateWrapper', () => {
+describe('Given QuickMarcCreateWrapper', () => {
   let mutator;
   let instance;
   let history;
@@ -213,8 +169,8 @@ describe('Given QuickMarcDuplicateWrapper', () => {
   describe('when click on cancel pane button', () => {
     const onClose = jest.fn();
 
-    it('should display pane footer', () => {
-      const { getByText } = renderQuickMarcDuplicateWrapper({
+    it('should handle onClose action', () => {
+      const { getByText } = renderQuickMarcCreateWrapper({
         instance,
         mutator,
         history,
@@ -224,7 +180,7 @@ describe('Given QuickMarcDuplicateWrapper', () => {
 
       fireEvent.click(getByText('stripes-acq-components.FormFooter.cancel'));
 
-      expect('Confirmation modal').toBeDefined();
+      expect(onClose).toHaveBeenCalled();
     });
   });
 
@@ -233,7 +189,7 @@ describe('Given QuickMarcDuplicateWrapper', () => {
       let getByText;
 
       await act(async () => {
-        getByText = renderQuickMarcDuplicateWrapper({
+        getByText = renderQuickMarcCreateWrapper({
           instance,
           mutator,
           history,
@@ -243,18 +199,7 @@ describe('Given QuickMarcDuplicateWrapper', () => {
 
       await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
-      expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.onSave' });
-
-      await new Promise(resolve => {
-        setTimeout(() => {
-          expect(history.push).toHaveBeenCalledWith({
-            pathname: '/inventory/view/id',
-            search: location.search,
-          });
-
-          resolve();
-        }, 10);
-      });
+      expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
     }, 100);
 
     describe('when there is an error during POST request', () => {
@@ -262,7 +207,7 @@ describe('Given QuickMarcDuplicateWrapper', () => {
         let getByText;
 
         await act(async () => {
-          getByText = renderQuickMarcDuplicateWrapper({
+          getByText = renderQuickMarcCreateWrapper({
             instance,
             mutator,
             history,

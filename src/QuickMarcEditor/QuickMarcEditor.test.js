@@ -9,6 +9,9 @@ import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcEditor from './QuickMarcEditor';
 
+import { QUICK_MARC_ACTIONS } from './constants';
+import { MARC_TYPES } from '../common/constants';
+
 jest.mock('@folio/stripes/components', () => ({
   ...jest.requireActual('@folio/stripes/components'),
   ConfirmationModal: jest.fn(({ open }) => (open ? <span>Confirmation modal</span> : null)),
@@ -61,11 +64,12 @@ const renderQuickMarcEditor = ({
   onClose,
   onSubmit,
   mutators,
-  marcType = 'bib',
+  action = QUICK_MARC_ACTIONS.EDIT,
+  marcType = MARC_TYPES.BIB,
 }) => (render(
   <MemoryRouter>
     <QuickMarcEditor
-      action="edit"
+      action={action}
       instance={instance}
       onClose={onClose}
       onSubmit={onSubmit}
@@ -152,21 +156,43 @@ describe('Given Quick Marc Editor', () => {
   });
 
   describe('when marc record is of type HOLDINGS', () => {
-    it('should display holdings record pane title', () => {
-      const instance = getInstance();
-      const { getByText } = renderQuickMarcEditor({
-        instance,
-        onClose: jest.fn(),
-        onSubmit: jest.fn(),
-        mutators: {
-          addRecord: jest.fn(),
-          deleteRecord: jest.fn(),
-          moveRecord: jest.fn(),
-        },
-        marcType: 'holdings',
-      });
+    describe('when action is create', () => {
+      it('should display create holdings record pane title', () => {
+        const instance = getInstance();
+        const { getByText } = renderQuickMarcEditor({
+          instance,
+          onClose: jest.fn(),
+          onSubmit: jest.fn(),
+          mutators: {
+            addRecord: jest.fn(),
+            deleteRecord: jest.fn(),
+            moveRecord: jest.fn(),
+          },
+          action: 'create',
+          marcType: 'holdings',
+        });
 
-      expect(getByText('ui-quick-marc.holdings-record.edit.title')).toBeDefined();
+        expect(getByText('ui-quick-marc.holdings-record.create.title')).toBeDefined();
+      });
+    });
+
+    describe('when action is edit', () => {
+      it('should display edit holdings record pane title', () => {
+        const instance = getInstance();
+        const { getByText } = renderQuickMarcEditor({
+          instance,
+          onClose: jest.fn(),
+          onSubmit: jest.fn(),
+          mutators: {
+            addRecord: jest.fn(),
+            deleteRecord: jest.fn(),
+            moveRecord: jest.fn(),
+          },
+          marcType: 'holdings',
+        });
+
+        expect(getByText('ui-quick-marc.holdings-record.edit.title')).toBeDefined();
+      });
     });
   });
 });

@@ -1,12 +1,8 @@
-import React, {
-  useCallback,
-} from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import ReactRouterPropTypes from 'react-router-prop-types';
 
-import {
-  useShowCallout,
-} from '@folio/stripes-acq-components';
+import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
@@ -33,7 +29,7 @@ const propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-const QuickMarcDuplicateWrapper = ({
+const QuickMarcCreateWrapper = ({
   action,
   instance,
   onClose,
@@ -46,10 +42,13 @@ const QuickMarcDuplicateWrapper = ({
   const showCallout = useShowCallout();
 
   const onSubmit = useCallback(async (formValues) => {
-    const clearFormValues = removeFieldsForDuplicate(formValues);
-    const autopopulatedFormValues = autopopulateSubfieldSection(clearFormValues, initialValues, marcType);
-    const formValuesForDuplicate = cleanBytesFields(autopopulatedFormValues, initialValues, marcType);
-    const validationErrorMessage = validateMarcRecord(formValuesForDuplicate, initialValues);
+    const autopopulatedFormValues = autopopulateSubfieldSection(
+      removeFieldsForDuplicate(formValues),
+      initialValues,
+      marcType,
+    );
+    const formValuesForCreate = cleanBytesFields(autopopulatedFormValues, initialValues, marcType);
+    const validationErrorMessage = validateMarcRecord(formValuesForCreate, initialValues, marcType);
 
     if (validationErrorMessage) {
       showCallout({ message: validationErrorMessage, type: 'error' });
@@ -57,18 +56,11 @@ const QuickMarcDuplicateWrapper = ({
       return null;
     }
 
-    showCallout({ messageId: 'ui-quick-marc.record.saveNew.onSave' });
+    showCallout({ messageId: 'ui-quick-marc.record.save.success.processing' });
 
-    const marcRecord = hydrateMarcRecord(formValuesForDuplicate);
-
-    marcRecord.relatedRecordVersion = 1;
-
-    return mutator.quickMarcEditMarcRecord.POST(marcRecord)
+    return mutator.quickMarcEditMarcRecord.POST(hydrateMarcRecord(formValuesForCreate))
       .then(({ qmRecordId }) => {
-        history.push({
-          pathname: '/inventory/view/id',
-          search: location.search,
-        });
+        const instanceId = formValues.externalId;
 
         getQuickMarcRecordStatus({
           quickMarcRecordStatusGETRequest: mutator.quickMarcRecordStatus.GET,
@@ -76,6 +68,7 @@ const QuickMarcDuplicateWrapper = ({
           showCallout,
           history,
           location,
+          instanceId,
         });
       })
       .catch(async (errorResponse) => {
@@ -111,6 +104,6 @@ const QuickMarcDuplicateWrapper = ({
   );
 };
 
-QuickMarcDuplicateWrapper.propTypes = propTypes;
+QuickMarcCreateWrapper.propTypes = propTypes;
 
-export default QuickMarcDuplicateWrapper;
+export default QuickMarcCreateWrapper;
