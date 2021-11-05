@@ -302,7 +302,7 @@ const validateMarcBibRecord = (marcRecords) => {
 const validateMarcHoldingsRecord = (marcRecords) => {
   const instanceHridRecords = marcRecords.filter(({ tag }) => tag === '004');
 
-  if (instanceHridRecords.length > 0) {
+  if (instanceHridRecords.length > 1) {
     return <FormattedMessage id="ui-quick-marc.record.error.instanceHrid.multiple" />;
   }
 
