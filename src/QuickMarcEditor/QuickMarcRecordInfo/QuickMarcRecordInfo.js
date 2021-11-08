@@ -52,7 +52,7 @@ export const QuickMarcRecordInfo = ({
           <>
             <span>&nbsp;&bull;&nbsp;</span>
             <FormattedMessage
-              id="stripes-components.metaSection.recordLastUpdated"
+              id="ui-quick-marc.record.lastUpdated"
               values={{
                 date: <FormattedDate value={updateDate} />,
                 time: <FormattedTime value={updateDate} />,

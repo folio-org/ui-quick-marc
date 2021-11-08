@@ -10,6 +10,7 @@
 * [UIQM-163](https://issues.folio.org/browse/UIQM-163) Edit bib record: Update error messaging when entered an invalid value for Leader/05.
 * [UIQM-165](https://issues.folio.org/browse/UIQM-165) Update error message when user attempts to save a record without a 852.
 * [UIQM-132](https://issues.folio.org/browse/UIQM-132) Create a MARC Holdings Record.
+* [UIQM-177](https://issues.folio.org/browse/UIQM-177) Omit `Record` on Status and Last updated labels when Edit/Derive quickMARC.
 
 ## [4.0.2](https://github.com/folio-org/ui-quick-marc/tree/v4.0.2) (2021-11-02)
 * [UIQM-161](https://issues.folio.org/browse/UIQM-161) Remove add button for MARC holdings tag 004.
