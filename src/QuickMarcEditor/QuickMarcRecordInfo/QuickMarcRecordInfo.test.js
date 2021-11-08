@@ -41,7 +41,7 @@ describe('Given Quick Marc Record Info', () => {
   it('should display record updated date', () => {
     const { getByText } = renderQuickMarcRecordInfo();
 
-    expect(getByText('stripes-components.metaSection.recordLastUpdated', { exact: false })).toBeDefined();
+    expect(getByText('ui-quick-marc.record.lastUpdated', { exact: false })).toBeDefined();
   });
 
   it('should display person who last edited', () => {
