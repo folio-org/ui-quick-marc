@@ -1,6 +1,6 @@
 # Change history for ui-quick-marc
 
-## [4.0.2](IN PROGRESS)
+## [4.0.3](https://github.com/folio-org/ui-quick-marc/tree/v4.0.3) (2021-11-09)
 
 * [UIQM-165](https://issues.folio.org/browse/UIQM-165) Update error message when user attempts to save a record without a 852.
 
