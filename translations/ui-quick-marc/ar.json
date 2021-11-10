@@ -118,7 +118,7 @@
     "record.status.progress": "قيد التقدم",
     "record.status.error": "خطأ",
     "record.save.error.illegalFixedLength": "لم يتم حفظ التسجيلة. يرجى التحقق من طول أحرف الحقول الثابتة.",
-    "record.status": "حالة التسجيلة:",
+    "record.status": "الحالة:",
     "record.status.new": "جديدة",
     "permission.quick-marc-editor.duplicate": "quickMARC: اشتق تسجيلة مارك بيبلوغرافية جديدة",
     "record.duplicate.notification.success": "تم حفظ هذه التسجيلة بنجاح وهي قيد المعالجة. قد لا تظهر التغييرات على الفور.",
@@ -183,5 +183,6 @@
     "record.fixedField.Rept date": "Rept date",
     "record.error.bib.leader.invalid005PositionValue": "لا يمكن حفظ التسجيلة. تم إدخال قيمة غير صحيحة للموضع 5.",
     "record.error.location.empty": "لا يمكن حفظ التسجيلة. الحقل 852 مطلوب.",
-    "holdings-record.create.title": "إنشاء تسجيلة مقتنيات مارك جديدة"
+    "holdings-record.create.title": "إنشاء تسجيلة مقتنيات مارك جديدة",
+    "record.lastUpdated": "آخر تحديث: {date} {time}"
 }
