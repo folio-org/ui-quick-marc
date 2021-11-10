@@ -9,6 +9,7 @@
 * [UIQM-159](https://issues.folio.org/browse/UIQM-159) Remove unnecessary cancellation modal on derive record page.
 * [UIQM-163](https://issues.folio.org/browse/UIQM-163) Edit bib record: Update error messaging when entered an invalid value for Leader/05.
 * [UIQM-132](https://issues.folio.org/browse/UIQM-132) Create a MARC Holdings Record.
+* [UIQM-177](https://issues.folio.org/browse/UIQM-177) Omit `Record` on Status and Last updated labels when Edit/Derive quickMARC.
 
 ## [4.0.3](https://github.com/folio-org/ui-quick-marc/tree/v4.0.3) (2021-11-09)
 
