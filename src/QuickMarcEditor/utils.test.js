@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import faker from 'faker';
 
 import uuid from 'uuid';
@@ -732,6 +733,66 @@ describe('QuickMarcEditor utils', () => {
     };
 
     expect(utils.removeFieldsForDuplicate(formValues)).toEqual(expectedFormValues);
+  });
+
+  describe('autopopulateIndicators', () => {
+    it('should return record with autopopulated indicators', () => {
+      const record = {
+        records: [{
+          tag: '001',
+          content: 'some content',
+          id: 'id001',
+        }, {
+          tag: '035',
+          content: 'some content',
+          id: 'id0351',
+          indicators: ['0', '\\'],
+        }, {
+          tag: '035',
+          content: 'some content',
+          id: 'id0352',
+          indicators: ['\\', undefined],
+        }, {
+          tag: '035',
+          content: '$a',
+          id: 'id0353',
+          indicators: [undefined, undefined],
+        }],
+        updateInfo: {
+          recordState: 'actual',
+          updateDate: '01/01/1970',
+        },
+      };
+
+      const expectedRecord = {
+        records: [{
+          tag: '001',
+          content: 'some content',
+          id: 'id001',
+        }, {
+          tag: '035',
+          content: 'some content',
+          id: 'id0351',
+          indicators: ['0', '\\'],
+        }, {
+          tag: '035',
+          content: 'some content',
+          id: 'id0352',
+          indicators: ['\\', '\\'],
+        }, {
+          tag: '035',
+          content: '$a',
+          id: 'id0353',
+          indicators: ['\\', '\\'],
+        }],
+        updateInfo: {
+          recordState: 'actual',
+          updateDate: '01/01/1970',
+        },
+      };
+
+      expect(utils.autopopulateIndicators(record)).toEqual(expectedRecord);
+    });
   });
 
   describe('autopopulateSubfieldSection', () => {

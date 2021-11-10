@@ -398,6 +398,28 @@ const checkIsEmptyContent = (field) => {
   return false;
 };
 
+export const autopopulateIndicators = (formValues) => {
+  const { records } = formValues;
+
+  const recordsWithIndicators = records.reduce((acc, field) => {
+    if (!field.indicators || field.indicators?.every(value => !!value)) {
+      return [...acc, field];
+    }
+
+    const autopopulatedIndicators = field.indicators.map(indicator => indicator || '\\');
+
+    return [...acc, {
+      ...field,
+      indicators: autopopulatedIndicators,
+    }];
+  }, []);
+
+  return {
+    ...formValues,
+    records: recordsWithIndicators,
+  };
+};
+
 export const autopopulateSubfieldSection = (formValues, initialValues, marcType = MARC_TYPES.BIB) => {
   const { records } = formValues;
   const { records: initialMarcRecords } = initialValues;
