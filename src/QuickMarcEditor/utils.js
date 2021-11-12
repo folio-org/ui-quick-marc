@@ -306,6 +306,10 @@ const validateMarcHoldingsRecord = (marcRecords) => {
     return <FormattedMessage id="ui-quick-marc.record.error.location.empty" />;
   }
 
+  if (locationRecords.length > 1) {
+    return <FormattedMessage id="ui-quick-marc.record.error.location.multiple" />;
+  }
+
   return undefined;
 };
 
