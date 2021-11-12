@@ -118,7 +118,7 @@
     "record.status.progress": "В обработке",
     "record.status.error": "Error",
     "record.save.error.illegalFixedLength": "Record not saved. Please check the character length of the fixed fields.",
-    "record.status": "Record status:",
+    "record.status": "Status:",
     "record.status.new": "New",
     "permission.quick-marc-editor.duplicate": "quickMARC: Derive new MARC bibliographic record",
     "record.duplicate.notification.success": "This record has successfully saved and is in process. Changes may not appear immediately.",
@@ -181,5 +181,8 @@
     "permission.quick-marc-holdings-editor.all": "quickMARC: View, edit MARC holdings record",
     "permission.quick-marc-holdings-editor.create": "quickMARC: Create a new MARC holdings record",
     "record.fixedField.Rept date": "Rept date",
-    "record.error.bib.leader.invalid005PositionValue": "Record cannot be saved. Invalid value entered for position 5."
+    "record.error.bib.leader.invalid005PositionValue": "Record cannot be saved. Invalid value entered for position 5.",
+    "record.error.location.empty": "Record cannot be saved. An 852 is required.",
+    "holdings-record.create.title": "Create a new MARC Holdings record",
+    "record.lastUpdated": "Last updated: {date} {time}"
 }

@@ -118,7 +118,7 @@
     "record.status.progress": "En progreso",
     "record.status.error": "Error",
     "record.save.error.illegalFixedLength": "Registro no guardado. Compruebe la longitud de los caracteres de los campos fijos.",
-    "record.status": "Record status:",
+    "record.status": "Status:",
     "record.status.new": "Nuevo",
     "permission.quick-marc-editor.duplicate": "quickMARC: Derive new MARC bibliographic record",
     "record.duplicate.notification.success": "Este registro se ha guardado con éxito y está en proceso. Es posible que los cambios no aparezcan inmediatamente.",
@@ -181,5 +181,8 @@
     "permission.quick-marc-holdings-editor.all": "quickMARC: View, edit MARC holdings record",
     "permission.quick-marc-holdings-editor.create": "quickMARC: Create a new MARC holdings record",
     "record.fixedField.Rept date": "Rept date",
-    "record.error.bib.leader.invalid005PositionValue": "Record cannot be saved. Invalid value entered for position 5."
+    "record.error.bib.leader.invalid005PositionValue": "Record cannot be saved. Invalid value entered for position 5.",
+    "record.error.location.empty": "Record cannot be saved. An 852 is required.",
+    "holdings-record.create.title": "Create a new MARC Holdings record",
+    "record.lastUpdated": "Last updated: {date} {time}"
 }
