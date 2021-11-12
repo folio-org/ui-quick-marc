@@ -12,6 +12,7 @@ import { MARC_TYPES } from '../common/constants';
 import {
   hydrateMarcRecord,
   validateMarcRecord,
+  autopopulateIndicators,
   autopopulateSubfieldSection,
   cleanBytesFields,
 } from './utils';
@@ -49,8 +50,13 @@ const QuickMarcEditWrapper = ({
       return null;
     }
 
-    const autopopulateFormValues = autopopulateSubfieldSection(formValues, initialValues, marcType);
-    const formValuesForEdit = cleanBytesFields(autopopulateFormValues, initialValues, marcType);
+    const autopopulatedFormWithIndicators = autopopulateIndicators(formValues);
+    const autopopulatedFormWithSubfields = autopopulateSubfieldSection(
+      autopopulatedFormWithIndicators,
+      initialValues,
+      marcType,
+    );
+    const formValuesForEdit = cleanBytesFields(autopopulatedFormWithSubfields, initialValues, marcType);
 
     const marcRecord = hydrateMarcRecord(formValuesForEdit);
 

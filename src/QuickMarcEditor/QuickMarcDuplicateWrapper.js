@@ -17,6 +17,7 @@ import { MARC_TYPES } from '../common/constants';
 import {
   hydrateMarcRecord,
   removeFieldsForDuplicate,
+  autopopulateIndicators,
   autopopulateSubfieldSection,
   validateMarcRecord,
   cleanBytesFields,
@@ -47,8 +48,13 @@ const QuickMarcDuplicateWrapper = ({
 
   const onSubmit = useCallback(async (formValues) => {
     const clearFormValues = removeFieldsForDuplicate(formValues);
-    const autopopulatedFormValues = autopopulateSubfieldSection(clearFormValues, initialValues, marcType);
-    const formValuesForDuplicate = cleanBytesFields(autopopulatedFormValues, initialValues, marcType);
+    const autopopulatedFormWithIndicators = autopopulateIndicators(clearFormValues);
+    const autopopulatedFormWithSubfields = autopopulateSubfieldSection(
+      autopopulatedFormWithIndicators,
+      initialValues,
+      marcType,
+    );
+    const formValuesForDuplicate = cleanBytesFields(autopopulatedFormWithSubfields, initialValues, marcType);
     const validationErrorMessage = validateMarcRecord(formValuesForDuplicate, initialValues);
 
     if (validationErrorMessage) {
