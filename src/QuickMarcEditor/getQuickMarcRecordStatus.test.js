@@ -71,7 +71,7 @@ describe('Given getQuickMarcRecordStatus', () => {
             resolve();
           }, 10);
         });
-      }, 100);
+      }, 1000);
     });
 
     describe('when instanceId is not passed to props', () => {
