@@ -1,4 +1,10 @@
 {
   "parser": "babel-eslint",
-  "extends": ["@folio/eslint-config-stripes/acquisitions"]
+  "extends": ["@folio/eslint-config-stripes/acquisitions"],
+  "overrides": [{
+    "files": [ "*.test.js" ],
+    "rules": {
+      "no-unused-expressions": 0
+    }
+  }]
 }
