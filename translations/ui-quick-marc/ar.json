@@ -184,5 +184,7 @@
     "record.error.bib.leader.invalid005PositionValue": "لا يمكن حفظ التسجيلة. تم إدخال قيمة غير صحيحة للموضع 5.",
     "record.error.location.empty": "لا يمكن حفظ التسجيلة. الحقل 852 مطلوب.",
     "holdings-record.create.title": "إنشاء تسجيلة مقتنيات مارك جديدة",
-    "record.lastUpdated": "آخر تحديث: {date} {time}"
+    "record.lastUpdated": "آخر تحديث: {date} {time}",
+    "record.error.instanceHrid.multiple": "لا يمكن حفظ التسجيلة. يمكن أن يكون بها حقل مارك 004 واحد فقط.",
+    "record.error.location.multiple": "لا يمكن حفظ التسجيلة. يمكن أن يكون بها حقل مارك 852 واحد فقط."
 }

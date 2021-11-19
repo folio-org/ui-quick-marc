@@ -184,5 +184,7 @@
     "record.error.bib.leader.invalid005PositionValue": "O registro não pode ser salvo. Valor inválido inserido para a posição 5.",
     "record.error.location.empty": "Record cannot be saved. An 852 is required.",
     "holdings-record.create.title": "Create a new MARC Holdings record",
-    "record.lastUpdated": "Last updated: {date} {time}"
+    "record.lastUpdated": "Last updated: {date} {time}",
+    "record.error.instanceHrid.multiple": "Record cannot be saved. Can only have one MARC 004.",
+    "record.error.location.multiple": "Record cannot be saved. Can only have one MARC 852."
 }
