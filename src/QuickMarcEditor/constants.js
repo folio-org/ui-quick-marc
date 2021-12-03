@@ -46,8 +46,23 @@ export const FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS = {
 
 export const CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE = '00000nu\\\\\\2200000un\\4500';
 
-export const CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS = ['001', '004', '005', '999'];
+export const CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS = ['001', '004', '005', '008', '852', '999'];
 
 export const QM_RECORD_STATUS_TIMEOUT = 5000;
 
 export const QM_RECORD_STATUS_BAIL_TIME = 20000;
+
+export const HOLDINGS_FIXED_FIELD_DEFAULT_VALUES = {
+  AcqStatus: 0,
+  AcqMethod: 'u',
+  AcqEndDate: '////',
+  'Gen ret': 0,
+  'Spec ret': ['/', '/', '/'],
+  Compl: 0,
+  Copies: '///',
+  Lend: 'u',
+  Repro: 'u',
+  Lang: 'eng',
+  'Sep/comp': 0,
+  'Rept date': '//////',
+};

@@ -19,6 +19,7 @@ import {
   LEADER_EDITABLE_BYTES,
   CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
   CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS,
+  HOLDINGS_FIXED_FIELD_DEFAULT_VALUES,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import getMaterialCharsFieldConfig from './QuickMarcEditorRows/MaterialCharsField/getMaterialCharsFieldConfig';
@@ -51,6 +52,14 @@ const getCreateMarcRecordDefaultFields = (instanceRecord) => {
 
     if (tag === '004') {
       field.content = instanceRecord.hrid;
+    }
+
+    if (tag === '008') {
+      field.content = HOLDINGS_FIXED_FIELD_DEFAULT_VALUES;
+    }
+
+    if (tag === '852') {
+      field.content = '$a';
     }
 
     if (tag === '999') {
