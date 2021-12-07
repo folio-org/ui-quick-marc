@@ -56,8 +56,6 @@ const QuickMarcCreateWrapper = ({
       return null;
     }
 
-    showCallout({ messageId: 'ui-quick-marc.record.save.success.processing' });
-
     return mutator.quickMarcEditMarcRecord.POST(hydrateMarcRecord(formValuesForCreate))
       .then(({ qmRecordId }) => {
         const instanceId = formValues.externalId;
@@ -70,6 +68,9 @@ const QuickMarcCreateWrapper = ({
           location,
           instanceId,
         });
+
+        showCallout({ messageId: 'ui-quick-marc.record.save.success.processing' });
+        onClose();
       })
       .catch(async (errorResponse) => {
         let messageId;

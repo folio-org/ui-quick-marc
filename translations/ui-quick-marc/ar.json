@@ -39,7 +39,7 @@
     "record.fixedField.SpFm": "SpFm",
     "record.fixedField.Proj": "مشروع",
     "record.error.title.multiple": "لا يمكن حفظ التسجيلة في حالة وجود أكثر من حقل 245",
-    "record.error.title.empty": "ياا يمكن حفظ التسجيلة بدون الحقل 245",
+    "record.error.title.empty": "لا يمكن حفظ التسجيلة بدون الحقل 245",
     "record.delete.confirmLabel": "متابعة الحفظ",
     "record.delete.message": "بتحديد <b>متابعة مع الحفظ</b>، سيتم حذف <b>{count} حقلاً</b> وسيتم تحديث هذه التسجيلة. هل أنت متأكد من أنك تريد الاستمرار؟",
     "record.save.error.generic": "لم يتم حفظ التسجيلة: توجد مشكلة في الاتصال بالخادم. يرجى إعادة المحاولة.",

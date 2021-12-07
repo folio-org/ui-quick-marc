@@ -1054,7 +1054,6 @@ describe('QuickMarcEditor utils', () => {
       }, {
         tag: '008',
         id: uuid(),
-        content: HOLDINGS_FIXED_FIELD_DEFAULT_VALUES,
       }, {
         tag: '852',
         id: uuid(),
