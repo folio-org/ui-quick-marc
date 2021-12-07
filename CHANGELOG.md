@@ -13,6 +13,7 @@
 * [UIQM-167](https://issues.folio.org/browse/UIQM-167) Do not allow user to add multiple 004s for MARC Holdings.
 * [UIQM-164](https://issues.folio.org/browse/UIQM-164) Autopopulate an empty indicator box with a backslash when a value is missing in a box.
 * [UIQM-166](https://issues.folio.org/browse/UIQM-166) Do not allow user to add multiple 852s for MARC Holdings.
+* [UIQM-182](https://issues.folio.org/browse/UIQM-182) Update onSubmit action for `<QuickMarcCreateWrapper>`
 * [UIQM-183](https://issues.folio.org/browse/UIQM-183) Add QuickMarcView component.
 
 ## [4.0.3](https://github.com/folio-org/ui-quick-marc/tree/v4.0.3) (2021-11-09)

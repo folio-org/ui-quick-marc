@@ -1051,6 +1051,9 @@ describe('QuickMarcEditor utils', () => {
         tag: '005',
         id: uuid(),
       }, {
+        tag: '008',
+        id: uuid(),
+      }, {
         tag: '999',
         id: uuid(),
         indicators: ['f', 'f'],
