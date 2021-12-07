@@ -8,9 +8,9 @@ import {
 } from '@folio/stripes/components';
 
 import MarcField from './MarcField';
+import { isControlField } from './utils';
 
 import styles from './QuickMarcView.css';
-import { isControlField } from './utils';
 
 const propTypes = {
   marc: PropTypes.object.isRequired,
@@ -24,7 +24,7 @@ const propTypes = {
     PropTypes.string,
   ]),
   onClose: PropTypes.func.isRequired,
-  paneWidth: PropTypes.string.isRequired,
+  paneWidth: PropTypes.string,
 };
 
 const QuickMarcView = ({
