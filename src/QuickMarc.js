@@ -14,8 +14,11 @@ import {
 import { QUICK_MARC_ACTIONS } from './QuickMarcEditor/constants';
 import { MARC_TYPES } from './common/constants';
 
-const QuickMarc = ({ basePath, onClose }) => {
-  const routesConfig = [
+const QuickMarc = ({
+  basePath,
+  onClose,
+}) => {
+  const editorRoutesConfig = [
     {
       path: `${basePath}/edit-bib/:externalId`,
       permission: 'ui-quick-marc.quick-marc-editor.all',
@@ -58,7 +61,7 @@ const QuickMarc = ({ basePath, onClose }) => {
     <div data-test-quick-marc>
       <Switch>
         {
-          routesConfig.map(({
+          editorRoutesConfig.map(({
             path,
             permission,
             props: routeProps = {},
