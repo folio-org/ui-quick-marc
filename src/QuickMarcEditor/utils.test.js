@@ -6,6 +6,7 @@ import {
   LEADER_TAG,
   QUICK_MARC_ACTIONS,
   CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+  HOLDINGS_FIXED_FIELD_DEFAULT_VALUES,
 } from './constants';
 import { MARC_TYPES } from '../common/constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
@@ -1053,6 +1054,11 @@ describe('QuickMarcEditor utils', () => {
       }, {
         tag: '008',
         id: uuid(),
+        content: HOLDINGS_FIXED_FIELD_DEFAULT_VALUES,
+      }, {
+        tag: '852',
+        id: uuid(),
+        content: '$a',
       }, {
         tag: '999',
         id: uuid(),
