@@ -3,6 +3,7 @@ import uuid from 'uuid';
 import omit from 'lodash/omit';
 import compact from 'lodash/compact';
 import isString from 'lodash/isString';
+import isNumber from 'lodash/isNumber';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -506,6 +507,13 @@ export const cleanBytesFields = (formValues, initialValues, marcType) => {
         return {
           ...acc,
           [key]: value,
+        };
+      }
+
+      if (isNumber(value)) {
+        return {
+          ...acc,
+          [key]: `${value}`,
         };
       }
 
