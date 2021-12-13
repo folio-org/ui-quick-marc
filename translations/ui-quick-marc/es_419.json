@@ -121,7 +121,6 @@
     "record.status": "Status:",
     "record.status.new": "Nuevo",
     "permission.quick-marc-editor.duplicate": "quickMARC: Derive new MARC bibliographic record",
-    "record.duplicate.notification.success": "Este registro se ha guardado con éxito y está en proceso. Es posible que los cambios no aparezcan inmediatamente.",
     "record.saveNew.onSave": "La creación de un registro puede tardar varios segundos.",
     "record.saveNew.success": "Registro creado.",
     "record.saveNew.error": "No se ha podido crear el registro debido a un error del sistema. Por favor, inténtelo de nuevo o póngase en contacto con el servicio de asistencia.",

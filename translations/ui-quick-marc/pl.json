@@ -121,7 +121,6 @@
     "record.status": "Status rekordu:",
     "record.status.new": "Nowy",
     "permission.quick-marc-editor.duplicate": "quickMARC: Pozyskiwanie nowych rekordów bibliograficznych MARC",
-    "record.duplicate.notification.success": "Ten rekord został pomyślnie zapisany i jest w trakcie przetwarzania. Zmiany mogą nie pojawić się natychmiast.",
     "record.saveNew.onSave": "Creating record may take several seconds.",
     "record.saveNew.success": "Record created.",
     "record.saveNew.error": "Unable to create record due to system error. Please try again or contact support.",
