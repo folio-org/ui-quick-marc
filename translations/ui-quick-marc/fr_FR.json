@@ -121,7 +121,6 @@
     "record.status": "Statut d'enregistrement:",
     "record.status.new": "Nouveau",
     "permission.quick-marc-editor.duplicate": "quickMARC : créer une nouvelle notice MARC bibliographique",
-    "record.duplicate.notification.success": "Cet enregistrement a été enregistré avec succès et est en cours. Les modifications peuvent ne pas apparaître immédiatement.",
     "record.saveNew.onSave": "La création d'un enregistrement peut prendre plusieurs secondes.",
     "record.saveNew.success": "Enregistrement créé.",
     "record.saveNew.error": "Impossible de créer un enregistrement en raison d'une erreur système. Veuillez réessayer ou contacter l'assistance.",
@@ -182,9 +181,9 @@
     "permission.quick-marc-holdings-editor.create": "quickMARC: Create a new MARC holdings record",
     "record.fixedField.Rept date": "Rept date",
     "record.error.bib.leader.invalid005PositionValue": "Record cannot be saved. Invalid value entered for position 5.",
-    "record.error.location.empty": "Record cannot be saved. An 852 is required.",
+    "record.error.location.empty": "La notice ne peut pas être sauvegardée. Le champ 852 doit être complété",
     "holdings-record.create.title": "Create a new MARC Holdings record",
     "record.lastUpdated": "Dernière mise à jour : {date} {time}",
-    "record.error.instanceHrid.multiple": "Record cannot be saved. Can only have one MARC 004.",
-    "record.error.location.multiple": "Record cannot be saved. Can only have one MARC 852."
+    "record.error.instanceHrid.multiple": "La notice ne peut pas être sauvegardée. Il ne peut y avoir qu'un seul champ MARC 004.",
+    "record.error.location.multiple": "La notice ne peut pas être sauvegardée. Il ne peut y avoir qu'un seul MARC 852."
 }

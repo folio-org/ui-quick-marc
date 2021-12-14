@@ -121,7 +121,6 @@
     "record.status": "Record status:",
     "record.status.new": "New",
     "permission.quick-marc-editor.duplicate": "quickMARC: Duplicate and create a new MARC bibliographic record",
-    "record.duplicate.notification.success": "This record has successfully saved and is in process. Changes may not appear immediately.",
     "record.saveNew.onSave": "Creating record may take several seconds.",
     "record.saveNew.success": "Record created.",
     "record.saveNew.error": "Unable to create record due to system error. Please try again or contact support.",
