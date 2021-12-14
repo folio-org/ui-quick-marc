@@ -121,7 +121,6 @@
     "record.status": "记录状态：",
     "record.status.new": "新建",
     "permission.quick-marc-editor.duplicate": "quickMARC：衍生新MARC书目记录",
-    "record.duplicate.notification.success": "本记录已成功保存，正在处理中。更改可能不会立即显示。",
     "record.saveNew.onSave": "创建记录可能需要几秒钟。",
     "record.saveNew.success": "记录已创建。",
     "record.saveNew.error": "由于系统错误，无法创建记录。请重试或联系支持人员。",
