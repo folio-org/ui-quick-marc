@@ -48,7 +48,6 @@ const QuickMarcEditorRows = ({
     moveRecord,
   },
   marcType,
-  id,
 }) => {
   const intl = useIntl();
 
@@ -77,7 +76,7 @@ const QuickMarcEditorRows = ({
   }, [moveRecord]);
 
   return (
-    <>
+    <div id="quick-marc-editor-rows">
       {
         fields.map((recordRow, idx) => {
           const isDisabled = isReadOnly(recordRow, action, marcType);
@@ -97,7 +96,6 @@ const QuickMarcEditorRows = ({
               key={idx}
               className={styles.quickMarcEditorRow}
               data-testid="quick-marc-editorid"
-              id={id}
             >
               <div className={styles.quickMarcEditorMovingRow}>
                 {
@@ -271,11 +269,6 @@ QuickMarcEditorRows.propTypes = {
     moveRecord: PropTypes.func.isRequired,
   }),
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
-  id: PropTypes.string,
 };
-
-const defaultProps = {
-  id: 'quickmarc-editor-row',
-}
 
 export default QuickMarcEditorRows;
