@@ -48,6 +48,7 @@ const QuickMarcEditorRows = ({
     moveRecord,
   },
   marcType,
+  id,
 }) => {
   const intl = useIntl();
 
