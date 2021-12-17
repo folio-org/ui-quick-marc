@@ -96,6 +96,7 @@ const QuickMarcEditorRows = ({
               key={idx}
               className={styles.quickMarcEditorRow}
               data-testid="quick-marc-editorid"
+              id={id}
             >
               <div className={styles.quickMarcEditorMovingRow}>
                 {
@@ -269,6 +270,11 @@ QuickMarcEditorRows.propTypes = {
     moveRecord: PropTypes.func.isRequired,
   }),
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
+  id: PropTypes.string,
 };
+
+defaultProps = {
+  id: 'pane-note-view',
+}
 
 export default QuickMarcEditorRows;
