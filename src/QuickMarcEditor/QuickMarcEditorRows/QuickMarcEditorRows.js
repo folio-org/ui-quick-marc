@@ -274,7 +274,7 @@ QuickMarcEditorRows.propTypes = {
 };
 
 const defaultProps = {
-  id: 'pane-note-view',
+  id: 'quickmarc-editor-row',
 }
 
 export default QuickMarcEditorRows;
