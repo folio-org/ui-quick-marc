@@ -76,7 +76,7 @@ const QuickMarcEditorRows = ({
   }, [moveRecord]);
 
   return (
-    <>
+    <div id="quick-marc-editor-rows">
       {
         fields.map((recordRow, idx) => {
           const isDisabled = isReadOnly(recordRow, action, marcType);
@@ -247,7 +247,7 @@ const QuickMarcEditorRows = ({
           );
         })
       }
-    </>
+    </div>
   );
 };
 
