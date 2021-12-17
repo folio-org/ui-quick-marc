@@ -273,7 +273,7 @@ QuickMarcEditorRows.propTypes = {
   id: PropTypes.string,
 };
 
-defaultProps = {
+const defaultProps = {
   id: 'pane-note-view',
 }
 
