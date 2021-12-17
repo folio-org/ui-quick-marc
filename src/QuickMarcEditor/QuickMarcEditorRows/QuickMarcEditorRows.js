@@ -247,7 +247,7 @@ const QuickMarcEditorRows = ({
           );
         })
       }
-    </>
+    </div>
   );
 };
 
