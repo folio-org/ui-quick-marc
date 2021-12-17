@@ -3,6 +3,13 @@
   "extends": ["@folio/eslint-config-stripes/acquisitions"],
   "overrides": [{
     "files": [ "*.test.js" ],
+    "settings": {
+      "import/resolver": {
+        "node": {
+          "extensions": [".js", ".jsx"]
+        }
+      }  
+    },
     "rules": {
       "no-unused-expressions": 0
     }
