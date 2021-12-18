@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import faker from 'faker';
 
-import uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 import {
   LEADER_TAG,
   QUICK_MARC_ACTIONS,
@@ -13,7 +13,9 @@ import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import * as utils from './utils';
 
 jest.mock('uuid', () => {
-  return () => 'uuid';
+  return {
+    v4: () => 'uuid',
+  };
 });
 
 describe('QuickMarcEditor utils', () => {

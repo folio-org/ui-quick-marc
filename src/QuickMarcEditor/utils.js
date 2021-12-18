@@ -1,5 +1,5 @@
 import React from 'react';
-import uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import omit from 'lodash/omit';
 import compact from 'lodash/compact';
 import isString from 'lodash/isString';
@@ -39,7 +39,7 @@ export const dehydrateMarcRecordResponse = marcRecordResponse => ({
     },
     ...marcRecordResponse.fields.map(record => ({
       ...record,
-      id: uuid(),
+      id: uuidv4(),
     })),
   ],
 });
@@ -48,7 +48,7 @@ const getCreateMarcRecordDefaultFields = (instanceRecord) => {
   return CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS.map(tag => {
     const field = {
       tag,
-      id: uuid(),
+      id: uuidv4(),
     };
 
     if (tag === '004') {
@@ -175,7 +175,7 @@ export const addNewRecord = (index, state) => {
   const records = [...state.formState.values.records];
   const newIndex = index + 1;
   const emptyRow = {
-    id: uuid(),
+    id: uuidv4(),
     tag: '',
     content: '$a ',
     indicators: ['\\', '\\'],
