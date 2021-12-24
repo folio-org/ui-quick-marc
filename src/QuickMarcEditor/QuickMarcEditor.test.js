@@ -195,4 +195,23 @@ describe('Given Quick Marc Editor', () => {
       });
     });
   });
+
+  describe('when marc record is of type AUTHORITY', () => {
+    it('should display instance title in pane title', () => {
+      const instance = getInstance();
+      const { getByText } = renderQuickMarcEditor({
+        instance,
+        onClose: jest.fn(),
+        onSubmit: jest.fn(),
+        mutators: {
+          addRecord: jest.fn(),
+          deleteRecord: jest.fn(),
+          moveRecord: jest.fn(),
+        },
+        marcType: MARC_TYPES.AUTHORITY,
+      });
+
+      expect(getByText('ui-quick-marc.authority-record.edit.title')).toBeDefined();
+    });
+  });
 });

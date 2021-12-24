@@ -60,11 +60,17 @@ const QuickMarcEditWrapper = ({
 
     const marcRecord = hydrateMarcRecord(formValuesForEdit);
 
-    marcRecord.relatedRecordVersion = searchParams.get('relatedRecordVersion');
+    marcRecord.relatedRecordVersion = marcType === MARC_TYPES.AUTHORITY
+      ? instance._version
+      : searchParams.get('relatedRecordVersion');
 
     return mutator.quickMarcEditMarcRecord.PUT(marcRecord)
       .then(() => {
-        showCallout({ messageId: 'ui-quick-marc.record.save.success.processing' });
+        showCallout({
+          messageId: marcType === MARC_TYPES.AUTHORITY
+            ? 'ui-quick-marc.record.save.updated'
+            : 'ui-quick-marc.record.save.success.processing',
+        });
         onClose();
       })
       .catch(async (errorResponse) => {
@@ -77,13 +83,21 @@ const QuickMarcEditWrapper = ({
           error = {};
         }
 
-        if (error.code === 'ILLEGAL_FIXED_LENGTH_CONTROL_FIELD') {
-          messageId = 'ui-quick-marc.record.save.error.illegalFixedLength';
+        if (marcType === MARC_TYPES.AUTHORITY) {
+          showCallout({
+            messageId: 'ui-quick-marc.record.save.updated.error',
+            values: { errorMsg: error.message },
+            type: 'error',
+          });
         } else {
-          messageId = 'ui-quick-marc.record.save.error.generic';
-        }
+          if (error.code === 'ILLEGAL_FIXED_LENGTH_CONTROL_FIELD') {
+            messageId = 'ui-quick-marc.record.save.error.illegalFixedLength';
+          } else {
+            messageId = 'ui-quick-marc.record.save.error.generic';
+          }
 
-        showCallout({ messageId, type: 'error' });
+          showCallout({ messageId, type: 'error' });
+        }
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onClose, showCallout]);

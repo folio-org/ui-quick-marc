@@ -21,6 +21,7 @@ import {
   CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
   CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS,
   HOLDINGS_FIXED_FIELD_DEFAULT_VALUES,
+  CORRESPONDING_HEADING_TYPE_TAGS,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import getMaterialCharsFieldConfig from './QuickMarcEditorRows/MaterialCharsField/getMaterialCharsFieldConfig';
@@ -341,9 +342,13 @@ export const validateMarcRecord = (marcRecord, initialValues, marcType = MARC_TY
     return leaderError;
   }
 
-  const validationResult = marcType === MARC_TYPES.BIB
-    ? validateMarcBibRecord(marcRecords)
-    : validateMarcHoldingsRecord(marcRecords);
+  let validationResult;
+
+  if (marcType === MARC_TYPES.BIB) {
+    validationResult = validateMarcBibRecord(marcRecords);
+  } else if (marcType === MARC_TYPES.HOLDINGS) {
+    validationResult = validateMarcHoldingsRecord(marcRecords);
+  }
 
   if (validationResult) {
     return validationResult;
@@ -544,4 +549,23 @@ export const cleanBytesFields = (formValues, initialValues, marcType) => {
     ...formValues,
     records: cleanedRecords,
   };
+};
+
+export const getCorrespondingMarcTag = (records) => {
+  const correspondingHeadingTypeTags = new Set(CORRESPONDING_HEADING_TYPE_TAGS);
+
+  return records.find(recordRow => correspondingHeadingTypeTags.has(recordRow.tag)).tag;
+};
+
+export const getContentSubfieldValue = (content) => {
+  return content.split(/\$/).reduce((acc, str) => {
+    if (!str) {
+      return acc;
+    }
+
+    return {
+      ...acc,
+      [`$${str[0]}`]: str.substring(2),
+    };
+  }, {});
 };

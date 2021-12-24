@@ -11,6 +11,7 @@ import ScoreFixedField from './ScoreFixedField';
 import SoundRecordingFixedField from './SoundRecordingFixedField';
 import VisualMaterialFixedField from './VisualMaterialFixedField';
 import HoldingsFixedField from './HoldingsFixedField';
+import AuthorityFixedField from './AuthorityFixedField';
 
 export const FixedFieldFactory = {
   getFixedFieldByType(marcType, type, subtype) {
@@ -19,6 +20,9 @@ export const FixedFieldFactory = {
     switch (true) {
       case marcType === MARC_TYPES.HOLDINGS:
         FixedField = HoldingsFixedField;
+        break;
+      case marcType === MARC_TYPES.AUTHORITY:
+        FixedField = AuthorityFixedField;
         break;
       case type === 'a' && ['b', 'i', 's'].includes(subtype):
       case type === 's':

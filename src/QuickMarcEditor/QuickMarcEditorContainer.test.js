@@ -1,6 +1,11 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { render, cleanup, act, fireEvent } from '@testing-library/react';
+import {
+  render,
+  cleanup,
+  act,
+  fireEvent,
+} from '@testing-library/react';
 import faker from 'faker';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
@@ -8,6 +13,10 @@ import '@folio/stripes-acq-components/test/jest/__mock__';
 import QuickMarcEditorContainer from './QuickMarcEditorContainer';
 import QuickMarcEditWrapper from './QuickMarcEditWrapper';
 import { QUICK_MARC_ACTIONS } from './constants';
+import {
+  EXTERNAL_INSTANCE_APIS,
+  MARC_TYPES,
+} from '../common/constants';
 
 const getInstance = () => ({
   id: faker.random.uuid(),
@@ -34,6 +43,7 @@ const renderQuickMarcEditorContainer = ({
   mutator,
   action,
   wrapper,
+  marcType = MARC_TYPES.BIB,
 }) => (render(
   <MemoryRouter>
     <QuickMarcEditorContainer
@@ -42,7 +52,7 @@ const renderQuickMarcEditorContainer = ({
       mutator={mutator}
       wrapper={wrapper}
       action={action}
-      marcType="bib"
+      marcType={marcType}
     />
   </MemoryRouter>,
 ));
@@ -113,6 +123,7 @@ describe('Given Quick Marc Editor Container', () => {
           onClose,
           action: QUICK_MARC_ACTIONS.EDIT,
           wrapper: QuickMarcEditWrapper,
+          marcType: MARC_TYPES.BIB,
         });
 
         getByText = renderer.getByText;
@@ -128,6 +139,35 @@ describe('Given Quick Marc Editor Container', () => {
       }));
 
       expect(onClose).toHaveBeenCalled();
+    });
+  });
+
+  describe('when marc type is "authority"', () => {
+    it('should change externalInstanceApi to authority instance api', () => {
+      renderQuickMarcEditorContainer({
+        mutator,
+        onClose: jest.fn(),
+        action: QUICK_MARC_ACTIONS.EDIT,
+        wrapper: QuickMarcEditWrapper,
+        marcType: MARC_TYPES.AUTHORITY,
+      });
+
+      expect(mutator.externalInstanceApi.update)
+        .toHaveBeenCalledWith({ _path: EXTERNAL_INSTANCE_APIS[MARC_TYPES.AUTHORITY] });
+    });
+  });
+
+  describe('when action is create', () => {
+    it('should change externalInstanceApi to bib instance api', () => {
+      renderQuickMarcEditorContainer({
+        mutator,
+        onClose: jest.fn(),
+        action: QUICK_MARC_ACTIONS.CREATE,
+        wrapper: QuickMarcEditWrapper,
+      });
+
+      expect(mutator.externalInstanceApi.update)
+        .toHaveBeenCalledWith({ _path: EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB] });
     });
   });
 });

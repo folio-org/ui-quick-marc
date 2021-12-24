@@ -63,6 +63,15 @@
           "inventory.instances.item.get"
         ],
         "visible": true
+      },
+      {
+        "permissionName": "ui-quick-marc.quick-marc-authorities-editor.all",
+        "displayName": "quickMARC: View, edit MARC authorities record",
+        "subPermissions": [
+          "records-editor.records.item.get",
+          "records-editor.records.item.put"
+        ],
+        "visible": true
       }
     ]
   },

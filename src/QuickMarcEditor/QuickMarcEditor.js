@@ -30,6 +30,8 @@ import {
   deleteRecordByIndex,
   reorderRecords,
   restoreRecordAtIndex,
+  getCorrespondingMarcTag,
+  getContentSubfieldValue,
 } from './utils';
 
 const spySubscription = { values: true };
@@ -109,6 +111,18 @@ const QuickMarcEditor = ({
     />
   );
 
+  const recordInfoProps = {
+    status: initialValues?.updateInfo?.recordState,
+    updateDate: initialValues?.updateInfo?.updateDate,
+    updatedBy: initialValues?.updateInfo?.updatedBy,
+    isEditAction: action === QUICK_MARC_ACTIONS.EDIT,
+    marcType,
+  };
+
+  if ((marcType === MARC_TYPES.AUTHORITY) && records.length) {
+    recordInfoProps.correspondingMarcTag = getCorrespondingMarcTag(records);
+  }
+
   const getPaneTitle = () => {
     let formattedMessageValues = {};
 
@@ -122,7 +136,17 @@ const QuickMarcEditor = ({
         return '';
       }
 
-      formattedMessageValues = instance;
+      if ((marcType === MARC_TYPES.AUTHORITY) && records.length) {
+        const headingTagContent = records.find((recordRow) => {
+          return recordRow.tag === recordInfoProps.correspondingMarcTag;
+        }).content;
+
+        formattedMessageValues = {
+          title: getContentSubfieldValue(headingTagContent).$a,
+        };
+      } else {
+        formattedMessageValues = instance;
+      }
     }
 
     return (
@@ -186,14 +210,7 @@ const QuickMarcEditor = ({
             onClose={onClose}
             defaultWidth="100%"
             paneTitle={getPaneTitle()}
-            paneSub={(
-              <QuickMarcRecordInfo
-                status={initialValues?.updateInfo?.recordState}
-                updateDate={initialValues?.updateInfo?.updateDate}
-                updatedBy={initialValues?.updateInfo?.updatedBy}
-                isEditAction={action === QUICK_MARC_ACTIONS.EDIT}
-              />
-            )}
+            paneSub={<QuickMarcRecordInfo {...recordInfoProps} />}
             footer={paneFooter}
           >
             <Row>

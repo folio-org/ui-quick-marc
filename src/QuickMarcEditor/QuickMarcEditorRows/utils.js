@@ -44,6 +44,7 @@ export const hasIndicatorException = recordRow => INDICATOR_EXEPTION_ROWS.has(re
 const ADD_EXCEPTION_ROWS = {
   [MARC_TYPES.BIB]: new Set([LEADER_TAG, '001', '003', '005', '008']),
   [MARC_TYPES.HOLDINGS]: new Set([LEADER_TAG, '001', '003', '004', '005', '008']),
+  [MARC_TYPES.AUTHORITY]: new Set(),
 };
 
 export const hasAddException = (recordRow, marcType = MARC_TYPES.BIB) => {

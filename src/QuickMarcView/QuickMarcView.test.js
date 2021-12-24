@@ -80,4 +80,14 @@ describe('Given QuickMarcView', () => {
 
     expect(getByText(`LEADER ${marc.parsedRecord.content.leader}`)).toBeDefined();
   });
+
+  describe('when present "lastMenu" prop', () => {
+    it('should render "lastMenu" prop', () => {
+      const { getByText } = renderQuickMarcView({
+        lastMenu: <div>Last Menu Node</div>,
+      });
+
+      expect(getByText('Last Menu Node')).toBeDefined();
+    });
+  });
 });
