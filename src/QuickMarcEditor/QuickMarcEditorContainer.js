@@ -53,7 +53,6 @@ const QuickMarcEditorContainer = ({
     externalId,
     instanceId,
   } = match.params;
-
   const [instance, setInstance] = useState();
   const [marcRecord, setMarcRecord] = useState();
   const [locations, setLocations] = useState();
@@ -62,9 +61,9 @@ const QuickMarcEditorContainer = ({
   const showCallout = useShowCallout();
 
   useEffect(() => {
-    const path = marcType === MARC_TYPES.BIB || action === QUICK_MARC_ACTIONS.CREATE
+    const path = action === QUICK_MARC_ACTIONS.CREATE
       ? EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]
-      : EXTERNAL_INSTANCE_APIS[MARC_TYPES.HOLDINGS];
+      : EXTERNAL_INSTANCE_APIS[marcType];
 
     mutator.externalInstanceApi.update({
       _path: path,

@@ -55,6 +55,15 @@ const QuickMarc = ({
         marcType: MARC_TYPES.HOLDINGS,
       },
     },
+    {
+      path: `${basePath}/edit-authority/:externalId`,
+      // permission: 'ui-quick-marc.quick-marc-authorities-editor.all',
+      props: {
+        action: QUICK_MARC_ACTIONS.EDIT,
+        wrapper: QuickMarcEditWrapper,
+        marcType: MARC_TYPES.AUTHORITY,
+      },
+    },
   ];
 
   return (
@@ -69,13 +78,21 @@ const QuickMarc = ({
             <Route
               path={path}
               key={path}
-              render={() => (
-                <IfPermission perm={permission}>
+              render={() => (permission
+                ? (
+                  <IfPermission perm={permission}>
+                    <QuickMarcEditorContainer
+                      onClose={onClose}
+                      {...routeProps}
+                    />
+                  </IfPermission>
+                )
+                : (
                   <QuickMarcEditorContainer
                     onClose={onClose}
                     {...routeProps}
                   />
-                </IfPermission>
+                )
               )}
             />
           ))

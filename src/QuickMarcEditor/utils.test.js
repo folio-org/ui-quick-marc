@@ -1086,4 +1086,31 @@ describe('QuickMarcEditor utils', () => {
       expect(utils.getCreateMarcRecordResponse(instanceResponse)).toEqual(expectedResult);
     });
   });
+
+  describe('getCorrespondingMarcTag', () => {
+    it('should return first corresponding record tag', () => {
+      const records = [{
+        tag: '001',
+        id: uuid(),
+      }, {
+        tag: '130',
+        id: uuid(),
+      }, {
+        tag: '852',
+        id: uuid(),
+      }, {
+        tag: '999',
+        id: uuid(),
+        indicators: ['f', 'f'],
+      }];
+
+      expect(utils.getCorrespondingMarcTag(records)).toEqual('130');
+    });
+  });
+
+  describe('getContentSubfieldValue', () => {
+    it('should return splited string by subfields into object', () => {
+      expect(utils.getContentSubfieldValue('$a Test Title')).toEqual({ $a: 'Test Title' });
+    });
+  });
 });

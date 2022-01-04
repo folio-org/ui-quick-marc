@@ -13,6 +13,7 @@ import { isControlField } from './utils';
 import styles from './QuickMarcView.css';
 
 const propTypes = {
+  lastMenu: PropTypes.node,
   marc: PropTypes.object.isRequired,
   marcTitle: PropTypes.node.isRequired,
   paneTitle: PropTypes.oneOfType([
@@ -34,6 +35,7 @@ const QuickMarcView = ({
   marc,
   onClose,
   paneWidth,
+  lastMenu,
 }) => {
   const parsedContent = marc.parsedRecord.content;
   const parsedMarc = {
@@ -43,6 +45,12 @@ const QuickMarcView = ({
       ...parsedContent.fields.filter(field => !isControlField(field)),
     ],
   };
+
+  const optionalProps = {};
+
+  if (lastMenu) {
+    optionalProps.lastMenu = lastMenu;
+  }
 
   return (
     <Paneset isRoot>
@@ -54,6 +62,7 @@ const QuickMarcView = ({
         dismissible
         onClose={onClose}
         data-test-instance-marc
+        {...optionalProps}
       >
         <section className={styles.marcWrapper}>
           <Headline

@@ -8,3 +8,4 @@ export { default as MixedMaterialFixedField } from './MixedMaterialFixedField';
 export { default as ScoreFixedField } from './ScoreFixedField';
 export { default as SoundRecordingFixedField } from './SoundRecordingFixedField';
 export { default as VisualMaterialFixedField } from './VisualMaterialFixedField';
+export { default as AutorityFixedField } from './AuthorityFixedField';

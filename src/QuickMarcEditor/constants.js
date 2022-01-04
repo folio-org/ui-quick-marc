@@ -5,6 +5,7 @@ export const LEADER_TAG = 'LDR';
 export const LEADER_EDITABLE_BYTES = {
   [MARC_TYPES.BIB]: [5, 8, 17, 18, 19],
   [MARC_TYPES.HOLDINGS]: [5, 6, 17, 18],
+  [MARC_TYPES.AUTHORITY]: [],
 };
 
 export const QUICK_MARC_ACTIONS = {
@@ -42,6 +43,11 @@ export const FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS = {
     { tag: '007' },
     { tag: '008' },
   ],
+  [MARC_TYPES.AUTHORITY]: [
+    { tag: LEADER_TAG },
+    ...FIELD_TAGS_TO_REMOVE,
+    { tag: '008' },
+  ],
 };
 
 export const CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE = '00000nu\\\\\\2200000un\\4500';
@@ -66,3 +72,5 @@ export const HOLDINGS_FIXED_FIELD_DEFAULT_VALUES = {
   'Sep/comp': 0,
   'Rept date': '//////',
 };
+
+export const CORRESPONDING_HEADING_TYPE_TAGS = ['100', '110', '111', '151', '130', '150', '155'];
