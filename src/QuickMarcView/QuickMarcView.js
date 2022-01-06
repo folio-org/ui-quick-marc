@@ -13,6 +13,7 @@ import { isControlField } from './utils';
 import styles from './QuickMarcView.css';
 
 const propTypes = {
+  isPaneset: PropTypes.bool,
   lastMenu: PropTypes.node,
   marc: PropTypes.object.isRequired,
   marcTitle: PropTypes.node.isRequired,
@@ -36,6 +37,7 @@ const QuickMarcView = ({
   onClose,
   paneWidth,
   lastMenu,
+  isPaneset,
 }) => {
   const parsedContent = marc.parsedRecord.content;
   const parsedMarc = {
@@ -52,52 +54,64 @@ const QuickMarcView = ({
     optionalProps.lastMenu = lastMenu;
   }
 
-  return (
-    <Paneset isRoot>
-      <Pane
-        paneTitle={paneTitle}
-        paneSub={paneSub}
-        defaultWidth={paneWidth}
-        id="marc-view-pane"
-        dismissible
-        onClose={onClose}
-        data-test-instance-marc
-        {...optionalProps}
-      >
-        <section className={styles.marcWrapper}>
-          <Headline
-            size="large"
-            margin="small"
-            tag="h3"
-          >
-            {marcTitle}
-          </Headline>
+  const renderContent = () => (
+    <Pane
+      paneTitle={paneTitle}
+      paneSub={paneSub}
+      defaultWidth={paneWidth}
+      id="marc-view-pane"
+      dismissible
+      onClose={onClose}
+      data-test-instance-marc
+      {...optionalProps}
+    >
+      <section className={styles.marcWrapper}>
+        <Headline
+          size="large"
+          margin="small"
+          tag="h3"
+        >
+          {marcTitle}
+        </Headline>
 
-          <table className={styles.marc}>
-            <tbody>
-              <tr data-test-instance-marc-field>
-                <td colSpan="4">
-                  {`LEADER ${parsedMarc.leader}`}
-                </td>
-              </tr>
+        <table className={styles.marc}>
+          <tbody>
+            <tr data-test-instance-marc-field>
+              <td colSpan="4">
+                {`LEADER ${parsedMarc.leader}`}
+              </td>
+            </tr>
 
-              {
-                parsedMarc.fields
-                  .map((field, idx) => (
-                    <MarcField
-                      field={field}
-                      key={idx}
-                    />
-                  ))
-              }
-            </tbody>
-          </table>
-        </section>
-      </Pane>
-    </Paneset>
+            {
+              parsedMarc.fields
+                .map((field, idx) => (
+                  <MarcField
+                    field={field}
+                    key={idx}
+                  />
+                ))
+            }
+          </tbody>
+        </table>
+      </section>
+    </Pane>
   );
+
+  return isPaneset
+    ? (
+      <Paneset
+        isRoot
+        data-testid="qm-view-paneset"
+      >
+        {renderContent()}
+      </Paneset>
+    )
+    : renderContent();
 };
 
 QuickMarcView.propTypes = propTypes;
+QuickMarcView.defaultProps = {
+  isPaneset: true,
+};
 
 export default QuickMarcView;
