@@ -18,6 +18,7 @@
 * [UIQM-183](https://issues.folio.org/browse/UIQM-183) Add QuickMarcView component.
 * [UIQM-191](https://issues.folio.org/browse/UIQM-191) Use supported `uuid`.
 * [UIQM-142](https://issues.folio.org/browse/UIQM-142) Edit MARC authority record via quickMARC.
+* Lock `faker` version.
 
 ## [4.0.3](https://github.com/folio-org/ui-quick-marc/tree/v4.0.3) (2021-11-09)
 
