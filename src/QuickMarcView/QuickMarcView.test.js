@@ -81,6 +81,22 @@ describe('Given QuickMarcView', () => {
     expect(getByText(`LEADER ${marc.parsedRecord.content.leader}`)).toBeDefined();
   });
 
+  it('should render paneset wrapper', () => {
+    const { getByTestId } = renderQuickMarcView();
+
+    expect(getByTestId('qm-view-paneset')).toBeDefined();
+  });
+
+  describe('when "isPaneset" prop is false', () => {
+    it('should not render paneset wrapper', () => {
+      const { queryByTestId } = renderQuickMarcView({
+        isPaneset: false,
+      });
+
+      expect(queryByTestId('qm-view-paneset')).toBeNull();
+    });
+  });
+
   describe('when present "lastMenu" prop', () => {
     it('should render "lastMenu" prop', () => {
       const { getByText } = renderQuickMarcView({
