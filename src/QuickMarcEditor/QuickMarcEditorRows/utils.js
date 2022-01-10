@@ -19,6 +19,8 @@ const READ_ONLY_ROWS_FOR_DUPLICATE = new Set([LEADER_TAG, '001', '005']);
 
 const READ_ONLY_ROWS_FOR_HOLDINGS = new Set(['001', '004', '005']);
 
+const READ_ONLY_ROWS_FOR_AUTHORITIES = new Set([LEADER_TAG, '001', '005']);
+
 export const isReadOnly = (
   recordRow,
   action = QUICK_MARC_ACTIONS.EDIT,
@@ -30,8 +32,10 @@ export const isReadOnly = (
     rows = action === QUICK_MARC_ACTIONS.DUPLICATE
       ? READ_ONLY_ROWS_FOR_DUPLICATE
       : READ_ONLY_ROWS;
-  } else {
+  } else if (marcType === MARC_TYPES.HOLDINGS) {
     rows = READ_ONLY_ROWS_FOR_HOLDINGS;
+  } else {
+    rows = READ_ONLY_ROWS_FOR_AUTHORITIES;
   }
 
   return rows.has(recordRow.tag) || isLastRecord(recordRow);
@@ -44,7 +48,7 @@ export const hasIndicatorException = recordRow => INDICATOR_EXEPTION_ROWS.has(re
 const ADD_EXCEPTION_ROWS = {
   [MARC_TYPES.BIB]: new Set([LEADER_TAG, '001', '003', '005', '008']),
   [MARC_TYPES.HOLDINGS]: new Set([LEADER_TAG, '001', '003', '004', '005', '008']),
-  [MARC_TYPES.AUTHORITY]: new Set(),
+  [MARC_TYPES.AUTHORITY]: new Set([LEADER_TAG, '001', '003', '005', '008']),
 };
 
 export const hasAddException = (recordRow, marcType = MARC_TYPES.BIB) => {
