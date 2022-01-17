@@ -17,6 +17,7 @@ import {
   ConfirmationModal,
   PaneFooter,
   Button,
+  CommandList,
 } from '@folio/stripes/components';
 
 import { FormSpy } from 'react-final-form';
@@ -33,6 +34,8 @@ import {
   getCorrespondingMarcTag,
   getContentSubfieldValue,
 } from './utils';
+
+import commandsGeneral from '../commandsGeneral';
 
 const spySubscription = { values: true };
 const hotKeys = {
@@ -198,6 +201,7 @@ const QuickMarcEditor = ({
   }), [saveFormDisabled, confirmSubmit, onClose]);
 
   return (
+    <CommandList commands={commandsGeneral}>
     <HotKeys
       keyMap={hotKeys}
       handlers={hotKeysHandlers}
@@ -249,6 +253,7 @@ const QuickMarcEditor = ({
         onChange={changeRecords}
       />
     </HotKeys>
+    </CommandList>
   );
 };
 
