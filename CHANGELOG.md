@@ -20,6 +20,7 @@
 * [UIQM-142](https://issues.folio.org/browse/UIQM-142) Edit MARC authority record via quickMARC.
 * Lock `faker` version.
 * [UIQM-195](https://issues.folio.org/browse/UIQM-195) Changes for MARC Authorities App: Closing third pane does not resize the second pane.
+* [UIQM-199](https://issues.folio.org/browse/UIQM-199) MARC Authority: Implement App context menu and keyboard shortcuts.
 
 ## [4.0.3](https://github.com/folio-org/ui-quick-marc/tree/v4.0.3) (2021-11-09)
 
