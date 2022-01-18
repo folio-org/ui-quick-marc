@@ -70,7 +70,6 @@ const QuickMarcCreateWrapper = ({
         });
 
         showCallout({ messageId: 'ui-quick-marc.record.save.success.processing' });
-        onClose();
       })
       .catch(async (errorResponse) => {
         let messageId;
