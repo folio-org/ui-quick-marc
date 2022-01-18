@@ -13,10 +13,11 @@ import {
   Paneset,
   Row,
   Col,
-  HotKeys,
   ConfirmationModal,
   PaneFooter,
   Button,
+  HasCommand,
+  checkScope,
 } from '@folio/stripes/components';
 
 import { FormSpy } from 'react-final-form';
@@ -35,10 +36,6 @@ import {
 } from './utils';
 
 const spySubscription = { values: true };
-const hotKeys = {
-  save: ['mod+s'],
-  close: ['mod+alt+h'],
-};
 
 const QuickMarcEditor = ({
   action,
@@ -183,24 +180,26 @@ const QuickMarcEditor = ({
     }
   }, []);
 
-  const hotKeysHandlers = useMemo(() => ({
-    save: e => {
-      e.preventDefault();
-
+  const shortcuts = useMemo(() => ([{
+    name: 'save',
+    handler: () => {
       if (!saveFormDisabled) {
         confirmSubmit();
       }
     },
-    close: e => {
-      e.preventDefault();
+  }, {
+    name: 'cancel',
+    shortcut: 'esc',
+    handler: () => {
       onClose();
     },
-  }), [saveFormDisabled, confirmSubmit, onClose]);
+  }]), [saveFormDisabled, confirmSubmit, onClose]);
 
   return (
-    <HotKeys
-      keyMap={hotKeys}
-      handlers={hotKeysHandlers}
+    <HasCommand
+      commands={shortcuts}
+      isWithinScope={checkScope}
+      scope={document.body}
     >
       <form>
         <Paneset>
@@ -248,7 +247,7 @@ const QuickMarcEditor = ({
         subscription={spySubscription}
         onChange={changeRecords}
       />
-    </HotKeys>
+    </HasCommand>
   );
 };
 
