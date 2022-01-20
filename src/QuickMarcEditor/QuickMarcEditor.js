@@ -33,6 +33,7 @@ import {
   restoreRecordAtIndex,
   getCorrespondingMarcTag,
   getContentSubfieldValue,
+  getNameLocationByLocationId,
 } from './utils';
 
 const spySubscription = { values: true };
@@ -126,7 +127,7 @@ const QuickMarcEditor = ({
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
       formattedMessageValues = {
         location: find(locations.records, { id: instance?.effectiveLocationId })?.name,
-        callNumber: instance?.callNumber,
+        callNumber: getNameLocationByLocationId(locations, instance?.effectiveLocationId),
       };
     } else {
       if (!instance) {
