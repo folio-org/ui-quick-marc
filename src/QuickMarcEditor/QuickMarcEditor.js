@@ -181,8 +181,10 @@ const QuickMarcEditor = ({
 
   const shortcuts = useMemo(() => ([{
     name: 'save',
-    handler: () => {
+    shortcut: 'mod+s',
+    handler: (e) => {
       if (!saveFormDisabled) {
+        e.preventDefault();
         confirmSubmit();
       }
     },
