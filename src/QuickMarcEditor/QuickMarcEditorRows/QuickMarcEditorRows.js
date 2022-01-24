@@ -7,10 +7,14 @@ import {
   useIntl,
 } from 'react-intl';
 
+import { omit } from 'lodash';
+
 import {
   TextField,
   IconButton,
 } from '@folio/stripes/components';
+
+import { LocationLookup } from '@folio/stripes/smart-components';
 
 import { ContentField } from './ContentField';
 import { IndicatorField } from './IndicatorField';
@@ -27,6 +31,7 @@ import {
   isPhysDescriptionRecord,
   isFixedFieldRow,
 } from './utils';
+import { getLocationValue } from '../utils';
 import { QUICK_MARC_ACTIONS } from '../constants';
 import {
   MARC_TYPES,
@@ -42,6 +47,11 @@ const QuickMarcEditorRows = ({
   type,
   subtype,
   setDeletedRecords,
+  isLocationLookupNeeded,
+  permanentLocation,
+  setPermanentLocation,
+  isLocationLookupUsed,
+  setIsLocationLookupUsed,
   mutators: {
     addRecord,
     deleteRecord,
@@ -74,6 +84,27 @@ const QuickMarcEditorRows = ({
       indexToSwitch: parseInt(target.dataset.indexToSwitch, 10),
     });
   }, [moveRecord]);
+
+  const getContentFieldValue = input => {
+    const locationField = fields.find(field => field.tag === '852');
+    const newInput = omit(input, ['value']);
+    const locationValue = getLocationValue(input);
+
+    let newInputValue;
+
+    if (action === QUICK_MARC_ACTIONS.EDIT) {
+      newInputValue = locationValue
+        ? input.value.replace(locationValue, permanentLocation)
+        : `${permanentLocation} ${input.value}`;
+    } else {
+      newInputValue = permanentLocation;
+    }
+
+    locationField.content = newInputValue;
+    newInput.value = newInputValue;
+
+    return newInput;
+  };
 
   return (
     <div id="quick-marc-editor-rows">
@@ -203,15 +234,49 @@ const QuickMarcEditorRows = ({
 
                 {
                   isContentField && (
-                    <Field
-                      dirty={false}
-                      aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
-                      name={`${name}[${idx}].content`}
-                      component={ContentField}
-                      marginBottom0
-                      disabled={isDisabled}
-                      id={`content-field-${idx}`}
-                    />
+                    <>
+                      <Field
+                        dirty={false}
+                        aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
+                        name={`${name}[${idx}].content`}
+                        marginBottom0
+                        disabled={isDisabled}
+                        id={`content-field-${idx}`}
+                      >
+                        {(props) => {
+                          // eslint-disable-next-line react/prop-types
+                          const { input, id } = props;
+
+                          const inputContent = recordRow.tag === '852' && isLocationLookupNeeded && permanentLocation !== getLocationValue(input)
+                            ? getContentFieldValue(input)
+                            : undefined;
+
+                          return (
+                            <ContentField
+                              input={inputContent || input}
+                              id={id}
+                              {...omit(props, ['input', 'id'])}
+                            />
+                          );
+                        }}
+                      </Field>
+
+                      {
+                        isLocationLookupNeeded && recordRow.tag === '852' && (
+                          <LocationLookup
+                            label={intl.formatMessage({ id: 'ui-quick-marc.permanentLocationLookup' })}
+                            onLocationSelected={location => {
+                              if (!isLocationLookupUsed) {
+                                setIsLocationLookupUsed(true);
+                              }
+
+                              setPermanentLocation(`$b ${location.code}`);
+                            }}
+                            marginBottom0
+                          />
+                        )
+                      }
+                    </>
                   )
                 }
               </div>
@@ -263,6 +328,11 @@ QuickMarcEditorRows.propTypes = {
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   })),
   setDeletedRecords: PropTypes.func.isRequired,
+  isLocationLookupNeeded: PropTypes.bool.isRequired,
+  permanentLocation: PropTypes.string.isRequired,
+  setPermanentLocation: PropTypes.func.isRequired,
+  isLocationLookupUsed: PropTypes.bool.isRequired,
+  setIsLocationLookupUsed: PropTypes.func.isRequired,
   mutators: PropTypes.shape({
     addRecord: PropTypes.func.isRequired,
     deleteRecord: PropTypes.func.isRequired,

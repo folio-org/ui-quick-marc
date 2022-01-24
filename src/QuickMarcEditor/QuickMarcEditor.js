@@ -33,6 +33,7 @@ import {
   restoreRecordAtIndex,
   getCorrespondingMarcTag,
   getContentSubfieldValue,
+  getLocationValue,
 } from './utils';
 
 const spySubscription = { values: true };
@@ -55,9 +56,14 @@ const QuickMarcEditor = ({
   const [records, setRecords] = useState([]);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const [deletedRecords, setDeletedRecords] = useState([]);
+  const [permanentLocation, setPermanentLocation] = useState('');
+  const [isLocationLookupUsed, setIsLocationLookupUsed] = useState(false);
+
+  const isLocationLookupNeeded = marcType === MARC_TYPES.HOLDINGS
+    && (action === QUICK_MARC_ACTIONS.CREATE || action === QUICK_MARC_ACTIONS.EDIT);
 
   const saveFormDisabled = action === QUICK_MARC_ACTIONS.EDIT
-    ? pristine || submitting
+    ? (!isLocationLookupUsed && pristine) || submitting
     : submitting;
 
   const confirmSubmit = useCallback((e) => {
@@ -177,6 +183,14 @@ const QuickMarcEditor = ({
   const changeRecords = useCallback(({ values }) => {
     if (values?.records) {
       setRecords(values.records);
+
+      if (isLocationLookupNeeded) {
+        const locationField = values.records.find(field => field.tag === '852');
+
+        const matchedLocation = getLocationValue({ value: locationField.content });
+
+        setPermanentLocation(matchedLocation);
+      }
     }
   }, []);
 
@@ -228,6 +242,11 @@ const QuickMarcEditor = ({
                   type={initialValues?.leader[6]}
                   subtype={initialValues?.leader[7]}
                   setDeletedRecords={setDeletedRecords}
+                  isLocationLookupNeeded={isLocationLookupNeeded}
+                  permanentLocation={permanentLocation}
+                  setPermanentLocation={setPermanentLocation}
+                  isLocationLookupUsed={isLocationLookupUsed}
+                  setIsLocationLookupUsed={setIsLocationLookupUsed}
                   marcType={marcType}
                 />
               </Col>
