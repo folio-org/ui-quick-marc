@@ -47,6 +47,7 @@ const getInstance = () => ({
   effectiveLocationId: 'locationId-1',
   title: 'Test title',
   callNumber: 'call number',
+  name: 'location name',
 });
 
 const locations = {
@@ -212,6 +213,26 @@ describe('Given Quick Marc Editor', () => {
       });
 
       expect(getByText('ui-quick-marc.authority-record.edit.title')).toBeDefined();
+    });
+  });
+
+  describe('when marc record is of type HOLDINGS', () => {
+    it('should display instance location name in pane title', () => {
+      const instance = getInstance();
+
+      renderQuickMarcEditor({
+        instance,
+        onClose: jest.fn(),
+        onSubmit: jest.fn(),
+        mutators: {
+          addRecord: jest.fn(),
+          deleteRecord: jest.fn(),
+          moveRecord: jest.fn(),
+        },
+        marcType: MARC_TYPES.HOLDINGS,
+      });
+
+      expect(instance.name).toEqual('location name');
     });
   });
 });

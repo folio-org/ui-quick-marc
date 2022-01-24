@@ -1113,29 +1113,4 @@ describe('QuickMarcEditor utils', () => {
       expect(utils.getContentSubfieldValue('$a Test Title')).toEqual({ $a: 'Test Title' });
     });
   });
-
-  describe('getNameLocationByLocationId', () => {
-    it('should return first name location from locations array', () => {
-      const locations = [{
-        id: '02',
-        name: 'TestNameLocation',
-        code: 'test',
-        isActive: true,
-        institutionId: uuid(),
-        campusId: uuid(),
-        libraryId: uuid(),
-        primaryServicePoint: uuid(),
-        servicePointIds: [uuid()],
-        servicePoints: [],
-        metadata: {
-          createdDate: '2022-01-27',
-          updatedDate: '2022-01-27',
-        },
-      }];
-
-      const id = '02';
-
-      expect(utils.getNameLocationByLocationId(locations, id)).toEqual('TestNameLocation');
-    });
-  });
 });

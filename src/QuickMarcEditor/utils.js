@@ -569,7 +569,3 @@ export const getContentSubfieldValue = (content) => {
     };
   }, {});
 };
-
-export const getNameLocationByLocationId = (locations, id) => {
-  return locations.find(location => location.id === id).name;
-};
