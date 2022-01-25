@@ -573,7 +573,5 @@ export const getContentSubfieldValue = (content) => {
 export const getLocationValue = ({ value }) => {
   const matches = value?.match(/\$b\s([a-zA-Z]+\/*)+/) || [];
 
-  const matchedLocation = matches[0] || '';
-
-  return matchedLocation;
+  return matches[0] || '';
 };

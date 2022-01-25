@@ -122,6 +122,8 @@ const QuickMarcEditorRows = ({
           const isFixedField = isFixedFieldRow(recordRow);
           const isContentField = !(isFixedField || isMaterialCharsField || isPhysDescriptionField);
 
+          const isLocationLookupNeededForCurrentTag = isLocationLookupNeeded && recordRow.tag === '852';
+
           return (
             <div
               key={idx}
@@ -247,13 +249,16 @@ const QuickMarcEditorRows = ({
                           // eslint-disable-next-line react/prop-types
                           const { input, id } = props;
 
-                          const inputContent = recordRow.tag === '852' && isLocationLookupNeeded && permanentLocation !== getLocationValue(input)
+                          const isReplacingLocationNeeded = isLocationLookupNeededForCurrentTag
+                            && (permanentLocation !== getLocationValue(input));
+
+                          const inputContent = isReplacingLocationNeeded
                             ? getContentFieldValue(input)
-                            : undefined;
+                            : input;
 
                           return (
                             <ContentField
-                              input={inputContent || input}
+                              input={inputContent}
                               id={id}
                               {...omit(props, ['input', 'id'])}
                             />
@@ -262,7 +267,7 @@ const QuickMarcEditorRows = ({
                       </Field>
 
                       {
-                        isLocationLookupNeeded && recordRow.tag === '852' && (
+                        isLocationLookupNeededForCurrentTag && (
                           <LocationLookup
                             label={intl.formatMessage({ id: 'ui-quick-marc.permanentLocationLookup' })}
                             onLocationSelected={location => {
