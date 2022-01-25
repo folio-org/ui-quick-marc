@@ -11,7 +11,7 @@
   "bib-record.edit.title": "Edit MARC record - {title}",
   "bib-record.duplicate.title": "Derive a new MARC bib record",
   "holdings-record.create.title": "Create a new MARC Holdings record",
-  "holdings-record.edit.title": "Edit MARC holdings - Location: {location}",
+  "holdings-record.edit.title": "Edit MARC holdings - Location: {location} - [{callNumber}]",
   "authority-record.edit.title": "Edit MARC authority record - {title}",
 
   "record.status": "Status:",

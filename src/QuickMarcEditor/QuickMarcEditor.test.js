@@ -217,7 +217,7 @@ describe('Given Quick Marc Editor', () => {
   });
 
   describe('when marc record is of type HOLDINGS', () => {
-    it('should display instance location name in pane title', () => {
+    it('should display instance location name and callNumber in pane title', () => {
       const instance = getInstance();
 
       renderQuickMarcEditor({
@@ -233,6 +233,7 @@ describe('Given Quick Marc Editor', () => {
       });
 
       expect(instance.name).toEqual('location name');
+      expect(instance.callNumber).toEqual('call number');
     });
   });
 });

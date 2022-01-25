@@ -126,6 +126,7 @@ const QuickMarcEditor = ({
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
       formattedMessageValues = {
         location: find(locations, { id: instance?.effectiveLocationId })?.name,
+        callNumber: instance?.callNumber,
       };
     } else {
       if (!instance) {
