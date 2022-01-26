@@ -195,6 +195,27 @@ describe('Given Quick Marc Editor', () => {
         expect(getByText('ui-quick-marc.holdings-record.edit.title')).toBeDefined();
       });
     });
+
+    describe('when action is edit in quickMARC', () => {
+      it('should display instance location name and callNumber in pane title', () => {
+        const instance = getInstance();
+
+        renderQuickMarcEditor({
+          instance,
+          onClose: jest.fn(),
+          onSubmit: jest.fn(),
+          mutators: {
+            addRecord: jest.fn(),
+            deleteRecord: jest.fn(),
+            moveRecord: jest.fn(),
+          },
+          marcType: MARC_TYPES.HOLDINGS,
+        });
+
+        expect(instance.name).toEqual('location name');
+        expect(instance.callNumber).toEqual('call number');
+      });
+    });
   });
 
   describe('when marc record is of type AUTHORITY', () => {
@@ -213,27 +234,6 @@ describe('Given Quick Marc Editor', () => {
       });
 
       expect(getByText('ui-quick-marc.authority-record.edit.title')).toBeDefined();
-    });
-  });
-
-  describe('when marc record is of type HOLDINGS', () => {
-    it('should display instance location name and callNumber in pane title', () => {
-      const instance = getInstance();
-
-      renderQuickMarcEditor({
-        instance,
-        onClose: jest.fn(),
-        onSubmit: jest.fn(),
-        mutators: {
-          addRecord: jest.fn(),
-          deleteRecord: jest.fn(),
-          moveRecord: jest.fn(),
-        },
-        marcType: MARC_TYPES.HOLDINGS,
-      });
-
-      expect(instance.name).toEqual('location name');
-      expect(instance.callNumber).toEqual('call number');
     });
   });
 });
