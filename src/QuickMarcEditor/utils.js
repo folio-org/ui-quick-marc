@@ -375,7 +375,6 @@ const validateMarcAuthorityRecord = (marcRecords) => {
   return undefined;
 };
 
-export const validateMarcRecord = (marcRecord, initialValues, marcType = MARC_TYPES.BIB) => {
 export const validateMarcRecord = (marcRecord, initialValues, marcType = MARC_TYPES.BIB, locations = []) => {
   const marcRecords = marcRecord.records || [];
   const initialMarcRecords = initialValues.records;
