@@ -359,6 +359,18 @@ const validateMarcHoldingsRecord = (marcRecords, locations) => {
   return undefined;
 };
 
+const validateMarcAuthorityRecord = (marcRecords) => {
+  const correspondingHeadingTypeTags = new Set(CORRESPONDING_HEADING_TYPE_TAGS);
+
+  const headingRecords = marcRecords.filter(recordRow => correspondingHeadingTypeTags.has(recordRow.tag));
+
+  if (!headingRecords.length) {
+    return <FormattedMessage id="ui-quick-marc.record.error.heading.empty" />;
+  }
+
+  return undefined;
+};
+
 export const validateMarcRecord = (marcRecord, initialValues, marcType = MARC_TYPES.BIB, locations = []) => {
   const marcRecords = marcRecord.records || [];
   const initialMarcRecords = initialValues.records;
@@ -376,6 +388,8 @@ export const validateMarcRecord = (marcRecord, initialValues, marcType = MARC_TY
     validationResult = validateMarcBibRecord(marcRecords);
   } else if (marcType === MARC_TYPES.HOLDINGS) {
     validationResult = validateMarcHoldingsRecord(marcRecords, locations);
+  } else if (marcType === MARC_TYPES.AUTHORITY) {
+    validationResult = validateMarcAuthorityRecord(marcRecords);
   }
 
   if (validationResult) {
