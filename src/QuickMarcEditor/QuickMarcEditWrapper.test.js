@@ -64,7 +64,7 @@ const mockRecords = {
       tag: '245',
     }, {
       tag: '852',
-      content: '$b KU/CC/DI/A$t3$hM3$i.M93 1955$m+$xRec\'d in Music Lib ;',
+      content: '$b KU/CC/DI/A $t 3 $h M3 $i .M93 1955 $m + $x Rec\'d in Music Lib ;',
       indicators: ['0', '1'],
       id: '6abdaf9b-ac58-4f83-9687-73c939c3c21a',
     }, {
@@ -238,6 +238,10 @@ const record = {
   fields: [],
 };
 
+const locations = [{
+  code: 'KU/CC/DI/A',
+}];
+
 const renderQuickMarcEditWrapper = ({
   instance,
   mutator,
@@ -253,6 +257,7 @@ const renderQuickMarcEditWrapper = ({
       initialValues={{ leader: mockLeaders[marcType], records: [] }}
       instance={instance}
       location={{}}
+      locations={locations}
       {...props}
     />
   </MemoryRouter>,
