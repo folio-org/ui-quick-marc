@@ -244,6 +244,30 @@ export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYP
   return undefined;
 };
 
+export const validateLocationSubfield = (field, locations) => {
+  const findLocationSubfieldValue = () => {
+    let locationSubfieldValue = field.content;
+    let locationSubfieldIndex = field.content.indexOf('$b ');
+
+    if (locationSubfieldIndex === -1) {
+      return '';
+    }
+
+    locationSubfieldIndex += 3; // +3 to remove "$b " from string start
+    locationSubfieldValue = locationSubfieldValue.substring(locationSubfieldIndex);
+
+    const nextSubfieldIndex = locationSubfieldValue.match(/\s\$\w\s/)?.index || locationSubfieldValue.length;
+
+    locationSubfieldValue = locationSubfieldValue.substring(0, nextSubfieldIndex);
+
+    return locationSubfieldValue.trim();
+  };
+
+  const locationValue = findLocationSubfieldValue();
+
+  return !!locations.find(location => location.code === locationValue);
+};
+
 export const validateRecordTag = marcRecords => {
   if (marcRecords.some(({ tag }) => !tag || tag.length !== 3)) {
     return <FormattedMessage id="ui-quick-marc.record.error.tag.length" />;
@@ -311,7 +335,7 @@ const validateMarcBibRecord = (marcRecords) => {
   return undefined;
 };
 
-const validateMarcHoldingsRecord = (marcRecords) => {
+const validateMarcHoldingsRecord = (marcRecords, locations) => {
   const instanceHridRecords = marcRecords.filter(({ tag }) => tag === '004');
 
   if (instanceHridRecords.length > 1) {
@@ -326,6 +350,10 @@ const validateMarcHoldingsRecord = (marcRecords) => {
 
   if (locationRecords.length > 1) {
     return <FormattedMessage id="ui-quick-marc.record.error.location.multiple" />;
+  }
+
+  if (!validateLocationSubfield(marcRecords.find(({ tag }) => tag === '852'), locations)) {
+    return <FormattedMessage id="ui-quick-marc.record.error.location.invalid" />;
   }
 
   return undefined;
@@ -348,6 +376,7 @@ const validateMarcAuthorityRecord = (marcRecords) => {
 };
 
 export const validateMarcRecord = (marcRecord, initialValues, marcType = MARC_TYPES.BIB) => {
+export const validateMarcRecord = (marcRecord, initialValues, marcType = MARC_TYPES.BIB, locations = []) => {
   const marcRecords = marcRecord.records || [];
   const initialMarcRecords = initialValues.records;
   const recordLeader = marcRecords[0];
@@ -363,7 +392,7 @@ export const validateMarcRecord = (marcRecord, initialValues, marcType = MARC_TY
   if (marcType === MARC_TYPES.BIB) {
     validationResult = validateMarcBibRecord(marcRecords);
   } else if (marcType === MARC_TYPES.HOLDINGS) {
-    validationResult = validateMarcHoldingsRecord(marcRecords);
+    validationResult = validateMarcHoldingsRecord(marcRecords, locations);
   } else if (marcType === MARC_TYPES.AUTHORITY) {
     validationResult = validateMarcAuthorityRecord(marcRecords);
   }
