@@ -1170,11 +1170,11 @@ describe('QuickMarcEditor utils', () => {
 
   describe('validateLocationSubfield', () => {
     it('should return true for valid location subfield', () => {
-      expect(utils.validateLocationSubfield({ content: '$b VA/LI/D ' }, locations));
+      expect(utils.validateLocationSubfield({ content: '$b VA/LI/D ' }, locations)).toBe(true);
     });
 
     it('should return false for locations that do not exist', () => {
-      expect(utils.validateLocationSubfield({ content: '$b NOT/VA/LI/D ' }, locations));
+      expect(utils.validateLocationSubfield({ content: '$b NOT/VA/LI/D ' }, locations)).toBe(false);
     });
   });
 });
