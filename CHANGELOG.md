@@ -23,6 +23,7 @@
 * [UIQM-198](https://issues.folio.org/browse/UIQM-198) Saving a MARC holdings record upon creation/update displays Instance record then Holdings record.
 * [UIQM-199](https://issues.folio.org/browse/UIQM-199) MARC Authority: Implement App context menu and keyboard shortcuts.
 * [UIQM-190](https://issues.folio.org/browse/UIQM-190) Edit MARC holdings (quickMARC) update paneheader display.
+* [UIQM-189](https://issues.folio.org/browse/UIQM-189) Add/Edit MARC holdings record: Improve error messaging when user enters an invalid Location (852 $b) value
 
 ## [4.0.3](https://github.com/folio-org/ui-quick-marc/tree/v4.0.3) (2021-11-09)
 

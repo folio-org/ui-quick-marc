@@ -24,6 +24,7 @@ const propTypes = {
   initialValues: PropTypes.object.isRequired,
   instance: PropTypes.object,
   location: ReactRouterPropTypes.location.isRequired,
+  locations: PropTypes.object.isRequired,
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
@@ -38,6 +39,7 @@ const QuickMarcCreateWrapper = ({
   history,
   location,
   marcType,
+  locations,
 }) => {
   const showCallout = useShowCallout();
 
@@ -48,7 +50,7 @@ const QuickMarcCreateWrapper = ({
       marcType,
     );
     const formValuesForCreate = cleanBytesFields(autopopulatedFormValues, initialValues, marcType);
-    const validationErrorMessage = validateMarcRecord(formValuesForCreate, initialValues, marcType);
+    const validationErrorMessage = validateMarcRecord(formValuesForCreate, initialValues, marcType, locations);
 
     if (validationErrorMessage) {
       showCallout({ message: validationErrorMessage, type: 'error' });
