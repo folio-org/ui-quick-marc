@@ -22,6 +22,7 @@
 * [UIQM-195](https://issues.folio.org/browse/UIQM-195) Changes for MARC Authorities App: Closing third pane does not resize the second pane.
 * [UIQM-198](https://issues.folio.org/browse/UIQM-198) Saving a MARC holdings record upon creation/update displays Instance record then Holdings record.
 * [UIQM-199](https://issues.folio.org/browse/UIQM-199) MARC Authority: Implement App context menu and keyboard shortcuts.
+* [UIQM-189](https://issues.folio.org/browse/UIQM-189) Add/Edit MARC holdings record: Improve error messaging when user enters an invalid Location (852 $b) value
 * [UIQM-187](https://issues.folio.org/browse/UIQM-187) Add a new MARC holdings/Edit MARC Holdings - 852 field display a Location Lookup link and modal.
 
 ## [4.0.3](https://github.com/folio-org/ui-quick-marc/tree/v4.0.3) (2021-11-09)

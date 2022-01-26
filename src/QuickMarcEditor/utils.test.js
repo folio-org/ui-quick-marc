@@ -19,6 +19,12 @@ jest.mock('uuid', () => {
 });
 
 describe('QuickMarcEditor utils', () => {
+  const locations = [{
+    code: 'VA/LI/D',
+  }, {
+    code: 'LO/CA/TI/ON',
+  }];
+
   describe('dehydrateMarcRecordResponse', () => {
     it('should return dehydrated marc record', () => {
       const marcRecord = {
@@ -211,7 +217,7 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record, initialValues)).not.toBeDefined();
+      expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.BIB, locations)).not.toBeDefined();
     });
 
     it('should return error message when record is invalid', () => {
@@ -226,7 +232,7 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record, initialValues)).toBeDefined();
+      expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.BIB, locations)).toBeDefined();
     });
 
     it('should return error message when record is without 245 row', () => {
@@ -248,7 +254,7 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record, initialValues).props.id).toBe('ui-quick-marc.record.error.title.empty');
+      expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.BIB, locations).props.id).toBe('ui-quick-marc.record.error.title.empty');
     });
 
     it('should return error message when record has several 245 rows', () => {
@@ -276,7 +282,7 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record, initialValues).props.id).toBe('ui-quick-marc.record.error.title.multiple');
+      expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.BIB, locations).props.id).toBe('ui-quick-marc.record.error.title.multiple');
     });
 
     describe('when record is MARC Holdings record', () => {
@@ -291,11 +297,12 @@ describe('QuickMarcEditor utils', () => {
             },
             {
               tag: '852',
+              content: '$b VA/LI/D',
             },
           ],
         };
 
-        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS)).not.toBeDefined();
+        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS, locations)).not.toBeDefined();
       });
 
       it('should return error message when record is without 852 row', () => {
@@ -310,7 +317,7 @@ describe('QuickMarcEditor utils', () => {
           ],
         };
 
-        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS).props.id).toBe('ui-quick-marc.record.error.location.empty');
+        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS, locations).props.id).toBe('ui-quick-marc.record.error.location.empty');
       });
 
       it('should return error message when record has several 004 rows', () => {
@@ -327,7 +334,47 @@ describe('QuickMarcEditor utils', () => {
           ],
         };
 
-        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS).props.id).toBe('ui-quick-marc.record.error.instanceHrid.multiple');
+        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS, locations).props.id).toBe('ui-quick-marc.record.error.instanceHrid.multiple');
+      });
+
+      it('should return error message when record has invalid 852 location', () => {
+        const initialValues = { records: [] };
+        const record = {
+          leader: '04706cxm a22008651i 4500',
+          records: [
+            {
+              content: '04706cxm a22008651i 4500',
+              tag: 'LDR',
+            },
+            { tag: '004' },
+            {
+              tag: '852',
+              content: '$b IN/VA/LI/D',
+            },
+          ],
+        };
+
+        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS, locations).props.id).toBe('ui-quick-marc.record.error.location.invalid');
+      });
+
+      it('should return error message when record is missing 852 location', () => {
+        const initialValues = { records: [] };
+        const record = {
+          leader: '04706cxm a22008651i 4500',
+          records: [
+            {
+              content: '04706cxm a22008651i 4500',
+              tag: 'LDR',
+            },
+            { tag: '004' },
+            {
+              tag: '852',
+              content: '$a',
+            },
+          ],
+        };
+
+        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS, locations).props.id).toBe('ui-quick-marc.record.error.location.invalid');
       });
     });
 
@@ -340,12 +387,18 @@ describe('QuickMarcEditor utils', () => {
             content: '04706cxm a22008651i 4500',
             tag: 'LDR',
           },
-          { tag: '852' },
-          { tag: '852' },
+          {
+            tag: '852',
+            content: '$b VA/LI/D',
+          },
+          {
+            tag: '852',
+            content: '$b VA/LI/D',
+          },
         ],
       };
 
-      expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS).props.id).toBe('ui-quick-marc.record.error.location.multiple');
+      expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS, locations).props.id).toBe('ui-quick-marc.record.error.location.multiple');
     });
   });
 
@@ -1098,6 +1151,7 @@ describe('QuickMarcEditor utils', () => {
       }, {
         tag: '852',
         id: uuid(),
+        content: '$b VA/LI/D',
       }, {
         tag: '999',
         id: uuid(),
@@ -1111,6 +1165,16 @@ describe('QuickMarcEditor utils', () => {
   describe('getContentSubfieldValue', () => {
     it('should return splited string by subfields into object', () => {
       expect(utils.getContentSubfieldValue('$a Test Title')).toEqual({ $a: 'Test Title' });
+    });
+  });
+
+  describe('validateLocationSubfield', () => {
+    it('should return true for valid location subfield', () => {
+      expect(utils.validateLocationSubfield({ content: '$b VA/LI/D ' }, locations)).toBe(true);
+    });
+
+    it('should return false for locations that do not exist', () => {
+      expect(utils.validateLocationSubfield({ content: '$b NOT/VA/LI/D ' }, locations)).toBe(false);
     });
   });
 

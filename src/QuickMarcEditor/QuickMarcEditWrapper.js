@@ -24,7 +24,7 @@ const propTypes = {
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
-  locations: PropTypes.object,
+  locations: PropTypes.object.isRequired,
 };
 
 const QuickMarcEditWrapper = ({
@@ -42,7 +42,7 @@ const QuickMarcEditWrapper = ({
   const searchParams = new URLSearchParams(location.search);
 
   const onSubmit = useCallback(async (formValues) => {
-    const validationErrorMessage = validateMarcRecord(formValues, initialValues, marcType);
+    const validationErrorMessage = validateMarcRecord(formValues, initialValues, marcType, locations);
 
     if (validationErrorMessage) {
       showCallout({ message: validationErrorMessage, type: 'error' });
