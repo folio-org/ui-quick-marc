@@ -7,20 +7,17 @@ import {
   useIntl,
 } from 'react-intl';
 
-import { omit } from 'lodash';
-
 import {
   TextField,
   IconButton,
 } from '@folio/stripes/components';
-
-import { LocationLookup } from '@folio/stripes/smart-components';
 
 import { ContentField } from './ContentField';
 import { IndicatorField } from './IndicatorField';
 import { MaterialCharsField } from './MaterialCharsField';
 import { PhysDescriptionField } from './PhysDescriptionField';
 import { FixedFieldFactory } from './FixedField';
+import { LocationField } from './LocationField';
 import {
   isReadOnly,
   hasIndicatorException,
@@ -31,7 +28,6 @@ import {
   isPhysDescriptionRecord,
   isFixedFieldRow,
 } from './utils';
-import { getLocationValue } from '../utils';
 import { QUICK_MARC_ACTIONS } from '../constants';
 import {
   MARC_TYPES,
@@ -85,27 +81,6 @@ const QuickMarcEditorRows = ({
     });
   }, [moveRecord]);
 
-  const getContentFieldValue = input => {
-    const locationField = fields.find(field => field.tag === '852');
-    const newInput = omit(input, ['value']);
-    const locationValue = getLocationValue(input);
-
-    let newInputValue;
-
-    if (action === QUICK_MARC_ACTIONS.EDIT) {
-      newInputValue = locationValue
-        ? input.value.replace(locationValue, permanentLocation)
-        : `${permanentLocation} ${input.value}`;
-    } else {
-      newInputValue = permanentLocation;
-    }
-
-    locationField.content = newInputValue;
-    newInput.value = newInputValue;
-
-    return newInput;
-  };
-
   return (
     <div id="quick-marc-editor-rows">
       {
@@ -121,8 +96,7 @@ const QuickMarcEditorRows = ({
           const isPhysDescriptionField = isPhysDescriptionRecord(recordRow);
           const isFixedField = isFixedFieldRow(recordRow);
           const isContentField = !(isFixedField || isMaterialCharsField || isPhysDescriptionField);
-
-          const isLocationLookupNeededForCurrentTag = isLocationLookupNeeded && recordRow.tag === '852';
+          const isLocationField = isLocationLookupNeeded && recordRow.tag === '852';
 
           return (
             <div
@@ -246,41 +220,21 @@ const QuickMarcEditorRows = ({
                         id={`content-field-${idx}`}
                       >
                         {(props) => {
-                          // eslint-disable-next-line react/prop-types
-                          const { input, id } = props;
-
-                          const isReplacingLocationNeeded = isLocationLookupNeededForCurrentTag
-                            && (permanentLocation !== getLocationValue(input));
-
-                          const inputContent = isReplacingLocationNeeded
-                            ? getContentFieldValue(input)
-                            : input;
-
-                          return (
-                            <ContentField
-                              input={inputContent}
-                              id={id}
-                              {...omit(props, ['input', 'id'])}
+                          return isLocationField ? (
+                            <LocationField
+                              action={action}
+                              fields={fields}
+                              isLocationLookupUsed={isLocationLookupUsed}
+                              setIsLocationLookupUsed={setIsLocationLookupUsed}
+                              permanentLocation={permanentLocation}
+                              setPermanentLocation={setPermanentLocation}
+                              {...props}
                             />
+                          ) : (
+                            <ContentField {...props} />
                           );
                         }}
                       </Field>
-
-                      {
-                        isLocationLookupNeededForCurrentTag && (
-                          <LocationLookup
-                            label={intl.formatMessage({ id: 'ui-quick-marc.permanentLocationLookup' })}
-                            onLocationSelected={location => {
-                              if (!isLocationLookupUsed) {
-                                setIsLocationLookupUsed(true);
-                              }
-
-                              setPermanentLocation(`$b ${location.code}`);
-                            }}
-                            marginBottom0
-                          />
-                        )
-                      }
                     </>
                   )
                 }

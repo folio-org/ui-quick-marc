@@ -1181,13 +1181,13 @@ describe('QuickMarcEditor utils', () => {
   describe('getLocationValue', () => {
     describe('when has matches', () => {
       it('should return matched location value', () => {
-        expect(utils.getLocationValue({ value: '$b KU/CC/DI/A $t 3 $h M3' })).toEqual('$b KU/CC/DI/A');
+        expect(utils.getLocationValue('$b KU/CC/DI/A $t 3 $h M3')).toEqual('$b KU/CC/DI/A');
       });
     });
 
     describe('when does not have matches', () => {
       it('should return an empty string', () => {
-        expect(utils.getLocationValue({ value: '$t 3 $h M3' })).toEqual('');
+        expect(utils.getLocationValue('$t 3 $h M3')).toEqual('');
       });
     });
   });
