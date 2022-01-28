@@ -368,6 +368,10 @@ const validateMarcAuthorityRecord = (marcRecords) => {
     return <FormattedMessage id="ui-quick-marc.record.error.heading.empty" />;
   }
 
+  if (headingRecords.length > 1) {
+    return <FormattedMessage id="ui-quick-marc.record.error.heading.multiple" />;
+  }
+
   return undefined;
 };
 

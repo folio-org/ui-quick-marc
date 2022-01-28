@@ -435,6 +435,29 @@ describe('QuickMarcEditor utils', () => {
 
         expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.AUTHORITY).props.id).toBe('ui-quick-marc.record.error.heading.empty');
       });
+
+      it('should return error message when record has several 1XX rows', () => {
+        const initialValues = { records: [] };
+        const record = {
+          leader: '04706cxm a22008651i 4500',
+          records: [
+            {
+              content: '04706cxm a22008651i 4500',
+              tag: 'LDR',
+            },
+            {
+              tag: '100',
+              content: '$a',
+            },
+            {
+              tag: '110',
+              content: '$a',
+            },
+          ],
+        };
+
+        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.AUTHORITY).props.id).toBe('ui-quick-marc.record.error.heading.multiple');
+      });
     });
   });
 
