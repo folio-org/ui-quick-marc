@@ -46,7 +46,7 @@ export const LocationField = ({
   const isReplacingLocationNeeded = permanentLocation !== getLocationValue(input.value);
 
   const inputContent = isReplacingLocationNeeded
-    ? getContentFieldValue(input)
+    ? getContentFieldValue()
     : input;
 
   return (
