@@ -123,7 +123,7 @@ const QuickMarcEditor = ({
   };
 
   if ((marcType === MARC_TYPES.AUTHORITY) && records.length) {
-    recordInfoProps.correspondingMarcTag = getCorrespondingMarcTag(records);
+    recordInfoProps.correspondingMarcTag = getCorrespondingMarcTag(initialValues.records);
   }
 
   const getPaneTitle = () => {
@@ -140,12 +140,18 @@ const QuickMarcEditor = ({
       }
 
       if ((marcType === MARC_TYPES.AUTHORITY) && records.length) {
-        const headingTagContent = records.find((recordRow) => {
+        const currentHeading = records.find((recordRow) => {
           return recordRow.tag === recordInfoProps.correspondingMarcTag;
-        }).content;
+        });
+
+        const initialHeading = initialValues.records.find((recordRow) => {
+          return recordRow.tag === recordInfoProps.correspondingMarcTag;
+        });
+
+        const headingContent = currentHeading?.content || initialHeading?.content;
 
         formattedMessageValues = {
-          title: getContentSubfieldValue(headingTagContent).$a,
+          title: getContentSubfieldValue(headingContent).$a,
         };
       } else {
         formattedMessageValues = instance;
@@ -187,7 +193,7 @@ const QuickMarcEditor = ({
       if (isLocationLookupNeeded) {
         const locationField = values.records.find(field => field.tag === '852');
 
-        const matchedLocation = getLocationValue(locationField.content);
+        const matchedLocation = getLocationValue(locationField?.content);
 
         setPermanentLocation(matchedLocation);
       }

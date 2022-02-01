@@ -320,6 +320,29 @@ describe('QuickMarcEditor utils', () => {
         expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS, locations).props.id).toBe('ui-quick-marc.record.error.location.empty');
       });
 
+      it('should return error message when record has several 852 rows', () => {
+        const initialValues = { records: [] };
+        const record = {
+          leader: '04706cxm a22008651i 4500',
+          records: [
+            {
+              content: '04706cxm a22008651i 4500',
+              tag: 'LDR',
+            },
+            {
+              tag: '852',
+              content: '$b VA/LI/D',
+            },
+            {
+              tag: '852',
+              content: '$b VA/LI/D',
+            },
+          ],
+        };
+
+        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS, locations).props.id).toBe('ui-quick-marc.record.error.location.multiple');
+      });
+
       it('should return error message when record has several 004 rows', () => {
         const initialValues = { records: [] };
         const record = {
@@ -378,31 +401,42 @@ describe('QuickMarcEditor utils', () => {
       });
     });
 
-    it('should return error message when record has several 852 rows', () => {
-      const initialValues = { records: [] };
-      const record = {
-        leader: '04706cxm a22008651i 4500',
-        records: [
-          {
-            content: '04706cxm a22008651i 4500',
-            tag: 'LDR',
-          },
-          {
-            tag: '852',
-            content: '$b VA/LI/D',
-          },
-          {
-            tag: '852',
-            content: '$b VA/LI/D',
-          },
-        ],
-      };
-
-      expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS, locations).props.id).toBe('ui-quick-marc.record.error.location.multiple');
-    });
-
     describe('when record is MARC Authority record', () => {
-      it('should return error message when record has several corresponding_heading_type_tags rows', () => {
+      it('should not return error message when record is valid', () => {
+        const initialValues = { records: [] };
+        const record = {
+          leader: '04706cxm a22008651i 4500',
+          records: [
+            {
+              content: '04706cxm a22008651i 4500',
+              tag: 'LDR',
+            },
+            {
+              tag: '110',
+              content: '$a Record title',
+            },
+          ],
+        };
+
+        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.AUTHORITY)).not.toBeDefined();
+      });
+
+      it('should return error message when record is without 1XX row', () => {
+        const initialValues = { records: [] };
+        const record = {
+          leader: '04706cxm a22008651i 4500',
+          records: [
+            {
+              content: '04706cxm a22008651i 4500',
+              tag: 'LDR',
+            },
+          ],
+        };
+
+        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.AUTHORITY).props.id).toBe('ui-quick-marc.record.error.heading.empty');
+      });
+
+      it('should return error message when record has several 1XX rows', () => {
         const initialValues = { records: [] };
         const record = {
           leader: '04706cxm a22008651i 4500',
@@ -422,7 +456,7 @@ describe('QuickMarcEditor utils', () => {
           ],
         };
 
-        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.AUTHORITY).props.id).toBe('ui-quick-marc.record.save.updated.error.location.multiple');
+        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.AUTHORITY).props.id).toBe('ui-quick-marc.record.error.heading.multiple');
       });
     });
   });

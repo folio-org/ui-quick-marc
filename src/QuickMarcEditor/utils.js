@@ -347,17 +347,17 @@ const validateMarcHoldingsRecord = (marcRecords, locations) => {
   return undefined;
 };
 
-const getCorrespondingMarcFields = (marcRecords) => {
+const validateMarcAuthorityRecord = (marcRecords) => {
   const correspondingHeadingTypeTags = new Set(CORRESPONDING_HEADING_TYPE_TAGS);
 
-  return marcRecords.filter(recordRow => correspondingHeadingTypeTags.has(recordRow.tag));
-};
+  const headingRecords = marcRecords.filter(recordRow => correspondingHeadingTypeTags.has(recordRow.tag));
 
-const validateMarcAuthorityRecord = (marcRecords) => {
-  const locationRecords = getCorrespondingMarcFields(marcRecords);
+  if (!headingRecords.length) {
+    return <FormattedMessage id="ui-quick-marc.record.error.heading.empty" />;
+  }
 
-  if (locationRecords.length > 1) {
-    return <FormattedMessage id="ui-quick-marc.record.save.updated.error.location.multiple" />;
+  if (headingRecords.length > 1) {
+    return <FormattedMessage id="ui-quick-marc.record.error.heading.multiple" />;
   }
 
   return undefined;
