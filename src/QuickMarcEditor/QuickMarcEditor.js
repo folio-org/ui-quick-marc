@@ -193,7 +193,7 @@ const QuickMarcEditor = ({
       if (isLocationLookupNeeded) {
         const locationField = values.records.find(field => field.tag === '852');
 
-        const matchedLocation = getLocationValue(locationField.content);
+        const matchedLocation = getLocationValue(locationField?.content);
 
         setPermanentLocation(matchedLocation);
       }
