@@ -40,13 +40,22 @@ const values = [
     indicators: [],
   },
   {
+    id: '7',
+    tag: '852',
+    content: '$b KU/CC/DI/M $t 3 $h M3',
+    indicators: ['0', '1'],
+  },
+  {
     id: '3',
     tag: '999',
     content: '$b f',
   },
 ];
 
-const setDeletedRecords = jest.fn();
+const addRecordMock = jest.fn();
+const deleteRecordMock = jest.fn();
+const moveRecordMock = jest.fn();
+const setDeletedRecordsMock = jest.fn();
 
 const renderQuickMarcEditorRows = ({ fields }) => (render(
   <MemoryRouter>
@@ -58,22 +67,22 @@ const renderQuickMarcEditorRows = ({ fields }) => (render(
           name="records"
           type="a"
           mutators={{
-            addRecord: jest.fn(),
-            deleteRecord: jest.fn(),
-            moveRecord: jest.fn(),
+            addRecord: addRecordMock,
+            deleteRecord: deleteRecordMock,
+            moveRecord: moveRecordMock,
           }}
           subtype="test"
-          setDeletedRecords={setDeletedRecords}
+          setDeletedRecords={setDeletedRecordsMock}
         />
       )}
     />
   </MemoryRouter>,
 ));
 
-describe('Given Quick Marc Editor Rows', () => {
+describe('Given QuickMarcEditorRows', () => {
   afterEach(cleanup);
 
-  it('Than it should display row for each record value', () => {
+  it('should display row for each record value', () => {
     const { getAllByTestId } = renderQuickMarcEditorRows({
       fields: {
         map: cb => values.map((value, idx) => cb(`records[${idx}]`, idx)),
@@ -84,7 +93,7 @@ describe('Given Quick Marc Editor Rows', () => {
     expect(getAllByTestId('quick-marc-editorid').length).toBe(values.length);
   });
 
-  it('Than it should display row for each record value', () => {
+  it('should display row for each record value', () => {
     const isReadOnlySpy = jest.spyOn(utils, 'isReadOnly');
     const hasIndicatorExceptionSpy = jest.spyOn(utils, 'hasIndicatorException');
     const hasAddExceptionSpy = jest.spyOn(utils, 'hasAddException');
@@ -120,7 +129,24 @@ describe('Given Quick Marc Editor Rows', () => {
     isPhysDescriptionRecordSpy.mockRestore();
   });
 
-  describe('Deleting rows', () => {
+  describe('when add a new row', () => {
+    it('should handle addRecord', () => {
+      const { getAllByRole } = renderQuickMarcEditorRows({
+        fields: {
+          map: cb => values.map((value, idx) => cb(`records[${idx}]`, idx)),
+          value: values,
+        },
+      });
+
+      const [addButton] = getAllByRole('button', { name: 'ui-quick-marc.record.addField' });
+
+      fireEvent.click(addButton);
+
+      expect(addRecordMock).toHaveBeenCalled();
+    });
+  });
+
+  describe('when deleting rows', () => {
     it('should call setDeletedRecords 2 times', () => {
       const { getAllByTestId } = renderQuickMarcEditorRows({
         fields: {
@@ -137,7 +163,22 @@ describe('Given Quick Marc Editor Rows', () => {
       fireEvent.click(deleteIcon1[1]);
       fireEvent.click(deleteIcon2[1]);
 
-      expect(setDeletedRecords).toHaveBeenCalledTimes(2);
+      expect(setDeletedRecordsMock).toHaveBeenCalledTimes(2);
+    });
+
+    it('should handle deleteRecord', () => {
+      const { getAllByRole } = renderQuickMarcEditorRows({
+        fields: {
+          map: cb => values.map((value, idx) => cb(`records[${idx}]`, idx)),
+          value: values,
+        },
+      });
+
+      const [deleteButton] = getAllByRole('button', { name: 'ui-quick-marc.record.deleteField' });
+
+      fireEvent.click(deleteButton);
+
+      expect(deleteRecordMock).toHaveBeenCalled();
     });
   });
 });

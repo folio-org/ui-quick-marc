@@ -244,26 +244,14 @@ export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYP
   return undefined;
 };
 
+export const getLocationValue = (value) => {
+  const matches = value?.match(/\$b\s([a-zA-Z]+\/*)+/) || [];
+
+  return matches[0] || '';
+};
+
 export const validateLocationSubfield = (field, locations) => {
-  const findLocationSubfieldValue = () => {
-    let locationSubfieldValue = field.content;
-    let locationSubfieldIndex = field.content.indexOf('$b ');
-
-    if (locationSubfieldIndex === -1) {
-      return '';
-    }
-
-    locationSubfieldIndex += 3; // +3 to remove "$b " from string start
-    locationSubfieldValue = locationSubfieldValue.substring(locationSubfieldIndex);
-
-    const nextSubfieldIndex = locationSubfieldValue.match(/\s\$\w\s/)?.index || locationSubfieldValue.length;
-
-    locationSubfieldValue = locationSubfieldValue.substring(0, nextSubfieldIndex);
-
-    return locationSubfieldValue.trim();
-  };
-
-  const locationValue = findLocationSubfieldValue();
+  const [, locationValue] = getLocationValue(field.content)?.split(' ');
 
   return !!locations.find(location => location.code === locationValue);
 };

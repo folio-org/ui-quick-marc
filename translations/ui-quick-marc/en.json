@@ -232,5 +232,7 @@
   "record.physDescription.categoryOfMaterial.s": "Sound recording",
   "record.physDescription.categoryOfMaterial.t": "Text",
   "record.physDescription.categoryOfMaterial.v": "Videorecording",
-  "record.physDescription.categoryOfMaterial.z": "Unspecified"
+  "record.physDescription.categoryOfMaterial.z": "Unspecified",
+
+  "permanentLocationLookup": "Permanent location look-up"
 }
