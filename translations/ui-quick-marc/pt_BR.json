@@ -214,5 +214,7 @@
     "record.fixedField.Mod Rec Est": "Mod Rec Est",
     "record.fixedField.Source": "Fonte",
     "record.save.updated": "O registro foi atualizado.",
-    "record.save.updated.error": "O registro não pode ser salvo. {errorMsg}"
+    "record.save.updated.error": "O registro não pode ser salvo. {errorMsg}",
+    "record.error.location.invalid": "852 $b contains an invalid Location code. Please try again.",
+    "record.save.updated.error.location.multiple": "Record cannot be saved. Cannot have multiple 1XXs"
 }
