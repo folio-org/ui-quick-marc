@@ -17,6 +17,7 @@ import { IndicatorField } from './IndicatorField';
 import { MaterialCharsField } from './MaterialCharsField';
 import { PhysDescriptionField } from './PhysDescriptionField';
 import { FixedFieldFactory } from './FixedField';
+import { LocationField } from './LocationField';
 import {
   isReadOnly,
   hasIndicatorException,
@@ -42,6 +43,11 @@ const QuickMarcEditorRows = ({
   type,
   subtype,
   setDeletedRecords,
+  isLocationLookupNeeded,
+  permanentLocation,
+  setPermanentLocation,
+  isLocationLookupUsed,
+  setIsLocationLookupUsed,
   mutators: {
     addRecord,
     deleteRecord,
@@ -90,6 +96,7 @@ const QuickMarcEditorRows = ({
           const isPhysDescriptionField = isPhysDescriptionRecord(recordRow);
           const isFixedField = isFixedFieldRow(recordRow);
           const isContentField = !(isFixedField || isMaterialCharsField || isPhysDescriptionField);
+          const isLocationField = isLocationLookupNeeded && recordRow.tag === '852';
 
           return (
             <div
@@ -203,15 +210,32 @@ const QuickMarcEditorRows = ({
 
                 {
                   isContentField && (
-                    <Field
-                      dirty={false}
-                      aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
-                      name={`${name}[${idx}].content`}
-                      component={ContentField}
-                      marginBottom0
-                      disabled={isDisabled}
-                      id={`content-field-${idx}`}
-                    />
+                    <>
+                      <Field
+                        dirty={false}
+                        aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
+                        name={`${name}[${idx}].content`}
+                        marginBottom0
+                        disabled={isDisabled}
+                        id={`content-field-${idx}`}
+                      >
+                        {(props) => {
+                          return isLocationField ? (
+                            <LocationField
+                              action={action}
+                              fields={fields}
+                              isLocationLookupUsed={isLocationLookupUsed}
+                              setIsLocationLookupUsed={setIsLocationLookupUsed}
+                              permanentLocation={permanentLocation}
+                              setPermanentLocation={setPermanentLocation}
+                              {...props}
+                            />
+                          ) : (
+                            <ContentField {...props} />
+                          );
+                        }}
+                      </Field>
+                    </>
                   )
                 }
               </div>
@@ -263,6 +287,11 @@ QuickMarcEditorRows.propTypes = {
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   })),
   setDeletedRecords: PropTypes.func.isRequired,
+  isLocationLookupNeeded: PropTypes.bool.isRequired,
+  permanentLocation: PropTypes.string.isRequired,
+  setPermanentLocation: PropTypes.func.isRequired,
+  isLocationLookupUsed: PropTypes.bool.isRequired,
+  setIsLocationLookupUsed: PropTypes.func.isRequired,
   mutators: PropTypes.shape({
     addRecord: PropTypes.func.isRequired,
     deleteRecord: PropTypes.func.isRequired,
