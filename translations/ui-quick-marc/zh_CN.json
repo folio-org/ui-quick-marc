@@ -216,5 +216,7 @@
     "record.save.updated": "记录已更新。",
     "record.save.updated.error": "无法保存记录。 {errorMsg}",
     "record.error.location.invalid": "852$b包含无效的馆藏地代码。请再试一次。",
-    "record.save.updated.error.location.multiple": "无法保存记录。不能有多个 1XX"
+    "permanentLocationLookup": "Permanent location look-up",
+    "record.error.heading.empty": "Record cannot be saved without 1XX field.",
+    "record.error.heading.multiple": "Record cannot be saved. Cannot have multiple 1XXs"
 }
