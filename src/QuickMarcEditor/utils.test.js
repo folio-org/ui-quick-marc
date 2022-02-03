@@ -399,6 +399,28 @@ describe('QuickMarcEditor utils', () => {
 
         expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS, locations).props.id).toBe('ui-quick-marc.record.error.location.invalid');
       });
+
+      it('should not return error message when record has 852 location', () => {
+        const initialValues = { records: [] };
+        const locationsWithNumbers = [{ code: 'location.with.numbers.and.symbols123123' }];
+        const record = {
+          leader: '04706cxm a22008651i 4500',
+          records: [
+            {
+              content: '04706cxm a22008651i 4500',
+              tag: 'LDR',
+            },
+            { tag: '004' },
+            {
+              tag: '852',
+              content: '$b location.with.numbers.and.symbols123123',
+            },
+          ],
+        };
+
+        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS, locationsWithNumbers))
+          .toBe(undefined);
+      });
     });
 
     describe('when record is MARC Authority record', () => {
