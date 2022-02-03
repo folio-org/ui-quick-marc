@@ -452,7 +452,7 @@ export const removeFieldsForDuplicate = (formValues) => {
 
 const checkIsEmptyContent = (field) => {
   if (typeof field.content === 'string') {
-    return compact(field.content.split(' ')).every(content => /^\$[a-z0-9]*/.test(content));
+    return compact(field.content.split(' ')).every(content => /^\$[a-z0-9]?$/.test(content));
   }
 
   return false;
