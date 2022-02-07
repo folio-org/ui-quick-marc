@@ -28,6 +28,7 @@
 * [UIQM-187](https://issues.folio.org/browse/UIQM-187) Add a new MARC holdings/Edit MARC Holdings - 852 field display a Location Lookup link and modal.
 * [UIQM-197](https://issues.folio.org/browse/UIQM-197) Edit MARC authority record | Remove last 1XX crashes MARC Authority app.
 * [UIQM-204](https://issues.folio.org/browse/UIQM-204) Edit MARC holdings via quickMARC > Cannot save 008's Gen ret position.
+* [UIQM-205](https://issues.folio.org/browse/UIQM-205) Improve handling of parsing multiple subfields.
 
 ## [4.0.3](https://github.com/folio-org/ui-quick-marc/tree/v4.0.3) (2021-11-09)
 
