@@ -21,7 +21,7 @@ const config = {
       type: SUBFIELD_TYPES.STRING,
     },
     {
-      name: 'GenRet',
+      name: 'Gen ret',
       type: SUBFIELD_TYPES.BYTE,
     },
     {
