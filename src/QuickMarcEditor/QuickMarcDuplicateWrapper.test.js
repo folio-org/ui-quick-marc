@@ -229,7 +229,7 @@ describe('Given QuickMarcDuplicateWrapper', () => {
   });
 
   describe('when click on save button', () => {
-    it('should show on save message and redirect on load page', async () => {
+    it.skip('should show on save message and redirect on load page', async () => {
       let getByText;
 
       await act(async () => {
