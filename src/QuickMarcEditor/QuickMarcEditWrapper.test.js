@@ -290,7 +290,7 @@ describe('Given QuickMarcEditWrapper', () => {
 
   describe('when is bib marc type', () => {
     describe('when click on save button', () => {
-      it.skip('should show on save message and redirect on load page', async () => {
+      it('should show on save message and redirect on load page', async () => {
         let getByText;
         const mockOnClose = jest.fn();
 
@@ -317,7 +317,7 @@ describe('Given QuickMarcEditWrapper', () => {
             resolve();
           }, 10);
         });
-      }, 100);
+      }, 1000);
 
       describe('when there is an error during POST request', () => {
         it('should show an error message', async () => {
@@ -356,7 +356,7 @@ describe('Given QuickMarcEditWrapper', () => {
 
   describe('when is authority marc type', () => {
     describe('when click on save button', () => {
-      it.skip('should show on save message and redirect on load page', async () => {
+      it('should show on save message and redirect on load page', async () => {
         let getByText;
         const mockOnClose = jest.fn();
 
@@ -380,7 +380,7 @@ describe('Given QuickMarcEditWrapper', () => {
             resolve();
           }, 10);
         });
-      }, 100);
+      }, 1000);
 
       describe('when there is an error during POST request', () => {
         it('should show an error message', async () => {
