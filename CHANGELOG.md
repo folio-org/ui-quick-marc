@@ -30,6 +30,7 @@
 * [UIQM-203](https://issues.folio.org/browse/UIQM-203) MARC Holdings: Update 008 default position values.
 * [UIQM-204](https://issues.folio.org/browse/UIQM-204) Edit MARC holdings via quickMARC > Cannot save 008's Gen ret position.
 * [UIQM-205](https://issues.folio.org/browse/UIQM-205) Improve handling of parsing multiple subfields.
+* [UIQM-202](https://issues.folio.org/browse/UIQM-202) Fix tests that fail due to timeouts on Jenkins.
 
 ## [4.0.3](https://github.com/folio-org/ui-quick-marc/tree/v4.0.3) (2021-11-09)
 
