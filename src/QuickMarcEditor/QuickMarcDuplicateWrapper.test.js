@@ -255,10 +255,10 @@ describe('Given QuickMarcDuplicateWrapper', () => {
           resolve();
         }, 10);
       });
-    }, 100);
+    }, 1000);
 
     describe('when there is an error during POST request', () => {
-      it.skip('should show an error message', async () => {
+      it('should show an error message', async () => {
         let getByText;
 
         await act(async () => {
@@ -286,7 +286,7 @@ describe('Given QuickMarcDuplicateWrapper', () => {
             resolve();
           }, 10);
         });
-      }, 100);
+      }, 1000);
     });
   });
 });

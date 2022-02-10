@@ -76,7 +76,7 @@
   "record.fixedField.AcqStatus": "AcqStatus",
   "record.fixedField.AcqMethod": "AcqMethod",
   "record.fixedField.AcqEndDate": "AcqEndDate",
-  "record.fixedField.GenRet": "Gen ret",
+  "record.fixedField.Gen ret": "Gen ret",
   "record.fixedField.Spec ret": "Spec ret",
   "record.fixedField.Compl": "Compl",
   "record.fixedField.Copies": "Copies",

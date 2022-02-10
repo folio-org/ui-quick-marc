@@ -980,6 +980,7 @@ describe('QuickMarcEditor utils', () => {
           id: 'id240',
         }],
       };
+
       const record = {
         records: [{
           tag: '001',
@@ -994,8 +995,61 @@ describe('QuickMarcEditor utils', () => {
           content: 'some content',
           id: 'id240',
         }, {
+          tag: '998',
+          indicators: ['f', 'f'],
+          content: '$c some content',
+          id: 'id998',
+        }],
+        updateInfo: {
+          recordState: 'actual',
+          updateDate: '01/01/1970',
+        },
+      };
+
+      const expectedRecord = {
+        records: [{
+          tag: '001',
+          content: 'some content',
+          id: 'id001',
+        }, {
+          tag: '003',
+          content: 'some content',
+          id: 'id003',
+        }, {
+          tag: '240',
+          content: '$a some content',
+          id: 'id240',
+        }, {
+          tag: '998',
+          indicators: ['f', 'f'],
+          content: '$c some content',
+          id: 'id998',
+        }],
+        updateInfo: {
+          recordState: 'actual',
+          updateDate: '01/01/1970',
+        },
+      };
+
+      expect(utils.autopopulateSubfieldSection(record, initialValues)).toEqual(expectedRecord);
+    });
+
+    it('should remove fields with empty content', () => {
+      const initialValues = {
+        records: [{
+          tag: '001',
+          id: 'id001',
+        }],
+      };
+
+      const record = {
+        records: [{
+          tag: '001',
+          content: 'some content',
+          id: 'id001',
+        }, {
           tag: '035',
-          content: '$a',
+          content: '$a $b',
           id: 'id0351',
         }, {
           tag: '035',
@@ -1028,13 +1082,74 @@ describe('QuickMarcEditor utils', () => {
           content: 'some content',
           id: 'id001',
         }, {
-          tag: '003',
+          tag: '998',
+          indicators: ['f', 'f'],
+          content: '$c some content',
+          id: 'id998',
+        }],
+        updateInfo: {
+          recordState: 'actual',
+          updateDate: '01/01/1970',
+        },
+      };
+
+      expect(utils.autopopulateSubfieldSection(record, initialValues)).toEqual(expectedRecord);
+    });
+
+    it('should not remove fields when subfield code and subfield value not separated with space', () => {
+      const initialValues = {
+        records: [{
+          tag: '001',
+          id: 'id001',
+        }],
+      };
+
+      const record = {
+        records: [{
+          tag: '001',
           content: 'some content',
-          id: 'id003',
+          id: 'id001',
         }, {
-          tag: '240',
-          content: '$a some content',
-          id: 'id240',
+          tag: '035',
+          content: '$atesting $b testingtwo',
+          id: 'id0351',
+        }, {
+          tag: '035',
+          content: '$a testing $btestingtwo',
+          id: 'id0352',
+        }, {
+          tag: '035',
+          content: '$atesting $btestingtwo',
+          id: 'id0353',
+        }, {
+          tag: '998',
+          indicators: ['f', 'f'],
+          content: '$c some content',
+          id: 'id998',
+        }],
+        updateInfo: {
+          recordState: 'actual',
+          updateDate: '01/01/1970',
+        },
+      };
+
+      const expectedRecord = {
+        records: [{
+          tag: '001',
+          content: 'some content',
+          id: 'id001',
+        }, {
+          tag: '035',
+          content: '$atesting $b testingtwo',
+          id: 'id0351',
+        }, {
+          tag: '035',
+          content: '$a testing $btestingtwo',
+          id: 'id0352',
+        }, {
+          tag: '035',
+          content: '$atesting $btestingtwo',
+          id: 'id0353',
         }, {
           tag: '998',
           indicators: ['f', 'f'],

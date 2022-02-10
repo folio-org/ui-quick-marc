@@ -105,7 +105,7 @@ describe('Given getQuickMarcRecordStatus', () => {
             resolve();
           }, 10);
         });
-      }, 100);
+      }, 1000);
     });
   });
 
@@ -137,11 +137,11 @@ describe('Given getQuickMarcRecordStatus', () => {
           resolve();
         }, 10);
       });
-    }, 100);
+    }, 1000);
   });
 
   describe('when form is valid and fetch is failed', () => {
-    it.skip('should show error toast notification', async () => {
+    it('should show error toast notification', async () => {
       quickMarcRecordStatusGETRequest = jest.fn(() => Promise.reject());
 
       await act(async () => {
@@ -164,6 +164,6 @@ describe('Given getQuickMarcRecordStatus', () => {
           resolve();
         }, 10);
       });
-    }, 100);
+    }, 1000);
   });
 });

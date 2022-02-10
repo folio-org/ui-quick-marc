@@ -167,7 +167,6 @@
     "record.fixedField.AcqStatus": "حالة التزويد",
     "record.fixedField.AcqMethod": "طريقة التزويد",
     "record.fixedField.AcqEndDate": "تاريخ انتهاء التزويد",
-    "record.fixedField.GenRet": "احتفاظ عام",
     "record.fixedField.Spec ret": "احتفاظ محدد",
     "record.fixedField.Compl": "مكتمل",
     "record.fixedField.Copies": "نسخ",
@@ -216,5 +215,8 @@
     "record.save.updated": "تم تحديث التسجيلة.",
     "record.save.updated.error": "تعذر حفظ التسجيلة. {errorMsg}",
     "record.error.location.invalid": "يحتوي الحقل 852 $b على رمز موقع غير صالح. يرجى إعادة المحاولة.",
-    "record.save.updated.error.location.multiple": "لا يمكن حفظ التسجيلة. لا يمكن أن يكون بها عدة 1XX"
+    "permanentLocationLookup": "بحث الموقع الدائم",
+    "record.error.heading.empty": "لا يمكن حفظ التسجيلة بدون الحقل 1XX.",
+    "record.error.heading.multiple": "لا يمكن حفظ التسجيلة. لا يمكن أن يكون بها عدة 1XX",
+    "record.fixedField.Gen ret": "احتفاظ عام"
 }
