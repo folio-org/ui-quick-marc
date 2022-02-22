@@ -14,7 +14,7 @@ const MarcField = ({
     ? field[fieldTag].subfields.map(subFieldTag => {
       const subKey = Object.keys(subFieldTag)[0];
 
-      const subfieldValue = field.isHighlighted
+      const subfieldValue = field[fieldTag].isHighlighted
         ? <mark>{subFieldTag[subKey]}</mark>
         : subFieldTag[subKey];
 

@@ -26,6 +26,7 @@ const marc = {
           }, {
             b: 'Luv Puri.',
           }],
+          isHighlighted: true,
         },
       }, {
         '999': {
@@ -85,6 +86,16 @@ describe('Given QuickMarcView', () => {
     const { getByTestId } = renderQuickMarcView();
 
     expect(getByTestId('qm-view-paneset')).toBeDefined();
+  });
+
+  describe('when a field has isHighlighted flag', () => {
+    it('should highlight the field content', () => {
+      const { container } = renderQuickMarcView();
+
+      const highlightedContent = [...container.querySelectorAll('mark')].map(mark => mark.textContent).join(' ');
+
+      expect(highlightedContent).toEqual('Across the line of control : inside Pakistan-administered Jammu and Kashmir / Luv Puri.');
+    });
   });
 
   describe('when "isPaneset" prop is false', () => {
