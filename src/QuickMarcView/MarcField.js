@@ -14,7 +14,11 @@ const MarcField = ({
     ? field[fieldTag].subfields.map(subFieldTag => {
       const subKey = Object.keys(subFieldTag)[0];
 
-      return [<span key={`span${subKey}`}>&#8225;</span>, subKey, ' ', subFieldTag[subKey], ' '];
+      const subfieldValue = field.isHighlighted
+        ? <mark>{subFieldTag[subKey]}</mark>
+        : subFieldTag[subKey];
+
+      return [<span key={`span${subKey}`}>&#8225;</span>, subKey, ' ', subfieldValue, ' '];
     })
     : field[fieldTag].replace(/\\/g, ' ');
 

@@ -27,6 +27,7 @@
 * [UIQM-189](https://issues.folio.org/browse/UIQM-189) Add/Edit MARC holdings record: Improve error messaging when user enters an invalid Location (852 $b) value
 * [UIQM-187](https://issues.folio.org/browse/UIQM-187) Add a new MARC holdings/Edit MARC Holdings - 852 field display a Location Lookup link and modal.
 * [UIQM-197](https://issues.folio.org/browse/UIQM-197) Edit MARC authority record | Remove last 1XX crashes MARC Authority app.
+* [UIQM-209](https://issues.folio.org/browse/UIQM-209) Highlight clicked on Heading/Reference in Authorities Detail record
 
 ## [4.0.3](https://github.com/folio-org/ui-quick-marc/tree/v4.0.3) (2021-11-09)
 
