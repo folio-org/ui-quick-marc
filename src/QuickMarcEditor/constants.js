@@ -61,16 +61,16 @@ export const QM_RECORD_STATUS_BAIL_TIME = 20000;
 export const HOLDINGS_FIXED_FIELD_DEFAULT_VALUES = {
   AcqStatus: 0,
   AcqMethod: 'u',
-  AcqEndDate: '////',
+  AcqEndDate: '\\\\\\\\',
   'Gen ret': 0,
-  'Spec ret': ['/', '/', '/'],
+  'Spec ret': ['\\', '\\', '\\'],
   Compl: 0,
-  Copies: '///',
+  Copies: '\\\\\\',
   Lend: 'u',
   Repro: 'u',
   Lang: 'eng',
   'Sep/comp': 0,
-  'Rept date': '//////',
+  'Rept date': '\\\\\\\\\\\\',
 };
 
 export const CORRESPONDING_HEADING_TYPE_TAGS = ['100', '110', '111', '151', '130', '150', '155'];

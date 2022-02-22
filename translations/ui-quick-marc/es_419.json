@@ -167,7 +167,6 @@
     "record.fixedField.AcqStatus": "AcqStatus",
     "record.fixedField.AcqMethod": "AcqMethod",
     "record.fixedField.AcqEndDate": "AcqEndDate",
-    "record.fixedField.GenRet": "Gen ret",
     "record.fixedField.Spec ret": "Spec ret",
     "record.fixedField.Compl": "Compl",
     "record.fixedField.Copies": "Copies",
@@ -214,7 +213,10 @@
     "record.fixedField.Mod Rec Est": "Mod Rec Est",
     "record.fixedField.Source": "Source",
     "record.save.updated": "Record has been updated.",
-    "record.save.updated.error": "Record cannot be saved.{errorMsg}",
+    "record.save.updated.error": "Record cannot be saved. {errorMsg}",
     "record.error.location.invalid": "852 $b contains an invalid Location code. Please try again.",
-    "record.save.updated.error.location.multiple": "Record cannot be saved. Cannot have multiple 1XXs"
+    "permanentLocationLookup": "Permanent location look-up",
+    "record.error.heading.empty": "Record cannot be saved without 1XX field.",
+    "record.error.heading.multiple": "Record cannot be saved. Cannot have multiple 1XXs",
+    "record.fixedField.Gen ret": "Gen ret"
 }

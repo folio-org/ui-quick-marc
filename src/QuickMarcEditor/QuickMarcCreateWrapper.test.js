@@ -236,7 +236,7 @@ describe('Given QuickMarcCreateWrapper', () => {
             resolve();
           }, 10);
         });
-      }, 100);
+      }, 1000);
     });
   });
 });

@@ -167,7 +167,6 @@
     "record.fixedField.AcqStatus": "采购状态",
     "record.fixedField.AcqMethod": "采购方法",
     "record.fixedField.AcqEndDate": "采购终止日期",
-    "record.fixedField.GenRet": "Gen ret",
     "record.fixedField.Spec ret": "Spec ret",
     "record.fixedField.Compl": "完整性",
     "record.fixedField.Copies": "副本",
@@ -216,5 +215,8 @@
     "record.save.updated": "记录已更新。",
     "record.save.updated.error": "无法保存记录。 {errorMsg}",
     "record.error.location.invalid": "852$b包含无效的馆藏地代码。请再试一次。",
-    "record.save.updated.error.location.multiple": "无法保存记录。不能有多个 1XX"
+    "permanentLocationLookup": "永久位置查询",
+    "record.error.heading.empty": "没有1XX字段不能保存记录。",
+    "record.error.heading.multiple": "无法保存记录。不能有多个 1XX",
+    "record.fixedField.Gen ret": "Gen ret"
 }
