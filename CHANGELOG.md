@@ -31,6 +31,7 @@
 * [UIQM-204](https://issues.folio.org/browse/UIQM-204) Edit MARC holdings via quickMARC > Cannot save 008's Gen ret position.
 * [UIQM-205](https://issues.folio.org/browse/UIQM-205) Improve handling of parsing multiple subfields.
 * [UIQM-202](https://issues.folio.org/browse/UIQM-202) Fix tests that fail due to timeouts on Jenkins.
+* [UIQM-209](https://issues.folio.org/browse/UIQM-209) Highlight clicked on Heading/Reference in Authorities Detail record
 
 ## [4.0.3](https://github.com/folio-org/ui-quick-marc/tree/v4.0.3) (2021-11-09)
 

@@ -63,6 +63,7 @@ const QuickMarcView = ({
       dismissible
       onClose={onClose}
       data-test-instance-marc
+      data-testid="marc-view-pane"
       {...optionalProps}
     >
       <section className={styles.marcWrapper}>
