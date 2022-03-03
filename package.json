@@ -80,7 +80,8 @@
     "lint": "eslint .",
     "start": "yarn stripes serve",
     "test": "jest --ci --coverage",
-    "formatjs-compile": "formatjs compile-folder --ast --format simple ./translations/ui-quick-marc ./translations/ui-quick-marc/compiled"
+    "formatjs-compile": "formatjs compile-folder --ast --format simple ./translations/ui-quick-marc ./translations/ui-quick-marc/compiled",
+    "build-mod-descriptor": "stripes mod descriptor --full --strict | jq '.[]' > module-descriptor.json"
   },
   "devDependencies": {
     "@babel/core": "^7.8.0",
