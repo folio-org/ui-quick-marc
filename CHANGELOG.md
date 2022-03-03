@@ -1,6 +1,9 @@
 # Change history for ui-quick-marc
 
-## [5.0.0](IN PROGRESS)
+## IN PROGRESS
+
+## [5.0.0](https://github.com/folio-org/ui-quick-marc/tree/v5.0.0) (2022-03-03)
+[Full Changelog](https://github.com/folio-org/ui-quick-marc/compare/v4.0.3...v5.0.0)
 
 * [UIQM-148](https://issues.folio.org/browse/UIQM-148) Change error message when MARC tag does not contain 3 digits.
 * [UIQM-155](https://issues.folio.org/browse/UIQM-155) Update according changed logic for deriving.
