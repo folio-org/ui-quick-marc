@@ -37,6 +37,7 @@
 * [UIQM-209](https://issues.folio.org/browse/UIQM-209) Highlight clicked on Heading/Reference in Authorities Detail record
 * [UIQM-207](https://issues.folio.org/browse/UIQM-207) ui-quick-marc: Configure GitHub actions
 * [UIQM-214](https://issues.folio.org/browse/UIQM-214) Update 'records-editor.records' interface version to v3.1.
+* [UIQM-219](https://issues.folio.org/browse/UIQM-219) Cannot assign MARC authority permissions only.
 
 ## [4.0.3](https://github.com/folio-org/ui-quick-marc/tree/v4.0.3) (2021-11-09)
 
