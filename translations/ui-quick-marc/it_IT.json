@@ -162,7 +162,7 @@
     "record.error.tag.nonDigits": "Invalid MARC tag. Please try again.",
     "record.error.subfield": "Missing a subfield value for a MARC tag",
     "bib-record.edit.title": "Edit MARC record - {title}",
-    "bib-record.duplicate.title": "Derive a new MARC bib record",
+    "bib-record.duplicate.title": "Derivare un nuovo record bib MARC",
     "holdings-record.edit.title": "Edit MARC holdings - Location: {location} - [{callNumber}]",
     "record.fixedField.AcqStatus": "AcqStatus",
     "record.fixedField.AcqMethod": "AcqMethod",
