@@ -69,7 +69,8 @@
         "displayName": "quickMARC: View, edit MARC authorities record",
         "subPermissions": [
           "records-editor.records.item.get",
-          "records-editor.records.item.put"
+          "records-editor.records.item.put",
+          "inventory-storage.locations.collection.get"
         ],
         "visible": true
       }
