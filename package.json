@@ -23,12 +23,20 @@
     ],
     "permissionSets": [
       {
+        "permissionName": "ui-quick-marc.quick-marc-editor.view",
+        "displayName": "quickMARC: View MARC bibliographic record",
+        "subPermissions": [
+          "records-editor.records.item.get",
+          "inventory.instances.item.get"
+        ],
+        "visible": true
+      },
+      {
         "permissionName": "ui-quick-marc.quick-marc-editor.all",
         "displayName": "quickMARC: View, edit MARC bibliographic record",
         "subPermissions": [
-          "records-editor.records.item.get",
-          "records-editor.records.item.put",
-          "inventory.instances.item.get"
+          "ui-quick-marc.quick-marc-editor.view",
+          "records-editor.records.item.put"
         ],
         "visible": true
       },
@@ -57,10 +65,9 @@
         "permissionName": "ui-quick-marc.quick-marc-editor.duplicate",
         "displayName": "quickMARC: Derive new MARC bibliographic record",
         "subPermissions": [
+          "ui-quick-marc.quick-marc-editor.view",
           "records-editor.records.status.item.get",
-          "records-editor.records.item.get",
-          "records-editor.records.item.post",
-          "inventory.instances.item.get"
+          "records-editor.records.item.post"
         ],
         "visible": true
       },

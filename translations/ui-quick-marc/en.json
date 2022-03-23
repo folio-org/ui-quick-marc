@@ -3,6 +3,7 @@
   "meta.source.system": "System",
 
   "permission.quick-marc-editor.all": "quickMARC: View, edit MARC bibliographic record",
+  "permission.quick-marc-editor.view": "quickMARC: View MARC bibliographic record",
   "permission.quick-marc-holdings-editor.all": "quickMARC: View, edit MARC holdings record",
   "permission.quick-marc-holdings-editor.create": "quickMARC: Create a new MARC holdings record",
   "permission.quick-marc-editor.duplicate": "quickMARC: Derive new MARC bibliographic record",
