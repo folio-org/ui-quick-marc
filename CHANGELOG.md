@@ -1,6 +1,9 @@
 # Change history for ui-quick-marc
 
-## IN PROGRESS
+## [5.1.0] (IN PROGRESS)
+
+* [UIQM-213](https://issues.folio.org/browse/UIQM-213) New Permission: View MARC holdings record.
+* [UIQM-212](https://issues.folio.org/browse/UIQM-212) New permission: View source (instance).
 
 ## [5.0.0](https://github.com/folio-org/ui-quick-marc/tree/v5.0.0) (2022-03-03)
 [Full Changelog](https://github.com/folio-org/ui-quick-marc/compare/v4.0.3...v5.0.0)
@@ -38,7 +41,6 @@
 * [UIQM-207](https://issues.folio.org/browse/UIQM-207) ui-quick-marc: Configure GitHub actions
 * [UIQM-214](https://issues.folio.org/browse/UIQM-214) Update 'records-editor.records' interface version to v3.1.
 * [UIQM-219](https://issues.folio.org/browse/UIQM-219) Cannot assign MARC authority permissions only.
-* [UIQM-212](https://issues.folio.org/browse/UIQM-212) New permission: View source (instance).
 
 ## [4.0.3](https://github.com/folio-org/ui-quick-marc/tree/v4.0.3) (2021-11-09)
 
