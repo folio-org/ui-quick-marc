@@ -16,6 +16,7 @@ import { MARC_TYPES } from './common/constants';
 
 const QuickMarc = ({
   basePath,
+  externalRecordPath,
   onClose,
 }) => {
   const editorRoutesConfig = [
@@ -83,6 +84,7 @@ const QuickMarc = ({
                   <IfPermission perm={permission}>
                     <QuickMarcEditorContainer
                       onClose={onClose}
+                      externalRecordPath={externalRecordPath}
                       {...routeProps}
                     />
                   </IfPermission>
@@ -90,6 +92,7 @@ const QuickMarc = ({
                 : (
                   <QuickMarcEditorContainer
                     onClose={onClose}
+                    externalRecordPath={externalRecordPath}
                     {...routeProps}
                   />
                 )
@@ -104,6 +107,7 @@ const QuickMarc = ({
 
 QuickMarc.propTypes = {
   basePath: PropTypes.string.isRequired,
+  externalRecordPath: PropTypes.string,
   onClose: PropTypes.func.isRequired,
 };
 

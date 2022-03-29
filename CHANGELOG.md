@@ -4,6 +4,7 @@
 
 * [UIQM-213](https://issues.folio.org/browse/UIQM-213) New Permission: View MARC holdings record.
 * [UIQM-212](https://issues.folio.org/browse/UIQM-212) New permission: View source (instance).
+* [UIQM-162](https://issues.folio.org/browse/UIQM-162) Optimistic locking: display error message to inform user about OL.
 
 ## [5.0.0](https://github.com/folio-org/ui-quick-marc/tree/v5.0.0) (2022-03-03)
 [Full Changelog](https://github.com/folio-org/ui-quick-marc/compare/v4.0.3...v5.0.0)

@@ -1,4 +1,7 @@
-import React, { useCallback } from 'react';
+import React, {
+  useCallback,
+  useState,
+} from 'react';
 import PropTypes from 'prop-types';
 import ReactRouterPropTypes from 'react-router-prop-types';
 
@@ -16,6 +19,7 @@ import {
   autopopulateSubfieldSection,
   validateMarcRecord,
   cleanBytesFields,
+  parseHttpError,
 } from './utils';
 
 const propTypes = {
@@ -42,6 +46,7 @@ const QuickMarcCreateWrapper = ({
   locations,
 }) => {
   const showCallout = useShowCallout();
+  const [httpError, setHttpError] = useState(null);
 
   const onSubmit = useCallback(async (formValues) => {
     const autopopulatedFormValues = autopopulateSubfieldSection(
@@ -74,22 +79,9 @@ const QuickMarcCreateWrapper = ({
         showCallout({ messageId: 'ui-quick-marc.record.save.success.processing' });
       })
       .catch(async (errorResponse) => {
-        let messageId;
-        let error;
+        const parsedError = await parseHttpError(errorResponse);
 
-        try {
-          error = await errorResponse.json();
-        } catch (e) {
-          error = {};
-        }
-
-        if (error.code === 'ILLEGAL_FIXED_LENGTH_CONTROL_FIELD') {
-          messageId = 'ui-quick-marc.record.save.error.illegalFixedLength';
-        } else {
-          messageId = 'ui-quick-marc.record.save.error.generic';
-        }
-
-        showCallout({ messageId, type: 'error' });
+        setHttpError(parsedError);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onClose, showCallout]);
@@ -102,6 +94,7 @@ const QuickMarcCreateWrapper = ({
       onSubmit={onSubmit}
       action={action}
       marcType={marcType}
+      httpError={httpError}
     />
   );
 };
