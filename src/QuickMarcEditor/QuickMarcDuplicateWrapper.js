@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useState,
 } from 'react';
 import PropTypes from 'prop-types';
 import ReactRouterPropTypes from 'react-router-prop-types';
@@ -21,6 +22,7 @@ import {
   autopopulateSubfieldSection,
   validateMarcRecord,
   cleanBytesFields,
+  parseHttpError,
 } from './utils';
 
 const propTypes = {
@@ -45,6 +47,7 @@ const QuickMarcDuplicateWrapper = ({
   marcType,
 }) => {
   const showCallout = useShowCallout();
+  const [httpError, setHttpError] = useState(null);
 
   const onSubmit = useCallback(async (formValues) => {
     const clearFormValues = removeFieldsForDuplicate(formValues);
@@ -85,22 +88,9 @@ const QuickMarcDuplicateWrapper = ({
         });
       })
       .catch(async (errorResponse) => {
-        let messageId;
-        let error;
+        const parsedError = await parseHttpError(errorResponse);
 
-        try {
-          error = await errorResponse.json();
-        } catch (e) {
-          error = {};
-        }
-
-        if (error.code === 'ILLEGAL_FIXED_LENGTH_CONTROL_FIELD') {
-          messageId = 'ui-quick-marc.record.save.error.illegalFixedLength';
-        } else {
-          messageId = 'ui-quick-marc.record.save.error.generic';
-        }
-
-        showCallout({ messageId, type: 'error' });
+        setHttpError(parsedError);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onClose, showCallout]);
@@ -113,6 +103,7 @@ const QuickMarcDuplicateWrapper = ({
       onSubmit={onSubmit}
       action={action}
       marcType={marcType}
+      httpError={httpError}
     />
   );
 };

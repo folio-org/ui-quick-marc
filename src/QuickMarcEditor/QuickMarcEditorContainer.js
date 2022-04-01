@@ -2,6 +2,7 @@ import React, {
   useEffect,
   useState,
   useCallback,
+  useMemo,
 } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
@@ -48,6 +49,7 @@ const QuickMarcEditorContainer = ({
   history,
   location,
   marcType,
+  externalRecordPath,
 }) => {
   const {
     externalId,
@@ -59,6 +61,14 @@ const QuickMarcEditorContainer = ({
   const [isLoading, setIsLoading] = useState(true);
 
   const showCallout = useShowCallout();
+
+  const externalRecordUrl = useMemo(() => {
+    if (marcType === MARC_TYPES.BIB || action === QUICK_MARC_ACTIONS.CREATE) {
+      return `${externalRecordPath}/${externalId}`;
+    } else {
+      return `${externalRecordPath}/${instanceId}/${externalId}`;
+    }
+  }, [externalRecordPath, marcType, externalId, instanceId, action]);
 
   useEffect(() => {
     const path = action === QUICK_MARC_ACTIONS.CREATE
@@ -132,6 +142,7 @@ const QuickMarcEditorContainer = ({
       location={location}
       locations={locations}
       marcType={marcType}
+      externalRecordPath={externalRecordUrl}
     />
   );
 };

@@ -2,10 +2,12 @@ import React, {
   useMemo,
   useState,
   useCallback,
+  useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import find from 'lodash/find';
+import { FormSpy } from 'react-final-form';
 
 import stripesFinalForm from '@folio/stripes/final-form';
 import {
@@ -19,13 +21,18 @@ import {
   HasCommand,
   checkScope,
 } from '@folio/stripes/components';
-
-import { FormSpy } from 'react-final-form';
+import {
+  useShowCallout,
+} from '@folio/stripes-acq-components';
 
 import { QuickMarcRecordInfo } from './QuickMarcRecordInfo';
 import { QuickMarcEditorRows } from './QuickMarcEditorRows';
+import { OptimisticLockingBanner } from './OptimisticLockingBanner';
 import { QUICK_MARC_ACTIONS } from './constants';
-import { MARC_TYPES } from '../common/constants';
+import {
+  ERROR_TYPES,
+  MARC_TYPES,
+} from '../common/constants';
 import {
   addNewRecord,
   deleteRecordByIndex,
@@ -52,7 +59,10 @@ const QuickMarcEditor = ({
   },
   marcType,
   locations,
+  httpError,
+  externalRecordPath,
 }) => {
+  const showCallout = useShowCallout();
   const [records, setRecords] = useState([]);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const [deletedRecords, setDeletedRecords] = useState([]);
@@ -217,6 +227,33 @@ const QuickMarcEditor = ({
     },
   }]), [saveFormDisabled, confirmSubmit, onClose]);
 
+  useEffect(() => {
+    if (!httpError) {
+      return;
+    }
+
+    let messageId = '';
+
+    if (marcType === MARC_TYPES.AUTHORITY) {
+      showCallout({
+        messageId: 'ui-quick-marc.record.save.updated.error',
+        values: { errorMsg: httpError.message },
+        type: 'error',
+      });
+    } else {
+      if (httpError.errorType === ERROR_TYPES.OPTIMISTIC_LOCKING) {
+        return;
+      } else if (httpError.code === 'ILLEGAL_FIXED_LENGTH_CONTROL_FIELD') {
+        messageId = 'ui-quick-marc.record.save.error.illegalFixedLength';
+      } else {
+        messageId = 'ui-quick-marc.record.save.error.generic';
+      }
+
+      showCallout({ messageId, type: 'error' });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [httpError]);
+
   return (
     <HasCommand
       commands={shortcuts}
@@ -234,6 +271,10 @@ const QuickMarcEditor = ({
             paneSub={<QuickMarcRecordInfo {...recordInfoProps} />}
             footer={paneFooter}
           >
+            <OptimisticLockingBanner
+              httpError={httpError}
+              latestVersionLink={externalRecordPath}
+            />
             <Row>
               <Col
                 xs={12}
@@ -280,6 +321,7 @@ const QuickMarcEditor = ({
 
 QuickMarcEditor.propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
+  externalRecordPath: PropTypes.string,
   instance: PropTypes.object,
   onClose: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
@@ -294,6 +336,15 @@ QuickMarcEditor.propTypes = {
   locations: PropTypes.shape({
     records: PropTypes.array.isRequired,
   }),
+  httpError: PropTypes.shape({
+    code: PropTypes.string,
+    message: PropTypes.string,
+    errorType: PropTypes.string,
+  }),
+};
+
+QuickMarcEditor.defaultProps = {
+  httpError: null,
 };
 
 export default stripesFinalForm({

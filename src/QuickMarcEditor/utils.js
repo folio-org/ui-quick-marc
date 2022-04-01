@@ -27,7 +27,35 @@ import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import getMaterialCharsFieldConfig from './QuickMarcEditorRows/MaterialCharsField/getMaterialCharsFieldConfig';
 import getPhysDescriptionFieldConfig from './QuickMarcEditorRows/PhysDescriptionField/getPhysDescriptionFieldConfig';
 import { FixedFieldFactory } from './QuickMarcEditorRows/FixedField';
-import { MARC_TYPES } from '../common/constants';
+import {
+  MARC_TYPES,
+  ERROR_TYPES,
+} from '../common/constants';
+
+export const parseHttpError = async (httpError) => {
+  const contentType = httpError?.headers?.get('content-type');
+  let jsonError = {};
+
+  try {
+    if (contentType === 'text/plain') {
+      jsonError.message = await httpError.text();
+    } else {
+      jsonError = await httpError.json();
+    }
+
+    jsonError.errorType = ERROR_TYPES.OTHER;
+
+    // Optimistic locking error is currently returned as a plain text
+    // https://issues.folio.org/browse/UIIN-1872?focusedCommentId=125438&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-125438
+    if (jsonError.message.match(/optimistic locking/i)) {
+      jsonError.errorType = ERROR_TYPES.OPTIMISTIC_LOCKING;
+    }
+
+    return jsonError;
+  } catch (err) {
+    return httpError;
+  }
+};
 
 export const dehydrateMarcRecordResponse = marcRecordResponse => ({
   ...marcRecordResponse,

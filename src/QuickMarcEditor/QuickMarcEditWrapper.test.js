@@ -258,6 +258,7 @@ const renderQuickMarcEditWrapper = ({
       instance={instance}
       location={{}}
       locations={locations}
+      externalRecordPath="/some-record"
       {...props}
     />
   </MemoryRouter>,
@@ -333,7 +334,10 @@ describe('Given QuickMarcEditWrapper', () => {
             }).getByText;
           });
 
-          mutator.quickMarcEditMarcRecord.PUT = jest.fn(() => Promise.reject());
+          // eslint-disable-next-line prefer-promise-reject-errors
+          mutator.quickMarcEditMarcRecord.PUT = jest.fn(() => Promise.reject({
+            json: () => Promise.resolve({}),
+          }));
 
           await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
@@ -345,6 +349,39 @@ describe('Given QuickMarcEditWrapper', () => {
                 messageId: 'ui-quick-marc.record.save.error.generic',
                 type: 'error',
               });
+
+              resolve();
+            }, 100);
+          });
+        }, 1000);
+      });
+
+      describe('when there is an error during POST request due to optimistic locking', () => {
+        it('should show optimistic locking banner', async () => {
+          let getByText;
+
+          await act(async () => {
+            getByText = renderQuickMarcEditWrapper({
+              instance,
+              mutator,
+              location: {
+                search: 'relatedRecordVersion=1',
+              },
+            }).getByText;
+          });
+
+          // eslint-disable-next-line prefer-promise-reject-errors
+          mutator.quickMarcEditMarcRecord.PUT = jest.fn(() => Promise.reject({
+            json: () => Promise.resolve({ message: 'optimistic locking' }),
+          }));
+
+          await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+
+          expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
+
+          await new Promise(resolve => {
+            setTimeout(() => {
+              expect(getByText('stripes-components.optimisticLocking.saveError')).toBeDefined();
 
               resolve();
             }, 100);
@@ -394,7 +431,10 @@ describe('Given QuickMarcEditWrapper', () => {
             }).getByText;
           });
 
-          mutator.quickMarcEditMarcRecord.PUT = jest.fn(() => Promise.reject());
+          // eslint-disable-next-line prefer-promise-reject-errors
+          mutator.quickMarcEditMarcRecord.PUT = jest.fn(() => Promise.reject({
+            json: () => Promise.resolve({}),
+          }));
 
           await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 

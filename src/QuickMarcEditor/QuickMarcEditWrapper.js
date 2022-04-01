@@ -1,4 +1,7 @@
-import React, { useCallback } from 'react';
+import React, {
+  useCallback,
+  useState,
+} from 'react';
 import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 
@@ -15,10 +18,12 @@ import {
   autopopulateIndicators,
   autopopulateSubfieldSection,
   cleanBytesFields,
+  parseHttpError,
 } from './utils';
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
+  externalRecordPath: PropTypes.string.isRequired,
   initialValues: PropTypes.object.isRequired,
   instance: PropTypes.object,
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
@@ -35,9 +40,11 @@ const QuickMarcEditWrapper = ({
   mutator,
   marcType,
   locations,
+  externalRecordPath,
 }) => {
   const showCallout = useShowCallout();
   const location = useLocation();
+  const [httpError, setHttpError] = useState(null);
 
   const searchParams = new URLSearchParams(location.search);
 
@@ -74,30 +81,9 @@ const QuickMarcEditWrapper = ({
         onClose();
       })
       .catch(async (errorResponse) => {
-        let messageId;
-        let error;
+        const parsedError = await parseHttpError(errorResponse);
 
-        try {
-          error = await errorResponse.json();
-        } catch (e) {
-          error = {};
-        }
-
-        if (marcType === MARC_TYPES.AUTHORITY) {
-          showCallout({
-            messageId: 'ui-quick-marc.record.save.updated.error',
-            values: { errorMsg: error.message },
-            type: 'error',
-          });
-        } else {
-          if (error.code === 'ILLEGAL_FIXED_LENGTH_CONTROL_FIELD') {
-            messageId = 'ui-quick-marc.record.save.error.illegalFixedLength';
-          } else {
-            messageId = 'ui-quick-marc.record.save.error.generic';
-          }
-
-          showCallout({ messageId, type: 'error' });
-        }
+        setHttpError(parsedError);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onClose, showCallout]);
@@ -111,6 +97,8 @@ const QuickMarcEditWrapper = ({
       action={action}
       marcType={marcType}
       locations={locations}
+      httpError={httpError}
+      externalRecordPath={externalRecordPath}
     />
   );
 };
