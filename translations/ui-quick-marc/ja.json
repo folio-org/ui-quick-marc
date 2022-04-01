@@ -218,5 +218,7 @@
     "permanentLocationLookup": "Permanent location look-up",
     "record.error.heading.empty": "Record cannot be saved without 1XX field.",
     "record.error.heading.multiple": "Record cannot be saved. Cannot have multiple 1XXs",
-    "record.fixedField.Gen ret": "Gen ret"
+    "record.fixedField.Gen ret": "Gen ret",
+    "permission.quick-marc-holdings-editor.view": "quickMARC: View MARC holdings record",
+    "permission.quick-marc-editor.view": "quickMARC: View MARC bibliographic record"
 }
