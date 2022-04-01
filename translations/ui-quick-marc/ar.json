@@ -218,5 +218,7 @@
     "permanentLocationLookup": "بحث الموقع الدائم",
     "record.error.heading.empty": "لا يمكن حفظ التسجيلة بدون الحقل 1XX.",
     "record.error.heading.multiple": "لا يمكن حفظ التسجيلة. لا يمكن أن يكون بها عدة 1XX",
-    "record.fixedField.Gen ret": "احتفاظ عام"
+    "record.fixedField.Gen ret": "احتفاظ عام",
+    "permission.quick-marc-holdings-editor.view": "quickMARC: اعرض تسجيلة مقتنيات مارك",
+    "permission.quick-marc-editor.view": "quickMARC: اعرض تسجيلة مارك البيبلوغرافية"
 }

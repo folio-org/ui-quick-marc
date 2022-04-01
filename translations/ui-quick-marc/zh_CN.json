@@ -218,5 +218,7 @@
     "permanentLocationLookup": "永久位置查询",
     "record.error.heading.empty": "没有1XX字段不能保存记录。",
     "record.error.heading.multiple": "无法保存记录。不能有多个 1XX",
-    "record.fixedField.Gen ret": "Gen ret"
+    "record.fixedField.Gen ret": "Gen ret",
+    "permission.quick-marc-holdings-editor.view": "quickMARC：查看MARC馆藏记录",
+    "permission.quick-marc-editor.view": "quickMARC：查看MARC书目记录"
 }
