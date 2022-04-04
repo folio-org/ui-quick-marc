@@ -6,6 +6,7 @@ import React, {
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import find from 'lodash/find';
+import { FormSpy } from 'react-final-form';
 
 import stripesFinalForm from '@folio/stripes/final-form';
 import {
@@ -19,8 +20,6 @@ import {
   HasCommand,
   checkScope,
 } from '@folio/stripes/components';
-
-import { FormSpy } from 'react-final-form';
 
 import { QuickMarcRecordInfo } from './QuickMarcRecordInfo';
 import { QuickMarcEditorRows } from './QuickMarcEditorRows';
@@ -56,7 +55,6 @@ const QuickMarcEditor = ({
   const [records, setRecords] = useState([]);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const [deletedRecords, setDeletedRecords] = useState([]);
-  const [permanentLocation, setPermanentLocation] = useState('');
   const [isLocationLookupUsed, setIsLocationLookupUsed] = useState(false);
 
   const isLocationLookupNeeded = marcType === MARC_TYPES.HOLDINGS
@@ -189,14 +187,6 @@ const QuickMarcEditor = ({
   const changeRecords = useCallback(({ values }) => {
     if (values?.records) {
       setRecords(values.records);
-
-      if (isLocationLookupNeeded) {
-        const locationField = values.records.find(field => field.tag === '852');
-
-        const matchedLocation = getLocationValue(locationField?.content);
-
-        setPermanentLocation(matchedLocation);
-      }
     }
   }, []);
 
@@ -249,8 +239,6 @@ const QuickMarcEditor = ({
                   subtype={initialValues?.leader[7]}
                   setDeletedRecords={setDeletedRecords}
                   isLocationLookupNeeded={isLocationLookupNeeded}
-                  permanentLocation={permanentLocation}
-                  setPermanentLocation={setPermanentLocation}
                   isLocationLookupUsed={isLocationLookupUsed}
                   setIsLocationLookupUsed={setIsLocationLookupUsed}
                   marcType={marcType}

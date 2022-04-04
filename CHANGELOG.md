@@ -4,6 +4,7 @@
 
 * [UIQM-213](https://issues.folio.org/browse/UIQM-213) New Permission: View MARC holdings record.
 * [UIQM-212](https://issues.folio.org/browse/UIQM-212) New permission: View source (instance).
+* [UIQM-226](https://issues.folio.org/browse/UIQM-226) MARC holdings: Can add multiple 852s tags.
 
 ## [5.0.1](https://github.com/folio-org/ui-quick-marc/tree/v5.0.1) (2022-03-29)
 
