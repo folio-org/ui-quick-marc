@@ -6,6 +6,7 @@
 * [UIQM-212](https://issues.folio.org/browse/UIQM-212) New permission: View source (instance).
 * [UIQM-162](https://issues.folio.org/browse/UIQM-162) Optimistic locking: display error message to inform user about OL.
 * [UIQM-217](https://issues.folio.org/browse/UIQM-217) Update dependencies: `stripes-acq-components` to v3.1.1.
+* [UIQM-224](https://issues.folio.org/browse/UIQM-224) Replace or remove react-hot-loader.
 
 ## [5.0.1](https://github.com/folio-org/ui-quick-marc/tree/v5.0.1) (2022-03-29)
 
