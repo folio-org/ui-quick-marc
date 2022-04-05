@@ -270,7 +270,10 @@ describe('Given QuickMarcDuplicateWrapper', () => {
           }).getByText;
         });
 
-        mutator.quickMarcEditMarcRecord.POST = jest.fn(() => Promise.reject());
+        // eslint-disable-next-line prefer-promise-reject-errors
+        mutator.quickMarcEditMarcRecord.POST = jest.fn(() => Promise.reject({
+          json: () => Promise.resolve({}),
+        }));
 
         await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 

@@ -218,5 +218,7 @@
     "permanentLocationLookup": "Pesquisa de localização permanente",
     "record.error.heading.empty": "O registro não pode ser salvo sem campo 1XX.",
     "record.error.heading.multiple": "O registro não pode ser salvo. Não pode ter vários 1XXs",
-    "record.fixedField.Gen ret": "Gen ret"
+    "record.fixedField.Gen ret": "Gen ret",
+    "permission.quick-marc-holdings-editor.view": "quickMARC: Ver registro de MARC holdings",
+    "permission.quick-marc-editor.view": "quickMARC: Ver registro bibliográfico MARC"
 }
