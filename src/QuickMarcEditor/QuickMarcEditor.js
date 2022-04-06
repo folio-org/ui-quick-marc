@@ -40,7 +40,6 @@ import {
   restoreRecordAtIndex,
   getCorrespondingMarcTag,
   getContentSubfieldValue,
-  getLocationValue,
 } from './utils';
 
 const spySubscription = { values: true };
