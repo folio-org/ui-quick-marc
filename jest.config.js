@@ -7,8 +7,4 @@ module.exports = {
     ...commonCofig.collectCoverageFrom,
     './src/*.{js,jsx}',
   ],
-  moduleNameMapper: {
-    '^.+\\.(css)$': 'identity-obj-proxy',
-    '^.+\\.(svg)$': 'identity-obj-proxy',
-  },
 };
