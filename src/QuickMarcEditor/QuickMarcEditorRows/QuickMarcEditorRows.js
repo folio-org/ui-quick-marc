@@ -6,6 +6,7 @@ import { Field } from 'react-final-form';
 import {
   useIntl,
 } from 'react-intl';
+import { omit } from 'lodash';
 
 import {
   TextField,
@@ -44,8 +45,6 @@ const QuickMarcEditorRows = ({
   subtype,
   setDeletedRecords,
   isLocationLookupNeeded,
-  permanentLocation,
-  setPermanentLocation,
   isLocationLookupUsed,
   setIsLocationLookupUsed,
   mutators: {
@@ -103,7 +102,7 @@ const QuickMarcEditorRows = ({
 
           return (
             <div
-              key={idx}
+              key={recordRow.id}
               className={styles.quickMarcEditorRow}
               data-testid="quick-marc-editorid"
             >
@@ -225,13 +224,12 @@ const QuickMarcEditorRows = ({
                         {(props) => {
                           return isLocationField ? (
                             <LocationField
+                              id={recordRow.id}
                               action={action}
                               fields={fields}
                               isLocationLookupUsed={isLocationLookupUsed}
                               setIsLocationLookupUsed={setIsLocationLookupUsed}
-                              permanentLocation={permanentLocation}
-                              setPermanentLocation={setPermanentLocation}
-                              {...props}
+                              {...omit(props, ['id'])}
                             />
                           ) : (
                             <ContentField {...props} />
