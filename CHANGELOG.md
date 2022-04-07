@@ -1,5 +1,9 @@
 # Change history for ui-quick-marc
 
+## [5.0.2] (IN PROGRESS)
+
+* [UIQM-226](https://issues.folio.org/browse/UIQM-226) MARC holdings: Can add multiple 852s tags.
+
 ## [5.0.1](https://github.com/folio-org/ui-quick-marc/tree/v5.0.1) (2022-03-29)
 
 * [UIQM-219](https://issues.folio.org/browse/UIQM-219) Cannot assign MARC authority permissions only.

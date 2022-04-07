@@ -1,8 +1,11 @@
-import React from 'react';
+import React, {
+  useState,
+  useCallback,
+} from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
-
 import { omit } from 'lodash';
+import { FormSpy } from 'react-final-form';
 
 import { LocationLookup } from '@folio/stripes/smart-components';
 
@@ -10,67 +13,9 @@ import { QUICK_MARC_ACTIONS } from '../../constants';
 import { getLocationValue } from '../../utils';
 import { ContentField } from '../ContentField';
 
-export const LocationField = ({
-  action,
-  input,
-  fields,
-  isLocationLookupUsed,
-  setIsLocationLookupUsed,
-  permanentLocation,
-  setPermanentLocation,
-  ...props
-}) => {
-  const intl = useIntl();
+const spySubscription = { values: true };
 
-  const getContentFieldValue = () => {
-    const locationField = fields.find(field => field.tag === '852');
-    const newInput = omit(input, ['value']);
-    const locationValue = getLocationValue(input.value);
-
-    let newInputValue;
-
-    if (action === QUICK_MARC_ACTIONS.EDIT) {
-      newInputValue = locationValue
-        ? input.value.replace(locationValue, permanentLocation)
-        : `${permanentLocation} ${input.value.trim()}`;
-    } else {
-      newInputValue = permanentLocation;
-    }
-
-    locationField.content = newInputValue;
-    newInput.value = newInputValue;
-
-    return newInput;
-  };
-
-  const isReplacingLocationNeeded = permanentLocation !== getLocationValue(input.value);
-
-  const inputContent = isReplacingLocationNeeded
-    ? getContentFieldValue()
-    : input;
-
-  return (
-    <>
-      <ContentField
-        input={inputContent}
-        {...props}
-      />
-      <LocationLookup
-        label={intl.formatMessage({ id: 'ui-quick-marc.permanentLocationLookup' })}
-        onLocationSelected={location => {
-          if (!isLocationLookupUsed) {
-            setIsLocationLookupUsed(true);
-          }
-
-          setPermanentLocation(`$b ${location.code}`);
-        }}
-        marginBottom0
-      />
-    </>
-  );
-};
-
-LocationField.propTypes = {
+const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
   input: PropTypes.shape({
     value: PropTypes.string,
@@ -86,3 +31,86 @@ LocationField.propTypes = {
   isLocationLookupUsed: PropTypes.bool.isRequired,
   setIsLocationLookupUsed: PropTypes.func.isRequired,
 };
+
+const LocationField = ({
+  id,
+  action,
+  input,
+  fields,
+  isLocationLookupUsed,
+  setIsLocationLookupUsed,
+  ...props
+}) => {
+  const intl = useIntl();
+  const [permanentLocation, setPermanentLocation] = useState(getLocationValue(input.value));
+
+  const getContentFieldValue = useCallback(() => {
+    const locationField = fields.find(field => field.id === id);
+
+    if (!locationField) {
+      return input;
+    }
+
+    const newInput = omit(input, ['value']);
+    const locationValue = getLocationValue(locationField.content);
+
+    let newInputValue;
+
+    if (action === QUICK_MARC_ACTIONS.EDIT) {
+      newInputValue = locationValue
+        ? locationField.content.replace(locationValue, permanentLocation)
+        : `${permanentLocation} ${input.value.trim()}`;
+    } else {
+      newInputValue = permanentLocation;
+    }
+
+    locationField.content = newInputValue;
+    newInput.value = newInputValue;
+
+    return newInput;
+  }, [permanentLocation, input]);
+
+  const changeRecords = useCallback(({ values }) => {
+    if (values?.records) {
+      const locationField = values.records.find(field => field.id === id);
+
+      const matchedLocation = getLocationValue(locationField?.content);
+
+      setPermanentLocation(matchedLocation);
+    }
+  }, []);
+
+  const isReplacingLocationNeeded = permanentLocation !== getLocationValue(input.value);
+
+  const inputContent = isReplacingLocationNeeded
+    ? getContentFieldValue()
+    : input;
+
+  return (
+    <>
+      <ContentField
+        input={inputContent}
+        {...props}
+      />
+      <LocationLookup
+        label={intl.formatMessage({ id: 'ui-quick-marc.permanentLocationLookup' })}
+        marginBottom0
+        onLocationSelected={location => {
+          if (!isLocationLookupUsed) {
+            setIsLocationLookupUsed(true);
+          }
+
+          setPermanentLocation(`$b ${location.code}`);
+        }}
+      />
+      <FormSpy
+        subscription={spySubscription}
+        onChange={changeRecords}
+      />
+    </>
+  );
+};
+
+LocationField.propTypes = propTypes;
+
+export { LocationField };
