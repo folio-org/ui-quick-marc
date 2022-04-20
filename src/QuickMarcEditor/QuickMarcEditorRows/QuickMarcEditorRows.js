@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'react-final-form';
+import { FieldArray } from 'react-final-form-arrays';
 import {
   useIntl,
 } from 'react-intl';
@@ -39,7 +40,6 @@ import styles from './QuickMarcEditorRows.css';
 
 const QuickMarcEditorRows = ({
   action,
-  name,
   fields,
   type,
   subtype,
@@ -68,10 +68,9 @@ const QuickMarcEditorRows = ({
       ...prevDeletedRecords,
       {
         index,
-        record: fields[index],
       },
     ]);
-  }, [deleteRecord, setDeletedRecords, fields]);
+  }, [deleteRecord, setDeletedRecords]);
 
   const moveRow = useCallback(({ target }) => {
     moveRecord({
@@ -85,193 +84,201 @@ const QuickMarcEditorRows = ({
       id="quick-marc-editor-rows"
       data-testid="quick-marc-editor-rows"
     >
-      {
-        fields.map((recordRow, idx) => {
-          const isDisabled = isReadOnly(recordRow, action, marcType);
-          const withIndicators = !hasIndicatorException(recordRow);
-          const withAddRowAction = hasAddException(recordRow, marcType);
-          const withDeleteRowAction = hasDeleteException(recordRow, marcType);
-          const withMoveUpRowAction = hasMoveException(recordRow, fields[idx - 1]);
-          const withMoveDownRowAction = hasMoveException(recordRow, fields[idx + 1]);
+      <FieldArray name="records">
+        {({ fields: records }) => (
+          records.map((name, idx) => {
+            const recordRow = fields[idx];
 
-          const isMaterialCharsField = isMaterialCharsRecord(recordRow);
-          const isPhysDescriptionField = isPhysDescriptionRecord(recordRow);
-          const isFixedField = isFixedFieldRow(recordRow);
-          const isContentField = !(isFixedField || isMaterialCharsField || isPhysDescriptionField);
-          const isLocationField = isLocationLookupNeeded && recordRow.tag === '852';
+            if (!recordRow) {
+              return null;
+            }
 
-          return (
-            <div
-              key={recordRow.id}
-              className={styles.quickMarcEditorRow}
-              data-testid="quick-marc-editorid"
-            >
-              <div className={styles.quickMarcEditorMovingRow}>
-                {
-                  !withMoveUpRowAction && (
-                    <IconButton
-                      title={intl.formatMessage({ id: 'ui-quick-marc.record.moveUpRow' })}
-                      ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.moveUpRow' })}
-                      data-test-move-up-row
-                      data-index={idx}
-                      data-index-to-switch={idx - 1}
-                      icon="arrow-up"
-                      onClick={moveRow}
-                    />
-                  )
-                }
-                {
-                  !withMoveDownRowAction && (
-                    <IconButton
-                      title={intl.formatMessage({ id: 'ui-quick-marc.record.moveDownRow' })}
-                      ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.moveDownRow' })}
-                      data-test-move-down-row
-                      data-index={idx}
-                      data-index-to-switch={idx + 1}
-                      icon="arrow-down"
-                      onClick={moveRow}
-                    />
-                  )
-                }
-              </div>
+            const isDisabled = isReadOnly(recordRow, action, marcType);
+            const withIndicators = !hasIndicatorException(recordRow);
+            const withAddRowAction = hasAddException(recordRow, marcType);
+            const withDeleteRowAction = hasDeleteException(recordRow, marcType);
+            const withMoveUpRowAction = hasMoveException(recordRow, fields[idx - 1]);
+            const withMoveDownRowAction = hasMoveException(recordRow, fields[idx + 1]);
 
-              <div className={styles.quickMarcEditorRowTag}>
-                <Field
-                  dirty={false}
-                  ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.field' })}
-                  name={`${name}[${idx}].tag`}
-                  component={TextField}
-                  maxLength={TAG_FIELD_MAX_LENGTH}
-                  marginBottom0
-                  fullWidth
-                  disabled={isDisabled || !idx}
-                  hasClearIcon={false}
-                />
-              </div>
+            const isMaterialCharsField = isMaterialCharsRecord(recordRow);
+            const isPhysDescriptionField = isPhysDescriptionRecord(recordRow);
+            const isFixedField = isFixedFieldRow(recordRow);
+            const isContentField = !(isFixedField || isMaterialCharsField || isPhysDescriptionField);
+            const isLocationField = isLocationLookupNeeded && recordRow.tag === '852';
 
-              <div className={styles.quickMarcEditorRowIndicator}>
-                {
-                  withIndicators && (
-                    <Field
-                      dirty={false}
-                      ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.indicator' })}
-                      name={`${name}[${idx}].indicators[0]`}
-                      component={IndicatorField}
-                      marginBottom0
-                      fullWidth
-                      disabled={isDisabled}
-                      hasClearIcon={false}
-                    />
-                  )
-                }
-              </div>
-
-              <div className={styles.quickMarcEditorRowIndicator}>
-                {
-                  withIndicators && (
-                    <Field
-                      dirty={false}
-                      ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.indicator' })}
-                      name={`${name}[${idx}].indicators[1]`}
-                      component={IndicatorField}
-                      marginBottom0
-                      fullWidth
-                      disabled={isDisabled}
-                      hasClearIcon={false}
-                    />
-                  )
-                }
-              </div>
-
-              <div className={styles.quickMarcEditorRowContent}>
-                {
-                  isMaterialCharsField && (
-                    <MaterialCharsField
-                      name={`${name}[${idx}].content`}
-                      type={recordRow.content.Type}
-                    />
-                  )
-                }
-
-                {
-                  isPhysDescriptionField && (
-                    <PhysDescriptionField
-                      name={`${name}[${idx}].content`}
-                      type={recordRow.content.Category}
-                    />
-                  )
-                }
-
-                {
-                  isFixedField && (
-                    FixedFieldFactory.getFixedField(
-                      `${name}[${idx}].content`, marcType, type, subtype,
+            return (
+              <div
+                key={recordRow.id}
+                className={styles.quickMarcEditorRow}
+                data-testid="quick-marc-editorid"
+              >
+                <div className={styles.quickMarcEditorMovingRow}>
+                  {
+                    !withMoveUpRowAction && (
+                      <IconButton
+                        title={intl.formatMessage({ id: 'ui-quick-marc.record.moveUpRow' })}
+                        ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.moveUpRow' })}
+                        data-test-move-up-row
+                        data-index={idx}
+                        data-index-to-switch={idx - 1}
+                        icon="arrow-up"
+                        onClick={moveRow}
+                      />
                     )
-                  )
-                }
+                  }
+                  {
+                    !withMoveDownRowAction && (
+                      <IconButton
+                        title={intl.formatMessage({ id: 'ui-quick-marc.record.moveDownRow' })}
+                        ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.moveDownRow' })}
+                        data-test-move-down-row
+                        data-index={idx}
+                        data-index-to-switch={idx + 1}
+                        icon="arrow-down"
+                        onClick={moveRow}
+                      />
+                    )
+                  }
+                </div>
 
-                {
-                  isContentField && (
-                    <>
+                <div className={styles.quickMarcEditorRowTag}>
+                  <Field
+                    dirty={false}
+                    ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.field' })}
+                    name={`${name}.tag`}
+                    component={TextField}
+                    maxLength={TAG_FIELD_MAX_LENGTH}
+                    marginBottom0
+                    fullWidth
+                    disabled={isDisabled || !idx}
+                    hasClearIcon={false}
+                  />
+                </div>
+
+                <div className={styles.quickMarcEditorRowIndicator}>
+                  {
+                    withIndicators && (
                       <Field
                         dirty={false}
-                        aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
-                        name={`${name}[${idx}].content`}
+                        ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.indicator' })}
+                        name={`${name}.indicators[0]`}
+                        component={IndicatorField}
                         marginBottom0
+                        fullWidth
                         disabled={isDisabled}
-                        id={`content-field-${idx}`}
-                      >
-                        {(props) => {
-                          return isLocationField ? (
-                            <LocationField
-                              id={recordRow.id}
-                              action={action}
-                              fields={fields}
-                              isLocationLookupUsed={isLocationLookupUsed}
-                              setIsLocationLookupUsed={setIsLocationLookupUsed}
-                              {...omit(props, ['id'])}
-                            />
-                          ) : (
-                            <ContentField {...props} />
-                          );
-                        }}
-                      </Field>
-                    </>
-                  )
-                }
-              </div>
+                        hasClearIcon={false}
+                      />
+                    )
+                  }
+                </div>
 
-              <div className={styles.quickMarcEditorActions}>
-                {
-                  !withAddRowAction && (
-                    <IconButton
-                      className="quickMarcEditorAddField"
-                      title={intl.formatMessage({ id: 'ui-quick-marc.record.addField' })}
-                      ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.addField' })}
-                      data-test-add-row
-                      data-index={idx}
-                      icon="plus-sign"
-                      onClick={addNewRow}
-                    />
-                  )
-                }
-                {
-                  !withDeleteRowAction && (
-                    <IconButton
-                      title={intl.formatMessage({ id: 'ui-quick-marc.record.deleteField' })}
-                      ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.deleteField' })}
-                      data-testid={`data-test-remove-row-${idx}`}
-                      data-index={idx}
-                      icon="trash"
-                      onClick={deleteRow}
-                    />
-                  )
-                }
+                <div className={styles.quickMarcEditorRowIndicator}>
+                  {
+                    withIndicators && (
+                      <Field
+                        dirty={false}
+                        ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.indicator' })}
+                        name={`${name}.indicators[1]`}
+                        component={IndicatorField}
+                        marginBottom0
+                        fullWidth
+                        disabled={isDisabled}
+                        hasClearIcon={false}
+                      />
+                    )
+                  }
+                </div>
+
+                <div className={styles.quickMarcEditorRowContent}>
+                  {
+                    isMaterialCharsField && (
+                      <MaterialCharsField
+                        name={`${name}.content`}
+                        type={recordRow.content.Type}
+                      />
+                    )
+                  }
+
+                  {
+                    isPhysDescriptionField && (
+                      <PhysDescriptionField
+                        name={`${name}.content`}
+                        type={recordRow.content.Category}
+                      />
+                    )
+                  }
+
+                  {
+                    isFixedField && (
+                      FixedFieldFactory.getFixedField(
+                        `${name}[${idx}].content`, marcType, type, subtype,
+                      )
+                    )
+                  }
+
+                  {
+                    isContentField && (
+                      <>
+                        <Field
+                          dirty={false}
+                          aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
+                          name={`${name}.content`}
+                          marginBottom0
+                          disabled={isDisabled}
+                          id={`content-field-${idx}`}
+                        >
+                          {(props) => {
+                            return isLocationField ? (
+                              <LocationField
+                                id={recordRow.id}
+                                action={action}
+                                fields={fields}
+                                isLocationLookupUsed={isLocationLookupUsed}
+                                setIsLocationLookupUsed={setIsLocationLookupUsed}
+                                {...omit(props, ['id'])}
+                              />
+                            ) : (
+                              <ContentField {...props} />
+                            );
+                          }}
+                        </Field>
+                      </>
+                    )
+                  }
+                </div>
+
+                <div className={styles.quickMarcEditorActions}>
+                  {
+                    !withAddRowAction && (
+                      <IconButton
+                        className="quickMarcEditorAddField"
+                        title={intl.formatMessage({ id: 'ui-quick-marc.record.addField' })}
+                        ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.addField' })}
+                        data-test-add-row
+                        data-index={idx}
+                        icon="plus-sign"
+                        onClick={addNewRow}
+                      />
+                    )
+                  }
+                  {
+                    !withDeleteRowAction && (
+                      <IconButton
+                        title={intl.formatMessage({ id: 'ui-quick-marc.record.deleteField' })}
+                        ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.deleteField' })}
+                        data-testid={`data-test-remove-row-${idx}`}
+                        data-index={idx}
+                        icon="trash"
+                        onClick={deleteRow}
+                      />
+                    )
+                  }
+                </div>
               </div>
-            </div>
-          );
-        })
-      }
+            );
+          })
+        )}
+      </FieldArray>
     </div>
   );
 };
