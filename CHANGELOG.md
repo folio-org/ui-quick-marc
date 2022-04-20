@@ -8,6 +8,7 @@
 * [UIQM-217](https://issues.folio.org/browse/UIQM-217) Update dependencies: `stripes-acq-components` to v3.1.1.
 * [UIQM-224](https://issues.folio.org/browse/UIQM-224) Replace or remove react-hot-loader.
 * [UIQM-226](https://issues.folio.org/browse/UIQM-226) MARC holdings: Can add multiple 852s tags.
+* [UIQM-53](https://issues.folio.org/browse/UIQM-53) Adjust the quickMARC edit UI to indicate that specific fields are protected.
 
 ## [5.0.1](https://github.com/folio-org/ui-quick-marc/tree/v5.0.1) (2022-03-29)
 

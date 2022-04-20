@@ -11,6 +11,7 @@ import { omit } from 'lodash';
 import {
   TextField,
   IconButton,
+  InfoPopover,
 } from '@folio/stripes/components';
 
 import { ContentField } from './ContentField';
@@ -99,6 +100,8 @@ const QuickMarcEditorRows = ({
           const isFixedField = isFixedFieldRow(recordRow);
           const isContentField = !(isFixedField || isMaterialCharsField || isPhysDescriptionField);
           const isLocationField = isLocationLookupNeeded && recordRow.tag === '852';
+          const isMARCFieldProtections = marcType !== MARC_TYPES.HOLDINGS && action === QUICK_MARC_ACTIONS.EDIT;
+          const isProtectedField = recordRow.isProtected;
 
           return (
             <div
@@ -134,6 +137,21 @@ const QuickMarcEditorRows = ({
                   )
                 }
               </div>
+
+              {
+                isMARCFieldProtections && (
+                  <div className={styles.quickMarcEditorRowInfoPopover}>
+                    {
+                      isProtectedField && (
+                        <InfoPopover
+                          iconSize="medium"
+                          content={intl.formatMessage({ id: 'ui-quick-marc.record.protectedField' })}
+                        />
+                      )
+                    }
+                  </div>
+                )
+              }
 
               <div className={styles.quickMarcEditorRowTag}>
                 <Field
