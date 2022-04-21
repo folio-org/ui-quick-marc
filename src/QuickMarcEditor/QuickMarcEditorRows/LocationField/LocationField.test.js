@@ -26,17 +26,19 @@ const fields = [
 const newLocation = { code: 'NEWLOCATION' };
 
 jest.mock('@folio/stripes/smart-components', () => ({
+  // eslint-disable-next-line react/prop-types
   LocationLookup: ({ onLocationSelected }) => (
     <div>
       <span>LocationLookup</span>
       <button
+        type="button"
         onClick={() => onLocationSelected(newLocation)}
       >
         Select location
       </button>
     </div>
-  )
-}))
+  ),
+}));
 
 const getLocationField = (props = {}) => (
   <Form

@@ -17,6 +17,7 @@ const spySubscription = { values: true };
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
+  id: PropTypes.string.isRequired,
   input: PropTypes.shape({
     value: PropTypes.string,
   }),
@@ -68,6 +69,7 @@ const LocationField = ({
     newInput.value = newInputValue;
 
     return newInput;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [permanentLocation, input]);
 
   const changeRecords = useCallback(({ values }) => {
@@ -78,6 +80,7 @@ const LocationField = ({
 
       setPermanentLocation(matchedLocation);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const isReplacingLocationNeeded = permanentLocation !== getLocationValue(input.value);

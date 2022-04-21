@@ -38,6 +38,8 @@ const record = {
 
 const locations = {};
 
+const externalRecordPath = '/external/record/path';
+
 const renderQuickMarcEditorContainer = ({
   onClose,
   mutator,
@@ -53,6 +55,7 @@ const renderQuickMarcEditorContainer = ({
       wrapper={wrapper}
       action={action}
       marcType={marcType}
+      externalRecordPath={externalRecordPath}
     />
   </MemoryRouter>,
 ));
