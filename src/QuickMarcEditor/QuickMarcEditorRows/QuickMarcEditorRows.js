@@ -143,10 +143,12 @@ const QuickMarcEditorRows = ({
                   <div className={styles.quickMarcEditorRowInfoPopover}>
                     {
                       isProtectedField && (
-                        <InfoPopover
-                          iconSize="medium"
-                          content={intl.formatMessage({ id: 'ui-quick-marc.record.protectedField' })}
-                        />
+                        <div data-testid="quick-marc-protected-field-popover">
+                          <InfoPopover
+                            iconSize="medium"
+                            content={intl.formatMessage({ id: 'ui-quick-marc.record.protectedField' })}
+                          />
+                        </div>
                       )
                     }
                   </div>
