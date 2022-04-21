@@ -2,12 +2,12 @@ import React, {
   useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
-import { Field } from 'react-final-form';
-import { FieldArray } from 'react-final-form-arrays';
 import {
-  useIntl,
-} from 'react-intl';
-import { omit } from 'lodash';
+  Field,
+  useFormState,
+} from 'react-final-form';
+import { FieldArray } from 'react-final-form-arrays';
+import { useIntl } from 'react-intl';
 
 import {
   TextField,
@@ -44,9 +44,6 @@ const QuickMarcEditorRows = ({
   type,
   subtype,
   setDeletedRecords,
-  isLocationLookupNeeded,
-  isLocationLookupUsed,
-  setIsLocationLookupUsed,
   mutators: {
     addRecord,
     deleteRecord,
@@ -55,6 +52,9 @@ const QuickMarcEditorRows = ({
   marcType,
 }) => {
   const intl = useIntl();
+  const { initialValues } = useFormState();
+
+  const isNewRow = (row) => !initialValues.records.find(record => record.id === row.id);
 
   const addNewRow = useCallback(({ target }) => {
     addRecord({ index: parseInt(target.dataset.index, 10) });
@@ -64,13 +64,17 @@ const QuickMarcEditorRows = ({
     const index = parseInt(target.dataset.index, 10);
 
     deleteRecord({ index });
-    setDeletedRecords((prevDeletedRecords) => [
-      ...prevDeletedRecords,
-      {
-        index,
-      },
-    ]);
-  }, [deleteRecord, setDeletedRecords]);
+
+    if (!isNewRow(fields[index])) {
+      setDeletedRecords((prevDeletedRecords) => [
+        ...prevDeletedRecords,
+        {
+          index,
+          record: fields[index],
+        },
+      ]);
+    }
+  }, [fields, deleteRecord, setDeletedRecords]);
 
   const moveRow = useCallback(({ target }) => {
     moveRecord({
@@ -103,8 +107,8 @@ const QuickMarcEditorRows = ({
             const isMaterialCharsField = isMaterialCharsRecord(recordRow);
             const isPhysDescriptionField = isPhysDescriptionRecord(recordRow);
             const isFixedField = isFixedFieldRow(recordRow);
-            const isContentField = !(isFixedField || isMaterialCharsField || isPhysDescriptionField);
-            const isLocationField = isLocationLookupNeeded && recordRow.tag === '852';
+            const isLocationField = marcType === MARC_TYPES.HOLDINGS && recordRow.tag === '852';
+            const isContentField = !(isLocationField || isFixedField || isMaterialCharsField || isPhysDescriptionField);
 
             return (
               <div
@@ -211,38 +215,30 @@ const QuickMarcEditorRows = ({
                   {
                     isFixedField && (
                       FixedFieldFactory.getFixedField(
-                        `${name}[${idx}].content`, marcType, type, subtype,
+                        `${name}.content`, marcType, type, subtype,
                       )
                     )
                   }
 
+                  {isLocationField && (
+                    <LocationField
+                      id={`location-field-${idx}`}
+                      name={`${name}.content`}
+                      action={action}
+                    />
+                  )}
+
                   {
                     isContentField && (
-                      <>
-                        <Field
-                          dirty={false}
-                          aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
-                          name={`${name}.content`}
-                          marginBottom0
-                          disabled={isDisabled}
-                          id={`content-field-${idx}`}
-                        >
-                          {(props) => {
-                            return isLocationField ? (
-                              <LocationField
-                                id={recordRow.id}
-                                action={action}
-                                fields={fields}
-                                isLocationLookupUsed={isLocationLookupUsed}
-                                setIsLocationLookupUsed={setIsLocationLookupUsed}
-                                {...omit(props, ['id'])}
-                              />
-                            ) : (
-                              <ContentField {...props} />
-                            );
-                          }}
-                        </Field>
-                      </>
+                      <Field
+                        dirty={false}
+                        aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
+                        name={`${name}.content`}
+                        marginBottom0
+                        disabled={isDisabled}
+                        id={`content-field-${idx}`}
+                        component={ContentField}
+                      />
                     )
                   }
                 </div>
@@ -285,7 +281,6 @@ const QuickMarcEditorRows = ({
 
 QuickMarcEditorRows.propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
-  name: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   subtype: PropTypes.string.isRequired,
   fields: PropTypes.arrayOf(PropTypes.shape({
@@ -295,11 +290,6 @@ QuickMarcEditorRows.propTypes = {
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   })),
   setDeletedRecords: PropTypes.func.isRequired,
-  isLocationLookupNeeded: PropTypes.bool.isRequired,
-  permanentLocation: PropTypes.string.isRequired,
-  setPermanentLocation: PropTypes.func.isRequired,
-  isLocationLookupUsed: PropTypes.bool.isRequired,
-  setIsLocationLookupUsed: PropTypes.func.isRequired,
   mutators: PropTypes.shape({
     addRecord: PropTypes.func.isRequired,
     deleteRecord: PropTypes.func.isRequired,

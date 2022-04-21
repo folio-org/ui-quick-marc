@@ -9,20 +9,6 @@ import { QUICK_MARC_ACTIONS } from '../../constants';
 
 import { LocationField } from './LocationField';
 
-const fields = [
-  {
-    id: 'LDR',
-    tag: 'LDR',
-    content: '00000nu\\\\\\2200000un\\4500',
-  },
-  {
-    id: 'id-1',
-    tag: '852',
-    content: '$b KU/CC/DI/A $t 3 $h M3',
-    indicators: ['0', '1'],
-  },
-];
-
 const newLocation = { code: 'NEWLOCATION' };
 
 jest.mock('@folio/stripes/smart-components', () => ({
@@ -30,31 +16,27 @@ jest.mock('@folio/stripes/smart-components', () => ({
     <div>
       <span>LocationLookup</span>
       <button
+        type="button"
         onClick={() => onLocationSelected(newLocation)}
       >
         Select location
       </button>
     </div>
-  )
-}))
+  ),
+}));
 
 const getLocationField = (props = {}) => (
   <Form
     onSubmit={jest.fn()}
     mutators={{ ...arrayMutators }}
+    initialValues={{
+      location: '$b KU/CC/DI/A $t 3 $h M3',
+    }}
     render={() => (
       <LocationField
         id="id-1"
         action={QUICK_MARC_ACTIONS.EDIT}
-        input={{
-          value: '$b KU/CC/DI/A $t 3 $h M3',
-        }}
-        fields={fields}
-        isLocationLookupUsed={false}
-        setIsLocationLookupUsed={jest.fn()}
-        meta={{
-          dirty: false,
-        }}
+        name="location"
         {...props}
       />
     )}
