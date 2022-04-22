@@ -12,6 +12,8 @@ import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcEditorRows from './QuickMarcEditorRows';
 import * as utils from './utils';
+import { QUICK_MARC_ACTIONS } from '../constants';
+import { MARC_TYPES } from '../../common/constants';
 
 import { QUICK_MARC_ACTIONS } from '../constants';
 import { MARC_TYPES } from '../../common/constants';
@@ -73,11 +75,16 @@ const renderQuickMarcEditorRows = (props = {}) => (render(
     <Form
       mutators={{ ...arrayMutators }}
       onSubmit={jest.fn()}
+      initialValues={{
+        records: values,
+      }}
       render={() => (
         <QuickMarcEditorRows
-          fields={fields}
+          fields={values}
           name="records"
           type="a"
+          action={QUICK_MARC_ACTIONS.EDIT}
+          marcType={MARC_TYPES.BIB}
           mutators={{
             addRecord: addRecordMock,
             deleteRecord: deleteRecordMock,
@@ -142,13 +149,38 @@ describe('Given QuickMarcEditorRows', () => {
 
       expect(addRecordMock).toHaveBeenCalled();
     });
+
+    describe('and deleting a new row and saving', () => {
+      it('should mark the row as deleted', () => {
+        const {
+          getAllByRole,
+          getByTestId,
+        } = renderQuickMarcEditorRows();
+
+        const [addButton] = getAllByRole('button', { name: 'ui-quick-marc.record.addField' });
+        const contentField852 = getByTestId('content-field-5');
+
+        fireEvent.change(contentField852, { target: { value: '' } });
+
+        fireEvent.click(addButton);
+        // delete button next to added row
+        const deleteButton = getAllByRole('button', { name: 'ui-quick-marc.record.addField' })[1];
+
+        fireEvent.click(deleteButton);
+
+        expect(setDeletedRecordsMock).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe('when deleting rows', () => {
     it('should call setDeletedRecords 2 times', () => {
-      const { getAllByRole } = renderQuickMarcEditorRows();
+      const { getAllByTestId } = renderQuickMarcEditorRows();
 
-      const deleteIcons = getAllByRole('button', { name: 'ui-quick-marc.record.deleteField' });
+      const testIdx1 = 1;
+      const testIdx2 = 2;
+      const deleteIcon1 = getAllByTestId(`data-test-remove-row-${testIdx1}`);
+      const deleteIcon2 = getAllByTestId(`data-test-remove-row-${testIdx2}`);
 
       fireEvent.click(deleteIcons[0]);
       fireEvent.click(deleteIcons[1]);

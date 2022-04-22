@@ -1,5 +1,8 @@
 import React from 'react';
-import { render, cleanup, act, fireEvent, createEvent } from '@testing-library/react';
+import {
+  render,
+  cleanup,
+} from '@testing-library/react';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
