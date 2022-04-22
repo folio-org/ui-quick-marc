@@ -32,6 +32,7 @@ import { QUICK_MARC_ACTIONS } from './constants';
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
   onClose: PropTypes.func.isRequired,
+  externalRecordPath: PropTypes.string.isRequired,
   history: ReactRouterPropTypes.history.isRequired,
   location: ReactRouterPropTypes.location.isRequired,
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
@@ -78,6 +79,7 @@ const QuickMarcEditorContainer = ({
     mutator.externalInstanceApi.update({
       _path: path,
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -119,6 +121,7 @@ const QuickMarcEditorContainer = ({
     } else {
       onClose(`${instanceId}/${externalId}`);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [externalId, onClose]);
 
   if (isLoading) {

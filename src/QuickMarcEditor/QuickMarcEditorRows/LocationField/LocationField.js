@@ -14,12 +14,8 @@ import { ContentField } from '../ContentField';
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
-  fields: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    tag: PropTypes.string.isRequired,
-    indicators: PropTypes.arrayOf(PropTypes.string),
-    content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
-  })),
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 };
 
 const LocationField = ({

@@ -12,6 +12,7 @@ import { LocationField } from './LocationField';
 const newLocation = { code: 'NEWLOCATION' };
 
 jest.mock('@folio/stripes/smart-components', () => ({
+  // eslint-disable-next-line react/prop-types
   LocationLookup: ({ onLocationSelected }) => (
     <div>
       <span>LocationLookup</span>
