@@ -15,9 +15,6 @@ import * as utils from './utils';
 import { QUICK_MARC_ACTIONS } from '../constants';
 import { MARC_TYPES } from '../../common/constants';
 
-import { QUICK_MARC_ACTIONS } from '../constants';
-import { MARC_TYPES } from '../../common/constants';
-
 const values = [
   {
     id: '1',
@@ -60,11 +57,6 @@ const values = [
   },
 ];
 
-const fields = {
-  map: cb => values.map((value, idx) => cb(value, idx)),
-  value: values,
-};
-
 const addRecordMock = jest.fn();
 const deleteRecordMock = jest.fn();
 const moveRecordMock = jest.fn();
@@ -73,8 +65,8 @@ const setDeletedRecordsMock = jest.fn();
 const renderQuickMarcEditorRows = (props = {}) => (render(
   <MemoryRouter>
     <Form
-      mutators={{ ...arrayMutators }}
       onSubmit={jest.fn()}
+      mutators={arrayMutators}
       initialValues={{
         records: values,
       }}
@@ -182,8 +174,8 @@ describe('Given QuickMarcEditorRows', () => {
       const deleteIcon1 = getAllByTestId(`data-test-remove-row-${testIdx1}`);
       const deleteIcon2 = getAllByTestId(`data-test-remove-row-${testIdx2}`);
 
-      fireEvent.click(deleteIcons[0]);
-      fireEvent.click(deleteIcons[1]);
+      fireEvent.click(deleteIcon1[1]);
+      fireEvent.click(deleteIcon2[1]);
 
       expect(setDeletedRecordsMock).toHaveBeenCalledTimes(2);
     });
