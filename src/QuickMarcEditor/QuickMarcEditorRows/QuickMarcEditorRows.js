@@ -12,6 +12,7 @@ import { useIntl } from 'react-intl';
 import {
   TextField,
   IconButton,
+  InfoPopover,
 } from '@folio/stripes/components';
 
 import { ContentField } from './ContentField';
@@ -109,6 +110,8 @@ const QuickMarcEditorRows = ({
             const isFixedField = isFixedFieldRow(recordRow);
             const isLocationField = marcType === MARC_TYPES.HOLDINGS && recordRow.tag === '852';
             const isContentField = !(isLocationField || isFixedField || isMaterialCharsField || isPhysDescriptionField);
+            const isMARCFieldProtections = marcType !== MARC_TYPES.HOLDINGS && action === QUICK_MARC_ACTIONS.EDIT;
+            const isProtectedField = recordRow.isProtected;
 
             return (
               <div
@@ -144,6 +147,23 @@ const QuickMarcEditorRows = ({
                     )
                   }
                 </div>
+
+                {
+                  isMARCFieldProtections && (
+                    <div className={styles.quickMarcEditorRowInfoPopover}>
+                      {
+                        isProtectedField && (
+                          <div data-testid="quick-marc-protected-field-popover">
+                            <InfoPopover
+                              iconSize="medium"
+                              content={intl.formatMessage({ id: 'ui-quick-marc.record.protectedField' })}
+                            />
+                          </div>
+                        )
+                      }
+                    </div>
+                  )
+                }
 
                 <div className={styles.quickMarcEditorRowTag}>
                   <Field

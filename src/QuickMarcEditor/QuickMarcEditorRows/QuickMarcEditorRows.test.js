@@ -20,6 +20,7 @@ const values = [
     id: '1',
     tag: '001',
     content: '$a f',
+    isProtected: true,
   },
   {
     id: '4',
@@ -52,6 +53,7 @@ const values = [
     id: '3',
     tag: '999',
     content: '$b f',
+    isProtected: true,
   },
 ];
 
@@ -60,7 +62,7 @@ const deleteRecordMock = jest.fn();
 const moveRecordMock = jest.fn();
 const setDeletedRecordsMock = jest.fn();
 
-const renderQuickMarcEditorRows = () => (render(
+const renderQuickMarcEditorRows = (props = {}) => (render(
   <MemoryRouter>
     <Form
       onSubmit={jest.fn()}
@@ -82,6 +84,7 @@ const renderQuickMarcEditorRows = () => (render(
           }}
           subtype="test"
           setDeletedRecords={setDeletedRecordsMock}
+          {...props}
         />
       )}
     />
@@ -185,6 +188,41 @@ describe('Given QuickMarcEditorRows', () => {
       fireEvent.click(deleteButton);
 
       expect(deleteRecordMock).toHaveBeenCalled();
+    });
+  });
+
+  describe('when there are protected fields', () => {
+    describe('when action is edit and marcType is not holdings', () => {
+      it('should display protected field popover icons', () => {
+        const { getAllByTestId } = renderQuickMarcEditorRows({
+          action: QUICK_MARC_ACTIONS.EDIT,
+          marcType: MARC_TYPES.BIB,
+        });
+
+        expect(getAllByTestId('quick-marc-protected-field-popover').length).toBe(2);
+      });
+    });
+
+    describe('when action is not edit', () => {
+      it('should not display protected field popover icons', () => {
+        const { queryByTestId } = renderQuickMarcEditorRows({
+          action: QUICK_MARC_ACTIONS.DUPLICATE,
+          marcType: MARC_TYPES.BIB,
+        });
+
+        expect(queryByTestId('quick-marc-protected-field-popover')).toBeNull();
+      });
+    });
+
+    describe('when marcType is holdings', () => {
+      it('should not display protected field popover icons', () => {
+        const { queryByTestId } = renderQuickMarcEditorRows({
+          action: QUICK_MARC_ACTIONS.EDIT,
+          marcType: MARC_TYPES.HOLDINGS,
+        });
+
+        expect(queryByTestId('quick-marc-protected-field-popover')).toBeNull();
+      });
     });
   });
 });
