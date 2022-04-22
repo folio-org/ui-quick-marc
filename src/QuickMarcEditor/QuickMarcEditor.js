@@ -55,13 +55,9 @@ const QuickMarcEditor = ({
   const [records, setRecords] = useState([]);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const [deletedRecords, setDeletedRecords] = useState([]);
-  const [isLocationLookupUsed, setIsLocationLookupUsed] = useState(false);
-
-  const isLocationLookupNeeded = marcType === MARC_TYPES.HOLDINGS
-    && (action === QUICK_MARC_ACTIONS.CREATE || action === QUICK_MARC_ACTIONS.EDIT);
 
   const saveFormDisabled = action === QUICK_MARC_ACTIONS.EDIT
-    ? (!isLocationLookupUsed && pristine) || submitting
+    ? pristine || submitting
     : submitting;
 
   const confirmSubmit = useCallback((e) => {
@@ -238,9 +234,6 @@ const QuickMarcEditor = ({
                   type={initialValues?.leader[6]}
                   subtype={initialValues?.leader[7]}
                   setDeletedRecords={setDeletedRecords}
-                  isLocationLookupNeeded={isLocationLookupNeeded}
-                  isLocationLookupUsed={isLocationLookupUsed}
-                  setIsLocationLookupUsed={setIsLocationLookupUsed}
                   marcType={marcType}
                 />
               </Col>
@@ -280,7 +273,7 @@ QuickMarcEditor.propTypes = {
   }),
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   locations: PropTypes.shape({
-    records: PropTypes.array.isRequired,
+    locations: PropTypes.arrayOf(PropTypes.object).isRequired,
   }),
 };
 

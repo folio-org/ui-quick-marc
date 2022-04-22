@@ -141,33 +141,4 @@ describe('Given Quick Marc Editor Container', () => {
       expect(onClose).toHaveBeenCalled();
     });
   });
-
-  describe('when marc type is "authority"', () => {
-    it('should change externalInstanceApi to authority instance api', () => {
-      renderQuickMarcEditorContainer({
-        mutator,
-        onClose: jest.fn(),
-        action: QUICK_MARC_ACTIONS.EDIT,
-        wrapper: QuickMarcEditWrapper,
-        marcType: MARC_TYPES.AUTHORITY,
-      });
-
-      expect(mutator.externalInstanceApi.update)
-        .toHaveBeenCalledWith({ _path: EXTERNAL_INSTANCE_APIS[MARC_TYPES.AUTHORITY] });
-    });
-  });
-
-  describe('when action is create', () => {
-    it('should change externalInstanceApi to bib instance api', () => {
-      renderQuickMarcEditorContainer({
-        mutator,
-        onClose: jest.fn(),
-        action: QUICK_MARC_ACTIONS.CREATE,
-        wrapper: QuickMarcEditWrapper,
-      });
-
-      expect(mutator.externalInstanceApi.update)
-        .toHaveBeenCalledWith({ _path: EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB] });
-    });
-  });
 });

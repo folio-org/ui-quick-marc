@@ -71,7 +71,9 @@ const locations = {
 const initialValues = {
   leader: 'assdfgs ds sdg',
   records: [{
-    tag: 'LDR', content: 'assdfgs ds sdg', id: 'LDR',
+    tag: 'LDR',
+    content: 'assdfgs ds sdg',
+    id: 'LDR',
   }, {
     tag: '110',
     content: '$a Test title',

@@ -6,11 +6,14 @@ import {
   fireEvent,
 } from '@testing-library/react';
 import { Form } from 'react-final-form';
+import arrayMutators from 'final-form-arrays';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcEditorRows from './QuickMarcEditorRows';
 import * as utils from './utils';
+import { QUICK_MARC_ACTIONS } from '../constants';
+import { MARC_TYPES } from '../../common/constants';
 
 const values = [
   {
@@ -57,15 +60,21 @@ const deleteRecordMock = jest.fn();
 const moveRecordMock = jest.fn();
 const setDeletedRecordsMock = jest.fn();
 
-const renderQuickMarcEditorRows = ({ fields }) => (render(
+const renderQuickMarcEditorRows = () => (render(
   <MemoryRouter>
     <Form
       onSubmit={jest.fn()}
+      mutators={arrayMutators}
+      initialValues={{
+        records: values,
+      }}
       render={() => (
         <QuickMarcEditorRows
-          fields={fields}
+          fields={values}
           name="records"
           type="a"
+          action={QUICK_MARC_ACTIONS.EDIT}
+          marcType={MARC_TYPES.BIB}
           mutators={{
             addRecord: addRecordMock,
             deleteRecord: deleteRecordMock,
@@ -83,12 +92,7 @@ describe('Given QuickMarcEditorRows', () => {
   afterEach(cleanup);
 
   it('should display row for each record value', () => {
-    const { getAllByTestId } = renderQuickMarcEditorRows({
-      fields: {
-        map: cb => values.map((value, idx) => cb(`records[${idx}]`, idx)),
-        value: values,
-      },
-    });
+    const { getAllByTestId } = renderQuickMarcEditorRows();
 
     expect(getAllByTestId('quick-marc-editorid').length).toBe(values.length);
   });
@@ -103,12 +107,7 @@ describe('Given QuickMarcEditorRows', () => {
     const isMaterialCharsRecordSpy = jest.spyOn(utils, 'isPhysDescriptionRecord');
     const isPhysDescriptionRecordSpy = jest.spyOn(utils, 'isMaterialCharsRecord');
 
-    renderQuickMarcEditorRows({
-      fields: {
-        map: cb => values.map((value, idx) => cb(`records[${idx}]`, idx)),
-        value: values,
-      },
-    });
+    renderQuickMarcEditorRows();
 
     expect(isReadOnlySpy.mock.calls.length > values.length).toBeTruthy();
     expect(hasIndicatorExceptionSpy.mock.calls.length > values.length).toBeTruthy();
@@ -131,12 +130,7 @@ describe('Given QuickMarcEditorRows', () => {
 
   describe('when add a new row', () => {
     it('should handle addRecord', () => {
-      const { getAllByRole } = renderQuickMarcEditorRows({
-        fields: {
-          map: cb => values.map((value, idx) => cb(`records[${idx}]`, idx)),
-          value: values,
-        },
-      });
+      const { getAllByRole } = renderQuickMarcEditorRows();
 
       const [addButton] = getAllByRole('button', { name: 'ui-quick-marc.record.addField' });
 
@@ -144,19 +138,36 @@ describe('Given QuickMarcEditorRows', () => {
 
       expect(addRecordMock).toHaveBeenCalled();
     });
+
+    describe('and deleting a new row and saving', () => {
+      it('should mark the row as deleted', () => {
+        const {
+          getAllByRole,
+          getByTestId,
+        } = renderQuickMarcEditorRows();
+
+        const [addButton] = getAllByRole('button', { name: 'ui-quick-marc.record.addField' });
+        const contentField852 = getByTestId('content-field-5');
+
+        fireEvent.change(contentField852, { target: { value: '' } });
+
+        fireEvent.click(addButton);
+        // delete button next to added row
+        const deleteButton = getAllByRole('button', { name: 'ui-quick-marc.record.addField' })[1];
+
+        fireEvent.click(deleteButton);
+
+        expect(setDeletedRecordsMock).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe('when deleting rows', () => {
     it('should call setDeletedRecords 2 times', () => {
-      const { getAllByTestId } = renderQuickMarcEditorRows({
-        fields: {
-          map: cb => values.map((value, idx) => cb(`records[${idx}]`, idx)),
-          value: values,
-        },
-      });
+      const { getAllByTestId } = renderQuickMarcEditorRows();
 
-      const testIdx1 = 0;
-      const testIdx2 = 1;
+      const testIdx1 = 1;
+      const testIdx2 = 2;
       const deleteIcon1 = getAllByTestId(`data-test-remove-row-${testIdx1}`);
       const deleteIcon2 = getAllByTestId(`data-test-remove-row-${testIdx2}`);
 
@@ -167,12 +178,7 @@ describe('Given QuickMarcEditorRows', () => {
     });
 
     it('should handle deleteRecord', () => {
-      const { getAllByRole } = renderQuickMarcEditorRows({
-        fields: {
-          map: cb => values.map((value, idx) => cb(`records[${idx}]`, idx)),
-          value: values,
-        },
-      });
+      const { getAllByRole } = renderQuickMarcEditorRows();
 
       const [deleteButton] = getAllByRole('button', { name: 'ui-quick-marc.record.deleteField' });
 

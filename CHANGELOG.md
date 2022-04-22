@@ -1,5 +1,9 @@
 # Change history for ui-quick-marc
 
+## [5.0.3](IN PROGRESS)
+
+* [UIQM-228](https://issues.folio.org/browse/UIQM-228) "Save & close" button accessibility when edit bib/holdings/authority record via "quickMARC".
+
 ## [5.0.2](https://github.com/folio-org/ui-quick-marc/tree/v5.0.2) (2022-04-08)
 
 * [UIQM-226](https://issues.folio.org/browse/UIQM-226) MARC holdings: Can add multiple 852s tags.
