@@ -43,13 +43,13 @@ const renderSubField = (name, config) => {
                         key={idx}
                         id={`ui-quick-marc.record.fixedField.${config.name}`}
                       >
-                        {ariaLabel => (
+                        {([ariaLabel]) => (
                           <Field
                             dirty={false}
                             ariaLabel={ariaLabel}
                             name={`${fieldName}[${idx}]`}
                             component={TextField}
-                            maxlength={FIXED_FIELD_MAX_LENGTH}
+                            maxLength={FIXED_FIELD_MAX_LENGTH}
                             disabled={config.disabled}
                             className={styles.fixedFieldSubFieldByte}
                             hasClearIcon={false}
@@ -74,7 +74,7 @@ const renderSubField = (name, config) => {
     return (
       <div className={styles.bytesFieldSubFieldSelect}>
         <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`}>
-          {ariaLabel => (
+          {([ariaLabel]) => (
             <Field
               dirty={false}
               ariaLabel={ariaLabel}
@@ -95,7 +95,7 @@ const renderSubField = (name, config) => {
 
   return (
     <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`}>
-      {ariaLabel => (
+      {([ariaLabel]) => (
         <Field
           dirty={false}
           ariaLabel={ariaLabel}
@@ -103,7 +103,7 @@ const renderSubField = (name, config) => {
           label={label}
           component={TextField}
           disabled={config.disabled}
-          maxlength={getMaxLengthByType}
+          maxLength={getMaxLengthByType}
           className={styles[`bytesFieldSubField${config.type}`]}
           hasClearIcon={false}
           data-testid={`fixed-field-${config.type}`}
