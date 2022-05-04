@@ -304,6 +304,17 @@ export const checkIsInitialRecord = (initialMarcRecord, marcRecordId) => {
   return initialMarcRecordIds.has(marcRecordId);
 };
 
+export const checkControlFieldLength = (formValues) => {
+  const marcRecords = formValues.records || [];
+  const controlFieldRecords = marcRecords.filter(({ tag }) => tag === '001');
+
+  if (controlFieldRecords.length > 1) {
+    return <FormattedMessage id="ui-quick-marc.record.error.controlField.multiple" />;
+  }
+
+  return undefined;
+};
+
 export const validateSubfield = (marcRecords, initialMarcRecords) => {
   const marcRecordsWithSubfields = marcRecords.filter(marcRecord => marcRecord.indicators);
   const isEmptySubfield = marcRecordsWithSubfields.some(marcRecord => {

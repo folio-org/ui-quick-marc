@@ -167,6 +167,7 @@
   "record.error.leader.fixedFieldMismatch": "Record cannot be saved. The Leader and 008 do not match.",
   "record.error.leader.invalidPositionValue": "Invalid value entered for the Leader {position}",
   "record.error.bib.leader.invalid005PositionValue": "Record cannot be saved. Invalid value entered for position 5.",
+  "record.error.controlField.multiple": "Record cannot be saved. Can only have one MARC 001.",
   "record.error.instanceHrid.multiple": "Record cannot be saved. Can only have one MARC 004.",
   "record.error.heading.empty": "Record cannot be saved without 1XX field.",
   "record.error.heading.multiple": "Record cannot be saved. Cannot have multiple 1XXs",

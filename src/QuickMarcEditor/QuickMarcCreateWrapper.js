@@ -18,6 +18,7 @@ import {
   removeFieldsForDuplicate,
   autopopulateSubfieldSection,
   validateMarcRecord,
+  checkControlFieldLength,
   cleanBytesFields,
   parseHttpError,
 } from './utils';
@@ -49,6 +50,14 @@ const QuickMarcCreateWrapper = ({
   const [httpError, setHttpError] = useState(null);
 
   const onSubmit = useCallback(async (formValues) => {
+    const controlFieldErrorMessage = checkControlFieldLength(formValues);
+
+    if (controlFieldErrorMessage) {
+      showCallout({ message: controlFieldErrorMessage, type: 'error' });
+
+      return null;
+    }
+
     const autopopulatedFormValues = autopopulateSubfieldSection(
       removeFieldsForDuplicate(formValues),
       initialValues,
