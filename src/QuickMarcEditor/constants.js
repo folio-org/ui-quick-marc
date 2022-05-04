@@ -3,9 +3,28 @@ import { MARC_TYPES } from '../common/constants';
 export const LEADER_TAG = 'LDR';
 
 export const LEADER_EDITABLE_BYTES = {
-  [MARC_TYPES.BIB]: [5, 8, 17, 18, 19],
+  [MARC_TYPES.BIB]: [5, 6, 7, 8, 17, 18, 19],
   [MARC_TYPES.HOLDINGS]: [5, 6, 17, 18],
   [MARC_TYPES.AUTHORITY]: [],
+};
+
+export const LEADER_VALUES_FOR_POSITION = {
+  [MARC_TYPES.BIB]: {
+    5: ['a', 'c', 'd', 'n', 'p'],
+    6: ['a', 'c', 'd', 'e', 'f', 'g', 'i', 'j', 'k', 'm', 'o', 'p', 'r', 't'],
+    7: ['a', 'b', 'c', 'd', 'i', 'm', 's'],
+  },
+  [MARC_TYPES.HOLDINGS]: {
+    5: ['c', 'd', 'n'],
+    6: ['u', 'v', 'x', 'y'],
+    17: ['1', '2', '3', '4', '5', 'm', 'u', 'z'],
+  },
+  [MARC_TYPES.AUTHORITY]: [],
+};
+
+export const LEADER_DOCUMENTATION_LINKS = {
+  [MARC_TYPES.BIB]: 'https://loc.gov/marc/bibliographic/bdleader.html',
+  [MARC_TYPES.HOLDINGS]: 'https://www.loc.gov/marc/holdings/hdleader.html',
 };
 
 export const QUICK_MARC_ACTIONS = {

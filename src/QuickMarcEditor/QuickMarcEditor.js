@@ -66,6 +66,10 @@ const QuickMarcEditor = ({
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const [deletedRecords, setDeletedRecords] = useState([]);
 
+  const leader = records[0];
+  const type = leader?.content[6];
+  const subtype = leader?.content[7];
+
   const saveFormDisabled = action === QUICK_MARC_ACTIONS.EDIT
     ? pristine || submitting
     : submitting;
@@ -272,8 +276,8 @@ const QuickMarcEditor = ({
                   fields={records}
                   name="records"
                   mutators={mutators}
-                  type={initialValues?.leader[6]}
-                  subtype={initialValues?.leader[7]}
+                  type={type}
+                  subtype={subtype}
                   setDeletedRecords={setDeletedRecords}
                   marcType={marcType}
                 />
