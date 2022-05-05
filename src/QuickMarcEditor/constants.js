@@ -5,7 +5,7 @@ export const LEADER_TAG = 'LDR';
 export const LEADER_EDITABLE_BYTES = {
   [MARC_TYPES.BIB]: [5, 6, 7, 8, 17, 18, 19],
   [MARC_TYPES.HOLDINGS]: [5, 6, 17, 18],
-  [MARC_TYPES.AUTHORITY]: [],
+  [MARC_TYPES.AUTHORITY]: [5, 17, 18],
 };
 
 export const LEADER_VALUES_FOR_POSITION = {
