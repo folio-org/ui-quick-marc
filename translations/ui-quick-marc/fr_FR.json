@@ -149,7 +149,7 @@
     "record.physDescription.categoryOfMaterial.d": "Globe",
     "record.physDescription.categoryOfMaterial.f": "Tactile material",
     "record.physDescription.categoryOfMaterial.g": "Projected graphic",
-    "record.physDescription.categoryOfMaterial.h": "Microform",
+    "record.physDescription.categoryOfMaterial.h": "Microforme",
     "record.physDescription.categoryOfMaterial.k": "Nonprojected graphic",
     "record.physDescription.categoryOfMaterial.m": "Motion picture",
     "record.physDescription.categoryOfMaterial.o": "Kit",
@@ -220,5 +220,6 @@
     "record.error.heading.multiple": "Record cannot be saved. Cannot have multiple 1XXs",
     "record.fixedField.Gen ret": "Gen ret",
     "permission.quick-marc-holdings-editor.view": "quickMARC: View MARC holdings record",
-    "permission.quick-marc-editor.view": "quickMARC: View MARC bibliographic record"
+    "permission.quick-marc-editor.view": "quickMARC: View MARC bibliographic record",
+    "record.protectedField": "This field is protected."
 }
