@@ -15,6 +15,7 @@ import { MARC_TYPES } from '../common/constants';
 import {
   hydrateMarcRecord,
   validateMarcRecord,
+  checkControlFieldLength,
   autopopulateIndicators,
   autopopulateSubfieldSection,
   cleanBytesFields,
@@ -49,10 +50,15 @@ const QuickMarcEditWrapper = ({
   const searchParams = new URLSearchParams(location.search);
 
   const onSubmit = useCallback(async (formValues) => {
+    const controlFieldErrorMessage = checkControlFieldLength(formValues);
     const validationErrorMessage = validateMarcRecord(formValues, initialValues, marcType, locations);
+    const errorMessage = controlFieldErrorMessage || validationErrorMessage;
 
-    if (validationErrorMessage) {
-      showCallout({ message: validationErrorMessage, type: 'error' });
+    if (errorMessage) {
+      showCallout({
+        message: errorMessage,
+        type: 'error',
+      });
 
       return null;
     }

@@ -173,7 +173,8 @@ const renderQuickMarcDuplicateWrapper = ({
       instance={instance}
       mutator={mutator}
       action={QUICK_MARC_ACTIONS.DUPLICATE}
-      initialValues={{ leader: 'assdfgs ds sdg' }}
+      initialValues={{ leader: '14706cam a2200865Ii 4500' }}
+      marcType="bib"
       history={history}
       location={location}
     />

@@ -173,7 +173,7 @@ describe('QuickMarcEditor utils', () => {
       it('should return edit error message when unsupported bytes are found', () => {
         expect(
           utils.validateLeader('00194cx  a22000851  4500', '00194ox  a22000851  4500').props.id,
-        ).toBe('ui-quick-marc.record.error.bib.leader.invalid005PositionValue');
+        ).toBe('ui-quick-marc.record.error.leader.invalidPositionValue');
       });
     });
 
@@ -609,6 +609,64 @@ describe('QuickMarcEditor utils', () => {
       const recordId = 'id3';
 
       expect(utils.checkIsInitialRecord(initialRecords, recordId)).toBeFalsy();
+    });
+  });
+
+  describe('checkControlFieldLength', () => {
+    it('should not return error message when only one 001 field is present', () => {
+      const formValues = {
+        records: [{
+          tag: '001',
+          content: 'some content',
+          id: 'id001',
+        }, {
+          tag: '035',
+          content: 'some content',
+          id: 'id035',
+          indicators: ['0', '\\'],
+        }, {
+          content: '',
+          id: 'id999ff',
+          indicators: ['f', 'f'],
+          tag: '999',
+        }],
+        updateInfo: {
+          recordState: 'actual',
+          updateDate: '01/01/1970',
+        },
+      };
+
+      expect(utils.checkControlFieldLength(formValues)).not.toBeDefined();
+    });
+
+    it('should return error message when more than one 001 field is present', () => {
+      const formValues = {
+        records: [{
+          tag: '001',
+          content: 'some content',
+          id: 'id001-1',
+        }, {
+          tag: '001',
+          content: 'some other content',
+          id: 'id001-2',
+        }, {
+          tag: '035',
+          content: 'some content',
+          id: 'id035',
+          indicators: ['0', '\\'],
+        }, {
+          content: '',
+          id: 'id999ff-746e-4058-a35b-8130e4f6d277',
+          indicators: ['f', 'f'],
+          tag: '999',
+        }],
+        updateInfo: {
+          recordState: 'actual',
+          updateDate: '01/01/1970',
+        },
+      };
+
+      expect(utils.checkControlFieldLength(formValues).props.id).toBe('ui-quick-marc.record.error.controlField.multiple');
     });
   });
 

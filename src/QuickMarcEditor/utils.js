@@ -1,10 +1,11 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
 import omit from 'lodash/omit';
 import compact from 'lodash/compact';
 import isString from 'lodash/isString';
 import isNumber from 'lodash/isNumber';
-import { FormattedMessage } from 'react-intl';
 
 import {
   isLastRecord,
@@ -22,6 +23,8 @@ import {
   CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS,
   HOLDINGS_FIXED_FIELD_DEFAULT_VALUES,
   CORRESPONDING_HEADING_TYPE_TAGS,
+  LEADER_VALUES_FOR_POSITION,
+  LEADER_DOCUMENTATION_LINKS,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import getMaterialCharsFieldConfig from './QuickMarcEditorRows/MaterialCharsField/getMaterialCharsFieldConfig';
@@ -215,6 +218,71 @@ export const addNewRecord = (index, state) => {
   return records;
 };
 
+const getInvalidLeaderPositions = (leader, marcType) => {
+  const failedPositions = Object.keys(LEADER_VALUES_FOR_POSITION[marcType]).map(position => {
+    if (!LEADER_VALUES_FOR_POSITION[marcType][position].includes(leader[position])) {
+      return position;
+    }
+
+    return null;
+  }).filter(result => !!result);
+
+  return failedPositions;
+};
+
+const joinFailedPositions = (failedPositions) => {
+  const formattedFailedPositions = failedPositions.map(position => `Leader 0${position}`);
+
+  const last = formattedFailedPositions.pop();
+  const joinedPositions = formattedFailedPositions.length > 0
+    ? formattedFailedPositions.join(', ') + ' and ' + last
+    : last;
+
+  return joinedPositions;
+};
+
+const validateLeaderPositions = (prevLeader, leader, marcType) => {
+  const prevLeaderFailedPositions = getInvalidLeaderPositions(prevLeader, marcType);
+  const prevLeaderJoinedPositions = joinFailedPositions(prevLeaderFailedPositions);
+  const failedPositions = getInvalidLeaderPositions(leader, marcType);
+  const joinedPositions = joinFailedPositions(failedPositions);
+
+  if (prevLeaderFailedPositions.length && prevLeader === leader) {
+    // invalid leader positions came from backend
+    return (
+      <FormattedMessage
+        id="ui-quick-marc.record.error.leader.initial.invalidPositionValue"
+        values={{
+          positions: prevLeaderJoinedPositions,
+          link: (
+            <Link to={LEADER_DOCUMENTATION_LINKS[marcType]}>
+              {LEADER_DOCUMENTATION_LINKS[marcType]}
+            </Link>
+          ),
+        }}
+      />
+    );
+  }
+
+  if (failedPositions.length) {
+    return (
+      <FormattedMessage
+        id="ui-quick-marc.record.error.leader.invalidPositionValue"
+        values={{
+          positions: joinedPositions,
+          link: (
+            <Link to={LEADER_DOCUMENTATION_LINKS[marcType]}>
+              {LEADER_DOCUMENTATION_LINKS[marcType]}
+            </Link>
+          ),
+        }}
+      />
+    );
+  }
+
+  return undefined;
+};
+
 export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYPES.BIB) => {
   const cutEditableBytes = (str) => (
     LEADER_EDITABLE_BYTES[marcType].reduce((acc, byte, idx) => {
@@ -232,41 +300,10 @@ export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYP
     return <FormattedMessage id={`ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}`} />;
   }
 
-  if (marcType === MARC_TYPES.BIB) {
-    if (!['a', 'c', 'd', 'n', 'p'].includes(leader[5])) {
-      return (
-        <FormattedMessage id="ui-quick-marc.record.error.bib.leader.invalid005PositionValue" />
-      );
-    }
-  }
+  const leaderValidationError = validateLeaderPositions(prevLeader, leader, marcType);
 
-  if (marcType === MARC_TYPES.HOLDINGS) {
-    if (!['c', 'd', 'n'].includes(leader[5])) {
-      return (
-        <FormattedMessage
-          id="ui-quick-marc.record.error.leader.invalidPositionValue"
-          values={{ position: 5 }}
-        />
-      );
-    }
-
-    if (!['u', 'v', 'x', 'y'].includes(leader[6])) {
-      return (
-        <FormattedMessage
-          id="ui-quick-marc.record.error.leader.invalidPositionValue"
-          values={{ position: 6 }}
-        />
-      );
-    }
-
-    if (!['1', '2', '3', '4', '5', 'm', 'u', 'z'].includes(leader[17])) {
-      return (
-        <FormattedMessage
-          id="ui-quick-marc.record.error.leader.invalidPositionValue"
-          values={{ position: 17 }}
-        />
-      );
-    }
+  if (leaderValidationError) {
+    return leaderValidationError;
   }
 
   return undefined;
@@ -302,6 +339,17 @@ export const checkIsInitialRecord = (initialMarcRecord, marcRecordId) => {
   const initialMarcRecordIds = new Set(initialMarcRecord.map(record => record.id));
 
   return initialMarcRecordIds.has(marcRecordId);
+};
+
+export const checkControlFieldLength = (formValues) => {
+  const marcRecords = formValues.records || [];
+  const controlFieldRecords = marcRecords.filter(({ tag }) => tag === '001');
+
+  if (controlFieldRecords.length > 1) {
+    return <FormattedMessage id="ui-quick-marc.record.error.controlField.multiple" />;
+  }
+
+  return undefined;
 };
 
 export const validateSubfield = (marcRecords, initialMarcRecords) => {
