@@ -10,11 +10,6 @@ const config = {
   fields: [
     {
       type: SUBFIELD_TYPES.BYTE,
-      disabled: true,
-      name: 'Type',
-    },
-    {
-      type: SUBFIELD_TYPES.BYTE,
       name: 'ELvl',
     },
     {
@@ -32,11 +27,6 @@ const config = {
     {
       type: SUBFIELD_TYPES.STRING,
       name: 'Lang',
-    },
-    {
-      type: SUBFIELD_TYPES.BYTE,
-      disabled: true,
-      name: 'BLvl',
     },
     {
       type: SUBFIELD_TYPES.BYTE,

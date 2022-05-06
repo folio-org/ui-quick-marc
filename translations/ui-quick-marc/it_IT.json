@@ -220,5 +220,6 @@
     "record.error.heading.multiple": "Record cannot be saved. Cannot have multiple 1XXs",
     "record.fixedField.Gen ret": "Gen ret",
     "permission.quick-marc-holdings-editor.view": "quickMARC: Visualizza record holding",
-    "permission.quick-marc-editor.view": "quickMARC: Visualizza record bibliografico MARC"
+    "permission.quick-marc-editor.view": "quickMARC: Visualizza record bibliografico MARC",
+    "record.protectedField": "This field is protected."
 }

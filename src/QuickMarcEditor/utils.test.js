@@ -173,7 +173,7 @@ describe('QuickMarcEditor utils', () => {
       it('should return edit error message when unsupported bytes are found', () => {
         expect(
           utils.validateLeader('00194cx  a22000851  4500', '00194ox  a22000851  4500').props.id,
-        ).toBe('ui-quick-marc.record.error.bib.leader.invalid005PositionValue');
+        ).toBe('ui-quick-marc.record.error.leader.invalidPositionValue');
       });
     });
 

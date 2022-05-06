@@ -220,5 +220,6 @@
     "record.error.heading.multiple": "لا يمكن حفظ التسجيلة. لا يمكن أن يكون بها عدة 1XX",
     "record.fixedField.Gen ret": "احتفاظ عام",
     "permission.quick-marc-holdings-editor.view": "quickMARC: اعرض تسجيلة مقتنيات مارك",
-    "permission.quick-marc-editor.view": "quickMARC: اعرض تسجيلة مارك البيبلوغرافية"
+    "permission.quick-marc-editor.view": "quickMARC: اعرض تسجيلة مارك البيبلوغرافية",
+    "record.protectedField": "هذا الحقل محمي."
 }
