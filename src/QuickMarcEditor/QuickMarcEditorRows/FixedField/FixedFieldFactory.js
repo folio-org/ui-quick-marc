@@ -28,7 +28,8 @@ export const FixedFieldFactory = {
       case type === 's':
         FixedField = ContinuingResourceFixedField;
         break;
-      case ['a', 't'].includes(type):
+      case type === 'a' && ['a', 'c', 'd', 'm'].includes(subtype):
+      case type === 't':
         FixedField = BookFixedField;
         break;
       case type === 'm':
