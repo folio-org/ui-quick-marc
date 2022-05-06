@@ -13,6 +13,7 @@
 * [UIQM-53](https://issues.folio.org/browse/UIQM-53) Adjust the quickMARC edit UI to indicate that specific fields are protected.
 * [UIQM-233](https://issues.folio.org/browse/UIQM-233) MARC authority: Leader field make the following positions editable.
 * [UIQM-234](https://issues.folio.org/browse/UIQM-234) FE: Derive/Edit MARC bibliographic record: Make positions 06 and 07 editable.
+* [UIQM-231](https://issues.folio.org/browse/UIQM-231) Fix user able to replace the '001' field value when edit record in quickmarc.
 
 ## [5.0.1](https://github.com/folio-org/ui-quick-marc/tree/v5.0.1) (2022-03-29)
 

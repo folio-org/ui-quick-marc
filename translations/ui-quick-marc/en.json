@@ -169,6 +169,7 @@
   "record.error.leader.invalidPositionValue": "Record cannot be saved. Please enter a valid {positions}. Valid values are listed at {link}",
   "record.error.leader.initial.invalidPositionValue": "Record cannot be saved. Cannot edit 008 due to invalid {positions}. Please update this record's {positions}. Valid values are listed at {link}",
   "record.error.bib.leader.invalid005PositionValue": "Record cannot be saved. Invalid value entered for position 5.",
+  "record.error.controlField.multiple": "Record cannot be saved. Can only have one MARC 001.",
   "record.error.instanceHrid.multiple": "Record cannot be saved. Can only have one MARC 004.",
   "record.error.heading.empty": "Record cannot be saved without 1XX field.",
   "record.error.heading.multiple": "Record cannot be saved. Cannot have multiple 1XXs",

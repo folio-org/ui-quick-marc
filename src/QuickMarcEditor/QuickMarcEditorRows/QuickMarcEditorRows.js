@@ -307,6 +307,7 @@ QuickMarcEditorRows.propTypes = {
     id: PropTypes.string.isRequired,
     tag: PropTypes.string.isRequired,
     indicators: PropTypes.arrayOf(PropTypes.string),
+    isProtected: PropTypes.bool.isRequired,
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   })),
   setDeletedRecords: PropTypes.func.isRequired,
