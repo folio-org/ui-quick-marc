@@ -72,20 +72,13 @@ const QuickMarcEditorContainer = ({
   }, [externalRecordPath, marcType, externalId, instanceId, action]);
 
   useEffect(() => {
+    setIsLoading(true);
+
     const path = action === QUICK_MARC_ACTIONS.CREATE
       ? EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]
       : EXTERNAL_INSTANCE_APIS[marcType];
 
-    mutator.externalInstanceApi.update({
-      _path: path,
-    });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    setIsLoading(true);
-
-    const instancePromise = mutator.quickMarcEditInstance.GET();
+    const instancePromise = mutator.quickMarcEditInstance.GET({ path: `${path}/${externalId}` });
     const marcRecordPromise = action === QUICK_MARC_ACTIONS.CREATE
       ? Promise.resolve({})
       : mutator.quickMarcEditMarcRecord.GET();
@@ -151,12 +144,10 @@ const QuickMarcEditorContainer = ({
 };
 
 QuickMarcEditorContainer.manifest = Object.freeze({
-  externalInstanceApi: {},
   quickMarcEditInstance: {
     ...baseManifest,
     fetch: false,
     accumulate: true,
-    path: '%{externalInstanceApi._path}/:{externalId}',
   },
   quickMarcEditMarcRecord: {
     ...baseManifest,

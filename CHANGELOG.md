@@ -14,6 +14,7 @@
 * [UIQM-233](https://issues.folio.org/browse/UIQM-233) MARC authority: Leader field make the following positions editable.
 * [UIQM-234](https://issues.folio.org/browse/UIQM-234) FE: Derive/Edit MARC bibliographic record: Make positions 06 and 07 editable.
 * [UIQM-231](https://issues.folio.org/browse/UIQM-231) Fix user able to replace the '001' field value when edit record in quickmarc.
+* [UIQM-238](https://issues.folio.org/browse/UIQM-238) Fix Save & Close button not working.
 
 ## [5.0.1](https://github.com/folio-org/ui-quick-marc/tree/v5.0.1) (2022-03-29)
 
