@@ -5,7 +5,7 @@ import {
 
 const getQuickMarcRecordStatus = ({
   quickMarcRecordStatusGETRequest,
-  qmRecordId,
+  actionId,
   instanceId,
   showCallout,
   history,
@@ -16,7 +16,7 @@ const getQuickMarcRecordStatus = ({
   let intervalId;
 
   function makeRequest() {
-    quickMarcRecordStatusGETRequest({ params: { qmRecordId } })
+    quickMarcRecordStatusGETRequest({ params: { actionId } })
       .then(({ externalId, status }) => {
         if (status === 'ERROR') {
           clearInterval(intervalId);
@@ -35,7 +35,7 @@ const getQuickMarcRecordStatus = ({
           }
         }
 
-        if (externalId !== null && status === 'CREATED') {
+        if (externalId !== null && status === 'COMPLETED') {
           clearInterval(intervalId);
           showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
 
