@@ -46,7 +46,7 @@ describe('Given getQuickMarcRecordStatus', () => {
         quickMarcRecordStatusGETRequest = jest.fn(() => Promise.resolve({
           externalId,
           jobExecutionId: faker.random.uuid(),
-          status: 'CREATED',
+          status: 'COMPLETED',
         }));
 
         await act(async () => {
@@ -81,7 +81,7 @@ describe('Given getQuickMarcRecordStatus', () => {
         quickMarcRecordStatusGETRequest = jest.fn(() => Promise.resolve({
           externalId,
           jobExecutionId: faker.random.uuid(),
-          status: 'CREATED',
+          status: 'COMPLETED',
         }));
 
         await act(async () => {
