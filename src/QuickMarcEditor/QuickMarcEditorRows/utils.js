@@ -19,7 +19,7 @@ const READ_ONLY_ROWS_FOR_DUPLICATE = new Set([LEADER_TAG, '001', '005']);
 
 const READ_ONLY_ROWS_FOR_HOLDINGS = new Set(['001', '004', '005']);
 
-const READ_ONLY_ROWS_FOR_AUTHORITIES = new Set([LEADER_TAG, '001', '005']);
+const READ_ONLY_ROWS_FOR_AUTHORITIES = new Set(['001', '005']);
 
 export const isReadOnly = (
   recordRow,

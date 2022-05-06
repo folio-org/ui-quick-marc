@@ -11,6 +11,7 @@
 * [UIQM-230](https://issues.folio.org/browse/UIQM-230) Replace `babel-eslint` with `@babel/eslint-parser`.
 * [UIQM-228](https://issues.folio.org/browse/UIQM-228) "Save & close" button accessibility when edit bib/holdings/authority record via "quickMARC".
 * [UIQM-53](https://issues.folio.org/browse/UIQM-53) Adjust the quickMARC edit UI to indicate that specific fields are protected.
+* [UIQM-233](https://issues.folio.org/browse/UIQM-233) MARC authority: Leader field make the following positions editable.
 * [UIQM-238](https://issues.folio.org/browse/UIQM-238) Fix Save & Close button not working.
 
 ## [5.0.1](https://github.com/folio-org/ui-quick-marc/tree/v5.0.1) (2022-03-29)
