@@ -21,6 +21,29 @@ const getQuickMarcRecordStatus = ({
   let requestCount = 1;
   let intervalId;
 
+  function actByActionType(externalId) {
+    if (action === QUICK_MARC_ACTIONS.EDIT) {
+      showCallout({
+        messageId: marcType === MARC_TYPES.AUTHORITY
+          ? 'ui-quick-marc.record.save.updated'
+          : 'ui-quick-marc.record.save.success.processing',
+      });
+
+      onClose();
+    } else {
+      showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
+
+      const path = instanceId
+        ? `/inventory/view/${instanceId}/${externalId}`
+        : `/inventory/view/${externalId}`;
+
+      history.push({
+        pathname: path,
+        search: location.search,
+      });
+    }
+  }
+
   function makeRequest() {
     quickMarcRecordStatusGETRequest({ params: { actionId } })
       .then(({ externalId, status }) => {
@@ -43,27 +66,7 @@ const getQuickMarcRecordStatus = ({
 
         if (externalId !== null && status === 'COMPLETED') {
           clearInterval(intervalId);
-
-          if (action === QUICK_MARC_ACTIONS.EDIT) {
-            showCallout({
-              messageId: marcType === MARC_TYPES.AUTHORITY
-                ? 'ui-quick-marc.record.save.updated'
-                : 'ui-quick-marc.record.save.success.processing',
-            });
-
-            onClose();
-          } else {
-            showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
-
-            const path = instanceId
-              ? `/inventory/view/${instanceId}/${externalId}`
-              : `/inventory/view/${externalId}`;
-
-            history.push({
-              pathname: path,
-              search: location.search,
-            });
-          }
+          actByActionType(externalId);
         }
       })
       .catch(() => {
