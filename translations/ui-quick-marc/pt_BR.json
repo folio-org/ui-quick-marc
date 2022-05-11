@@ -221,5 +221,8 @@
     "record.fixedField.Gen ret": "Gen ret",
     "permission.quick-marc-holdings-editor.view": "quickMARC: Ver registro de MARC holdings",
     "permission.quick-marc-editor.view": "quickMARC: Ver registro bibliográfico MARC",
-    "record.protectedField": "Este campo está protegido."
+    "record.protectedField": "Este campo está protegido.",
+    "record.error.leader.forbiddenBytes.authority": "Record cannot be saved. Please check the Leader. Only positions 5, 17, 18 can be edited in the Leader.",
+    "record.error.leader.initial.invalidPositionValue": "Record cannot be saved. Cannot edit 008 due to invalid {positions}. Please update this record's {positions}. Valid values are listed at {link}",
+    "record.error.controlField.multiple": "Record cannot be saved. Can only have one MARC 001."
 }

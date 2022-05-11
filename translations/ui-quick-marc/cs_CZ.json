@@ -52,7 +52,7 @@
     "record.addField": "Add a new field",
     "record.deleteField": "Delete this field",
     "record.delete.title": "Delete fields",
-    "record.error.leader.length": "Record cannot be saved. The Leader must contain 24 characters, including null spaces.",
+    "record.error.leader.length": "Záznam nelze uložit. Odkaz musí obsahovat 24 znaků včetně prázdných mezer.",
     "record.collapseRow": "Collapse row",
     "record.error.tag.length": "Záznam nelze uložit. Tag MARC musí obsahovat tři znaky",
     "record.fixedField.Time": "Time",
@@ -175,7 +175,7 @@
     "record.fixedField.Sep/comp": "Září/srov",
     "record.error.leader.forbiddenBytes.bib": "Záznam nelze uložit. Zkontrolujte prosím lídra. Pouze pozice 5, 8, 17, 18 a/nebo 19 mohou být editovány.",
     "record.error.leader.forbiddenBytes.holdings": "Záznam nelze uložit. Zkontrolujte prosím lídra. V odkazu lze upravovat pouze pozice 5, 6, 17, 18.",
-    "record.error.leader.invalidPositionValue": "Zadaná neplatná hodnota pro lídra {position}",
+    "record.error.leader.invalidPositionValue": "Záznam nelze uložit. Zadejte prosím platné {positions}. Platné hodnoty jsou uvedeny v {link}",
     "permission.quick-marc-holdings-editor.all": "quickMARC: Zobrazení, úprava záznamu holdingů MARC",
     "permission.quick-marc-holdings-editor.create": "quickMARC: Vytvoření nového záznamu holdingu MARC",
     "record.fixedField.Rept date": "Datum opakování",
@@ -221,5 +221,8 @@
     "record.fixedField.Gen ret": "Gen ret",
     "permission.quick-marc-holdings-editor.view": "quickMARC: Zobrazení záznamu holdingu MARC",
     "permission.quick-marc-editor.view": "quickMARC: Zobrazení bibliografického záznamu MARC",
-    "record.protectedField": "Toto pole je chráněno."
+    "record.protectedField": "Toto pole je chráněno.",
+    "record.error.leader.forbiddenBytes.authority": "Záznam nelze uložit. Zkontrolujte prosím lídra. V lídrovi lze upravovat pouze pozice 5, 17, 18.",
+    "record.error.leader.initial.invalidPositionValue": "Záznam nelze uložit. Nelze upravit 008 z důvodu neplatných {positions}. Aktualizujte prosím {positions} tohoto záznamu. Platné hodnoty jsou uvedeny v {link}",
+    "record.error.controlField.multiple": "Záznam nelze uložit. Může mít pouze jeden záznam MARC 001."
 }

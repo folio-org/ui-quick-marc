@@ -175,7 +175,7 @@
     "record.fixedField.Sep/comp": "Sep/comp",
     "record.error.leader.forbiddenBytes.bib": "Record cannot be saved. Please check the Leader. Only positions 5, 8, 17, 18 and/or 19 can be edited in the Leader.",
     "record.error.leader.forbiddenBytes.holdings": "Record cannot be saved. Please check the Leader. Only positions 5, 6, 17, 18 can be edited in the Leader.",
-    "record.error.leader.invalidPositionValue": "Invalid value entered for the Leader {position}",
+    "record.error.leader.invalidPositionValue": "Record cannot be saved. Please enter a valid {positions}. Valid values are listed at {link}",
     "permission.quick-marc-holdings-editor.all": "quickMARC: View, edit MARC holdings record",
     "permission.quick-marc-holdings-editor.create": "quickMARC: Create a new MARC holdings record",
     "record.fixedField.Rept date": "Rept date",
@@ -221,5 +221,8 @@
     "record.fixedField.Gen ret": "Gen ret",
     "permission.quick-marc-holdings-editor.view": "quickMARC: Visualizza record holding",
     "permission.quick-marc-editor.view": "quickMARC: Visualizza record bibliografico MARC",
-    "record.protectedField": "This field is protected."
+    "record.protectedField": "This field is protected.",
+    "record.error.leader.forbiddenBytes.authority": "Record cannot be saved. Please check the Leader. Only positions 5, 17, 18 can be edited in the Leader.",
+    "record.error.leader.initial.invalidPositionValue": "Record cannot be saved. Cannot edit 008 due to invalid {positions}. Please update this record's {positions}. Valid values are listed at {link}",
+    "record.error.controlField.multiple": "Record cannot be saved. Can only have one MARC 001."
 }
