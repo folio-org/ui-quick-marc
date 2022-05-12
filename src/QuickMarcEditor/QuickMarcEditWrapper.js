@@ -4,11 +4,13 @@ import React, {
 } from 'react';
 import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
+import ReactRouterPropTypes from 'react-router-prop-types';
 
 import {
   useShowCallout,
 } from '@folio/stripes-acq-components';
 
+import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
 import QuickMarcEditor from './QuickMarcEditor';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
@@ -25,6 +27,7 @@ import {
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
   externalRecordPath: PropTypes.string.isRequired,
+  history: ReactRouterPropTypes.history.isRequired,
   initialValues: PropTypes.object.isRequired,
   instance: PropTypes.object,
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
@@ -38,6 +41,7 @@ const QuickMarcEditWrapper = ({
   instance,
   onClose,
   initialValues,
+  history,
   mutator,
   marcType,
   locations,
@@ -78,13 +82,17 @@ const QuickMarcEditWrapper = ({
       : searchParams.get('relatedRecordVersion');
 
     return mutator.quickMarcEditMarcRecord.PUT(marcRecord)
-      .then(() => {
-        showCallout({
-          messageId: marcType === MARC_TYPES.AUTHORITY
-            ? 'ui-quick-marc.record.save.updated'
-            : 'ui-quick-marc.record.save.success.processing',
+      .then(({ actionId }) => {
+        getQuickMarcRecordStatus({
+          quickMarcRecordStatusGETRequest: mutator.quickMarcRecordStatus.GET,
+          actionId,
+          action,
+          marcType,
+          onClose,
+          showCallout,
+          history,
+          location,
         });
-        onClose();
       })
       .catch(async (errorResponse) => {
         const parsedError = await parseHttpError(errorResponse);

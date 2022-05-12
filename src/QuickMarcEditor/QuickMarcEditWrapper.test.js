@@ -2,6 +2,7 @@ import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import {
   render,
+  waitFor,
   cleanup,
   act,
   fireEvent,
@@ -15,10 +16,14 @@ import QuickMarcEditWrapper from './QuickMarcEditWrapper';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 
+const mockGetQuickMarcRecordStatus = jest.fn();
+
 jest.mock('react-final-form', () => ({
   ...jest.requireActual('react-final-form'),
   FormSpy: jest.fn(() => (<span>FormSpy</span>)),
 }));
+
+jest.mock('./getQuickMarcRecordStatus', () => () => mockGetQuickMarcRecordStatus);
 
 const mockRecords = {
   [MARC_TYPES.BIB]: [
@@ -289,9 +294,9 @@ describe('Given QuickMarcEditWrapper', () => {
 
   afterEach(cleanup);
 
-  describe('when is bib marc type', () => {
+  describe('when marc type is bib', () => {
     describe('when click on save button', () => {
-      it('should show on save message and redirect on load page', async () => {
+      it('should show on save message and handle getQuickMarcRecordStatus', async () => {
         let getByText;
         const mockOnClose = jest.fn();
 
@@ -309,14 +314,9 @@ describe('Given QuickMarcEditWrapper', () => {
         await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
         expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
-        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
 
-        await new Promise(resolve => {
-          setTimeout(() => {
-            expect(mockOnClose).toHaveBeenCalledWith();
-
-            resolve();
-          }, 10);
+        waitFor(() => {
+          expect(mockGetQuickMarcRecordStatus).toHaveBeenCalled();
         });
       }, 1000);
 
@@ -391,9 +391,9 @@ describe('Given QuickMarcEditWrapper', () => {
     });
   });
 
-  describe('when is authority marc type', () => {
+  describe('when marc type is authority', () => {
     describe('when click on save button', () => {
-      it('should show on save message and redirect on load page', async () => {
+      it('should show on save message and handle getQuickMarcRecordStatus', async () => {
         let getByText;
         const mockOnClose = jest.fn();
 
@@ -408,14 +408,10 @@ describe('Given QuickMarcEditWrapper', () => {
 
         await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
-        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' });
+        expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
 
-        await new Promise(resolve => {
-          setTimeout(() => {
-            expect(mockOnClose).toHaveBeenCalledWith();
-
-            resolve();
-          }, 10);
+        waitFor(() => {
+          expect(mockGetQuickMarcRecordStatus).toHaveBeenCalled();
         });
       }, 1000);
 

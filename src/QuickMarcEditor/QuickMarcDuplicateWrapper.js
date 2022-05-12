@@ -82,7 +82,7 @@ const QuickMarcDuplicateWrapper = ({
     marcRecord.relatedRecordVersion = 1;
 
     return mutator.quickMarcEditMarcRecord.POST(marcRecord)
-      .then(({ qmRecordId }) => {
+      .then(({ actionId }) => {
         history.push({
           pathname: '/inventory/view/id',
           search: location.search,
@@ -90,7 +90,7 @@ const QuickMarcDuplicateWrapper = ({
 
         getQuickMarcRecordStatus({
           quickMarcRecordStatusGETRequest: mutator.quickMarcRecordStatus.GET,
-          qmRecordId,
+          actionId,
           showCallout,
           history,
           location,
