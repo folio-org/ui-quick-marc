@@ -73,12 +73,12 @@ const QuickMarcCreateWrapper = ({
     }
 
     return mutator.quickMarcEditMarcRecord.POST(hydrateMarcRecord(formValuesForCreate))
-      .then(({ qmRecordId }) => {
+      .then(({ actionId }) => {
         const instanceId = formValues.externalId;
 
         getQuickMarcRecordStatus({
           quickMarcRecordStatusGETRequest: mutator.quickMarcRecordStatus.GET,
-          qmRecordId,
+          actionId,
           showCallout,
           history,
           location,
