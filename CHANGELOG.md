@@ -15,6 +15,7 @@
 * [UIQM-234](https://issues.folio.org/browse/UIQM-234) FE: Derive/Edit MARC bibliographic record: Make positions 06 and 07 editable.
 * [UIQM-231](https://issues.folio.org/browse/UIQM-231) Fix user able to replace the '001' field value when edit record in quickmarc.
 * [UIQM-238](https://issues.folio.org/browse/UIQM-238) Fix Save & Close button not working.
+* [UIQM-235](https://issues.folio.org/browse/UIQM-235) Modify MARC bib processing for update and derive.
 * [UIQM-236](https://issues.folio.org/browse/UIQM-236) Modify MARC holdings processing for update and create.
 
 ## [5.0.1](https://github.com/folio-org/ui-quick-marc/tree/v5.0.1) (2022-03-29)
