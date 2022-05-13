@@ -175,7 +175,7 @@
     "record.fixedField.Sep/comp": "منفصل/مركب",
     "record.error.leader.forbiddenBytes.bib": "لا يمكن حفظ التسجيلة. يرجى التحقق من الفاتح. يمكن تحرير المواضع 5،8، 17، 18 و19 فقط في الفاتح.",
     "record.error.leader.forbiddenBytes.holdings": "لا يمكن حفظ التسجيلة. يرجى التحقق من الفاتح. يمكن تحرير المواضع 5، 6، 17 و 18 فقط في الفاتح.",
-    "record.error.leader.invalidPositionValue": "تم إدخال قيمة غير صالحة للفاتح {position}",
+    "record.error.leader.invalidPositionValue": "لا يمكن حفظ التسجيلة. يرجى إدخال {positions} صالح. القيم الصالحة موجودة في {link}",
     "permission.quick-marc-holdings-editor.all": "quickMARC: اعرض، وحرر تسجيلة مقتنيات مارك",
     "permission.quick-marc-holdings-editor.create": "quickMARC : أنشئ تسجيلة مقتنيات مارك جديدة",
     "record.fixedField.Rept date": "تاريخ التقرير",
@@ -221,5 +221,8 @@
     "record.fixedField.Gen ret": "احتفاظ عام",
     "permission.quick-marc-holdings-editor.view": "quickMARC: اعرض تسجيلة مقتنيات مارك",
     "permission.quick-marc-editor.view": "quickMARC: اعرض تسجيلة مارك البيبلوغرافية",
-    "record.protectedField": "هذا الحقل محمي."
+    "record.protectedField": "هذا الحقل محمي.",
+    "record.error.leader.forbiddenBytes.authority": "لا يمكن حفظ التسجيلة. يرجى التحقق من الفاتح. يمكن تحرير المواضع 5، 17، و18 فقط في الفاتح.",
+    "record.error.leader.initial.invalidPositionValue": "لا يمكن حفظ التسجيلة. لا يمكن تحرير الحقل 008 بسبب {positions} غير صالحة. يرجى تحديث {positions} هذه التسجيلة. القيم الصالحة موجودة في {link}",
+    "record.error.controlField.multiple": "لا يمكن حفظ التسجيلة. يمكن أن يكون بها حقل مارك 001 واحد فقط."
 }
