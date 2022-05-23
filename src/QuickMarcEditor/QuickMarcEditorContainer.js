@@ -64,11 +64,11 @@ const QuickMarcEditorContainer = ({
   const showCallout = useShowCallout();
 
   const externalRecordUrl = useMemo(() => {
-    if (marcType === MARC_TYPES.BIB || action === QUICK_MARC_ACTIONS.CREATE) {
-      return `${externalRecordPath}/${externalId}`;
-    } else {
+    if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
       return `${externalRecordPath}/${instanceId}/${externalId}`;
     }
+
+    return `${externalRecordPath}/${externalId}`;
   }, [externalRecordPath, marcType, externalId, instanceId, action]);
 
   useEffect(() => {
@@ -109,10 +109,10 @@ const QuickMarcEditorContainer = ({
   }, [externalId]);
 
   const closeEditor = useCallback(() => {
-    if (marcType === MARC_TYPES.BIB || action === QUICK_MARC_ACTIONS.CREATE) {
-      onClose(externalId);
-    } else {
+    if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
       onClose(`${instanceId}/${externalId}`);
+    } else {
+      onClose(externalId);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [externalId, onClose]);
