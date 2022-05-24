@@ -224,23 +224,15 @@ const QuickMarcEditor = ({
 
     let messageId = '';
 
-    if (marcType === MARC_TYPES.AUTHORITY) {
-      showCallout({
-        messageId: 'ui-quick-marc.record.save.updated.error',
-        values: { errorMsg: httpError.message },
-        type: 'error',
-      });
+    if (httpError.errorType === ERROR_TYPES.OPTIMISTIC_LOCKING) {
+      return;
+    } else if (httpError.code === 'ILLEGAL_FIXED_LENGTH_CONTROL_FIELD') {
+      messageId = 'ui-quick-marc.record.save.error.illegalFixedLength';
     } else {
-      if (httpError.errorType === ERROR_TYPES.OPTIMISTIC_LOCKING) {
-        return;
-      } else if (httpError.code === 'ILLEGAL_FIXED_LENGTH_CONTROL_FIELD') {
-        messageId = 'ui-quick-marc.record.save.error.illegalFixedLength';
-      } else {
-        messageId = 'ui-quick-marc.record.save.error.generic';
-      }
-
-      showCallout({ messageId, type: 'error' });
+      messageId = 'ui-quick-marc.record.save.error.generic';
     }
+
+    showCallout({ messageId, type: 'error' });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [httpError]);
 

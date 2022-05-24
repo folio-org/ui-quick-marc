@@ -443,11 +443,8 @@ describe('Given QuickMarcEditWrapper', () => {
           await new Promise(resolve => {
             setTimeout(() => {
               expect(mockShowCallout).toHaveBeenCalledWith({
-                messageId: 'ui-quick-marc.record.save.updated.error',
+                messageId: 'ui-quick-marc.record.save.error.generic',
                 type: 'error',
-                values: {
-                  errorMsg: undefined,
-                },
               });
 
               resolve();
