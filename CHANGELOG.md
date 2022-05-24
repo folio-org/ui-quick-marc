@@ -16,6 +16,7 @@
 * [UIQM-231](https://issues.folio.org/browse/UIQM-231) Fix user able to replace the '001' field value when edit record in quickmarc.
 * [UIQM-238](https://issues.folio.org/browse/UIQM-238) Fix Save & Close button not working.
 * [UIQM-242](https://issues.folio.org/browse/UIQM-242) Apply to MARC Authority:  Optimistic locking: display error message to inform user about OL
+* [UIQM-239](https://issues.folio.org/browse/UIQM-239) FE: Derive/Edit MARC bibliographic record: Error message for when a user attempts to edit a read-only leader value  is not updated
 
 ## [5.0.1](https://github.com/folio-org/ui-quick-marc/tree/v5.0.1) (2022-03-29)
 
