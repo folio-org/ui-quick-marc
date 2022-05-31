@@ -173,9 +173,9 @@
     "record.fixedField.Lend": "借出",
     "record.fixedField.Repro": "复制",
     "record.fixedField.Sep/comp": "分离/完整",
-    "record.error.leader.forbiddenBytes.bib": "记录无法保存。请检查头标。头标中只能编辑位置5、8、17、18和/或19。",
+    "record.error.leader.forbiddenBytes.bib": "记录无法保存。请检查头标。头标中只能编辑位置5、6、7、8、17、18和/或19。",
     "record.error.leader.forbiddenBytes.holdings": "记录无法保存。请检查头标。在头标中只能编辑5、6、17、18位。",
-    "record.error.leader.invalidPositionValue": "由头标{position}输入的值无效",
+    "record.error.leader.invalidPositionValue": "无法保存记录。请输入有效的{positions} 。有效值列在{link}",
     "permission.quick-marc-holdings-editor.all": "quickMARC：查看、编辑MARC馆藏记录",
     "permission.quick-marc-holdings-editor.create": "quickMARC：创建新MARC馆藏记录",
     "record.fixedField.Rept date": "报告日期",
@@ -213,7 +213,6 @@
     "record.fixedField.Mod Rec Est": "修改记录建立",
     "record.fixedField.Source": "来源",
     "record.save.updated": "记录已更新。",
-    "record.save.updated.error": "无法保存记录。 {errorMsg}",
     "record.error.location.invalid": "852$b包含无效的馆藏地代码。请再试一次。",
     "permanentLocationLookup": "永久位置查询",
     "record.error.heading.empty": "没有1XX字段不能保存记录。",
@@ -222,7 +221,7 @@
     "permission.quick-marc-holdings-editor.view": "quickMARC：查看MARC馆藏记录",
     "permission.quick-marc-editor.view": "quickMARC：查看MARC书目记录",
     "record.protectedField": "该字段受保护。",
-    "record.error.leader.forbiddenBytes.authority": "Record cannot be saved. Please check the Leader. Only positions 5, 17, 18 can be edited in the Leader.",
-    "record.error.leader.initial.invalidPositionValue": "Record cannot be saved. Cannot edit 008 due to invalid {positions}. Please update this record's {positions}. Valid values are listed at {link}",
-    "record.error.controlField.multiple": "Record cannot be saved. Can only have one MARC 001."
+    "record.error.leader.forbiddenBytes.authority": "无法保存记录。请检查头标。在 头标中只能编辑位置 5、17、18。",
+    "record.error.leader.initial.invalidPositionValue": "无法保存记录。由于{positions}无效，无法编辑 008。请更新此记录的{positions} 。有效值列在{link}",
+    "record.error.controlField.multiple": "无法保存记录。只能有一个MARC 001。"
 }
