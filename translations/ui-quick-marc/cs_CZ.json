@@ -213,7 +213,6 @@
     "record.fixedField.Mod Rec Est": "Mod Zázn. odhad",
     "record.fixedField.Source": "Zdroj",
     "record.save.updated": "Záznam byl aktualizován.",
-    "record.save.updated.error": "Záznam nelze uložit. {errorMsg}",
     "record.error.location.invalid": "852 $b obsahuje neplatný kód umístění. Prosím zkuste to znovu.",
     "permanentLocationLookup": "Vyhledávání trvalého umístění",
     "record.error.heading.empty": "Záznam nelze uložit bez pole 1XX.",

@@ -213,7 +213,6 @@
     "record.fixedField.Mod Rec Est": "Mod Rec Est",
     "record.fixedField.Source": "Fonte",
     "record.save.updated": "O registro foi atualizado.",
-    "record.save.updated.error": "O registro não pode ser salvo. {errorMsg}",
     "record.error.location.invalid": "Subcampo $b do campo 852 contém um código de localização inválido. Por favor, tente novamente.",
     "permanentLocationLookup": "Pesquisa de localização permanente",
     "record.error.heading.empty": "O registro não pode ser salvo sem campo 1XX.",
