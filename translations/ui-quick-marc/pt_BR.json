@@ -173,7 +173,7 @@
     "record.fixedField.Lend": "Emprestar",
     "record.fixedField.Repro": "Repro",
     "record.fixedField.Sep/comp": "Sep/comp",
-    "record.error.leader.forbiddenBytes.bib": "O registro não pode ser salvo. Por favor, verifique o Líder. Apenas as posições 5, 8, 17, 18 e / ou 19 podem ser editadas no Líder.",
+    "record.error.leader.forbiddenBytes.bib": "O registro não pode ser salvo. Por favor, verifique o Líder. Apenas as posições 5, 6, 7, 8, 17, 18 e/ou 19 podem ser editadas no Líder.",
     "record.error.leader.forbiddenBytes.holdings": "O registro não pode ser salvo. Por favor, verifique o Líder. Apenas as posições 5, 6, 17 e/ou 18  podem ser editadas no Líder.",
     "record.error.leader.invalidPositionValue": "O registro não pode ser salvo. Insira valores válidos para {positions}. Os valores válidos estão listados em {link}",
     "permission.quick-marc-holdings-editor.all": "quickMARC: Ver, editar registros MARC Holdings",
