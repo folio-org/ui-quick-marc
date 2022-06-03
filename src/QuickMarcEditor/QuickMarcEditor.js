@@ -67,8 +67,8 @@ const QuickMarcEditor = ({
   const [deletedRecords, setDeletedRecords] = useState([]);
 
   const leader = records[0];
-  const type = leader?.content[6];
-  const subtype = leader?.content[7];
+  const type = leader?.content?.[6];
+  const subtype = leader?.content?.[7];
 
   const saveFormDisabled = action === QUICK_MARC_ACTIONS.EDIT
     ? pristine || submitting
