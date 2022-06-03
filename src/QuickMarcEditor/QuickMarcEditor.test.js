@@ -124,6 +124,18 @@ describe('Given QuickMarcEditor', () => {
     expect(getByTestId('quick-marc-editor-rows')).toBeDefined();
   });
 
+  describe('when clearing LDR field', () => {
+    it('should not crash the app', () => {
+      const { getByTestId } = renderQuickMarcEditor();
+
+      const contentField = getByTestId('content-field-0');
+
+      fireEvent.change(contentField, { target: { value: '' } });
+
+      expect(getByTestId('quick-marc-editor-rows')).toBeDefined();
+    });
+  });
+
   describe('when deleted a row', () => {
     it('should not display ConfirmationModal', () => {
       const {
