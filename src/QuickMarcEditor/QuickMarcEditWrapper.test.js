@@ -5,6 +5,7 @@ import {
   cleanup,
   act,
   fireEvent,
+  waitFor,
 } from '@testing-library/react';
 import faker from 'faker';
 import noop from 'lodash/noop';
@@ -275,7 +276,7 @@ describe('Given QuickMarcEditWrapper', () => {
         update: jest.fn(),
       },
       quickMarcEditInstance: {
-        GET: () => Promise.resolve(instance),
+        GET: jest.fn(() => Promise.resolve(instance)),
       },
       quickMarcEditMarcRecord: {
         GET: jest.fn(() => Promise.resolve(record)),
@@ -308,8 +309,10 @@ describe('Given QuickMarcEditWrapper', () => {
 
         await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
+        expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
         expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
-        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
+
+        waitFor(() => expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' }));
 
         await new Promise(resolve => {
           setTimeout(() => {
@@ -408,7 +411,10 @@ describe('Given QuickMarcEditWrapper', () => {
 
         await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
-        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' });
+        expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
+        expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
+
+        waitFor(() => expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' }));
 
         await new Promise(resolve => {
           setTimeout(() => {

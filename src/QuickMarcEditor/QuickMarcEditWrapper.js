@@ -82,11 +82,10 @@ const QuickMarcEditWrapper = ({
     const prevVersion = instance._version;
     const lastVersion = instancePromise._version;
 
-    if (prevVersion !== lastVersion) {
+    if (prevVersion && lastVersion && prevVersion !== lastVersion) {
       setHttpError({
-        code: 'VERSINO_ERROR',
         errorType: 'optimisticLocking',
-        message: 'Depricated instance version cannot be updated.',
+        message: 'Instance cannot be updated. Depricated instance version.',
       });
 
       return null;
