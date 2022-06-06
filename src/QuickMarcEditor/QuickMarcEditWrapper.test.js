@@ -6,6 +6,7 @@ import {
   act,
   fireEvent,
   waitFor,
+  screen,
 } from '@testing-library/react';
 import faker from 'faker';
 import noop from 'lodash/noop';
@@ -390,6 +391,43 @@ describe('Given QuickMarcEditWrapper', () => {
             }, 100);
           });
         }, 1000);
+      });
+
+      describe('when there is a record returned with different version', () => {
+        it('should show up a conflict detection banner and not make an update request', async () => {
+          let getByText;
+
+          mutator.quickMarcEditInstance.GET = jest.fn(() => Promise.resolve({
+            ...instance,
+            _version: '1',
+          }));
+
+          await act(async () => {
+            getByText = renderQuickMarcEditWrapper({
+              instance: {
+                ...instance,
+                _version: '0',
+              },
+              mutator,
+              location: {
+                search: 'relatedRecordVersion=1',
+              },
+            }).getByText;
+          });
+
+          await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+
+          expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
+          expect(mutator.quickMarcEditMarcRecord.PUT).not.toHaveBeenCalled();
+
+          await new Promise(resolve => {
+            setTimeout(() => {
+              expect(getByText('stripes-components.optimisticLocking.saveError')).toBeDefined();
+
+              resolve();
+            }, 100);
+          });
+        });
       });
     });
   });

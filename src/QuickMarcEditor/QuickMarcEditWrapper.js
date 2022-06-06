@@ -14,6 +14,7 @@ import { QUICK_MARC_ACTIONS } from './constants';
 import {
   EXTERNAL_INSTANCE_APIS,
   MARC_TYPES,
+  ERROR_TYPES,
 } from '../common/constants';
 import {
   hydrateMarcRecord,
@@ -84,7 +85,7 @@ const QuickMarcEditWrapper = ({
 
     if (prevVersion && lastVersion && prevVersion !== lastVersion) {
       setHttpError({
-        errorType: 'optimisticLocking',
+        errorType: ERROR_TYPES.OPTIMISTIC_LOCKING,
         message: 'Instance cannot be updated. Depricated instance version.',
       });
 
