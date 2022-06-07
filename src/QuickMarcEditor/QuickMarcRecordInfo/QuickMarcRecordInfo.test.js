@@ -25,6 +25,7 @@ const renderQuickMarcRecordInfo = (props = {}) => render(
     updatedBy={{
       firstName: 'John',
       lastName: 'Doe',
+      username: 'JohnDoe',
     }}
     {...props}
   />,
@@ -60,6 +61,34 @@ describe('Given Quick Marc Record Info', () => {
       });
 
       expect(getByText('ui-quick-marc.record.headingType.130')).toBeDefined();
+    });
+  });
+
+  describe('when  firstName is undefined ', () => {
+    it('should display only lastName', () => {
+      const { getByText } = renderQuickMarcRecordInfo({
+        updatedBy: {
+          firstName: undefined,
+          lastName: 'Doe',
+          username: 'JohnDoe',
+        },
+      });
+
+      expect(getByText('Doe')).toBeDefined();
+    });
+  });
+
+  describe('when firstName and lastName is undefined ', () => {
+    it('should display only lastName', () => {
+      const { getByText } = renderQuickMarcRecordInfo({
+        updatedBy: {
+          firstName: 'John',
+          lastName: undefined,
+          username: 'JohnDoe',
+        },
+      });
+
+      expect(getByText('John')).toBeDefined();
     });
   });
 });
