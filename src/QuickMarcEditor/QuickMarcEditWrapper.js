@@ -11,7 +11,11 @@ import {
 
 import QuickMarcEditor from './QuickMarcEditor';
 import { QUICK_MARC_ACTIONS } from './constants';
-import { MARC_TYPES } from '../common/constants';
+import {
+  EXTERNAL_INSTANCE_APIS,
+  MARC_TYPES,
+  ERROR_TYPES,
+} from '../common/constants';
 import {
   hydrateMarcRecord,
   validateMarcRecord,
@@ -72,6 +76,21 @@ const QuickMarcEditWrapper = ({
     const formValuesForEdit = cleanBytesFields(autopopulatedFormWithSubfields, initialValues, marcType);
 
     const marcRecord = hydrateMarcRecord(formValuesForEdit);
+
+    const path = EXTERNAL_INSTANCE_APIS[marcType];
+    const instancePromise = await mutator.quickMarcEditInstance.GET({ path: `${path}/${marcRecord.externalId}` });
+
+    const prevVersion = instance._version;
+    const lastVersion = instancePromise._version;
+
+    if (prevVersion && lastVersion && prevVersion !== lastVersion) {
+      setHttpError({
+        errorType: ERROR_TYPES.OPTIMISTIC_LOCKING,
+        message: 'Instance cannot be updated. Depricated instance version.',
+      });
+
+      return null;
+    }
 
     marcRecord.relatedRecordVersion = marcType === MARC_TYPES.AUTHORITY
       ? instance._version

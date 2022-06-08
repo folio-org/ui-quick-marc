@@ -19,6 +19,7 @@
 * [UIQM-239](https://issues.folio.org/browse/UIQM-239) FE: Derive/Edit MARC bibliographic record: Error message for when a user attempts to edit a read-only leader value  is not updated
 * [UIQM-241](https://issues.folio.org/browse/UIQM-241) update NodeJS to v16 in GitHub Actions
 * [UIQM-247](https://issues.folio.org/browse/UIQM-247) Folio crashes in quickmarc editor when cypress clears LDR field
+* [UIQM-243](https://issues.folio.org/browse/UIQM-243) Optimistic Locking: Do not send update request when user attempts to update older version of MARC bib/holdings/authority
 
 ## [5.0.1](https://github.com/folio-org/ui-quick-marc/tree/v5.0.1) (2022-03-29)
 
