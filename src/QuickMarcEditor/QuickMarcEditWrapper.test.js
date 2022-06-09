@@ -5,6 +5,8 @@ import {
   cleanup,
   act,
   fireEvent,
+  waitFor,
+  screen,
 } from '@testing-library/react';
 import faker from 'faker';
 import noop from 'lodash/noop';
@@ -275,7 +277,7 @@ describe('Given QuickMarcEditWrapper', () => {
         update: jest.fn(),
       },
       quickMarcEditInstance: {
-        GET: () => Promise.resolve(instance),
+        GET: jest.fn(() => Promise.resolve(instance)),
       },
       quickMarcEditMarcRecord: {
         GET: jest.fn(() => Promise.resolve(record)),
@@ -308,8 +310,10 @@ describe('Given QuickMarcEditWrapper', () => {
 
         await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
+        expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
         expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
-        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
+
+        waitFor(() => expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' }));
 
         await new Promise(resolve => {
           setTimeout(() => {
@@ -388,6 +392,43 @@ describe('Given QuickMarcEditWrapper', () => {
           });
         }, 1000);
       });
+
+      describe('when there is a record returned with different version', () => {
+        it('should show up a conflict detection banner and not make an update request', async () => {
+          let getByText;
+
+          mutator.quickMarcEditInstance.GET = jest.fn(() => Promise.resolve({
+            ...instance,
+            _version: '1',
+          }));
+
+          await act(async () => {
+            getByText = renderQuickMarcEditWrapper({
+              instance: {
+                ...instance,
+                _version: '0',
+              },
+              mutator,
+              location: {
+                search: 'relatedRecordVersion=1',
+              },
+            }).getByText;
+          });
+
+          await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+
+          expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
+          expect(mutator.quickMarcEditMarcRecord.PUT).not.toHaveBeenCalled();
+
+          await new Promise(resolve => {
+            setTimeout(() => {
+              expect(getByText('stripes-components.optimisticLocking.saveError')).toBeDefined();
+
+              resolve();
+            }, 100);
+          });
+        });
+      });
     });
   });
 
@@ -408,7 +449,10 @@ describe('Given QuickMarcEditWrapper', () => {
 
         await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
-        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' });
+        expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
+        expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
+
+        waitFor(() => expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' }));
 
         await new Promise(resolve => {
           setTimeout(() => {
