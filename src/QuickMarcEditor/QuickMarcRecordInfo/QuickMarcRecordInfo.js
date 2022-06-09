@@ -28,19 +28,16 @@ export const QuickMarcRecordInfo = ({
   const getSourceLabel = () => {
     let source;
 
-    if (updatedBy.firstName === undefined && updatedBy.lastName === undefined) {
-      source = `${updatedBy.username}`;
+    if (!updatedBy) {
+      return <FormattedMessage id="ui-quick-marc.meta.source.system" />;
     }
-    if (updatedBy.firstName !== undefined && updatedBy.lastName !== undefined) {
-      source = `${updatedBy.lastName}, ${updatedBy.firstName}`;
-    }
-    if (updatedBy.lastName === undefined) {
-      source = `${updatedBy.firstName}`;
-    }
-    if (updatedBy.firstName === undefined) {
-      source = `${updatedBy.lastName}`;
+
+    const notEmptyNames = [updatedBy.firstName, updatedBy.lastName].filter(name => !!name);
+
+    if (!notEmptyNames.length) {
+      source = updatedBy.username;
     } else {
-      <FormattedMessage id="ui-quick-marc.meta.source.system" />;
+      source = notEmptyNames.join(', ');
     }
 
     return (
