@@ -246,8 +246,12 @@ const validateLeaderPositions = (prevLeader, leader, marcType) => {
   const prevLeaderJoinedPositions = joinFailedPositions(prevLeaderFailedPositions);
   const failedPositions = getInvalidLeaderPositions(leader, marcType);
   const joinedPositions = joinFailedPositions(failedPositions);
+  const isEighthFieldBlank = !FixedFieldFactory.getFixedFieldByType(marcType, leader[6], leader[7]);
 
-  if (prevLeaderFailedPositions.length && prevLeader === leader) {
+  if (
+    (prevLeaderFailedPositions.length && prevLeader === leader)
+    || isEighthFieldBlank
+  ) {
     // invalid leader positions came from backend
     return (
       <FormattedMessage
