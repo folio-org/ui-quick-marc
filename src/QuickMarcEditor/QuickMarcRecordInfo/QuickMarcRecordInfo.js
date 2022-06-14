@@ -26,9 +26,19 @@ export const QuickMarcRecordInfo = ({
   correspondingMarcTag,
 }) => {
   const getSourceLabel = () => {
-    const source = updatedBy
-      ? `${updatedBy.lastName}, ${updatedBy.firstName}`
-      : <FormattedMessage id="ui-quick-marc.meta.source.system" />;
+    let source;
+
+    if (!updatedBy) {
+      return <FormattedMessage id="ui-quick-marc.meta.source.system" />;
+    }
+
+    const notEmptyNames = [updatedBy.firstName, updatedBy.lastName].filter(name => !!name);
+
+    if (!notEmptyNames.length) {
+      source = updatedBy.username;
+    } else {
+      source = notEmptyNames.join(', ');
+    }
 
     return (
       <>
@@ -84,6 +94,7 @@ QuickMarcRecordInfo.propTypes = {
   updatedBy: PropTypes.shape({
     firstName: PropTypes.string,
     lastName: PropTypes.string,
+    username: PropTypes.string,
   }),
 };
 

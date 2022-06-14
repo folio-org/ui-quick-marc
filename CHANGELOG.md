@@ -20,6 +20,7 @@
 * [UIQM-241](https://issues.folio.org/browse/UIQM-241) update NodeJS to v16 in GitHub Actions
 * [UIQM-247](https://issues.folio.org/browse/UIQM-247) Folio crashes in quickmarc editor when cypress clears LDR field
 * [UIQM-243](https://issues.folio.org/browse/UIQM-243) Optimistic Locking: Do not send update request when user attempts to update older version of MARC bib/holdings/authority
+* [UIQM-244](https://issues.folio.org/browse/UIQM-244) Fix undefined user name
 
 ## [5.0.1](https://github.com/folio-org/ui-quick-marc/tree/v5.0.1) (2022-03-29)
 

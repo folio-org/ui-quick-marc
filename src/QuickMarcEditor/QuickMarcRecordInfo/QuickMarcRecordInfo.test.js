@@ -25,6 +25,7 @@ const renderQuickMarcRecordInfo = (props = {}) => render(
     updatedBy={{
       firstName: 'John',
       lastName: 'Doe',
+      username: 'JohnDoe',
     }}
     {...props}
   />,
@@ -49,7 +50,7 @@ describe('Given Quick Marc Record Info', () => {
     const { getByText } = renderQuickMarcRecordInfo();
 
     expect(getByText('stripes-components.metaSection.source', { exact: false })).toBeDefined();
-    expect(getByText('Doe, John', { exact: false })).toBeDefined();
+    expect(getByText('John, Doe', { exact: false })).toBeDefined();
   });
 
   describe('when marc type is authority', () => {
@@ -60,6 +61,48 @@ describe('Given Quick Marc Record Info', () => {
       });
 
       expect(getByText('ui-quick-marc.record.headingType.130')).toBeDefined();
+    });
+  });
+
+  describe('when firstName in updateBy is undefined', () => {
+    it('should display only lastName', () => {
+      const { getByText } = renderQuickMarcRecordInfo({
+        updatedBy: {
+          firstName: undefined,
+          lastName: 'Doe',
+          username: 'JohnDoe',
+        },
+      });
+
+      expect(getByText('Doe')).toBeDefined();
+    });
+  });
+
+  describe('when lastName in updateBy is undefined', () => {
+    it('should display only firstName', () => {
+      const { getByText } = renderQuickMarcRecordInfo({
+        updatedBy: {
+          firstName: 'John',
+          lastName: undefined,
+          username: 'JohnDoe',
+        },
+      });
+
+      expect(getByText('John')).toBeDefined();
+    });
+  });
+
+  describe('when firstName and lastName in updateBy are undefined ', () => {
+    it('should display username', () => {
+      const { getByText } = renderQuickMarcRecordInfo({
+        updatedBy: {
+          firstName: undefined,
+          lastName: undefined,
+          username: 'JohnDoe',
+        },
+      });
+
+      expect(getByText('JohnDoe')).toBeDefined();
     });
   });
 });
