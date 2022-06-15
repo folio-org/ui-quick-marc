@@ -8,7 +8,6 @@
 * [UIQM-217](https://issues.folio.org/browse/UIQM-217) Update dependencies: `stripes-acq-components` to v3.1.1.
 * [UIQM-224](https://issues.folio.org/browse/UIQM-224) Replace or remove react-hot-loader.
 * [UIQM-230](https://issues.folio.org/browse/UIQM-230) Replace `babel-eslint` with `@babel/eslint-parser`.
-* [UIQM-228](https://issues.folio.org/browse/UIQM-228) "Save & close" button accessibility when edit bib/holdings/authority record via "quickMARC".
 * [UIQM-53](https://issues.folio.org/browse/UIQM-53) Adjust the quickMARC edit UI to indicate that specific fields are protected.
 * [UIQM-233](https://issues.folio.org/browse/UIQM-233) MARC authority: Leader field make the following positions editable.
 * [UIQM-234](https://issues.folio.org/browse/UIQM-234) FE: Derive/Edit MARC bibliographic record: Make positions 06 and 07 editable.
@@ -16,10 +15,14 @@
 * [UIQM-238](https://issues.folio.org/browse/UIQM-238) Fix Save & Close button not working.
 * [UIQM-242](https://issues.folio.org/browse/UIQM-242) Apply to MARC Authority:  Optimistic locking: display error message to inform user about OL
 * [UIQM-239](https://issues.folio.org/browse/UIQM-239) FE: Derive/Edit MARC bibliographic record: Error message for when a user attempts to edit a read-only leader value  is not updated
-* [UIQM-241](https://issues.folio.org/browse/UIQM-241) update NodeJS to v16 in GitHub Actions
 * [UIQM-247](https://issues.folio.org/browse/UIQM-247) Folio crashes in quickmarc editor when cypress clears LDR field
 * [UIQM-243](https://issues.folio.org/browse/UIQM-243) Optimistic Locking: Do not send update request when user attempts to update older version of MARC bib/holdings/authority
 * [UIQM-244](https://issues.folio.org/browse/UIQM-244) Fix undefined user name
+
+## [5.0.3](https://github.com/folio-org/ui-quick-marc/tree/v5.0.3) (2022-06-15)
+
+* [UIQM-228](https://issues.folio.org/browse/UIQM-228) "Save & close" button accessibility when edit bib/holdings/authority record via "quickMARC".
+* [UIQM-241](https://issues.folio.org/browse/UIQM-241) update NodeJS to v16 in GitHub Actions
 
 ## [5.0.2](https://github.com/folio-org/ui-quick-marc/tree/v5.0.2) (2022-04-08)
 
