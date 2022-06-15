@@ -1,6 +1,6 @@
 # Change history for ui-quick-marc
 
-## [5.0.3](IN PROGRESS)
+## [5.0.3](https://github.com/folio-org/ui-quick-marc/tree/v5.0.3) (2022-06-15)
 
 * [UIQM-228](https://issues.folio.org/browse/UIQM-228) "Save & close" button accessibility when edit bib/holdings/authority record via "quickMARC".
 * [UIQM-241](https://issues.folio.org/browse/UIQM-241) update NodeJS to v16 in GitHub Actions
