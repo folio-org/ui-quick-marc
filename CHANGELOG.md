@@ -7,7 +7,6 @@
 * [UIQM-162](https://issues.folio.org/browse/UIQM-162) Optimistic locking: display error message to inform user about OL.
 * [UIQM-217](https://issues.folio.org/browse/UIQM-217) Update dependencies: `stripes-acq-components` to v3.1.1.
 * [UIQM-224](https://issues.folio.org/browse/UIQM-224) Replace or remove react-hot-loader.
-* [UIQM-226](https://issues.folio.org/browse/UIQM-226) MARC holdings: Can add multiple 852s tags.
 * [UIQM-230](https://issues.folio.org/browse/UIQM-230) Replace `babel-eslint` with `@babel/eslint-parser`.
 * [UIQM-228](https://issues.folio.org/browse/UIQM-228) "Save & close" button accessibility when edit bib/holdings/authority record via "quickMARC".
 * [UIQM-53](https://issues.folio.org/browse/UIQM-53) Adjust the quickMARC edit UI to indicate that specific fields are protected.
@@ -21,6 +20,10 @@
 * [UIQM-247](https://issues.folio.org/browse/UIQM-247) Folio crashes in quickmarc editor when cypress clears LDR field
 * [UIQM-243](https://issues.folio.org/browse/UIQM-243) Optimistic Locking: Do not send update request when user attempts to update older version of MARC bib/holdings/authority
 * [UIQM-244](https://issues.folio.org/browse/UIQM-244) Fix undefined user name
+
+## [5.0.2](https://github.com/folio-org/ui-quick-marc/tree/v5.0.2) (2022-04-08)
+
+* [UIQM-226](https://issues.folio.org/browse/UIQM-226) MARC holdings: Can add multiple 852s tags.
 
 ## [5.0.1](https://github.com/folio-org/ui-quick-marc/tree/v5.0.1) (2022-03-29)
 
