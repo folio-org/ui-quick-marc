@@ -18,6 +18,7 @@ export const LEADER_VALUES_FOR_POSITION = {
     5: ['c', 'd', 'n'],
     6: ['u', 'v', 'x', 'y'],
     17: ['1', '2', '3', '4', '5', 'm', 'u', 'z'],
+    18: ['i', 'n'],
   },
   [MARC_TYPES.AUTHORITY]: [],
 };
