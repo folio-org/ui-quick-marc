@@ -40,7 +40,6 @@ const mockRecords = {
       content: {
         Type: 'a',
         BLvl: 'm',
-        ELvl: '3',
         Desc: 'c',
         Entered: '211212',
         DtSt: '|',

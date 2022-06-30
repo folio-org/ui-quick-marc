@@ -33,7 +33,6 @@
   "record.lastUpdated": "Last updated: {date} {time}",
 
   "record.fixedField.Type": "Type",
-  "record.fixedField.ELvl": "ELvl",
   "record.fixedField.Srce": "Srce",
   "record.fixedField.Audn": "Audn",
   "record.fixedField.Ctrl": "Ctrl",

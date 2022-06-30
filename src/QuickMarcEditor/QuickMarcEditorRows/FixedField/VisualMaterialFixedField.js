@@ -10,10 +10,6 @@ const config = {
   fields: [
     {
       type: SUBFIELD_TYPES.BYTE,
-      name: 'ELvl',
-    },
-    {
-      type: SUBFIELD_TYPES.BYTE,
       name: 'Srce',
     },
     {

@@ -9,10 +9,6 @@ import {
 const config = {
   fields: [
     {
-      type: SUBFIELD_TYPES.BYTE,
-      name: 'ELvl',
-    },
-    {
       name: 'Srce',
       type: SUBFIELD_TYPES.BYTE,
     },

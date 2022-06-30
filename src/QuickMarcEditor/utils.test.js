@@ -207,7 +207,6 @@ describe('QuickMarcEditor utils', () => {
           {
             tag: '008',
             content: {
-              ELvl: 'I',
               Desc: 'i',
             },
           },
@@ -247,7 +246,6 @@ describe('QuickMarcEditor utils', () => {
           {
             tag: '008',
             content: {
-              ELvl: 'I',
               Desc: 'i',
             },
           },
@@ -269,7 +267,6 @@ describe('QuickMarcEditor utils', () => {
           {
             tag: '008',
             content: {
-              ELvl: 'I',
               Desc: 'i',
             },
           },
@@ -484,24 +481,6 @@ describe('QuickMarcEditor utils', () => {
   });
 
   describe('validateRecordMismatch', () => {
-    it('should return error message when 008 Elvl is not matched with leader Elvl', () => {
-      const records = [
-        {
-          content: '04706cam a2200865Ii 4500',
-          tag: '245',
-        },
-        {
-          tag: '008',
-          content: {
-            ELvl: 'A',
-            Desc: 'i',
-          },
-        },
-      ];
-
-      expect(utils.validateRecordMismatch(records).props.id).toBe('ui-quick-marc.record.error.leader.fixedFieldMismatch');
-    });
-
     it('should return error message when 008 Desc is not matched with leader Desc', () => {
       const records = [
         {
@@ -511,7 +490,6 @@ describe('QuickMarcEditor utils', () => {
         {
           tag: '008',
           content: {
-            ELvl: 'I',
             Desc: 'M',
           },
         },
@@ -529,7 +507,6 @@ describe('QuickMarcEditor utils', () => {
         {
           tag: '008',
           content: {
-            ELvl: 'I',
             Desc: 'i',
           },
         },
@@ -1225,7 +1202,7 @@ describe('QuickMarcEditor utils', () => {
   });
 
   describe('cleanBytesFields', () => {
-    it('should return cleaded records', () => {
+    it('should return cleaned records', () => {
       const record = {
         records: [{
           tag: '001',
@@ -1320,7 +1297,6 @@ describe('QuickMarcEditor utils', () => {
             Date2: '\\\\\\\\',
             Desc: 'a',
             DtSt: 's',
-            ELvl: 'I',
             Entered: '101027',
             Form: '\\',
             GPub: '\\',
