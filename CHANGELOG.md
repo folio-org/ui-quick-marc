@@ -19,6 +19,7 @@
 * [UIQM-243](https://issues.folio.org/browse/UIQM-243) Optimistic Locking: Do not send update request when user attempts to update older version of MARC bib/holdings/authority
 * [UIQM-244](https://issues.folio.org/browse/UIQM-244) Fix undefined user name
 * [UIQM-246] (https://issues.folio.org/browse/UIQM-246) MARC Holdings | Update error toast notification message when user edit 18 position of LDR
+* [UIQM-251] (https://issues.folio.org/browse/UIQM-251) Edit/Derive Bib and Create/Edit Holdings - URL in error toast notifications does not work
 
 ## [5.0.3](https://github.com/folio-org/ui-quick-marc/tree/v5.0.3) (2022-06-15)
 
