@@ -6,7 +6,6 @@ import {
   act,
   fireEvent,
   waitFor,
-  screen,
 } from '@testing-library/react';
 import faker from 'faker';
 import noop from 'lodash/noop';
