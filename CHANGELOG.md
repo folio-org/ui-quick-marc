@@ -1,6 +1,6 @@
 # Change history for ui-quick-marc
 
-## [5.1.0] (IN PROGRESS)
+## [5.1.0](https://github.com/folio-org/ui-quick-marc/tree/v5.1.0) (2022-07-08)
 
 * [UIQM-213](https://issues.folio.org/browse/UIQM-213) New Permission: View MARC holdings record.
 * [UIQM-212](https://issues.folio.org/browse/UIQM-212) New permission: View source (instance).
