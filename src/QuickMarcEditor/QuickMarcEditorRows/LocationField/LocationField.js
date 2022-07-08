@@ -41,7 +41,7 @@ const LocationField = ({
     }
 
     input.onChange(newInputValue);
-  }, [permanentLocation]);
+  }, [permanentLocation, input, action]);
 
   return (
     <>

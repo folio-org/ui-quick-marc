@@ -241,28 +241,9 @@ const joinFailedPositions = (failedPositions) => {
   return joinedPositions;
 };
 
-const validateLeaderPositions = (prevLeader, leader, marcType) => {
-  const prevLeaderFailedPositions = getInvalidLeaderPositions(prevLeader, marcType);
-  const prevLeaderJoinedPositions = joinFailedPositions(prevLeaderFailedPositions);
+const validateLeaderPositions = (leader, marcType) => {
   const failedPositions = getInvalidLeaderPositions(leader, marcType);
   const joinedPositions = joinFailedPositions(failedPositions);
-
-  if (prevLeaderFailedPositions.length && prevLeader === leader) {
-    // invalid leader positions came from backend
-    return (
-      <FormattedMessage
-        id="ui-quick-marc.record.error.leader.initial.invalidPositionValue"
-        values={{
-          positions: prevLeaderJoinedPositions,
-          link: (
-            <Link to={LEADER_DOCUMENTATION_LINKS[marcType]}>
-              {LEADER_DOCUMENTATION_LINKS[marcType]}
-            </Link>
-          ),
-        }}
-      />
-    );
-  }
 
   if (failedPositions.length) {
     return (
@@ -271,7 +252,12 @@ const validateLeaderPositions = (prevLeader, leader, marcType) => {
         values={{
           positions: joinedPositions,
           link: (
-            <Link to={LEADER_DOCUMENTATION_LINKS[marcType]}>
+            <Link
+              to={{
+                pathname: LEADER_DOCUMENTATION_LINKS[marcType],
+              }}
+              target="_blank"
+            >
               {LEADER_DOCUMENTATION_LINKS[marcType]}
             </Link>
           ),
@@ -300,7 +286,7 @@ export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYP
     return <FormattedMessage id={`ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}`} />;
   }
 
-  const leaderValidationError = validateLeaderPositions(prevLeader, leader, marcType);
+  const leaderValidationError = validateLeaderPositions(leader, marcType);
 
   if (leaderValidationError) {
     return leaderValidationError;

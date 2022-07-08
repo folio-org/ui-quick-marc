@@ -13,10 +13,7 @@ import '@folio/stripes-acq-components/test/jest/__mock__';
 import QuickMarcEditorContainer from './QuickMarcEditorContainer';
 import QuickMarcEditWrapper from './QuickMarcEditWrapper';
 import { QUICK_MARC_ACTIONS } from './constants';
-import {
-  EXTERNAL_INSTANCE_APIS,
-  MARC_TYPES,
-} from '../common/constants';
+import { MARC_TYPES } from '../common/constants';
 
 const getInstance = () => ({
   id: faker.random.uuid(),
