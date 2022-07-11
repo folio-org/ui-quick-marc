@@ -35,6 +35,7 @@ import {
   MARC_TYPES,
   ERROR_TYPES,
 } from '../common/constants';
+import { toPairs } from 'lodash';
 
 export const parseHttpError = async (httpError) => {
   const contentType = httpError?.headers?.get('content-type');
@@ -168,6 +169,19 @@ const removeMarcRecordFieldContentForDuplication = marcRecord => {
   };
 };
 
+export const getContentSubfieldValue = (content) => {
+  return content.split(/\$/).reduce((acc, str) => {
+    if (!str) {
+      return acc;
+    }
+
+    return {
+      ...acc,
+      [`$${str[0]}`]: str.substring(2).trim(),
+    };
+  }, {});
+};
+
 export const formatMarcRecordByQuickMarcAction = (marcRecord, action) => {
   if (action === QUICK_MARC_ACTIONS.DUPLICATE) {
     return {
@@ -190,7 +204,15 @@ export const formatMarcRecordByQuickMarcAction = (marcRecord, action) => {
     };
   }
 
-  return marcRecord;
+  return {
+    ...marcRecord,
+    records: marcRecord.records.map(record => ({
+      ...record,
+      subfields: typeof record.content === 'string'
+        ? toPairs(getContentSubfieldValue(record.content)).map(pair => ({ content: `${pair[0]} ${pair[1]}` }))
+        : record.content,
+    })),
+  };
 };
 
 export const hydrateMarcRecord = marcRecord => ({
@@ -653,17 +675,4 @@ export const getCorrespondingMarcTag = (records) => {
   const correspondingHeadingTypeTags = new Set(CORRESPONDING_HEADING_TYPE_TAGS);
 
   return records.find(recordRow => correspondingHeadingTypeTags.has(recordRow.tag)).tag;
-};
-
-export const getContentSubfieldValue = (content) => {
-  return content.split(/\$/).reduce((acc, str) => {
-    if (!str) {
-      return acc;
-    }
-
-    return {
-      ...acc,
-      [`$${str[0]}`]: str.substring(2),
-    };
-  }, {});
 };

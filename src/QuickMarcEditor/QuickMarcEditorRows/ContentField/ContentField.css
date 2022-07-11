@@ -1,0 +1,12 @@
+.contentFieldContainer {
+  position: relative;
+  margin-right: 5px;
+  width: 100%;
+}
+
+.splitButton {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+}

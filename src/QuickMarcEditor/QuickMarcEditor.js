@@ -41,6 +41,7 @@ import {
   getCorrespondingMarcTag,
   getContentSubfieldValue,
 } from './utils';
+import { toPairs } from 'lodash';
 
 const spySubscription = { values: true };
 
@@ -342,6 +343,24 @@ export default stripesFinalForm({
     },
     restoreRecord: ([{ index, record }], state, tools) => {
       const records = restoreRecordAtIndex(index, record, state);
+
+      tools.changeValue(state, 'records', () => records);
+    },
+    splitField: ([{ fieldIndex, subfieldIndex }], state, tools) => {
+      const records = [...state.formState.values.records];
+
+      records[fieldIndex] = {
+        ...records[fieldIndex],
+        subfields: records[fieldIndex].subfields.reduce((acc, subfield, idx) => {
+          if (idx !== subfieldIndex) {
+            return [...acc, subfield];
+          }
+
+          const splitSubfields = toPairs(getContentSubfieldValue(subfield.content)).map(pair => ({ content: `${pair[0]} ${pair[1]}` }));
+
+          return [...acc, ...splitSubfields];
+        }, []),
+      };
 
       tools.changeValue(state, 'records', () => records);
     },

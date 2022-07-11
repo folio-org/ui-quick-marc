@@ -6,13 +6,18 @@ import PropTypes from 'prop-types';
 
 import {
   TextArea,
+  IconButton,
 } from '@folio/stripes/components';
 
 import { getResizeStyles } from './utils';
 
+import styles from './ContentField.css';
+import { getContentSubfieldValue } from '../../utils';
+
 export const ContentField = ({
   input,
   id,
+  splitField,
   ...props
 }) => {
   const ref = useRef();
@@ -29,13 +34,24 @@ export const ContentField = ({
     }
   }, [ref, input.value]);
 
+  const showSplitButton = Object.keys(getContentSubfieldValue(input.value)).length > 1;
+
   return (
-    <TextArea
-      {...props}
-      input={input}
-      inputRef={ref}
-      data-testid={id}
-    />
+    <div className={styles.contentFieldContainer}>
+      <TextArea
+        {...props}
+        input={input}
+        inputRef={ref}
+        data-testid={id}
+      />
+      {showSplitButton && (
+        <IconButton
+          icon="source"
+          className={styles.splitButton}
+          onClick={splitField}
+        />
+      )}
+    </div>
   );
 };
 

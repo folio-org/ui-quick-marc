@@ -49,6 +49,7 @@ const QuickMarcEditorRows = ({
     addRecord,
     deleteRecord,
     moveRecord,
+    splitField,
   },
   marcType,
 }) => {
@@ -252,15 +253,22 @@ const QuickMarcEditorRows = ({
 
                   {
                     isContentField && (
-                      <Field
-                        dirty={false}
-                        aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
-                        name={`${name}.content`}
-                        marginBottom0
-                        disabled={isDisabled}
-                        id={`content-field-${idx}`}
-                        component={ContentField}
-                      />
+                      <FieldArray name={`${name}.subfields`}>
+                        {({ fields: subfields }) => (
+                          subfields.map((subfield, idx_s) => (
+                            <Field
+                              dirty={false}
+                              aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
+                              name={`${name}.subfields[${idx_s}].content`}
+                              marginBottom0
+                              disabled={isDisabled}
+                              id={`content-field-${idx}-${idx_s}`}
+                              component={ContentField}
+                              splitField={() => splitField({ fieldIndex: idx, subfieldIndex: idx_s, })}
+                            />
+                          ))
+                        )}
+                      </FieldArray>
                     )
                   }
                 </div>
