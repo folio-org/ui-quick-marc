@@ -55,7 +55,9 @@ const QuickMarcEditorRows = ({
   const intl = useIntl();
   const { initialValues } = useFormState();
 
-  const isNewRow = (row) => !initialValues.records.find(record => record.id === row.id);
+  const isNewRow = useCallback((row) => {
+    return !initialValues.records.find(record => record.id === row.id);
+  }, [initialValues.records]);
 
   const addNewRow = useCallback(({ target }) => {
     addRecord({ index: parseInt(target.dataset.index, 10) });
@@ -75,7 +77,7 @@ const QuickMarcEditorRows = ({
         },
       ]);
     }
-  }, [fields, deleteRecord, setDeletedRecords]);
+  }, [fields, deleteRecord, setDeletedRecords, isNewRow]);
 
   const moveRow = useCallback(({ target }) => {
     moveRecord({
