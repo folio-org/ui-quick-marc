@@ -25,6 +25,7 @@ import {
   CORRESPONDING_HEADING_TYPE_TAGS,
   LEADER_VALUES_FOR_POSITION,
   LEADER_DOCUMENTATION_LINKS,
+  ELVL_BYTE,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import getMaterialCharsFieldConfig from './QuickMarcEditorRows/MaterialCharsField/getMaterialCharsFieldConfig';
@@ -355,10 +356,7 @@ export const validateRecordMismatch = marcRecords => {
   const leader = marcRecords[0]?.content || '';
   const fixedField = marcRecords.find(isFixedFieldRow);
 
-  if (
-    leader[17] !== fixedField?.content?.ELvl
-    || leader[18] !== fixedField?.content?.Desc
-  ) {
+  if (leader[18] !== fixedField?.content?.Desc) {
     return <FormattedMessage id="ui-quick-marc.record.error.leader.fixedFieldMismatch" />;
   }
 
@@ -606,6 +604,10 @@ export const cleanBytesFields = (formValues, initialValues, marcType) => {
 
     const content = Object.entries(field.content).reduce((acc, [key, value]) => {
       if (isString(value)) {
+        if (key === ELVL_BYTE) {
+          return acc;
+        }
+
         return {
           ...acc,
           [key]: value,

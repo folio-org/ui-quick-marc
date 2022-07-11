@@ -20,6 +20,7 @@
 * [UIQM-244](https://issues.folio.org/browse/UIQM-244) Fix undefined user name
 * [UIQM-246] (https://issues.folio.org/browse/UIQM-246) MARC Holdings | Update error toast notification message when user edit 18 position of LDR
 * [UIQM-251] (https://issues.folio.org/browse/UIQM-251) Edit/Derive Bib and Create/Edit Holdings - URL in error toast notifications does not work
+* [UIQM-240](https://issues.folio.org/browse/UIQM-240) Edit/Derive MARC bib > Changes to Leader position 17 validation AND 008 byte.
 
 ## [5.0.3](https://github.com/folio-org/ui-quick-marc/tree/v5.0.3) (2022-06-15)
 

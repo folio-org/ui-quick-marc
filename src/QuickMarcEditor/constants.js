@@ -78,6 +78,8 @@ export const QM_RECORD_STATUS_TIMEOUT = 5000;
 
 export const QM_RECORD_STATUS_BAIL_TIME = 20000;
 
+export const ELVL_BYTE = 'ELvl';
+
 export const HOLDINGS_FIXED_FIELD_DEFAULT_VALUES = {
   AcqStatus: 0,
   AcqMethod: 'u',

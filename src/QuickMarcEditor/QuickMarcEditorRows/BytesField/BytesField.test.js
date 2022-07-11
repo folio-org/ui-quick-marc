@@ -19,7 +19,7 @@ const config = {
     },
     {
       type: SUBFIELD_TYPES.STRING,
-      name: 'ELvl',
+      name: 'Desc',
     },
     {
       type: SUBFIELD_TYPES.BYTE,
