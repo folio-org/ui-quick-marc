@@ -205,6 +205,7 @@
   "record.deleteField": "Delete this field",
   "record.collapseRow": "Collapse row",
   "record.protectedField": "This field is protected.",
+  "record.splitSubfields": "Split subfields",
 
   "record.materialChars.materialType.a": "Language material",
   "record.materialChars.materialType.c": "Notated music",

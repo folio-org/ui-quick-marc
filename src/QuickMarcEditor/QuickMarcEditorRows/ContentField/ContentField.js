@@ -3,10 +3,12 @@ import React, {
   useLayoutEffect,
 } from 'react';
 import PropTypes from 'prop-types';
+import { useIntl } from 'react-intl';
 
 import {
   TextArea,
   IconButton,
+  Tooltip,
 } from '@folio/stripes/components';
 
 import { getResizeStyles } from './utils';
@@ -20,6 +22,7 @@ export const ContentField = ({
   splitField,
   ...props
 }) => {
+  const intl = useIntl();
   const ref = useRef();
 
   useLayoutEffect(() => {
@@ -45,11 +48,19 @@ export const ContentField = ({
         data-testid={id}
       />
       {showSplitButton && (
-        <IconButton
-          icon="source"
-          className={styles.splitButton}
-          onClick={splitField}
-        />
+        <Tooltip
+          text={intl.formatMessage({ id: 'ui-quick-marc.record.splitSubfields' })}
+        >
+          {({ ref: tooltipText, ariaIds }) => (
+            <IconButton
+              icon="source"
+              ref={tooltipText}
+              aria-labelledby={ariaIds.text}
+              className={styles.splitButton}
+              onClick={splitField}
+            />
+          )}
+        </Tooltip>
       )}
     </div>
   );

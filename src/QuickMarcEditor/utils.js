@@ -232,7 +232,7 @@ export const addNewRecord = (index, state) => {
   const emptyRow = {
     id: uuidv4(),
     tag: '',
-    content: '$a ',
+    subfields: [{ content: '$a ' }],
     indicators: ['\\', '\\'],
   };
 
