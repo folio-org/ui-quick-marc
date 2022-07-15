@@ -1,7 +1,6 @@
 {
     "meta.title": "مارك السريع",
     "record.fixedField.Type": "النوع",
-    "record.fixedField.ELvl": "ELvl",
     "record.fixedField.Srce": "مصدر",
     "record.fixedField.Audn": "Audn",
     "record.fixedField.Ctrl": "Ctrl",

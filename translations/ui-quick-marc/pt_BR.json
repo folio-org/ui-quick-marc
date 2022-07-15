@@ -1,7 +1,6 @@
 {
     "meta.title": "MARC rápido",
     "record.fixedField.Type": "Tipo",
-    "record.fixedField.ELvl": "ELvl",
     "record.fixedField.Srce": "Srce",
     "record.fixedField.Audn": "Audn",
     "record.fixedField.Ctrl": "Ctrl",
