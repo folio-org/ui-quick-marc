@@ -4,7 +4,10 @@ import {
   Switch,
   Route,
 } from 'react-router-dom';
+
 import { IfPermission } from '@folio/stripes/core';
+import { CommandList } from '@folio/stripes-components';
+
 import {
   QuickMarcEditorContainer,
   QuickMarcDuplicateWrapper,
@@ -12,7 +15,10 @@ import {
   QuickMarcEditWrapper,
 } from './QuickMarcEditor';
 import { QUICK_MARC_ACTIONS } from './QuickMarcEditor/constants';
-import { MARC_TYPES } from './common/constants';
+import {
+  MARC_TYPES,
+  keyboardCommands,
+} from './common/constants';
 
 const QuickMarc = ({
   basePath,
@@ -69,38 +75,42 @@ const QuickMarc = ({
 
   return (
     <div data-test-quick-marc>
-      <Switch>
-        {
-          editorRoutesConfig.map(({
-            path,
-            permission,
-            props: routeProps = {},
-          }) => (
-            <Route
-              path={path}
-              key={path}
-              render={() => (permission
-                ? (
-                  <IfPermission perm={permission}>
+      <CommandList
+        commands={keyboardCommands}
+      >
+        <Switch>
+          {
+            editorRoutesConfig.map(({
+              path,
+              permission,
+              props: routeProps = {},
+            }) => (
+              <Route
+                path={path}
+                key={path}
+                render={() => (permission
+                  ? (
+                    <IfPermission perm={permission}>
+                      <QuickMarcEditorContainer
+                        onClose={onClose}
+                        externalRecordPath={externalRecordPath}
+                        {...routeProps}
+                      />
+                    </IfPermission>
+                  )
+                  : (
                     <QuickMarcEditorContainer
                       onClose={onClose}
                       externalRecordPath={externalRecordPath}
                       {...routeProps}
                     />
-                  </IfPermission>
-                )
-                : (
-                  <QuickMarcEditorContainer
-                    onClose={onClose}
-                    externalRecordPath={externalRecordPath}
-                    {...routeProps}
-                  />
-                )
-              )}
-            />
-          ))
-        }
-      </Switch>
+                  )
+                )}
+              />
+            ))
+          }
+        </Switch>
+      </CommandList>
     </div>
   );
 };
