@@ -1,7 +1,6 @@
 {
     "meta.title": "Quick MARC",
     "record.fixedField.Type": "Type",
-    "record.fixedField.ELvl": "ELvl",
     "record.fixedField.Srce": "Srce",
     "record.fixedField.Audn": "Audn",
     "record.fixedField.Ctrl": "Ctrl",
@@ -38,7 +37,7 @@
     "record.fixedField.Relf": "Relf",
     "record.fixedField.SpFm": "SpFm",
     "record.fixedField.Proj": "Proj",
-    "record.error.title.multiple": "Record cannot be saved with more than one field 245.",
+    "record.error.title.multiple": "Záznam nelze uložit s více než jedním polem 245.",
     "record.error.title.empty": "Record cannot be saved without field 245.",
     "record.delete.confirmLabel": "Continue with save",
     "record.delete.message": "By selecting <b>Continue with save</b>, then <b>{count} field(s)</b> will be deleted and this record will be updated. Are you sure you want to continue?",

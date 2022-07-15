@@ -1,7 +1,6 @@
 {
     "meta.title": "快速MARC",
     "record.fixedField.Type": "Type 记录类型",
-    "record.fixedField.ELvl": "ELvl 编目等级",
     "record.fixedField.Srce": "Srce 编目来源",
     "record.fixedField.Audn": "Audn 读者对象",
     "record.fixedField.Ctrl": "Ctrl 控制类型",
