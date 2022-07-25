@@ -34,7 +34,7 @@ const propTypes = {
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
-  locations: PropTypes.object.isRequired,
+  locations: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 const QuickMarcEditWrapper = ({
@@ -78,8 +78,17 @@ const QuickMarcEditWrapper = ({
     const marcRecord = hydrateMarcRecord(formValuesForEdit);
 
     const path = EXTERNAL_INSTANCE_APIS[marcType];
-    const instancePromise = await mutator.quickMarcEditInstance.GET({ path: `${path}/${marcRecord.externalId}` });
+    let instancePromise;
 
+    try {
+      instancePromise = await mutator.quickMarcEditInstance.GET({ path: `${path}/${marcRecord.externalId}` });
+    } catch (errorResponse) {
+      const parsedError = await parseHttpError(errorResponse);
+
+      setHttpError(parsedError);
+
+      return undefined;
+    }
     const prevVersion = instance._version;
     const lastVersion = instancePromise._version;
 

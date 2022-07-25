@@ -306,7 +306,7 @@ describe('Given QuickMarcEditWrapper', () => {
           }).getByText;
         });
 
-        await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+        await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
         expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
         expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
@@ -341,7 +341,7 @@ describe('Given QuickMarcEditWrapper', () => {
             json: () => Promise.resolve({}),
           }));
 
-          await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+          await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
           expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
 
@@ -377,7 +377,7 @@ describe('Given QuickMarcEditWrapper', () => {
             json: () => Promise.resolve({ message: 'optimistic locking' }),
           }));
 
-          await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+          await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
           expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
 
@@ -413,7 +413,7 @@ describe('Given QuickMarcEditWrapper', () => {
             }).getByText;
           });
 
-          await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+          await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
           expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
           expect(mutator.quickMarcEditMarcRecord.PUT).not.toHaveBeenCalled();
@@ -424,6 +424,30 @@ describe('Given QuickMarcEditWrapper', () => {
 
               resolve();
             }, 100);
+          });
+        });
+      });
+
+      describe('when record not found (already deleted)', () => {
+        it('should reveal an error message', async () => {
+          let getByText;
+
+          mutator.quickMarcEditInstance.GET = jest.fn(() => Promise.reject(new Error('Not found')));
+
+          await act(async () => {
+            getByText = renderQuickMarcEditWrapper({
+              instance,
+              mutator,
+              location: {
+                search: 'relatedRecordVersion=1',
+              },
+            }).getByText;
+          });
+
+          await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
+          expect(mockShowCallout).toHaveBeenCalledWith({
+            messageId: 'ui-quick-marc.record.save.error.notFound',
+            type: 'error',
           });
         });
       });
@@ -445,7 +469,7 @@ describe('Given QuickMarcEditWrapper', () => {
           }).getByText;
         });
 
-        await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+        await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
         expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
         expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
@@ -478,7 +502,7 @@ describe('Given QuickMarcEditWrapper', () => {
             json: () => Promise.resolve({}),
           }));
 
-          await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+          await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
           expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
 
