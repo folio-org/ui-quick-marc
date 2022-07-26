@@ -7,8 +7,14 @@ import {
   useFormState,
 } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
-import { useIntl } from 'react-intl';
+import {
+  FormattedMessage,
+  useIntl,
+} from 'react-intl';
 
+import {
+  Pluggable,
+} from '@folio/stripes/core';
 import {
   TextField,
   IconButton,
@@ -291,6 +297,11 @@ const QuickMarcEditorRows = ({
                       />
                     )
                   }
+                  <Pluggable
+                    type="find-authority"
+                  >
+                    <FormattedMessage id="ui-quick-marc.noPlugin" />
+                  </Pluggable>
                 </div>
               </div>
             );
