@@ -222,5 +222,6 @@
     "record.protectedField": "This field is protected.",
     "record.error.leader.forbiddenBytes.authority": "Record cannot be saved. Please check the Leader. Only positions 5, 17, 18 can be edited in the Leader.",
     "record.error.leader.initial.invalidPositionValue": "Record cannot be saved. Cannot edit 008 due to invalid {positions}. Please update this record's {positions}. Valid values are listed at {link}",
-    "record.error.controlField.multiple": "Record cannot be saved. Can only have one MARC 001."
+    "record.error.controlField.multiple": "Record cannot be saved. Can only have one MARC 001.",
+    "record.save.error.notFound": "This record has been deleted by another user. You can no longer edit this record. Hit the cancel to return to the previous page."
 }
