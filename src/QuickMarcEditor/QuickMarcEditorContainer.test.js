@@ -33,9 +33,12 @@ const record = {
   fields: [],
 };
 
-const locations = {};
+const locations = [];
 
 const externalRecordPath = '/external/record/path';
+const history = {
+  goBack: jest.fn(),
+};
 
 const renderQuickMarcEditorContainer = ({
   onClose,
@@ -43,6 +46,7 @@ const renderQuickMarcEditorContainer = ({
   action,
   wrapper,
   marcType = MARC_TYPES.BIB,
+  history = history,
 }) => (render(
   <MemoryRouter>
     <QuickMarcEditorContainer
@@ -53,6 +57,7 @@ const renderQuickMarcEditorContainer = ({
       action={action}
       marcType={marcType}
       externalRecordPath={externalRecordPath}
+      history={history}
     />
   </MemoryRouter>,
 ));
@@ -94,6 +99,21 @@ describe('Given Quick Marc Editor Container', () => {
 
     expect(mutator.quickMarcEditMarcRecord.GET).toHaveBeenCalled();
   });
+
+  describe('when data cannot be fetched', () => {
+    it('should navigate back', async () => {
+      await act(async () => {
+        renderQuickMarcEditorContainer({
+          mutator,
+          onClose: jest.fn(),
+          action: QUICK_MARC_ACTIONS.DUPLICATE,
+          wrapper: QuickMarcEditWrapper,
+        });
+      });
+    });
+
+    expect(history.goBack).toHaveBeenCalled();
+  })
 
   it('should display Quick Marc Editor with fetched instance', async () => {
     let getByText;

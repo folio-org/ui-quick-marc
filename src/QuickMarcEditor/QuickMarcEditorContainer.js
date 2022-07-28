@@ -95,15 +95,11 @@ const QuickMarcEditorContainer = ({
         setInstance(instanceResponse);
         setMarcRecord(formattedMarcRecord);
         setLocations(locationsResponse);
+        setIsLoading(false);
       })
       .catch(() => {
-        setInstance();
-        setMarcRecord();
-
         showCallout({ messageId: 'ui-quick-marc.record.load.error', type: 'error' });
-      })
-      .finally(() => {
-        setIsLoading(false);
+        history.goBack();
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [externalId]);
