@@ -1,6 +1,7 @@
 import React, {
   useState,
   useEffect,
+  useRef,
 } from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
@@ -25,22 +26,23 @@ const LocationField = ({
 }) => {
   const intl = useIntl();
   const { input, ...inputRest } = useField(name);
+  const locationLookupUsed = useRef(false);
   const [permanentLocation, setPermanentLocation] = useState(getLocationValue(input.value));
 
   useEffect(() => {
     const locationValue = getLocationValue(input.value);
 
-    let newInputValue;
+    const newInputValue = locationValue
+      ? input.value.replace(locationValue, permanentLocation)
+      : `${permanentLocation} ${input.value.trim()}`;
 
-    if (action === QUICK_MARC_ACTIONS.EDIT) {
-      newInputValue = locationValue
-        ? input.value.replace(locationValue, permanentLocation)
-        : `${permanentLocation} ${input.value.trim()}`;
+    if (locationLookupUsed.current) {
+      input.onChange(newInputValue);
     } else {
-      newInputValue = permanentLocation;
+      input.onChange(input.value);
     }
 
-    input.onChange(newInputValue);
+    locationLookupUsed.current = false;
   }, [permanentLocation, input, action]);
 
   return (
@@ -54,6 +56,7 @@ const LocationField = ({
         label={intl.formatMessage({ id: 'ui-quick-marc.permanentLocationLookup' })}
         marginBottom0
         onLocationSelected={location => {
+          locationLookupUsed.current = true;
           setPermanentLocation(`$b ${location.code}`);
         }}
       />

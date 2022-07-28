@@ -97,8 +97,7 @@ const QuickMarcEditorContainer = ({
         setLocations(locationsResponse);
       })
       .catch(() => {
-        setInstance();
-        setMarcRecord();
+        closeEditor();
 
         showCallout({ messageId: 'ui-quick-marc.record.load.error', type: 'error' });
       })
