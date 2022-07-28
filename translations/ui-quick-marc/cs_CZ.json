@@ -1,5 +1,5 @@
 {
-    "meta.title": "Quick MARC",
+    "meta.title": "Rychlý MARC",
     "record.fixedField.Type": "Type",
     "record.fixedField.Srce": "Srce",
     "record.fixedField.Audn": "Audn",
@@ -11,7 +11,7 @@
     "record.fixedField.AccM": "AccM",
     "record.fixedField.MRec": "MRec",
     "record.fixedField.Ctry": "Ctry",
-    "record.fixedField.Part": "Part",
+    "record.fixedField.Part": "Část",
     "record.fixedField.TrAr": "TrAr",
     "record.fixedField.Desc": "Desc",
     "record.fixedField.FMus": "FMus",
@@ -50,7 +50,7 @@
     "record.subfield": "Subfield",
     "record.addField": "Add a new field",
     "record.deleteField": "Delete this field",
-    "record.delete.title": "Delete fields",
+    "record.delete.title": "Odstranit polí",
     "record.error.leader.length": "Záznam nelze uložit. Odkaz musí obsahovat 24 znaků včetně prázdných mezer.",
     "record.collapseRow": "Collapse row",
     "record.error.tag.length": "Záznam nelze uložit. Tag MARC musí obsahovat tři znaky",
@@ -72,7 +72,7 @@
     "record.fixedField.Reformatting quality": "RefQ",
     "record.fixedField.Type of reproduction": "ToRepr",
     "record.fixedField.Physical medium": "PhMedium",
-    "record.fixedField.Production/reproduction details": "P/R details",
+    "record.fixedField.Production/reproduction details": "P/R detaily",
     "record.fixedField.Positive/negative aspect": "P/N aspect",
     "record.fixedField.Reduction ratio range/Reduction ratio": "RRR/RR",
     "record.fixedField.Emulsion on film": "EmOnF",
@@ -222,5 +222,6 @@
     "record.protectedField": "Toto pole je chráněno.",
     "record.error.leader.forbiddenBytes.authority": "Záznam nelze uložit. Zkontrolujte prosím lídra. V lídrovi lze upravovat pouze pozice 5, 17, 18.",
     "record.error.leader.initial.invalidPositionValue": "Záznam nelze uložit. Nelze upravit 008 z důvodu neplatných {positions}. Aktualizujte prosím {positions} tohoto záznamu. Platné hodnoty jsou uvedeny v {link}",
-    "record.error.controlField.multiple": "Záznam nelze uložit. Může mít pouze jeden záznam MARC 001."
+    "record.error.controlField.multiple": "Záznam nelze uložit. Může mít pouze jeden záznam MARC 001.",
+    "record.save.error.notFound": "Tento záznam byl smazán jiným uživatelem a nemůžete jej proto již  upravovat. Stisknutím tlačítka Zrušit se vrátíte na předchozí stránku."
 }
