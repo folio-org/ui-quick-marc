@@ -222,5 +222,6 @@
     "record.protectedField": "该字段受保护。",
     "record.error.leader.forbiddenBytes.authority": "无法保存记录。请检查头标。在 头标中只能编辑位置 5、17、18。",
     "record.error.leader.initial.invalidPositionValue": "无法保存记录。由于{positions}无效，无法编辑 008。请更新此记录的{positions} 。有效值列在{link}",
-    "record.error.controlField.multiple": "无法保存记录。只能有一个MARC 001。"
+    "record.error.controlField.multiple": "无法保存记录。只能有一个MARC 001。",
+    "record.save.error.notFound": "This record has been deleted by another user. You can no longer edit this record. Hit the cancel to return to the previous page."
 }
