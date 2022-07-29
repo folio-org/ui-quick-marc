@@ -1,10 +1,12 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
+import { Router } from 'react-router-dom';
+import { createMemoryHistory } from 'history';
 import {
   render,
   cleanup,
   act,
   fireEvent,
+  screen,
 } from '@testing-library/react';
 import faker from 'faker';
 
@@ -36,9 +38,6 @@ const record = {
 const locations = [];
 
 const externalRecordPath = '/external/record/path';
-const history = {
-  goBack: jest.fn(),
-};
 
 const renderQuickMarcEditorContainer = ({
   onClose,
@@ -46,9 +45,9 @@ const renderQuickMarcEditorContainer = ({
   action,
   wrapper,
   marcType = MARC_TYPES.BIB,
-  history = history,
+  history = createMemoryHistory(),
 }) => (render(
-  <MemoryRouter>
+  <Router history={history}>
     <QuickMarcEditorContainer
       onClose={onClose}
       match={match}
@@ -57,14 +56,14 @@ const renderQuickMarcEditorContainer = ({
       action={action}
       marcType={marcType}
       externalRecordPath={externalRecordPath}
-      history={history}
     />
-  </MemoryRouter>,
+  </Router>,
 ));
 
 describe('Given Quick Marc Editor Container', () => {
   let mutator;
   let instance;
+  let history;
 
   beforeEach(() => {
     instance = getInstance();
@@ -81,6 +80,21 @@ describe('Given Quick Marc Editor Container', () => {
       },
       locations: {
         GET: () => Promise.resolve(locations),
+      },
+    };
+    history = {
+      action: 'PUSH',
+      goBack: jest.fn(),
+      go: jest.fn(),
+      listen: jest.fn(),
+      push: jest.fn(),
+      block: jest.fn(),
+      createHref: jest.fn(),
+      replace: jest.fn(),
+      location: {
+        pathname: 'fake-path-name',
+        hash: 'fake-hash',
+        search: 'fake-search',
       },
     };
   });
@@ -101,10 +115,13 @@ describe('Given Quick Marc Editor Container', () => {
   });
 
   describe('when data cannot be fetched', () => {
-    it('should navigate back', async () => {
+    beforeEach(async () => {
+      mutator.quickMarcEditMarcRecord.GET = jest.fn(() => Promise.reject());
+
       await act(async () => {
         renderQuickMarcEditorContainer({
           mutator,
+          history,
           onClose: jest.fn(),
           action: QUICK_MARC_ACTIONS.DUPLICATE,
           wrapper: QuickMarcEditWrapper,
@@ -112,8 +129,14 @@ describe('Given Quick Marc Editor Container', () => {
       });
     });
 
-    expect(history.goBack).toHaveBeenCalled();
-  })
+    it('should navigate back', () => {
+      expect(history.goBack).toHaveBeenCalled();
+    });
+
+    it('should not display Quick Marc Editor', () => {
+      expect(screen.queryByTestId('quick-marc-editor')).not.toBeInTheDocument();
+    });
+  });
 
   it('should display Quick Marc Editor with fetched instance', async () => {
     let getByText;
