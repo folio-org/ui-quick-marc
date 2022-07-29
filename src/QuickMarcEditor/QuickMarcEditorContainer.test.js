@@ -66,6 +66,7 @@ describe('Given Quick Marc Editor Container', () => {
   let history;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     instance = getInstance();
     mutator = {
       externalInstanceApi: {
@@ -115,14 +116,15 @@ describe('Given Quick Marc Editor Container', () => {
   });
 
   describe('when data cannot be fetched', () => {
+    const onClose = jest.fn();
+
     beforeEach(async () => {
       mutator.quickMarcEditMarcRecord.GET = jest.fn(() => Promise.reject());
 
       await act(async () => {
         renderQuickMarcEditorContainer({
           mutator,
-          history,
-          onClose: jest.fn(),
+          onClose,
           action: QUICK_MARC_ACTIONS.DUPLICATE,
           wrapper: QuickMarcEditWrapper,
         });
@@ -130,7 +132,7 @@ describe('Given Quick Marc Editor Container', () => {
     });
 
     it('should navigate back', () => {
-      expect(history.goBack).toHaveBeenCalled();
+      expect(onClose).toHaveBeenCalled();
     });
 
     it('should not display Quick Marc Editor', () => {

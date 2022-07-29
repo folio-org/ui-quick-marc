@@ -63,6 +63,15 @@ const QuickMarcEditorContainer = ({
 
   const showCallout = useShowCallout();
 
+  const closeEditor = useCallback(() => {
+    if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
+      onClose(`${instanceId}/${externalId}`);
+    } else {
+      onClose(externalId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [externalId, onClose]);
+
   const externalRecordUrl = useMemo(() => {
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
       return `${externalRecordPath}/${instanceId}/${externalId}`;
@@ -99,19 +108,10 @@ const QuickMarcEditorContainer = ({
       })
       .catch(() => {
         showCallout({ messageId: 'ui-quick-marc.record.load.error', type: 'error' });
-        history.goBack();
+        closeEditor();
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [externalId]);
-
-  const closeEditor = useCallback(() => {
-    if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
-      onClose(`${instanceId}/${externalId}`);
-    } else {
-      onClose(externalId);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [externalId, onClose]);
 
   if (isLoading) {
     return (
