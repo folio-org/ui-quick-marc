@@ -1,5 +1,9 @@
 # Change history for ui-quick-marc
 
+## [5.1.1] (IN PROGRESS)
+
+* [UIQM-263](https://issues.folio.org/browse/UIQM-263) Cannot access a MARC bib because creator has been deleted. Handling a 404 error.
+
 ## [5.1.0](https://github.com/folio-org/ui-quick-marc/tree/v5.1.0) (2022-07-08)
 
 * [UIQM-213](https://issues.folio.org/browse/UIQM-213) New Permission: View MARC holdings record.
