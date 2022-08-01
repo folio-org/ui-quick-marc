@@ -9,12 +9,10 @@ import { useField } from 'react-final-form';
 
 import { LocationLookup } from '@folio/stripes/smart-components';
 
-import { QUICK_MARC_ACTIONS } from '../../constants';
 import { getLocationValue } from '../../utils';
 import { ContentField } from '../ContentField';
 
 const propTypes = {
-  action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
 };
@@ -22,7 +20,6 @@ const propTypes = {
 const LocationField = ({
   id,
   name,
-  action,
 }) => {
   const intl = useIntl();
   const { input, ...inputRest } = useField(name);
@@ -30,10 +27,10 @@ const LocationField = ({
   const [permanentLocation, setPermanentLocation] = useState(getLocationValue(input.value));
 
   useEffect(() => {
-    const locationValue = getLocationValue(input.value);
+    const locationSubfield = getLocationValue(input.value);
 
-    const newInputValue = locationValue
-      ? input.value.replace(locationValue, permanentLocation)
+    const newInputValue = locationSubfield
+      ? input.value.replace(locationSubfield, permanentLocation)
       : `${permanentLocation} ${input.value.trim()}`;
 
     if (locationLookupUsed.current) {
@@ -43,7 +40,7 @@ const LocationField = ({
     }
 
     locationLookupUsed.current = false;
-  }, [permanentLocation, input, action]);
+  }, [permanentLocation, input]);
 
   return (
     <>
