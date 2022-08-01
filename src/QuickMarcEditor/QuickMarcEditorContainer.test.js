@@ -1,10 +1,12 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
+import { Router } from 'react-router-dom';
+import { createMemoryHistory } from 'history';
 import {
   render,
   cleanup,
   act,
   fireEvent,
+  screen,
 } from '@testing-library/react';
 import faker from 'faker';
 
@@ -33,7 +35,7 @@ const record = {
   fields: [],
 };
 
-const locations = {};
+const locations = [];
 
 const externalRecordPath = '/external/record/path';
 
@@ -43,8 +45,9 @@ const renderQuickMarcEditorContainer = ({
   action,
   wrapper,
   marcType = MARC_TYPES.BIB,
+  history = createMemoryHistory(),
 }) => (render(
-  <MemoryRouter>
+  <Router history={history}>
     <QuickMarcEditorContainer
       onClose={onClose}
       match={match}
@@ -54,14 +57,16 @@ const renderQuickMarcEditorContainer = ({
       marcType={marcType}
       externalRecordPath={externalRecordPath}
     />
-  </MemoryRouter>,
+  </Router>,
 ));
 
 describe('Given Quick Marc Editor Container', () => {
   let mutator;
   let instance;
+  let history;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     instance = getInstance();
     mutator = {
       externalInstanceApi: {
@@ -76,6 +81,21 @@ describe('Given Quick Marc Editor Container', () => {
       },
       locations: {
         GET: () => Promise.resolve(locations),
+      },
+    };
+    history = {
+      action: 'PUSH',
+      goBack: jest.fn(),
+      go: jest.fn(),
+      listen: jest.fn(),
+      push: jest.fn(),
+      block: jest.fn(),
+      createHref: jest.fn(),
+      replace: jest.fn(),
+      location: {
+        pathname: 'fake-path-name',
+        hash: 'fake-hash',
+        search: 'fake-search',
       },
     };
   });
@@ -93,6 +113,31 @@ describe('Given Quick Marc Editor Container', () => {
     });
 
     expect(mutator.quickMarcEditMarcRecord.GET).toHaveBeenCalled();
+  });
+
+  describe('when data cannot be fetched', () => {
+    const onClose = jest.fn();
+
+    beforeEach(async () => {
+      mutator.quickMarcEditMarcRecord.GET = jest.fn(() => Promise.reject());
+
+      await act(async () => {
+        renderQuickMarcEditorContainer({
+          mutator,
+          onClose,
+          action: QUICK_MARC_ACTIONS.DUPLICATE,
+          wrapper: QuickMarcEditWrapper,
+        });
+      });
+    });
+
+    it('should navigate back', () => {
+      expect(onClose).toHaveBeenCalled();
+    });
+
+    it('should not display Quick Marc Editor', () => {
+      expect(screen.queryByTestId('quick-marc-editor')).not.toBeInTheDocument();
+    });
   });
 
   it('should display Quick Marc Editor with fetched instance', async () => {
