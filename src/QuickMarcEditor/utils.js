@@ -296,7 +296,7 @@ export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYP
 };
 
 export const getLocationValue = (value) => {
-  const matches = value?.match(/\$b\s([^$\s]+\/?)+/) || [];
+  const matches = value?.match(/\$b\s+([^$\s]+\/?)+/) || [];
 
   return matches[0] || '';
 };
