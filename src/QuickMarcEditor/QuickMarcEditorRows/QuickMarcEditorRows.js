@@ -252,7 +252,6 @@ const QuickMarcEditorRows = ({
                     <LocationField
                       id={`location-field-${idx}`}
                       name={`${name}.content`}
-                      action={action}
                     />
                   )}
 
