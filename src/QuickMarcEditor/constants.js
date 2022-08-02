@@ -13,6 +13,7 @@ export const LEADER_VALUES_FOR_POSITION = {
     5: ['a', 'c', 'd', 'n', 'p'],
     6: ['a', 'c', 'd', 'e', 'f', 'g', 'i', 'j', 'k', 'm', 'o', 'p', 'r', 't'],
     7: ['a', 'b', 'c', 'd', 'i', 'm', 's'],
+    8: ['\\', ' ', '\u00A0', 'a'],
   },
   [MARC_TYPES.HOLDINGS]: {
     5: ['c', 'd', 'n'],
