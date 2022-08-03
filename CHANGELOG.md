@@ -4,6 +4,7 @@
 
 * [UIQM-263](https://issues.folio.org/browse/UIQM-263) Cannot access a MARC bib because creator has been deleted. Handling a 404 error.
 * [UIQM-260](https://issues.folio.org/browse/UIQM-260) Fix Add MARC holdings:  852 field > cannot enter text 
+* [UIQM-267](https://issues.folio.org/browse/UIQM-267) MARC Holdings - Leader position 18 accept a space and \ as a valid value
 
 ## [5.1.0](https://github.com/folio-org/ui-quick-marc/tree/v5.1.0) (2022-07-08)
 
