@@ -239,5 +239,6 @@
   "record.physDescription.categoryOfMaterial.v": "Videorecording",
   "record.physDescription.categoryOfMaterial.z": "Unspecified",
 
-  "permanentLocationLookup": "Permanent location look-up"
+  "permanentLocationLookup": "Permanent location look-up",
+  "noPlugin": "No plugin is installed"
 }
