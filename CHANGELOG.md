@@ -4,9 +4,14 @@
 
 * [UIQM-259](https://issues.folio.org/browse/UIQM-259) Edit MARC authority: User does not get a notification that the record is edited has been deleted by another user.
 * [UIQM-258](https://issues.folio.org/browse/UIQM-258) Add fake link Authority button next to MARC fields.
+
+## [5.1.1](https://github.com/folio-org/ui-quick-marc/tree/v5.1.1) (2022-08-05)
+
+* [UIQM-263](https://issues.folio.org/browse/UIQM-263) Cannot access a MARC bib because creator has been deleted. Handling a 404 error.
 * [UIQM-260](https://issues.folio.org/browse/UIQM-260) Fix Add MARC holdings:  852 field > cannot enter text 
 * [UIQM-267](https://issues.folio.org/browse/UIQM-267) MARC Holdings - Leader position 18 accept a space and \ as a valid value
 * [UIQM-262](https://issues.folio.org/browse/UIQM-262) FE: Derive/Edit MARC bibliographic record: Improve Leader position 08 error message
+* [UIQM-265](https://issues.folio.org/browse/UIQM-265) Add/Edit MARC Holdings - Adding a new field above MARC 852 results in 852$b value populating the newly added field
 
 ## [5.1.0](https://github.com/folio-org/ui-quick-marc/tree/v5.1.0) (2022-07-08)
 
