@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useRef,
 } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -11,6 +12,9 @@ import {
   FormattedMessage,
   useIntl,
 } from 'react-intl';
+import {
+  defer,
+} from 'lodash';
 
 import {
   Pluggable,
@@ -60,19 +64,34 @@ const QuickMarcEditorRows = ({
 }) => {
   const intl = useIntl();
   const { initialValues } = useFormState();
+  const containerRef = useRef(null);
+  const indexOfNewRow = useRef(null);
+  const newRowRef = useRef(null);
 
   const isNewRow = useCallback((row) => {
     return !initialValues.records.find(record => record.id === row.id);
   }, [initialValues.records]);
 
   const addNewRow = useCallback(({ target }) => {
-    addRecord({ index: parseInt(target.dataset.index, 10) });
+    const index = parseInt(target.dataset.index, 10);
+
+    indexOfNewRow.current = index + 1;
+    addRecord({ index });
+    defer(() => {
+      newRowRef.current.focus();
+    });
   }, [addRecord]);
 
   const deleteRow = useCallback(({ target }) => {
     const index = parseInt(target.dataset.index, 10);
+    const recordsLength = parseInt(target.dataset.recordsLength, 10);
+    const isLastRowDeleted = index === recordsLength - 1;
+    const indexOfFocusableField = isLastRowDeleted ? index - 1 : index;
 
     deleteRecord({ index });
+    defer(() => {
+      containerRef.current.querySelector(`[name="records[${indexOfFocusableField}].tag"]`).focus();
+    });
 
     if (!isNewRow(fields[index])) {
       setDeletedRecords((prevDeletedRecords) => [
@@ -92,10 +111,20 @@ const QuickMarcEditorRows = ({
     });
   }, [moveRecord]);
 
+  const processTagRef = useCallback(ref => {
+    if (!ref) return;
+    const index = parseInt(ref.dataset.index, 10);
+
+    if (indexOfNewRow.current === index) {
+      newRowRef.current = ref;
+    }
+  }, [indexOfNewRow, newRowRef]);
+
   return (
     <div
       id="quick-marc-editor-rows"
       data-testid="quick-marc-editor-rows"
+      ref={containerRef}
     >
       <FieldArray name="records">
         {({ fields: records }) => (
@@ -175,6 +204,8 @@ const QuickMarcEditorRows = ({
 
                 <div className={styles.quickMarcEditorRowTag}>
                   <Field
+                    inputRef={processTagRef}
+                    data-index={idx}
                     dirty={false}
                     ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.field' })}
                     name={`${name}.tag`}
@@ -292,6 +323,7 @@ const QuickMarcEditorRows = ({
                         ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.deleteField' })}
                         data-testid={`data-test-remove-row-${idx}`}
                         data-index={idx}
+                        data-records-length={records.length}
                         icon="trash"
                         onClick={deleteRow}
                       />
