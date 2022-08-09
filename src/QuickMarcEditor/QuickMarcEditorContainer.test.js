@@ -63,7 +63,6 @@ const renderQuickMarcEditorContainer = ({
 describe('Given Quick Marc Editor Container', () => {
   let mutator;
   let instance;
-  let history;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -81,21 +80,6 @@ describe('Given Quick Marc Editor Container', () => {
       },
       locations: {
         GET: () => Promise.resolve(locations),
-      },
-    };
-    history = {
-      action: 'PUSH',
-      goBack: jest.fn(),
-      go: jest.fn(),
-      listen: jest.fn(),
-      push: jest.fn(),
-      block: jest.fn(),
-      createHref: jest.fn(),
-      replace: jest.fn(),
-      location: {
-        pathname: 'fake-path-name',
-        hash: 'fake-hash',
-        search: 'fake-search',
       },
     };
   });

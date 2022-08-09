@@ -5,8 +5,6 @@ import {
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 
-import { QUICK_MARC_ACTIONS } from '../../constants';
-
 import { LocationField } from './LocationField';
 
 const newLocation = { code: 'NEWLOCATION' };
@@ -26,19 +24,18 @@ jest.mock('@folio/stripes/smart-components', () => ({
   ),
 }));
 
-const getLocationField = (props = {}) => (
+const getLocationField = (initialValues) => (
   <Form
     onSubmit={jest.fn()}
     mutators={{ ...arrayMutators }}
     initialValues={{
       location: '$b KU/CC/DI/A $t 3 $h M3',
     }}
+    {...initialValues}
     render={() => (
       <LocationField
         id="id-1"
-        action={QUICK_MARC_ACTIONS.EDIT}
         name="location"
-        {...props}
       />
     )}
   />
@@ -58,28 +55,33 @@ describe('Given LocationField', () => {
   });
 
   describe('when selecting a new location', () => {
-    describe('when action is edit', () => {
+    describe('when location already exists', () => {
       it('should replace subfield $b with new location value in location field', () => {
-        const { getByText } = renderLocationField();
+        const {
+          getByText,
+          getByTestId,
+        } = renderLocationField();
 
         fireEvent.click(getByText('Select location'));
 
-        expect(getByText('$b NEWLOCATION $t 3 $h M3')).toBeDefined();
+        expect(getByTestId('id-1').value).toEqual('$b NEWLOCATION $t 3 $h M3');
       });
     });
 
-    describe('when action is create', () => {
+    describe('when location is empty', () => {
       it('should set subfield $b with new location value in location field', () => {
-        const { getByText } = renderLocationField({
-          action: QUICK_MARC_ACTIONS.CREATE,
-          input: {
-            value: '$a ',
+        const {
+          getByText,
+          getByTestId,
+        } = renderLocationField({
+          initialValues: {
+            location: '$a',
           },
         });
 
         fireEvent.click(getByText('Select location'));
 
-        expect(getByText('$b NEWLOCATION')).toBeDefined();
+        expect(getByTestId('id-1').value).toEqual('$b NEWLOCATION $a');
       });
     });
   });
