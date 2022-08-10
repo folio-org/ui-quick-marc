@@ -35,6 +35,9 @@ const propTypes = {
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
   locations: PropTypes.arrayOf(PropTypes.object).isRequired,
+  stripes: PropTypes.shape({
+    hasPerm: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 const QuickMarcEditWrapper = ({
@@ -46,6 +49,7 @@ const QuickMarcEditWrapper = ({
   marcType,
   locations,
   externalRecordPath,
+  stripes,
 }) => {
   const showCallout = useShowCallout();
   const location = useLocation();
@@ -133,6 +137,7 @@ const QuickMarcEditWrapper = ({
       locations={locations}
       httpError={httpError}
       externalRecordPath={externalRecordPath}
+      stripes={stripes}
     />
   );
 };

@@ -57,7 +57,10 @@ const QuickMarcEditorRows = ({
     moveRecord,
   },
   marcType,
+  stripes,
 }) => {
+  const showLinkToMarcAuthority = stripes.hasPerm('ui-marc-authorities.authority-record.view') &&
+    stripes.hasPerm('ui-quick-marc.quick-marc-authorities-editor.all');
   const intl = useIntl();
   const { initialValues } = useFormState();
 
@@ -296,11 +299,13 @@ const QuickMarcEditorRows = ({
                       />
                     )
                   }
-                  <Pluggable
-                    type="find-authority"
-                  >
-                    <FormattedMessage id="ui-quick-marc.noPlugin" />
-                  </Pluggable>
+                  {showLinkToMarcAuthority &&
+                    <Pluggable
+                      type="find-authority"
+                    >
+                      <FormattedMessage id="ui-quick-marc.noPlugin" />
+                    </Pluggable>
+                  }
                 </div>
               </div>
             );
@@ -314,6 +319,9 @@ const QuickMarcEditorRows = ({
 QuickMarcEditorRows.propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
   type: PropTypes.string.isRequired,
+  stripes: PropTypes.shape({
+    hasPerm: PropTypes.func.isRequired,
+  }).isRequired,
   subtype: PropTypes.string.isRequired,
   fields: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string.isRequired,
