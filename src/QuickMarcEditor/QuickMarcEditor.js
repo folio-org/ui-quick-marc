@@ -60,6 +60,7 @@ const QuickMarcEditor = ({
   locations,
   httpError,
   externalRecordPath,
+  stripes,
 }) => {
   const showCallout = useShowCallout();
   const [records, setRecords] = useState([]);
@@ -274,6 +275,7 @@ const QuickMarcEditor = ({
                   subtype={subtype}
                   setDeletedRecords={setDeletedRecords}
                   marcType={marcType}
+                  stripes={stripes}
                 />
               </Col>
             </Row>
@@ -304,6 +306,9 @@ QuickMarcEditor.propTypes = {
   instance: PropTypes.object,
   onClose: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
+  stripes: PropTypes.shape({
+    hasPerm: PropTypes.func.isRequired,
+  }).isRequired,
   submitting: PropTypes.bool,
   pristine: PropTypes.bool,
   initialValues: PropTypes.object.isRequired,

@@ -38,6 +38,9 @@ const propTypes = {
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   mutator: PropTypes.object.isRequired,
   match: ReactRouterPropTypes.match.isRequired,
+  stripes: PropTypes.shape({
+    hasPerm: PropTypes.func.isRequired,
+  }).isRequired,
   wrapper: PropTypes.func.isRequired,
 };
 
@@ -51,6 +54,7 @@ const QuickMarcEditorContainer = ({
   location,
   marcType,
   externalRecordPath,
+  stripes,
 }) => {
   const {
     externalId,
@@ -135,6 +139,7 @@ const QuickMarcEditorContainer = ({
       locations={locations}
       marcType={marcType}
       externalRecordPath={externalRecordUrl}
+      stripes={stripes}
     />
   );
 };
