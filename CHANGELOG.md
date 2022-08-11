@@ -4,6 +4,7 @@
 
 * [UIQM-259](https://issues.folio.org/browse/UIQM-259) Edit MARC authority: User does not get a notification that the record is edited has been deleted by another user.
 * [UIQM-258](https://issues.folio.org/browse/UIQM-258) Add fake link Authority button next to MARC fields.
+* [UIQM-271](https://issues.folio.org/browse/UIQM-271) Only display the MARC authority link when the user has the appropriate permissions.
 
 ## [5.1.1](https://github.com/folio-org/ui-quick-marc/tree/v5.1.1) (2022-08-05)
 
