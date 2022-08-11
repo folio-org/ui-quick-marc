@@ -26,6 +26,7 @@ import {
   dehydrateMarcRecordResponse,
   getCreateMarcRecordResponse,
   formatMarcRecordByQuickMarcAction,
+  addInternalFieldProperties,
 } from './utils';
 import { QUICK_MARC_ACTIONS } from './constants';
 
@@ -100,9 +101,10 @@ const QuickMarcEditorContainer = ({
           : dehydrateMarcRecordResponse(marcRecordResponse);
 
         const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, action);
+        const marcRecordWithInternalProps = addInternalFieldProperties(formattedMarcRecord);
 
         setInstance(instanceResponse);
-        setMarcRecord(formattedMarcRecord);
+        setMarcRecord(marcRecordWithInternalProps);
         setLocations(locationsResponse);
         setIsLoading(false);
       })

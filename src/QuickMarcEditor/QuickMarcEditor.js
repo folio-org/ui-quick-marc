@@ -35,11 +35,12 @@ import {
 } from '../common/constants';
 import {
   addNewRecord,
-  deleteRecordByIndex,
+  markDeletedRecordByIndex,
   reorderRecords,
   restoreRecordAtIndex,
   getCorrespondingMarcTag,
   getContentSubfieldValue,
+  deleteRecordByIndex,
 } from './utils';
 
 const spySubscription = { values: true };
@@ -64,7 +65,12 @@ const QuickMarcEditor = ({
   const showCallout = useShowCallout();
   const [records, setRecords] = useState([]);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
-  const [deletedRecords, setDeletedRecords] = useState([]);
+
+  const deletedRecords = useMemo(() => {
+    return records
+      .map((record, index) => ({ index, record }))
+      .filter(({ record }) => record._isDeleted);
+  }, [records]);
 
   const leader = records[0];
   const type = leader?.content?.[6];
@@ -176,7 +182,6 @@ const QuickMarcEditor = ({
 
   const restoreDeletedRecords = () => {
     deletedRecords.forEach(mutators.restoreRecord);
-    setDeletedRecords([]);
   };
 
   const onConfirmModal = (e) => {
@@ -272,7 +277,6 @@ const QuickMarcEditor = ({
                   mutators={mutators}
                   type={type}
                   subtype={subtype}
-                  setDeletedRecords={setDeletedRecords}
                   marcType={marcType}
                 />
               </Col>
@@ -332,6 +336,11 @@ export default stripesFinalForm({
 
       tools.changeValue(state, 'records', () => records);
     },
+    markRecordDeleted: ([{ index }], state, tools) => {
+      const records = markDeletedRecordByIndex(index, state);
+
+      tools.changeValue(state, 'records', () => records);
+    },
     deleteRecord: ([{ index }], state, tools) => {
       const records = deleteRecordByIndex(index, state);
 
@@ -342,10 +351,14 @@ export default stripesFinalForm({
 
       tools.changeValue(state, 'records', () => records);
     },
-    restoreRecord: ([{ index, record }], state, tools) => {
-      const records = restoreRecordAtIndex(index, record, state);
+    restoreRecord: ([{ index }], state, tools) => {
+      const records = restoreRecordAtIndex(index, state);
 
       tools.changeValue(state, 'records', () => records);
     },
+  },
+  subscription: {
+    dirty: true,
+    dirtyFields: true,
   },
 })(QuickMarcEditor);

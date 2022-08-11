@@ -11,10 +11,9 @@ import {
   FormattedMessage,
   useIntl,
 } from 'react-intl';
+import isEqual from 'lodash/isEqual';
 
-import {
-  Pluggable,
-} from '@folio/stripes/core';
+import { Pluggable } from '@folio/stripes/core';
 import {
   TextField,
   IconButton,
@@ -50,9 +49,9 @@ const QuickMarcEditorRows = ({
   fields,
   type,
   subtype,
-  setDeletedRecords,
   mutators: {
     addRecord,
+    markRecordDeleted,
     deleteRecord,
     moveRecord,
   },
@@ -72,18 +71,12 @@ const QuickMarcEditorRows = ({
   const deleteRow = useCallback(({ target }) => {
     const index = parseInt(target.dataset.index, 10);
 
-    deleteRecord({ index });
-
-    if (!isNewRow(fields[index])) {
-      setDeletedRecords((prevDeletedRecords) => [
-        ...prevDeletedRecords,
-        {
-          index,
-          record: fields[index],
-        },
-      ]);
+    if (isNewRow(fields[index])) {
+      deleteRecord({ index });
+    } else {
+      markRecordDeleted({ index });
     }
-  }, [fields, deleteRecord, setDeletedRecords, isNewRow]);
+  }, [fields, deleteRecord, markRecordDeleted, isNewRow]);
 
   const moveRow = useCallback(({ target }) => {
     moveRecord({
@@ -92,17 +85,40 @@ const QuickMarcEditorRows = ({
     });
   }, [moveRecord]);
 
+  const areRecordsEqual = useCallback((aArray, bArray) => {
+    // this function will deep compare MARC fields to determine if form is dirty or not
+    // if we face issues when form is dirty or clean when it's not supposed to be - look here
+    if (!Array.isArray(aArray) || !Array.isArray(bArray)) {
+      return false;
+    }
+
+    if (aArray.length !== bArray.length) {
+      return false;
+    }
+
+    return aArray.every((a, index) => {
+      return isEqual(a, bArray[index]);
+    });
+  }, []);
+
   return (
     <div
       id="quick-marc-editor-rows"
       data-testid="quick-marc-editor-rows"
     >
-      <FieldArray name="records">
+      <FieldArray
+        name="records"
+        isEqual={areRecordsEqual}
+      >
         {({ fields: records }) => (
           records.map((name, idx) => {
             const recordRow = fields[idx];
 
             if (!recordRow) {
+              return null;
+            }
+
+            if (recordRow._isDeleted) {
               return null;
             }
 
@@ -321,11 +337,12 @@ QuickMarcEditorRows.propTypes = {
     indicators: PropTypes.arrayOf(PropTypes.string),
     isProtected: PropTypes.bool.isRequired,
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+    _isDeleted: PropTypes.bool,
   })),
-  setDeletedRecords: PropTypes.func.isRequired,
   mutators: PropTypes.shape({
     addRecord: PropTypes.func.isRequired,
     deleteRecord: PropTypes.func.isRequired,
+    markRecordDeleted: PropTypes.func.isRequired,
     moveRecord: PropTypes.func.isRequired,
   }),
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
