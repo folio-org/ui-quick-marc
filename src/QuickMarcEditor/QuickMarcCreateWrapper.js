@@ -32,6 +32,9 @@ const propTypes = {
   locations: PropTypes.object.isRequired,
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   mutator: PropTypes.object.isRequired,
+  stripes: PropTypes.shape({
+    hasPerm: PropTypes.func.isRequired,
+  }).isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
@@ -45,6 +48,7 @@ const QuickMarcCreateWrapper = ({
   location,
   marcType,
   locations,
+  stripes,
 }) => {
   const showCallout = useShowCallout();
   const [httpError, setHttpError] = useState(null);
@@ -104,6 +108,7 @@ const QuickMarcCreateWrapper = ({
       action={action}
       marcType={marcType}
       httpError={httpError}
+      stripes={stripes}
     />
   );
 };
