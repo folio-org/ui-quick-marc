@@ -38,6 +38,9 @@ const record = {
 const locations = [];
 
 const externalRecordPath = '/external/record/path';
+const stripesMock = {
+  hasPerm: jest.fn(),
+};
 
 const renderQuickMarcEditorContainer = ({
   onClose,
@@ -46,6 +49,7 @@ const renderQuickMarcEditorContainer = ({
   wrapper,
   marcType = MARC_TYPES.BIB,
   history = createMemoryHistory(),
+  stripes = stripesMock,
 }) => (render(
   <Router history={history}>
     <QuickMarcEditorContainer
@@ -56,6 +60,7 @@ const renderQuickMarcEditorContainer = ({
       action={action}
       marcType={marcType}
       externalRecordPath={externalRecordPath}
+      stripes={stripes}
     />
   </Router>,
 ));

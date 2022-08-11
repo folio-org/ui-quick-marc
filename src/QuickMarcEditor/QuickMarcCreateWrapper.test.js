@@ -119,12 +119,17 @@ const locations = [{
   code: 'KU/CC/DI/A',
 }];
 
+const stripesMock = {
+  hasPerm: jest.fn(),
+};
+
 const renderQuickMarcCreateWrapper = ({
   instance,
   onClose = noop,
   mutator,
   history,
   location,
+  stripes = stripesMock,
 }) => (render(
   <MemoryRouter>
     <QuickMarcCreateWrapper
@@ -137,6 +142,7 @@ const renderQuickMarcCreateWrapper = ({
       location={location}
       marcType={MARC_TYPES.HOLDINGS}
       locations={locations}
+      stripes={stripes}
     />
   </MemoryRouter>,
 ));

@@ -82,6 +82,10 @@ const initialValues = {
   }],
 };
 
+const stripesMock = {
+  hasPerm: jest.fn(),
+};
+
 const renderQuickMarcEditor = (props) => (render(
   <MemoryRouter>
     <QuickMarcEditor
@@ -97,6 +101,7 @@ const renderQuickMarcEditor = (props) => (render(
       initialValues={initialValues}
       marcType={MARC_TYPES.BIB}
       locations={locations}
+      stripes={stripesMock}
       {...props}
     />
   </MemoryRouter>,

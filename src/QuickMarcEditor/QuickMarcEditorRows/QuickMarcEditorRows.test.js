@@ -15,6 +15,11 @@ import * as utils from './utils';
 import { QUICK_MARC_ACTIONS } from '../constants';
 import { MARC_TYPES } from '../../common/constants';
 
+jest.mock('@folio/stripes/core', () => ({
+  ...jest.requireActual('@folio/stripes/core'),
+  Pluggable: jest.fn(({ type }) => <div data-testid={type}>Pluggable</div>),
+}));
+
 const values = [
   {
     id: '1',
@@ -61,6 +66,9 @@ const addRecordMock = jest.fn();
 const deleteRecordMock = jest.fn();
 const moveRecordMock = jest.fn();
 const setDeletedRecordsMock = jest.fn();
+const stripesMock = {
+  hasPerm: () => true,
+};
 
 const renderQuickMarcEditorRows = (props = {}) => (render(
   <MemoryRouter>
@@ -84,6 +92,7 @@ const renderQuickMarcEditorRows = (props = {}) => (render(
           }}
           subtype="test"
           setDeletedRecords={setDeletedRecordsMock}
+          stripes={stripesMock}
           {...props}
         />
       )}
@@ -223,6 +232,18 @@ describe('Given QuickMarcEditorRows', () => {
 
         expect(queryByTestId('quick-marc-protected-field-popover')).toBeNull();
       });
+    });
+  });
+
+  describe('when there are no required permissions', () => {
+    it('should not display the `find-authority` plugin', () => {
+      const { queryByTestId } = renderQuickMarcEditorRows({
+        stripes: {
+          hasPerm: () => false,
+        },
+      });
+
+      expect(queryByTestId('find-authority')).not.toBeInTheDocument();
     });
   });
 });

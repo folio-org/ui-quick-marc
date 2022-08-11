@@ -242,6 +242,10 @@ const locations = [{
   code: 'KU/CC/DI/A',
 }];
 
+const stripesMock = {
+  hasPerm: jest.fn(),
+};
+
 const renderQuickMarcEditWrapper = ({
   instance,
   mutator,
@@ -259,6 +263,7 @@ const renderQuickMarcEditWrapper = ({
       location={{}}
       locations={locations}
       externalRecordPath="/some-record"
+      stripes={stripesMock}
       {...props}
     />
   </MemoryRouter>,

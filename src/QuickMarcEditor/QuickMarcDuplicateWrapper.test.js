@@ -159,12 +159,17 @@ const record = {
   fields: [],
 };
 
+const stripesMock = {
+  hasPerm: jest.fn(),
+};
+
 const renderQuickMarcDuplicateWrapper = ({
   instance,
   onClose = noop,
   mutator,
   history,
   location,
+  stripes = stripesMock,
 }) => (render(
   <MemoryRouter>
     <QuickMarcDuplicateWrapper
@@ -176,6 +181,7 @@ const renderQuickMarcDuplicateWrapper = ({
       marcType="bib"
       history={history}
       location={location}
+      stripes={stripes}
     />
   </MemoryRouter>,
 ));

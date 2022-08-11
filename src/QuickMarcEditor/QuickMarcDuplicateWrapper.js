@@ -34,6 +34,9 @@ const propTypes = {
   location: ReactRouterPropTypes.location.isRequired,
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   mutator: PropTypes.object.isRequired,
+  stripes: PropTypes.shape({
+    hasPerm: PropTypes.func.isRequired,
+  }).isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
@@ -46,6 +49,7 @@ const QuickMarcDuplicateWrapper = ({
   history,
   location,
   marcType,
+  stripes,
 }) => {
   const showCallout = useShowCallout();
   const [httpError, setHttpError] = useState(null);
@@ -113,6 +117,7 @@ const QuickMarcDuplicateWrapper = ({
       action={action}
       marcType={marcType}
       httpError={httpError}
+      stripes={stripes}
     />
   );
 };
