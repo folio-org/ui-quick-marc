@@ -151,6 +151,6 @@
     "react-router-dom": "^5.2.0"
   },
   "optionalDependencies": {
-    "@folio/plugin-find-authority": "^0.1.0"
+    "@folio/plugin-find-authority": "^1.0.0"
   }
 }
