@@ -357,8 +357,4 @@ export default stripesFinalForm({
       tools.changeValue(state, 'records', () => records);
     },
   },
-  subscription: {
-    dirty: true,
-    dirtyFields: true,
-  },
 })(QuickMarcEditor);

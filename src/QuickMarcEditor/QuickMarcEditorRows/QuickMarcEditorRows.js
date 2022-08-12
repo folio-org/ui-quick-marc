@@ -103,22 +103,6 @@ const QuickMarcEditorRows = ({
     });
   }, [moveRecord]);
 
-  const areRecordsEqual = useCallback((aArray, bArray) => {
-    // this function will deep compare MARC fields to determine if form is dirty or not
-    // if we face issues when form is dirty or clean when it's not supposed to be - look here
-    if (!Array.isArray(aArray) || !Array.isArray(bArray)) {
-      return false;
-    }
-
-    if (aArray.length !== bArray.length) {
-      return false;
-    }
-
-    return aArray.every((a, index) => {
-      return isEqual(a, bArray[index]);
-    });
-  }, []);
-
   const processTagRef = useCallback(ref => {
     if (!ref) return;
     const index = parseInt(ref.dataset.index, 10);
@@ -136,7 +120,7 @@ const QuickMarcEditorRows = ({
     >
       <FieldArray
         name="records"
-        isEqual={areRecordsEqual}
+        isEqual={isEqual}
       >
         {({ fields: records }) => (
           records.map((name, idx) => {
