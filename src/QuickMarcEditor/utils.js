@@ -192,6 +192,16 @@ export const formatMarcRecordByQuickMarcAction = (marcRecord, action) => {
   return marcRecord;
 };
 
+export const addInternalFieldProperties = (marcRecord) => {
+  return {
+    ...marcRecord,
+    records: marcRecord.records.map(record => ({
+      ...record,
+      _isDeleted: false,
+    })),
+  };
+};
+
 export const hydrateMarcRecord = marcRecord => ({
   ...marcRecord,
   leader: marcRecord.records[0].content,
@@ -473,6 +483,17 @@ export const deleteRecordByIndex = (index, state) => {
   return records;
 };
 
+export const markDeletedRecordByIndex = (index, state) => {
+  const records = [...state.formState.values.records];
+
+  records[index] = {
+    ...records[index],
+    _isDeleted: true,
+  };
+
+  return records;
+};
+
 export const reorderRecords = (index, indexToSwitch, state) => {
   const records = [...state.formState.values.records];
 
@@ -481,12 +502,24 @@ export const reorderRecords = (index, indexToSwitch, state) => {
   return records;
 };
 
-export const restoreRecordAtIndex = (index, record, state) => {
+export const restoreRecordAtIndex = (index, state) => {
   const records = [...state.formState.values.records];
 
-  records.splice(index, 0, record);
+  records[index] = {
+    ...records[index],
+    _isDeleted: false,
+  };
 
   return records;
+};
+
+export const removeDeletedRecords = (formValues) => {
+  const { records } = formValues;
+
+  return {
+    ...formValues,
+    records: records.filter(record => !record._isDeleted),
+  };
 };
 
 export const removeFieldsForDuplicate = (formValues) => {

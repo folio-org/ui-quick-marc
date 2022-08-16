@@ -117,6 +117,7 @@ describe('QuickMarcEditor utils', () => {
               {
                 tag: '011',
                 content: '$a fss $b asd',
+                _isDeleted: true,
               },
               {
                 tag: '012',
@@ -128,13 +129,9 @@ describe('QuickMarcEditor utils', () => {
       };
 
       const insertIndex = 1;
-      const insertedRecord = {
-        tag: '013',
-        content: '$a fss $b asd',
-      };
-      const newRecords = utils.restoreRecordAtIndex(insertIndex, insertedRecord, state);
+      const newRecords = utils.restoreRecordAtIndex(insertIndex, state);
 
-      expect(newRecords[1]).toBe(insertedRecord);
+      expect(newRecords[1]._isDeleted).toBe(false);
     });
   });
 

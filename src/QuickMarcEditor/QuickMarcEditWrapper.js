@@ -24,6 +24,7 @@ import {
   autopopulateSubfieldSection,
   cleanBytesFields,
   parseHttpError,
+  removeDeletedRecords,
 } from './utils';
 
 const propTypes = {
@@ -54,8 +55,9 @@ const QuickMarcEditWrapper = ({
   const searchParams = new URLSearchParams(location.search);
 
   const onSubmit = useCallback(async (formValues) => {
-    const controlFieldErrorMessage = checkControlFieldLength(formValues);
-    const validationErrorMessage = validateMarcRecord(formValues, initialValues, marcType, locations);
+    const formValuesToSave = removeDeletedRecords(formValues);
+    const controlFieldErrorMessage = checkControlFieldLength(formValuesToSave);
+    const validationErrorMessage = validateMarcRecord(formValuesToSave, initialValues, marcType, locations);
     const errorMessage = controlFieldErrorMessage || validationErrorMessage;
 
     if (errorMessage) {
@@ -67,7 +69,7 @@ const QuickMarcEditWrapper = ({
       return null;
     }
 
-    const autopopulatedFormWithIndicators = autopopulateIndicators(formValues);
+    const autopopulatedFormWithIndicators = autopopulateIndicators(formValuesToSave);
     const autopopulatedFormWithSubfields = autopopulateSubfieldSection(
       autopopulatedFormWithIndicators,
       initialValues,
