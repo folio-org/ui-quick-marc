@@ -12,13 +12,10 @@ import {
   FormattedMessage,
   useIntl,
 } from 'react-intl';
-import {
-  defer,
-} from 'lodash';
+import isEqual from 'lodash/isEqual';
+import defer from 'lodash/defer';
 
-import {
-  Pluggable,
-} from '@folio/stripes/core';
+import { Pluggable } from '@folio/stripes/core';
 import {
   TextField,
   IconButton,
@@ -54,9 +51,9 @@ const QuickMarcEditorRows = ({
   fields,
   type,
   subtype,
-  setDeletedRecords,
   mutators: {
     addRecord,
+    markRecordDeleted,
     deleteRecord,
     moveRecord,
   },
@@ -88,21 +85,16 @@ const QuickMarcEditorRows = ({
     const isLastRowDeleted = index === recordsLength - 1;
     const indexOfFocusableField = isLastRowDeleted ? index - 1 : index;
 
-    deleteRecord({ index });
+    if (isNewRow(fields[index])) {
+      deleteRecord({ index });
+    } else {
+      markRecordDeleted({ index });
+    }
+
     defer(() => {
       containerRef.current.querySelector(`[name="records[${indexOfFocusableField}].tag"]`).focus();
     });
-
-    if (!isNewRow(fields[index])) {
-      setDeletedRecords((prevDeletedRecords) => [
-        ...prevDeletedRecords,
-        {
-          index,
-          record: fields[index],
-        },
-      ]);
-    }
-  }, [fields, deleteRecord, setDeletedRecords, isNewRow]);
+  }, [fields, deleteRecord, markRecordDeleted, isNewRow]);
 
   const moveRow = useCallback(({ target }) => {
     moveRecord({
@@ -126,12 +118,19 @@ const QuickMarcEditorRows = ({
       data-testid="quick-marc-editor-rows"
       ref={containerRef}
     >
-      <FieldArray name="records">
+      <FieldArray
+        name="records"
+        isEqual={isEqual}
+      >
         {({ fields: records }) => (
           records.map((name, idx) => {
             const recordRow = fields[idx];
 
             if (!recordRow) {
+              return null;
+            }
+
+            if (recordRow._isDeleted) {
               return null;
             }
 
@@ -353,11 +352,12 @@ QuickMarcEditorRows.propTypes = {
     indicators: PropTypes.arrayOf(PropTypes.string),
     isProtected: PropTypes.bool.isRequired,
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+    _isDeleted: PropTypes.bool,
   })),
-  setDeletedRecords: PropTypes.func.isRequired,
   mutators: PropTypes.shape({
     addRecord: PropTypes.func.isRequired,
     deleteRecord: PropTypes.func.isRequired,
+    markRecordDeleted: PropTypes.func.isRequired,
     moveRecord: PropTypes.func.isRequired,
   }),
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,

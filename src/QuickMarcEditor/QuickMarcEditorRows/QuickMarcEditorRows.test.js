@@ -7,9 +7,7 @@ import {
 } from '@testing-library/react';
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
-import {
-  defer,
-} from 'lodash';
+import defer from 'lodash/defer';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
@@ -18,12 +16,9 @@ import * as utils from './utils';
 import { QUICK_MARC_ACTIONS } from '../constants';
 import { MARC_TYPES } from '../../common/constants';
 
-jest.mock('lodash', () => ({
-  ...jest.requireActual('lodash'),
-  defer: jest.fn(),
-}));
+jest.mock('lodash/defer', () => jest.fn());
 
-const values = [
+const initValues = [
   {
     id: '1',
     tag: '001',
@@ -65,10 +60,16 @@ const values = [
   },
 ];
 
-const addRecordMock = jest.fn();
+let values = [...initValues];
+const addRecordMock = jest.fn().mockImplementation(({ index }) => {
+  values.splice(index, 0, {
+    id: 'new-1',
+    content: '',
+  });
+});
 const deleteRecordMock = jest.fn();
 const moveRecordMock = jest.fn();
-const setDeletedRecordsMock = jest.fn();
+const markRecordDeletedMock = jest.fn();
 
 const renderQuickMarcEditorRows = (props = {}) => (render(
   <MemoryRouter>
@@ -76,7 +77,7 @@ const renderQuickMarcEditorRows = (props = {}) => (render(
       onSubmit={jest.fn()}
       mutators={arrayMutators}
       initialValues={{
-        records: values,
+        records: initValues,
       }}
       render={() => (
         <QuickMarcEditorRows
@@ -88,10 +89,10 @@ const renderQuickMarcEditorRows = (props = {}) => (render(
           mutators={{
             addRecord: addRecordMock,
             deleteRecord: deleteRecordMock,
+            markRecordDeleted: markRecordDeletedMock,
             moveRecord: moveRecordMock,
           }}
           subtype="test"
-          setDeletedRecords={setDeletedRecordsMock}
           {...props}
         />
       )}
@@ -101,8 +102,10 @@ const renderQuickMarcEditorRows = (props = {}) => (render(
 
 describe('Given QuickMarcEditorRows', () => {
   beforeEach(() => {
+    values = [...initValues];
     jest.clearAllMocks();
   });
+
   afterEach(cleanup);
 
   it('should display row for each record value', () => {
@@ -162,7 +165,7 @@ describe('Given QuickMarcEditorRows', () => {
     });
 
     describe('and deleting a new row and saving', () => {
-      it('should mark the row as deleted', () => {
+      it('should not mark the row as deleted', () => {
         const {
           getAllByRole,
           getByTestId,
@@ -175,17 +178,18 @@ describe('Given QuickMarcEditorRows', () => {
 
         fireEvent.click(addButton);
         // delete button next to added row
-        const deleteButton = getAllByRole('button', { name: 'ui-quick-marc.record.addField' })[1];
+        const deleteButton = getAllByRole('button', { name: 'ui-quick-marc.record.deleteField' })[0];
 
         fireEvent.click(deleteButton);
 
-        expect(setDeletedRecordsMock).not.toHaveBeenCalled();
+        expect(markRecordDeletedMock).not.toHaveBeenCalled();
+        expect(deleteRecordMock).toHaveBeenCalled();
       });
     });
   });
 
   describe('when deleting rows', () => {
-    it('should call setDeletedRecords 2 times', () => {
+    it('should call markRecordDeleted 2 times', () => {
       const { getAllByTestId } = renderQuickMarcEditorRows();
 
       const testIdx1 = 1;
@@ -196,17 +200,7 @@ describe('Given QuickMarcEditorRows', () => {
       fireEvent.click(deleteIcon1[1]);
       fireEvent.click(deleteIcon2[1]);
 
-      expect(setDeletedRecordsMock).toHaveBeenCalledTimes(2);
-    });
-
-    it('should handle deleteRecord', () => {
-      const { getAllByRole } = renderQuickMarcEditorRows();
-
-      const [deleteButton] = getAllByRole('button', { name: 'ui-quick-marc.record.deleteField' });
-
-      fireEvent.click(deleteButton);
-
-      expect(deleteRecordMock).toHaveBeenCalled();
+      expect(markRecordDeletedMock).toHaveBeenCalledTimes(2);
     });
 
     it('should focus the `tag` field that is located after the deleted field with a delay', async () => {
