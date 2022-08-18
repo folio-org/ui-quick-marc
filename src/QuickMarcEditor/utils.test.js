@@ -1364,7 +1364,6 @@ describe('QuickMarcEditor utils', () => {
       }, {
         tag: '852',
         id: uuid(),
-        content: '$a',
         indicators: ['\\', '\\'],
       }, {
         tag: '999',

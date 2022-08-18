@@ -92,7 +92,6 @@ const getCreateMarcRecordDefaultFields = (instanceRecord) => {
     }
 
     if (tag === '852') {
-      field.content = '$a';
       field.indicators = ['\\', '\\'];
     }
 
