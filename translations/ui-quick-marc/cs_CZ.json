@@ -224,5 +224,5 @@
     "record.error.leader.initial.invalidPositionValue": "Záznam nelze uložit. Nelze upravit 008 z důvodu neplatných {positions}. Aktualizujte prosím {positions} tohoto záznamu. Platné hodnoty jsou uvedeny v {link}",
     "record.error.controlField.multiple": "Záznam nelze uložit. Může mít pouze jeden záznam MARC 001.",
     "record.save.error.notFound": "Tento záznam byl smazán jiným uživatelem a nemůžete jej proto již  upravovat. Stisknutím tlačítka Zrušit se vrátíte na předchozí stránku.",
-    "noPlugin": "No plugin is installed"
+    "noPlugin": "Není nainstalován žádný plugin"
 }
