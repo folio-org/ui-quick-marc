@@ -223,6 +223,6 @@
     "record.error.leader.forbiddenBytes.authority": "O registro não pode ser salvo. Por favor, verifique o Líder. Apenas as posições 5, 17, 18 podem ser editadas no campo Líder.",
     "record.error.leader.initial.invalidPositionValue": "O registro não pode ser salvo. Não é possível editar o campo 008 pois as {positions} são inválidas. Atualize as {positions} deste registro. Os valores válidos estão listados em {link}",
     "record.error.controlField.multiple": "O registro não pode ser salvo. Só pode ter um campo MARC 001.",
-    "record.save.error.notFound": "This record has been deleted by another user. You can no longer edit this record, hit the cancel button to return to the previous page.",
-    "noPlugin": "No plugin is installed"
+    "record.save.error.notFound": "Este registro foi excluído por outro usuário. Você não pode mais editar este registro, pressione o botão Cancelar para voltar à página anterior.",
+    "noPlugin": "Nenhum plug-in está instalado"
 }
