@@ -184,6 +184,40 @@ const QuickMarcEditorRows = ({
                   }
                 </div>
 
+                <div className={styles.quickMarcEditorActions}>
+                  {
+                    !withAddRowAction && (
+                      <IconButton
+                        className="quickMarcEditorAddField"
+                        title={intl.formatMessage({ id: 'ui-quick-marc.record.addField' })}
+                        ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.addField' })}
+                        data-test-add-row
+                        data-index={idx}
+                        icon="plus-sign"
+                        onClick={addNewRow}
+                      />
+                    )
+                  }
+                  {
+                    !withDeleteRowAction && (
+                      <IconButton
+                        title={intl.formatMessage({ id: 'ui-quick-marc.record.deleteField' })}
+                        ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.deleteField' })}
+                        data-testid={`data-test-remove-row-${idx}`}
+                        data-index={idx}
+                        data-records-length={records.length}
+                        icon="trash"
+                        onClick={deleteRow}
+                      />
+                    )
+                  }
+                  <Pluggable
+                    type="find-authority"
+                  >
+                    <FormattedMessage id="ui-quick-marc.noPlugin" />
+                  </Pluggable>
+                </div>
+
                 {
                   isMARCFieldProtections && (
                     <div className={styles.quickMarcEditorRowInfoPopover}>
@@ -298,40 +332,6 @@ const QuickMarcEditorRows = ({
                       />
                     )
                   }
-                </div>
-
-                <div className={styles.quickMarcEditorActions}>
-                  {
-                    !withAddRowAction && (
-                      <IconButton
-                        className="quickMarcEditorAddField"
-                        title={intl.formatMessage({ id: 'ui-quick-marc.record.addField' })}
-                        ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.addField' })}
-                        data-test-add-row
-                        data-index={idx}
-                        icon="plus-sign"
-                        onClick={addNewRow}
-                      />
-                    )
-                  }
-                  {
-                    !withDeleteRowAction && (
-                      <IconButton
-                        title={intl.formatMessage({ id: 'ui-quick-marc.record.deleteField' })}
-                        ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.deleteField' })}
-                        data-testid={`data-test-remove-row-${idx}`}
-                        data-index={idx}
-                        data-records-length={records.length}
-                        icon="trash"
-                        onClick={deleteRow}
-                      />
-                    )
-                  }
-                  <Pluggable
-                    type="find-authority"
-                  >
-                    <FormattedMessage id="ui-quick-marc.noPlugin" />
-                  </Pluggable>
                 </div>
               </div>
             );

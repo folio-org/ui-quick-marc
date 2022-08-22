@@ -15,6 +15,7 @@
 * [UIQM-267](https://issues.folio.org/browse/UIQM-267) MARC Holdings - Leader position 18 accept a space and \ as a valid value
 * [UIQM-262](https://issues.folio.org/browse/UIQM-262) FE: Derive/Edit MARC bibliographic record: Improve Leader position 08 error message
 * [UIQM-265](https://issues.folio.org/browse/UIQM-265) Add/Edit MARC Holdings - Adding a new field above MARC 852 results in 852$b value populating the newly added field
+* [UIQM-256](https://issues.folio.org/browse/UIQM-256) Change field level actions display
 
 ## [5.1.0](https://github.com/folio-org/ui-quick-marc/tree/v5.1.0) (2022-07-08)
 
