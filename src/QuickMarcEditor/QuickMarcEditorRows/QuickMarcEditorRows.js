@@ -211,11 +211,6 @@ const QuickMarcEditorRows = ({
                       />
                     )
                   }
-                  <Pluggable
-                    type="find-authority"
-                  >
-                    <FormattedMessage id="ui-quick-marc.noPlugin" />
-                  </Pluggable>
                 </div>
 
                 {
@@ -332,6 +327,14 @@ const QuickMarcEditorRows = ({
                       />
                     )
                   }
+                </div>
+
+                <div className={styles.quickMarcEditorActions}>
+                  <Pluggable
+                    type="find-authority"
+                  >
+                    <FormattedMessage id="ui-quick-marc.noPlugin" />
+                  </Pluggable>
                 </div>
               </div>
             );
