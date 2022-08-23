@@ -1,6 +1,6 @@
 # Change history for ui-quick-marc
 
-## [5.1.2] (IN PROGRESS)
+## [5.1.2](https://github.com/folio-org/ui-quick-marc/tree/v5.1.2) (2022-08-23)
 
 * [UIQM-266](https://issues.folio.org/browse/UIQM-266) Edit quickMARC: Undoing a delete field is not restored in the same position.
 * [UIQM-269](https://issues.folio.org/browse/UIQM-269) Remove default $a subfield at "852" field when user created "MARC Holdings" record
