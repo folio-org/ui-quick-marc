@@ -81,9 +81,7 @@ const QuickMarcEditorRows = ({
 
   const deleteRow = useCallback(({ target }) => {
     const index = parseInt(target.dataset.index, 10);
-    const recordsLength = parseInt(target.dataset.recordsLength, 10);
-    const isLastRowDeleted = index === recordsLength - 1;
-    const indexOfFocusableField = isLastRowDeleted ? index - 1 : index;
+    const nextRowIndex = index + 1;
 
     if (isNewRow(fields[index])) {
       deleteRecord({ index });
@@ -92,7 +90,7 @@ const QuickMarcEditorRows = ({
     }
 
     defer(() => {
-      containerRef.current.querySelector(`[name="records[${indexOfFocusableField}].tag"]`).focus();
+      containerRef.current.querySelector(`[name="${nextRowIndex}.delete"]`)?.focus();
     });
   }, [fields, deleteRecord, markRecordDeleted, isNewRow]);
 
@@ -203,6 +201,7 @@ const QuickMarcEditorRows = ({
                       <IconButton
                         title={intl.formatMessage({ id: 'ui-quick-marc.record.deleteField' })}
                         ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.deleteField' })}
+                        name={`${idx}.delete`}
                         data-testid={`data-test-remove-row-${idx}`}
                         data-index={idx}
                         data-records-length={records.length}
