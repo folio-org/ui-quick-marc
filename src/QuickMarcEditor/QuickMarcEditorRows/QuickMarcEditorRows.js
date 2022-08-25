@@ -114,6 +114,7 @@ const QuickMarcEditorRows = ({
 
   const processSubfieldFocus = useCallback(({ target }) => {
     const end = target.value.length;
+
     target.setSelectionRange(end, end);
   }, []);
 

@@ -173,8 +173,8 @@ describe('Given QuickMarcEditorRows', () => {
 
         fireEvent.focus(subfield);
         expect(spySetSelectionRange).toHaveBeenCalledWith(valueLength, valueLength);
-      })
-    })
+      });
+    });
 
     describe('and deleting a new row and saving', () => {
       it('should not mark the row as deleted', () => {

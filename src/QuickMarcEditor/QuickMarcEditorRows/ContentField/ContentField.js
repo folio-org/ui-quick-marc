@@ -35,7 +35,7 @@ export const ContentField = ({
     if (ref.current && onProcessSubfieldRef) {
       onProcessSubfieldRef(ref.current);
     }
-  }, [ref]);
+  }, [ref, onProcessSubfieldRef]);
 
   return (
     <TextArea
