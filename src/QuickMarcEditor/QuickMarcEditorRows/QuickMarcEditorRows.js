@@ -112,12 +112,6 @@ const QuickMarcEditorRows = ({
     }
   }, [indexOfNewRow, newRowRef]);
 
-  const processSubfieldFocus = useCallback(({ target }) => {
-    const end = target.value.length;
-
-    target.setSelectionRange(end, end);
-  }, []);
-
   return (
     <div
       id="quick-marc-editor-rows"
@@ -300,7 +294,6 @@ const QuickMarcEditorRows = ({
                         id={`content-field-${idx}`}
                         data-index={idx}
                         onProcessSubfieldRef={processSubfieldRef}
-                        onFocus={processSubfieldFocus}
                         component={ContentField}
                       />
                     )
