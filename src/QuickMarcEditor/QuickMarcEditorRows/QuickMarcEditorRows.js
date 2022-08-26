@@ -15,7 +15,10 @@ import {
 import isEqual from 'lodash/isEqual';
 import defer from 'lodash/defer';
 
-import { Pluggable } from '@folio/stripes/core';
+import {
+  Pluggable,
+  IfPermission,
+} from '@folio/stripes/core';
 import {
   TextField,
   IconButton,
@@ -327,11 +330,13 @@ const QuickMarcEditorRows = ({
                       />
                     )
                   }
-                  <Pluggable
-                    type="find-authority"
-                  >
-                    <FormattedMessage id="ui-quick-marc.noPlugin" />
-                  </Pluggable>
+                  <IfPermission perm="ui-quick-marc.quick-marc-authority-records.linkUnlink">
+                    <Pluggable
+                      type="find-authority"
+                    >
+                      <FormattedMessage id="ui-quick-marc.noPlugin" />
+                    </Pluggable>
+                  </IfPermission>
                 </div>
               </div>
             );
