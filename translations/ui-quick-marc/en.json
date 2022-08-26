@@ -206,6 +206,8 @@
   "record.deleteField": "Delete this field",
   "record.collapseRow": "Collapse row",
   "record.protectedField": "This field is protected.",
+  "record.fieldDeleted": "<strong>Field {tag}</strong> has been deleted from this MARC record.",
+  "record.fieldDeleted.undo": "Undo",
 
   "record.materialChars.materialType.a": "Language material",
   "record.materialChars.materialType.c": "Notated music",
