@@ -1,7 +1,6 @@
 import React, {
   useRef,
   useLayoutEffect,
-  useEffect,
   useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
@@ -15,7 +14,6 @@ import { getResizeStyles } from './utils';
 export const ContentField = ({
   input,
   id,
-  onProcessSubfieldRef,
   ...props
 }) => {
   const ref = useRef();
@@ -38,12 +36,6 @@ export const ContentField = ({
     }
   }, [ref, input.value]);
 
-  useEffect(() => {
-    if (ref.current && onProcessSubfieldRef) {
-      onProcessSubfieldRef(ref.current);
-    }
-  }, [ref, onProcessSubfieldRef]);
-
   return (
     <TextArea
       {...props}
@@ -60,5 +52,4 @@ ContentField.propTypes = {
   input: PropTypes.shape({
     value: PropTypes.string,
   }),
-  onProcessSubfieldRef: PropTypes.func,
 };

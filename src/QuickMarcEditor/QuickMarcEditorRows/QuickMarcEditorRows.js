@@ -103,7 +103,7 @@ const QuickMarcEditorRows = ({
     });
   }, [moveRecord]);
 
-  const processSubfieldRef = useCallback(ref => {
+  const processTagRef = useCallback(ref => {
     if (!ref) return;
     const index = parseInt(ref.dataset.index, 10);
 
@@ -203,6 +203,8 @@ const QuickMarcEditorRows = ({
 
                 <div className={styles.quickMarcEditorRowTag}>
                   <Field
+                    inputRef={processTagRef}
+                    data-index={idx}
                     dirty={false}
                     ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.field' })}
                     name={`${name}.tag`}
@@ -292,8 +294,6 @@ const QuickMarcEditorRows = ({
                         marginBottom0
                         disabled={isDisabled}
                         id={`content-field-${idx}`}
-                        data-index={idx}
-                        onProcessSubfieldRef={processSubfieldRef}
                         component={ContentField}
                       />
                     )
