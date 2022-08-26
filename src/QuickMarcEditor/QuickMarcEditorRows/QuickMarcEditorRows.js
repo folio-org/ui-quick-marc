@@ -212,23 +212,6 @@ const QuickMarcEditorRows = ({
                   }
                 </div>
 
-                {
-                  isMARCFieldProtections && (
-                    <div className={styles.quickMarcEditorRowInfoPopover}>
-                      {
-                        isProtectedField && (
-                          <div data-testid="quick-marc-protected-field-popover">
-                            <InfoPopover
-                              iconSize="medium"
-                              content={intl.formatMessage({ id: 'ui-quick-marc.record.protectedField' })}
-                            />
-                          </div>
-                        )
-                      }
-                    </div>
-                  )
-                }
-
                 <div className={styles.quickMarcEditorRowTag}>
                   <Field
                     inputRef={processTagRef}
@@ -327,6 +310,23 @@ const QuickMarcEditorRows = ({
                     )
                   }
                 </div>
+
+                {
+                  isMARCFieldProtections && (
+                    <div className={styles.quickMarcEditorRowInfoPopover}>
+                      {
+                        isProtectedField && (
+                          <div data-testid="quick-marc-protected-field-popover">
+                            <InfoPopover
+                              iconSize="medium"
+                              content={intl.formatMessage({ id: 'ui-quick-marc.record.protectedField' })}
+                            />
+                          </div>
+                        )
+                      }
+                    </div>
+                  )
+                }
 
                 <div className={styles.quickMarcEditorActions}>
                   <Pluggable
