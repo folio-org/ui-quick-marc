@@ -102,15 +102,26 @@ const QuickMarcEditor = ({
     );
 
     const end = (
-      <Button
-        buttonStyle="primary mega"
-        disabled={saveFormDisabled}
-        id="quick-marc-record-save"
-        onClick={confirmSubmit}
-        marginBottom0
-      >
-        <FormattedMessage id="stripes-acq-components.FormFooter.save" />
-      </Button>
+      <>
+        <Button
+          buttonStyle="default mega"
+          disabled={saveFormDisabled}
+          id="quick-marc-record-save-edit"
+          onClick={confirmSubmit}
+          marginBottom0
+        >
+          <FormattedMessage id="stripes-acq-components.FormFooter.save.edit" />
+        </Button>
+        <Button
+          buttonStyle="primary mega"
+          disabled={saveFormDisabled}
+          id="quick-marc-record-save"
+          onClick={confirmSubmit}
+          marginBottom0
+        >
+          <FormattedMessage id="stripes-acq-components.FormFooter.save" />
+        </Button>
+      </>
     );
 
     return (
