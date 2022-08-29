@@ -1,4 +1,7 @@
-import { FormattedMessage } from 'react-intl';
+import {
+  useIntl,
+  FormattedMessage,
+} from 'react-intl';
 import PropTypes from 'prop-types';
 
 import { Button } from '@folio/stripes/components';
@@ -15,25 +18,30 @@ const propTypes = {
 const DeletedRowPlaceholder = ({
   field,
   restoreRow,
-}) => (
-  <div className={styles.deletedRowPlaceholder}>
-    <span>
-      <FormattedMessage
-        id="ui-quick-marc.record.fieldDeleted"
-        values={{
-          tag: field.tag,
-        }}
-      />
-    </span>
-    <Button
-      buttonStyle="link"
-      buttonClass={styles.deletedRowUndoButton}
-      onClick={restoreRow}
-    >
-      <FormattedMessage id="ui-quick-marc.record.fieldDeleted.undo" />
-    </Button>
-  </div>
-);
+}) => {
+  const intl = useIntl();
+
+  return (
+    <div className={styles.deletedRowPlaceholder}>
+      <span>
+        <FormattedMessage
+          id="ui-quick-marc.record.fieldDeleted"
+          values={{
+            tag: field.tag,
+          }}
+        />
+      </span>
+      <Button
+        aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.fieldDeleted.undoLabel' }, { tag: field.tag })}
+        buttonStyle="link"
+        buttonClass={styles.deletedRowUndoButton}
+        onClick={restoreRow}
+      >
+        <FormattedMessage id="ui-quick-marc.record.fieldDeleted.undo" />
+      </Button>
+    </div>
+  );
+};
 
 DeletedRowPlaceholder.propTypes = propTypes;
 
