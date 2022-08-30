@@ -6,6 +6,7 @@
 * [UIQM-258](https://issues.folio.org/browse/UIQM-258) Add fake link Authority button next to MARC fields.
 * [UIQM-261](https://issues.folio.org/browse/UIQM-261) Shift focus to MARC tag box once you click Add or Delete field.
 * [UIQM-278](https://issues.folio.org/browse/UIQM-278) Add the ability to change the height of the QuickMarcView component.
+* [UIQM-272](https://issues.folio.org/browse/UIQM-272) Edit quickMARC : Display a Save & keep editing button
 
 ## [5.1.2](https://github.com/folio-org/ui-quick-marc/tree/v5.1.2) (2022-08-23)
 
