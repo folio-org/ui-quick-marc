@@ -1,0 +1,22 @@
+:root {
+  --placeholder-color-text: #ddd;
+}
+
+.deletedRowPlaceholder {
+  display: flex;
+  justify-content: center;
+  padding: 12px 0;
+  color: var(--placeholder-color-text);
+  background-color: rgba(0, 0, 0, 0.75);
+
+  & button.deletedRowUndoButton {
+    margin: 0 5px;
+    font-weight: bold;
+    color: var(--placeholder-color-text);
+
+    &:hover,
+    &:focus {
+      color: var(--placeholder-color-text);
+    }
+  }
+}
