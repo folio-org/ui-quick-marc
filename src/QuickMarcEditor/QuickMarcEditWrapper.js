@@ -29,6 +29,7 @@ import {
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
+  refreshMarcRecord: PropTypes.func.isRequired,
   externalRecordPath: PropTypes.string.isRequired,
   initialValues: PropTypes.object.isRequired,
   instance: PropTypes.object,
@@ -46,6 +47,7 @@ const QuickMarcEditWrapper = ({
   mutator,
   marcType,
   locations,
+  refreshMarcRecord,
   externalRecordPath,
 }) => {
   const showCallout = useShowCallout();
@@ -76,14 +78,19 @@ const QuickMarcEditWrapper = ({
       marcType,
     );
     const formValuesForEdit = cleanBytesFields(autopopulatedFormWithSubfields, initialValues, marcType);
-
     const marcRecord = hydrateMarcRecord(formValuesForEdit);
-
     const path = EXTERNAL_INSTANCE_APIS[marcType];
-    let instancePromise;
+
+    const fetchInstance = async () => {
+      const fetchedInstance = await mutator.quickMarcEditInstance.GET({ path: `${path}/${marcRecord.externalId}` });
+
+      return fetchedInstance;
+    };
+
+    let instanceResponse;
 
     try {
-      instancePromise = await mutator.quickMarcEditInstance.GET({ path: `${path}/${marcRecord.externalId}` });
+      instanceResponse = await fetchInstance();
     } catch (errorResponse) {
       const parsedError = await parseHttpError(errorResponse);
 
@@ -91,13 +98,14 @@ const QuickMarcEditWrapper = ({
 
       return undefined;
     }
+
     const prevVersion = instance._version;
-    const lastVersion = instancePromise._version;
+    const lastVersion = instanceResponse._version;
 
     if (prevVersion && lastVersion && prevVersion !== lastVersion) {
       setHttpError({
         errorType: ERROR_TYPES.OPTIMISTIC_LOCKING,
-        message: 'Instance cannot be updated. Depricated instance version.',
+        message: 'ui-quick-marc.record.save.error.dublicate',
       });
 
       return null;
@@ -108,13 +116,18 @@ const QuickMarcEditWrapper = ({
       : searchParams.get('relatedRecordVersion');
 
     return mutator.quickMarcEditMarcRecord.PUT(marcRecord)
-      .then(() => {
+      .then(async () => {
         showCallout({
           messageId: marcType === MARC_TYPES.AUTHORITY
             ? 'ui-quick-marc.record.save.updated'
             : 'ui-quick-marc.record.save.success.processing',
         });
-        onClose();
+
+        refreshMarcRecord();
+
+        instanceResponse = await fetchInstance();
+
+        return { version: instanceResponse._version };
       })
       .catch(async (errorResponse) => {
         const parsedError = await parseHttpError(errorResponse);
@@ -122,10 +135,11 @@ const QuickMarcEditWrapper = ({
         setHttpError(parsedError);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onClose, showCallout]);
+  }, [showCallout, refreshMarcRecord]);
 
   return (
     <QuickMarcEditor
+      mutator={mutator}
       instance={instance}
       onClose={onClose}
       initialValues={initialValues}

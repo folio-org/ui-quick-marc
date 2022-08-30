@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useEffect,
 } from 'react';
+import { useHistory } from 'react-router';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import find from 'lodash/find';
@@ -62,9 +63,11 @@ const QuickMarcEditor = ({
   httpError,
   externalRecordPath,
 }) => {
+  const history = useHistory();
   const showCallout = useShowCallout();
   const [records, setRecords] = useState([]);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
+  const [shouldCloseEditor, setShouldCloseEditor] = useState(false);
 
   const deletedRecords = useMemo(() => {
     return records
@@ -80,15 +83,42 @@ const QuickMarcEditor = ({
     ? pristine || submitting
     : submitting;
 
-  const confirmSubmit = useCallback((e) => {
+  const redirectToVersion = useCallback((updatedVersion) => {
+    history.push({
+      search: `?relatedRecordVersion=${updatedVersion}`,
+    });
+  }, [history]);
+
+  const handleSubmitResponse = useCallback((updatedRecord) => {
+    if (!updatedRecord?.version) {
+      reset();
+      setShouldCloseEditor(false);
+
+      return;
+    }
+
+    if (!shouldCloseEditor) {
+      redirectToVersion(updatedRecord.version);
+
+      return;
+    }
+
+    onClose();
+  }, [shouldCloseEditor, redirectToVersion, onClose, reset]);
+
+  const confirmSubmit = useCallback((e, isKeepEditing = false) => {
+    if (!isKeepEditing) setShouldCloseEditor(true);
+
     if (deletedRecords.length) {
       setIsDeleteModalOpened(true);
 
       return;
     }
 
-    handleSubmit(e);
-  }, [deletedRecords, handleSubmit]);
+    handleSubmit(e).then((updatedRecord) => {
+      handleSubmitResponse(updatedRecord);
+    });
+  }, [deletedRecords, handleSubmit, handleSubmitResponse]);
 
   const paneFooter = useMemo(() => {
     const start = (
@@ -107,7 +137,7 @@ const QuickMarcEditor = ({
           buttonStyle="default mega"
           disabled={saveFormDisabled}
           id="quick-marc-record-save-edit"
-          onClick={confirmSubmit}
+          onClick={(event) => confirmSubmit(event, true)}
           marginBottom0
         >
           <FormattedMessage id="stripes-acq-components.FormFooter.save.edit" />
@@ -197,7 +227,7 @@ const QuickMarcEditor = ({
 
   const onConfirmModal = (e) => {
     setIsDeleteModalOpened(false);
-    handleSubmit(e);
+    handleSubmit(e).then((updatedRecord) => handleSubmitResponse(updatedRecord));
   };
 
   const onCancelModal = () => {
