@@ -4,6 +4,7 @@ import {
   render,
   cleanup,
   fireEvent,
+  waitFor,
 } from '@testing-library/react';
 import faker from 'faker';
 
@@ -49,7 +50,7 @@ jest.mock('./QuickMarcRecordInfo', () => {
 });
 
 const onCloseMock = jest.fn();
-const onSubmitMock = jest.fn();
+const onSubmitMock = jest.fn(() => Promise.resolve({ relatedMarcVersion: 1 }));
 
 const instance = {
   id: faker.random.uuid(),
@@ -149,8 +150,25 @@ describe('Given QuickMarcEditor', () => {
     });
   });
 
+  describe('when clicked save and keep editing button', () => {
+    it('should handle onSubmit and keep editor open', async () => {
+      const {
+        getByTestId,
+        getByText,
+      } = renderQuickMarcEditor();
+
+      const contentField = getByTestId('content-field-1');
+
+      fireEvent.change(contentField, { target: { value: 'Changed test title' } });
+      fireEvent.click(getByText('stripes-acq-components.FormFooter.save.edit'));
+
+      expect(onSubmitMock).toHaveBeenCalled();
+      expect(onCloseMock).not.toHaveBeenCalled();
+    });
+  });
+
   describe('when clicked save button', () => {
-    it('should handle onSubmit', () => {
+    it('should handle onSubmit and close editor', async () => {
       const {
         getByTestId,
         getByText,
@@ -162,6 +180,8 @@ describe('Given QuickMarcEditor', () => {
       fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
       expect(onSubmitMock).toHaveBeenCalled();
+
+      waitFor(() => expect(onCloseMock).toHaveBeenCalledWith());
     });
 
     describe('when there are deleted fields', () => {

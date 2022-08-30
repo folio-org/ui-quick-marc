@@ -293,7 +293,6 @@ describe('Given QuickMarcEditWrapper', () => {
     describe('when click on save button', () => {
       it('should show on save message and redirect on load page', async () => {
         let getByText;
-        const mockOnClose = jest.fn();
 
         await act(async () => {
           getByText = renderQuickMarcEditWrapper({
@@ -302,7 +301,6 @@ describe('Given QuickMarcEditWrapper', () => {
             location: {
               search: 'relatedRecordVersion=1',
             },
-            onClose: mockOnClose,
           }).getByText;
         });
 
@@ -312,14 +310,6 @@ describe('Given QuickMarcEditWrapper', () => {
         expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
 
         waitFor(() => expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' }));
-
-        await new Promise(resolve => {
-          setTimeout(() => {
-            expect(mockOnClose).toHaveBeenCalledWith();
-
-            resolve();
-          }, 10);
-        });
       }, 1000);
 
       describe('when there is an error during POST request', () => {
@@ -458,14 +448,12 @@ describe('Given QuickMarcEditWrapper', () => {
     describe('when click on save button', () => {
       it('should show on save message and redirect on load page', async () => {
         let getByText;
-        const mockOnClose = jest.fn();
 
         await act(async () => {
           getByText = renderQuickMarcEditWrapper({
             instance,
             mutator,
             marcType: MARC_TYPES.AUTHORITY,
-            onClose: mockOnClose,
           }).getByText;
         });
 
@@ -475,14 +463,6 @@ describe('Given QuickMarcEditWrapper', () => {
         expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
 
         waitFor(() => expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' }));
-
-        await new Promise(resolve => {
-          setTimeout(() => {
-            expect(mockOnClose).toHaveBeenCalledWith();
-
-            resolve();
-          }, 10);
-        });
       }, 1000);
 
       describe('when there is an error during POST request', () => {
