@@ -89,7 +89,7 @@ const QuickMarcEditor = ({
     });
   }, [history]);
 
-  const handleSubmitResponse = useCallback((updatedRecord) => {
+  const handleSubmitResponse = useCallback((updatedRecord, shouldClose) => {
     if (!updatedRecord?.version) {
       reset();
       setShouldCloseEditor(false);
@@ -97,7 +97,7 @@ const QuickMarcEditor = ({
       return;
     }
 
-    if (!shouldCloseEditor) {
+    if (!shouldClose && !shouldCloseEditor) {
       redirectToVersion(updatedRecord.version);
 
       return;
@@ -116,7 +116,7 @@ const QuickMarcEditor = ({
     }
 
     handleSubmit(e).then((updatedRecord) => {
-      handleSubmitResponse(updatedRecord);
+      handleSubmitResponse(updatedRecord, !isKeepEditing);
     });
   }, [deletedRecords, handleSubmit, handleSubmitResponse]);
 
