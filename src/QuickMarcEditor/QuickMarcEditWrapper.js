@@ -24,6 +24,7 @@ import {
   autopopulateSubfieldSection,
   cleanBytesFields,
   parseHttpError,
+  removeDeletedRecords,
 } from './utils';
 
 const propTypes = {
@@ -34,7 +35,7 @@ const propTypes = {
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
-  locations: PropTypes.object.isRequired,
+  locations: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 const QuickMarcEditWrapper = ({
@@ -54,8 +55,9 @@ const QuickMarcEditWrapper = ({
   const searchParams = new URLSearchParams(location.search);
 
   const onSubmit = useCallback(async (formValues) => {
-    const controlFieldErrorMessage = checkControlFieldLength(formValues);
-    const validationErrorMessage = validateMarcRecord(formValues, initialValues, marcType, locations);
+    const formValuesToSave = removeDeletedRecords(formValues);
+    const controlFieldErrorMessage = checkControlFieldLength(formValuesToSave);
+    const validationErrorMessage = validateMarcRecord(formValuesToSave, initialValues, marcType, locations);
     const errorMessage = controlFieldErrorMessage || validationErrorMessage;
 
     if (errorMessage) {
@@ -67,7 +69,7 @@ const QuickMarcEditWrapper = ({
       return null;
     }
 
-    const autopopulatedFormWithIndicators = autopopulateIndicators(formValues);
+    const autopopulatedFormWithIndicators = autopopulateIndicators(formValuesToSave);
     const autopopulatedFormWithSubfields = autopopulateSubfieldSection(
       autopopulatedFormWithIndicators,
       initialValues,
@@ -78,8 +80,17 @@ const QuickMarcEditWrapper = ({
     const marcRecord = hydrateMarcRecord(formValuesForEdit);
 
     const path = EXTERNAL_INSTANCE_APIS[marcType];
-    const instancePromise = await mutator.quickMarcEditInstance.GET({ path: `${path}/${marcRecord.externalId}` });
+    let instancePromise;
 
+    try {
+      instancePromise = await mutator.quickMarcEditInstance.GET({ path: `${path}/${marcRecord.externalId}` });
+    } catch (errorResponse) {
+      const parsedError = await parseHttpError(errorResponse);
+
+      setHttpError(parsedError);
+
+      return undefined;
+    }
     const prevVersion = instance._version;
     const lastVersion = instancePromise._version;
 

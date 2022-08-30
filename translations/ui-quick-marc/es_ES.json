@@ -1,7 +1,6 @@
 {
     "meta.title": "Quick MARC",
     "record.fixedField.Type": "Tipo",
-    "record.fixedField.ELvl": "ELvl",
     "record.fixedField.Srce": "Srce",
     "record.fixedField.Audn": "Audn",
     "record.fixedField.Ctrl": "Ctrl",
@@ -223,5 +222,7 @@
     "record.protectedField": "This field is protected.",
     "record.error.leader.forbiddenBytes.authority": "No se puede guardar el registro. Por favor, revise la cabecera. Solo las posiciones 5, 17, 18 pueden ser editadas en el campo de cabecera",
     "record.error.leader.initial.invalidPositionValue": "Record cannot be saved. Cannot edit 008 due to invalid {positions}. Please update this record's {positions}. Valid values are listed at {link}",
-    "record.error.controlField.multiple": "Record cannot be saved. Can only have one MARC 001."
+    "record.error.controlField.multiple": "Record cannot be saved. Can only have one MARC 001.",
+    "record.save.error.notFound": "This record has been deleted by another user. You can no longer edit this record, hit the cancel button to return to the previous page.",
+    "noPlugin": "No plugin is installed"
 }

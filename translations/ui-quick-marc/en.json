@@ -9,6 +9,7 @@
   "permission.quick-marc-holdings-editor.create": "quickMARC: Create a new MARC holdings record",
   "permission.quick-marc-editor.duplicate": "quickMARC: Derive new MARC bibliographic record",
   "permission.quick-marc-authorities-editor.all": "quickMARC: View, edit MARC authorities record",
+  "permission.quick-marc-authority-records.linkUnlink": "quickMARC: Can Link/unlink authority records to bib records",
 
   "bib-record.edit.title": "Edit MARC record - {title}",
   "bib-record.duplicate.title": "Derive a new MARC bib record",
@@ -188,6 +189,7 @@
 
   "record.save.success.processing": "This record has successfully saved and is in process. Changes may not appear immediately.",
   "record.save.error.illegalFixedLength": "Record not saved. Please check the character length of the fixed fields.",
+  "record.save.error.notFound": "This record has been deleted by another user. You can no longer edit this record, hit the cancel button to return to the previous page.",
   "record.save.error.generic": "Record not saved: Communication problem with server. Please try again.",
   "record.save.updated": "Record has been updated.",
 
@@ -205,6 +207,9 @@
   "record.deleteField": "Delete this field",
   "record.collapseRow": "Collapse row",
   "record.protectedField": "This field is protected.",
+  "record.fieldDeleted": "<strong>Field {tag}</strong> has been deleted from this MARC record.",
+  "record.fieldDeleted.undo": "Undo",
+  "record.fieldDeleted.undoLabel": "Undo delete of field {tag}",
 
   "record.materialChars.materialType.a": "Language material",
   "record.materialChars.materialType.c": "Notated music",
@@ -238,5 +243,6 @@
   "record.physDescription.categoryOfMaterial.v": "Videorecording",
   "record.physDescription.categoryOfMaterial.z": "Unspecified",
 
-  "permanentLocationLookup": "Permanent location look-up"
+  "permanentLocationLookup": "Permanent location look-up",
+  "noPlugin": "No plugin is installed"
 }

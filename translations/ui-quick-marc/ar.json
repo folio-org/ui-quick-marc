@@ -1,7 +1,6 @@
 {
     "meta.title": "مارك السريع",
     "record.fixedField.Type": "النوع",
-    "record.fixedField.ELvl": "ELvl",
     "record.fixedField.Srce": "مصدر",
     "record.fixedField.Audn": "Audn",
     "record.fixedField.Ctrl": "Ctrl",
@@ -223,5 +222,7 @@
     "record.protectedField": "هذا الحقل محمي.",
     "record.error.leader.forbiddenBytes.authority": "لا يمكن حفظ التسجيلة. يرجى التحقق من الفاتح. يمكن تحرير المواضع 5، 17، و18 فقط في الفاتح.",
     "record.error.leader.initial.invalidPositionValue": "لا يمكن حفظ التسجيلة. لا يمكن تحرير الحقل 008 بسبب {positions} غير صالحة. يرجى تحديث {positions} هذه التسجيلة. القيم الصالحة موجودة في {link}",
-    "record.error.controlField.multiple": "لا يمكن حفظ التسجيلة. يمكن أن يكون بها حقل مارك 001 واحد فقط."
+    "record.error.controlField.multiple": "لا يمكن حفظ التسجيلة. يمكن أن يكون بها حقل مارك 001 واحد فقط.",
+    "record.save.error.notFound": "This record has been deleted by another user. You can no longer edit this record, hit the cancel button to return to the previous page.",
+    "noPlugin": "لم يتم تثبيت برنامج مساعد"
 }

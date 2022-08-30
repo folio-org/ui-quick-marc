@@ -26,6 +26,7 @@ import {
   dehydrateMarcRecordResponse,
   getCreateMarcRecordResponse,
   formatMarcRecordByQuickMarcAction,
+  addInternalFieldProperties,
 } from './utils';
 import { QUICK_MARC_ACTIONS } from './constants';
 
@@ -63,6 +64,15 @@ const QuickMarcEditorContainer = ({
 
   const showCallout = useShowCallout();
 
+  const closeEditor = useCallback(() => {
+    if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
+      onClose(`${instanceId}/${externalId}`);
+    } else {
+      onClose(externalId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [externalId, onClose]);
+
   const externalRecordUrl = useMemo(() => {
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
       return `${externalRecordPath}/${instanceId}/${externalId}`;
@@ -91,31 +101,19 @@ const QuickMarcEditorContainer = ({
           : dehydrateMarcRecordResponse(marcRecordResponse);
 
         const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, action);
+        const marcRecordWithInternalProps = addInternalFieldProperties(formattedMarcRecord);
 
         setInstance(instanceResponse);
-        setMarcRecord(formattedMarcRecord);
+        setMarcRecord(marcRecordWithInternalProps);
         setLocations(locationsResponse);
+        setIsLoading(false);
       })
       .catch(() => {
-        setInstance();
-        setMarcRecord();
-
         showCallout({ messageId: 'ui-quick-marc.record.load.error', type: 'error' });
-      })
-      .finally(() => {
-        setIsLoading(false);
+        closeEditor();
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [externalId]);
-
-  const closeEditor = useCallback(() => {
-    if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
-      onClose(`${instanceId}/${externalId}`);
-    } else {
-      onClose(externalId);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [externalId, onClose]);
 
   if (isLoading) {
     return (

@@ -1,6 +1,7 @@
 import React, {
   useRef,
   useLayoutEffect,
+  useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
 
@@ -29,6 +30,12 @@ export const ContentField = ({
   ...props
 }) => {
   const ref = useRef();
+
+  const processSubfieldFocus = useCallback(({ target }) => {
+    const end = target.value.length;
+
+    target.setSelectionRange(end, end);
+  }, []);
 
   useLayoutEffect(() => {
     if (ref.current) {
@@ -86,6 +93,7 @@ export const ContentField = ({
         input={input}
         inputRef={ref}
         data-testid={id}
+        onFocus={processSubfieldFocus}
       />
     </HasCommand>
   );

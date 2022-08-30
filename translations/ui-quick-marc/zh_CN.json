@@ -1,7 +1,6 @@
 {
     "meta.title": "快速MARC",
     "record.fixedField.Type": "Type 记录类型",
-    "record.fixedField.ELvl": "ELvl 编目等级",
     "record.fixedField.Srce": "Srce 编目来源",
     "record.fixedField.Audn": "Audn 读者对象",
     "record.fixedField.Ctrl": "Ctrl 控制类型",
@@ -223,5 +222,7 @@
     "record.protectedField": "该字段受保护。",
     "record.error.leader.forbiddenBytes.authority": "无法保存记录。请检查头标。在 头标中只能编辑位置 5、17、18。",
     "record.error.leader.initial.invalidPositionValue": "无法保存记录。由于{positions}无效，无法编辑 008。请更新此记录的{positions} 。有效值列在{link}",
-    "record.error.controlField.multiple": "无法保存记录。只能有一个MARC 001。"
+    "record.error.controlField.multiple": "无法保存记录。只能有一个MARC 001。",
+    "record.save.error.notFound": "此记录已被其他用户删除。不能再编辑此记录。点击取消返回上一页。",
+    "noPlugin": "No plugin is installed"
 }

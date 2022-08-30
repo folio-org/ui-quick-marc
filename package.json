@@ -1,6 +1,6 @@
 {
   "name": "@folio/quick-marc",
-  "version": "5.1.0",
+  "version": "5.1.2",
   "description": "Quick MARC editor",
   "main": "index.js",
   "repository": "",
@@ -87,6 +87,11 @@
           "inventory-storage.locations.collection.get"
         ],
         "visible": true
+      },
+      {
+        "permissionName": "ui-quick-marc.quick-marc-authority-records.linkUnlink",
+        "displayName": "quickMARC: Can Link/unlink authority records to bib records",
+        "visible": true
       }
     ]
   },
@@ -149,5 +154,8 @@
     "react-intl": "^5.8.1",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0"
+  },
+  "optionalDependencies": {
+    "@folio/plugin-find-authority": "^1.0.0"
   }
 }

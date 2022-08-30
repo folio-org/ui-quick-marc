@@ -1,7 +1,6 @@
 {
     "meta.title": "Quick MARC",
     "record.fixedField.Type": "Type",
-    "record.fixedField.ELvl": "ELvl",
     "record.fixedField.Srce": "Srce",
     "record.fixedField.Audn": "Audn",
     "record.fixedField.Ctrl": "Ctrl",
@@ -63,7 +62,7 @@
     "record.fixedField.Braille music format": "BMF",
     "record.fixedField.Special physical characteristics": "SPCs",
     "record.fixedField.Color": "Color",
-    "record.fixedField.Dimensions": "Dimensions",
+    "record.fixedField.Dimensions": "Maße",
     "record.fixedField.Sound": "Sound",
     "record.fixedField.Image bit depth": "IBD",
     "record.fixedField.File formats": "FF",
@@ -186,7 +185,7 @@
     "record.error.instanceHrid.multiple": "Record cannot be saved. Can only have one MARC 004.",
     "record.error.location.multiple": "Record cannot be saved. Can only have one MARC 852.",
     "permission.quick-marc-authorities-editor.all": "quickMARC: View, edit MARC authorities record",
-    "authority-record.edit.title": "Edit MARC authority record - {title}",
+    "authority-record.edit.title": "MARC Normdatensatz bearbeiten - [title}",
     "record.headingType.100": "Personal name",
     "record.headingType.110": "Corporate name",
     "record.headingType.111": "Conference name",
@@ -213,9 +212,9 @@
     "record.fixedField.Mod Rec Est": "Mod Rec Est",
     "record.fixedField.Source": "Source",
     "record.save.updated": "Record has been updated.",
-    "record.error.location.invalid": "852 $b contains an invalid Location code. Please try again.",
+    "record.error.location.invalid": "852 $b enthält einen ungültigen Standortcode. Bitte erneut versuchen.",
     "permanentLocationLookup": "Permanent location look-up",
-    "record.error.heading.empty": "Record cannot be saved without 1XX field.",
+    "record.error.heading.empty": "Der Datensatz kann nicht ohne 1XX-Feld gespeichert werden.",
     "record.error.heading.multiple": "Record cannot be saved. Cannot have multiple 1XXs",
     "record.fixedField.Gen ret": "Gen ret",
     "permission.quick-marc-holdings-editor.view": "quickMARC: View MARC holdings record",
@@ -223,5 +222,7 @@
     "record.protectedField": "This field is protected.",
     "record.error.leader.forbiddenBytes.authority": "Record cannot be saved. Please check the Leader. Only positions 5, 17, 18 can be edited in the Leader.",
     "record.error.leader.initial.invalidPositionValue": "Record cannot be saved. Cannot edit 008 due to invalid {positions}. Please update this record's {positions}. Valid values are listed at {link}",
-    "record.error.controlField.multiple": "Record cannot be saved. Can only have one MARC 001."
+    "record.error.controlField.multiple": "Record cannot be saved. Can only have one MARC 001.",
+    "record.save.error.notFound": "This record has been deleted by another user. You can no longer edit this record, hit the cancel button to return to the previous page.",
+    "noPlugin": "No plugin is installed"
 }

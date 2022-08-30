@@ -21,6 +21,7 @@ const propTypes = {
     PropTypes.node,
     PropTypes.string,
   ]).isRequired,
+  paneHeight: PropTypes.string,
   paneSub: PropTypes.oneOfType([
     PropTypes.node,
     PropTypes.string,
@@ -32,6 +33,7 @@ const propTypes = {
 const QuickMarcView = ({
   paneTitle,
   paneSub,
+  paneHeight,
   marcTitle,
   marc,
   onClose,
@@ -64,6 +66,7 @@ const QuickMarcView = ({
       onClose={onClose}
       data-test-instance-marc
       data-testid="marc-view-pane"
+      height={paneHeight}
       {...optionalProps}
     >
       <section className={styles.marcWrapper}>
@@ -113,6 +116,7 @@ const QuickMarcView = ({
 QuickMarcView.propTypes = propTypes;
 QuickMarcView.defaultProps = {
   isPaneset: true,
+  paneHeight: null,
 };
 
 export default QuickMarcView;
