@@ -190,6 +190,7 @@
   "record.save.error.illegalFixedLength": "Record not saved. Please check the character length of the fixed fields.",
   "record.save.error.notFound": "This record has been deleted by another user. You can no longer edit this record, hit the cancel button to return to the previous page.",
   "record.save.error.generic": "Record not saved: Communication problem with server. Please try again.",
+  "record.save.error.dublicate": "Instance cannot be updated. Depricated instance version.",
   "record.save.updated": "Record has been updated.",
 
   "record.saveNew.onSave": "Creating record may take several seconds.",
