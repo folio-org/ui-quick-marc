@@ -10,19 +10,12 @@ import {
   HasCommand,
 } from '@folio/stripes/components';
 
-import { getResizeStyles } from './utils';
-
-const indexOfRegex = (string, regex) => {
-  const match = string.match(regex);
-
-  return match ? string.indexOf(match[0]) : -1;
-};
-
-const lastIndexOfRegex = (string, regex) => {
-  const match = string.match(regex);
-
-  return match ? string.lastIndexOf(match[match.length - 1]) : -1;
-};
+import {
+  getResizeStyles,
+  cursorToNextSubfield,
+  cursorToPrevSubfield,
+} from './utils';
+import { KEYBOARD_COMMAND_NAMES } from '../../../common/constants';
 
 export const ContentField = ({
   input,
@@ -37,6 +30,14 @@ export const ContentField = ({
     target.setSelectionRange(end, end);
   }, []);
 
+  const keyCommands = [{
+    name: KEYBOARD_COMMAND_NAMES.NEXT_SUBFIELD,
+    handler: cursorToNextSubfield,
+  }, {
+    name: KEYBOARD_COMMAND_NAMES.PREV_SUBFIELD,
+    handler: cursorToPrevSubfield,
+  }];
+
   useLayoutEffect(() => {
     if (ref.current) {
       ref.current.style.height = '0';
@@ -48,43 +49,6 @@ export const ContentField = ({
       });
     }
   }, [ref, input.value]);
-
-  const keyCommands = [{
-    name: 'nextsubfield',
-    handler: (e) => {
-      e.preventDefault();
-      const cursorPosition = e.target.selectionStart;
-      const valueAfterCursor = input.value.substring(cursorPosition);
-
-      const nextSubfieldIndex = indexOfRegex(valueAfterCursor, /\$\w\s/g);
-
-      if (nextSubfieldIndex === -1) {
-        return;
-      }
-
-      const newPosition = nextSubfieldIndex + cursorPosition + 3;
-
-      e.target.setSelectionRange(newPosition, newPosition);
-    },
-  }, {
-    name: 'prevsubfield',
-    handler: (e) => {
-      e.preventDefault();
-      const cursorPosition = e.target.selectionStart;
-      const startOfCurrentSubfieldPosition = lastIndexOfRegex(input.value.substring(0, cursorPosition), /\$\w\s/g);
-      const valueBeforeCurrentSubfield = input.value.substring(0, startOfCurrentSubfieldPosition);
-
-      const prevSubfieldIndex = lastIndexOfRegex(valueBeforeCurrentSubfield, /\$\w\s/g);
-
-      if (prevSubfieldIndex === -1) {
-        return;
-      }
-
-      const newPosition = prevSubfieldIndex + 3;
-
-      e.target.setSelectionRange(newPosition, newPosition);
-    },
-  }];
 
   return (
     <HasCommand commands={keyCommands}>
