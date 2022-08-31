@@ -18,6 +18,7 @@ import defer from 'lodash/defer';
 import { Pluggable } from '@folio/stripes/core';
 import {
   TextField,
+  Tooltip,
   IconButton,
   InfoPopover,
 } from '@folio/stripes/components';
@@ -156,28 +157,42 @@ const QuickMarcEditorRows = ({
                 <div className={styles.quickMarcEditorMovingRow}>
                   {
                     !withMoveUpRowAction && (
-                      <IconButton
-                        title={intl.formatMessage({ id: 'ui-quick-marc.record.moveUpRow' })}
-                        ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.moveUpRow' })}
-                        data-test-move-up-row
-                        data-index={idx}
-                        data-index-to-switch={idx - 1}
-                        icon="arrow-up"
-                        onClick={moveRow}
-                      />
+                      <Tooltip
+                        id="moving-row-move-up"
+                        text={intl.formatMessage({ id: 'ui-quick-marc.record.moveUpRow' })}
+                      >
+                        {({ ref, ariaIds }) => (
+                          <IconButton
+                            ref={ref}
+                            aria-labelledby={ariaIds.text}
+                            data-test-move-up-row
+                            data-index={idx}
+                            data-index-to-switch={idx - 1}
+                            icon="arrow-up"
+                            onClick={moveRow}
+                          />
+                        )}
+                      </Tooltip>
                     )
                   }
                   {
                     !withMoveDownRowAction && (
-                      <IconButton
-                        title={intl.formatMessage({ id: 'ui-quick-marc.record.moveDownRow' })}
-                        ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.moveDownRow' })}
-                        data-test-move-down-row
-                        data-index={idx}
-                        data-index-to-switch={idx + 1}
-                        icon="arrow-down"
-                        onClick={moveRow}
-                      />
+                      <Tooltip
+                        id="moving-row-move-down"
+                        text={intl.formatMessage({ id: 'ui-quick-marc.record.moveDownRow' })}
+                      >
+                        {({ ref, ariaIds }) => (
+                          <IconButton
+                            ref={ref}
+                            aria-labelledby={ariaIds.text}
+                            data-test-move-down-row
+                            data-index={idx}
+                            data-index-to-switch={idx + 1}
+                            icon="arrow-down"
+                            onClick={moveRow}
+                          />
+                        )}
+                      </Tooltip>
                     )
                   }
                 </div>
@@ -185,29 +200,43 @@ const QuickMarcEditorRows = ({
                 <div className={styles.quickMarcEditorActions}>
                   {
                     !withAddRowAction && (
-                      <IconButton
-                        className="quickMarcEditorAddField"
-                        title={intl.formatMessage({ id: 'ui-quick-marc.record.addField' })}
-                        ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.addField' })}
-                        data-test-add-row
-                        data-index={idx}
-                        icon="plus-sign"
-                        onClick={addNewRow}
-                      />
+                      <Tooltip
+                        id="actions-add-field"
+                        text={intl.formatMessage({ id: 'ui-quick-marc.record.addField' })}
+                      >
+                        {({ ref, ariaIds }) => (
+                          <IconButton
+                            ref={ref}
+                            aria-labelledby={ariaIds.text}
+                            className="quickMarcEditorAddField"
+                            data-test-add-row
+                            data-index={idx}
+                            icon="plus-sign"
+                            onClick={addNewRow}
+                          />
+                        )}
+                      </Tooltip>
                     )
                   }
                   {
                     !withDeleteRowAction && (
-                      <IconButton
-                        title={intl.formatMessage({ id: 'ui-quick-marc.record.deleteField' })}
-                        ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.deleteField' })}
-                        name={`${idx}.delete`}
-                        data-testid={`data-test-remove-row-${idx}`}
-                        data-index={idx}
-                        data-records-length={records.length}
-                        icon="trash"
-                        onClick={deleteRow}
-                      />
+                      <Tooltip
+                        id="actions-delete-field"
+                        text={intl.formatMessage({ id: 'ui-quick-marc.record.deleteField' })}
+                      >
+                        {({ ref, ariaIds }) => (
+                          <IconButton
+                            ref={ref}
+                            aria-labelledby={ariaIds.text}
+                            name={`${idx}.delete`}
+                            data-testid={`data-test-remove-row-${idx}`}
+                            data-index={idx}
+                            data-records-length={records.length}
+                            icon="trash"
+                            onClick={deleteRow}
+                          />
+                        )}
+                      </Tooltip>
                     )
                   }
                 </div>
