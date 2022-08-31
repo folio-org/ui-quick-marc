@@ -82,7 +82,13 @@ const QuickMarcEditorRows = ({
 
   const deleteRow = useCallback(({ target }) => {
     const index = parseInt(target.dataset.index, 10);
-    const nextRowIndex = index + 1;
+
+    const currElementRow = containerRef.current.querySelector(`[name="record-row[${index}]"]`);
+    const prevElementRow = currElementRow.previousElementSibling;
+    const nextElementRow = currElementRow.nextElementSibling;
+
+    const prevDeleteIcon = prevElementRow.querySelector('[name="icon-delete"]');
+    const nextDeleteIcon = nextElementRow.querySelector('[name="icon-delete"]');
 
     if (isNewRow(fields[index])) {
       deleteRecord({ index });
@@ -91,7 +97,13 @@ const QuickMarcEditorRows = ({
     }
 
     defer(() => {
-      containerRef.current.querySelector(`[name="${nextRowIndex}.delete"]`)?.focus();
+      if (nextDeleteIcon) {
+        nextDeleteIcon.focus();
+
+        return;
+      }
+
+      prevDeleteIcon?.focus();
     });
   }, [fields, deleteRecord, markRecordDeleted, isNewRow]);
 
@@ -153,6 +165,7 @@ const QuickMarcEditorRows = ({
                 key={recordRow.id}
                 className={styles.quickMarcEditorRow}
                 data-testid="quick-marc-editorid"
+                name={`record-row[${idx}]`}
               >
                 <div className={styles.quickMarcEditorMovingRow}>
                   {
@@ -228,7 +241,7 @@ const QuickMarcEditorRows = ({
                           <IconButton
                             ref={ref}
                             aria-labelledby={ariaIds.text}
-                            name={`${idx}.delete`}
+                            name="icon-delete"
                             data-testid={`data-test-remove-row-${idx}`}
                             data-index={idx}
                             data-records-length={records.length}
