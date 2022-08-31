@@ -87,8 +87,8 @@ const QuickMarcEditorRows = ({
     const prevElementRow = currElementRow.previousElementSibling;
     const nextElementRow = currElementRow.nextElementSibling;
 
-    const prevDeleteIcon = prevElementRow.querySelector('[name="icon-delete"]');
-    const nextDeleteIcon = nextElementRow.querySelector('[name="icon-delete"]');
+    const prevDeleteIcon = prevElementRow?.querySelector('[name="icon-delete"]');
+    const nextDeleteIcon = nextElementRow?.querySelector('[name="icon-delete"]');
 
     if (isNewRow(fields[index])) {
       deleteRecord({ index });
