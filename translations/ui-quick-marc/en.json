@@ -192,6 +192,7 @@
   "record.save.error.generic": "Record not saved: Communication problem with server. Please try again.",
   "record.save.error.dublicate": "Instance cannot be updated. Depricated instance version.",
   "record.save.updated": "Record has been updated.",
+  "record.save.continue": "Save & keep editing",
 
   "record.saveNew.onSave": "Creating record may take several seconds.",
   "record.saveNew.success": "Record created.",

@@ -140,7 +140,7 @@ const QuickMarcEditor = ({
           onClick={(event) => confirmSubmit(event, true)}
           marginBottom0
         >
-          <FormattedMessage id="stripes-acq-components.FormFooter.save.edit" />
+          <FormattedMessage id="ui-quick-marc.record.save.continue" />
         </Button>
         <Button
           buttonStyle="primary mega"
