@@ -243,6 +243,8 @@
   "record.physDescription.categoryOfMaterial.v": "Videorecording",
   "record.physDescription.categoryOfMaterial.z": "Unspecified",
 
+  "record.quickMarcEditorLabel": "Quick MARC editor",
+
   "permanentLocationLookup": "Permanent location look-up",
   "noPlugin": "No plugin is installed"
 }
