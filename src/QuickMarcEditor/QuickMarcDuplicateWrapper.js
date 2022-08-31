@@ -24,6 +24,7 @@ import {
   checkControlFieldLength,
   cleanBytesFields,
   parseHttpError,
+  removeDeletedRecords,
 } from './utils';
 
 const propTypes = {
@@ -51,7 +52,8 @@ const QuickMarcDuplicateWrapper = ({
   const [httpError, setHttpError] = useState(null);
 
   const onSubmit = useCallback(async (formValues) => {
-    const controlFieldErrorMessage = checkControlFieldLength(formValues);
+    const formValuesToSave = removeDeletedRecords(formValues);
+    const controlFieldErrorMessage = checkControlFieldLength(formValuesToSave);
 
     if (controlFieldErrorMessage) {
       showCallout({ message: controlFieldErrorMessage, type: 'error' });
@@ -59,7 +61,7 @@ const QuickMarcDuplicateWrapper = ({
       return null;
     }
 
-    const clearFormValues = removeFieldsForDuplicate(formValues);
+    const clearFormValues = removeFieldsForDuplicate(formValuesToSave);
     const autopopulatedFormWithIndicators = autopopulateIndicators(clearFormValues);
     const autopopulatedFormWithSubfields = autopopulateSubfieldSection(
       autopopulatedFormWithIndicators,

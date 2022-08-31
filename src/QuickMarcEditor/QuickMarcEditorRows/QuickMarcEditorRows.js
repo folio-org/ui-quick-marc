@@ -15,7 +15,10 @@ import {
 import isEqual from 'lodash/isEqual';
 import defer from 'lodash/defer';
 
-import { Pluggable } from '@folio/stripes/core';
+import {
+  Pluggable,
+  IfPermission,
+} from '@folio/stripes/core';
 import {
   TextField,
   IconButton,
@@ -28,6 +31,7 @@ import { MaterialCharsField } from './MaterialCharsField';
 import { PhysDescriptionField } from './PhysDescriptionField';
 import { FixedFieldFactory } from './FixedField';
 import { LocationField } from './LocationField';
+import { DeletedRowPlaceholder } from './DeletedRowPlaceholder';
 import {
   isReadOnly,
   hasIndicatorException,
@@ -56,6 +60,7 @@ const QuickMarcEditorRows = ({
     markRecordDeleted,
     deleteRecord,
     moveRecord,
+    restoreRecord,
   },
   marcType,
 }) => {
@@ -83,7 +88,6 @@ const QuickMarcEditorRows = ({
     const index = parseInt(target.dataset.index, 10);
     const recordsLength = parseInt(target.dataset.recordsLength, 10);
     const isLastRowDeleted = index === recordsLength - 1;
-    const indexOfFocusableField = isLastRowDeleted ? index - 1 : index;
 
     if (isNewRow(fields[index])) {
       deleteRecord({ index });
@@ -91,10 +95,12 @@ const QuickMarcEditorRows = ({
       markRecordDeleted({ index });
     }
 
-    defer(() => {
-      containerRef.current.querySelector(`[name="records[${indexOfFocusableField}].tag"]`).focus();
-    });
-  }, [fields, deleteRecord, markRecordDeleted, isNewRow]);
+    if (!isLastRowDeleted) {
+      defer(() => {
+        containerRef.current.querySelector(`[name="records[${index + 1}].tag"]`).focus();
+      });
+    }
+  }, [fields, deleteRecord, markRecordDeleted, isNewRow, containerRef]);
 
   const moveRow = useCallback(({ target }) => {
     moveRecord({
@@ -102,6 +108,10 @@ const QuickMarcEditorRows = ({
       indexToSwitch: parseInt(target.dataset.indexToSwitch, 10),
     });
   }, [moveRecord]);
+
+  const restoreRow = useCallback((index) => {
+    restoreRecord({ index });
+  }, [restoreRecord]);
 
   const processTagRef = useCallback(ref => {
     if (!ref) return;
@@ -131,7 +141,12 @@ const QuickMarcEditorRows = ({
             }
 
             if (recordRow._isDeleted) {
-              return null;
+              return (
+                <DeletedRowPlaceholder
+                  field={recordRow}
+                  restoreRow={() => restoreRow(idx)}
+                />
+              );
             }
 
             const isDisabled = isReadOnly(recordRow, action, marcType);
@@ -327,11 +342,13 @@ const QuickMarcEditorRows = ({
                       />
                     )
                   }
-                  <Pluggable
-                    type="find-authority"
-                  >
-                    <FormattedMessage id="ui-quick-marc.noPlugin" />
-                  </Pluggable>
+                  <IfPermission perm="ui-quick-marc.quick-marc-authority-records.linkUnlink">
+                    <Pluggable
+                      type="find-authority"
+                    >
+                      <FormattedMessage id="ui-quick-marc.noPlugin" />
+                    </Pluggable>
+                  </IfPermission>
                 </div>
               </div>
             );
@@ -359,6 +376,7 @@ QuickMarcEditorRows.propTypes = {
     deleteRecord: PropTypes.func.isRequired,
     markRecordDeleted: PropTypes.func.isRequired,
     moveRecord: PropTypes.func.isRequired,
+    restoreRecord: PropTypes.func.isRequired,
   }),
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
 };
