@@ -160,7 +160,7 @@ describe('Given QuickMarcEditor', () => {
       const contentField = getByTestId('content-field-1');
 
       fireEvent.change(contentField, { target: { value: 'Changed test title' } });
-      fireEvent.click(getByText('stripes-acq-components.FormFooter.save.edit'));
+      fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
 
       expect(onSubmitMock).toHaveBeenCalled();
       expect(onCloseMock).not.toHaveBeenCalled();
