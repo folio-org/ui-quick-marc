@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom';
 
 import { IfPermission } from '@folio/stripes/core';
-import { CommandList } from '@folio/stripes-components';
+import { CommandList } from '@folio/stripes/components';
 
 import {
   QuickMarcEditorContainer,
