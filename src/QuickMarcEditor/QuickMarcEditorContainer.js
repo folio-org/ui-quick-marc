@@ -76,17 +76,6 @@ const QuickMarcEditorContainer = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [externalId, onClose]);
 
-  const refreshMarcRecord = useCallback(async () => {
-    const marcRecordResponse = await mutator.quickMarcEditMarcRecord.GET();
-
-    const dehydratedMarcRecord = dehydrateMarcRecordResponse(marcRecordResponse);
-
-    const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, action);
-    const marcRecordWithInternalProps = addInternalFieldProperties(formattedMarcRecord);
-
-    setMarcRecord(marcRecordWithInternalProps);
-  }, [mutator.quickMarcEditMarcRecord, action]);
-
   const externalRecordUrl = useMemo(() => {
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
       return `${externalRecordPath}/${instanceId}/${externalId}`;
@@ -95,7 +84,7 @@ const QuickMarcEditorContainer = ({
     return `${externalRecordPath}/${externalId}`;
   }, [externalRecordPath, marcType, externalId, instanceId, action]);
 
-  useEffect(() => {
+  const loadData = useCallback(async () => {
     setIsLoading(true);
 
     const path = action === QUICK_MARC_ACTIONS.CREATE
@@ -108,7 +97,7 @@ const QuickMarcEditorContainer = ({
       : mutator.quickMarcEditMarcRecord.GET();
     const locationsPromise = mutator.locations.GET();
 
-    Promise.all([instancePromise, marcRecordPromise, locationsPromise])
+    await Promise.all([instancePromise, marcRecordPromise, locationsPromise])
       .then(([instanceResponse, marcRecordResponse, locationsResponse]) => {
         const dehydratedMarcRecord = action === QUICK_MARC_ACTIONS.CREATE
           ? getCreateMarcRecordResponse(instanceResponse)
@@ -126,8 +115,12 @@ const QuickMarcEditorContainer = ({
         showCallout({ messageId: 'ui-quick-marc.record.load.error', type: 'error' });
         closeEditor();
       });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [externalId, relatedRecordVersion]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   if (isLoading) {
     return (
@@ -150,7 +143,7 @@ const QuickMarcEditorContainer = ({
       location={location}
       locations={locations}
       marcType={marcType}
-      refreshMarcRecord={refreshMarcRecord}
+      refreshPageData={loadData}
       externalRecordPath={externalRecordUrl}
     />
   );

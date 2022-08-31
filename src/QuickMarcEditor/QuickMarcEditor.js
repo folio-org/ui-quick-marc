@@ -1,4 +1,5 @@
 import React, {
+  useRef,
   useMemo,
   useState,
   useCallback,
@@ -67,7 +68,7 @@ const QuickMarcEditor = ({
   const showCallout = useShowCallout();
   const [records, setRecords] = useState([]);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
-  const [shouldCloseEditor, setShouldCloseEditor] = useState(false);
+  const continueAfterSave = useRef(false);
 
   const deletedRecords = useMemo(() => {
     return records
@@ -89,25 +90,25 @@ const QuickMarcEditor = ({
     });
   }, [history]);
 
-  const handleSubmitResponse = useCallback((updatedRecord, shouldClose) => {
+  const handleSubmitResponse = useCallback((updatedRecord) => {
     if (!updatedRecord?.version) {
       reset();
-      setShouldCloseEditor(false);
+      continueAfterSave.current = false;
 
       return;
     }
 
-    if (!shouldClose && !shouldCloseEditor) {
+    if (continueAfterSave.current) {
       redirectToVersion(updatedRecord.version);
 
       return;
     }
 
     onClose();
-  }, [shouldCloseEditor, redirectToVersion, onClose, reset]);
+  }, [redirectToVersion, onClose, reset]);
 
   const confirmSubmit = useCallback((e, isKeepEditing = false) => {
-    if (!isKeepEditing) setShouldCloseEditor(true);
+    continueAfterSave.current = isKeepEditing;
 
     if (deletedRecords.length) {
       setIsDeleteModalOpened(true);
@@ -116,7 +117,7 @@ const QuickMarcEditor = ({
     }
 
     handleSubmit(e).then((updatedRecord) => {
-      handleSubmitResponse(updatedRecord, !isKeepEditing);
+      handleSubmitResponse(updatedRecord);
     });
   }, [deletedRecords, handleSubmit, handleSubmitResponse]);
 
@@ -133,15 +134,17 @@ const QuickMarcEditor = ({
 
     const end = (
       <>
-        <Button
-          buttonStyle="default mega"
-          disabled={saveFormDisabled}
-          id="quick-marc-record-save-edit"
-          onClick={(event) => confirmSubmit(event, true)}
-          marginBottom0
-        >
-          <FormattedMessage id="ui-quick-marc.record.save.continue" />
-        </Button>
+        {action === QUICK_MARC_ACTIONS.EDIT && (
+          <Button
+            buttonStyle="default mega"
+            disabled={saveFormDisabled}
+            id="quick-marc-record-save-edit"
+            onClick={(event) => confirmSubmit(event, true)}
+            marginBottom0
+          >
+            <FormattedMessage id="ui-quick-marc.record.save.continue" />
+          </Button>
+        )}
         <Button
           buttonStyle="primary mega"
           disabled={saveFormDisabled}
@@ -160,7 +163,7 @@ const QuickMarcEditor = ({
         renderEnd={end}
       />
     );
-  }, [confirmSubmit, saveFormDisabled, onClose]);
+  }, [confirmSubmit, saveFormDisabled, onClose, action]);
 
   const getConfirmModalMessage = () => (
     <FormattedMessage

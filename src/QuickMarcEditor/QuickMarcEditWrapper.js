@@ -29,7 +29,7 @@ import {
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
-  refreshMarcRecord: PropTypes.func.isRequired,
+  refreshPageData: PropTypes.func.isRequired,
   externalRecordPath: PropTypes.string.isRequired,
   initialValues: PropTypes.object.isRequired,
   instance: PropTypes.object,
@@ -47,7 +47,7 @@ const QuickMarcEditWrapper = ({
   mutator,
   marcType,
   locations,
-  refreshMarcRecord,
+  refreshPageData,
   externalRecordPath,
 }) => {
   const showCallout = useShowCallout();
@@ -123,11 +123,9 @@ const QuickMarcEditWrapper = ({
             : 'ui-quick-marc.record.save.success.processing',
         });
 
-        refreshMarcRecord();
+        await refreshPageData();
 
-        instanceResponse = await fetchInstance();
-
-        return { version: instanceResponse._version };
+        return { version: parseInt(marcRecord.relatedRecordVersion, 10) + 1 };
       })
       .catch(async (errorResponse) => {
         const parsedError = await parseHttpError(errorResponse);
@@ -135,7 +133,7 @@ const QuickMarcEditWrapper = ({
         setHttpError(parsedError);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showCallout, refreshMarcRecord]);
+  }, [showCallout, refreshPageData]);
 
   return (
     <QuickMarcEditor
