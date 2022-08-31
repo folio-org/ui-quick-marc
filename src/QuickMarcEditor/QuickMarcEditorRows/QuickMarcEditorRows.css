@@ -11,7 +11,7 @@
 
 .quickMarcEditorRowInfoPopover {
   width: 23px;
-  margin-right: 15px;
+  margin-inline: 10px;
 }
 
 .quickMarcEditorRowTag {
@@ -29,8 +29,8 @@
 }
 
 .quickMarcEditorActions {
-  width: 76px;
-  margin-left: 10px;
+  width: 50px;
+  margin-right: 10px;
 }
 
 .quickMarcEditorMovingRow {
