@@ -18,5 +18,10 @@
     &:focus {
       color: var(--placeholder-color-text);
     }
+
+    &:before,
+    &:after {
+      display: none;
+    }
   }
 }
