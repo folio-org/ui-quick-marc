@@ -7,9 +7,15 @@ import PropTypes from 'prop-types';
 
 import {
   TextArea,
+  HasCommand,
 } from '@folio/stripes/components';
 
-import { getResizeStyles } from './utils';
+import {
+  getResizeStyles,
+  cursorToNextSubfield,
+  cursorToPrevSubfield,
+} from './utils';
+import { KEYBOARD_COMMAND_NAMES } from '../../../common/constants';
 
 export const ContentField = ({
   input,
@@ -24,6 +30,14 @@ export const ContentField = ({
     target.setSelectionRange(end, end);
   }, []);
 
+  const keyCommands = [{
+    name: KEYBOARD_COMMAND_NAMES.NEXT_SUBFIELD,
+    handler: cursorToNextSubfield,
+  }, {
+    name: KEYBOARD_COMMAND_NAMES.PREV_SUBFIELD,
+    handler: cursorToPrevSubfield,
+  }];
+
   useLayoutEffect(() => {
     if (ref.current) {
       ref.current.style.height = '0';
@@ -37,13 +51,15 @@ export const ContentField = ({
   }, [ref, input.value]);
 
   return (
-    <TextArea
-      {...props}
-      input={input}
-      inputRef={ref}
-      data-testid={id}
-      onFocus={processSubfieldFocus}
-    />
+    <HasCommand commands={keyCommands}>
+      <TextArea
+        {...props}
+        input={input}
+        inputRef={ref}
+        data-testid={id}
+        onFocus={processSubfieldFocus}
+      />
+    </HasCommand>
   );
 };
 
