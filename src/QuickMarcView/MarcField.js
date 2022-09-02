@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -11,14 +11,20 @@ const MarcField = ({
   const fieldTag = Object.keys(field)[0];
   const hasIndicators = typeof field[fieldTag] !== 'string';
   const subFields = hasIndicators
-    ? field[fieldTag].subfields.map(subFieldTag => {
+    ? field[fieldTag].subfields.map((subFieldTag, index) => {
       const subKey = Object.keys(subFieldTag)[0];
 
       const subfieldValue = field[fieldTag].isHighlighted
         ? <mark>{subFieldTag[subKey]}</mark>
         : subFieldTag[subKey];
 
-      return [<span key={`span${subKey}`}>&#8225;</span>, subKey, ' ', subfieldValue, ' '];
+      return [
+        <span key={`span${subKey}`}>&#8225;</span>,
+        <Fragment key={index}>{subKey}</Fragment>,
+        <Fragment key={index + 1}>{' '}</Fragment>,
+        <Fragment key={index + 2}>{subfieldValue}</Fragment>,
+        <Fragment key={index + 3}>{' '}</Fragment>,
+      ];
     })
     : field[fieldTag].replace(/\\/g, ' ');
 
