@@ -18,13 +18,15 @@ const MarcField = ({
         ? <mark>{subFieldTag[subKey]}</mark>
         : subFieldTag[subKey];
 
-      return [
-        <span key={`span${subKey}`}>&#8225;</span>,
-        <Fragment key={index}>{subKey}</Fragment>,
-        <Fragment key={index + 1}>{' '}</Fragment>,
-        <Fragment key={index + 2}>{subfieldValue}</Fragment>,
-        <Fragment key={index + 3}>{' '}</Fragment>,
-      ];
+      return (
+        <Fragment key={`subfield-${index}-${subKey}`}>
+          <span>&#8225;</span>
+          {subKey}
+          {' '}
+          {subfieldValue}
+          {' '}
+        </Fragment>
+      );
     })
     : field[fieldTag].replace(/\\/g, ' ');
 
