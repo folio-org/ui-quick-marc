@@ -290,8 +290,8 @@ describe('Given QuickMarcEditWrapper', () => {
   afterEach(cleanup);
 
   describe('when is bib marc type', () => {
-    describe('when click on save button', () => {
-      it('should show on save message and redirect on load page', async () => {
+    describe('when click on "Save & keep editing" button', () => {
+      it('should show on save message and stay on the edit page', async () => {
         let getByText;
         const mockOnClose = jest.fn();
 
@@ -306,20 +306,41 @@ describe('Given QuickMarcEditWrapper', () => {
           }).getByText;
         });
 
+        await act(async () => { fireEvent.click(getByText('ui-quick-marc.record.save.continue')); });
+
+        expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
+        expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
+
+        waitFor(() => expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' }));
+
+        expect(mockOnClose).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when click on save button', () => {
+      it('should show on save message and redirect on load page', async () => {
+        let getByText;
+        const mockOnClose = jest.fn();
+
+        await act(async () => {
+          getByText = renderQuickMarcEditWrapper({
+            instance,
+            mutator,
+            onClose: mockOnClose,
+            location: {
+              search: 'relatedRecordVersion=1',
+            },
+          }).getByText;
+        });
+
         await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
         expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
         expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
 
-        waitFor(() => expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' }));
+        waitFor(() => expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' }));
 
-        await new Promise(resolve => {
-          setTimeout(() => {
-            expect(mockOnClose).toHaveBeenCalledWith();
-
-            resolve();
-          }, 10);
-        });
+        waitFor(() => expect(mockOnClose).toHaveBeenCalled());
       }, 1000);
 
       describe('when there is an error during POST request', () => {
@@ -455,6 +476,31 @@ describe('Given QuickMarcEditWrapper', () => {
   });
 
   describe('when is authority marc type', () => {
+    describe('when click on "Save & keep editing" button', () => {
+      it('should show on save message and stay on the edit page', async () => {
+        let getByText;
+        const mockOnClose = jest.fn();
+
+        await act(async () => {
+          getByText = renderQuickMarcEditWrapper({
+            instance,
+            mutator,
+            marcType: MARC_TYPES.AUTHORITY,
+            onClose: mockOnClose,
+          }).getByText;
+        });
+
+        await act(async () => { fireEvent.click(getByText('ui-quick-marc.record.save.continue')); });
+
+        expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
+        expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
+
+        waitFor(() => expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' }));
+
+        expect(mockOnClose).not.toHaveBeenCalled();
+      });
+    });
+
     describe('when click on save button', () => {
       it('should show on save message and redirect on load page', async () => {
         let getByText;
@@ -476,13 +522,7 @@ describe('Given QuickMarcEditWrapper', () => {
 
         waitFor(() => expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' }));
 
-        await new Promise(resolve => {
-          setTimeout(() => {
-            expect(mockOnClose).toHaveBeenCalledWith();
-
-            resolve();
-          }, 10);
-        });
+        waitFor(() => expect(mockOnClose).toHaveBeenCalled());
       }, 1000);
 
       describe('when there is an error during POST request', () => {

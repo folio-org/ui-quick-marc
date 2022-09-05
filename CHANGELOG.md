@@ -6,6 +6,7 @@
 * [UIQM-258](https://issues.folio.org/browse/UIQM-258) Add fake link Authority button next to MARC fields.
 * [UIQM-261](https://issues.folio.org/browse/UIQM-261) Shift focus to MARC tag box once you click Add or Delete field.
 * [UIQM-278](https://issues.folio.org/browse/UIQM-278) Add the ability to change the height of the QuickMarcView component.
+* [UIQM-272](https://issues.folio.org/browse/UIQM-272) Edit quickMARC : Display a Save & keep editing button
 * [UIQM-273](https://issues.folio.org/browse/UIQM-273) Add a new field : Default focus/cursor to after $a.
 * [UIQM-254](https://issues.folio.org/browse/UIQM-254) New permission: quickMARC Link/unlink authority records to bib records.
 * [UIQM-270](https://issues.folio.org/browse/UIQM-270) When user deletes a row then show a placeholder message that includes an Undo action.
