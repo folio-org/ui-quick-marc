@@ -224,5 +224,10 @@
     "record.error.leader.initial.invalidPositionValue": "لا يمكن حفظ التسجيلة. لا يمكن تحرير الحقل 008 بسبب {positions} غير صالحة. يرجى تحديث {positions} هذه التسجيلة. القيم الصالحة موجودة في {link}",
     "record.error.controlField.multiple": "لا يمكن حفظ التسجيلة. يمكن أن يكون بها حقل مارك 001 واحد فقط.",
     "record.save.error.notFound": "This record has been deleted by another user. You can no longer edit this record, hit the cancel button to return to the previous page.",
-    "noPlugin": "لم يتم تثبيت برنامج مساعد"
+    "noPlugin": "لم يتم تثبيت برنامج مساعد",
+    "permission.quick-marc-authority-records.linkUnlink": "quickMARC: Can Link/unlink authority records to bib records",
+    "record.fieldDeleted": "<strong>Field {tag}</strong> has been deleted from this MARC record.",
+    "record.fieldDeleted.undo": "تراجع",
+    "record.fieldDeleted.undoLabel": "تراجع عن حذف الحقل {tag}",
+    "record.quickMarcEditorLabel": "محرر مارك السريع"
 }
