@@ -223,6 +223,11 @@
     "record.error.leader.forbiddenBytes.authority": "无法保存记录。请检查头标。在 头标中只能编辑位置 5、17、18。",
     "record.error.leader.initial.invalidPositionValue": "无法保存记录。由于{positions}无效，无法编辑 008。请更新此记录的{positions} 。有效值列在{link}",
     "record.error.controlField.multiple": "无法保存记录。只能有一个MARC 001。",
-    "record.save.error.notFound": "此记录已被其他用户删除。不能再编辑此记录。点击取消返回上一页。",
-    "noPlugin": "No plugin is installed"
+    "record.save.error.notFound": "此记录已被其他用户删除。不能再编辑此记录。点击取消按钮返回上一页。",
+    "noPlugin": "未安装插件",
+    "permission.quick-marc-authority-records.linkUnlink": "quickMARC: Can Link/unlink authority records to bib records",
+    "record.fieldDeleted": "<strong>Field {tag}</strong> has been deleted from this MARC record.",
+    "record.fieldDeleted.undo": "Undo",
+    "record.fieldDeleted.undoLabel": "Undo delete of field {tag}",
+    "record.quickMarcEditorLabel": "Quick MARC editor"
 }

@@ -7,6 +7,11 @@
 * [UIQM-261](https://issues.folio.org/browse/UIQM-261) Shift focus to MARC tag box once you click Add or Delete field.
 * [UIQM-278](https://issues.folio.org/browse/UIQM-278) Add the ability to change the height of the QuickMarcView component.
 * [UIQM-272](https://issues.folio.org/browse/UIQM-272) Edit quickMARC : Display a Save & keep editing button
+* [UIQM-273](https://issues.folio.org/browse/UIQM-273) Add a new field : Default focus/cursor to after $a.
+* [UIQM-254](https://issues.folio.org/browse/UIQM-254) New permission: quickMARC Link/unlink authority records to bib records.
+* [UIQM-270](https://issues.folio.org/browse/UIQM-270) When user deletes a row then show a placeholder message that includes an Undo action.
+* [UIQM-255](https://issues.folio.org/browse/UIQM-255) quickMARC : Allow a user to tab from one subfield to another using a shortcut key in a single row
+* [UIQM-285](https://issues.folio.org/browse/UIQM-285) Also support version `12.0` of the `inventory` interface in okapiInterfaces.
 
 ## [5.1.2](https://github.com/folio-org/ui-quick-marc/tree/v5.1.2) (2022-08-23)
 
@@ -20,6 +25,7 @@
 * [UIQM-267](https://issues.folio.org/browse/UIQM-267) MARC Holdings - Leader position 18 accept a space and \ as a valid value
 * [UIQM-262](https://issues.folio.org/browse/UIQM-262) FE: Derive/Edit MARC bibliographic record: Improve Leader position 08 error message
 * [UIQM-265](https://issues.folio.org/browse/UIQM-265) Add/Edit MARC Holdings - Adding a new field above MARC 852 results in 852$b value populating the newly added field
+* [UIQM-256](https://issues.folio.org/browse/UIQM-256) Change field level actions display
 
 ## [5.1.0](https://github.com/folio-org/ui-quick-marc/tree/v5.1.0) (2022-07-08)
 

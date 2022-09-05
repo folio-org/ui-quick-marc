@@ -15,7 +15,7 @@
     "pluginType": "quick-marc",
     "displayName": "ui-quick-marc.meta.title",
     "okapiInterfaces": {
-      "inventory": "10.0 11.0",
+      "inventory": "10.0 11.0 12.0",
       "records-editor.records": "3.1"
     },
     "stripesDeps": [
@@ -86,6 +86,11 @@
           "records-editor.records.item.put",
           "inventory-storage.locations.collection.get"
         ],
+        "visible": true
+      },
+      {
+        "permissionName": "ui-quick-marc.quick-marc-authority-records.linkUnlink",
+        "displayName": "quickMARC: Can Link/unlink authority records to bib records",
         "visible": true
       }
     ]

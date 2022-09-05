@@ -15,9 +15,13 @@ import {
 import isEqual from 'lodash/isEqual';
 import defer from 'lodash/defer';
 
-import { Pluggable } from '@folio/stripes/core';
+import {
+  Pluggable,
+  IfPermission,
+} from '@folio/stripes/core';
 import {
   TextField,
+  Tooltip,
   IconButton,
   InfoPopover,
 } from '@folio/stripes/components';
@@ -28,6 +32,7 @@ import { MaterialCharsField } from './MaterialCharsField';
 import { PhysDescriptionField } from './PhysDescriptionField';
 import { FixedFieldFactory } from './FixedField';
 import { LocationField } from './LocationField';
+import { DeletedRowPlaceholder } from './DeletedRowPlaceholder';
 import {
   isReadOnly,
   hasIndicatorException,
@@ -56,6 +61,7 @@ const QuickMarcEditorRows = ({
     markRecordDeleted,
     deleteRecord,
     moveRecord,
+    restoreRecord,
   },
   marcType,
 }) => {
@@ -83,7 +89,13 @@ const QuickMarcEditorRows = ({
     const index = parseInt(target.dataset.index, 10);
     const recordsLength = parseInt(target.dataset.recordsLength, 10);
     const isLastRowDeleted = index === recordsLength - 1;
-    const indexOfFocusableField = isLastRowDeleted ? index - 1 : index;
+
+    const currElementRow = containerRef.current.querySelector(`[name="record-row[${index}]"]`);
+    const prevElementRow = currElementRow.previousElementSibling;
+    const nextElementRow = currElementRow.nextElementSibling;
+
+    const prevDeleteIcon = prevElementRow?.querySelector('[name="icon-delete"]');
+    const nextDeleteIcon = nextElementRow?.querySelector('[name="icon-delete"]');
 
     if (isNewRow(fields[index])) {
       deleteRecord({ index });
@@ -92,9 +104,21 @@ const QuickMarcEditorRows = ({
     }
 
     defer(() => {
-      containerRef.current.querySelector(`[name="records[${indexOfFocusableField}].tag"]`).focus();
+      if (nextDeleteIcon) {
+        nextDeleteIcon.focus();
+
+        return;
+      }
+
+      prevDeleteIcon?.focus();
     });
-  }, [fields, deleteRecord, markRecordDeleted, isNewRow]);
+
+    if (!isLastRowDeleted) {
+      defer(() => {
+        containerRef.current.querySelector(`[name="records[${index + 1}].tag"]`).focus();
+      });
+    }
+  }, [fields, deleteRecord, markRecordDeleted, isNewRow, containerRef]);
 
   const moveRow = useCallback(({ target }) => {
     moveRecord({
@@ -102,6 +126,10 @@ const QuickMarcEditorRows = ({
       indexToSwitch: parseInt(target.dataset.indexToSwitch, 10),
     });
   }, [moveRecord]);
+
+  const restoreRow = useCallback((index) => {
+    restoreRecord({ index });
+  }, [restoreRecord]);
 
   const processTagRef = useCallback(ref => {
     if (!ref) return;
@@ -131,7 +159,12 @@ const QuickMarcEditorRows = ({
             }
 
             if (recordRow._isDeleted) {
-              return null;
+              return (
+                <DeletedRowPlaceholder
+                  field={recordRow}
+                  restoreRow={() => restoreRow(idx)}
+                />
+              );
             }
 
             const isDisabled = isReadOnly(recordRow, action, marcType);
@@ -154,52 +187,94 @@ const QuickMarcEditorRows = ({
                 key={recordRow.id}
                 className={styles.quickMarcEditorRow}
                 data-testid="quick-marc-editorid"
+                name={`record-row[${idx}]`}
               >
                 <div className={styles.quickMarcEditorMovingRow}>
                   {
                     !withMoveUpRowAction && (
-                      <IconButton
-                        title={intl.formatMessage({ id: 'ui-quick-marc.record.moveUpRow' })}
-                        ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.moveUpRow' })}
-                        data-test-move-up-row
-                        data-index={idx}
-                        data-index-to-switch={idx - 1}
-                        icon="arrow-up"
-                        onClick={moveRow}
-                      />
+                      <Tooltip
+                        id="moving-row-move-up"
+                        text={intl.formatMessage({ id: 'ui-quick-marc.record.moveUpRow' })}
+                      >
+                        {({ ref, ariaIds }) => (
+                          <IconButton
+                            ref={ref}
+                            aria-labelledby={ariaIds.text}
+                            data-test-move-up-row
+                            data-index={idx}
+                            data-index-to-switch={idx - 1}
+                            icon="arrow-up"
+                            onClick={moveRow}
+                          />
+                        )}
+                      </Tooltip>
                     )
                   }
                   {
                     !withMoveDownRowAction && (
-                      <IconButton
-                        title={intl.formatMessage({ id: 'ui-quick-marc.record.moveDownRow' })}
-                        ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.moveDownRow' })}
-                        data-test-move-down-row
-                        data-index={idx}
-                        data-index-to-switch={idx + 1}
-                        icon="arrow-down"
-                        onClick={moveRow}
-                      />
+                      <Tooltip
+                        id="moving-row-move-down"
+                        text={intl.formatMessage({ id: 'ui-quick-marc.record.moveDownRow' })}
+                      >
+                        {({ ref, ariaIds }) => (
+                          <IconButton
+                            ref={ref}
+                            aria-labelledby={ariaIds.text}
+                            data-test-move-down-row
+                            data-index={idx}
+                            data-index-to-switch={idx + 1}
+                            icon="arrow-down"
+                            onClick={moveRow}
+                          />
+                        )}
+                      </Tooltip>
                     )
                   }
                 </div>
 
-                {
-                  isMARCFieldProtections && (
-                    <div className={styles.quickMarcEditorRowInfoPopover}>
-                      {
-                        isProtectedField && (
-                          <div data-testid="quick-marc-protected-field-popover">
-                            <InfoPopover
-                              iconSize="medium"
-                              content={intl.formatMessage({ id: 'ui-quick-marc.record.protectedField' })}
-                            />
-                          </div>
-                        )
-                      }
-                    </div>
-                  )
-                }
+                <div className={styles.quickMarcEditorActions}>
+                  {
+                    !withAddRowAction && (
+                      <Tooltip
+                        id="actions-add-field"
+                        text={intl.formatMessage({ id: 'ui-quick-marc.record.addField' })}
+                      >
+                        {({ ref, ariaIds }) => (
+                          <IconButton
+                            ref={ref}
+                            aria-labelledby={ariaIds.text}
+                            className="quickMarcEditorAddField"
+                            data-test-add-row
+                            data-index={idx}
+                            icon="plus-sign"
+                            onClick={addNewRow}
+                          />
+                        )}
+                      </Tooltip>
+                    )
+                  }
+                  {
+                    !withDeleteRowAction && (
+                      <Tooltip
+                        id="actions-delete-field"
+                        text={intl.formatMessage({ id: 'ui-quick-marc.record.deleteField' })}
+                      >
+                        {({ ref, ariaIds }) => (
+                          <IconButton
+                            ref={ref}
+                            aria-labelledby={ariaIds.text}
+                            name="icon-delete"
+                            data-testid={`data-test-remove-row-${idx}`}
+                            data-index={idx}
+                            data-records-length={records.length}
+                            icon="trash"
+                            onClick={deleteRow}
+                          />
+                        )}
+                      </Tooltip>
+                    )
+                  }
+                </div>
 
                 <div className={styles.quickMarcEditorRowTag}>
                   <Field
@@ -300,39 +375,28 @@ const QuickMarcEditorRows = ({
                   }
                 </div>
 
-                <div className={styles.quickMarcEditorActions}>
-                  {
-                    !withAddRowAction && (
-                      <IconButton
-                        className="quickMarcEditorAddField"
-                        title={intl.formatMessage({ id: 'ui-quick-marc.record.addField' })}
-                        ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.addField' })}
-                        data-test-add-row
-                        data-index={idx}
-                        icon="plus-sign"
-                        onClick={addNewRow}
-                      />
-                    )
-                  }
-                  {
-                    !withDeleteRowAction && (
-                      <IconButton
-                        title={intl.formatMessage({ id: 'ui-quick-marc.record.deleteField' })}
-                        ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.deleteField' })}
-                        data-testid={`data-test-remove-row-${idx}`}
-                        data-index={idx}
-                        data-records-length={records.length}
-                        icon="trash"
-                        onClick={deleteRow}
-                      />
-                    )
-                  }
-                  <Pluggable
-                    type="find-authority"
-                  >
+                {
+                  isMARCFieldProtections && (
+                    <div className={styles.quickMarcEditorRowInfoPopover}>
+                      {
+                        isProtectedField && (
+                          <div data-testid="quick-marc-protected-field-popover">
+                            <InfoPopover
+                              iconSize="medium"
+                              content={intl.formatMessage({ id: 'ui-quick-marc.record.protectedField' })}
+                            />
+                          </div>
+                        )
+                      }
+                    </div>
+                  )
+                }
+
+                <IfPermission perm="ui-quick-marc.quick-marc-authority-records.linkUnlink">
+                  <Pluggable type="find-authority">
                     <FormattedMessage id="ui-quick-marc.noPlugin" />
                   </Pluggable>
-                </div>
+                </IfPermission>
               </div>
             );
           })
@@ -359,6 +423,7 @@ QuickMarcEditorRows.propTypes = {
     deleteRecord: PropTypes.func.isRequired,
     markRecordDeleted: PropTypes.func.isRequired,
     moveRecord: PropTypes.func.isRequired,
+    restoreRecord: PropTypes.func.isRequired,
   }),
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
 };

@@ -22,6 +22,7 @@ import {
   Button,
   HasCommand,
   checkScope,
+  Layer,
 } from '@folio/stripes/components';
 import {
   useShowCallout,
@@ -300,37 +301,42 @@ const QuickMarcEditor = ({
     >
       <form>
         <Paneset>
-          <Pane
-            id="quick-marc-editor-pane"
-            dismissible
-            onClose={onClose}
-            defaultWidth="100%"
-            paneTitle={getPaneTitle()}
-            paneSub={<QuickMarcRecordInfo {...recordInfoProps} />}
-            footer={paneFooter}
+          <Layer
+            isOpen
+            contentLabel="ui-quick-marc.record.quickMarcEditorLabel"
           >
-            <OptimisticLockingBanner
-              httpError={httpError}
-              latestVersionLink={externalRecordPath}
-            />
-            <Row>
-              <Col
-                xs={12}
-                data-test-quick-marc-editor={instance?.id}
-                data-testid="quick-marc-editor"
-              >
-                <QuickMarcEditorRows
-                  action={action}
-                  fields={records}
-                  name="records"
-                  mutators={mutators}
-                  type={type}
-                  subtype={subtype}
-                  marcType={marcType}
-                />
-              </Col>
-            </Row>
-          </Pane>
+            <Pane
+              id="quick-marc-editor-pane"
+              dismissible
+              onClose={onClose}
+              defaultWidth="100%"
+              paneTitle={getPaneTitle()}
+              paneSub={<QuickMarcRecordInfo {...recordInfoProps} />}
+              footer={paneFooter}
+            >
+              <OptimisticLockingBanner
+                httpError={httpError}
+                latestVersionLink={externalRecordPath}
+              />
+              <Row>
+                <Col
+                  xs={12}
+                  data-test-quick-marc-editor={instance?.id}
+                  data-testid="quick-marc-editor"
+                >
+                  <QuickMarcEditorRows
+                    action={action}
+                    fields={records}
+                    name="records"
+                    mutators={mutators}
+                    type={type}
+                    subtype={subtype}
+                    marcType={marcType}
+                  />
+                </Col>
+              </Row>
+            </Pane>
+          </Layer>
         </Paneset>
       </form>
       <ConfirmationModal
