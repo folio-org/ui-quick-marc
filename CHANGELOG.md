@@ -5,6 +5,15 @@
 * [UIQM-259](https://issues.folio.org/browse/UIQM-259) Edit MARC authority: User does not get a notification that the record is edited has been deleted by another user.
 * [UIQM-258](https://issues.folio.org/browse/UIQM-258) Add fake link Authority button next to MARC fields.
 * [UIQM-261](https://issues.folio.org/browse/UIQM-261) Shift focus to MARC tag box once you click Add or Delete field.
+* [UIQM-278](https://issues.folio.org/browse/UIQM-278) Add the ability to change the height of the QuickMarcView component.
+* [UIQM-273](https://issues.folio.org/browse/UIQM-273) Add a new field : Default focus/cursor to after $a.
+* [UIQM-254](https://issues.folio.org/browse/UIQM-254) New permission: quickMARC Link/unlink authority records to bib records.
+* [UIQM-270](https://issues.folio.org/browse/UIQM-270) When user deletes a row then show a placeholder message that includes an Undo action.
+* [UIQM-255](https://issues.folio.org/browse/UIQM-255) quickMARC : Allow a user to tab from one subfield to another using a shortcut key in a single row
+* [UIQM-285](https://issues.folio.org/browse/UIQM-285) Also support version `12.0` of the `inventory` interface in okapiInterfaces.
+
+## [5.1.2](https://github.com/folio-org/ui-quick-marc/tree/v5.1.2) (2022-08-23)
+
 * [UIQM-266](https://issues.folio.org/browse/UIQM-266) Edit quickMARC: Undoing a delete field is not restored in the same position.
 * [UIQM-269](https://issues.folio.org/browse/UIQM-269) Remove default $a subfield at "852" field when user created "MARC Holdings" record
 

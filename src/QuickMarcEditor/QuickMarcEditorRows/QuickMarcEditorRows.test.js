@@ -164,6 +164,18 @@ describe('Given QuickMarcEditorRows', () => {
       expect(defer).toHaveBeenCalled();
     });
 
+    describe('when the subfield is focused', () => {
+      it('should have a cursor at the end of the field value', () => {
+        const { getByTestId } = renderQuickMarcEditorRows();
+        const subfield = getByTestId('content-field-0');
+        const valueLength = subfield.value.length;
+        const spySetSelectionRange = jest.spyOn(subfield, 'setSelectionRange');
+
+        fireEvent.focus(subfield);
+        expect(spySetSelectionRange).toHaveBeenCalledWith(valueLength, valueLength);
+      });
+    });
+
     describe('and deleting a new row and saving', () => {
       it('should not mark the row as deleted', () => {
         const {
