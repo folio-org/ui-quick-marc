@@ -50,7 +50,7 @@ jest.mock('./QuickMarcRecordInfo', () => {
 });
 
 const onCloseMock = jest.fn();
-const onSubmitMock = jest.fn(() => Promise.resolve({ relatedMarcVersion: 1 }));
+const onSubmitMock = jest.fn(() => Promise.resolve({ version: 1 }));
 
 const instance = {
   id: faker.random.uuid(),
@@ -249,6 +249,15 @@ describe('Given QuickMarcEditor', () => {
 
         expect(getByText('ui-quick-marc.holdings-record.create.title')).toBeDefined();
       });
+
+      it('should not show "Save & keep editing" button', () => {
+        const { queryByText } = renderQuickMarcEditor({
+          action: QUICK_MARC_ACTIONS.CREATE,
+          marcType: MARC_TYPES.HOLDINGS,
+        });
+
+        expect(queryByText('ui-quick-marc.record.save.continue')).not.toBeInTheDocument();
+      });
     });
 
     describe('when action is edit', () => {
@@ -258,6 +267,14 @@ describe('Given QuickMarcEditor', () => {
         });
 
         expect(getByText('ui-quick-marc.holdings-record.edit.title')).toBeDefined();
+      });
+
+      it('should display "Save & keep editing" button', () => {
+        const { getByText } = renderQuickMarcEditor({
+          marcType: MARC_TYPES.HOLDINGS,
+        });
+
+        expect(getByText('ui-quick-marc.record.save.continue')).toBeDefined();
       });
     });
   });
