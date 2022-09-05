@@ -85,15 +85,33 @@ const QuickMarcEditorRows = ({
     });
   }, [addRecord]);
 
+  const getNextFocusableElement = (element) => {
+    let prevElementRow = element.previousElementSibling;
+    let nextElementRow = element.nextElementSibling;
+
+    let prevFocusElmnt;
+    let nextFocusElmnt;
+
+    while (nextElementRow && !nextFocusElmnt) {
+      nextFocusElmnt = nextElementRow?.querySelector('[name="icon-delete"]') || nextElementRow?.querySelector('[name="icon-arrow-up"]');
+      nextElementRow = nextElementRow.nextElementSibling;
+      if (!nextElementRow) break;
+    }
+
+    while (!nextFocusElmnt && prevElementRow && !prevFocusElmnt) {
+      prevFocusElmnt = prevElementRow?.querySelector('[name="icon-delete"]');
+      prevElementRow = prevElementRow.previousElementSibling;
+      if (!prevElementRow) break;
+    }
+
+    return nextFocusElmnt || prevFocusElmnt;
+  };
+
   const deleteRow = useCallback(({ target }) => {
     const index = parseInt(target.dataset.index, 10);
 
-    const currElementRow = containerRef.current.querySelector(`[name="record-row[${index}]"]`);
-    const prevElementRow = currElementRow.previousElementSibling;
-    const nextElementRow = currElementRow.nextElementSibling;
-
-    const prevDeleteIcon = prevElementRow?.querySelector('[name="icon-delete"]');
-    const nextDeleteIcon = nextElementRow?.querySelector('[name="icon-delete"]');
+    const indxElementRow = containerRef.current.querySelector(`[name="record-row[${index}]"]`);
+    const nextFocusableElement = getNextFocusableElement(indxElementRow);
 
     if (isNewRow(fields[index])) {
       deleteRecord({ index });
@@ -102,13 +120,7 @@ const QuickMarcEditorRows = ({
     }
 
     defer(() => {
-      if (nextDeleteIcon) {
-        nextDeleteIcon.focus();
-
-        return;
-      }
-
-      prevDeleteIcon?.focus();
+      nextFocusableElement?.focus();
     });
   }, [fields, deleteRecord, markRecordDeleted, isNewRow, containerRef]);
 
@@ -191,6 +203,7 @@ const QuickMarcEditorRows = ({
                         {({ ref, ariaIds }) => (
                           <IconButton
                             ref={ref}
+                            name="icon-arrow-up"
                             aria-labelledby={ariaIds.text}
                             data-test-move-up-row
                             data-index={idx}
@@ -211,6 +224,7 @@ const QuickMarcEditorRows = ({
                         {({ ref, ariaIds }) => (
                           <IconButton
                             ref={ref}
+                            name="icon-arrow-down"
                             aria-labelledby={ariaIds.text}
                             data-test-move-down-row
                             data-index={idx}
