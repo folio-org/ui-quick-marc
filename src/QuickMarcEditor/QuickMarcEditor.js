@@ -5,7 +5,7 @@ import React, {
   useCallback,
   useEffect,
 } from 'react';
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import find from 'lodash/find';
@@ -65,6 +65,7 @@ const QuickMarcEditor = ({
   externalRecordPath,
 }) => {
   const history = useHistory();
+  const location = useLocation();
   const showCallout = useShowCallout();
   const [records, setRecords] = useState([]);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
@@ -85,10 +86,14 @@ const QuickMarcEditor = ({
     : submitting;
 
   const redirectToVersion = useCallback((updatedVersion) => {
-    history.push({
-      search: `?relatedRecordVersion=${updatedVersion}`,
+    const searchParams = new URLSearchParams(location.search);
+
+    searchParams.set('relatedRecordVersion', updatedVersion);
+
+    history.replace({
+      search: searchParams.toString(),
     });
-  }, [history]);
+  }, [history, location.search]);
 
   const handleSubmitResponse = useCallback((updatedRecord) => {
     if (!updatedRecord?.version) {
