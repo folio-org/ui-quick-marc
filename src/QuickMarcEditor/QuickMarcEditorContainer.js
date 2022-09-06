@@ -62,6 +62,9 @@ const QuickMarcEditorContainer = ({
   const [locations, setLocations] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
+  const searchParams = new URLSearchParams(location.search);
+  const relatedRecordVersion = searchParams.get('relatedRecordVersion');
+
   const showCallout = useShowCallout();
 
   const closeEditor = useCallback(() => {
@@ -81,7 +84,7 @@ const QuickMarcEditorContainer = ({
     return `${externalRecordPath}/${externalId}`;
   }, [externalRecordPath, marcType, externalId, instanceId, action]);
 
-  useEffect(() => {
+  const loadData = useCallback(async () => {
     setIsLoading(true);
 
     const path = action === QUICK_MARC_ACTIONS.CREATE
@@ -94,7 +97,7 @@ const QuickMarcEditorContainer = ({
       : mutator.quickMarcEditMarcRecord.GET();
     const locationsPromise = mutator.locations.GET();
 
-    Promise.all([instancePromise, marcRecordPromise, locationsPromise])
+    await Promise.all([instancePromise, marcRecordPromise, locationsPromise])
       .then(([instanceResponse, marcRecordResponse, locationsResponse]) => {
         const dehydratedMarcRecord = action === QUICK_MARC_ACTIONS.CREATE
           ? getCreateMarcRecordResponse(instanceResponse)
@@ -112,8 +115,12 @@ const QuickMarcEditorContainer = ({
         showCallout({ messageId: 'ui-quick-marc.record.load.error', type: 'error' });
         closeEditor();
       });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [externalId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [externalId, relatedRecordVersion]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   if (isLoading) {
     return (
@@ -136,6 +143,7 @@ const QuickMarcEditorContainer = ({
       location={location}
       locations={locations}
       marcType={marcType}
+      refreshPageData={loadData}
       externalRecordPath={externalRecordUrl}
     />
   );

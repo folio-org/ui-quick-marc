@@ -4,6 +4,7 @@ import {
   render,
   cleanup,
   fireEvent,
+  waitFor,
 } from '@testing-library/react';
 import faker from 'faker';
 
@@ -49,7 +50,7 @@ jest.mock('./QuickMarcRecordInfo', () => {
 });
 
 const onCloseMock = jest.fn();
-const onSubmitMock = jest.fn();
+const onSubmitMock = jest.fn(() => Promise.resolve({ version: 1 }));
 
 const instance = {
   id: faker.random.uuid(),
@@ -149,8 +150,25 @@ describe('Given QuickMarcEditor', () => {
     });
   });
 
+  describe('when clicked save and keep editing button', () => {
+    it('should handle onSubmit and keep editor open', async () => {
+      const {
+        getByTestId,
+        getByText,
+      } = renderQuickMarcEditor();
+
+      const contentField = getByTestId('content-field-1');
+
+      fireEvent.change(contentField, { target: { value: 'Changed test title' } });
+      fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
+
+      expect(onSubmitMock).toHaveBeenCalled();
+      expect(onCloseMock).not.toHaveBeenCalled();
+    });
+  });
+
   describe('when clicked save button', () => {
-    it('should handle onSubmit', () => {
+    it('should handle onSubmit and close editor', async () => {
       const {
         getByTestId,
         getByText,
@@ -162,6 +180,8 @@ describe('Given QuickMarcEditor', () => {
       fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
       expect(onSubmitMock).toHaveBeenCalled();
+
+      waitFor(() => expect(onCloseMock).toHaveBeenCalledWith());
     });
 
     describe('when there are deleted fields', () => {
@@ -229,6 +249,15 @@ describe('Given QuickMarcEditor', () => {
 
         expect(getByText('ui-quick-marc.holdings-record.create.title')).toBeDefined();
       });
+
+      it('should not show "Save & keep editing" button', () => {
+        const { queryByText } = renderQuickMarcEditor({
+          action: QUICK_MARC_ACTIONS.CREATE,
+          marcType: MARC_TYPES.HOLDINGS,
+        });
+
+        expect(queryByText('ui-quick-marc.record.save.continue')).not.toBeInTheDocument();
+      });
     });
 
     describe('when action is edit', () => {
@@ -238,6 +267,14 @@ describe('Given QuickMarcEditor', () => {
         });
 
         expect(getByText('ui-quick-marc.holdings-record.edit.title')).toBeDefined();
+      });
+
+      it('should display "Save & keep editing" button', () => {
+        const { getByText } = renderQuickMarcEditor({
+          marcType: MARC_TYPES.HOLDINGS,
+        });
+
+        expect(getByText('ui-quick-marc.record.save.continue')).toBeDefined();
       });
     });
   });
