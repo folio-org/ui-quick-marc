@@ -95,13 +95,13 @@ const QuickMarcEditorRows = ({
     while (nextElementRow && !nextFocusElmnt) {
       nextFocusElmnt = nextElementRow?.querySelector('[name="icon-delete"]') || nextElementRow?.querySelector('[name="icon-arrow-up"]');
       nextElementRow = nextElementRow.nextElementSibling;
-      if (!nextElementRow) break;
     }
 
-    while (!nextFocusElmnt && prevElementRow && !prevFocusElmnt) {
-      prevFocusElmnt = prevElementRow?.querySelector('[name="icon-delete"]');
-      prevElementRow = prevElementRow.previousElementSibling;
-      if (!prevElementRow) break;
+    if (!nextFocusElmnt) {
+      while (prevElementRow && !prevFocusElmnt) {
+        prevFocusElmnt = prevElementRow?.querySelector('[name="icon-delete"]');
+        prevElementRow = prevElementRow.previousElementSibling;
+      }
     }
 
     return nextFocusElmnt || prevFocusElmnt;
