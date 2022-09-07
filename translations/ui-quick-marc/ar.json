@@ -229,5 +229,7 @@
     "record.fieldDeleted": "<strong>Field {tag}</strong> has been deleted from this MARC record.",
     "record.fieldDeleted.undo": "تراجع",
     "record.fieldDeleted.undoLabel": "تراجع عن حذف الحقل {tag}",
-    "record.quickMarcEditorLabel": "محرر مارك السريع"
+    "record.quickMarcEditorLabel": "محرر مارك السريع",
+    "record.save.error.dublicate": "Instance cannot be updated. Depricated instance version.",
+    "record.save.continue": "Save & keep editing"
 }

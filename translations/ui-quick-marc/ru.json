@@ -229,5 +229,7 @@
     "record.fieldDeleted": "<strong>Field {tag}</strong> has been deleted from this MARC record.",
     "record.fieldDeleted.undo": "Undo",
     "record.fieldDeleted.undoLabel": "Undo delete of field {tag}",
-    "record.quickMarcEditorLabel": "Quick MARC editor"
+    "record.quickMarcEditorLabel": "Quick MARC editor",
+    "record.save.error.dublicate": "Instance cannot be updated. Depricated instance version.",
+    "record.save.continue": "Save & keep editing"
 }
