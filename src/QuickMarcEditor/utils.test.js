@@ -135,6 +135,68 @@ describe('QuickMarcEditor utils', () => {
     });
   });
 
+  describe('markLinkedRecordByIndex', () => {
+    it('should mark record as linked', () => {
+      const state = {
+        formState: {
+          values: {
+            records: [
+              {
+                tag: '010',
+                content: '$a fss $b asd',
+              },
+              {
+                tag: '011',
+                content: '$a fss $b asd',
+              },
+              {
+                tag: '012',
+                content: '$a fss $b asd',
+              },
+            ],
+          },
+        },
+      };
+
+      const index = 1;
+      const authority = {};
+      const newRecords = utils.markLinkedRecordByIndex(index, authority, state);
+
+      expect(newRecords[index]._isLinked).toBe(true);
+    });
+  });
+
+  describe('markUnlinkedRecordByIndex', () => {
+    it('should mark record as unlinked', () => {
+      const state = {
+        formState: {
+          values: {
+            records: [
+              {
+                tag: '010',
+                content: '$a fss $b asd',
+              },
+              {
+                tag: '011',
+                content: '$a fss $b asd',
+                _isLinked: true,
+              },
+              {
+                tag: '012',
+                content: '$a fss $b asd',
+              },
+            ],
+          },
+        },
+      };
+
+      const index = 1;
+      const newRecords = utils.markUnlinkedRecordByIndex(index, state);
+
+      expect(newRecords[index]._isLinked).toBe(false);
+    });
+  });
+
   describe('validateLeader', () => {
     it('should not return error message when leader is valid', () => {
       expect(

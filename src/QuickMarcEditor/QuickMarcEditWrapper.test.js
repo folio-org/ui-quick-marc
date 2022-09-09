@@ -259,6 +259,7 @@ const renderQuickMarcEditWrapper = ({
       location={{}}
       locations={locations}
       externalRecordPath="/some-record"
+      refreshPageData={jest.fn().mockResolvedValue()}
       {...props}
     />
   </MemoryRouter>,

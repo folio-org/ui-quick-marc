@@ -39,6 +39,8 @@ import {
 import {
   addNewRecord,
   markDeletedRecordByIndex,
+  markLinkedRecordByIndex,
+  markUnlinkedRecordByIndex,
   reorderRecords,
   restoreRecordAtIndex,
   getCorrespondingMarcTag,
@@ -98,7 +100,6 @@ const QuickMarcEditor = ({
 
   const handleSubmitResponse = useCallback((updatedRecord) => {
     if (!updatedRecord?.version) {
-      reset();
       continueAfterSave.current = false;
 
       return;
@@ -393,6 +394,16 @@ export default stripesFinalForm({
     },
     markRecordDeleted: ([{ index }], state, tools) => {
       const records = markDeletedRecordByIndex(index, state);
+
+      tools.changeValue(state, 'records', () => records);
+    },
+    markRecordLinked: ([{ index, authority }], state, tools) => {
+      const records = markLinkedRecordByIndex(index, authority, state);
+
+      tools.changeValue(state, 'records', () => records);
+    },
+    markRecordUnlinked: ([{ index }], state, tools) => {
+      const records = markUnlinkedRecordByIndex(index, state);
 
       tools.changeValue(state, 'records', () => records);
     },
