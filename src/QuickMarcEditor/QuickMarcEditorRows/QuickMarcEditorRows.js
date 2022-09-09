@@ -144,6 +144,8 @@ const QuickMarcEditorRows = ({
     }
   }, [indexOfNewRow, newRowRef]);
 
+  const handleLinkAuthority = (authority, recordRow) => {};
+
   return (
     <div
       id="quick-marc-editor-rows"
@@ -399,7 +401,10 @@ const QuickMarcEditorRows = ({
                 }
 
                 <IfPermission perm="ui-quick-marc.quick-marc-authority-records.linkUnlink">
-                  <Pluggable type="find-authority">
+                  <Pluggable
+                    type="find-authority"
+                    onLinkRecord={(authority) => handleLinkAuthority(authority, recordRow)}
+                  >
                     <FormattedMessage id="ui-quick-marc.noPlugin" />
                   </Pluggable>
                 </IfPermission>
