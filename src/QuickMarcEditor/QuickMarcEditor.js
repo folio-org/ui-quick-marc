@@ -98,7 +98,6 @@ const QuickMarcEditor = ({
 
   const handleSubmitResponse = useCallback((updatedRecord) => {
     if (!updatedRecord?.version) {
-      reset();
       continueAfterSave.current = false;
 
       return;
@@ -111,7 +110,7 @@ const QuickMarcEditor = ({
     }
 
     onClose();
-  }, [redirectToVersion, onClose, reset]);
+  }, [redirectToVersion, onClose]);
 
   const confirmSubmit = useCallback((e, isKeepEditing = false) => {
     continueAfterSave.current = isKeepEditing;
