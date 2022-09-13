@@ -82,33 +82,24 @@ const QuickMarcEditorRows = ({
     });
   }, [addRecord]);
 
-  const getNextFocusableElement = (element) => {
-    let prevElementRow = element.previousElementSibling;
-    let nextElementRow = element.nextElementSibling;
+  const getNextFocusableElement = (row) => {
+    const prevRow = row.previousElementSibling;
+    const nextRow = row.nextElementSibling;
 
-    let prevFocusElmnt;
-    let nextFocusElmnt;
-
-    while (nextElementRow && !nextFocusElmnt) {
-      nextFocusElmnt = nextElementRow?.querySelector('[name="icon-delete"]') || nextElementRow?.querySelector('[name="icon-arrow-up"]');
-      nextElementRow = nextElementRow.nextElementSibling;
+    if (nextRow) {
+      return nextRow.querySelector('[data-icon="delete-row"]') ||
+        nextRow.querySelector('[data-icon="move-up"]');
     }
 
-    if (!nextFocusElmnt) {
-      while (prevElementRow && !prevFocusElmnt) {
-        prevFocusElmnt = prevElementRow?.querySelector('[name="icon-delete"]');
-        prevElementRow = prevElementRow.previousElementSibling;
-      }
-    }
-
-    return nextFocusElmnt || prevFocusElmnt;
+    return prevRow.querySelector('[data-icon="delete-row"]') ||
+      prevRow.querySelector('[data-icon="move-up"]');
   };
 
   const deleteRow = useCallback(({ target }) => {
     const index = parseInt(target.dataset.index, 10);
 
-    const indxElementRow = containerRef.current.querySelector(`[name="record-row[${index}]"]`);
-    const nextFocusableElement = getNextFocusableElement(indxElementRow);
+    const row = containerRef.current.querySelector(`[data-row="record-row[${index}]"]`);
+    const nextFocusableElement = getNextFocusableElement(row);
 
     if (isNewRow(fields[index])) {
       deleteRecord({ index });
@@ -196,7 +187,7 @@ const QuickMarcEditorRows = ({
                 key={recordRow.id}
                 className={styles.quickMarcEditorRow}
                 data-testid="quick-marc-editorid"
-                name={`record-row[${idx}]`}
+                data-row={`record-row[${idx}]`}
               >
                 <div className={styles.quickMarcEditorMovingRow}>
                   {
@@ -208,7 +199,7 @@ const QuickMarcEditorRows = ({
                         {({ ref, ariaIds }) => (
                           <IconButton
                             ref={ref}
-                            name="icon-arrow-up"
+                            data-icon="move-up"
                             aria-labelledby={ariaIds.text}
                             data-test-move-up-row
                             data-index={idx}
@@ -274,10 +265,9 @@ const QuickMarcEditorRows = ({
                           <IconButton
                             ref={ref}
                             aria-labelledby={ariaIds.text}
-                            name="icon-delete"
+                            data-icon="delete-row"
                             data-testid={`data-test-remove-row-${idx}`}
                             data-index={idx}
-                            data-records-length={records.length}
                             icon="trash"
                             onClick={deleteRow}
                           />
