@@ -212,6 +212,8 @@
   "record.fieldDeleted": "<strong>Field {tag}</strong> has been deleted from this MARC record.",
   "record.fieldDeleted.undo": "Undo",
   "record.fieldDeleted.undoLabel": "Undo delete of field {tag}",
+  "record.link": "Link to MARC Authority record",
+  "record.unlink": "Unlink from MARC Authority record",
 
   "record.materialChars.materialType.a": "Language material",
   "record.materialChars.materialType.c": "Notated music",

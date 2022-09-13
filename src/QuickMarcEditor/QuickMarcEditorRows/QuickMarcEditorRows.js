@@ -8,17 +8,11 @@ import {
   useFormState,
 } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
-import {
-  FormattedMessage,
-  useIntl,
-} from 'react-intl';
+import { useIntl } from 'react-intl';
 import isEqual from 'lodash/isEqual';
 import defer from 'lodash/defer';
 
-import {
-  Pluggable,
-  IfPermission,
-} from '@folio/stripes/core';
+import { IfPermission } from '@folio/stripes/core';
 import {
   TextField,
   Tooltip,
@@ -50,6 +44,7 @@ import {
 } from '../../common/constants';
 
 import styles from './QuickMarcEditorRows.css';
+import { LinkButton } from './LinkButton/LinkButton';
 
 const QuickMarcEditorRows = ({
   action,
@@ -59,6 +54,8 @@ const QuickMarcEditorRows = ({
   mutators: {
     addRecord,
     markRecordDeleted,
+    markRecordLinked,
+    markRecordUnlinked,
     deleteRecord,
     moveRecord,
     restoreRecord,
@@ -143,6 +140,14 @@ const QuickMarcEditorRows = ({
       newRowRef.current = ref;
     }
   }, [indexOfNewRow, newRowRef]);
+
+  const handleLinkAuthority = useCallback((authority, index) => {
+    markRecordLinked({ index, authority });
+  }, [markRecordLinked]);
+
+  const handleUnlinkAuthority = useCallback(index => {
+    markRecordUnlinked({ index });
+  }, [markRecordUnlinked]);
 
   return (
     <div
@@ -399,9 +404,11 @@ const QuickMarcEditorRows = ({
                 }
 
                 <IfPermission perm="ui-quick-marc.quick-marc-authority-records.linkUnlink">
-                  <Pluggable type="find-authority">
-                    <FormattedMessage id="ui-quick-marc.noPlugin" />
-                  </Pluggable>
+                  <LinkButton
+                    handleLinkAuthority={(authority) => handleLinkAuthority(authority, idx)}
+                    handleUnlinkAuthority={() => handleUnlinkAuthority(idx)}
+                    isLinked={recordRow._isLinked}
+                  />
                 </IfPermission>
               </div>
             );
@@ -423,11 +430,14 @@ QuickMarcEditorRows.propTypes = {
     isProtected: PropTypes.bool.isRequired,
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     _isDeleted: PropTypes.bool,
+    _isLinked: PropTypes.bool,
   })),
   mutators: PropTypes.shape({
     addRecord: PropTypes.func.isRequired,
     deleteRecord: PropTypes.func.isRequired,
     markRecordDeleted: PropTypes.func.isRequired,
+    markRecordLinked: PropTypes.func.isRequired,
+    markRecordUnlinked: PropTypes.func.isRequired,
     moveRecord: PropTypes.func.isRequired,
     restoreRecord: PropTypes.func.isRequired,
   }),
