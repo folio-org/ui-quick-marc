@@ -13,6 +13,7 @@
 * [UIQM-255](https://issues.folio.org/browse/UIQM-255) quickMARC : Allow a user to tab from one subfield to another using a shortcut key in a single row
 * [UIQM-285](https://issues.folio.org/browse/UIQM-285) Also support version `12.0` of the `inventory` interface in okapiInterfaces.
 * [UIQM-286](https://issues.folio.org/browse/UIQM-286) Add key to Marc fields.
+* [UIQM-289](https://issues.folio.org/browse/UIQM-289) The entered data is deleted when user click on the "Save & close" button and validation error appears
 * [UIQM-290](https://issues.folio.org/browse/UIQM-290) Detail Record : Click Link button to select a MARC authority record
 
 ## [5.1.2](https://github.com/folio-org/ui-quick-marc/tree/v5.1.2) (2022-08-23)

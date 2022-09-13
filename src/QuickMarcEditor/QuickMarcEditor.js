@@ -112,7 +112,7 @@ const QuickMarcEditor = ({
     }
 
     onClose();
-  }, [redirectToVersion, onClose, reset]);
+  }, [redirectToVersion, onClose]);
 
   const confirmSubmit = useCallback((e, isKeepEditing = false) => {
     continueAfterSave.current = isKeepEditing;
