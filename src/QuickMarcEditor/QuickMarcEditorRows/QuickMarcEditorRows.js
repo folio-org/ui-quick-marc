@@ -8,14 +8,11 @@ import {
   useFormState,
 } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
-import {
-  FormattedMessage,
-  useIntl,
-} from 'react-intl';
+import { useIntl } from 'react-intl';
 import isEqual from 'lodash/isEqual';
 import defer from 'lodash/defer';
 
-import { Pluggable } from '@folio/stripes/core';
+import { IfPermission } from '@folio/stripes/core';
 import {
   TextField,
   Tooltip,
@@ -29,6 +26,7 @@ import { MaterialCharsField } from './MaterialCharsField';
 import { PhysDescriptionField } from './PhysDescriptionField';
 import { FixedFieldFactory } from './FixedField';
 import { LocationField } from './LocationField';
+import { DeletedRowPlaceholder } from './DeletedRowPlaceholder';
 import {
   isReadOnly,
   hasIndicatorException,
@@ -46,6 +44,7 @@ import {
 } from '../../common/constants';
 
 import styles from './QuickMarcEditorRows.css';
+import { LinkButton } from './LinkButton/LinkButton';
 
 const QuickMarcEditorRows = ({
   action,
@@ -55,8 +54,11 @@ const QuickMarcEditorRows = ({
   mutators: {
     addRecord,
     markRecordDeleted,
+    markRecordLinked,
+    markRecordUnlinked,
     deleteRecord,
     moveRecord,
+    restoreRecord,
   },
   marcType,
 }) => {
@@ -80,15 +82,33 @@ const QuickMarcEditorRows = ({
     });
   }, [addRecord]);
 
+  const getNextFocusableElement = (element) => {
+    let prevElementRow = element.previousElementSibling;
+    let nextElementRow = element.nextElementSibling;
+
+    let prevFocusElmnt;
+    let nextFocusElmnt;
+
+    while (nextElementRow && !nextFocusElmnt) {
+      nextFocusElmnt = nextElementRow?.querySelector('[name="icon-delete"]') || nextElementRow?.querySelector('[name="icon-arrow-up"]');
+      nextElementRow = nextElementRow.nextElementSibling;
+    }
+
+    if (!nextFocusElmnt) {
+      while (prevElementRow && !prevFocusElmnt) {
+        prevFocusElmnt = prevElementRow?.querySelector('[name="icon-delete"]');
+        prevElementRow = prevElementRow.previousElementSibling;
+      }
+    }
+
+    return nextFocusElmnt || prevFocusElmnt;
+  };
+
   const deleteRow = useCallback(({ target }) => {
     const index = parseInt(target.dataset.index, 10);
 
-    const currElementRow = containerRef.current.querySelector(`[name="record-row[${index}]"]`);
-    const prevElementRow = currElementRow.previousElementSibling;
-    const nextElementRow = currElementRow.nextElementSibling;
-
-    const prevDeleteIcon = prevElementRow?.querySelector('[name="icon-delete"]');
-    const nextDeleteIcon = nextElementRow?.querySelector('[name="icon-delete"]');
+    const indxElementRow = containerRef.current.querySelector(`[name="record-row[${index}]"]`);
+    const nextFocusableElement = getNextFocusableElement(indxElementRow);
 
     if (isNewRow(fields[index])) {
       deleteRecord({ index });
@@ -97,15 +117,9 @@ const QuickMarcEditorRows = ({
     }
 
     defer(() => {
-      if (nextDeleteIcon) {
-        nextDeleteIcon.focus();
-
-        return;
-      }
-
-      prevDeleteIcon?.focus();
+      nextFocusableElement?.focus();
     });
-  }, [fields, deleteRecord, markRecordDeleted, isNewRow]);
+  }, [fields, deleteRecord, markRecordDeleted, isNewRow, containerRef]);
 
   const moveRow = useCallback(({ target }) => {
     moveRecord({
@@ -113,6 +127,10 @@ const QuickMarcEditorRows = ({
       indexToSwitch: parseInt(target.dataset.indexToSwitch, 10),
     });
   }, [moveRecord]);
+
+  const restoreRow = useCallback((index) => {
+    restoreRecord({ index });
+  }, [restoreRecord]);
 
   const processTagRef = useCallback(ref => {
     if (!ref) return;
@@ -122,6 +140,14 @@ const QuickMarcEditorRows = ({
       newRowRef.current = ref;
     }
   }, [indexOfNewRow, newRowRef]);
+
+  const handleLinkAuthority = useCallback((authority, index) => {
+    markRecordLinked({ index, authority });
+  }, [markRecordLinked]);
+
+  const handleUnlinkAuthority = useCallback(index => {
+    markRecordUnlinked({ index });
+  }, [markRecordUnlinked]);
 
   return (
     <div
@@ -142,7 +168,12 @@ const QuickMarcEditorRows = ({
             }
 
             if (recordRow._isDeleted) {
-              return null;
+              return (
+                <DeletedRowPlaceholder
+                  field={recordRow}
+                  restoreRow={() => restoreRow(idx)}
+                />
+              );
             }
 
             const isDisabled = isReadOnly(recordRow, action, marcType);
@@ -177,6 +208,7 @@ const QuickMarcEditorRows = ({
                         {({ ref, ariaIds }) => (
                           <IconButton
                             ref={ref}
+                            name="icon-arrow-up"
                             aria-labelledby={ariaIds.text}
                             data-test-move-up-row
                             data-index={idx}
@@ -197,6 +229,7 @@ const QuickMarcEditorRows = ({
                         {({ ref, ariaIds }) => (
                           <IconButton
                             ref={ref}
+                            name="icon-arrow-down"
                             aria-labelledby={ariaIds.text}
                             data-test-move-down-row
                             data-index={idx}
@@ -370,11 +403,13 @@ const QuickMarcEditorRows = ({
                   )
                 }
 
-                <Pluggable
-                  type="find-authority"
-                >
-                  <FormattedMessage id="ui-quick-marc.noPlugin" />
-                </Pluggable>
+                <IfPermission perm="ui-quick-marc.quick-marc-authority-records.linkUnlink">
+                  <LinkButton
+                    handleLinkAuthority={(authority) => handleLinkAuthority(authority, idx)}
+                    handleUnlinkAuthority={() => handleUnlinkAuthority(idx)}
+                    isLinked={recordRow._isLinked}
+                  />
+                </IfPermission>
               </div>
             );
           })
@@ -395,12 +430,16 @@ QuickMarcEditorRows.propTypes = {
     isProtected: PropTypes.bool.isRequired,
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     _isDeleted: PropTypes.bool,
+    _isLinked: PropTypes.bool,
   })),
   mutators: PropTypes.shape({
     addRecord: PropTypes.func.isRequired,
     deleteRecord: PropTypes.func.isRequired,
     markRecordDeleted: PropTypes.func.isRequired,
+    markRecordLinked: PropTypes.func.isRequired,
+    markRecordUnlinked: PropTypes.func.isRequired,
     moveRecord: PropTypes.func.isRequired,
+    restoreRecord: PropTypes.func.isRequired,
   }),
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
 };

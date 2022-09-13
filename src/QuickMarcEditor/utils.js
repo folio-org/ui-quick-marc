@@ -198,6 +198,7 @@ export const addInternalFieldProperties = (marcRecord) => {
     records: marcRecord.records.map(record => ({
       ...record,
       _isDeleted: false,
+      _isLinked: false,
     })),
   };
 };
@@ -486,6 +487,28 @@ export const markDeletedRecordByIndex = (index, state) => {
   records[index] = {
     ...records[index],
     _isDeleted: true,
+  };
+
+  return records;
+};
+
+export const markLinkedRecordByIndex = (index, authority, state) => {
+  const records = [...state.formState.values.records];
+
+  records[index] = {
+    ...records[index],
+    _isLinked: true,
+  };
+
+  return records;
+};
+
+export const markUnlinkedRecordByIndex = (index, state) => {
+  const records = [...state.formState.values.records];
+
+  records[index] = {
+    ...records[index],
+    _isLinked: false,
   };
 
   return records;

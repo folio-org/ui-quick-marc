@@ -224,5 +224,12 @@
     "record.error.leader.initial.invalidPositionValue": "O registro não pode ser salvo. Não é possível editar o campo 008 pois as {positions} são inválidas. Atualize as {positions} deste registro. Os valores válidos estão listados em {link}",
     "record.error.controlField.multiple": "O registro não pode ser salvo. Só pode ter um campo MARC 001.",
     "record.save.error.notFound": "Este registro foi excluído por outro usuário. Você não pode mais editar este registro, pressione o botão Cancelar para voltar à página anterior.",
-    "noPlugin": "Nenhum plug-in está instalado"
+    "noPlugin": "Nenhum plug-in está instalado",
+    "permission.quick-marc-authority-records.linkUnlink": "quickMARC: Can Link/unlink authority records to bib records",
+    "record.fieldDeleted": "<strong>Field {tag}</strong> has been deleted from this MARC record.",
+    "record.fieldDeleted.undo": "Undo",
+    "record.fieldDeleted.undoLabel": "Undo delete of field {tag}",
+    "record.quickMarcEditorLabel": "Quick MARC editor",
+    "record.save.error.dublicate": "Instance cannot be updated. Depricated instance version.",
+    "record.save.continue": "Save & keep editing"
 }

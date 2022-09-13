@@ -57,7 +57,7 @@
     "record.fixedField.Time": "Time(运行时间)",
     "record.fixedField.TMat": "TMat(视觉资料类型)",
     "record.fixedField.Tech": "Tech(技术)",
-    "record.fixedField.Category": "Type(记录类型)",
+    "record.fixedField.Category": "Type ( 紀錄類型 )",
     "record.fixedField.SMD": "SMD",
     "record.fixedField.Braille music format": "BMF(盲文音乐格式)",
     "record.fixedField.Special physical characteristics": "SPC(特殊物理特征)",
@@ -110,8 +110,8 @@
     "record.fixedField.Deterioration stage": "DetSt(退化阶段)",
     "record.fixedField.Kind of color stock or print": "KoCSoP(彩色库存或印刷品的种类)",
     "record.fixedField.Refined categories of color": "RCoC(细化颜色类别)",
-    "record.error.leader.fixedFieldMismatch": "记录无法保存。 头标和008不匹配。",
-    "record.load.error": "记录未找到或加载。",
+    "record.error.leader.fixedFieldMismatch": "無法儲存紀錄：leader 和 008 不一致。",
+    "record.load.error": "未能找到紀錄或是無法載入。",
     "record.save.success.processing": "本记录已成功保存，正在处理中。更改可能不会立即显示。",
     "record.status.current": "当前",
     "record.status.progress": "进行中",
@@ -224,5 +224,12 @@
     "record.error.leader.initial.invalidPositionValue": "Record cannot be saved. Cannot edit 008 due to invalid {positions}. Please update this record's {positions}. Valid values are listed at {link}",
     "record.error.controlField.multiple": "Record cannot be saved. Can only have one MARC 001.",
     "record.save.error.notFound": "This record has been deleted by another user. You can no longer edit this record, hit the cancel button to return to the previous page.",
-    "noPlugin": "No plugin is installed"
+    "noPlugin": "No plugin is installed",
+    "permission.quick-marc-authority-records.linkUnlink": "quickMARC: Can Link/unlink authority records to bib records",
+    "record.fieldDeleted": "<strong>Field {tag}</strong> has been deleted from this MARC record.",
+    "record.fieldDeleted.undo": "Undo",
+    "record.fieldDeleted.undoLabel": "Undo delete of field {tag}",
+    "record.quickMarcEditorLabel": "Quick MARC editor",
+    "record.save.error.dublicate": "Instance cannot be updated. Depricated instance version.",
+    "record.save.continue": "Save & keep editing"
 }

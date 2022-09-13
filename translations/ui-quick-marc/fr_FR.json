@@ -224,5 +224,12 @@
     "record.error.leader.initial.invalidPositionValue": "Record cannot be saved. Cannot edit 008 due to invalid {positions}. Please update this record's {positions}. Valid values are listed at {link}",
     "record.error.controlField.multiple": "Record cannot be saved. Can only have one MARC 001.",
     "record.save.error.notFound": "This record has been deleted by another user. You can no longer edit this record, hit the cancel button to return to the previous page.",
-    "noPlugin": "Aucun plugin n'est installé"
+    "noPlugin": "Aucun plugin n'est installé",
+    "permission.quick-marc-authority-records.linkUnlink": "quickMARC: Can Link/unlink authority records to bib records",
+    "record.fieldDeleted": "<strong>Field {tag}</strong> has been deleted from this MARC record.",
+    "record.fieldDeleted.undo": "Undo",
+    "record.fieldDeleted.undoLabel": "Undo delete of field {tag}",
+    "record.quickMarcEditorLabel": "Quick MARC editor",
+    "record.save.error.dublicate": "Instance cannot be updated. Depricated instance version.",
+    "record.save.continue": "Save & keep editing"
 }

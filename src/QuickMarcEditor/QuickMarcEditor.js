@@ -1,9 +1,11 @@
 import React, {
+  useRef,
   useMemo,
   useState,
   useCallback,
   useEffect,
 } from 'react';
+import { useHistory, useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import find from 'lodash/find';
@@ -20,6 +22,7 @@ import {
   Button,
   HasCommand,
   checkScope,
+  Layer,
 } from '@folio/stripes/components';
 import {
   useShowCallout,
@@ -36,6 +39,8 @@ import {
 import {
   addNewRecord,
   markDeletedRecordByIndex,
+  markLinkedRecordByIndex,
+  markUnlinkedRecordByIndex,
   reorderRecords,
   restoreRecordAtIndex,
   getCorrespondingMarcTag,
@@ -62,9 +67,12 @@ const QuickMarcEditor = ({
   httpError,
   externalRecordPath,
 }) => {
+  const history = useHistory();
+  const location = useLocation();
   const showCallout = useShowCallout();
   const [records, setRecords] = useState([]);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
+  const continueAfterSave = useRef(false);
 
   const deletedRecords = useMemo(() => {
     return records
@@ -80,15 +88,45 @@ const QuickMarcEditor = ({
     ? pristine || submitting
     : submitting;
 
-  const confirmSubmit = useCallback((e) => {
+  const redirectToVersion = useCallback((updatedVersion) => {
+    const searchParams = new URLSearchParams(location.search);
+
+    searchParams.set('relatedRecordVersion', updatedVersion);
+
+    history.replace({
+      search: searchParams.toString(),
+    });
+  }, [history, location.search]);
+
+  const handleSubmitResponse = useCallback((updatedRecord) => {
+    if (!updatedRecord?.version) {
+      continueAfterSave.current = false;
+
+      return;
+    }
+
+    if (continueAfterSave.current) {
+      redirectToVersion(updatedRecord.version);
+
+      return;
+    }
+
+    onClose();
+  }, [redirectToVersion, onClose]);
+
+  const confirmSubmit = useCallback((e, isKeepEditing = false) => {
+    continueAfterSave.current = isKeepEditing;
+
     if (deletedRecords.length) {
       setIsDeleteModalOpened(true);
 
       return;
     }
 
-    handleSubmit(e);
-  }, [deletedRecords, handleSubmit]);
+    handleSubmit(e).then((updatedRecord) => {
+      handleSubmitResponse(updatedRecord);
+    });
+  }, [deletedRecords, handleSubmit, handleSubmitResponse]);
 
   const paneFooter = useMemo(() => {
     const start = (
@@ -102,15 +140,28 @@ const QuickMarcEditor = ({
     );
 
     const end = (
-      <Button
-        buttonStyle="primary mega"
-        disabled={saveFormDisabled}
-        id="quick-marc-record-save"
-        onClick={confirmSubmit}
-        marginBottom0
-      >
-        <FormattedMessage id="stripes-acq-components.FormFooter.save" />
-      </Button>
+      <>
+        {action === QUICK_MARC_ACTIONS.EDIT && (
+          <Button
+            buttonStyle="default mega"
+            disabled={saveFormDisabled}
+            id="quick-marc-record-save-edit"
+            onClick={(event) => confirmSubmit(event, true)}
+            marginBottom0
+          >
+            <FormattedMessage id="ui-quick-marc.record.save.continue" />
+          </Button>
+        )}
+        <Button
+          buttonStyle="primary mega"
+          disabled={saveFormDisabled}
+          id="quick-marc-record-save"
+          onClick={confirmSubmit}
+          marginBottom0
+        >
+          <FormattedMessage id="stripes-acq-components.FormFooter.save" />
+        </Button>
+      </>
     );
 
     return (
@@ -119,7 +170,7 @@ const QuickMarcEditor = ({
         renderEnd={end}
       />
     );
-  }, [confirmSubmit, saveFormDisabled, onClose]);
+  }, [confirmSubmit, saveFormDisabled, onClose, action]);
 
   const getConfirmModalMessage = () => (
     <FormattedMessage
@@ -186,7 +237,7 @@ const QuickMarcEditor = ({
 
   const onConfirmModal = (e) => {
     setIsDeleteModalOpened(false);
-    handleSubmit(e);
+    handleSubmit(e).then((updatedRecord) => handleSubmitResponse(updatedRecord));
   };
 
   const onCancelModal = () => {
@@ -251,37 +302,42 @@ const QuickMarcEditor = ({
     >
       <form>
         <Paneset>
-          <Pane
-            id="quick-marc-editor-pane"
-            dismissible
-            onClose={onClose}
-            defaultWidth="100%"
-            paneTitle={getPaneTitle()}
-            paneSub={<QuickMarcRecordInfo {...recordInfoProps} />}
-            footer={paneFooter}
+          <Layer
+            isOpen
+            contentLabel="ui-quick-marc.record.quickMarcEditorLabel"
           >
-            <OptimisticLockingBanner
-              httpError={httpError}
-              latestVersionLink={externalRecordPath}
-            />
-            <Row>
-              <Col
-                xs={12}
-                data-test-quick-marc-editor={instance?.id}
-                data-testid="quick-marc-editor"
-              >
-                <QuickMarcEditorRows
-                  action={action}
-                  fields={records}
-                  name="records"
-                  mutators={mutators}
-                  type={type}
-                  subtype={subtype}
-                  marcType={marcType}
-                />
-              </Col>
-            </Row>
-          </Pane>
+            <Pane
+              id="quick-marc-editor-pane"
+              dismissible
+              onClose={onClose}
+              defaultWidth="100%"
+              paneTitle={getPaneTitle()}
+              paneSub={<QuickMarcRecordInfo {...recordInfoProps} />}
+              footer={paneFooter}
+            >
+              <OptimisticLockingBanner
+                httpError={httpError}
+                latestVersionLink={externalRecordPath}
+              />
+              <Row>
+                <Col
+                  xs={12}
+                  data-test-quick-marc-editor={instance?.id}
+                  data-testid="quick-marc-editor"
+                >
+                  <QuickMarcEditorRows
+                    action={action}
+                    fields={records}
+                    name="records"
+                    mutators={mutators}
+                    type={type}
+                    subtype={subtype}
+                    marcType={marcType}
+                  />
+                </Col>
+              </Row>
+            </Pane>
+          </Layer>
         </Paneset>
       </form>
       <ConfirmationModal
@@ -338,6 +394,16 @@ export default stripesFinalForm({
     },
     markRecordDeleted: ([{ index }], state, tools) => {
       const records = markDeletedRecordByIndex(index, state);
+
+      tools.changeValue(state, 'records', () => records);
+    },
+    markRecordLinked: ([{ index, authority }], state, tools) => {
+      const records = markLinkedRecordByIndex(index, authority, state);
+
+      tools.changeValue(state, 'records', () => records);
+    },
+    markRecordUnlinked: ([{ index }], state, tools) => {
+      const records = markUnlinkedRecordByIndex(index, state);
 
       tools.changeValue(state, 'records', () => records);
     },
