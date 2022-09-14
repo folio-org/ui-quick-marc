@@ -231,5 +231,7 @@
     "record.fieldDeleted.undoLabel": "Undo delete of field {tag}",
     "record.quickMarcEditorLabel": "Quick MARC editor",
     "record.save.error.dublicate": "Instance cannot be updated. Depricated instance version.",
-    "record.save.continue": "Save & keep editing"
+    "record.save.continue": "Save & keep editing",
+    "record.link": "Link to MARC Authority record",
+    "record.unlink": "Unlink from MARC Authority record"
 }
