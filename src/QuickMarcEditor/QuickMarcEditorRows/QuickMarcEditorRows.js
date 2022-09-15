@@ -186,6 +186,7 @@ const QuickMarcEditorRows = ({
             const isMARCFieldProtections = marcType !== MARC_TYPES.HOLDINGS && action === QUICK_MARC_ACTIONS.EDIT;
             const isProtectedField = recordRow.isProtected;
             const isLinkVisible = stripes.hasPerm('ui-quick-marc.quick-marc-authority-records.linkUnlink') &&
+              marcType === MARC_TYPES.BIB &&
               (action === QUICK_MARC_ACTIONS.EDIT || action === QUICK_MARC_ACTIONS.DUPLICATE) &&
               TAGS_FOR_DISPLAYING_LINKS.has(recordRow.tag);
 
