@@ -231,5 +231,7 @@
     "record.fieldDeleted.undoLabel": "تراجع عن حذف الحقل {tag}",
     "record.quickMarcEditorLabel": "محرر مارك السريع",
     "record.save.error.dublicate": "Instance cannot be updated. Depricated instance version.",
-    "record.save.continue": "Save & keep editing"
+    "record.save.continue": "حفظ ومتابعة التحرير",
+    "record.link": "ربط بتسجيلة استناد مارك",
+    "record.unlink": "إلغاء ربط بتسجيلة استناد مارك"
 }

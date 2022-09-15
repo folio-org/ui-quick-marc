@@ -49,8 +49,8 @@
     "record.indicator": "Indikátor",
     "record.subfield": "Podpole",
     "record.addField": "Přidání nového pole",
-    "record.deleteField": "Odstranění tohoto pole",
-    "record.delete.title": "Odstranit polí",
+    "record.deleteField": "Smazání tohoto pole",
+    "record.delete.title": "Smazání polí",
     "record.error.leader.length": "Záznam nelze uložit. Odkaz musí obsahovat 24 znaků včetně prázdných mezer.",
     "record.collapseRow": "Sbalit řádek",
     "record.error.tag.length": "Záznam nelze uložit. Tag MARC musí obsahovat tři znaky",
@@ -231,5 +231,7 @@
     "record.fieldDeleted.undoLabel": "Vrátit zpět smazání pole {tag}",
     "record.quickMarcEditorLabel": "Quick MARC editor",
     "record.save.error.dublicate": "Instanci nelze aktualizovat. Zastaralá verze instance.",
-    "record.save.continue": "Uložit a pokračovat v úpravách"
+    "record.save.continue": "Uložit a pokračovat v úpravách",
+    "record.link": "Odkaz na záznam MARC autority",
+    "record.unlink": "Odpojit od záznamu MARC autority"
 }
