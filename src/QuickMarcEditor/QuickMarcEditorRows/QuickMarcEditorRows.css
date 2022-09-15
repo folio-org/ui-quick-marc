@@ -9,11 +9,6 @@
   }
 }
 
-.quickMarcEditorRowInfoPopover {
-  width: 23px;
-  margin-inline: 10px;
-}
-
 .quickMarcEditorRowTag {
   width: 50px;
   margin-right: 10px;
@@ -36,4 +31,10 @@
 .quickMarcEditorMovingRow {
   width: 50px;
   margin-right: 10px;
+}
+
+.quickMarcEditorRightSide {
+  display: flex;
+  min-width: 50px;
+  margin-left: 10px;
 }

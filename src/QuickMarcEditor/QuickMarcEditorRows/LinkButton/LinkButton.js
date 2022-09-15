@@ -5,7 +5,10 @@ import {
 import PropTypes from 'prop-types';
 
 import { Pluggable } from '@folio/stripes/core';
-import { IconButton } from '@folio/stripes/components';
+import {
+  Tooltip,
+  IconButton,
+} from '@folio/stripes/components';
 
 const propTypes = {
   isLinked: PropTypes.bool.isRequired,
@@ -22,14 +25,21 @@ const LinkButton = ({
 
   if (isLinked) {
     return (
-      <IconButton
-        data-testid="unlink-authority-button"
-        icon="unlink"
-        aria-haspopup="true"
-        title={intl.formatMessage({ id: 'ui-quick-marc.record.unlink' })}
-        ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.unlink' })}
-        onClick={handleUnlinkAuthority}
-      />
+      <Tooltip
+        id="unlink"
+        text={intl.formatMessage({ id: 'ui-quick-marc.record.unlink' })}
+      >
+        {({ ref, ariaIds }) => (
+          <IconButton
+            ref={ref}
+            data-testid="unlink-authority-button"
+            icon="unlink"
+            aria-haspopup="true"
+            aria-labelledby={ariaIds.text}
+            onClick={handleUnlinkAuthority}
+          />
+        )}
+      </Tooltip>
     );
   }
 
@@ -38,14 +48,21 @@ const LinkButton = ({
       type="find-authority"
       onLinkRecord={handleLinkAuthority}
       renderCustomTrigger={({ onClick }) => (
-        <IconButton
-          data-testid="link-authority-button"
-          icon="link"
-          aria-haspopup="true"
-          title={intl.formatMessage({ id: 'ui-quick-marc.record.link' })}
-          ariaLabel={intl.formatMessage({ id: 'ui-quick-marc.record.link' })}
-          onClick={onClick}
-        />
+        <Tooltip
+          id="link"
+          text={intl.formatMessage({ id: 'ui-quick-marc.record.link' })}
+        >
+          {({ ref, ariaIds }) => (
+            <IconButton
+              ref={ref}
+              data-testid="link-authority-button"
+              icon="link"
+              aria-haspopup="true"
+              aria-labelledby={ariaIds.text}
+              onClick={onClick}
+            />
+          )}
+        </Tooltip>
       )}
     >
       <FormattedMessage id="ui-quick-marc.noPlugin" />
