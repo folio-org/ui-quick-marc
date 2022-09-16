@@ -12,7 +12,7 @@ import { useIntl } from 'react-intl';
 import isEqual from 'lodash/isEqual';
 import defer from 'lodash/defer';
 
-import { IfPermission } from '@folio/stripes/core';
+import { useStripes } from '@folio/stripes/core';
 import {
   TextField,
   Tooltip,
@@ -37,7 +37,10 @@ import {
   isPhysDescriptionRecord,
   isFixedFieldRow,
 } from './utils';
-import { QUICK_MARC_ACTIONS } from '../constants';
+import {
+  QUICK_MARC_ACTIONS,
+  TAGS_FOR_DISPLAYING_LINKS,
+} from '../constants';
 import {
   MARC_TYPES,
   TAG_FIELD_MAX_LENGTH,
@@ -62,6 +65,7 @@ const QuickMarcEditorRows = ({
   },
   marcType,
 }) => {
+  const stripes = useStripes();
   const intl = useIntl();
   const { initialValues } = useFormState();
   const containerRef = useRef(null);
@@ -181,6 +185,10 @@ const QuickMarcEditorRows = ({
             const isContentField = !(isLocationField || isFixedField || isMaterialCharsField || isPhysDescriptionField);
             const isMARCFieldProtections = marcType !== MARC_TYPES.HOLDINGS && action === QUICK_MARC_ACTIONS.EDIT;
             const isProtectedField = recordRow.isProtected;
+            const isLinkVisible = stripes.hasPerm('ui-quick-marc.quick-marc-authority-records.linkUnlink') &&
+              marcType === MARC_TYPES.BIB &&
+              (action === QUICK_MARC_ACTIONS.EDIT || action === QUICK_MARC_ACTIONS.DUPLICATE) &&
+              TAGS_FOR_DISPLAYING_LINKS.has(recordRow.tag);
 
             return (
               <div
@@ -376,30 +384,23 @@ const QuickMarcEditorRows = ({
                   }
                 </div>
 
-                {
-                  isMARCFieldProtections && (
-                    <div className={styles.quickMarcEditorRowInfoPopover}>
-                      {
-                        isProtectedField && (
-                          <div data-testid="quick-marc-protected-field-popover">
-                            <InfoPopover
-                              iconSize="medium"
-                              content={intl.formatMessage({ id: 'ui-quick-marc.record.protectedField' })}
-                            />
-                          </div>
-                        )
-                      }
-                    </div>
-                  )
-                }
-
-                <IfPermission perm="ui-quick-marc.quick-marc-authority-records.linkUnlink">
-                  <LinkButton
-                    handleLinkAuthority={(authority) => handleLinkAuthority(authority, idx)}
-                    handleUnlinkAuthority={() => handleUnlinkAuthority(idx)}
-                    isLinked={recordRow._isLinked}
-                  />
-                </IfPermission>
+                <div className={styles.quickMarcEditorRightSide}>
+                  {isMARCFieldProtections && isProtectedField && (
+                    <span data-testid="quick-marc-protected-field-popover">
+                      <InfoPopover
+                        iconSize="medium"
+                        content={intl.formatMessage({ id: 'ui-quick-marc.record.protectedField' })}
+                      />
+                    </span>
+                  )}
+                  {isLinkVisible && (
+                    <LinkButton
+                      handleLinkAuthority={(authority) => handleLinkAuthority(authority, idx)}
+                      handleUnlinkAuthority={() => handleUnlinkAuthority(idx)}
+                      isLinked={recordRow._isLinked}
+                    />
+                  )}
+                </div>
               </div>
             );
           })
