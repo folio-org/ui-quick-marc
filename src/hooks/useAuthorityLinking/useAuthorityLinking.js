@@ -1,5 +1,7 @@
 import { useCallback } from 'react';
 
+import { useAuthoritySourceFiles } from '@folio/stripes-authority-components';
+
 import { getContentSubfieldValue } from '../../QuickMarcEditor/utils';
 
 export const useAuthorityLinking = () => {
@@ -17,6 +19,7 @@ export const useAuthorityLinking = () => {
 
     if (!subfields.$0 || subfields.$0 !== authority.naturalId) {
       subfields.$0 = newZeroSubfield;
+      subfields.$9 = authority.id;
 
       return {
         ...field,
