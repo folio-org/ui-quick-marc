@@ -37,6 +37,7 @@ import {
   isPhysDescriptionRecord,
   isFixedFieldRow,
 } from './utils';
+import { useAuthorityLinking } from '../../hooks';
 import {
   QUICK_MARC_ACTIONS,
   TAGS_FOR_DISPLAYING_LINKS,
@@ -71,6 +72,8 @@ const QuickMarcEditorRows = ({
   const containerRef = useRef(null);
   const indexOfNewRow = useRef(null);
   const newRowRef = useRef(null);
+
+  const { linkAuthority } = useAuthorityLinking();
 
   const isNewRow = useCallback((row) => {
     return !initialValues.records.find(record => record.id === row.id);
@@ -137,8 +140,10 @@ const QuickMarcEditorRows = ({
   }, [indexOfNewRow, newRowRef]);
 
   const handleLinkAuthority = useCallback((authority, index) => {
-    markRecordLinked({ index, authority });
-  }, [markRecordLinked]);
+    const field = linkAuthority(authority, fields[index]);
+
+    markRecordLinked({ index, field });
+  }, [markRecordLinked, linkAuthority, fields]);
 
   const handleUnlinkAuthority = useCallback(index => {
     markRecordUnlinked({ index });

@@ -144,6 +144,7 @@
     "react-final-form": "^6.3.0",
     "react-final-form-arrays": "^3.1.0",
     "react-final-form-listeners": "^1.0.2",
+    "react-query": "^3.39.2",
     "react-router-prop-types": "^1.0.4",
     "uuid": "^8.3.2"
   },

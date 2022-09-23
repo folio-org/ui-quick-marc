@@ -397,8 +397,8 @@ export default stripesFinalForm({
 
       tools.changeValue(state, 'records', () => records);
     },
-    markRecordLinked: ([{ index, authority }], state, tools) => {
-      const records = markLinkedRecordByIndex(index, authority, state);
+    markRecordLinked: ([{ index, field }], state, tools) => {
+      const records = markLinkedRecordByIndex(index, field, state);
 
       tools.changeValue(state, 'records', () => records);
     },
