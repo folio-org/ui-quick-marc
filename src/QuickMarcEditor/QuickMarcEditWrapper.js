@@ -130,8 +130,7 @@ const QuickMarcEditWrapper = ({
 
         setHttpError(parsedError);
       });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showCallout, refreshPageData, location]);
+  }, [showCallout, refreshPageData, location, initialValues, instance, locations, marcType, mutator]);
 
   return (
     <QuickMarcEditor

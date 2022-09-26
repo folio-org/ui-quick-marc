@@ -18,7 +18,6 @@
     "files": ["test/jest/**/*"],
     "rules": {
       "react/prop-types": "off",
-      "filenames/match-exported"
     }
   }]
 }

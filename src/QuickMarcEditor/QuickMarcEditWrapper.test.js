@@ -2,7 +2,6 @@ import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import {
   render,
-  cleanup,
   act,
   fireEvent,
   waitFor,
