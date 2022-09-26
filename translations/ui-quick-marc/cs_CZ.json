@@ -230,7 +230,7 @@
     "record.fieldDeleted.undo": "Vrátit",
     "record.fieldDeleted.undoLabel": "Vrátit zpět smazání pole {tag}",
     "record.quickMarcEditorLabel": "Quick MARC editor",
-    "record.save.error.dublicate": "Instanci nelze aktualizovat. Zastaralá verze instance.",
+    "record.save.error.dublicate": "Titul nelze aktualizovat. Zastaralá verze katalogu.",
     "record.save.continue": "Uložit a pokračovat v úpravách",
     "record.link": "Odkaz na záznam MARC autority",
     "record.unlink": "Odpojit od záznamu MARC autority"
