@@ -54,8 +54,6 @@ const QuickMarcEditWrapper = ({
   const location = useLocation();
   const [httpError, setHttpError] = useState(null);
 
-  const searchParams = new URLSearchParams(location.search);
-
   const onSubmit = useCallback(async (formValues) => {
     const formValuesToSave = removeDeletedRecords(formValues);
     const controlFieldErrorMessage = checkControlFieldLength(formValuesToSave);
@@ -113,7 +111,7 @@ const QuickMarcEditWrapper = ({
 
     marcRecord.relatedRecordVersion = marcType === MARC_TYPES.AUTHORITY
       ? instance._version
-      : searchParams.get('relatedRecordVersion');
+      : new URLSearchParams(location.search).get('relatedRecordVersion');
 
     return mutator.quickMarcEditMarcRecord.PUT(marcRecord)
       .then(async () => {
@@ -133,7 +131,7 @@ const QuickMarcEditWrapper = ({
         setHttpError(parsedError);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showCallout, refreshPageData]);
+  }, [showCallout, refreshPageData, location]);
 
   return (
     <QuickMarcEditor

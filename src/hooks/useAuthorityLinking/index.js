@@ -1,1 +1,1 @@
-export * from './useAuthorityLinking';
+export { default as useAuthorityLinking } from './useAuthorityLinking';

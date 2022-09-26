@@ -1,10 +1,12 @@
-const commonCofig = require('@folio/stripes-acq-components/jest.config');
+const path = require('path');
+const commonConfig = require('@folio/stripes-acq-components/jest.config');
 
 module.exports = {
-  ...commonCofig,
+  ...commonConfig,
   coverageDirectory: './artifacts/coverage-jest/',
   collectCoverageFrom: [
-    ...commonCofig.collectCoverageFrom,
+    ...commonConfig.collectCoverageFrom,
     './src/*.{js,jsx}',
   ],
+  setupFiles: [...commonConfig.setupFiles, path.join(__dirname, './test/jest/setup-tests.js')],
 };

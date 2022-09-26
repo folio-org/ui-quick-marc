@@ -720,7 +720,7 @@ export const getContentSubfieldValue = (content) => {
 
       return {
         ...acc,
-        [`$${str[0]}`]: str.substring(2),
+        [`$${str[0]}`]: str.substring(2).trimEnd(),
       };
     }, {});
 };

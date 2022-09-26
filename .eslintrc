@@ -14,5 +14,11 @@
       "no-unused-expressions": 0,
       "react/prop-types": "off"
     }
+  }, {
+    "files": ["test/jest/**/*"],
+    "rules": {
+      "react/prop-types": "off",
+      "filenames/match-exported"
+    }
   }]
 }

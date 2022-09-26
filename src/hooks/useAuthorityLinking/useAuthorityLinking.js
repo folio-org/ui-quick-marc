@@ -4,7 +4,7 @@ import { useAuthoritySourceFiles } from '@folio/stripes-authority-components';
 
 import { getContentSubfieldValue } from '../../QuickMarcEditor/utils';
 
-export const useAuthorityLinking = () => {
+const useAuthorityLinking = () => {
   const { sourceFiles } = useAuthoritySourceFiles();
 
   const linkAuthority = useCallback((authority, field) => {
@@ -34,3 +34,5 @@ export const useAuthorityLinking = () => {
     linkAuthority,
   };
 };
+
+export default useAuthorityLinking;
