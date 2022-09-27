@@ -492,11 +492,11 @@ export const markDeletedRecordByIndex = (index, state) => {
   return records;
 };
 
-export const markLinkedRecordByIndex = (index, authority, state) => {
+export const markLinkedRecordByIndex = (index, field, state) => {
   const records = [...state.formState.values.records];
 
   records[index] = {
-    ...records[index],
+    ...field,
     _isLinked: true,
   };
 
@@ -711,14 +711,16 @@ export const getCorrespondingMarcTag = (records) => {
 };
 
 export const getContentSubfieldValue = (content) => {
-  return content.split(/\$/).reduce((acc, str) => {
-    if (!str) {
-      return acc;
-    }
+  return content.split(/\$/)
+    .filter(str => str.length > 0)
+    .reduce((acc, str) => {
+      if (!str) {
+        return acc;
+      }
 
-    return {
-      ...acc,
-      [`$${str[0]}`]: str.substring(2),
-    };
-  }, {});
+      return {
+        ...acc,
+        [`$${str[0]}`]: str.substring(2).trimEnd(),
+      };
+    }, {});
 };
