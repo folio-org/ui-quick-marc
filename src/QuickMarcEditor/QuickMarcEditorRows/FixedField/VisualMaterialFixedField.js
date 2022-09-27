@@ -42,10 +42,6 @@ const config = {
     },
     {
       type: SUBFIELD_TYPES.BYTE,
-      name: 'Desc',
-    },
-    {
-      type: SUBFIELD_TYPES.BYTE,
       name: 'Tech',
     },
     {

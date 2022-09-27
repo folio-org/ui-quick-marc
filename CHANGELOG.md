@@ -16,6 +16,7 @@
 * [UIQM-289](https://issues.folio.org/browse/UIQM-289) The entered data is deleted when user click on the "Save & close" button and validation error appears
 * [UIQM-290](https://issues.folio.org/browse/UIQM-290) Detail Record : Click Link button to select a MARC authority record
 * [UIQM-274](https://issues.folio.org/browse/UIQM-274) Derive/Edit a bib record | Display link icon for eligible name bib fields to link to authority records and show Select a MARC authority plug-in
+* [UIQM-293](https://issues.folio.org/browse/UIQM-293) Edit/Derive - MARC bib - Remove 008 Desc box
 
 ## [5.1.2](https://github.com/folio-org/ui-quick-marc/tree/v5.1.2) (2022-08-23)
 

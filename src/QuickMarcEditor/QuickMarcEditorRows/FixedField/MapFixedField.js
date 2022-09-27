@@ -71,10 +71,6 @@ const config = {
       name: 'Date2',
       type: SUBFIELD_TYPES.STRING,
     },
-    {
-      name: 'Desc',
-      type: SUBFIELD_TYPES.BYTE,
-    },
   ],
 };
 

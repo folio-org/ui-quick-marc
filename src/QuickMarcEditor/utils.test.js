@@ -539,42 +539,6 @@ describe('QuickMarcEditor utils', () => {
     });
   });
 
-  describe('validateRecordMismatch', () => {
-    it('should return error message when 008 Desc is not matched with leader Desc', () => {
-      const records = [
-        {
-          content: '04706cam a2200865Ii 4500',
-          tag: '245',
-        },
-        {
-          tag: '008',
-          content: {
-            Desc: 'M',
-          },
-        },
-      ];
-
-      expect(utils.validateRecordMismatch(records).props.id).toBe('ui-quick-marc.record.error.leader.fixedFieldMismatch');
-    });
-
-    it('should return error message when tag is not valid', () => {
-      const records = [
-        {
-          content: '04706cam a2200865Ii 4500',
-          tag: '245',
-        },
-        {
-          tag: '008',
-          content: {
-            Desc: 'i',
-          },
-        },
-      ];
-
-      expect(utils.validateRecordMismatch(records)).not.toBeDefined();
-    });
-  });
-
   describe('validateRecordTag', () => {
     it('should not return error message when tag is valid', () => {
       const records = [

@@ -362,24 +362,7 @@ export const validateSubfield = (marcRecords, initialMarcRecords) => {
   return undefined;
 };
 
-export const validateRecordMismatch = marcRecords => {
-  const leader = marcRecords[0]?.content || '';
-  const fixedField = marcRecords.find(isFixedFieldRow);
-
-  if (leader[18] !== fixedField?.content?.Desc) {
-    return <FormattedMessage id="ui-quick-marc.record.error.leader.fixedFieldMismatch" />;
-  }
-
-  return undefined;
-};
-
 const validateMarcBibRecord = (marcRecords) => {
-  const leaderMismatchError = validateRecordMismatch(marcRecords);
-
-  if (leaderMismatchError) {
-    return leaderMismatchError;
-  }
-
   const titleRecords = marcRecords.filter(({ tag }) => tag === '245');
 
   if (titleRecords.length === 0) {

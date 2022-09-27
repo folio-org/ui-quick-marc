@@ -62,10 +62,6 @@ const config = {
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Desc',
-      type: SUBFIELD_TYPES.BYTE,
-    },
-    {
       name: 'Ills',
       type: SUBFIELD_TYPES.BYTES,
       bytes: 4,
