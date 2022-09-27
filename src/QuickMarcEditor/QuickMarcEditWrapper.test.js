@@ -406,7 +406,7 @@ describe('Given QuickMarcEditWrapper', () => {
           expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
           expect(mutator.quickMarcEditMarcRecord.PUT).not.toHaveBeenCalled();
 
-          () => expect(getByText('stripes-components.optimisticLocking.saveError')).toBeDefined();
+          await waitFor(() => expect(getByText('stripes-components.optimisticLocking.saveError')).toBeDefined());
         });
       });
 
@@ -489,12 +489,10 @@ describe('Given QuickMarcEditWrapper', () => {
 
           expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
 
-          waitFor(() => {
-            return expect(mockShowCallout).toHaveBeenCalledWith({
-              messageId: 'ui-quick-marc.record.save.error.generic',
-              type: 'error',
-            });
-          });
+          await waitFor(() => expect(mockShowCallout).toHaveBeenCalledWith({
+            messageId: 'ui-quick-marc.record.save.error.generic',
+            type: 'error',
+          }));
         });
       });
     });
