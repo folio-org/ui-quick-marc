@@ -2,7 +2,6 @@ import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import {
   render,
-  cleanup,
   act,
   fireEvent,
   waitFor,
@@ -19,6 +18,13 @@ import { MARC_TYPES } from '../common/constants';
 jest.mock('react-final-form', () => ({
   ...jest.requireActual('react-final-form'),
   FormSpy: jest.fn(() => (<span>FormSpy</span>)),
+}));
+
+jest.mock('react-router', () => ({
+  ...jest.requireActual('react-router'),
+  useLocation: () => ({
+    search: 'relatedRecordVersion=1',
+  }),
 }));
 
 const mockRecords = {
@@ -231,6 +237,7 @@ jest.mock('./constants', () => ({
 const getInstance = () => ({
   id: faker.random.uuid(),
   title: 'ui-quick-marc.record.edit.title',
+  _version: 1,
 });
 
 const record = {
@@ -254,7 +261,11 @@ const renderQuickMarcEditWrapper = ({
       mutator={mutator}
       action={QUICK_MARC_ACTIONS.EDIT}
       marcType={marcType}
-      initialValues={{ leader: mockLeaders[marcType], records: [] }}
+      initialValues={{
+        leader: mockLeaders[marcType],
+        records: [],
+        relatedRecordVersion: 1,
+      }}
       instance={instance}
       location={{}}
       locations={locations}
@@ -286,25 +297,19 @@ describe('Given QuickMarcEditWrapper', () => {
         GET: () => Promise.resolve({}),
       },
     };
-  });
 
-  afterEach(cleanup);
+    jest.clearAllMocks();
+  });
 
   describe('when is bib marc type', () => {
     describe('when click on "Save & keep editing" button', () => {
       it('should show on save message and stay on the edit page', async () => {
-        let getByText;
         const mockOnClose = jest.fn();
 
-        await act(async () => {
-          getByText = renderQuickMarcEditWrapper({
-            instance,
-            mutator,
-            location: {
-              search: 'relatedRecordVersion=1',
-            },
-            onClose: mockOnClose,
-          }).getByText;
+        const { getByText } = renderQuickMarcEditWrapper({
+          instance,
+          mutator,
+          onClose: mockOnClose,
         });
 
         await act(async () => { fireEvent.click(getByText('ui-quick-marc.record.save.continue')); });
@@ -312,26 +317,19 @@ describe('Given QuickMarcEditWrapper', () => {
         expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
         expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
 
-        waitFor(() => expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' }));
-
+        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
         expect(mockOnClose).not.toHaveBeenCalled();
       });
     });
 
     describe('when click on save button', () => {
       it('should show on save message and redirect on load page', async () => {
-        let getByText;
         const mockOnClose = jest.fn();
 
-        await act(async () => {
-          getByText = renderQuickMarcEditWrapper({
-            instance,
-            mutator,
-            onClose: mockOnClose,
-            location: {
-              search: 'relatedRecordVersion=1',
-            },
-          }).getByText;
+        const { getByText } = renderQuickMarcEditWrapper({
+          instance,
+          mutator,
+          onClose: mockOnClose,
         });
 
         await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
@@ -339,23 +337,15 @@ describe('Given QuickMarcEditWrapper', () => {
         expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
         expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
 
-        waitFor(() => expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' }));
-
-        waitFor(() => expect(mockOnClose).toHaveBeenCalled());
-      }, 1000);
+        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
+        await waitFor(() => expect(mockOnClose).toHaveBeenCalled());
+      });
 
       describe('when there is an error during POST request', () => {
         it('should show an error message', async () => {
-          let getByText;
-
-          await act(async () => {
-            getByText = renderQuickMarcEditWrapper({
-              instance,
-              mutator,
-              location: {
-                search: 'relatedRecordVersion=1',
-              },
-            }).getByText;
+          const { getByText } = renderQuickMarcEditWrapper({
+            instance,
+            mutator,
           });
 
           // eslint-disable-next-line prefer-promise-reject-errors
@@ -367,31 +357,20 @@ describe('Given QuickMarcEditWrapper', () => {
 
           expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
 
-          await new Promise(resolve => {
-            setTimeout(() => {
-              expect(mockShowCallout).toHaveBeenCalledWith({
-                messageId: 'ui-quick-marc.record.save.error.generic',
-                type: 'error',
-              });
-
-              resolve();
-            }, 100);
+          waitFor(() => {
+            return expect(mockShowCallout).toHaveBeenCalledWith({
+              messageId: 'ui-quick-marc.record.save.error.generic',
+              type: 'error',
+            });
           });
-        }, 1000);
+        });
       });
 
       describe('when there is an error during POST request due to optimistic locking', () => {
         it('should show optimistic locking banner', async () => {
-          let getByText;
-
-          await act(async () => {
-            getByText = renderQuickMarcEditWrapper({
-              instance,
-              mutator,
-              location: {
-                search: 'relatedRecordVersion=1',
-              },
-            }).getByText;
+          const { getByText } = renderQuickMarcEditWrapper({
+            instance,
+            mutator,
           });
 
           // eslint-disable-next-line prefer-promise-reject-errors
@@ -403,36 +382,23 @@ describe('Given QuickMarcEditWrapper', () => {
 
           expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
 
-          await new Promise(resolve => {
-            setTimeout(() => {
-              expect(getByText('stripes-components.optimisticLocking.saveError')).toBeDefined();
-
-              resolve();
-            }, 100);
-          });
-        }, 1000);
+          await waitFor(() => expect(getByText('stripes-components.optimisticLocking.saveError')).toBeDefined());
+        });
       });
 
       describe('when there is a record returned with different version', () => {
         it('should show up a conflict detection banner and not make an update request', async () => {
-          let getByText;
-
           mutator.quickMarcEditInstance.GET = jest.fn(() => Promise.resolve({
             ...instance,
-            _version: '1',
+            _version: '2',
           }));
 
-          await act(async () => {
-            getByText = renderQuickMarcEditWrapper({
-              instance: {
-                ...instance,
-                _version: '0',
-              },
-              mutator,
-              location: {
-                search: 'relatedRecordVersion=1',
-              },
-            }).getByText;
+          const { getByText } = renderQuickMarcEditWrapper({
+            instance: {
+              ...instance,
+              _version: '1',
+            },
+            mutator,
           });
 
           await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
@@ -440,30 +406,17 @@ describe('Given QuickMarcEditWrapper', () => {
           expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
           expect(mutator.quickMarcEditMarcRecord.PUT).not.toHaveBeenCalled();
 
-          await new Promise(resolve => {
-            setTimeout(() => {
-              expect(getByText('stripes-components.optimisticLocking.saveError')).toBeDefined();
-
-              resolve();
-            }, 100);
-          });
+          await waitFor(() => expect(getByText('stripes-components.optimisticLocking.saveError')).toBeDefined());
         });
       });
 
       describe('when record not found (already deleted)', () => {
         it('should reveal an error message', async () => {
-          let getByText;
-
           mutator.quickMarcEditInstance.GET = jest.fn(() => Promise.reject(new Error('Not found')));
 
-          await act(async () => {
-            getByText = renderQuickMarcEditWrapper({
-              instance,
-              mutator,
-              location: {
-                search: 'relatedRecordVersion=1',
-              },
-            }).getByText;
+          const { getByText } = renderQuickMarcEditWrapper({
+            instance,
+            mutator,
           });
 
           await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
@@ -479,16 +432,13 @@ describe('Given QuickMarcEditWrapper', () => {
   describe('when is authority marc type', () => {
     describe('when click on "Save & keep editing" button', () => {
       it('should show on save message and stay on the edit page', async () => {
-        let getByText;
         const mockOnClose = jest.fn();
 
-        await act(async () => {
-          getByText = renderQuickMarcEditWrapper({
-            instance,
-            mutator,
-            marcType: MARC_TYPES.AUTHORITY,
-            onClose: mockOnClose,
-          }).getByText;
+        const { getByText } = renderQuickMarcEditWrapper({
+          instance,
+          mutator,
+          marcType: MARC_TYPES.AUTHORITY,
+          onClose: mockOnClose,
         });
 
         await act(async () => { fireEvent.click(getByText('ui-quick-marc.record.save.continue')); });
@@ -496,24 +446,20 @@ describe('Given QuickMarcEditWrapper', () => {
         expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
         expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
 
-        waitFor(() => expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' }));
-
+        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' });
         expect(mockOnClose).not.toHaveBeenCalled();
       });
     });
 
     describe('when click on save button', () => {
       it('should show on save message and redirect on load page', async () => {
-        let getByText;
         const mockOnClose = jest.fn();
 
-        await act(async () => {
-          getByText = renderQuickMarcEditWrapper({
-            instance,
-            mutator,
-            marcType: MARC_TYPES.AUTHORITY,
-            onClose: mockOnClose,
-          }).getByText;
+        const { getByText } = renderQuickMarcEditWrapper({
+          instance,
+          mutator,
+          marcType: MARC_TYPES.AUTHORITY,
+          onClose: mockOnClose,
         });
 
         await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
@@ -521,21 +467,17 @@ describe('Given QuickMarcEditWrapper', () => {
         expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
         expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
 
-        waitFor(() => expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' }));
+        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' });
 
-        waitFor(() => expect(mockOnClose).toHaveBeenCalled());
-      }, 1000);
+        await waitFor(() => expect(mockOnClose).toHaveBeenCalled());
+      });
 
       describe('when there is an error during POST request', () => {
         it('should show an error message', async () => {
-          let getByText;
-
-          await act(async () => {
-            getByText = renderQuickMarcEditWrapper({
-              instance,
-              mutator,
-              marcType: MARC_TYPES.AUTHORITY,
-            }).getByText;
+          const { getByText } = renderQuickMarcEditWrapper({
+            instance,
+            mutator,
+            marcType: MARC_TYPES.AUTHORITY,
           });
 
           // eslint-disable-next-line prefer-promise-reject-errors
@@ -547,17 +489,11 @@ describe('Given QuickMarcEditWrapper', () => {
 
           expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
 
-          await new Promise(resolve => {
-            setTimeout(() => {
-              expect(mockShowCallout).toHaveBeenCalledWith({
-                messageId: 'ui-quick-marc.record.save.error.generic',
-                type: 'error',
-              });
-
-              resolve();
-            }, 100);
-          });
-        }, 1000);
+          await waitFor(() => expect(mockShowCallout).toHaveBeenCalledWith({
+            messageId: 'ui-quick-marc.record.save.error.generic',
+            type: 'error',
+          }));
+        });
       });
     });
   });
