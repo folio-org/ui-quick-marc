@@ -65,10 +65,6 @@ const config = {
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Desc',
-      type: SUBFIELD_TYPES.BYTE,
-    },
-    {
       name: 'SrTp',
       type: SUBFIELD_TYPES.BYTE,
     },

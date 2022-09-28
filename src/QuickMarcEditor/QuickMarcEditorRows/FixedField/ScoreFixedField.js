@@ -54,10 +54,6 @@ const config = {
       name: 'TrAr',
     },
     {
-      type: SUBFIELD_TYPES.BYTE,
-      name: 'Desc',
-    },
-    {
       name: 'FMus',
       type: SUBFIELD_TYPES.BYTE,
     },

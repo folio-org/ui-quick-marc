@@ -33,10 +33,6 @@ const config = {
       type: SUBFIELD_TYPES.STRING,
     },
     {
-      name: 'Desc',
-      type: SUBFIELD_TYPES.BYTE,
-    },
-    {
       name: 'DtSt',
       type: SUBFIELD_TYPES.BYTE,
     },
