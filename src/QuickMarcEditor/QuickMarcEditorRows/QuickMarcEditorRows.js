@@ -27,6 +27,8 @@ import { PhysDescriptionField } from './PhysDescriptionField';
 import { FixedFieldFactory } from './FixedField';
 import { LocationField } from './LocationField';
 import { DeletedRowPlaceholder } from './DeletedRowPlaceholder';
+import { LinkButton } from './LinkButton';
+import { SplitField } from './SplitField';
 import {
   isReadOnly,
   hasIndicatorException,
@@ -48,7 +50,6 @@ import {
 } from '../../common/constants';
 
 import styles from './QuickMarcEditorRows.css';
-import { LinkButton } from './LinkButton/LinkButton';
 
 const QuickMarcEditorRows = ({
   action,
@@ -376,15 +377,24 @@ const QuickMarcEditorRows = ({
 
                   {
                     isContentField && (
-                      <Field
-                        dirty={false}
-                        aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
-                        name={`${name}.content`}
-                        marginBottom0
-                        disabled={isDisabled}
-                        id={`content-field-${idx}`}
-                        component={ContentField}
-                      />
+                      recordRow._isLinked
+                        ? (
+                          <SplitField
+                            name={name}
+                            field={recordRow}
+                          />
+                        )
+                        : (
+                          <Field
+                            dirty={false}
+                            aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
+                            name={`${name}.content`}
+                            marginBottom0
+                            disabled={isDisabled}
+                            id={`content-field-${idx}`}
+                            component={ContentField}
+                          />
+                        )
                     )
                   }
                 </div>
@@ -423,10 +433,11 @@ QuickMarcEditorRows.propTypes = {
     id: PropTypes.string.isRequired,
     tag: PropTypes.string.isRequired,
     indicators: PropTypes.arrayOf(PropTypes.string),
-    isProtected: PropTypes.bool.isRequired,
+    isProtected: PropTypes.bool,
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     _isDeleted: PropTypes.bool,
     _isLinked: PropTypes.bool,
+    authorityId: PropTypes.string,
   })),
   mutators: PropTypes.shape({
     addRecord: PropTypes.func.isRequired,

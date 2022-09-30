@@ -9,6 +9,7 @@ import { useHistory, useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import find from 'lodash/find';
+import toPairs from 'lodash/toPairs';
 import { FormSpy } from 'react-final-form';
 
 import stripesFinalForm from '@folio/stripes/final-form';

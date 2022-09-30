@@ -2,7 +2,10 @@ import { useCallback } from 'react';
 
 import { useAuthoritySourceFiles } from '@folio/stripes-authority-components';
 
-import { getContentSubfieldValue } from '../../QuickMarcEditor/utils';
+import {
+  getContentSubfieldValue,
+  groupSubfields,
+} from '../../QuickMarcEditor/utils';
 
 const useAuthorityLinking = () => {
   const { sourceFiles } = useAuthoritySourceFiles();
@@ -21,9 +24,11 @@ const useAuthorityLinking = () => {
       subfields.$0 = newZeroSubfield;
       subfields.$9 = authority.id;
 
+      field.content = Object.keys(subfields).reduce((content, key) => [content, `${key} ${subfields[key]}`].join(' '), '').trim();
+
       return {
         ...field,
-        content: Object.keys(subfields).reduce((content, key) => [content, `${key} ${subfields[key]}`].join(' '), '').trim(),
+        subfieldGroups: groupSubfields(field),
       };
     }
 
