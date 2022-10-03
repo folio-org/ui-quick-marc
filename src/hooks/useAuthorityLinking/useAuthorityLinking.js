@@ -34,11 +34,7 @@ const useAuthorityLinking = () => {
     const bibSubfields = getContentSubfieldValue(field.content);
     const sourceFile = sourceFiles.find(file => file.id === authority.sourceFileId);
 
-    if (!sourceFile) {
-      return field;
-    }
-
-    const newZeroSubfield = [sourceFile.baseUrl, authority.naturalId].join('');
+    const newZeroSubfield = [sourceFile?.baseUrl, authority.naturalId].join('').trim();
 
     if (!bibSubfields.$0 || bibSubfields.$0 !== authority.naturalId) {
       bibSubfields.$0 = newZeroSubfield;
