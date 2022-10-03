@@ -1,4 +1,8 @@
 import React from 'react';
+import {
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query';
 import { fireEvent, render } from '@testing-library/react';
 
 import { LinkButton } from './LinkButton';
@@ -7,18 +11,26 @@ const mockOnClick = jest.fn();
 
 jest.mock('@folio/stripes/core', () => ({
   ...jest.requireActual('@folio/stripes/core'),
+  useNamespace: jest.fn().mockReturnValue(['ui-quick-marc-test']),
+  useOkapiKy: jest.fn().mockReturnValue({
+    get: jest.fn(),
+  }),
   Pluggable: ({ renderCustomTrigger }) => renderCustomTrigger({ onClick: mockOnClick }),
 }));
 
 const mockHandleLinkAuthority = jest.fn();
 const mockHandleUnlinkAuthority = jest.fn();
 
+const queryClient = new QueryClient();
+
 const renderComponent = (props = {}) => render(
-  <LinkButton
-    handleLinkAuthority={mockHandleLinkAuthority}
-    handleUnlinkAuthority={mockHandleUnlinkAuthority}
-    {...props}
-  />,
+  <QueryClientProvider client={queryClient}>
+    <LinkButton
+      handleLinkAuthority={mockHandleLinkAuthority}
+      handleUnlinkAuthority={mockHandleUnlinkAuthority}
+      {...props}
+    />
+  </QueryClientProvider>,
 );
 
 describe('Given LinkButton', () => {

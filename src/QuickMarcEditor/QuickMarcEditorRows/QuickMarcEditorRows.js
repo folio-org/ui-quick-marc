@@ -381,10 +381,7 @@ const QuickMarcEditorRows = ({
                     isContentField && (
                       recordRow._isLinked
                         ? (
-                          <SplitField
-                            name={name}
-                            field={recordRow}
-                          />
+                          <SplitField name={name} />
                         )
                         : (
                           <Field

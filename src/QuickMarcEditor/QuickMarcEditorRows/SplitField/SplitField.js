@@ -7,15 +7,16 @@ import { TextField } from '@folio/stripes/components';
 
 import css from './SplitField.css';
 
-const propTypes = {};
+const propTypes = {
+  name: PropTypes.string.isRequired,
+};
 
 const SplitField = ({
   name,
-  field,
 }) => {
   const intl = useIntl();
 
-  const renderSubfieldGroup = (subfieldGroup, fieldProps) => {
+  const renderSubfieldGroup = (fieldProps) => {
     return (
       <Field
         className={css.splitFieldWrapper}
@@ -34,19 +35,19 @@ const SplitField = ({
     <FieldArray name={`${name}.subfieldGroups`}>
       {() => (
         <>
-          {renderSubfieldGroup(field.subfieldGroups.controlled, {
+          {renderSubfieldGroup({
             disabled: true,
             name: `${name}.subfieldGroups.controlled`,
           })}
-          {renderSubfieldGroup(field.subfieldGroups.uncontrolledAlpha, {
+          {renderSubfieldGroup({
             disabled: false,
             name: `${name}.subfieldGroups.uncontrolledAlpha`,
           })}
-          {renderSubfieldGroup(field.subfieldGroups.zeroSubfield, {
+          {renderSubfieldGroup({
             disabled: true,
             name: `${name}.subfieldGroups.zeroSubfield`,
           })}
-          {renderSubfieldGroup(field.subfieldGroups.uncontrolledNumber, {
+          {renderSubfieldGroup({
             disabled: false,
             name: `${name}.subfieldGroups.uncontrolledNumber`,
           })}
