@@ -150,7 +150,7 @@ const QuickMarcEditorRows = ({
     unlinkAuthority(fields[index]);
 
     markRecordUnlinked({ index });
-  }, [markRecordUnlinked]);
+  }, [markRecordUnlinked, unlinkAuthority, fields]);
 
   return (
     <div
