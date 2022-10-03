@@ -412,13 +412,22 @@ const QuickMarcEditorRows = ({
                     />
                   )}
                   {canViewAuthorityRecord && (
-                    <Link
-                      to={`/marc-authorities/authorities/${recordRow.authorityId}?segment=search`}
-                      target="_blank"
-                      data-testid="authority-record-link"
+                    <Tooltip
+                      id="view-marc-authority-record-tooltip"
+                      text={intl.formatMessage({ id: 'ui-quick-marc.record.viewMarcAuthorityRecord' })}
                     >
-                      <IconButton icon="eye-open" />
-                    </Link>
+                      {({ ref, ariaIds }) => (
+                        <Link
+                          to={`/marc-authorities/authorities/${recordRow.authorityId}?segment=search`}
+                          target="_blank"
+                          data-testid="authority-record-link"
+                          ref={ref}
+                          aria-labelledby={ariaIds.text}
+                        >
+                          <IconButton icon="eye-open" />
+                        </Link>
+                      )}
+                    </Tooltip>
                   )}
                 </div>
               </div>
