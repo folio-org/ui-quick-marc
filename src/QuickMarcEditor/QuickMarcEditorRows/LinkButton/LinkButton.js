@@ -1,4 +1,8 @@
 import {
+  useEffect,
+  useState,
+} from 'react';
+import {
   useIntl,
   FormattedMessage,
 } from 'react-intl';
@@ -8,7 +12,10 @@ import { Pluggable } from '@folio/stripes/core';
 import {
   Tooltip,
   IconButton,
+  Icon,
 } from '@folio/stripes/components';
+
+import { useMarcSource } from '../../../queries';
 
 const propTypes = {
   isLinked: PropTypes.bool.isRequired,
@@ -22,6 +29,26 @@ const LinkButton = ({
   isLinked,
 }) => {
   const intl = useIntl();
+  const [authority, setAuthority] = useState(null);
+
+  const { isLoading } = useMarcSource(authority?.id, {
+    onSuccess: (authoritySource) => {
+      handleLinkAuthority(authority, authoritySource);
+    },
+  });
+
+  const onLinkRecord = (_authority) => {
+    setAuthority(_authority);
+  };
+
+  if (isLoading) {
+    return (
+      <Icon
+        data-testid="link-authority-loading"
+        icon="spinner-ellipsis"
+      />
+    );
+  }
 
   if (isLinked) {
     return (
@@ -46,7 +73,7 @@ const LinkButton = ({
   return (
     <Pluggable
       type="find-authority"
-      onLinkRecord={handleLinkAuthority}
+      onLinkRecord={onLinkRecord}
       renderCustomTrigger={({ onClick }) => (
         <Tooltip
           id="link"

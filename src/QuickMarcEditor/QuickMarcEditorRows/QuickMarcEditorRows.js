@@ -74,7 +74,7 @@ const QuickMarcEditorRows = ({
   const indexOfNewRow = useRef(null);
   const newRowRef = useRef(null);
 
-  const { linkAuthority } = useAuthorityLinking();
+  const { linkAuthority, unlinkAuthority } = useAuthorityLinking();
 
   const isNewRow = useCallback((row) => {
     return !initialValues.records.find(record => record.id === row.id);
@@ -140,13 +140,15 @@ const QuickMarcEditorRows = ({
     }
   }, [indexOfNewRow, newRowRef]);
 
-  const handleLinkAuthority = useCallback((authority, index) => {
-    const field = linkAuthority(authority, fields[index]);
+  const handleLinkAuthority = useCallback((authority, marcSource, index) => {
+    const field = linkAuthority(authority, marcSource, fields[index]);
 
     markRecordLinked({ index, field });
   }, [markRecordLinked, linkAuthority, fields]);
 
   const handleUnlinkAuthority = useCallback(index => {
+    unlinkAuthority(fields[index]);
+
     markRecordUnlinked({ index });
   }, [markRecordUnlinked]);
 
@@ -410,7 +412,7 @@ const QuickMarcEditorRows = ({
                   )}
                   {isLinkVisible && (
                     <LinkButton
-                      handleLinkAuthority={(authority) => handleLinkAuthority(authority, idx)}
+                      handleLinkAuthority={(authority, marcSource) => handleLinkAuthority(authority, marcSource, idx)}
                       handleUnlinkAuthority={() => handleUnlinkAuthority(idx)}
                       isLinked={recordRow._isLinked}
                     />

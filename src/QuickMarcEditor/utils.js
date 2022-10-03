@@ -212,6 +212,7 @@ export const hydrateMarcRecord = marcRecord => ({
     tag: record.tag,
     content: record.content,
     indicators: record.indicators,
+    authorityNaturalId: record.authorityNaturalId,
   })),
   records: undefined,
 });
@@ -719,8 +720,8 @@ export const getContentSubfieldValue = (content) => {
 
       const key = `$${str[0]}`;
       const value = acc[key]
-        ? flatten([acc[key], str.substring(2).trimEnd()]) // repeatable subfields will be stored as an array
-        : str.substring(2).trimEnd();
+        ? flatten([acc[key], str.substring(2).trim()]) // repeatable subfields will be stored as an array
+        : str.substring(2).trim();
 
       return {
         ...acc,
