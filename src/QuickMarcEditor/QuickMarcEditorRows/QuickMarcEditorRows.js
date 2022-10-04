@@ -8,6 +8,7 @@ import {
   useFormState,
 } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
+import { Link } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import isEqual from 'lodash/isEqual';
 import defer from 'lodash/defer';
@@ -194,6 +195,11 @@ const QuickMarcEditorRows = ({
               marcType === MARC_TYPES.BIB &&
               (action === QUICK_MARC_ACTIONS.EDIT || action === QUICK_MARC_ACTIONS.DUPLICATE) &&
               TAGS_FOR_DISPLAYING_LINKS.has(recordRow.tag);
+
+            const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') &&
+              marcType === MARC_TYPES.BIB &&
+              recordRow.authorityId &&
+              (action === QUICK_MARC_ACTIONS.EDIT || action === QUICK_MARC_ACTIONS.DUPLICATE);
 
             return (
               <div
@@ -405,6 +411,24 @@ const QuickMarcEditorRows = ({
                       isLinked={recordRow._isLinked}
                     />
                   )}
+                  {canViewAuthorityRecord && (
+                    <Tooltip
+                      id="view-marc-authority-record-tooltip"
+                      text={intl.formatMessage({ id: 'ui-quick-marc.record.viewMarcAuthorityRecord' })}
+                    >
+                      {({ ref, ariaIds }) => (
+                        <Link
+                          to={`/marc-authorities/authorities/${recordRow.authorityId}?segment=search`}
+                          target="_blank"
+                          data-testid="authority-record-link"
+                          ref={ref}
+                          aria-labelledby={ariaIds.text}
+                        >
+                          <IconButton icon="eye-open" />
+                        </Link>
+                      )}
+                    </Tooltip>
+                  )}
                 </div>
               </div>
             );
@@ -420,6 +444,7 @@ QuickMarcEditorRows.propTypes = {
   type: PropTypes.string.isRequired,
   subtype: PropTypes.string.isRequired,
   fields: PropTypes.arrayOf(PropTypes.shape({
+    authorityId: PropTypes.string,
     id: PropTypes.string.isRequired,
     tag: PropTypes.string.isRequired,
     indicators: PropTypes.arrayOf(PropTypes.string),
