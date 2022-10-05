@@ -18,6 +18,13 @@ import { MARC_TYPES } from '../../common/constants';
 
 jest.mock('lodash/defer', () => jest.fn());
 
+jest.mock('../../hooks/useAuthoritySourceFiles', () => ({
+  useAuthoritySourceFiles: jest.fn().mockResolvedValue({
+    sourceFiles: [],
+    isLoading: false,
+  }),
+}));
+
 const initValues = [
   {
     id: '1',
