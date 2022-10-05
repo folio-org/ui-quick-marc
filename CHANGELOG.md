@@ -19,6 +19,7 @@
 * [UIQM-276](https://issues.folio.org/browse/UIQM-276) Derive/Edit MARC bib | Link bib field to authority record | Validate and Generate $0 value
 * [UIQM-293](https://issues.folio.org/browse/UIQM-293) Edit/Derive - MARC bib - Remove 008 Desc box
 * [UIQM-284](https://issues.folio.org/browse/UIQM-284) Linked bib field | Show View Authority icon
+* [UIQM-275](https://issues.folio.org/browse/UIQM-275) Derive a new MARC bib/Edit a MARC bib | Link/Unlink a MARC bib field to/from an Authority record
 
 ## [5.1.2](https://github.com/folio-org/ui-quick-marc/tree/v5.1.2) (2022-08-23)
 

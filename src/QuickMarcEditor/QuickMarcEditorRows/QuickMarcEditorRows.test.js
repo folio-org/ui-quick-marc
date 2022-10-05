@@ -7,6 +7,10 @@ import {
 } from '@testing-library/react';
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
+import {
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query';
 import defer from 'lodash/defer';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
@@ -75,35 +79,38 @@ const addRecordMock = jest.fn().mockImplementation(({ index }) => {
 const deleteRecordMock = jest.fn();
 const moveRecordMock = jest.fn();
 const markRecordDeletedMock = jest.fn();
+const queryClient = new QueryClient();
 
 const renderQuickMarcEditorRows = (props = {}) => (render(
   <MemoryRouter>
-    <Form
-      onSubmit={jest.fn()}
-      mutators={arrayMutators}
-      initialValues={{
-        records: initValues,
-      }}
-      render={() => (
-        <QuickMarcEditorRows
-          fields={values}
-          name="records"
-          type="a"
-          action={QUICK_MARC_ACTIONS.EDIT}
-          marcType={MARC_TYPES.BIB}
-          mutators={{
-            addRecord: addRecordMock,
-            deleteRecord: deleteRecordMock,
-            markRecordDeleted: markRecordDeletedMock,
-            moveRecord: moveRecordMock,
-            markRecordLinked: jest.fn(),
-            markRecordUnlinked: jest.fn(),
-          }}
-          subtype="test"
-          {...props}
-        />
-      )}
-    />
+    <QueryClientProvider client={queryClient}>
+      <Form
+        onSubmit={jest.fn()}
+        mutators={arrayMutators}
+        initialValues={{
+          records: initValues,
+        }}
+        render={() => (
+          <QuickMarcEditorRows
+            fields={values}
+            name="records"
+            type="a"
+            action={QUICK_MARC_ACTIONS.EDIT}
+            marcType={MARC_TYPES.BIB}
+            mutators={{
+              addRecord: addRecordMock,
+              deleteRecord: deleteRecordMock,
+              markRecordDeleted: markRecordDeletedMock,
+              moveRecord: moveRecordMock,
+              markRecordLinked: jest.fn(),
+              markRecordUnlinked: jest.fn(),
+            }}
+            subtype="test"
+            {...props}
+          />
+        )}
+      />
+    </QueryClientProvider>
   </MemoryRouter>,
 ));
 

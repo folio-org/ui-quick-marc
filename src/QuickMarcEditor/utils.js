@@ -6,6 +6,8 @@ import omit from 'lodash/omit';
 import compact from 'lodash/compact';
 import isString from 'lodash/isString';
 import isNumber from 'lodash/isNumber';
+import toPairs from 'lodash/toPairs';
+import flatten from 'lodash/flatten';
 
 import {
   isLastRecord,
@@ -198,7 +200,7 @@ export const addInternalFieldProperties = (marcRecord) => {
     records: marcRecord.records.map(record => ({
       ...record,
       _isDeleted: false,
-      _isLinked: false,
+      _isLinked: !!record.authorityId,
     })),
   };
 };
@@ -210,6 +212,7 @@ export const hydrateMarcRecord = marcRecord => ({
     tag: record.tag,
     content: record.content,
     indicators: record.indicators,
+    authorityNaturalId: record.authorityNaturalId,
   })),
   records: undefined,
 });
@@ -687,6 +690,20 @@ export const cleanBytesFields = (formValues, initialValues, marcType) => {
   };
 };
 
+export const combineSplitFields = (formValues) => {
+  const { records } = formValues;
+
+  return {
+    ...formValues,
+    records: records.map(record => ({
+      ...record,
+      content: record._isLinked
+        ? Object.values(record.subfieldGroups).reduce((content, subfield) => [content, subfield].join(' ').trim(), '')
+        : record.content,
+    })),
+  };
+};
+
 export const getCorrespondingMarcTag = (records) => {
   const correspondingHeadingTypeTags = new Set(CORRESPONDING_HEADING_TYPE_TAGS);
 
@@ -701,9 +718,92 @@ export const getContentSubfieldValue = (content) => {
         return acc;
       }
 
+      const key = `$${str[0]}`;
+      const value = acc[key]
+        ? flatten([acc[key], str.substring(2).trim()]) // repeatable subfields will be stored as an array
+        : str.substring(2).trim();
+
       return {
         ...acc,
-        [`$${str[0]}`]: str.substring(2).trimEnd(),
+        [key]: value,
       };
     }, {});
+};
+
+export const groupSubfields = (field) => {
+  const { authorityControlledSubfields = ['$a'] } = field;
+
+  const subfields = toPairs(getContentSubfieldValue(field.content));
+
+  return subfields.reduce((groups, subfield) => {
+    const isControlled = authorityControlledSubfields.includes(subfield[0]);
+    const isNum = /\$\d/.test(subfield[0]);
+    const isZero = /\$0/.test(subfield[0]);
+    const isNine = /\$9/.test(subfield[0]);
+
+    const fieldContent = Array.isArray(subfield[1])
+      ? subfield[1].reduce((content, value) => [content, `${subfield[0]} ${value}`].join(' '), '')
+      : `${subfield[0]} ${subfield[1]}`;
+
+    const formattedSubfield = {
+      content: fieldContent,
+      code: subfield[0],
+    };
+
+    if (isControlled) {
+      groups.controlled = [groups.controlled, formattedSubfield.content].join(' ').trim();
+
+      return groups;
+    }
+
+    if (!isControlled && !isNum) {
+      groups.uncontrolledAlpha = [groups.uncontrolledAlpha, formattedSubfield.content].join(' ').trim();
+
+      return groups;
+    }
+
+    if (isZero) {
+      groups.zeroSubfield = [groups.zeroSubfield, formattedSubfield.content].join(' ').trim();
+
+      return groups;
+    }
+
+    if (isNine) {
+      groups.nineSubfield = [groups.nineSubfield, formattedSubfield.content].join(' ').trim();
+
+      return groups;
+    }
+
+    if (isNum) {
+      groups.uncontrolledNumber = [groups.uncontrolledNumber, formattedSubfield.content].join(' ').trim();
+
+      return groups;
+    }
+
+    return groups;
+  }, {
+    controlled: '',
+    uncontrolledAlpha: '',
+    zeroSubfield: '',
+    nineSubfield: '',
+    uncontrolledNumber: '',
+  });
+};
+
+export const splitFields = marcRecord => {
+  return {
+    ...marcRecord,
+    records: marcRecord.records.map(record => {
+      if (!record._isLinked) {
+        return record;
+      }
+
+      const subfieldGroups = groupSubfields(record);
+
+      return {
+        ...record,
+        subfieldGroups,
+      };
+    }),
+  };
 };
