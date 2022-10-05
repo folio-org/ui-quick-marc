@@ -462,7 +462,6 @@ QuickMarcEditorRows.propTypes = {
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     _isDeleted: PropTypes.bool,
     _isLinked: PropTypes.bool,
-    authorityId: PropTypes.string,
   })),
   mutators: PropTypes.shape({
     addRecord: PropTypes.func.isRequired,
