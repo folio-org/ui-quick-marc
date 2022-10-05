@@ -13,6 +13,7 @@ import {
   Tooltip,
   IconButton,
   Icon,
+  ConfirmationModal,
 } from '@folio/stripes/components';
 
 import { useMarcSource } from '../../../queries';
@@ -21,15 +22,18 @@ const propTypes = {
   isLinked: PropTypes.bool.isRequired,
   handleLinkAuthority: PropTypes.func.isRequired,
   handleUnlinkAuthority: PropTypes.func.isRequired,
+  tag: PropTypes.string.isRequired,
 };
 
 const LinkButton = ({
   handleLinkAuthority,
   handleUnlinkAuthority,
   isLinked,
+  tag,
 }) => {
   const intl = useIntl();
   const [authority, setAuthority] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { isLoading, refetch: refetchSource } = useMarcSource(authority?.id, {
     onSuccess: (authoritySource) => {
@@ -47,6 +51,67 @@ const LinkButton = ({
     setAuthority(_authority);
   };
 
+  const toggleModal = () => {
+    setIsModalOpen(open => !open);
+  };
+
+  const handleCancelUnlink = () => {
+    toggleModal();
+  };
+
+  const handleConfirmUnlink = () => {
+    handleUnlinkAuthority();
+    toggleModal();
+  };
+
+  const renderButton = () => {
+    if (isLinked) {
+      return (
+        <Tooltip
+          id="unlink"
+          text={intl.formatMessage({ id: 'ui-quick-marc.record.unlink' })}
+        >
+          {({ ref, ariaIds }) => (
+            <IconButton
+              ref={ref}
+              data-testid="unlink-authority-button"
+              icon="unlink"
+              aria-haspopup="true"
+              aria-labelledby={ariaIds.text}
+              onClick={toggleModal}
+            />
+          )}
+        </Tooltip>
+      );
+    }
+
+    return (
+      <Pluggable
+        type="find-authority"
+        onLinkRecord={onLinkRecord}
+        renderCustomTrigger={({ onClick }) => (
+          <Tooltip
+            id="link"
+            text={intl.formatMessage({ id: 'ui-quick-marc.record.link' })}
+          >
+            {({ ref, ariaIds }) => (
+              <IconButton
+                ref={ref}
+                data-testid="link-authority-button"
+                icon="link"
+                aria-haspopup="true"
+                aria-labelledby={ariaIds.text}
+                onClick={onClick}
+              />
+            )}
+          </Tooltip>
+        )}
+      >
+        <FormattedMessage id="ui-quick-marc.noPlugin" />
+      </Pluggable>
+    );
+  };
+
   if (isLoading) {
     return (
       <Icon
@@ -56,50 +121,20 @@ const LinkButton = ({
     );
   }
 
-  if (isLinked) {
-    return (
-      <Tooltip
-        id="unlink"
-        text={intl.formatMessage({ id: 'ui-quick-marc.record.unlink' })}
-      >
-        {({ ref, ariaIds }) => (
-          <IconButton
-            ref={ref}
-            data-testid="unlink-authority-button"
-            icon="unlink"
-            aria-haspopup="true"
-            aria-labelledby={ariaIds.text}
-            onClick={handleUnlinkAuthority}
-          />
-        )}
-      </Tooltip>
-    );
-  }
-
   return (
-    <Pluggable
-      type="find-authority"
-      onLinkRecord={onLinkRecord}
-      renderCustomTrigger={({ onClick }) => (
-        <Tooltip
-          id="link"
-          text={intl.formatMessage({ id: 'ui-quick-marc.record.link' })}
-        >
-          {({ ref, ariaIds }) => (
-            <IconButton
-              ref={ref}
-              data-testid="link-authority-button"
-              icon="link"
-              aria-haspopup="true"
-              aria-labelledby={ariaIds.text}
-              onClick={onClick}
-            />
-          )}
-        </Tooltip>
-      )}
-    >
-      <FormattedMessage id="ui-quick-marc.noPlugin" />
-    </Pluggable>
+    <>
+      {renderButton()}
+      <ConfirmationModal
+        id="quick-marc-confirm-unlink-modal"
+        open={isModalOpen}
+        heading={<FormattedMessage id="ui-quick-marc.record.unlink.confirm.title" />}
+        message={<FormattedMessage id="ui-quick-marc.record.unlink.confirm.message" values={{ tag }} />}
+        confirmLabel={<FormattedMessage id="ui-quick-marc.record.unlink.confirm.confirm" />}
+        cancelLabel={<FormattedMessage id="ui-quick-marc.record.unlink.confirm.cancel" />}
+        onConfirm={handleConfirmUnlink}
+        onCancel={handleCancelUnlink}
+      />
+    </>
   );
 };
 

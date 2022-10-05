@@ -71,12 +71,31 @@ describe('Given LinkButton', () => {
   });
 
   describe('when clicking on unlink button', () => {
-    it('should call onClick', () => {
-      const { getAllByTestId } = renderComponent({
+    it('should show confirmation modal', () => {
+      const {
+        getAllByTestId,
+        getByText,
+      } = renderComponent({
         isLinked: true,
       });
 
       fireEvent.click(getAllByTestId('unlink-authority-button')[0]);
+
+      expect(getByText('ui-quick-marc.record.unlink.confirm.title')).toBeDefined();
+    });
+  });
+
+  describe('when confirming unlinking', () => {
+    it('should call handleUnlinkAuthority', () => {
+      const {
+        getAllByTestId,
+        getByText,
+      } = renderComponent({
+        isLinked: true,
+      });
+
+      fireEvent.click(getAllByTestId('unlink-authority-button')[0]);
+      fireEvent.click(getByText('ui-quick-marc.record.unlink.confirm.confirm'));
 
       expect(mockHandleUnlinkAuthority).toHaveBeenCalled();
     });
