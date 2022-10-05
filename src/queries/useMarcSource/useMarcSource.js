@@ -13,7 +13,7 @@ export const useMarcSource = (recordId, { onSuccess }) => {
   const ky = useOkapiKy();
   const [namespace] = useNamespace({ key: 'MARC_SOURCE' });
 
-  const { isFetching, data } = useQuery(
+  const { isFetching, data, refetch } = useQuery(
     [namespace, recordId],
     async () => {
       return ky.get(MARC_SOURCE_API(recordId)).json();
@@ -24,6 +24,7 @@ export const useMarcSource = (recordId, { onSuccess }) => {
   );
 
   return ({
+    refetch,
     data,
     isLoading: isFetching,
   });

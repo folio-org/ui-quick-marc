@@ -774,7 +774,11 @@ export const groupSubfields = (field) => {
       return groups;
     }
 
-    groups.uncontrolledNumber = [groups.uncontrolledNumber, formattedSubfield.content].join(' ').trim();
+    if (isNum) {
+      groups.uncontrolledNumber = [groups.uncontrolledNumber, formattedSubfield.content].join(' ').trim();
+
+      return groups;
+    }
 
     return groups;
   }, {

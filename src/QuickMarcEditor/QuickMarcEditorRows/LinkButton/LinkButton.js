@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import {
+  useEffect,
+  useState,
+} from 'react';
 import {
   useIntl,
   FormattedMessage,
@@ -28,11 +31,17 @@ const LinkButton = ({
   const intl = useIntl();
   const [authority, setAuthority] = useState(null);
 
-  const { isLoading } = useMarcSource(authority?.id, {
+  const { isLoading, refetch: refetchSource } = useMarcSource(authority?.id, {
     onSuccess: (authoritySource) => {
       handleLinkAuthority(authority, authoritySource);
     },
   });
+
+  useEffect(() => {
+    if (authority) {
+      refetchSource();
+    }
+  }, [refetchSource, authority]);
 
   const onLinkRecord = (_authority) => {
     setAuthority(_authority);

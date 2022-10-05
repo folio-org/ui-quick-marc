@@ -29,6 +29,7 @@ const useAuthorityLinking = () => {
 
     if (!linkedAuthorityField) {
       // TODO: will handle validation here. Requirements are yet to be defined
+      return field;
     }
 
     const bibSubfields = getContentSubfieldValue(field.content);
@@ -38,19 +39,18 @@ const useAuthorityLinking = () => {
 
     if (!bibSubfields.$0 || bibSubfields.$0 !== authority.naturalId) {
       bibSubfields.$0 = newZeroSubfield;
-      bibSubfields.$9 = authority.id;
-      copySubfieldsFromAuthority(bibSubfields, linkedAuthorityField);
-
-      field.content = joinSubfields(bibSubfields);
-      field.authorityNaturalId = authority.naturalId;
-
-      return {
-        ...field,
-        subfieldGroups: groupSubfields(field),
-      };
     }
 
-    return field;
+    bibSubfields.$9 = authority.id;
+    copySubfieldsFromAuthority(bibSubfields, linkedAuthorityField);
+
+    field.content = joinSubfields(bibSubfields);
+    field.authorityNaturalId = authority.naturalId;
+
+    return {
+      ...field,
+      subfieldGroups: groupSubfields(field),
+    };
   }, [sourceFiles]);
 
   const unlinkAuthority = (field) => {
