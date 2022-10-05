@@ -58,6 +58,11 @@ const initValues = [
     content: '$b f',
     isProtected: true,
   },
+  {
+    id: '8',
+    authorityId: '09140d44-a515-4b64-9261-845639e75db4',
+    tag: '100',
+  },
 ];
 
 let values = [...initValues];
@@ -91,6 +96,8 @@ const renderQuickMarcEditorRows = (props = {}) => (render(
             deleteRecord: deleteRecordMock,
             markRecordDeleted: markRecordDeletedMock,
             moveRecord: moveRecordMock,
+            markRecordLinked: jest.fn(),
+            markRecordUnlinked: jest.fn(),
           }}
           subtype="test"
           {...props}
@@ -256,6 +263,17 @@ describe('Given QuickMarcEditorRows', () => {
 
         expect(queryByTestId('quick-marc-protected-field-popover')).toBeNull();
       });
+    });
+  });
+
+  describe('when there are linked fields', () => {
+    it('should display the view authority record button', () => {
+      const { getByTestId } = renderQuickMarcEditorRows({
+        action: QUICK_MARC_ACTIONS.EDIT,
+        marcType: MARC_TYPES.BIB,
+      });
+
+      expect(getByTestId('authority-record-link')).toBeVisible();
     });
   });
 });
