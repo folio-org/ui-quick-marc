@@ -2,7 +2,7 @@
   "extends": ["@folio/eslint-config-stripes/acquisitions"],
   "parser": "@babel/eslint-parser",
   "overrides": [{
-    "files": [ "*.test.js" ],
+    "files": [ "*.test.js", "test/jest/**/*"],
     "settings": {
       "import/resolver": {
         "node": {
@@ -12,7 +12,9 @@
     },
     "rules": {
       "no-unused-expressions": 0,
-      "react/prop-types": "off"
+      "react/prop-types": "off",
+      "func-names": "off",
+      "filenames/match-exported": "off"
     }
   }, {
     "files": ["test/jest/**/*"],
