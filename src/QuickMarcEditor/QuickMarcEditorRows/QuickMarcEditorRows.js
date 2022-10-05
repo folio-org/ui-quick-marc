@@ -125,23 +125,17 @@ const QuickMarcEditorRows = ({
 
     const row = containerRef.current.querySelector(`[data-row="record-row[${index}]"]`);
 
-    let nextFocusableElement;
-
     if (index > indexToSwitch && !row.previousElementSibling.querySelector('[data-icon="move-up"]')) {
-      nextFocusableElement = row.querySelector('[data-icon="move-down"]');
+      row.querySelector('[data-icon="move-down"]')?.focus();
     }
 
     if (index < indexToSwitch && !row.nextElementSibling.querySelector('[data-icon="move-down"]')) {
-      nextFocusableElement = row.querySelector('[data-icon="move-up"]');
+      row.querySelector('[data-icon="move-up"]')?.focus();
     }
 
     moveRecord({
       index,
       indexToSwitch,
-    });
-
-    defer(() => {
-      nextFocusableElement?.focus();
     });
   }, [moveRecord]);
 
