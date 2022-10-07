@@ -20,6 +20,7 @@
 * [UIQM-293](https://issues.folio.org/browse/UIQM-293) Edit/Derive - MARC bib - Remove 008 Desc box
 * [UIQM-292](https://issues.folio.org/browse/UIQM-292) Change field level actions for "Move field a row" buttons.
 * [UIQM-284](https://issues.folio.org/browse/UIQM-284) Linked bib field | Show View Authority icon
+* [UIQM-305](https://issues.folio.org/browse/UIQM-305) Resolve ui-quick-marc and stripes-authority-component circular dependency
 
 ## [5.1.2](https://github.com/folio-org/ui-quick-marc/tree/v5.1.2) (2022-08-23)
 

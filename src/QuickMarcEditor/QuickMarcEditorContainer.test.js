@@ -17,6 +17,13 @@ import QuickMarcEditWrapper from './QuickMarcEditWrapper';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 
+jest.mock('../hooks/useAuthoritySourceFiles', () => ({
+  useAuthoritySourceFiles: jest.fn().mockResolvedValue({
+    sourceFiles: [],
+    isLoading: false,
+  }),
+}));
+
 const getInstance = () => ({
   id: faker.random.uuid(),
   title: 'ui-quick-marc.bib-record.edit.title',

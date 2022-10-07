@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useAuthoritySourceFiles } from '@folio/stripes-authority-components';
+import { useAuthoritySourceFiles } from '../useAuthoritySourceFiles';
 
 import { getContentSubfieldValue } from '../../QuickMarcEditor/utils';
 
