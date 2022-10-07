@@ -35,7 +35,13 @@ const useAuthorityLinking = () => {
     const bibSubfields = getContentSubfieldValue(field.content);
     const sourceFile = sourceFiles.find(file => file.id === authority.sourceFileId);
 
-    const newZeroSubfield = [sourceFile?.baseUrl, authority.naturalId].join('').trim();
+    let newZeroSubfield = '';
+
+    if (sourceFile?.baseUrl) {
+      newZeroSubfield = ['http://', sourceFile?.baseUrl, authority.naturalId].join('').trim();
+    } else {
+      newZeroSubfield = authority.naturalId;
+    }
 
     if (!bibSubfields.$0 || bibSubfields.$0 !== authority.naturalId) {
       bibSubfields.$0 = newZeroSubfield;
@@ -49,7 +55,7 @@ const useAuthorityLinking = () => {
 
     return {
       ...field,
-      subfieldGroups: groupSubfields(field),
+      subfieldGroups: groupSubfields(field, Object.keys(getContentSubfieldValue(linkedAuthorityField.content))),
     };
   }, [sourceFiles]);
 

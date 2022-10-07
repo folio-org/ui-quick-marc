@@ -730,9 +730,7 @@ export const getContentSubfieldValue = (content) => {
     }, {});
 };
 
-export const groupSubfields = (field) => {
-  const { authorityControlledSubfields = ['$a'] } = field;
-
+export const groupSubfields = (field, authorityControlledSubfields) => {
   const subfields = toPairs(getContentSubfieldValue(field.content));
 
   return subfields.reduce((groups, subfield) => {
@@ -798,7 +796,7 @@ export const splitFields = marcRecord => {
         return record;
       }
 
-      const subfieldGroups = groupSubfields(record);
+      const subfieldGroups = groupSubfields(record, record.authorityControlledSubfields);
 
       return {
         ...record,
