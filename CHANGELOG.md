@@ -18,6 +18,7 @@
 * [UIQM-274](https://issues.folio.org/browse/UIQM-274) Derive/Edit a bib record | Display link icon for eligible name bib fields to link to authority records and show Select a MARC authority plug-in
 * [UIQM-276](https://issues.folio.org/browse/UIQM-276) Derive/Edit MARC bib | Link bib field to authority record | Validate and Generate $0 value
 * [UIQM-293](https://issues.folio.org/browse/UIQM-293) Edit/Derive - MARC bib - Remove 008 Desc box
+* [UIQM-292](https://issues.folio.org/browse/UIQM-292) Change field level actions for "Move field a row" buttons.
 * [UIQM-284](https://issues.folio.org/browse/UIQM-284) Linked bib field | Show View Authority icon
 * [UIQM-275](https://issues.folio.org/browse/UIQM-275) Derive a new MARC bib/Edit a MARC bib | Link/Unlink a MARC bib field to/from an Authority record
 

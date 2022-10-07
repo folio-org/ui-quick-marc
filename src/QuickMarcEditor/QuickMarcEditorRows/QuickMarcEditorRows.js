@@ -122,9 +122,22 @@ const QuickMarcEditorRows = ({
   }, [fields, deleteRecord, markRecordDeleted, isNewRow, containerRef]);
 
   const moveRow = useCallback(({ target }) => {
+    const index = parseInt(target.dataset.index, 10);
+    const indexToSwitch = parseInt(target.dataset.indexToSwitch, 10);
+
+    const row = containerRef.current.querySelector(`[data-row="record-row[${index}]"]`);
+
+    if (index > indexToSwitch && !row.previousElementSibling.querySelector('[data-icon="move-up"]')) {
+      row.querySelector('[data-icon="move-down"]')?.focus();
+    }
+
+    if (index < indexToSwitch && !row.nextElementSibling.querySelector('[data-icon="move-down"]')) {
+      row.querySelector('[data-icon="move-up"]')?.focus();
+    }
+
     moveRecord({
-      index: +target.dataset.index,
-      indexToSwitch: parseInt(target.dataset.indexToSwitch, 10),
+      index,
+      indexToSwitch,
     });
   }, [moveRecord]);
 
@@ -243,6 +256,7 @@ const QuickMarcEditorRows = ({
                           <IconButton
                             ref={ref}
                             name="icon-arrow-down"
+                            data-icon="move-down"
                             aria-labelledby={ariaIds.text}
                             data-test-move-down-row
                             data-index={idx}
