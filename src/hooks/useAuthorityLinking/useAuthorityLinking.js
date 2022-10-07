@@ -49,13 +49,16 @@ const useAuthorityLinking = () => {
 
     bibSubfields.$9 = authority.id;
     copySubfieldsFromAuthority(bibSubfields, linkedAuthorityField);
-
     field.content = joinSubfields(bibSubfields);
-    field.authorityNaturalId = authority.naturalId;
+
+    const controlledSubfields = Object.keys(getContentSubfieldValue(linkedAuthorityField.content)).map(key => key.replace('$', ''));
 
     return {
       ...field,
-      subfieldGroups: groupSubfields(field, Object.keys(getContentSubfieldValue(linkedAuthorityField.content))),
+      authorityNaturalId: authority.naturalId,
+      authorityId: authority.id,
+      subfieldGroups: groupSubfields(field, controlledSubfields),
+      authorityControlledSubfields: controlledSubfields,
     };
   }, [sourceFiles]);
 
@@ -64,12 +67,14 @@ const useAuthorityLinking = () => {
 
     delete bibSubfields.$9;
     delete field.authorityNaturalId;
+    delete field.authorityId;
 
     field.content = joinSubfields(bibSubfields);
 
     return {
       ...field,
       subfieldGroups: null,
+      authorityControlledSubfields: [],
     };
   };
 

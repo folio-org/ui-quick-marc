@@ -212,10 +212,7 @@ const QuickMarcEditorRows = ({
               (action === QUICK_MARC_ACTIONS.EDIT || action === QUICK_MARC_ACTIONS.DUPLICATE) &&
               TAGS_FOR_DISPLAYING_LINKS.has(recordRow.tag);
 
-            const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') &&
-              marcType === MARC_TYPES.BIB &&
-              recordRow.authorityId &&
-              (action === QUICK_MARC_ACTIONS.EDIT || action === QUICK_MARC_ACTIONS.DUPLICATE);
+            const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') && recordRow._isLinked;
 
             return (
               <div
