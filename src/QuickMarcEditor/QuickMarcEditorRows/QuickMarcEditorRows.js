@@ -225,7 +225,7 @@ const QuickMarcEditorRows = ({
                   {
                     !withMoveUpRowAction && (
                       <Tooltip
-                        id="moving-row-move-up"
+                        id={`moving-row-move-up-${idx}`}
                         text={intl.formatMessage({ id: 'ui-quick-marc.record.moveUpRow' })}
                       >
                         {({ ref, ariaIds }) => (
@@ -246,7 +246,7 @@ const QuickMarcEditorRows = ({
                   {
                     !withMoveDownRowAction && (
                       <Tooltip
-                        id="moving-row-move-down"
+                        id={`moving-row-move-down-${idx}`}
                         text={intl.formatMessage({ id: 'ui-quick-marc.record.moveDownRow' })}
                       >
                         {({ ref, ariaIds }) => (
@@ -271,7 +271,7 @@ const QuickMarcEditorRows = ({
                   {
                     !withAddRowAction && (
                       <Tooltip
-                        id="actions-add-field"
+                        id={`actions-add-field-${idx}`}
                         text={intl.formatMessage({ id: 'ui-quick-marc.record.addField' })}
                       >
                         {({ ref, ariaIds }) => (
@@ -291,7 +291,7 @@ const QuickMarcEditorRows = ({
                   {
                     !withDeleteRowAction && (
                       <Tooltip
-                        id="actions-delete-field"
+                        id={`actions-delete-field-${idx}`}
                         text={intl.formatMessage({ id: 'ui-quick-marc.record.deleteField' })}
                       >
                         {({ ref, ariaIds }) => (
@@ -427,7 +427,7 @@ const QuickMarcEditorRows = ({
                   )}
                   {canViewAuthorityRecord && (
                     <Tooltip
-                      id="view-marc-authority-record-tooltip"
+                      id={`view-marc-authority-record-tooltip-${idx}`}
                       text={intl.formatMessage({ id: 'ui-quick-marc.record.viewMarcAuthorityRecord' })}
                     >
                       {({ ref, ariaIds }) => (
