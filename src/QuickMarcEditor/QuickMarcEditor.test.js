@@ -2,11 +2,16 @@ import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import {
   render,
-  cleanup,
   fireEvent,
   waitFor,
 } from '@testing-library/react';
+import {
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query';
 import faker from 'faker';
+
+import { runAxeTest } from '@folio/stripes-testing';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
@@ -49,6 +54,13 @@ jest.mock('./QuickMarcRecordInfo', () => {
   };
 });
 
+jest.mock('../hooks/useAuthoritySourceFiles', () => ({
+  useAuthoritySourceFiles: jest.fn().mockResolvedValue({
+    sourceFiles: [],
+    isLoading: false,
+  }),
+}));
+
 const onCloseMock = jest.fn();
 const onSubmitMock = jest.fn(() => Promise.resolve({ version: 1 }));
 
@@ -83,28 +95,38 @@ const initialValues = {
   }],
 };
 
+const queryClient = new QueryClient();
+
 const renderQuickMarcEditor = (props) => (render(
   <MemoryRouter>
-    <QuickMarcEditor
-      action={QUICK_MARC_ACTIONS.EDIT}
-      instance={instance}
-      onClose={onCloseMock}
-      onSubmit={onSubmitMock}
-      mutators={{
-        addRecord: jest.fn(),
-        deleteRecord: jest.fn(),
-        moveRecord: jest.fn(),
-      }}
-      initialValues={initialValues}
-      marcType={MARC_TYPES.BIB}
-      locations={locations}
-      {...props}
-    />
+    <QueryClientProvider client={queryClient}>
+      <QuickMarcEditor
+        action={QUICK_MARC_ACTIONS.EDIT}
+        instance={instance}
+        onClose={onCloseMock}
+        onSubmit={onSubmitMock}
+        mutators={{
+          addRecord: jest.fn(),
+          deleteRecord: jest.fn(),
+          moveRecord: jest.fn(),
+        }}
+        initialValues={initialValues}
+        marcType={MARC_TYPES.BIB}
+        locations={locations}
+        {...props}
+      />
+    </QueryClientProvider>
   </MemoryRouter>,
 ));
 
 describe('Given QuickMarcEditor', () => {
-  afterEach(cleanup);
+  it('should render with no axe errors', async () => {
+    const { container } = renderQuickMarcEditor();
+
+    await runAxeTest({
+      rootNode: container,
+    });
+  });
 
   it('should display instance title in pane title', () => {
     const { getByText } = renderQuickMarcEditor();
@@ -183,19 +205,19 @@ describe('Given QuickMarcEditor', () => {
 
       waitFor(() => expect(onCloseMock).toHaveBeenCalledWith());
     });
+  });
 
-    describe('when there are deleted fields', () => {
-      it('should display ConfirmationModal', () => {
-        const {
-          getByRole,
-          getByText,
-        } = renderQuickMarcEditor();
+  describe('when there are deleted fields', () => {
+    it('should display ConfirmationModal', () => {
+      const {
+        getByRole,
+        getByText,
+      } = renderQuickMarcEditor();
 
-        fireEvent.click(getByRole('button', { name: 'ui-quick-marc.record.deleteField' }));
-        fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+      fireEvent.click(getByRole('button', { name: 'ui-quick-marc.record.deleteField' }));
+      fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
-        expect(getByText('Confirmation modal')).toBeDefined();
-      });
+      expect(getByText('Confirmation modal')).toBeDefined();
     });
   });
 

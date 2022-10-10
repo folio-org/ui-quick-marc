@@ -4,6 +4,8 @@ import {
   render,
 } from '@testing-library/react';
 
+import { runAxeTest } from '@folio/stripes-testing';
+
 import { DeletedRowPlaceholder } from './DeletedRowPlaceholder';
 
 const field = {
@@ -21,6 +23,14 @@ const renderComponent = (props = {}) => render((
 ));
 
 describe('Given DeletedRowPlaceholder', () => {
+  it('should render with no axe errors', async () => {
+    const { container } = renderComponent();
+
+    await runAxeTest({
+      rootNode: container,
+    });
+  });
+
   it('should render correct placeholder message', async () => {
     const { getByText } = renderComponent();
 

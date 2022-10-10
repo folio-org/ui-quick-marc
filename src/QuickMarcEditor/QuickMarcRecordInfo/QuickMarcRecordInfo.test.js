@@ -1,6 +1,8 @@
 import React from 'react';
 import { render, cleanup } from '@testing-library/react';
 
+import { runAxeTest } from '@folio/stripes-testing';
+
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import { QuickMarcRecordInfo } from './QuickMarcRecordInfo';
@@ -22,6 +24,7 @@ const renderQuickMarcRecordInfo = (props = {}) => render(
     isEditAction
     status={RECORD_STATUS_CURRENT}
     updateDate="2020-07-14T12:20:10.000"
+    marcType={MARC_TYPES.BIB}
     updatedBy={{
       firstName: 'John',
       lastName: 'Doe',
@@ -33,6 +36,14 @@ const renderQuickMarcRecordInfo = (props = {}) => render(
 
 describe('Given Quick Marc Record Info', () => {
   afterEach(cleanup);
+
+  it('should render with no axe errors', async () => {
+    const { container } = renderQuickMarcRecordInfo();
+
+    await runAxeTest({
+      rootNode: container,
+    });
+  });
 
   it('should display record status', () => {
     const { getByText } = renderQuickMarcRecordInfo();

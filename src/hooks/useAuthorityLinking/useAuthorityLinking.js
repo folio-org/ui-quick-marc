@@ -1,37 +1,86 @@
 import { useCallback } from 'react';
 
-import { useAuthoritySourceFiles } from '@folio/stripes-authority-components';
+import { useAuthoritySourceFiles } from '../useAuthoritySourceFiles';
 
-import { getContentSubfieldValue } from '../../QuickMarcEditor/utils';
+import {
+  getContentSubfieldValue,
+  groupSubfields,
+} from '../../QuickMarcEditor/utils';
+import { LINKED_BIB_TO_AUTHORITY_FIELDS } from '../../common/constants';
 
 const useAuthorityLinking = () => {
   const { sourceFiles } = useAuthoritySourceFiles();
 
-  const linkAuthority = useCallback((authority, field) => {
-    const subfields = getContentSubfieldValue(field.content);
-    const sourceFile = sourceFiles.find(file => file.id === authority.sourceFileId);
+  const joinSubfields = (subfields) => Object.keys(subfields).reduce((content, key) => [content, `${key} ${subfields[key]}`].join(' '), '').trim();
 
-    if (!sourceFile) {
+  const copySubfieldsFromAuthority = (bibSubfields, authField) => {
+    const authSubfields = getContentSubfieldValue(authField.content);
+
+    Object.keys(authSubfields).forEach(key => {
+      bibSubfields[key] = authSubfields[key];
+    });
+
+    return bibSubfields;
+  };
+
+  const linkAuthority = useCallback((authority, authoritySource, field) => {
+    const linkedAuthorityField = authoritySource.fields
+      .find(authorityField => authorityField.tag === LINKED_BIB_TO_AUTHORITY_FIELDS[field.tag]);
+
+    if (!linkedAuthorityField) {
+      // TODO: will handle validation here. Requirements are yet to be defined
       return field;
     }
 
-    const newZeroSubfield = [sourceFile.baseUrl, authority.naturalId].join('');
+    const bibSubfields = getContentSubfieldValue(field.content);
+    const sourceFile = sourceFiles.find(file => file.id === authority.sourceFileId);
 
-    if (!subfields.$0 || subfields.$0 !== authority.naturalId) {
-      subfields.$0 = newZeroSubfield;
-      subfields.$9 = authority.id;
+    let newZeroSubfield = '';
 
-      return {
-        ...field,
-        content: Object.keys(subfields).reduce((content, key) => [content, `${key} ${subfields[key]}`].join(' '), '').trim(),
-      };
+    if (sourceFile?.baseUrl) {
+      newZeroSubfield = ['http://', sourceFile?.baseUrl, authority.naturalId].join('').trim();
+    } else {
+      newZeroSubfield = authority.naturalId;
     }
 
-    return field;
+    if (!bibSubfields.$0 || bibSubfields.$0 !== authority.naturalId) {
+      bibSubfields.$0 = newZeroSubfield;
+    }
+
+    bibSubfields.$9 = authority.id;
+    copySubfieldsFromAuthority(bibSubfields, linkedAuthorityField);
+    field.content = joinSubfields(bibSubfields);
+
+    const controlledSubfields = Object.keys(getContentSubfieldValue(linkedAuthorityField.content)).map(key => key.replace('$', ''));
+
+    return {
+      ...field,
+      authorityNaturalId: authority.naturalId,
+      authorityId: authority.id,
+      subfieldGroups: groupSubfields(field, controlledSubfields),
+      authorityControlledSubfields: controlledSubfields,
+    };
   }, [sourceFiles]);
+
+  const unlinkAuthority = (field) => {
+    const bibSubfields = getContentSubfieldValue(field.content);
+
+    delete bibSubfields.$9;
+    delete field.authorityNaturalId;
+    delete field.authorityId;
+
+    field.content = joinSubfields(bibSubfields);
+
+    return {
+      ...field,
+      subfieldGroups: null,
+      authorityControlledSubfields: [],
+    };
+  };
 
   return {
     linkAuthority,
+    unlinkAuthority,
   };
 };
 
