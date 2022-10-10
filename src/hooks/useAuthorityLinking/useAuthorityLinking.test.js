@@ -65,7 +65,7 @@ describe('Given useAuthorityLinking', () => {
       };
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
-        content: '$a authority value $b some other value $0 some.url/n0001 $9 authority-id',
+        content: '$a authority value $b some other value $0 http://some.url/n0001 $9 authority-id',
       });
     });
   });
@@ -85,7 +85,7 @@ describe('Given useAuthorityLinking', () => {
       };
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
-        content: '$a authority value $b some other value $0 some.url/n0001 $9 authority-id',
+        content: '$a authority value $b some other value $0 http://some.url/n0001 $9 authority-id',
       });
     });
   });

@@ -58,6 +58,13 @@ const initValues = [
     indicators: [],
   },
   {
+    id: '9',
+    tag: '100',
+    content: '$a c',
+    authorityId: 'authority-id',
+    indicators: [],
+  },
+  {
     id: '7',
     tag: '852',
     content: '$b KU/CC/DI/M $t 3 $h M3',
