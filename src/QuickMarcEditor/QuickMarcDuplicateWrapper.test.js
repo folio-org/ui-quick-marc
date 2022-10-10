@@ -9,6 +9,8 @@ import {
 import faker from 'faker';
 import noop from 'lodash/noop';
 
+import { runAxeTest } from '@folio/stripes-testing';
+
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcDuplicateWrapper from './QuickMarcDuplicateWrapper';
@@ -210,11 +212,25 @@ describe('Given QuickMarcDuplicateWrapper', () => {
 
   afterEach(cleanup);
 
+  it('should render with no axe errors', async () => {
+    const { container } = renderQuickMarcDuplicateWrapper({
+      instance,
+      mutator,
+      history,
+      onClose: jest.fn(),
+      location,
+    });
+
+    await runAxeTest({
+      rootNode: container,
+    });
+  });
+
   describe('when click on cancel pane button', () => {
     const onClose = jest.fn();
 
     it('should display pane footer', () => {
-      const { getByText } = renderQuickMarcDuplicateWrapper({
+      const { getByRole } = renderQuickMarcDuplicateWrapper({
         instance,
         mutator,
         history,
@@ -222,9 +238,9 @@ describe('Given QuickMarcDuplicateWrapper', () => {
         location,
       });
 
-      fireEvent.click(getByText('stripes-acq-components.FormFooter.cancel'));
+      fireEvent.click(getByRole('button', { name: 'stripes-acq-components.FormFooter.cancel' }));
 
-      expect('Confirmation modal').toBeDefined();
+      expect(onClose).toHaveBeenCalled();
     });
   });
 

@@ -9,6 +9,8 @@ import {
 import faker from 'faker';
 import noop from 'lodash/noop';
 
+import { runAxeTest } from '@folio/stripes-testing';
+
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcCreateWrapper from './QuickMarcCreateWrapper';
@@ -170,6 +172,19 @@ describe('Given QuickMarcCreateWrapper', () => {
   });
 
   afterEach(cleanup);
+
+  it('should render with no axe errors', async () => {
+    const { container } = renderQuickMarcCreateWrapper({
+      instance,
+      mutator,
+      history,
+      location,
+    });
+
+    await runAxeTest({
+      rootNode: container,
+    });
+  });
 
   describe('when click on cancel pane button', () => {
     const onClose = jest.fn();
