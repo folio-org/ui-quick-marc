@@ -24,7 +24,6 @@ const renderQuickMarcRecordInfo = (props = {}) => render(
     isEditAction
     status={RECORD_STATUS_CURRENT}
     updateDate="2020-07-14T12:20:10.000"
-    marcType={MARC_TYPES.BIB}
     updatedBy={{
       firstName: 'John',
       lastName: 'Doe',

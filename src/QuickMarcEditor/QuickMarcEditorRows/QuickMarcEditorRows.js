@@ -28,8 +28,6 @@ import { PhysDescriptionField } from './PhysDescriptionField';
 import { FixedFieldFactory } from './FixedField';
 import { LocationField } from './LocationField';
 import { DeletedRowPlaceholder } from './DeletedRowPlaceholder';
-import { LinkButton } from './LinkButton';
-import { SplitField } from './SplitField';
 import {
   isReadOnly,
   hasIndicatorException,
@@ -51,6 +49,7 @@ import {
 } from '../../common/constants';
 
 import styles from './QuickMarcEditorRows.css';
+import { LinkButton } from './LinkButton/LinkButton';
 
 const QuickMarcEditorRows = ({
   action,
@@ -75,7 +74,7 @@ const QuickMarcEditorRows = ({
   const indexOfNewRow = useRef(null);
   const newRowRef = useRef(null);
 
-  const { linkAuthority, unlinkAuthority } = useAuthorityLinking();
+  const { linkAuthority } = useAuthorityLinking();
 
   const isNewRow = useCallback((row) => {
     return !initialValues.records.find(record => record.id === row.id);
@@ -154,17 +153,15 @@ const QuickMarcEditorRows = ({
     }
   }, [indexOfNewRow, newRowRef]);
 
-  const handleLinkAuthority = useCallback((authority, marcSource, index) => {
-    const field = linkAuthority(authority, marcSource, fields[index]);
+  const handleLinkAuthority = useCallback((authority, index) => {
+    const field = linkAuthority(authority, fields[index]);
 
     markRecordLinked({ index, field });
   }, [markRecordLinked, linkAuthority, fields]);
 
   const handleUnlinkAuthority = useCallback(index => {
-    unlinkAuthority(fields[index]);
-
     markRecordUnlinked({ index });
-  }, [markRecordUnlinked, unlinkAuthority, fields]);
+  }, [markRecordUnlinked]);
 
   return (
     <div
@@ -212,7 +209,10 @@ const QuickMarcEditorRows = ({
               (action === QUICK_MARC_ACTIONS.EDIT || action === QUICK_MARC_ACTIONS.DUPLICATE) &&
               TAGS_FOR_DISPLAYING_LINKS.has(recordRow.tag);
 
-            const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') && recordRow._isLinked;
+            const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') &&
+              marcType === MARC_TYPES.BIB &&
+              recordRow.authorityId &&
+              (action === QUICK_MARC_ACTIONS.EDIT || action === QUICK_MARC_ACTIONS.DUPLICATE);
 
             return (
               <div
@@ -396,21 +396,15 @@ const QuickMarcEditorRows = ({
 
                   {
                     isContentField && (
-                      recordRow._isLinked
-                        ? (
-                          <SplitField name={name} />
-                        )
-                        : (
-                          <Field
-                            dirty={false}
-                            aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
-                            name={`${name}.content`}
-                            marginBottom0
-                            disabled={isDisabled}
-                            id={`content-field-${idx}`}
-                            component={ContentField}
-                          />
-                        )
+                      <Field
+                        dirty={false}
+                        aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
+                        name={`${name}.content`}
+                        marginBottom0
+                        disabled={isDisabled}
+                        id={`content-field-${idx}`}
+                        component={ContentField}
+                      />
                     )
                   }
                 </div>
@@ -426,10 +420,9 @@ const QuickMarcEditorRows = ({
                   )}
                   {isLinkVisible && (
                     <LinkButton
-                      handleLinkAuthority={(authority, marcSource) => handleLinkAuthority(authority, marcSource, idx)}
+                      handleLinkAuthority={(authority) => handleLinkAuthority(authority, idx)}
                       handleUnlinkAuthority={() => handleUnlinkAuthority(idx)}
                       isLinked={recordRow._isLinked}
-                      tag={recordRow.tag}
                     />
                   )}
                   {canViewAuthorityRecord && (
@@ -469,7 +462,7 @@ QuickMarcEditorRows.propTypes = {
     id: PropTypes.string.isRequired,
     tag: PropTypes.string.isRequired,
     indicators: PropTypes.arrayOf(PropTypes.string),
-    isProtected: PropTypes.bool,
+    isProtected: PropTypes.bool.isRequired,
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     _isDeleted: PropTypes.bool,
     _isLinked: PropTypes.bool,
