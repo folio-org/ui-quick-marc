@@ -9,6 +9,8 @@ import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import defer from 'lodash/defer';
 
+import { runAxeTest } from '@folio/stripes-testing';
+
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcEditorRows from './QuickMarcEditorRows';
@@ -121,6 +123,14 @@ describe('Given QuickMarcEditorRows', () => {
   });
 
   afterEach(cleanup);
+
+  it('should render with no axe errors', async () => {
+    const { container } = renderQuickMarcEditorRows();
+
+    await runAxeTest({
+      rootNode: container,
+    });
+  });
 
   it('should display row for each record value', () => {
     const { getAllByTestId } = renderQuickMarcEditorRows();

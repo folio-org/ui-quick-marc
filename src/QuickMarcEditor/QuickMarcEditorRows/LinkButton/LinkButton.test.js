@@ -1,6 +1,8 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 
+import { runAxeTest } from '@folio/stripes-testing';
+
 import { LinkButton } from './LinkButton';
 
 const mockOnClick = jest.fn();
@@ -17,6 +19,7 @@ const renderComponent = (props = {}) => render(
   <LinkButton
     handleLinkAuthority={mockHandleLinkAuthority}
     handleUnlinkAuthority={mockHandleUnlinkAuthority}
+    isLinked={false}
     {...props}
   />,
 );
@@ -26,11 +29,17 @@ describe('Given LinkButton', () => {
     jest.clearAllMocks();
   });
 
+  it('should render with no axe errors', async () => {
+    const { container } = renderComponent();
+
+    await runAxeTest({
+      rootNode: container,
+    });
+  });
+
   describe('when field is unlinked', () => {
     it('should render link button', () => {
-      const { getAllByTestId } = renderComponent({
-        isLinked: false,
-      });
+      const { getAllByTestId } = renderComponent();
 
       expect(getAllByTestId('link-authority-button')).toBeDefined();
     });
@@ -38,9 +47,7 @@ describe('Given LinkButton', () => {
 
   describe('when clicking on link button', () => {
     it('should call onClick', () => {
-      const { getAllByTestId } = renderComponent({
-        isLinked: false,
-      });
+      const { getAllByTestId } = renderComponent();
 
       fireEvent.click(getAllByTestId('link-authority-button')[0]);
 
