@@ -5,6 +5,10 @@ import {
   fireEvent,
   waitFor,
 } from '@testing-library/react';
+import {
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query';
 import faker from 'faker';
 
 import { runAxeTest } from '@folio/stripes-testing';
@@ -91,23 +95,27 @@ const initialValues = {
   }],
 };
 
+const queryClient = new QueryClient();
+
 const renderQuickMarcEditor = (props) => (render(
   <MemoryRouter>
-    <QuickMarcEditor
-      action={QUICK_MARC_ACTIONS.EDIT}
-      instance={instance}
-      onClose={onCloseMock}
-      onSubmit={onSubmitMock}
-      mutators={{
-        addRecord: jest.fn(),
-        deleteRecord: jest.fn(),
-        moveRecord: jest.fn(),
-      }}
-      initialValues={initialValues}
-      marcType={MARC_TYPES.BIB}
-      locations={locations}
-      {...props}
-    />
+    <QueryClientProvider client={queryClient}>
+      <QuickMarcEditor
+        action={QUICK_MARC_ACTIONS.EDIT}
+        instance={instance}
+        onClose={onCloseMock}
+        onSubmit={onSubmitMock}
+        mutators={{
+          addRecord: jest.fn(),
+          deleteRecord: jest.fn(),
+          moveRecord: jest.fn(),
+        }}
+        initialValues={initialValues}
+        marcType={MARC_TYPES.BIB}
+        locations={locations}
+        {...props}
+      />
+    </QueryClientProvider>
   </MemoryRouter>,
 ));
 

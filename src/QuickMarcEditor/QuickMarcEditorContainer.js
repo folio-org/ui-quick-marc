@@ -27,6 +27,7 @@ import {
   getCreateMarcRecordResponse,
   formatMarcRecordByQuickMarcAction,
   addInternalFieldProperties,
+  splitFields,
 } from './utils';
 import { QUICK_MARC_ACTIONS } from './constants';
 
@@ -105,9 +106,10 @@ const QuickMarcEditorContainer = ({
 
         const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, action);
         const marcRecordWithInternalProps = addInternalFieldProperties(formattedMarcRecord);
+        const marcRecordWithSplitFields = splitFields(marcRecordWithInternalProps);
 
         setInstance(instanceResponse);
-        setMarcRecord(marcRecordWithInternalProps);
+        setMarcRecord(marcRecordWithSplitFields);
         setLocations(locationsResponse);
         setIsLoading(false);
       })

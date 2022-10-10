@@ -73,6 +73,7 @@ const QuickMarcEditor = ({
   const [records, setRecords] = useState([]);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const continueAfterSave = useRef(false);
+  const formRef = useRef(null);
 
   const deletedRecords = useMemo(() => {
     return records
@@ -298,9 +299,9 @@ const QuickMarcEditor = ({
     <HasCommand
       commands={shortcuts}
       isWithinScope={checkScope}
-      scope={document.body}
+      scope={formRef.current}
     >
-      <form>
+      <form ref={formRef}>
         <Paneset>
           <Layer
             isOpen

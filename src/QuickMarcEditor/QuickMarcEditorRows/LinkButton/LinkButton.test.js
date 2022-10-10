@@ -1,4 +1,8 @@
 import React from 'react';
+import {
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query';
 import { fireEvent, render } from '@testing-library/react';
 
 import { runAxeTest } from '@folio/stripes-testing';
@@ -9,19 +13,27 @@ const mockOnClick = jest.fn();
 
 jest.mock('@folio/stripes/core', () => ({
   ...jest.requireActual('@folio/stripes/core'),
+  useNamespace: jest.fn().mockReturnValue(['ui-quick-marc-test']),
+  useOkapiKy: jest.fn().mockReturnValue({
+    get: jest.fn(),
+  }),
   Pluggable: ({ renderCustomTrigger }) => renderCustomTrigger({ onClick: mockOnClick }),
 }));
 
 const mockHandleLinkAuthority = jest.fn();
 const mockHandleUnlinkAuthority = jest.fn();
 
+const queryClient = new QueryClient();
+
 const renderComponent = (props = {}) => render(
-  <LinkButton
-    handleLinkAuthority={mockHandleLinkAuthority}
-    handleUnlinkAuthority={mockHandleUnlinkAuthority}
-    isLinked={false}
-    {...props}
-  />,
+  <QueryClientProvider client={queryClient}>
+    <LinkButton
+      handleLinkAuthority={mockHandleLinkAuthority}
+      handleUnlinkAuthority={mockHandleUnlinkAuthority}
+      isLinked={false}
+      {...props}
+    />
+  </QueryClientProvider>,
 );
 
 describe('Given LinkButton', () => {
@@ -66,12 +78,31 @@ describe('Given LinkButton', () => {
   });
 
   describe('when clicking on unlink button', () => {
-    it('should call onClick', () => {
-      const { getAllByTestId } = renderComponent({
+    it('should show confirmation modal', () => {
+      const {
+        getAllByTestId,
+        getByText,
+      } = renderComponent({
         isLinked: true,
       });
 
       fireEvent.click(getAllByTestId('unlink-authority-button')[0]);
+
+      expect(getByText('ui-quick-marc.record.unlink.confirm.title')).toBeDefined();
+    });
+  });
+
+  describe('when confirming unlinking', () => {
+    it('should call handleUnlinkAuthority', () => {
+      const {
+        getAllByTestId,
+        getByText,
+      } = renderComponent({
+        isLinked: true,
+      });
+
+      fireEvent.click(getAllByTestId('unlink-authority-button')[0]);
+      fireEvent.click(getByText('ui-quick-marc.record.unlink.confirm.confirm'));
 
       expect(mockHandleUnlinkAuthority).toHaveBeenCalled();
     });
