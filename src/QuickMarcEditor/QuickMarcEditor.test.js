@@ -53,6 +53,13 @@ jest.mock('./QuickMarcRecordInfo', () => {
   };
 });
 
+jest.mock('../hooks/useAuthoritySourceFiles', () => ({
+  useAuthoritySourceFiles: jest.fn().mockResolvedValue({
+    sourceFiles: [],
+    isLoading: false,
+  }),
+}));
+
 const onCloseMock = jest.fn();
 const onSubmitMock = jest.fn(() => Promise.resolve({ version: 1 }));
 

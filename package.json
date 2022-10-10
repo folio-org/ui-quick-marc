@@ -117,7 +117,6 @@
     "@babel/preset-react": "^7.7.4",
     "@folio/eslint-config-stripes": "^6.1.0",
     "@folio/stripes": "^7.0.0",
-    "@folio/stripes-authority-components": "^1.0.0",
     "@folio/stripes-cli": "^2.4.0",
     "@formatjs/cli": "^4.2.7",
     "@testing-library/jest-dom": "^5.11.1",
@@ -157,7 +156,6 @@
   },
   "peerDependencies": {
     "@folio/stripes": "^7.0.0",
-    "@folio/stripes-authority-components": "^1.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-intl": "^5.8.1",

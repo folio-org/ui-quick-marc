@@ -6,7 +6,7 @@ import { renderHook } from '@testing-library/react-hooks';
 
 import useAuthorityLinking from './useAuthorityLinking';
 
-jest.mock('@folio/stripes-authority-components', () => ({
+jest.mock('../useAuthoritySourceFiles', () => ({
   useAuthoritySourceFiles: jest.fn().mockReturnValue({
     sourceFiles: [{
       id: '1',
