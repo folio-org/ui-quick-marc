@@ -209,10 +209,7 @@ const QuickMarcEditorRows = ({
               (action === QUICK_MARC_ACTIONS.EDIT || action === QUICK_MARC_ACTIONS.DUPLICATE) &&
               TAGS_FOR_DISPLAYING_LINKS.has(recordRow.tag);
 
-            const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') &&
-              marcType === MARC_TYPES.BIB &&
-              recordRow.authorityId &&
-              (action === QUICK_MARC_ACTIONS.EDIT || action === QUICK_MARC_ACTIONS.DUPLICATE);
+            const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') && recordRow._isLinked;
 
             return (
               <div
@@ -434,11 +431,14 @@ const QuickMarcEditorRows = ({
                         <Link
                           to={`/marc-authorities/authorities/${recordRow.authorityId}?segment=search`}
                           target="_blank"
-                          data-testid="authority-record-link"
-                          ref={ref}
-                          aria-labelledby={ariaIds.text}
+                          data-testid="view-authority-record-link"
+                          tabIndex="-1"
                         >
-                          <IconButton icon="eye-open" />
+                          <IconButton
+                            icon="eye-open"
+                            ref={ref}
+                            aria-labelledby={ariaIds.text}
+                          />
                         </Link>
                       )}
                     </Tooltip>
