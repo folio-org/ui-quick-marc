@@ -28,10 +28,6 @@ export const isReadOnly = (
 ) => {
   let rows;
 
-  if (marcType === MARC_TYPES.BIB && recordRow._isLinked) {
-    return true;
-  }
-
   if (marcType === MARC_TYPES.BIB) {
     rows = action === QUICK_MARC_ACTIONS.DUPLICATE
       ? READ_ONLY_ROWS_FOR_DUPLICATE

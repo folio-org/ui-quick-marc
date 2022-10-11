@@ -25,7 +25,6 @@ import {
   cleanBytesFields,
   parseHttpError,
   removeDeletedRecords,
-  combineSplitFields,
 } from './utils';
 
 const propTypes = {
@@ -80,8 +79,7 @@ const QuickMarcDuplicateWrapper = ({
 
     showCallout({ messageId: 'ui-quick-marc.record.saveNew.onSave' });
 
-    const formValuesWithCombinedFields = combineSplitFields(formValuesForDuplicate);
-    const marcRecord = hydrateMarcRecord(formValuesWithCombinedFields);
+    const marcRecord = hydrateMarcRecord(formValuesForDuplicate);
 
     marcRecord.relatedRecordVersion = 1;
 

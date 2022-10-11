@@ -7,10 +7,6 @@ import {
 } from '@testing-library/react';
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
 import defer from 'lodash/defer';
 
 import { runAxeTest } from '@folio/stripes-testing';
@@ -60,14 +56,6 @@ const initValues = [
     indicators: [],
   },
   {
-    id: '9',
-    tag: '100',
-    content: '$a c',
-    authorityId: 'authority-id',
-    _isLinked: true,
-    indicators: [],
-  },
-  {
     id: '7',
     tag: '852',
     content: '$b KU/CC/DI/M $t 3 $h M3',
@@ -96,38 +84,35 @@ const addRecordMock = jest.fn().mockImplementation(({ index }) => {
 const deleteRecordMock = jest.fn();
 const moveRecordMock = jest.fn();
 const markRecordDeletedMock = jest.fn();
-const queryClient = new QueryClient();
 
 const renderQuickMarcEditorRows = (props = {}) => (render(
   <MemoryRouter>
-    <QueryClientProvider client={queryClient}>
-      <Form
-        onSubmit={jest.fn()}
-        mutators={arrayMutators}
-        initialValues={{
-          records: initValues,
-        }}
-        render={() => (
-          <QuickMarcEditorRows
-            fields={values}
-            name="records"
-            type="a"
-            action={QUICK_MARC_ACTIONS.EDIT}
-            marcType={MARC_TYPES.BIB}
-            mutators={{
-              addRecord: addRecordMock,
-              deleteRecord: deleteRecordMock,
-              markRecordDeleted: markRecordDeletedMock,
-              moveRecord: moveRecordMock,
-              markRecordLinked: jest.fn(),
-              markRecordUnlinked: jest.fn(),
-            }}
-            subtype="test"
-            {...props}
-          />
-        )}
-      />
-    </QueryClientProvider>
+    <Form
+      onSubmit={jest.fn()}
+      mutators={arrayMutators}
+      initialValues={{
+        records: initValues,
+      }}
+      render={() => (
+        <QuickMarcEditorRows
+          fields={values}
+          name="records"
+          type="a"
+          action={QUICK_MARC_ACTIONS.EDIT}
+          marcType={MARC_TYPES.BIB}
+          mutators={{
+            addRecord: addRecordMock,
+            deleteRecord: deleteRecordMock,
+            markRecordDeleted: markRecordDeletedMock,
+            moveRecord: moveRecordMock,
+            markRecordLinked: jest.fn(),
+            markRecordUnlinked: jest.fn(),
+          }}
+          subtype="test"
+          {...props}
+        />
+      )}
+    />
   </MemoryRouter>,
 ));
 
@@ -223,7 +208,7 @@ describe('Given QuickMarcEditorRows', () => {
         } = renderQuickMarcEditorRows();
 
         const [addButton] = getAllByRole('button', { name: 'ui-quick-marc.record.addField' });
-        const contentField852 = getByTestId('content-field-6');
+        const contentField852 = getByTestId('content-field-5');
 
         fireEvent.change(contentField852, { target: { value: '' } });
 
