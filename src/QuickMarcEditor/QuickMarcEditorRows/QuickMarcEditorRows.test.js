@@ -13,6 +13,8 @@ import {
 } from 'react-query';
 import defer from 'lodash/defer';
 
+import { runAxeTest } from '@folio/stripes-testing';
+
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcEditorRows from './QuickMarcEditorRows';
@@ -21,6 +23,13 @@ import { QUICK_MARC_ACTIONS } from '../constants';
 import { MARC_TYPES } from '../../common/constants';
 
 jest.mock('lodash/defer', () => jest.fn());
+
+jest.mock('../../hooks/useAuthoritySourceFiles', () => ({
+  useAuthoritySourceFiles: jest.fn().mockResolvedValue({
+    sourceFiles: [],
+    isLoading: false,
+  }),
+}));
 
 const initValues = [
   {
@@ -48,6 +57,14 @@ const initValues = [
     id: '2',
     tag: '036',
     content: '$a c',
+    indicators: [],
+  },
+  {
+    id: '9',
+    tag: '100',
+    content: '$a c',
+    authorityId: 'authority-id',
+    _isLinked: true,
     indicators: [],
   },
   {
@@ -121,6 +138,14 @@ describe('Given QuickMarcEditorRows', () => {
   });
 
   afterEach(cleanup);
+
+  it('should render with no axe errors', async () => {
+    const { container } = renderQuickMarcEditorRows();
+
+    await runAxeTest({
+      rootNode: container,
+    });
+  });
 
   it('should display row for each record value', () => {
     const { getAllByTestId } = renderQuickMarcEditorRows();
@@ -198,7 +223,7 @@ describe('Given QuickMarcEditorRows', () => {
         } = renderQuickMarcEditorRows();
 
         const [addButton] = getAllByRole('button', { name: 'ui-quick-marc.record.addField' });
-        const contentField852 = getByTestId('content-field-5');
+        const contentField852 = getByTestId('content-field-6');
 
         fireEvent.change(contentField852, { target: { value: '' } });
 

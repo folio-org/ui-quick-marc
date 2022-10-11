@@ -212,7 +212,9 @@ export const hydrateMarcRecord = marcRecord => ({
     tag: record.tag,
     content: record.content,
     indicators: record.indicators,
+    authorityId: record.authorityId,
     authorityNaturalId: record.authorityNaturalId,
+    authorityControlledSubfields: record.authorityControlledSubfields,
   })),
   records: undefined,
 });
@@ -730,13 +732,11 @@ export const getContentSubfieldValue = (content) => {
     }, {});
 };
 
-export const groupSubfields = (field) => {
-  const { authorityControlledSubfields = ['$a'] } = field;
-
+export const groupSubfields = (field, authorityControlledSubfields = []) => {
   const subfields = toPairs(getContentSubfieldValue(field.content));
 
   return subfields.reduce((groups, subfield) => {
-    const isControlled = authorityControlledSubfields.includes(subfield[0]);
+    const isControlled = authorityControlledSubfields.includes(subfield[0].replace('$', ''));
     const isNum = /\$\d/.test(subfield[0]);
     const isZero = /\$0/.test(subfield[0]);
     const isNine = /\$9/.test(subfield[0]);
@@ -798,7 +798,7 @@ export const splitFields = marcRecord => {
         return record;
       }
 
-      const subfieldGroups = groupSubfields(record);
+      const subfieldGroups = groupSubfields(record, record.authorityControlledSubfields);
 
       return {
         ...record,

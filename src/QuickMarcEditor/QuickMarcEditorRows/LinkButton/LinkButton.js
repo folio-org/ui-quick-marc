@@ -8,7 +8,10 @@ import {
 } from 'react-intl';
 import PropTypes from 'prop-types';
 
-import { Pluggable } from '@folio/stripes/core';
+import {
+  Pluggable,
+  useCallout,
+} from '@folio/stripes/core';
 import {
   Tooltip,
   IconButton,
@@ -34,10 +37,15 @@ const LinkButton = ({
   const intl = useIntl();
   const [authority, setAuthority] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const callout = useCallout();
 
   const { isLoading, refetch: refetchSource } = useMarcSource(authority?.id, {
     onSuccess: (authoritySource) => {
       handleLinkAuthority(authority, authoritySource);
+      callout.sendCallout({
+        type: 'success',
+        message: intl.formatMessage({ id: 'ui-quick-marc.record.link.success' }, { tag }),
+      });
     },
   });
 

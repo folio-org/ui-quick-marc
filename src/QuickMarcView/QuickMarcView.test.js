@@ -3,6 +3,8 @@ import {
   render,
 } from '@testing-library/react';
 
+import { runAxeTest } from '@folio/stripes-testing';
+
 import QuickMarcView from './QuickMarcView';
 
 const marc = {
@@ -58,6 +60,14 @@ const renderQuickMarcView = (props = {}) => (render(
 ));
 
 describe('Given QuickMarcView', () => {
+  it('should render with no axe errors', async () => {
+    const { container } = renderQuickMarcView();
+
+    await runAxeTest({
+      rootNode: container,
+    });
+  });
+
   it('should show pane title', () => {
     const { getByText } = renderQuickMarcView();
 

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useAuthoritySourceFiles } from '@folio/stripes-authority-components';
+import { useAuthoritySourceFiles } from '../useAuthoritySourceFiles';
 
 import {
   getContentSubfieldValue,
@@ -35,7 +35,13 @@ const useAuthorityLinking = () => {
     const bibSubfields = getContentSubfieldValue(field.content);
     const sourceFile = sourceFiles.find(file => file.id === authority.sourceFileId);
 
-    const newZeroSubfield = [sourceFile?.baseUrl, authority.naturalId].join('').trim();
+    let newZeroSubfield = '';
+
+    if (sourceFile?.baseUrl) {
+      newZeroSubfield = ['http://', sourceFile?.baseUrl, authority.naturalId].join('').trim();
+    } else {
+      newZeroSubfield = authority.naturalId;
+    }
 
     if (!bibSubfields.$0 || bibSubfields.$0 !== authority.naturalId) {
       bibSubfields.$0 = newZeroSubfield;
@@ -43,13 +49,16 @@ const useAuthorityLinking = () => {
 
     bibSubfields.$9 = authority.id;
     copySubfieldsFromAuthority(bibSubfields, linkedAuthorityField);
-
     field.content = joinSubfields(bibSubfields);
-    field.authorityNaturalId = authority.naturalId;
+
+    const controlledSubfields = Object.keys(getContentSubfieldValue(linkedAuthorityField.content)).map(key => key.replace('$', ''));
 
     return {
       ...field,
-      subfieldGroups: groupSubfields(field),
+      authorityNaturalId: authority.naturalId,
+      authorityId: authority.id,
+      subfieldGroups: groupSubfields(field, controlledSubfields),
+      authorityControlledSubfields: controlledSubfields,
     };
   }, [sourceFiles]);
 
@@ -58,12 +67,14 @@ const useAuthorityLinking = () => {
 
     delete bibSubfields.$9;
     delete field.authorityNaturalId;
+    delete field.authorityId;
 
     field.content = joinSubfields(bibSubfields);
 
     return {
       ...field,
       subfieldGroups: null,
+      authorityControlledSubfields: [],
     };
   };
 
