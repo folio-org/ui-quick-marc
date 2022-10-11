@@ -89,4 +89,42 @@ describe('Given useAuthorityLinking', () => {
       });
     });
   });
+
+  describe('when calling linkAuthority with repeated subfields', () => {
+    it('should return field with correctly formatted subfields', () => {
+      const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+
+      const authority = {
+        id: 'authority-id',
+        sourceFileId: '1',
+        naturalId: 'n0001',
+      };
+      const field = {
+        tag: '100',
+        content: '$a some value $b some other value $e author $e illustrator',
+      };
+
+      expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
+        content: '$a authority value $b some other value $e author $e illustrator $0 http://some.url/n0001 $9 authority-id',
+      });
+    });
+  });
+
+  describe('when calling unlinkAuthority', () => {
+    it('should return field with correct data', () => {
+      const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+
+      const field = {
+        tag: '100',
+        content: '$a authority value $b some other value $e author $e illustrator $0 http://some.url/n0001 $9 authority-id',
+        authorityNaturalId: 'n0001',
+        authorityId: 'authority-id',
+      };
+
+      expect(result.current.unlinkAuthority(field)).toMatchObject({
+        tag: '100',
+        content: '$a authority value $b some other value $e author $e illustrator $0 http://some.url/n0001',
+      });
+    });
+  });
 });

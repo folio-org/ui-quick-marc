@@ -11,7 +11,13 @@ import { LINKED_BIB_TO_AUTHORITY_FIELDS } from '../../common/constants';
 const useAuthorityLinking = () => {
   const { sourceFiles } = useAuthoritySourceFiles();
 
-  const joinSubfields = (subfields) => Object.keys(subfields).reduce((content, key) => [content, `${key} ${subfields[key]}`].join(' '), '').trim();
+  const joinSubfields = (subfields) => Object.keys(subfields).reduce((content, key) => {
+    const subfield = Array.isArray(subfields[key])
+      ? subfields[key].join(` ${key} `) // if the subfield is repeatable - join the items with subfield key
+      : subfields[key];
+
+    return [content, `${key} ${subfield}`].join(' ');
+  }, '').trim();
 
   const copySubfieldsFromAuthority = (bibSubfields, authField) => {
     const authSubfields = getContentSubfieldValue(authField.content);
