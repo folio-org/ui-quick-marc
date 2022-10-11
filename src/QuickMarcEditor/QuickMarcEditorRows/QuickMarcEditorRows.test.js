@@ -14,7 +14,7 @@ import {
 } from 'react-query';
 
 import { runAxeTest } from '@folio/stripes-testing';
-import * as stripesCore from "@folio/stripes/core";
+import * as stripesCore from '@folio/stripes/core';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
@@ -38,7 +38,7 @@ jest.mock('../../hooks', () => ({
   useAuthorityLinking: () => ({
     linkAuthority: jest.fn(),
   }),
-}))
+}));
 
 const initValues = [
   {
@@ -313,9 +313,10 @@ describe('Given QuickMarcEditorRows', () => {
 
     it('should display the view authority record icon', () => {
       const { getAllByTestId, getByTestId, rerender } = renderQuickMarcEditorRows(props);
+
       fireEvent.click(getAllByTestId('link-authority-button')[0]);
       rerender(getComponent(props));
       expect(getByTestId('view-authority-record-link')).toBeVisible();
-    })
+    });
   });
 });
