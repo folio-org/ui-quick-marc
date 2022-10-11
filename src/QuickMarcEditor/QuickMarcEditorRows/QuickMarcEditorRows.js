@@ -431,7 +431,7 @@ const QuickMarcEditorRows = ({
                         <Link
                           to={`/marc-authorities/authorities/${recordRow.authorityId}?segment=search`}
                           target="_blank"
-                          data-testid="authority-record-link"
+                          data-testid="view-authority-record-link"
                           tabIndex="-1"
                         >
                           <IconButton
