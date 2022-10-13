@@ -23,6 +23,7 @@
 * [UIQM-305](https://issues.folio.org/browse/UIQM-305) Resolve ui-quick-marc and stripes-authority-component circular dependency
 * [UIQM-301](https://issues.folio.org/browse/UIQM-301) quickMARC: Add a11y tests
 * [UIQM-311](https://issues.folio.org/browse/UIQM-311) Edit/Derive MARC bib | Improve error messaging for Leader positions 18 and 19
+* [UIQM-310](https://issues.folio.org/browse/UIQM-310) Update spacing between Save & continue and Save & close buttons
 
 ## [5.1.2](https://github.com/folio-org/ui-quick-marc/tree/v5.1.2) (2022-08-23)
 
