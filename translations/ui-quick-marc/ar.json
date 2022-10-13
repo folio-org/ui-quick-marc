@@ -233,5 +233,6 @@
     "record.save.error.dublicate": "Instance cannot be updated. Depricated instance version.",
     "record.save.continue": "حفظ ومتابعة التحرير",
     "record.link": "ربط بتسجيلة استناد مارك",
-    "record.unlink": "إلغاء ربط بتسجيلة استناد مارك"
+    "record.unlink": "إلغاء ربط بتسجيلة استناد مارك",
+    "record.viewMarcAuthorityRecord": "View MARC authority record"
 }

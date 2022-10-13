@@ -441,11 +441,14 @@ const QuickMarcEditorRows = ({
                         <Link
                           to={`/marc-authorities/authorities/${recordRow.authorityId}?segment=search`}
                           target="_blank"
-                          data-testid="authority-record-link"
-                          ref={ref}
-                          aria-labelledby={ariaIds.text}
+                          data-testid="view-authority-record-link"
+                          tabIndex="-1"
                         >
-                          <IconButton icon="eye-open" />
+                          <IconButton
+                            icon="eye-open"
+                            ref={ref}
+                            aria-labelledby={ariaIds.text}
+                          />
                         </Link>
                       )}
                     </Tooltip>
