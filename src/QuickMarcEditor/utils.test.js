@@ -204,7 +204,7 @@ describe('QuickMarcEditor utils', () => {
       ).not.toBeDefined();
 
       expect(
-        utils.validateLeader('04706cam a2200865Ii 4500', '04706dam a2200865nfa4500'),
+        utils.validateLeader('04706cam a2200865Ica4500', '04706dam a2200865nca4500'),
       ).not.toBeDefined();
     });
 

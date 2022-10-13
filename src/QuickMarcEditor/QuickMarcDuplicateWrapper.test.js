@@ -24,13 +24,13 @@ jest.mock('react-final-form', () => ({
 const mockFormValues = jest.fn(() => ({
   fields: undefined,
   externalId: '17064f9d-0362-468d-8317-5984b7efd1b5',
-  leader: '02949cama2200517Kii50000',
+  leader: '02949cama2200517Kica0000',
   parsedRecordDtoId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
   parsedRecordId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
   records: [
     {
       tag: 'LDR',
-      content: '02949cama2200517Kii50000',
+      content: '02949cama2200517Kiia0000',
       id: 'LDR',
     }, {
       tag: '001',
@@ -174,7 +174,7 @@ const renderQuickMarcDuplicateWrapper = ({
       instance={instance}
       mutator={mutator}
       action={QUICK_MARC_ACTIONS.DUPLICATE}
-      initialValues={{ leader: '14706cam a2200865Ii 4500' }}
+      initialValues={{ leader: '14706cam a2200865Ica4500' }}
       marcType="bib"
       history={history}
       location={location}
