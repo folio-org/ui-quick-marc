@@ -48,6 +48,8 @@ import {
   deleteRecordByIndex,
 } from './utils';
 
+import css from './QuickMarcEditor.css';
+
 const spySubscription = { values: true };
 
 const QuickMarcEditor = ({
@@ -144,6 +146,7 @@ const QuickMarcEditor = ({
         {action === QUICK_MARC_ACTIONS.EDIT && (
           <Button
             buttonStyle="default mega"
+            buttonClass={css.saveContinueBtn}
             disabled={saveFormDisabled}
             id="quick-marc-record-save-edit"
             onClick={(event) => confirmSubmit(event, true)}
