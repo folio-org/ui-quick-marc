@@ -55,6 +55,40 @@ const QuickMarcDuplicateWrapper = ({
   const showCallout = useShowCallout();
   const [httpError, setHttpError] = useState(null);
 
+  const saveLinksToNewRecord = async (externalId, marcRecord) => {
+    // request derived Instance record
+    const instancePromise = mutator.quickMarcEditInstance.GET({ path: `${EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]}/${externalId}` });
+    // request derived MARC Bib record
+    const marcPromise = mutator.quickMarcEditMarcRecord.GET({ params: { externalId } });
+
+    Promise.all([instancePromise, marcPromise]).then(([{ _version }, derivedRecord]) => {
+      // copy linking data to new record
+      derivedRecord.fields = derivedRecord.fields.map((field) => {
+        // matching field from POST request
+        const matchingLinkedField = marcRecord.fields
+          .find(_field => _field.authorityId && _field.tag === field.tag && _field.authorityId === field.authorityId);
+
+        if (!matchingLinkedField) {
+          return field;
+        }
+
+        field.authorityNaturalId = matchingLinkedField.authorityNaturalId;
+        field.authorityControlledSubfields = matchingLinkedField.authorityControlledSubfields;
+
+        return field;
+      });
+
+      derivedRecord.relatedRecordVersion = parseInt(_version, 10);
+      mutator.quickMarcEditMarcRecord.PUT(derivedRecord)
+        .finally(() => {
+          history.push({
+            pathname: `/inventory/view/${externalId}`,
+            search: location.search,
+          });
+        });
+    });
+  };
+
   const onSubmit = useCallback(async (formValues) => {
     const formValuesToSave = removeDeletedRecords(formValues);
     const controlFieldErrorMessage = checkControlFieldLength(formValuesToSave);
@@ -104,19 +138,7 @@ const QuickMarcDuplicateWrapper = ({
 
           showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
 
-          const instancePromise = mutator.quickMarcEditInstance.GET({ path: `${EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]}/${externalId}` });
-          const marcPromise = mutator.quickMarcEditMarcRecord.GET({ params: { externalId } });
-
-          Promise.all([instancePromise, marcPromise]).then(([{ _version }, derivedRecord]) => {
-            derivedRecord.relatedRecordVersion = parseInt(_version, 10);
-            mutator.quickMarcEditMarcRecord.PUT(derivedRecord)
-              .finally(() => {
-                history.push({
-                  pathname: `/inventory/view/${externalId}`,
-                  search: location.search,
-                });
-              });
-          });
+          saveLinksToNewRecord(externalId, marcRecord);
         } catch (e) {
           showCallout({
             messageId: 'ui-quick-marc.record.saveNew.error',
