@@ -143,7 +143,7 @@
     "record.materialChars.materialType.t": "Manuscript language material",
     "record.fixedField.SrTp": "SrTp",
     "record.fixedField.CrTp": "CrTp",
-    "record.physDescription.categoryOfMaterial.a": "Map",
+    "record.physDescription.categoryOfMaterial.a": "Carta geografica",
     "record.physDescription.categoryOfMaterial.c": "Electronic resource",
     "record.physDescription.categoryOfMaterial.d": "Globe",
     "record.physDescription.categoryOfMaterial.f": "Tactile material",
@@ -154,7 +154,7 @@
     "record.physDescription.categoryOfMaterial.o": "Kit",
     "record.physDescription.categoryOfMaterial.q": "Notated music",
     "record.physDescription.categoryOfMaterial.r": "Remote-sensing image",
-    "record.physDescription.categoryOfMaterial.s": "Sound recording",
+    "record.physDescription.categoryOfMaterial.s": "Registrazione audio",
     "record.physDescription.categoryOfMaterial.t": "Text",
     "record.physDescription.categoryOfMaterial.v": "Videorecording",
     "record.physDescription.categoryOfMaterial.z": "Unspecified",
@@ -227,11 +227,12 @@
     "noPlugin": "No plugin is installed",
     "permission.quick-marc-authority-records.linkUnlink": "quickMARC: Can Link/unlink authority records to bib records",
     "record.fieldDeleted": "<strong>Field {tag}</strong> has been deleted from this MARC record.",
-    "record.fieldDeleted.undo": "Undo",
+    "record.fieldDeleted.undo": "Annulla",
     "record.fieldDeleted.undoLabel": "Undo delete of field {tag}",
     "record.quickMarcEditorLabel": "Quick MARC editor",
     "record.save.error.dublicate": "Instance cannot be updated. Depricated instance version.",
     "record.save.continue": "Save & keep editing",
     "record.link": "Link to MARC Authority record",
-    "record.unlink": "Unlink from MARC Authority record"
+    "record.unlink": "Unlink from MARC Authority record",
+    "record.viewMarcAuthorityRecord": "View MARC authority record"
 }

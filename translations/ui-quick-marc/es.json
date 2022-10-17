@@ -233,5 +233,6 @@
     "record.save.error.dublicate": "Instance cannot be updated. Depricated instance version.",
     "record.save.continue": "Save & keep editing",
     "record.link": "Link to MARC Authority record",
-    "record.unlink": "Unlink from MARC Authority record"
+    "record.unlink": "Unlink from MARC Authority record",
+    "record.viewMarcAuthorityRecord": "View MARC authority record"
 }

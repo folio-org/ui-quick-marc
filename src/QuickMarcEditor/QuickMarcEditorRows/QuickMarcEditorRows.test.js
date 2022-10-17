@@ -14,6 +14,7 @@ import {
 import defer from 'lodash/defer';
 
 import { runAxeTest } from '@folio/stripes-testing';
+import * as stripesCore from '@folio/stripes/core';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
@@ -22,12 +23,20 @@ import * as utils from './utils';
 import { QUICK_MARC_ACTIONS } from '../constants';
 import { MARC_TYPES } from '../../common/constants';
 
+jest.spyOn(stripesCore, 'Pluggable').mockImplementation(({ onLinkRecord, renderCustomTrigger }) => (
+  renderCustomTrigger({ onClick: onLinkRecord })
+));
+
 jest.mock('lodash/defer', () => jest.fn());
 
-jest.mock('../../hooks/useAuthoritySourceFiles', () => ({
+jest.mock('../../hooks', () => ({
+  ...jest.requireActual('../../hooks'),
   useAuthoritySourceFiles: jest.fn().mockResolvedValue({
     sourceFiles: [],
     isLoading: false,
+  }),
+  useAuthorityLinking: () => ({
+    linkAuthority: jest.fn(),
   }),
 }));
 
@@ -82,6 +91,7 @@ const initValues = [
   {
     id: '8',
     authorityId: '09140d44-a515-4b64-9261-845639e75db4',
+    _isLinked: false,
     tag: '100',
   },
 ];
@@ -93,12 +103,15 @@ const addRecordMock = jest.fn().mockImplementation(({ index }) => {
     content: '',
   });
 });
+const markRecordLinked = jest.fn().mockImplementation(({ index }) => {
+  values[index]._isLinked = true;
+});
 const deleteRecordMock = jest.fn();
 const moveRecordMock = jest.fn();
 const markRecordDeletedMock = jest.fn();
 const queryClient = new QueryClient();
 
-const renderQuickMarcEditorRows = (props = {}) => (render(
+const getComponent = (props) => (
   <MemoryRouter>
     <QueryClientProvider client={queryClient}>
       <Form
@@ -128,8 +141,10 @@ const renderQuickMarcEditorRows = (props = {}) => (render(
         )}
       />
     </QueryClientProvider>
-  </MemoryRouter>,
-));
+  </MemoryRouter>
+);
+
+const renderQuickMarcEditorRows = (props = {}) => render(getComponent(props));
 
 describe('Given QuickMarcEditorRows', () => {
   beforeEach(() => {
@@ -298,14 +313,18 @@ describe('Given QuickMarcEditorRows', () => {
     });
   });
 
-  describe('when there are linked fields', () => {
-    it('should display the view authority record button', () => {
-      const { getByTestId } = renderQuickMarcEditorRows({
-        action: QUICK_MARC_ACTIONS.EDIT,
-        marcType: MARC_TYPES.BIB,
-      });
+  describe('when a field is linked', () => {
+    const props = {
+      action: QUICK_MARC_ACTIONS.EDIT,
+      marcType: MARC_TYPES.BIB,
+    };
 
-      expect(getByTestId('authority-record-link')).toBeVisible();
+    it('should display the view authority record icon', () => {
+      const { getAllByTestId, getByTestId, rerender } = renderQuickMarcEditorRows(props);
+
+      fireEvent.click(getAllByTestId('link-authority-button')[0]);
+      rerender(getComponent(props));
+      expect(getByTestId('view-authority-record-link')).toBeVisible();
     });
   });
 });
