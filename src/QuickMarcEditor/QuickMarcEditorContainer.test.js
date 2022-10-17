@@ -17,7 +17,7 @@ import QuickMarcEditWrapper from './QuickMarcEditWrapper';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 
-jest.mock('../hooks/useAuthoritySourceFiles', () => ({
+jest.mock('../queries', () => ({
   useAuthoritySourceFiles: jest.fn().mockResolvedValue({
     sourceFiles: [],
     isLoading: false,

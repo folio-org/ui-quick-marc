@@ -54,12 +54,20 @@ jest.mock('./QuickMarcRecordInfo', () => {
   };
 });
 
-jest.mock('../hooks/useAuthoritySourceFiles', () => ({
-  useAuthoritySourceFiles: jest.fn().mockResolvedValue({
-    sourceFiles: [],
-    isLoading: false,
-  }),
-}));
+// jest.mock('../queries', () => ({
+//   useAuthoritySourceFiles: jest.fn().mockResolvedValue({
+//     sourceFiles: [],
+//     isLoading: false,
+//   }),
+// }));
+
+// jest.mock('../hooks', () => ({
+//   useMarcSource: jest.fn().mockResolvedValue({
+//     data: [],
+//     isLoading: false,
+//     refetch: jest.fn(),
+//   }),
+// }));
 
 const onCloseMock = jest.fn();
 const onSubmitMock = jest.fn(() => Promise.resolve({ version: 1 }));

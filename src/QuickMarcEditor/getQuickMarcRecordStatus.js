@@ -6,7 +6,6 @@ import {
 const getQuickMarcRecordStatus = ({
   quickMarcRecordStatusGETRequest,
   qmRecordId,
-  instanceId,
   showCallout,
 }) => {
   const maxRequestAttempts = QM_RECORD_STATUS_BAIL_TIME / QM_RECORD_STATUS_TIMEOUT;
@@ -33,7 +32,7 @@ const getQuickMarcRecordStatus = ({
 
           if (externalId !== null && status === 'CREATED') {
             clearInterval(intervalId);
-            resolve({ externalId, instanceId, marcId });
+            resolve({ externalId, marcId });
           }
         })
         .catch(() => {

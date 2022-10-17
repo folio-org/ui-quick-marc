@@ -268,6 +268,8 @@ describe('Given QuickMarcDuplicateWrapper', () => {
             search: location.search,
           });
 
+          expect(mutator.quickMarcEditMarcRecord.POST).toHaveBeenCalled();
+
           resolve();
         }, 10);
       });
