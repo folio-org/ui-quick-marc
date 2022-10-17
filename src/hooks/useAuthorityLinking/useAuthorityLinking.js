@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useAuthoritySourceFiles } from '../useAuthoritySourceFiles';
+import { useAuthoritySourceFiles } from '../../queries';
 
 import {
   getContentSubfieldValue,

@@ -95,7 +95,7 @@ const QuickMarcEditorContainer = ({
     const instancePromise = mutator.quickMarcEditInstance.GET({ path: `${path}/${externalId}` });
     const marcRecordPromise = action === QUICK_MARC_ACTIONS.CREATE
       ? Promise.resolve({})
-      : mutator.quickMarcEditMarcRecord.GET();
+      : mutator.quickMarcEditMarcRecord.GET({ params: { externalId } });
     const locationsPromise = mutator.locations.GET();
 
     await Promise.all([instancePromise, marcRecordPromise, locationsPromise])
@@ -163,11 +163,6 @@ QuickMarcEditorContainer.manifest = Object.freeze({
     accumulate: true,
     path: MARC_RECORD_API,
     pk: 'parsedRecordId',
-    GET: {
-      params: {
-        externalId: ':{externalId}',
-      },
-    },
     headers: {
       accept: 'application/json',
     },

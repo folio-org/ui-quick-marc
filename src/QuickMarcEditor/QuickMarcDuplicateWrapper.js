@@ -14,7 +14,10 @@ import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
 import {
   QUICK_MARC_ACTIONS,
 } from './constants';
-import { MARC_TYPES } from '../common/constants';
+import {
+  MARC_TYPES,
+  EXTERNAL_INSTANCE_APIS,
+} from '../common/constants';
 import {
   hydrateMarcRecord,
   removeFieldsForDuplicate,
@@ -86,19 +89,40 @@ const QuickMarcDuplicateWrapper = ({
     marcRecord.relatedRecordVersion = 1;
 
     return mutator.quickMarcEditMarcRecord.POST(marcRecord)
-      .then(({ qmRecordId }) => {
+      .then(async ({ qmRecordId }) => {
         history.push({
           pathname: '/inventory/view/id',
           search: location.search,
         });
 
-        getQuickMarcRecordStatus({
-          quickMarcRecordStatusGETRequest: mutator.quickMarcRecordStatus.GET,
-          qmRecordId,
-          showCallout,
-          history,
-          location,
-        });
+        try {
+          const { externalId } = await getQuickMarcRecordStatus({
+            quickMarcRecordStatusGETRequest: mutator.quickMarcRecordStatus.GET,
+            qmRecordId,
+            showCallout,
+          });
+
+          showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
+
+          const instancePromise = mutator.quickMarcEditInstance.GET({ path: `${EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]}/${externalId}` });
+          const marcPromise = mutator.quickMarcEditMarcRecord.GET({ params: { externalId } });
+
+          Promise.all([instancePromise, marcPromise]).then(([{ _version }, derivedRecord]) => {
+            derivedRecord.relatedRecordVersion = parseInt(_version, 10);
+            mutator.quickMarcEditMarcRecord.PUT(derivedRecord)
+              .finally(() => {
+                history.push({
+                  pathname: `/inventory/view/${externalId}`,
+                  search: location.search,
+                });
+              });
+          });
+        } catch (e) {
+          showCallout({
+            messageId: 'ui-quick-marc.record.saveNew.error',
+            type: 'error',
+          });
+        }
       })
       .catch(async (errorResponse) => {
         const parsedError = await parseHttpError(errorResponse);
