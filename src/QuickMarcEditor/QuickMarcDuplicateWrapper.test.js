@@ -70,6 +70,12 @@ const mockFormValues = jest.fn(() => ({
       indicators: [],
       id: '6abdaf9b-ac58-4f83-9687-73c939c3c21a',
     }, {
+      tag: '100',
+      content: '$a value $0 http://some-url/naturalId',
+      authorityId: 'authority-id',
+      authorityNaturalId: 'naturalId',
+      authorityControlledSubfields: ['a'],
+    }, {
       content: '$a (derived2)/Ezekiel / $c Robert W. Jenson.',
       id: '5aa1a643-b9f2-47e8-bb68-6c6457b5c9c5',
       indicators: ['1', '0'],
@@ -84,6 +90,15 @@ const mockFormValues = jest.fn(() => ({
   suppressDiscovery: false,
   updateInfo: { recordState: 'NEW' },
 }));
+
+const mockDerivedRecord = () => {
+  const record = mockFormValues();
+
+  return {
+    ...record,
+    fields: record.records,
+  };
+};
 
 jest.mock('@folio/stripes/final-form', () => () => (Component) => ({ onSubmit, ...props }) => {
   const formValues = mockFormValues();
@@ -144,6 +159,8 @@ jest.mock('./QuickMarcRecordInfo', () => {
   };
 });
 
+jest.mock('./getQuickMarcRecordStatus', () => () => jest.fn().mockResolvedValue({}));
+
 jest.mock('./constants', () => ({
   ...jest.requireActual('./constants'),
   QM_RECORD_STATUS_TIMEOUT: 5,
@@ -154,12 +171,6 @@ const getInstance = () => ({
   id: faker.random.uuid(),
   title: 'ui-quick-marc.record.edit.title',
 });
-
-const record = {
-  id: faker.random.uuid(),
-  leader: faker.random.uuid(),
-  fields: [],
-};
 
 const renderQuickMarcDuplicateWrapper = ({
   instance,
@@ -195,8 +206,9 @@ describe('Given QuickMarcDuplicateWrapper', () => {
         GET: () => Promise.resolve(instance),
       },
       quickMarcEditMarcRecord: {
-        GET: jest.fn(() => Promise.resolve(record)),
+        GET: jest.fn(() => Promise.resolve(mockDerivedRecord())),
         POST: jest.fn(() => Promise.resolve({})),
+        PUT: jest.fn(() => Promise.resolve({})),
       },
       quickMarcRecordStatus: {
         GET: jest.fn(() => Promise.resolve({})),
@@ -267,6 +279,8 @@ describe('Given QuickMarcDuplicateWrapper', () => {
             pathname: '/inventory/view/id',
             search: location.search,
           });
+
+          expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
 
           resolve();
         }, 10);
