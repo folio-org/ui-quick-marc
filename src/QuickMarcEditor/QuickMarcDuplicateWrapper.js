@@ -163,6 +163,7 @@ const QuickMarcDuplicateWrapper = ({
       action={action}
       marcType={marcType}
       httpError={httpError}
+      confirmRemoveAuthorityLinking
     />
   );
 };
