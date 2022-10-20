@@ -91,16 +91,24 @@ const locations = {
 
 const initialValues = {
   leader: 'assdfgs ds sdg',
-  records: [{
-    tag: 'LDR',
-    content: 'assdfgs ds sdg',
-    id: 'LDR',
-  }, {
-    tag: '110',
-    content: '$a Test title',
-    indicators: ['2', '\\'],
-    id: 'test-id-1',
-  }],
+  records: [
+    {
+      tag: 'LDR',
+      content: 'assdfgs ds sdg',
+      id: 'LDR',
+    }, {
+      tag: '110',
+      content: '$a Test title',
+      indicators: ['2', '\\'],
+      id: 'test-id-1',
+    },
+    // {
+    //   tag: '100',
+    //   content: '$a Coates, Ta-Nehisi $e author.',
+    //   indicators: ['1', '\\'],
+    //   _isLinked: true,
+    // },
+  ],
 };
 
 const queryClient = new QueryClient();
