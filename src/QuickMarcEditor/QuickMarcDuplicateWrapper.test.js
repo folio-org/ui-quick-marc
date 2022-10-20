@@ -1,6 +1,10 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import {
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query';
+import {
   act,
   render,
   cleanup,
@@ -172,6 +176,8 @@ const getInstance = () => ({
   title: 'ui-quick-marc.record.edit.title',
 });
 
+const queryClient = new QueryClient();
+
 const renderQuickMarcDuplicateWrapper = ({
   instance,
   onClose = noop,
@@ -180,16 +186,18 @@ const renderQuickMarcDuplicateWrapper = ({
   location,
 }) => (render(
   <MemoryRouter>
-    <QuickMarcDuplicateWrapper
-      onClose={onClose}
-      instance={instance}
-      mutator={mutator}
-      action={QUICK_MARC_ACTIONS.DUPLICATE}
-      initialValues={{ leader: '14706cam a2200865Ii 4500' }}
-      marcType="bib"
-      history={history}
-      location={location}
-    />
+    <QueryClientProvider client={queryClient}>
+      <QuickMarcDuplicateWrapper
+        onClose={onClose}
+        instance={instance}
+        mutator={mutator}
+        action={QUICK_MARC_ACTIONS.DUPLICATE}
+        initialValues={{ leader: '14706cam a2200865Ii 4500' }}
+        marcType="bib"
+        history={history}
+        location={location}
+      />
+    </QueryClientProvider>
   </MemoryRouter>,
 ));
 
