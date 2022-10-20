@@ -330,4 +330,20 @@ describe('Given QuickMarcEditor', () => {
       });
     });
   });
+
+  describe('when confirmRemoveAuthorityLinking prop is true', () => {
+    it('should open remove authority linking modal', () => {
+      const { getByText } = renderQuickMarcEditor({ confirmRemoveAuthorityLinking: true });
+
+      expect(getByText('Confirmation modal')).toBeDefined();
+    });
+
+    it('should close the modal on clicking keep linking button', () => {
+      const { queryByText, getByText } = renderQuickMarcEditor({ confirmRemoveAuthorityLinking: true });
+
+      fireEvent.click(getByText('Cancel'));
+
+      expect(queryByText('Confirmation modal')).toBeNull();
+    });
+  });
 });
