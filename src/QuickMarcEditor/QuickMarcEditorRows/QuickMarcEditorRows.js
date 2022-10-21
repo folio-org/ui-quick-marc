@@ -8,12 +8,18 @@ import {
   useFormState,
 } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
-import { Link } from 'react-router-dom';
+/*
+  This code will be uncommented after Nolana release
+  import { Link } from 'react-router-dom';
+*/
 import { useIntl } from 'react-intl';
 import isEqual from 'lodash/isEqual';
 import defer from 'lodash/defer';
 
-import { useStripes } from '@folio/stripes/core';
+/*
+  This code will be uncommented after Nolana release
+  import { useStripes } from '@folio/stripes/core';
+*/
 import {
   TextField,
   Tooltip,
@@ -38,10 +44,15 @@ import {
   isPhysDescriptionRecord,
   isFixedFieldRow,
 } from './utils';
-import { useAuthorityLinking } from '../../hooks';
+/*
+  This code will be uncommented after Nolana release
+  import { useAuthorityLinking } from '../../hooks';
+*/
 import {
   QUICK_MARC_ACTIONS,
-  TAGS_FOR_DISPLAYING_LINKS,
+  /*
+    TAGS_FOR_DISPLAYING_LINKS,
+  */
 } from '../constants';
 import {
   MARC_TYPES,
@@ -49,7 +60,10 @@ import {
 } from '../../common/constants';
 
 import styles from './QuickMarcEditorRows.css';
-import { LinkButton } from './LinkButton/LinkButton';
+/*
+  This code will be uncommented after Nolana release
+  import { LinkButton } from './LinkButton/LinkButton';
+*/
 
 const QuickMarcEditorRows = ({
   action,
@@ -59,22 +73,31 @@ const QuickMarcEditorRows = ({
   mutators: {
     addRecord,
     markRecordDeleted,
-    markRecordLinked,
-    markRecordUnlinked,
+    /*
+      This code will be uncommented after Nolana release
+      markRecordLinked,
+      markRecordUnlinked,
+    */
     deleteRecord,
     moveRecord,
     restoreRecord,
   },
   marcType,
 }) => {
-  const stripes = useStripes();
+  /*
+    This code will be uncommented after Nolana release
+    const stripes = useStripes();
+  */
   const intl = useIntl();
   const { initialValues } = useFormState();
   const containerRef = useRef(null);
   const indexOfNewRow = useRef(null);
   const newRowRef = useRef(null);
 
-  const { linkAuthority } = useAuthorityLinking();
+  /*
+    This code will be uncommented after Nolana release
+    const { linkAuthority } = useAuthorityLinking();
+  */
 
   const isNewRow = useCallback((row) => {
     return !initialValues.records.find(record => record.id === row.id);
@@ -153,15 +176,18 @@ const QuickMarcEditorRows = ({
     }
   }, [indexOfNewRow, newRowRef]);
 
-  const handleLinkAuthority = useCallback((authority, index) => {
-    const field = linkAuthority(authority, fields[index]);
+  /*
+    This code will be uncommented after Nolana release
+    const handleLinkAuthority = useCallback((authority, index) => {
+      const field = linkAuthority(authority, fields[index]);
 
-    markRecordLinked({ index, field });
-  }, [markRecordLinked, linkAuthority, fields]);
+      markRecordLinked({ index, field });
+    }, [markRecordLinked, linkAuthority, fields]);
 
-  const handleUnlinkAuthority = useCallback(index => {
-    markRecordUnlinked({ index });
-  }, [markRecordUnlinked]);
+    const handleUnlinkAuthority = useCallback(index => {
+      markRecordUnlinked({ index });
+    }, [markRecordUnlinked]);
+  */
 
   return (
     <div
@@ -204,12 +230,15 @@ const QuickMarcEditorRows = ({
             const isContentField = !(isLocationField || isFixedField || isMaterialCharsField || isPhysDescriptionField);
             const isMARCFieldProtections = marcType !== MARC_TYPES.HOLDINGS && action === QUICK_MARC_ACTIONS.EDIT;
             const isProtectedField = recordRow.isProtected;
-            const isLinkVisible = stripes.hasPerm('ui-quick-marc.quick-marc-authority-records.linkUnlink') &&
-              marcType === MARC_TYPES.BIB &&
-              (action === QUICK_MARC_ACTIONS.EDIT || action === QUICK_MARC_ACTIONS.DUPLICATE) &&
-              TAGS_FOR_DISPLAYING_LINKS.has(recordRow.tag);
+            /*
+              This code will be uncommented after Nolana release
+              const isLinkVisible = stripes.hasPerm('ui-quick-marc.quick-marc-authority-records.linkUnlink') &&
+                marcType === MARC_TYPES.BIB &&
+                (action === QUICK_MARC_ACTIONS.EDIT || action === QUICK_MARC_ACTIONS.DUPLICATE) &&
+                TAGS_FOR_DISPLAYING_LINKS.has(recordRow.tag);
 
-            const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') && recordRow._isLinked;
+              const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') && recordRow._isLinked;
+            */
 
             return (
               <div
