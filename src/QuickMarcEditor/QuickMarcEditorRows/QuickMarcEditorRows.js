@@ -415,34 +415,37 @@ const QuickMarcEditorRows = ({
                       />
                     </span>
                   )}
-                  {isLinkVisible && (
-                    <LinkButton
-                      handleLinkAuthority={(authority) => handleLinkAuthority(authority, idx)}
-                      handleUnlinkAuthority={() => handleUnlinkAuthority(idx)}
-                      isLinked={recordRow._isLinked}
-                    />
-                  )}
-                  {canViewAuthorityRecord && (
-                    <Tooltip
-                      id={`view-marc-authority-record-tooltip-${idx}`}
-                      text={intl.formatMessage({ id: 'ui-quick-marc.record.viewMarcAuthorityRecord' })}
-                    >
-                      {({ ref, ariaIds }) => (
-                        <Link
-                          to={`/marc-authorities/authorities/${recordRow.authorityId}?segment=search`}
-                          target="_blank"
-                          data-testid="view-authority-record-link"
-                          tabIndex="-1"
-                        >
-                          <IconButton
-                            icon="eye-open"
-                            ref={ref}
-                            aria-labelledby={ariaIds.text}
-                          />
-                        </Link>
-                      )}
-                    </Tooltip>
-                  )}
+                  {/*
+                    This code will be uncommented after Nolana release
+                    {isLinkVisible && (
+                      <LinkButton
+                        handleLinkAuthority={(authority) => handleLinkAuthority(authority, idx)}
+                        handleUnlinkAuthority={() => handleUnlinkAuthority(idx)}
+                        isLinked={recordRow._isLinked}
+                      />
+                    )}
+                    {canViewAuthorityRecord && (
+                      <Tooltip
+                        id={`view-marc-authority-record-tooltip-${idx}`}
+                        text={intl.formatMessage({ id: 'ui-quick-marc.record.viewMarcAuthorityRecord' })}
+                      >
+                        {({ ref, ariaIds }) => (
+                          <Link
+                            to={`/marc-authorities/authorities/${recordRow.authorityId}?segment=search`}
+                            target="_blank"
+                            data-testid="view-authority-record-link"
+                            tabIndex="-1"
+                          >
+                            <IconButton
+                              icon="eye-open"
+                              ref={ref}
+                              aria-labelledby={ariaIds.text}
+                            />
+                          </Link>
+                        )}
+                      </Tooltip>
+                    )}
+                  */}
                 </div>
               </div>
             );
