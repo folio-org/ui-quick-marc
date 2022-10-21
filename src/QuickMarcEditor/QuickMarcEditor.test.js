@@ -96,18 +96,20 @@ const initialValues = {
       tag: 'LDR',
       content: 'assdfgs ds sdg',
       id: 'LDR',
-    }, {
+    },
+    {
+      tag: '100',
+      content: '$a Coates, Ta-Nehisi $e author.',
+      indicators: ['1', '\\'],
+      _isLinked: true,
+      id: '100',
+    },
+    {
       tag: '110',
       content: '$a Test title',
       indicators: ['2', '\\'],
       id: 'test-id-1',
     },
-    // {
-    //   tag: '100',
-    //   content: '$a Coates, Ta-Nehisi $e author.',
-    //   indicators: ['1', '\\'],
-    //   _isLinked: true,
-    // },
   ],
 };
 
@@ -126,7 +128,7 @@ const renderQuickMarcEditor = (props) => (render(
           deleteRecord: jest.fn(),
           moveRecord: jest.fn(),
         }}
-        initialValues={initialValues}
+        initialValues={props?.initialValues ? props.initialValues : initialValues}
         marcType={MARC_TYPES.BIB}
         locations={locations}
         {...props}
@@ -178,11 +180,12 @@ describe('Given QuickMarcEditor', () => {
   describe('when deleted a row', () => {
     it('should not display ConfirmationModal', () => {
       const {
-        getByRole,
+        getAllByRole,
         queryByText,
       } = renderQuickMarcEditor();
+      const deleteButtons = getAllByRole('button', { name: 'ui-quick-marc.record.deleteField' });
 
-      fireEvent.click(getByRole('button', { name: 'ui-quick-marc.record.deleteField' }));
+      fireEvent.click(deleteButtons[deleteButtons.length - 1]);
 
       expect(queryByText('Confirmation modal')).toBeNull();
     });
@@ -195,7 +198,7 @@ describe('Given QuickMarcEditor', () => {
         getByText,
       } = renderQuickMarcEditor();
 
-      const contentField = getByTestId('content-field-1');
+      const contentField = getByTestId('content-field-2');
 
       fireEvent.change(contentField, { target: { value: 'Changed test title' } });
       fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
@@ -212,7 +215,7 @@ describe('Given QuickMarcEditor', () => {
         getByText,
       } = renderQuickMarcEditor();
 
-      const contentField = getByTestId('content-field-1');
+      const contentField = getByTestId('content-field-2');
 
       fireEvent.change(contentField, { target: { value: 'Changed test title' } });
       fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
@@ -226,11 +229,12 @@ describe('Given QuickMarcEditor', () => {
   describe('when there are deleted fields', () => {
     it('should display ConfirmationModal', () => {
       const {
-        getByRole,
+        getAllByRole,
         getByText,
       } = renderQuickMarcEditor();
+      const deleteButtons = getAllByRole('button', { name: 'ui-quick-marc.record.deleteField' });
 
-      fireEvent.click(getByRole('button', { name: 'ui-quick-marc.record.deleteField' }));
+      fireEvent.click(deleteButtons[deleteButtons.length - 1]);
       fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
       expect(getByText('Confirmation modal')).toBeDefined();
@@ -241,12 +245,13 @@ describe('Given QuickMarcEditor', () => {
     describe('when click Confirm', () => {
       it('should hide ConfirmationModal and handle onSubmit', () => {
         const {
-          getByRole,
+          getAllByRole,
           getByText,
           queryByText,
         } = renderQuickMarcEditor();
+        const deleteButtons = getAllByRole('button', { name: 'ui-quick-marc.record.deleteField' });
 
-        fireEvent.click(getByRole('button', { name: 'ui-quick-marc.record.deleteField' }));
+        fireEvent.click(deleteButtons[deleteButtons.length - 1]);
         fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
         fireEvent.click(getByText('Confirm'));
 
@@ -258,12 +263,13 @@ describe('Given QuickMarcEditor', () => {
     describe('when click Cancel', () => {
       it('should hide ConfirmationModal and restore deleted fields', async () => {
         const {
-          getByRole,
+          getAllByRole,
           getByText,
           queryByText,
         } = renderQuickMarcEditor();
+        const deleteButtons = getAllByRole('button', { name: 'ui-quick-marc.record.deleteField' });
 
-        fireEvent.click(getByRole('button', { name: 'ui-quick-marc.record.deleteField' }));
+        fireEvent.click(deleteButtons[deleteButtons.length - 1]);
 
         expect(queryByText('$a Test title')).toBeNull();
 
@@ -328,30 +334,89 @@ describe('Given QuickMarcEditor', () => {
 
     describe('when delete last 1XX field', () => {
       it('should display edit authority record pane title', () => {
-        const { getByRole, getByText } = renderQuickMarcEditor({
+        const { getAllByRole, getByText } = renderQuickMarcEditor({
           marcType: MARC_TYPES.AUTHORITY,
         });
+        const deleteButtons = getAllByRole('button', { name: 'ui-quick-marc.record.deleteField' });
 
-        fireEvent.click(getByRole('button', { name: 'ui-quick-marc.record.deleteField' }));
+        fireEvent.click(deleteButtons[deleteButtons.length - 1]);
 
         expect(getByText('ui-quick-marc.authority-record.edit.title')).toBeDefined();
       });
     });
   });
 
-  describe('when confirmRemoveAuthorityLinking prop is true', () => {
-    it('should open remove authority linking modal', () => {
-      const { getByText } = renderQuickMarcEditor({ confirmRemoveAuthorityLinking: true });
+  describe('should open remove authority linking modal when record with tag 100 is linked', () => {
+    describe('when confirmRemoveAuthorityLinking prop is true', () => {
+      it('should open remove authority linking modal', () => {
+        const { getByText } = renderQuickMarcEditor({ confirmRemoveAuthorityLinking: true });
 
-      expect(getByText('Confirmation modal')).toBeDefined();
+        expect(getByText('Confirmation modal')).toBeDefined();
+      });
+
+      it('should close the modal on clicking keep linking button', () => {
+        const { queryByText, getByText } = renderQuickMarcEditor({ confirmRemoveAuthorityLinking: true });
+
+        fireEvent.click(getByText('Cancel'));
+
+        expect(queryByText('Confirmation modal')).toBeNull();
+      });
+
+      it('should close the modal on clicking keep linking button', () => {
+        const { queryByText, getByText } = renderQuickMarcEditor({ confirmRemoveAuthorityLinking: true });
+
+        fireEvent.click(getByText('Confirm'));
+
+        expect(queryByText('Confirmation modal')).toBeNull();
+      });
+    });
+  });
+  describe('should not open remove authority linking modal when record with tag 100 is linked', () => {
+    describe('when confirmRemoveAuthorityLinking prop is true', () => {
+      it('should not open remove authority linking modal', () => {
+        const { queryByText } = renderQuickMarcEditor(
+          {
+            confirmRemoveAuthorityLinking: true,
+            initialValues: {
+              leader: 'assdfgs ds sdg',
+              records: [
+                {
+                  tag: 'LDR',
+                  content: 'assdfgs ds sdg',
+                  id: 'LDR',
+                },
+                {
+                  tag: '100',
+                  content: '$a Coates, Ta-Nehisi $e author.',
+                  indicators: ['1', '\\'],
+                  _isLinked: false,
+                  id: '100',
+                },
+                {
+                  tag: '110',
+                  content: '$a Test title',
+                  indicators: ['2', '\\'],
+                  id: 'test-id-1',
+                },
+              ],
+            },
+          },
+        );
+
+        expect(queryByText('Confirmation modal')).toBeDefined();
+      });
     });
 
-    it('should close the modal on clicking keep linking button', () => {
-      const { queryByText, getByText } = renderQuickMarcEditor({ confirmRemoveAuthorityLinking: true });
+    describe('when confirmRemoveAuthorityLinking prop is false', () => {
+      it('should not open remove authority linking modal', () => {
+        const { queryByText } = renderQuickMarcEditor(
+          {
+            confirmRemoveAuthorityLinking: false,
+          },
+        );
 
-      fireEvent.click(getByText('Cancel'));
-
-      expect(queryByText('Confirmation modal')).toBeNull();
+        expect(queryByText('Confirmation modal')).toBeDefined();
+      });
     });
   });
 });
