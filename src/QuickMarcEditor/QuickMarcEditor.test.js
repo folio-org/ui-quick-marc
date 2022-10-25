@@ -128,7 +128,7 @@ const renderQuickMarcEditor = (props) => (render(
           deleteRecord: jest.fn(),
           moveRecord: jest.fn(),
         }}
-        initialValues={props?.initialValues ? props.initialValues : initialValues}
+        initialValues={initialValues}
         marcType={MARC_TYPES.BIB}
         locations={locations}
         {...props}
@@ -346,77 +346,72 @@ describe('Given QuickMarcEditor', () => {
     });
   });
 
-  describe('should open remove authority linking modal when record with tag 100 is linked', () => {
-    describe('when confirmRemoveAuthorityLinking prop is true', () => {
-      it('should open remove authority linking modal', () => {
-        const { getByText } = renderQuickMarcEditor({ confirmRemoveAuthorityLinking: true });
+  describe('when confirmRemoveAuthorityLinking prop is true and records are linked', () => {
+    it('should open remove authority linking modal', () => {
+      const { getByText } = renderQuickMarcEditor({ confirmRemoveAuthorityLinking: true });
 
-        expect(getByText('Confirmation modal')).toBeDefined();
-      });
+      expect(getByText('Confirmation modal')).toBeDefined();
+    });
 
-      it('should close the modal on clicking keep linking button', () => {
-        const { queryByText, getByText } = renderQuickMarcEditor({ confirmRemoveAuthorityLinking: true });
+    it('should close the modal on clicking keep linking button', () => {
+      const { queryByText, getByText } = renderQuickMarcEditor({ confirmRemoveAuthorityLinking: true });
 
-        fireEvent.click(getByText('Cancel'));
+      fireEvent.click(getByText('Cancel'));
 
-        expect(queryByText('Confirmation modal')).toBeNull();
-      });
+      expect(queryByText('Confirmation modal')).toBeNull();
+    });
 
-      it('should close the modal on clicking keep linking button', () => {
-        const { queryByText, getByText } = renderQuickMarcEditor({ confirmRemoveAuthorityLinking: true });
+    it('should close the modal on clicking keep linking button', () => {
+      const { queryByText, getByText } = renderQuickMarcEditor({ confirmRemoveAuthorityLinking: true });
 
-        fireEvent.click(getByText('Confirm'));
+      fireEvent.click(getByText('Confirm'));
 
-        expect(queryByText('Confirmation modal')).toBeNull();
-      });
+      expect(queryByText('Confirmation modal')).toBeNull();
     });
   });
-  describe('should not open remove authority linking modal when record with tag 100 is linked', () => {
-    describe('when confirmRemoveAuthorityLinking prop is true', () => {
-      it('should not open remove authority linking modal', () => {
-        const { queryByText } = renderQuickMarcEditor(
-          {
-            confirmRemoveAuthorityLinking: true,
-            initialValues: {
-              leader: 'assdfgs ds sdg',
-              records: [
-                {
-                  tag: 'LDR',
-                  content: 'assdfgs ds sdg',
-                  id: 'LDR',
-                },
-                {
-                  tag: '100',
-                  content: '$a Coates, Ta-Nehisi $e author.',
-                  indicators: ['1', '\\'],
-                  _isLinked: false,
-                  id: '100',
-                },
-                {
-                  tag: '110',
-                  content: '$a Test title',
-                  indicators: ['2', '\\'],
-                  id: 'test-id-1',
-                },
-              ],
-            },
-          },
-        );
 
-        expect(queryByText('Confirmation modal')).toBeDefined();
-      });
+  describe('when confirmRemoveAuthorityLinking prop is false or records are not linked', () => {
+    it('should not open remove authority linking modal when record with tag 100 is not linked', () => {
+      const { queryByText } = renderQuickMarcEditor(
+        {
+          confirmRemoveAuthorityLinking: true,
+          initialValues: {
+            leader: 'assdfgs ds sdg',
+            records: [
+              {
+                tag: 'LDR',
+                content: 'assdfgs ds sdg',
+                id: 'LDR',
+              },
+              {
+                tag: '100',
+                content: '$a Coates, Ta-Nehisi $e author.',
+                indicators: ['1', '\\'],
+                _isLinked: false,
+                id: '100',
+              },
+              {
+                tag: '110',
+                content: '$a Test title',
+                indicators: ['2', '\\'],
+                id: 'test-id-1',
+              },
+            ],
+          },
+        },
+      );
+
+      expect(queryByText('Confirmation modal')).toBeDefined();
     });
 
-    describe('when confirmRemoveAuthorityLinking prop is false', () => {
-      it('should not open remove authority linking modal', () => {
-        const { queryByText } = renderQuickMarcEditor(
-          {
-            confirmRemoveAuthorityLinking: false,
-          },
-        );
+    it('should not open remove authority linking modal when confirmRemoveAuthorityLinking prop is false', () => {
+      const { queryByText } = renderQuickMarcEditor(
+        {
+          confirmRemoveAuthorityLinking: false,
+        },
+      );
 
-        expect(queryByText('Confirmation modal')).toBeDefined();
-      });
+      expect(queryByText('Confirmation modal')).toBeDefined();
     });
   });
 });
