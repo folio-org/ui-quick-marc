@@ -76,7 +76,7 @@ const QuickMarcEditor = ({
   const showCallout = useShowCallout();
   const [records, setRecords] = useState([]);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
-  const [authorityLinkDetails, setAuthorityLinkDetails] = useState(null);
+  const [linkedRecords, setLinkedRecords] = useState(null);
   const continueAfterSave = useRef(false);
   const formRef = useRef(null);
 
@@ -282,13 +282,16 @@ const QuickMarcEditor = ({
   }]), [saveFormDisabled, confirmSubmit, onClose]);
 
   const handleKeepLinking = () => {
-    setAuthorityLinkDetails(null);
+    setLinkedRecords([]);
   };
 
   const handleRemoveLinking = () => {
-    unlinkAuthority(authorityLinkDetails?.record);
-    mutators.markRecordUnlinked({ index: authorityLinkDetails.index });
-    setAuthorityLinkDetails(null);
+    // unlink all linked records
+    linkedRecords.forEach(record => {
+      unlinkAuthority(record);
+      mutators.markRecordUnlinked({ index: records.findIndex(rec => rec.tag === record.tag) });
+    });
+    setLinkedRecords([]);
   };
 
   useEffect(() => {
@@ -313,15 +316,10 @@ const QuickMarcEditor = ({
   }, [httpError]);
 
   useEffect(() => {
-    if (confirmRemoveAuthorityLinking) {
-      const authorityRecordIndex = records.findIndex(record => (record.tag === '100' && record._isLinked));
-      const authorityRecord = records.filter(record => (record.tag === '100' && record._isLinked));
+    if (confirmRemoveAuthorityLinking && !linkedRecords && records.length) {
+      const authorityLinkedRecords = records.filter(record => record._isLinked);
 
-      if (authorityRecordIndex > -1 && authorityLinkDetails?.index !== authorityRecordIndex) {
-        setAuthorityLinkDetails({ index: authorityRecordIndex, record: authorityRecord[0] });
-      } else {
-        setAuthorityLinkDetails(null);
-      }
+      setLinkedRecords(authorityLinkedRecords);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [records]);
@@ -387,7 +385,7 @@ const QuickMarcEditor = ({
           <IfPermission perm="ui-quick-marc.quick-marc-authority-records.linkUnlink">
             <ConfirmationModal
               id="quick-marc-remove-authority-linking-confirm-modal"
-              open={!!authorityLinkDetails}
+              open={linkedRecords?.length}
               heading={<FormattedMessage id="ui-quick-marc.remove-authority-linking.modal.label" />}
               message={<FormattedMessage id="ui-quick-marc.remove-authority-linking.modal.message" />}
               confirmLabel={<FormattedMessage id="ui-quick-marc.remove-authority-linking.modal.remove-linking" />}
