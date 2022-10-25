@@ -289,7 +289,7 @@ const QuickMarcEditor = ({
     // unlink all linked records
     linkedRecords.forEach(record => {
       unlinkAuthority(record);
-      mutators.markRecordUnlinked({ index: records.findIndex(rec => rec.tag === record.tag) });
+      mutators.markRecordUnlinked({ index: records.findIndex(rec => rec.id === record.id) });
     });
     setLinkedRecords([]);
   };
