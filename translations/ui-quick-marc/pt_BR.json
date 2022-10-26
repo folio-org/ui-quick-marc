@@ -226,7 +226,7 @@
     "record.save.error.notFound": "Este registro foi excluído por outro usuário. Você não pode mais editar este registro, pressione o botão Cancelar para voltar à página anterior.",
     "noPlugin": "Nenhum plug-in está instalado",
     "permission.quick-marc-authority-records.linkUnlink": "QuickMARC: pode vincular/desvincular registros de autoridade a registros bibliográficos",
-    "record.fieldDeleted": "O <strong>campo {etiqueta}</strong> foi apagado deste registro MARC.",
+    "record.fieldDeleted": "O <strong>campo {tag}</strong> foi apagado deste registro MARC.",
     "record.fieldDeleted.undo": "Desfazer",
     "record.fieldDeleted.undoLabel": "Desfazer exclusão do campo {tag}",
     "record.quickMarcEditorLabel": "Editor QuickMARC",
