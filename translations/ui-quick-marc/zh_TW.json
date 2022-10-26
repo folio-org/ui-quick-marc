@@ -114,7 +114,7 @@
     "record.load.error": "未能找到紀錄或是無法載入。",
     "record.save.success.processing": "本记录已成功保存，正在处理中。更改可能不会立即显示。",
     "record.status.current": "当前",
-    "record.status.progress": "进行中",
+    "record.status.progress": "處理中",
     "record.status.error": "错误",
     "record.save.error.illegalFixedLength": "记录未保存。请检查定长字段的字符长度。",
     "record.status": "记录状态：",
