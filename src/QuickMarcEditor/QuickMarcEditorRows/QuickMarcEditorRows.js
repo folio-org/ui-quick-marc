@@ -430,6 +430,7 @@ const QuickMarcEditorRows = ({
                       handleUnlinkAuthority={() => handleUnlinkAuthority(idx)}
                       isLinked={recordRow._isLinked}
                       tag={recordRow.tag}
+                      marcRecordId={recordRow.id}
                     />
                   )}
                   {canViewAuthorityRecord && (

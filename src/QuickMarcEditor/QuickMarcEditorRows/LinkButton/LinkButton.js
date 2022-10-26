@@ -1,5 +1,4 @@
 import {
-  useEffect,
   useState,
 } from 'react';
 import {
@@ -25,6 +24,7 @@ const propTypes = {
   isLinked: PropTypes.bool.isRequired,
   handleLinkAuthority: PropTypes.func.isRequired,
   handleUnlinkAuthority: PropTypes.func.isRequired,
+  marcRecordId: PropTypes.string.isRequired,
   tag: PropTypes.string.isRequired,
 };
 
@@ -33,13 +33,14 @@ const LinkButton = ({
   handleUnlinkAuthority,
   isLinked,
   tag,
+  marcRecordId,
 }) => {
   const intl = useIntl();
   const [authority, setAuthority] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const callout = useCallout();
 
-  const { isLoading, refetch: refetchSource } = useMarcSource(authority?.id, {
+  const { isLoading, refetch: refetchSource } = useMarcSource(marcRecordId, authority?.id, {
     onSuccess: (authoritySource) => {
       handleLinkAuthority(authority, authoritySource);
       callout.sendCallout({
@@ -49,13 +50,10 @@ const LinkButton = ({
     },
   });
 
-  useEffect(() => {
-    if (authority) {
+  const onLinkRecord = (_authority) => {
+    if (_authority.id === authority?.id) {
       refetchSource();
     }
-  }, [refetchSource, authority]);
-
-  const onLinkRecord = (_authority) => {
     setAuthority(_authority);
   };
 

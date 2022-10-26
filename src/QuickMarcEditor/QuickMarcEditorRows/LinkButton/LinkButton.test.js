@@ -3,21 +3,28 @@ import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query';
-import { fireEvent, render } from '@testing-library/react';
+import { act, fireEvent, render } from '@testing-library/react';
 
+import {
+  Pluggable,
+} from '@folio/stripes/core';
 import { runAxeTest } from '@folio/stripes-testing';
 
 import { LinkButton } from './LinkButton';
 
 const mockOnClick = jest.fn();
+const mockGetMarcSource = jest.fn(() => ({ json: () => {} }));
 
 jest.mock('@folio/stripes/core', () => ({
   ...jest.requireActual('@folio/stripes/core'),
-  useNamespace: jest.fn().mockReturnValue(['ui-quick-marc-test']),
-  useOkapiKy: jest.fn().mockReturnValue({
-    get: jest.fn(),
+  useCallout: () => ({
+    sendCallout: jest.fn(),
   }),
-  Pluggable: ({ renderCustomTrigger }) => renderCustomTrigger({ onClick: mockOnClick }),
+  useNamespace: jest.fn().mockReturnValue(['ui-quick-marc-test']),
+  useOkapiKy: jest.fn(() => ({
+    get: mockGetMarcSource,
+  })),
+  Pluggable: jest.fn(({ renderCustomTrigger }) => renderCustomTrigger({ onClick: mockOnClick })),
 }));
 
 const mockHandleLinkAuthority = jest.fn();
@@ -31,6 +38,8 @@ const renderComponent = (props = {}) => render(
       handleLinkAuthority={mockHandleLinkAuthority}
       handleUnlinkAuthority={mockHandleUnlinkAuthority}
       isLinked={false}
+      marcRecordId="fakeId"
+      tag="100"
       {...props}
     />
   </QueryClientProvider>,
@@ -64,6 +73,21 @@ describe('Given LinkButton', () => {
       fireEvent.click(getAllByTestId('link-authority-button')[0]);
 
       expect(mockOnClick).toHaveBeenCalled();
+    });
+
+    describe('and the selected authority record is the same as the one previously selected', () => {
+      it('should refetch marc source', async () => {
+        renderComponent();
+
+        const authority = {
+          id: 'authority-id',
+        };
+
+        await act(async () => { Pluggable.mock.calls[0][0].onLinkRecord(authority); });
+        act(() => { Pluggable.mock.calls[1][0].onLinkRecord(authority); });
+
+        expect(mockGetMarcSource).toHaveBeenCalledTimes(2);
+      });
     });
   });
 
