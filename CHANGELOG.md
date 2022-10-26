@@ -25,6 +25,7 @@
 * [UIQM-275](https://issues.folio.org/browse/UIQM-275) Derive a new MARC bib/Edit a MARC bib | Link/Unlink a MARC bib field to/from an Authority record
 * [UIQM-309](https://issues.folio.org/browse/UIQM-309) Make PUT /records request to save authority links after deriving a MARC Bib record
 * [UIQM-281](https://issues.folio.org/browse/UIQM-281) FE | Linked bib fields | Derive a new MARC bibliographic record handling
+* [UIQM-307](https://issues.folio.org/browse/UIQM-307) Link then Unlink bib field before saving record behavior
 
 ## [5.1.2](https://github.com/folio-org/ui-quick-marc/tree/v5.1.2) (2022-08-23)
 
