@@ -1,6 +1,6 @@
 # Change history for ui-quick-marc
 
-## [6.0.0] (IN PROGRESS)
+## [5.2.0](https://github.com/folio-org/ui-quick-marc/tree/v5.2.0) (2022-10-26)
 
 * [UIQM-259](https://issues.folio.org/browse/UIQM-259) Edit MARC authority: User does not get a notification that the record is edited has been deleted by another user.
 * [UIQM-258](https://issues.folio.org/browse/UIQM-258) Add fake link Authority button next to MARC fields.
@@ -25,6 +25,7 @@
 * [UIQM-311](https://issues.folio.org/browse/UIQM-311) Edit/Derive MARC bib | Improve error messaging for Leader positions 18 and 19
 * [UIQM-310](https://issues.folio.org/browse/UIQM-310) Update spacing between Save & continue and Save & close buttons
 * [UIQM-288] (https://issues.folio.org/browse/UIQM-288) Authority control: Hide link authority button before Nolana release
+
 ## [5.1.2](https://github.com/folio-org/ui-quick-marc/tree/v5.1.2) (2022-08-23)
 
 * [UIQM-266](https://issues.folio.org/browse/UIQM-266) Edit quickMARC: Undoing a delete field is not restored in the same position.
