@@ -321,8 +321,7 @@ const QuickMarcEditor = ({
 
       setIsUnlinkRecordsModalOpen(linkedRecordsCount > 0);
     }
-
-  }, [initialValues]);
+  }, [confirmRemoveAuthorityLinking, initialValues]);
 
   return (
     <HasCommand

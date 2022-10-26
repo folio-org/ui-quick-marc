@@ -361,7 +361,7 @@ describe('Given QuickMarcEditor', () => {
       expect(queryByText('Confirmation modal')).toBeNull();
     });
 
-    it('should close the modal on clicking keep linking button', () => {
+    it('should close the modal on clicking remove linking button', () => {
       const { queryByText, getByText } = renderQuickMarcEditor({ confirmRemoveAuthorityLinking: true });
 
       fireEvent.click(getByText('Confirm'));
@@ -401,7 +401,7 @@ describe('Given QuickMarcEditor', () => {
         },
       );
 
-      expect(queryByText('Confirmation modal')).toBeDefined();
+      expect(queryByText('Confirmation modal')).toBeNull();
     });
 
     it('should not open remove authority linking modal when confirmRemoveAuthorityLinking prop is false', () => {
@@ -411,7 +411,7 @@ describe('Given QuickMarcEditor', () => {
         },
       );
 
-      expect(queryByText('Confirmation modal')).toBeDefined();
+      expect(queryByText('Confirmation modal')).toBeNull();
     });
   });
 });
