@@ -256,5 +256,10 @@
   "record.quickMarcEditorLabel": "Quick MARC editor",
 
   "permanentLocationLookup": "Permanent location look-up",
-  "noPlugin": "No plugin is installed"
+  "noPlugin": "No plugin is installed",
+
+  "remove-authority-linking.modal.label": "Remove authority linking",
+  "remove-authority-linking.modal.remove-linking": "Remove linking",
+  "remove-authority-linking.modal.keep-linking": "Keep linking",
+  "remove-authority-linking.modal.message": "Do you want to remove authority linking for this new bibliographic record?"
 }

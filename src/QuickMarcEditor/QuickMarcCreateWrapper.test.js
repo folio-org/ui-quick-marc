@@ -1,6 +1,10 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import {
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query';
+import {
   act,
   render,
   cleanup,
@@ -121,6 +125,8 @@ const locations = [{
   code: 'KU/CC/DI/A',
 }];
 
+const queryClient = new QueryClient();
+
 const renderQuickMarcCreateWrapper = ({
   instance,
   onClose = noop,
@@ -129,17 +135,19 @@ const renderQuickMarcCreateWrapper = ({
   location,
 }) => (render(
   <MemoryRouter>
-    <QuickMarcCreateWrapper
-      onClose={onClose}
-      instance={instance}
-      mutator={mutator}
-      action={QUICK_MARC_ACTIONS.CREATE}
-      initialValues={{ leader: 'assdfgs ds sdg' }}
-      history={history}
-      location={location}
-      marcType={MARC_TYPES.HOLDINGS}
-      locations={locations}
-    />
+    <QueryClientProvider client={queryClient}>
+      <QuickMarcCreateWrapper
+        onClose={onClose}
+        instance={instance}
+        mutator={mutator}
+        action={QUICK_MARC_ACTIONS.CREATE}
+        initialValues={{ leader: 'assdfgs ds sdg' }}
+        history={history}
+        location={location}
+        marcType={MARC_TYPES.HOLDINGS}
+        locations={locations}
+      />
+    </QueryClientProvider>
   </MemoryRouter>,
 ));
 

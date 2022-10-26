@@ -1,6 +1,10 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import {
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query';
+import {
   render,
   act,
   fireEvent,
@@ -249,6 +253,8 @@ const locations = [{
   code: 'KU/CC/DI/A',
 }];
 
+const queryClient = new QueryClient();
+
 const renderQuickMarcEditWrapper = ({
   instance,
   mutator,
@@ -256,23 +262,25 @@ const renderQuickMarcEditWrapper = ({
   ...props
 }) => (render(
   <MemoryRouter>
-    <QuickMarcEditWrapper
-      onClose={noop}
-      mutator={mutator}
-      action={QUICK_MARC_ACTIONS.EDIT}
-      marcType={marcType}
-      initialValues={{
-        leader: mockLeaders[marcType],
-        records: [],
-        relatedRecordVersion: 1,
-      }}
-      instance={instance}
-      location={{}}
-      locations={locations}
-      externalRecordPath="/some-record"
-      refreshPageData={jest.fn().mockResolvedValue()}
-      {...props}
-    />
+    <QueryClientProvider client={queryClient}>
+      <QuickMarcEditWrapper
+        onClose={noop}
+        mutator={mutator}
+        action={QUICK_MARC_ACTIONS.EDIT}
+        marcType={marcType}
+        initialValues={{
+          leader: mockLeaders[marcType],
+          records: [],
+          relatedRecordVersion: 1,
+        }}
+        instance={instance}
+        location={{}}
+        locations={locations}
+        externalRecordPath="/some-record"
+        refreshPageData={jest.fn().mockResolvedValue()}
+        {...props}
+      />
+    </QueryClientProvider>
   </MemoryRouter>,
 ));
 
