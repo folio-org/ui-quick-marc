@@ -1,6 +1,10 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import {
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query';
+import {
   act,
   render,
   cleanup,
@@ -172,6 +176,32 @@ const getInstance = () => ({
   title: 'ui-quick-marc.record.edit.title',
 });
 
+const queryClient = new QueryClient();
+
+const initialValues = {
+  leader: '14706cam a2200865Ii 4500',
+  records: [
+    {
+      tag: 'LDR',
+      content: 'assdfgs ds sdg',
+      id: 'LDR',
+    },
+    {
+      tag: '100',
+      content: '$a Coates, Ta-Nehisi $e author.',
+      indicators: ['1', '\\'],
+      _isLinked: true,
+      id: '100',
+    },
+    {
+      tag: '110',
+      content: '$a Test title',
+      indicators: ['2', '\\'],
+      id: 'test-id-1',
+    },
+  ],
+};
+
 const renderQuickMarcDuplicateWrapper = ({
   instance,
   onClose = noop,
@@ -180,16 +210,18 @@ const renderQuickMarcDuplicateWrapper = ({
   location,
 }) => (render(
   <MemoryRouter>
-    <QuickMarcDuplicateWrapper
-      onClose={onClose}
-      instance={instance}
-      mutator={mutator}
-      action={QUICK_MARC_ACTIONS.DUPLICATE}
-      initialValues={{ leader: '14706cam a2200865Ii 4500' }}
-      marcType="bib"
-      history={history}
-      location={location}
-    />
+    <QueryClientProvider client={queryClient}>
+      <QuickMarcDuplicateWrapper
+        onClose={onClose}
+        instance={instance}
+        mutator={mutator}
+        action={QUICK_MARC_ACTIONS.DUPLICATE}
+        initialValues={initialValues}
+        marcType="bib"
+        history={history}
+        location={location}
+      />
+    </QueryClientProvider>
   </MemoryRouter>,
 ));
 

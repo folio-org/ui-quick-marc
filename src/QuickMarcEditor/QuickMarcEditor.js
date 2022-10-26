@@ -11,6 +11,7 @@ import { FormattedMessage } from 'react-intl';
 import find from 'lodash/find';
 import { FormSpy } from 'react-final-form';
 
+import { IfPermission } from '@folio/stripes/core';
 import stripesFinalForm from '@folio/stripes/final-form';
 import {
   Pane,
@@ -48,6 +49,8 @@ import {
   deleteRecordByIndex,
 } from './utils';
 
+import { useAuthorityLinking } from '../hooks';
+
 const spySubscription = { values: true };
 
 const QuickMarcEditor = ({
@@ -66,14 +69,18 @@ const QuickMarcEditor = ({
   locations,
   httpError,
   externalRecordPath,
+  confirmRemoveAuthorityLinking,
 }) => {
   const history = useHistory();
   const location = useLocation();
   const showCallout = useShowCallout();
   const [records, setRecords] = useState([]);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
+  const [isUnlinkRecordsModalOpen, setIsUnlinkRecordsModalOpen] = useState(false);
   const continueAfterSave = useRef(false);
   const formRef = useRef(null);
+
+  const { unlinkAuthority } = useAuthorityLinking();
 
   const deletedRecords = useMemo(() => {
     return records
@@ -274,6 +281,19 @@ const QuickMarcEditor = ({
     },
   }]), [saveFormDisabled, confirmSubmit, onClose]);
 
+  const handleKeepLinking = () => {
+    setIsUnlinkRecordsModalOpen(false);
+  };
+
+  const handleRemoveLinking = () => {
+    // unlink all linked records
+    initialValues.records.filter(record => record._isLinked).forEach(record => {
+      unlinkAuthority(record);
+      mutators.markRecordUnlinked({ index: records.findIndex(rec => rec.id === record.id) });
+    });
+    setIsUnlinkRecordsModalOpen(false);
+  };
+
   useEffect(() => {
     if (!httpError) {
       return;
@@ -294,6 +314,14 @@ const QuickMarcEditor = ({
     showCallout({ messageId, type: 'error' });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [httpError]);
+
+  useEffect(() => {
+    if (confirmRemoveAuthorityLinking && initialValues.records.length) {
+      const linkedRecordsCount = initialValues.records.filter(record => record._isLinked).length;
+
+      setIsUnlinkRecordsModalOpen(linkedRecordsCount > 0);
+    }
+  }, [confirmRemoveAuthorityLinking, initialValues]);
 
   return (
     <HasCommand
@@ -351,6 +379,23 @@ const QuickMarcEditor = ({
         onConfirm={onConfirmModal}
         onCancel={onCancelModal}
       />
+      {
+        confirmRemoveAuthorityLinking && (
+          <IfPermission perm="ui-quick-marc.quick-marc-authority-records.linkUnlink">
+            <ConfirmationModal
+              id="quick-marc-remove-authority-linking-confirm-modal"
+              open={isUnlinkRecordsModalOpen}
+              heading={<FormattedMessage id="ui-quick-marc.remove-authority-linking.modal.label" />}
+              message={<FormattedMessage id="ui-quick-marc.remove-authority-linking.modal.message" />}
+              confirmLabel={<FormattedMessage id="ui-quick-marc.remove-authority-linking.modal.remove-linking" />}
+              cancelLabel={<FormattedMessage id="ui-quick-marc.remove-authority-linking.modal.keep-linking" />}
+              onConfirm={handleRemoveLinking}
+              onCancel={handleKeepLinking}
+              buttonStyle="danger"
+            />
+          </IfPermission>
+        )
+      }
       <FormSpy
         subscription={spySubscription}
         onChange={changeRecords}
@@ -379,10 +424,12 @@ QuickMarcEditor.propTypes = {
     message: PropTypes.string,
     errorType: PropTypes.string,
   }),
+  confirmRemoveAuthorityLinking: PropTypes.bool,
 };
 
 QuickMarcEditor.defaultProps = {
   httpError: null,
+  confirmRemoveAuthorityLinking: false,
 };
 
 export default stripesFinalForm({
