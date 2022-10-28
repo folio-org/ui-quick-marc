@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  render,
-  cleanup,
-} from '@testing-library/react';
+import { render } from '@testing-library/react';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
@@ -16,8 +13,6 @@ const getComponent = () => (
 );
 
 describe('Given indicator field', () => {
-  afterEach(cleanup);
-
   it('should render the field', () => {
     const { getByLabelText } = render(getComponent());
 

@@ -1,13 +1,7 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
 import {
   act,
   render,
-  cleanup,
   fireEvent,
 } from '@testing-library/react';
 import faker from 'faker';
@@ -20,6 +14,8 @@ import '@folio/stripes-acq-components/test/jest/__mock__';
 import QuickMarcCreateWrapper from './QuickMarcCreateWrapper';
 import { MARC_TYPES } from '../common/constants';
 import { QUICK_MARC_ACTIONS } from './constants';
+
+import Harness from '../../test/jest/helpers/harness';
 
 jest.mock('react-final-form', () => ({
   ...jest.requireActual('react-final-form'),
@@ -125,8 +121,6 @@ const locations = [{
   code: 'KU/CC/DI/A',
 }];
 
-const queryClient = new QueryClient();
-
 const renderQuickMarcCreateWrapper = ({
   instance,
   onClose = noop,
@@ -134,21 +128,19 @@ const renderQuickMarcCreateWrapper = ({
   history,
   location,
 }) => (render(
-  <MemoryRouter>
-    <QueryClientProvider client={queryClient}>
-      <QuickMarcCreateWrapper
-        onClose={onClose}
-        instance={instance}
-        mutator={mutator}
-        action={QUICK_MARC_ACTIONS.CREATE}
-        initialValues={{ leader: 'assdfgs ds sdg' }}
-        history={history}
-        location={location}
-        marcType={MARC_TYPES.HOLDINGS}
-        locations={locations}
-      />
-    </QueryClientProvider>
-  </MemoryRouter>,
+  <Harness>
+    <QuickMarcCreateWrapper
+      onClose={onClose}
+      instance={instance}
+      mutator={mutator}
+      action={QUICK_MARC_ACTIONS.CREATE}
+      initialValues={{ leader: 'assdfgs ds sdg' }}
+      history={history}
+      location={location}
+      marcType={MARC_TYPES.HOLDINGS}
+      locations={locations}
+    />
+  </Harness>,
 ));
 
 describe('Given QuickMarcCreateWrapper', () => {
@@ -178,8 +170,6 @@ describe('Given QuickMarcCreateWrapper', () => {
       search: '?filters=source.MARC',
     };
   });
-
-  afterEach(cleanup);
 
   it('should render with no axe errors', async () => {
     const { container } = renderQuickMarcCreateWrapper({

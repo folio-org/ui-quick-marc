@@ -1,9 +1,4 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
 import {
   render,
   act,
@@ -18,6 +13,8 @@ import '@folio/stripes-acq-components/test/jest/__mock__';
 import QuickMarcEditWrapper from './QuickMarcEditWrapper';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
+
+import Harness from '../../test/jest/helpers/harness';
 
 jest.mock('react-final-form', () => ({
   ...jest.requireActual('react-final-form'),
@@ -253,35 +250,31 @@ const locations = [{
   code: 'KU/CC/DI/A',
 }];
 
-const queryClient = new QueryClient();
-
 const renderQuickMarcEditWrapper = ({
   instance,
   mutator,
   marcType = MARC_TYPES.BIB,
   ...props
 }) => (render(
-  <MemoryRouter>
-    <QueryClientProvider client={queryClient}>
-      <QuickMarcEditWrapper
-        onClose={noop}
-        mutator={mutator}
-        action={QUICK_MARC_ACTIONS.EDIT}
-        marcType={marcType}
-        initialValues={{
-          leader: mockLeaders[marcType],
-          records: [],
-          relatedRecordVersion: 1,
-        }}
-        instance={instance}
-        location={{}}
-        locations={locations}
-        externalRecordPath="/some-record"
-        refreshPageData={jest.fn().mockResolvedValue()}
-        {...props}
-      />
-    </QueryClientProvider>
-  </MemoryRouter>,
+  <Harness>
+    <QuickMarcEditWrapper
+      onClose={noop}
+      mutator={mutator}
+      action={QUICK_MARC_ACTIONS.EDIT}
+      marcType={marcType}
+      initialValues={{
+        leader: mockLeaders[marcType],
+        records: [],
+        relatedRecordVersion: 1,
+      }}
+      instance={instance}
+      location={{}}
+      locations={locations}
+      externalRecordPath="/some-record"
+      refreshPageData={jest.fn().mockResolvedValue()}
+      {...props}
+    />
+  </Harness>,
 ));
 
 describe('Given QuickMarcEditWrapper', () => {

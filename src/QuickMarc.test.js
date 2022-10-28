@@ -1,16 +1,14 @@
 /* eslint-disable react/prop-types */
 
 import React from 'react';
-import { Router } from 'react-router-dom';
-import {
-  render,
-  cleanup,
-} from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarc from './QuickMarc';
+
+import Harness from '../test/jest/helpers/harness';
 
 jest.mock('./QuickMarcEditor', () => {
   return {
@@ -23,16 +21,15 @@ const renderQuickMarc = ({
   onClose,
   history,
 }) => (render(
-  <Router history={history}>
+  <Harness history={history}>
     <QuickMarc
       onClose={onClose}
       basePath={basePath}
     />
-  </Router>,
+  </Harness>,
 ));
 
 describe('Given Quick Marc', () => {
-  afterEach(cleanup);
   let history = null;
 
   beforeEach(() => {

@@ -1,6 +1,5 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
-import { render, cleanup } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 
@@ -10,6 +9,7 @@ import {
   BytesField,
   SUBFIELD_TYPES,
 } from './BytesField';
+import Harness from '../../../../test/jest/helpers/harness';
 
 const config = {
   fields: [
@@ -43,7 +43,7 @@ const config = {
 };
 
 const renderFixedField = () => (render(
-  <MemoryRouter>
+  <Harness>
     <Form
       onSubmit={jest.fn()}
       mutators={{ ...arrayMutators }}
@@ -54,19 +54,17 @@ const renderFixedField = () => (render(
         />
       )}
     />
-  </MemoryRouter>,
+  </Harness>,
 ));
 
 describe('Given Bytes Field', () => {
-  afterEach(cleanup);
-
-  it('Than it should display all cols from passed config', () => {
+  it('should display all cols from passed config', () => {
     const { getAllByTestId } = renderFixedField();
 
     expect(getAllByTestId('bytes-field-col').length).toBe(config.fields.length);
   });
 
-  it('Than it should display all fields from passed config', () => {
+  it('should display all fields from passed config', () => {
     const { getByText } = renderFixedField();
 
     config.fields
@@ -75,7 +73,7 @@ describe('Given Bytes Field', () => {
       });
   });
 
-  it('Than it should display byte fields from passed config', () => {
+  it('should display byte fields from passed config', () => {
     const { getAllByTestId } = renderFixedField();
 
     const byteFields = config.fields.filter(({ type }) => type === SUBFIELD_TYPES.BYTE);
@@ -83,7 +81,7 @@ describe('Given Bytes Field', () => {
     expect(getAllByTestId(`fixed-field-${SUBFIELD_TYPES.BYTE}`).length).toBe(byteFields.length);
   });
 
-  it('Than it should display select fields from passed config', () => {
+  it('should display select fields from passed config', () => {
     const { getAllByTestId } = renderFixedField();
 
     const byteFields = config.fields.filter(({ type }) => type === SUBFIELD_TYPES.SELECT);
@@ -91,7 +89,7 @@ describe('Given Bytes Field', () => {
     expect(getAllByTestId(`fixed-field-${SUBFIELD_TYPES.SELECT}`).length).toBe(byteFields.length);
   });
 
-  it('Than it should display bytes fields from passed config', () => {
+  it('should display bytes fields from passed config', () => {
     const { getAllByTestId } = renderFixedField();
 
     const bytesFieldsLength = config.fields
@@ -101,7 +99,7 @@ describe('Given Bytes Field', () => {
     expect(getAllByTestId(`fixed-field-${SUBFIELD_TYPES.BYTES}`).length).toBe(bytesFieldsLength);
   });
 
-  it('Than it should display string fields from passed config', () => {
+  it('should display string fields from passed config', () => {
     const { getAllByTestId } = renderFixedField();
 
     const stringFields = config.fields.filter(({ type }) => type === SUBFIELD_TYPES.STRING);

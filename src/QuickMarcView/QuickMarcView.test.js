@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  render,
-} from '@testing-library/react';
+import { render } from '@testing-library/react';
 
 import { runAxeTest } from '@folio/stripes-testing';
 

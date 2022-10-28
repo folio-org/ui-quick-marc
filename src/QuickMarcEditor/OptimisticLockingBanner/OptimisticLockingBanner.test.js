@@ -1,27 +1,22 @@
 import React from 'react';
-import {
-  render,
-  cleanup,
-} from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { render } from '@testing-library/react';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import OptimisticLockingBanner from './OptimisticLockingBanner';
 import { ERROR_TYPES } from '../../common/constants';
+import Harness from '../../../test/jest/helpers/harness';
 
-const renderOptimisticLockingBanner = (props) => (render(
-  <MemoryRouter>
+const renderOptimisticLockingBanner = (props = {}) => (render(
+  <Harness>
     <OptimisticLockingBanner
       latestVersionLink="/some-url"
       {...props}
     />
-  </MemoryRouter>,
+  </Harness>,
 ));
 
 describe('Given OptimisticLockingBanner', () => {
-  afterEach(cleanup);
-
   describe('when error is not caused by optimistic locking', () => {
     it('should not render banner', () => {
       const { queryByText } = renderOptimisticLockingBanner();

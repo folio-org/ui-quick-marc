@@ -1,14 +1,9 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
 import {
   render,
   fireEvent,
   waitFor,
 } from '@testing-library/react';
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
 import faker from 'faker';
 
 import { runAxeTest } from '@folio/stripes-testing';
@@ -19,6 +14,8 @@ import QuickMarcEditor from './QuickMarcEditor';
 
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
+
+import Harness from '../../test/jest/helpers/harness';
 
 jest.mock('@folio/stripes/components', () => ({
   ...jest.requireActual('@folio/stripes/components'),
@@ -53,21 +50,6 @@ jest.mock('./QuickMarcRecordInfo', () => {
     QuickMarcRecordInfo: () => <span>QuickMarcRecordInfo</span>,
   };
 });
-
-// jest.mock('../queries', () => ({
-//   useAuthoritySourceFiles: jest.fn().mockResolvedValue({
-//     sourceFiles: [],
-//     isLoading: false,
-//   }),
-// }));
-
-// jest.mock('../hooks', () => ({
-//   useMarcSource: jest.fn().mockResolvedValue({
-//     data: [],
-//     isLoading: false,
-//     refetch: jest.fn(),
-//   }),
-// }));
 
 const onCloseMock = jest.fn();
 const onSubmitMock = jest.fn(() => Promise.resolve({ version: 1 }));
@@ -113,28 +95,24 @@ const initialValues = {
   ],
 };
 
-const queryClient = new QueryClient();
-
 const renderQuickMarcEditor = (props) => (render(
-  <MemoryRouter>
-    <QueryClientProvider client={queryClient}>
-      <QuickMarcEditor
-        action={QUICK_MARC_ACTIONS.EDIT}
-        instance={instance}
-        onClose={onCloseMock}
-        onSubmit={onSubmitMock}
-        mutators={{
-          addRecord: jest.fn(),
-          deleteRecord: jest.fn(),
-          moveRecord: jest.fn(),
-        }}
-        initialValues={initialValues}
-        marcType={MARC_TYPES.BIB}
-        locations={locations}
-        {...props}
-      />
-    </QueryClientProvider>
-  </MemoryRouter>,
+  <Harness>
+    <QuickMarcEditor
+      action={QUICK_MARC_ACTIONS.EDIT}
+      instance={instance}
+      onClose={onCloseMock}
+      onSubmit={onSubmitMock}
+      mutators={{
+        addRecord: jest.fn(),
+        deleteRecord: jest.fn(),
+        moveRecord: jest.fn(),
+      }}
+      initialValues={initialValues}
+      marcType={MARC_TYPES.BIB}
+      locations={locations}
+      {...props}
+    />
+  </Harness>,
 ));
 
 describe('Given QuickMarcEditor', () => {
