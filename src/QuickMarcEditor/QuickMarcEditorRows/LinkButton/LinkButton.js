@@ -24,7 +24,7 @@ const propTypes = {
   isLinked: PropTypes.bool.isRequired,
   handleLinkAuthority: PropTypes.func.isRequired,
   handleUnlinkAuthority: PropTypes.func.isRequired,
-  marcRecordId: PropTypes.string.isRequired,
+  fieldId: PropTypes.string.isRequired,
   tag: PropTypes.string.isRequired,
 };
 
@@ -33,14 +33,14 @@ const LinkButton = ({
   handleUnlinkAuthority,
   isLinked,
   tag,
-  marcRecordId,
+  fieldId,
 }) => {
   const intl = useIntl();
   const [authority, setAuthority] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const callout = useCallout();
 
-  const { isLoading, refetch: refetchSource } = useMarcSource(marcRecordId, authority?.id, {
+  const { isLoading, refetch: refetchSource } = useMarcSource(fieldId, authority?.id, {
     onSuccess: (authoritySource) => {
       handleLinkAuthority(authority, authoritySource);
       callout.sendCallout({
