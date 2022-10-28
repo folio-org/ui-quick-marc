@@ -55,6 +55,7 @@ const useAuthorityLinking = () => {
 
     bibSubfields.$9 = authority.id;
     copySubfieldsFromAuthority(bibSubfields, linkedAuthorityField);
+    field.prevContent = field.content;
     field.content = joinSubfields(bibSubfields);
 
     const controlledSubfields = Object.keys(getContentSubfieldValue(linkedAuthorityField.content)).map(key => key.replace('$', ''));
@@ -75,7 +76,8 @@ const useAuthorityLinking = () => {
     delete field.authorityNaturalId;
     delete field.authorityId;
 
-    field.content = joinSubfields(bibSubfields);
+    field.content = field.prevContent || joinSubfields(bibSubfields);
+    delete field.prevContent;
 
     return {
       ...field,

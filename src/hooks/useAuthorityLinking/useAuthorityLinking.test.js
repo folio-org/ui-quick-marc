@@ -110,6 +110,27 @@ describe('Given useAuthorityLinking', () => {
     });
   });
 
+  describe('when calling linkAuthority without saving changes, and then unlinkAuthority', () => {
+    it('should return previous field content', () => {
+      const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+
+      const authority = {
+        id: 'authority-id',
+        sourceFileId: '1',
+        naturalId: 'n0001',
+      };
+      const field = {
+        tag: '100',
+        content: '$a Crumb, George. test',
+      };
+
+      const linkedField = result.current.linkAuthority(authority, authoritySource, field);
+      const unlinkedField = result.current.unlinkAuthority(linkedField);
+
+      expect(unlinkedField.content).toBe('$a Crumb, George. test');
+    });
+  });
+
   describe('when calling unlinkAuthority', () => {
     it('should return field with correct data', () => {
       const { result } = renderHook(() => useAuthorityLinking(), { wrapper });

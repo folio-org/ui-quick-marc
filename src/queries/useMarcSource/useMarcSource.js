@@ -9,12 +9,12 @@ import { MARC_RECORD_API } from '../../common/constants';
 
 const MARC_SOURCE_API = (id) => `${MARC_RECORD_API}?externalId=${id}`;
 
-export const useMarcSource = (recordId, { onSuccess }) => {
+export const useMarcSource = (fieldId, recordId, { onSuccess }) => {
   const ky = useOkapiKy();
   const [namespace] = useNamespace({ key: 'MARC_SOURCE' });
 
   const { isFetching, data, refetch } = useQuery(
-    [namespace, recordId],
+    [namespace, fieldId, recordId],
     async () => {
       return ky.get(MARC_SOURCE_API(recordId)).json();
     }, {

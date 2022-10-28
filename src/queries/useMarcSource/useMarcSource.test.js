@@ -28,9 +28,10 @@ describe('Given useMarcSource', () => {
     useOkapiKy.mockReturnValue({
       get: mockGet,
     });
+    const fieldId = 'marc-record-id';
     const recordId = 'record-id';
 
-    renderHook(() => useMarcSource(recordId, { onSuccess: jest.fn() }), { wrapper });
+    renderHook(() => useMarcSource(fieldId, recordId, { onSuccess: jest.fn() }), { wrapper });
 
     expect(mockGet).toHaveBeenCalledWith('records-editor/records?externalId=record-id');
   });

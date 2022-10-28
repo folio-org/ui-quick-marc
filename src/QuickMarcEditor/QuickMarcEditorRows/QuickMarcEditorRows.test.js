@@ -103,9 +103,6 @@ const addRecordMock = jest.fn().mockImplementation(({ index }) => {
     content: '',
   });
 });
-const markRecordLinked = jest.fn().mockImplementation(({ index }) => {
-  values[index]._isLinked = true;
-});
 const deleteRecordMock = jest.fn();
 const moveRecordMock = jest.fn();
 const markRecordDeletedMock = jest.fn();
