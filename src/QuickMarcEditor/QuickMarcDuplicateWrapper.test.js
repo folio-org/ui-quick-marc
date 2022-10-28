@@ -1,13 +1,7 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
 import {
   act,
   render,
-  cleanup,
   fireEvent,
 } from '@testing-library/react';
 import faker from 'faker';
@@ -19,6 +13,8 @@ import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcDuplicateWrapper from './QuickMarcDuplicateWrapper';
 import { QUICK_MARC_ACTIONS } from './constants';
+
+import Harness from '../../test/jest/helpers/harness';
 
 jest.mock('react-final-form', () => ({
   ...jest.requireActual('react-final-form'),
@@ -176,8 +172,6 @@ const getInstance = () => ({
   title: 'ui-quick-marc.record.edit.title',
 });
 
-const queryClient = new QueryClient();
-
 const initialValues = {
   leader: '14706cam a2200865Ii 4500',
   records: [
@@ -209,20 +203,18 @@ const renderQuickMarcDuplicateWrapper = ({
   history,
   location,
 }) => (render(
-  <MemoryRouter>
-    <QueryClientProvider client={queryClient}>
-      <QuickMarcDuplicateWrapper
-        onClose={onClose}
-        instance={instance}
-        mutator={mutator}
-        action={QUICK_MARC_ACTIONS.DUPLICATE}
-        initialValues={initialValues}
-        marcType="bib"
-        history={history}
-        location={location}
-      />
-    </QueryClientProvider>
-  </MemoryRouter>,
+  <Harness>
+    <QuickMarcDuplicateWrapper
+      onClose={onClose}
+      instance={instance}
+      mutator={mutator}
+      action={QUICK_MARC_ACTIONS.DUPLICATE}
+      initialValues={initialValues}
+      marcType="bib"
+      history={history}
+      location={location}
+    />
+  </Harness>,
 ));
 
 describe('Given QuickMarcDuplicateWrapper', () => {
@@ -253,8 +245,6 @@ describe('Given QuickMarcDuplicateWrapper', () => {
       search: '?filters=source.MARC',
     };
   });
-
-  afterEach(cleanup);
 
   it('should render with no axe errors', async () => {
     const { container } = renderQuickMarcDuplicateWrapper({

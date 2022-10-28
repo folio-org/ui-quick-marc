@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, cleanup } from '@testing-library/react';
+import { render } from '@testing-library/react';
 
 import { runAxeTest } from '@folio/stripes-testing';
 
@@ -35,8 +35,6 @@ const renderQuickMarcRecordInfo = (props = {}) => render(
 );
 
 describe('Given Quick Marc Record Info', () => {
-  afterEach(cleanup);
-
   it('should render with no axe errors', async () => {
     const { container } = renderQuickMarcRecordInfo();
 
