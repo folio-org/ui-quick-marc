@@ -43,9 +43,9 @@ import {
 import { useAuthorityLinking } from '../../hooks';
 import {
   QUICK_MARC_ACTIONS,
-  TAGS_FOR_DISPLAYING_LINKS,
 } from '../constants';
 import {
+  LINKED_BIB_TO_AUTHORITY_FIELDS,
   MARC_TYPES,
   TAG_FIELD_MAX_LENGTH,
 } from '../../common/constants';
@@ -210,7 +210,7 @@ const QuickMarcEditorRows = ({
             const isLinkVisible = stripes.hasPerm('ui-quick-marc.quick-marc-authority-records.linkUnlink') &&
               marcType === MARC_TYPES.BIB &&
               (action === QUICK_MARC_ACTIONS.EDIT || action === QUICK_MARC_ACTIONS.DUPLICATE) &&
-              TAGS_FOR_DISPLAYING_LINKS.has(recordRow.tag);
+              recordRow.tag in LINKED_BIB_TO_AUTHORITY_FIELDS;
 
             const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') && recordRow._isLinked;
 

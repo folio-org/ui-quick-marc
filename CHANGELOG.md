@@ -27,6 +27,7 @@
 * [UIQM-281](https://issues.folio.org/browse/UIQM-281) FE | Linked bib fields | Derive a new MARC bibliographic record handling
 * [UIQM-307](https://issues.folio.org/browse/UIQM-307) Link then Unlink bib field before saving record behavior
 * [UIQM-312](https://issues.folio.org/browse/UIQM-312) Create a test Harness for quick marc tests
+* [UIQM-314](https://issues.folio.org/browse/UIQM-314) Enable authority linking for the following MARC bib fields
 
 ## [5.1.2](https://github.com/folio-org/ui-quick-marc/tree/v5.1.2) (2022-08-23)
 
