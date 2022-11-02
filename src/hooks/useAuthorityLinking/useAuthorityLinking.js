@@ -31,7 +31,7 @@ const useAuthorityLinking = () => {
 
   const linkAuthority = useCallback((authority, authoritySource, field) => {
     const linkedAuthorityField = authoritySource.fields
-      .find(authorityField => authorityField.tag === LINKED_BIB_TO_AUTHORITY_FIELDS[field.tag]);
+      .find(authorityField => LINKED_BIB_TO_AUTHORITY_FIELDS[field.tag].includes(authorityField.tag));
 
     if (!linkedAuthorityField) {
       // TODO: will handle validation here. Requirements are yet to be defined

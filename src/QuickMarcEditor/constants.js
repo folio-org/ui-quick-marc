@@ -99,4 +99,3 @@ export const HOLDINGS_FIXED_FIELD_DEFAULT_VALUES = {
 };
 
 export const CORRESPONDING_HEADING_TYPE_TAGS = ['100', '110', '111', '151', '130', '150', '155'];
-
