@@ -405,6 +405,7 @@ const QuickMarcEditorRows = ({
                             dirty={false}
                             aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
                             name={`${name}.content`}
+                            parse={v => v}
                             marginBottom0
                             disabled={isDisabled}
                             id={`content-field-${idx}`}

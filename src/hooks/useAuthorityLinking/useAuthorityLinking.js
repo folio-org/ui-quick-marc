@@ -76,7 +76,7 @@ const useAuthorityLinking = () => {
     delete field.authorityNaturalId;
     delete field.authorityId;
 
-    field.content = field.prevContent || joinSubfields(bibSubfields);
+    field.content = field.prevContent ?? joinSubfields(bibSubfields);
     delete field.prevContent;
 
     return {
