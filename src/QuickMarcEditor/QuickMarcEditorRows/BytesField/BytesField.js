@@ -77,7 +77,7 @@ const renderSubField = (name, config) => {
           {([ariaLabel]) => (
             <Field
               dirty={false}
-              ariaLabel={ariaLabel}
+              aria-label={ariaLabel}
               name={fieldName}
               label={label}
               component={Select}
