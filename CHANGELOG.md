@@ -1,6 +1,17 @@
 # Change history for ui-quick-marc
 
-## [6.0.0] (IN PROGRESS)
+## [6.0.0](IN PROGRESS)
+
+* [UIQM-275](https://issues.folio.org/browse/UIQM-275) Derive a new MARC bib/Edit a MARC bib | Link/Unlink a MARC bib field to/from an Authority record
+* [UIQM-309](https://issues.folio.org/browse/UIQM-309) Make PUT /records request to save authority links after deriving a MARC Bib record
+* [UIQM-281](https://issues.folio.org/browse/UIQM-281) FE | Linked bib fields | Derive a new MARC bibliographic record handling
+* [UIQM-307](https://issues.folio.org/browse/UIQM-307) Link then Unlink bib field before saving record behavior
+* [UIQM-312](https://issues.folio.org/browse/UIQM-312) Create a test Harness for quick marc tests
+* [UIQM-314](https://issues.folio.org/browse/UIQM-314) Enable authority linking for the following MARC bib fields
+* [UIQM-317](https://issues.folio.org/browse/UIQM-317) Linking of empty field with "MARC Authority" record doesn't happen
+* [UIQM-313](https://issues.folio.org/browse/UIQM-313) Reference "MARC Authority" record is opened when user clicks on the "View MARC authority record" icon
+
+## [5.2.0](https://github.com/folio-org/ui-quick-marc/tree/v5.2.0) (2022-10-26)
 
 * [UIQM-259](https://issues.folio.org/browse/UIQM-259) Edit MARC authority: User does not get a notification that the record is edited has been deleted by another user.
 * [UIQM-258](https://issues.folio.org/browse/UIQM-258) Add fake link Authority button next to MARC fields.
@@ -22,14 +33,9 @@
 * [UIQM-284](https://issues.folio.org/browse/UIQM-284) Linked bib field | Show View Authority icon
 * [UIQM-305](https://issues.folio.org/browse/UIQM-305) Resolve ui-quick-marc and stripes-authority-component circular dependency
 * [UIQM-301](https://issues.folio.org/browse/UIQM-301) quickMARC: Add a11y tests
-* [UIQM-275](https://issues.folio.org/browse/UIQM-275) Derive a new MARC bib/Edit a MARC bib | Link/Unlink a MARC bib field to/from an Authority record
-* [UIQM-309](https://issues.folio.org/browse/UIQM-309) Make PUT /records request to save authority links after deriving a MARC Bib record
-* [UIQM-281](https://issues.folio.org/browse/UIQM-281) FE | Linked bib fields | Derive a new MARC bibliographic record handling
-* [UIQM-307](https://issues.folio.org/browse/UIQM-307) Link then Unlink bib field before saving record behavior
-* [UIQM-312](https://issues.folio.org/browse/UIQM-312) Create a test Harness for quick marc tests
-* [UIQM-314](https://issues.folio.org/browse/UIQM-314) Enable authority linking for the following MARC bib fields
-* [UIQM-317](https://issues.folio.org/browse/UIQM-317) Linking of empty field with "MARC Authority" record doesn't happen
-* [UIQM-313](https://issues.folio.org/browse/UIQM-313) Reference "MARC Authority" record is opened when user clicks on the "View MARC authority record" icon
+* [UIQM-311](https://issues.folio.org/browse/UIQM-311) Edit/Derive MARC bib | Improve error messaging for Leader positions 18 and 19
+* [UIQM-310](https://issues.folio.org/browse/UIQM-310) Update spacing between Save & continue and Save & close buttons
+* [UIQM-288](https://issues.folio.org/browse/UIQM-288) Authority control: Hide link authority button before Nolana release
 
 ## [5.1.2](https://github.com/folio-org/ui-quick-marc/tree/v5.1.2) (2022-08-23)
 
