@@ -125,6 +125,7 @@ const getComponent = (props) => (
             moveRecord: moveRecordMock,
             markRecordLinked: jest.fn(),
             markRecordUnlinked: jest.fn(),
+            restoreRecord: jest.fn(),
           }}
           subtype="test"
           {...props}
