@@ -1,9 +1,7 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
 import {
   act,
   render,
-  cleanup,
   fireEvent,
 } from '@testing-library/react';
 import faker from 'faker';
@@ -16,6 +14,8 @@ import '@folio/stripes-acq-components/test/jest/__mock__';
 import QuickMarcCreateWrapper from './QuickMarcCreateWrapper';
 import { MARC_TYPES } from '../common/constants';
 import { QUICK_MARC_ACTIONS } from './constants';
+
+import Harness from '../../test/jest/helpers/harness';
 
 jest.mock('react-final-form', () => ({
   ...jest.requireActual('react-final-form'),
@@ -128,7 +128,7 @@ const renderQuickMarcCreateWrapper = ({
   history,
   location,
 }) => (render(
-  <MemoryRouter>
+  <Harness>
     <QuickMarcCreateWrapper
       onClose={onClose}
       instance={instance}
@@ -140,7 +140,7 @@ const renderQuickMarcCreateWrapper = ({
       marcType={MARC_TYPES.HOLDINGS}
       locations={locations}
     />
-  </MemoryRouter>,
+  </Harness>,
 ));
 
 describe('Given QuickMarcCreateWrapper', () => {
@@ -170,8 +170,6 @@ describe('Given QuickMarcCreateWrapper', () => {
       search: '?filters=source.MARC',
     };
   });
-
-  afterEach(cleanup);
 
   it('should render with no axe errors', async () => {
     const { container } = renderQuickMarcCreateWrapper({

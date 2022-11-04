@@ -1,9 +1,7 @@
 import React from 'react';
-import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import {
   render,
-  cleanup,
   act,
   fireEvent,
   screen,
@@ -17,7 +15,9 @@ import QuickMarcEditWrapper from './QuickMarcEditWrapper';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 
-jest.mock('../hooks/useAuthoritySourceFiles', () => ({
+import Harness from '../../test/jest/helpers/harness';
+
+jest.mock('../queries', () => ({
   useAuthoritySourceFiles: jest.fn().mockResolvedValue({
     sourceFiles: [],
     isLoading: false,
@@ -54,7 +54,7 @@ const renderQuickMarcEditorContainer = ({
   marcType = MARC_TYPES.BIB,
   history = createMemoryHistory(),
 }) => (render(
-  <Router history={history}>
+  <Harness history={history}>
     <QuickMarcEditorContainer
       onClose={onClose}
       match={match}
@@ -64,7 +64,7 @@ const renderQuickMarcEditorContainer = ({
       marcType={marcType}
       externalRecordPath={externalRecordPath}
     />
-  </Router>,
+  </Harness>,
 ));
 
 describe('Given Quick Marc Editor Container', () => {
@@ -90,8 +90,6 @@ describe('Given Quick Marc Editor Container', () => {
       },
     };
   });
-
-  afterEach(cleanup);
 
   it('should fetch MARC record', async () => {
     await act(async () => {

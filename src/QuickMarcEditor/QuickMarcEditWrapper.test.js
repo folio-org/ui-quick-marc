@@ -1,5 +1,4 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
 import {
   render,
   act,
@@ -14,6 +13,8 @@ import '@folio/stripes-acq-components/test/jest/__mock__';
 import QuickMarcEditWrapper from './QuickMarcEditWrapper';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
+
+import Harness from '../../test/jest/helpers/harness';
 
 jest.mock('react-final-form', () => ({
   ...jest.requireActual('react-final-form'),
@@ -255,7 +256,7 @@ const renderQuickMarcEditWrapper = ({
   marcType = MARC_TYPES.BIB,
   ...props
 }) => (render(
-  <MemoryRouter>
+  <Harness>
     <QuickMarcEditWrapper
       onClose={noop}
       mutator={mutator}
@@ -273,7 +274,7 @@ const renderQuickMarcEditWrapper = ({
       refreshPageData={jest.fn().mockResolvedValue()}
       {...props}
     />
-  </MemoryRouter>,
+  </Harness>,
 ));
 
 describe('Given QuickMarcEditWrapper', () => {

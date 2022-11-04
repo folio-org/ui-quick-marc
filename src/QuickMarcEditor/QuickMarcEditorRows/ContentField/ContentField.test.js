@@ -27,7 +27,7 @@ describe('Given Content Field', () => {
     cleanup();
   });
 
-  it('Than it should calculate resize styles after mount', async () => {
+  it('should calculate resize styles after mount', async () => {
     await act(async () => {
       await render(getComponent('$a dg'));
     });
@@ -36,7 +36,7 @@ describe('Given Content Field', () => {
     expect(getResizeStylesSpy.mock.calls.length).toBe(1);
   });
 
-  it('Than it should set up resize styles', async () => {
+  it('should set up resize styles', async () => {
     const height = '42.5px';
     let getByTestId;
 
@@ -51,7 +51,7 @@ describe('Given Content Field', () => {
     expect(getByTestId('content-field-0').style.height).toBe(height);
   });
 
-  it('Than it should calculate resize styles after input value change', async () => {
+  it('should calculate resize styles after input value change', async () => {
     await act(async () => {
       const { rerender } = render(getComponent('$a dg'));
 

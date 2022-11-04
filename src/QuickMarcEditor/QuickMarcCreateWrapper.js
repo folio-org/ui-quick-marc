@@ -75,19 +75,32 @@ const QuickMarcCreateWrapper = ({
     }
 
     return mutator.quickMarcEditMarcRecord.POST(hydrateMarcRecord(formValuesForCreate))
-      .then(({ qmRecordId }) => {
+      .then(async ({ qmRecordId }) => {
         const instanceId = formValues.externalId;
 
-        getQuickMarcRecordStatus({
-          quickMarcRecordStatusGETRequest: mutator.quickMarcRecordStatus.GET,
-          qmRecordId,
-          showCallout,
-          history,
-          location,
-          instanceId,
-        });
-
         showCallout({ messageId: 'ui-quick-marc.record.save.success.processing' });
+
+        try {
+          const { externalId } = await getQuickMarcRecordStatus({
+            quickMarcRecordStatusGETRequest: mutator.quickMarcRecordStatus.GET,
+            qmRecordId,
+            showCallout,
+          });
+
+          showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
+
+          const path = `/inventory/view/${instanceId}/${externalId}`;
+
+          history.push({
+            pathname: path,
+            search: location.search,
+          });
+        } catch (e) {
+          showCallout({
+            messageId: 'ui-quick-marc.record.saveNew.error',
+            type: 'error',
+          });
+        }
       })
       .catch(async (errorResponse) => {
         const parsedError = await parseHttpError(errorResponse);

@@ -1,17 +1,11 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
 import {
   render,
-  cleanup,
   fireEvent,
 } from '@testing-library/react';
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import defer from 'lodash/defer';
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
 
 import { runAxeTest } from '@folio/stripes-testing';
 import * as stripesCore from '@folio/stripes/core';
@@ -22,6 +16,8 @@ import QuickMarcEditorRows from './QuickMarcEditorRows';
 import * as utils from './utils';
 import { QUICK_MARC_ACTIONS } from '../constants';
 import { MARC_TYPES } from '../../common/constants';
+
+import Harness from '../../../test/jest/helpers/harness';
 
 jest.spyOn(stripesCore, 'Pluggable').mockImplementation(({ onLinkRecord, renderCustomTrigger }) => (
   renderCustomTrigger({ onClick: onLinkRecord })
@@ -69,6 +65,14 @@ const initValues = [
     indicators: [],
   },
   {
+    id: '9',
+    tag: '100',
+    content: '$a c',
+    authorityId: 'authority-id',
+    _isLinked: true,
+    indicators: [],
+  },
+  {
     id: '7',
     tag: '852',
     content: '$b KU/CC/DI/M $t 3 $h M3',
@@ -95,45 +99,40 @@ const addRecordMock = jest.fn().mockImplementation(({ index }) => {
     content: '',
   });
 });
-const markRecordLinked = jest.fn().mockImplementation(({ index }) => {
-  values[index]._isLinked = true;
-});
 const deleteRecordMock = jest.fn();
 const moveRecordMock = jest.fn();
 const markRecordDeletedMock = jest.fn();
-const queryClient = new QueryClient();
 
 const getComponent = (props) => (
-  <MemoryRouter>
-    <QueryClientProvider client={queryClient}>
-      <Form
-        onSubmit={jest.fn()}
-        mutators={arrayMutators}
-        initialValues={{
-          records: initValues,
-        }}
-        render={() => (
-          <QuickMarcEditorRows
-            fields={values}
-            name="records"
-            type="a"
-            action={QUICK_MARC_ACTIONS.EDIT}
-            marcType={MARC_TYPES.BIB}
-            mutators={{
-              addRecord: addRecordMock,
-              deleteRecord: deleteRecordMock,
-              markRecordDeleted: markRecordDeletedMock,
-              moveRecord: moveRecordMock,
-              markRecordLinked,
-              markRecordUnlinked: jest.fn(),
-            }}
-            subtype="test"
-            {...props}
-          />
-        )}
-      />
-    </QueryClientProvider>
-  </MemoryRouter>
+  <Harness>
+    <Form
+      onSubmit={jest.fn()}
+      mutators={arrayMutators}
+      initialValues={{
+        records: initValues,
+      }}
+      render={() => (
+        <QuickMarcEditorRows
+          fields={values}
+          name="records"
+          type="a"
+          action={QUICK_MARC_ACTIONS.EDIT}
+          marcType={MARC_TYPES.BIB}
+          mutators={{
+            addRecord: addRecordMock,
+            deleteRecord: deleteRecordMock,
+            markRecordDeleted: markRecordDeletedMock,
+            moveRecord: moveRecordMock,
+            markRecordLinked: jest.fn(),
+            markRecordUnlinked: jest.fn(),
+            restoreRecord: jest.fn(),
+          }}
+          subtype="test"
+          {...props}
+        />
+      )}
+    />
+  </Harness>
 );
 
 const renderQuickMarcEditorRows = (props = {}) => render(getComponent(props));
@@ -143,8 +142,6 @@ describe('Given QuickMarcEditorRows', () => {
     values = [...initValues];
     jest.clearAllMocks();
   });
-
-  afterEach(cleanup);
 
   it('should render with no axe errors', async () => {
     const { container } = renderQuickMarcEditorRows();
@@ -230,7 +227,7 @@ describe('Given QuickMarcEditorRows', () => {
         } = renderQuickMarcEditorRows();
 
         const [addButton] = getAllByRole('button', { name: 'ui-quick-marc.record.addField' });
-        const contentField852 = getByTestId('content-field-5');
+        const contentField852 = getByTestId('content-field-6');
 
         fireEvent.change(contentField852, { target: { value: '' } });
 

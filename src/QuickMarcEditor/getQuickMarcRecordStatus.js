@@ -6,60 +6,44 @@ import {
 const getQuickMarcRecordStatus = ({
   quickMarcRecordStatusGETRequest,
   qmRecordId,
-  instanceId,
   showCallout,
-  history,
-  location,
 }) => {
   const maxRequestAttempts = QM_RECORD_STATUS_BAIL_TIME / QM_RECORD_STATUS_TIMEOUT;
   let requestCount = 1;
   let intervalId;
 
-  function makeRequest() {
-    quickMarcRecordStatusGETRequest({ params: { qmRecordId } })
-      .then(({ externalId, status }) => {
-        if (status === 'ERROR') {
-          clearInterval(intervalId);
-          showCallout({
-            messageId: 'ui-quick-marc.record.saveNew.error',
-            type: 'error',
-          });
-        }
-
-        if (status === 'IN_PROGRESS') {
-          if (requestCount === maxRequestAttempts) {
+  return new Promise((resolve, reject) => {
+    function makeRequest() {
+      quickMarcRecordStatusGETRequest({ params: { qmRecordId } })
+        .then(({ externalId, marcId, status }) => {
+          if (status === 'ERROR') {
             clearInterval(intervalId);
-            showCallout({ messageId: 'ui-quick-marc.record.saveNew.delay' });
-          } else {
-            requestCount++;
+            reject();
           }
-        }
 
-        if (externalId !== null && status === 'CREATED') {
-          clearInterval(intervalId);
-          showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
+          if (status === 'IN_PROGRESS') {
+            if (requestCount === maxRequestAttempts) {
+              clearInterval(intervalId);
+              showCallout({ messageId: 'ui-quick-marc.record.saveNew.delay' });
+            } else {
+              requestCount++;
+            }
+          }
 
-          const path = instanceId
-            ? `/inventory/view/${instanceId}/${externalId}`
-            : `/inventory/view/${externalId}`;
-
-          history.push({
-            pathname: path,
-            search: location.search,
-          });
-        }
-      })
-      .catch(() => {
-        showCallout({
-          messageId: 'ui-quick-marc.record.saveNew.error',
-          type: 'error',
+          if (externalId !== null && status === 'CREATED') {
+            clearInterval(intervalId);
+            resolve({ externalId, marcId });
+          }
+        })
+        .catch(() => {
+          reject();
         });
-      });
-  }
+    }
 
-  makeRequest();
+    makeRequest();
 
-  intervalId = setInterval(makeRequest, QM_RECORD_STATUS_TIMEOUT);
+    intervalId = setInterval(makeRequest, QM_RECORD_STATUS_TIMEOUT);
+  });
 };
 
 export default getQuickMarcRecordStatus;

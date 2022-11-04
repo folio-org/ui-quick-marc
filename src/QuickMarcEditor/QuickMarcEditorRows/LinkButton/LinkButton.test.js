@@ -1,27 +1,46 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+} from '@testing-library/react';
 
+import { Pluggable } from '@folio/stripes/core';
 import { runAxeTest } from '@folio/stripes-testing';
 
 import { LinkButton } from './LinkButton';
 
+import Harness from '../../../../test/jest/helpers/harness';
+
 const mockOnClick = jest.fn();
+const mockGetMarcSource = jest.fn(() => ({ json: () => {} }));
 
 jest.mock('@folio/stripes/core', () => ({
   ...jest.requireActual('@folio/stripes/core'),
-  Pluggable: ({ renderCustomTrigger }) => renderCustomTrigger({ onClick: mockOnClick }),
+  useCallout: () => ({
+    sendCallout: jest.fn(),
+  }),
+  useNamespace: jest.fn().mockReturnValue(['ui-quick-marc-test']),
+  useOkapiKy: jest.fn(() => ({
+    get: mockGetMarcSource,
+  })),
+  Pluggable: jest.fn(({ renderCustomTrigger }) => renderCustomTrigger({ onClick: mockOnClick })),
 }));
 
 const mockHandleLinkAuthority = jest.fn();
 const mockHandleUnlinkAuthority = jest.fn();
 
 const renderComponent = (props = {}) => render(
-  <LinkButton
-    handleLinkAuthority={mockHandleLinkAuthority}
-    handleUnlinkAuthority={mockHandleUnlinkAuthority}
-    isLinked={false}
-    {...props}
-  />,
+  <Harness>
+    <LinkButton
+      handleLinkAuthority={mockHandleLinkAuthority}
+      handleUnlinkAuthority={mockHandleUnlinkAuthority}
+      isLinked={false}
+      fieldId="fakeId"
+      tag="100"
+      {...props}
+    />
+  </Harness>,
 );
 
 describe('Given LinkButton', () => {
@@ -53,6 +72,21 @@ describe('Given LinkButton', () => {
 
       expect(mockOnClick).toHaveBeenCalled();
     });
+
+    describe('and the selected authority record is the same as the one previously selected', () => {
+      it('should refetch marc source', async () => {
+        renderComponent();
+
+        const authority = {
+          id: 'authority-id',
+        };
+
+        await act(async () => { Pluggable.mock.calls[0][0].onLinkRecord(authority); });
+        act(() => { Pluggable.mock.calls[1][0].onLinkRecord(authority); });
+
+        expect(mockGetMarcSource).toHaveBeenCalledTimes(2);
+      });
+    });
   });
 
   describe('when field is linked', () => {
@@ -66,12 +100,31 @@ describe('Given LinkButton', () => {
   });
 
   describe('when clicking on unlink button', () => {
-    it('should call onClick', () => {
-      const { getAllByTestId } = renderComponent({
+    it('should show confirmation modal', () => {
+      const {
+        getAllByTestId,
+        getByText,
+      } = renderComponent({
         isLinked: true,
       });
 
       fireEvent.click(getAllByTestId('unlink-authority-button')[0]);
+
+      expect(getByText('ui-quick-marc.record.unlink.confirm.title')).toBeDefined();
+    });
+  });
+
+  describe('when confirming unlinking', () => {
+    it('should call handleUnlinkAuthority', () => {
+      const {
+        getAllByTestId,
+        getByText,
+      } = renderComponent({
+        isLinked: true,
+      });
+
+      fireEvent.click(getAllByTestId('unlink-authority-button')[0]);
+      fireEvent.click(getByText('ui-quick-marc.record.unlink.confirm.confirm'));
 
       expect(mockHandleUnlinkAuthority).toHaveBeenCalled();
     });

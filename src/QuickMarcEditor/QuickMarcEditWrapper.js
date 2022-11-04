@@ -25,6 +25,7 @@ import {
   cleanBytesFields,
   parseHttpError,
   removeDeletedRecords,
+  combineSplitFields,
 } from './utils';
 
 const propTypes = {
@@ -76,7 +77,8 @@ const QuickMarcEditWrapper = ({
       marcType,
     );
     const formValuesForEdit = cleanBytesFields(autopopulatedFormWithSubfields, initialValues, marcType);
-    const marcRecord = hydrateMarcRecord(formValuesForEdit);
+    const formValuesWithCombinedFields = combineSplitFields(formValuesForEdit);
+    const marcRecord = hydrateMarcRecord(formValuesWithCombinedFields);
     const path = EXTERNAL_INSTANCE_APIS[marcType];
 
     const fetchInstance = async () => {

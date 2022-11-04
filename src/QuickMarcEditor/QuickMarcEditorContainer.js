@@ -27,6 +27,7 @@ import {
   getCreateMarcRecordResponse,
   formatMarcRecordByQuickMarcAction,
   addInternalFieldProperties,
+  splitFields,
 } from './utils';
 import { QUICK_MARC_ACTIONS } from './constants';
 
@@ -94,7 +95,7 @@ const QuickMarcEditorContainer = ({
     const instancePromise = mutator.quickMarcEditInstance.GET({ path: `${path}/${externalId}` });
     const marcRecordPromise = action === QUICK_MARC_ACTIONS.CREATE
       ? Promise.resolve({})
-      : mutator.quickMarcEditMarcRecord.GET();
+      : mutator.quickMarcEditMarcRecord.GET({ params: { externalId } });
     const locationsPromise = mutator.locations.GET();
 
     await Promise.all([instancePromise, marcRecordPromise, locationsPromise])
@@ -105,9 +106,10 @@ const QuickMarcEditorContainer = ({
 
         const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, action);
         const marcRecordWithInternalProps = addInternalFieldProperties(formattedMarcRecord);
+        const marcRecordWithSplitFields = splitFields(marcRecordWithInternalProps);
 
         setInstance(instanceResponse);
-        setMarcRecord(marcRecordWithInternalProps);
+        setMarcRecord(marcRecordWithSplitFields);
         setLocations(locationsResponse);
         setIsLoading(false);
       })
@@ -161,11 +163,6 @@ QuickMarcEditorContainer.manifest = Object.freeze({
     accumulate: true,
     path: MARC_RECORD_API,
     pk: 'parsedRecordId',
-    GET: {
-      params: {
-        externalId: ':{externalId}',
-      },
-    },
     headers: {
       accept: 'application/json',
     },

@@ -1,5 +1,4 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
 import {
   render,
   fireEvent,
@@ -15,6 +14,8 @@ import QuickMarcEditor from './QuickMarcEditor';
 
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
+
+import Harness from '../../test/jest/helpers/harness';
 
 jest.mock('@folio/stripes/components', () => ({
   ...jest.requireActual('@folio/stripes/components'),
@@ -50,13 +51,6 @@ jest.mock('./QuickMarcRecordInfo', () => {
   };
 });
 
-jest.mock('../hooks/useAuthoritySourceFiles', () => ({
-  useAuthoritySourceFiles: jest.fn().mockResolvedValue({
-    sourceFiles: [],
-    isLoading: false,
-  }),
-}));
-
 const onCloseMock = jest.fn();
 const onSubmitMock = jest.fn(() => Promise.resolve({ version: 1 }));
 
@@ -79,20 +73,30 @@ const locations = {
 
 const initialValues = {
   leader: 'assdfgs ds sdg',
-  records: [{
-    tag: 'LDR',
-    content: 'assdfgs ds sdg',
-    id: 'LDR',
-  }, {
-    tag: '110',
-    content: '$a Test title',
-    indicators: ['2', '\\'],
-    id: 'test-id-1',
-  }],
+  records: [
+    {
+      tag: 'LDR',
+      content: 'assdfgs ds sdg',
+      id: 'LDR',
+    },
+    {
+      tag: '100',
+      content: '$a Coates, Ta-Nehisi $e author.',
+      indicators: ['1', '\\'],
+      _isLinked: true,
+      id: '100',
+    },
+    {
+      tag: '110',
+      content: '$a Test title',
+      indicators: ['2', '\\'],
+      id: 'test-id-1',
+    },
+  ],
 };
 
 const renderQuickMarcEditor = (props) => (render(
-  <MemoryRouter>
+  <Harness>
     <QuickMarcEditor
       action={QUICK_MARC_ACTIONS.EDIT}
       instance={instance}
@@ -108,7 +112,7 @@ const renderQuickMarcEditor = (props) => (render(
       locations={locations}
       {...props}
     />
-  </MemoryRouter>,
+  </Harness>,
 ));
 
 describe('Given QuickMarcEditor', () => {
@@ -154,11 +158,12 @@ describe('Given QuickMarcEditor', () => {
   describe('when deleted a row', () => {
     it('should not display ConfirmationModal', () => {
       const {
-        getByRole,
+        getAllByRole,
         queryByText,
       } = renderQuickMarcEditor();
+      const deleteButtons = getAllByRole('button', { name: 'ui-quick-marc.record.deleteField' });
 
-      fireEvent.click(getByRole('button', { name: 'ui-quick-marc.record.deleteField' }));
+      fireEvent.click(deleteButtons[deleteButtons.length - 1]);
 
       expect(queryByText('Confirmation modal')).toBeNull();
     });
@@ -171,7 +176,7 @@ describe('Given QuickMarcEditor', () => {
         getByText,
       } = renderQuickMarcEditor();
 
-      const contentField = getByTestId('content-field-1');
+      const contentField = getByTestId('content-field-2');
 
       fireEvent.change(contentField, { target: { value: 'Changed test title' } });
       fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
@@ -188,7 +193,7 @@ describe('Given QuickMarcEditor', () => {
         getByText,
       } = renderQuickMarcEditor();
 
-      const contentField = getByTestId('content-field-1');
+      const contentField = getByTestId('content-field-2');
 
       fireEvent.change(contentField, { target: { value: 'Changed test title' } });
       fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
@@ -202,11 +207,12 @@ describe('Given QuickMarcEditor', () => {
   describe('when there are deleted fields', () => {
     it('should display ConfirmationModal', () => {
       const {
-        getByRole,
+        getAllByRole,
         getByText,
       } = renderQuickMarcEditor();
+      const deleteButtons = getAllByRole('button', { name: 'ui-quick-marc.record.deleteField' });
 
-      fireEvent.click(getByRole('button', { name: 'ui-quick-marc.record.deleteField' }));
+      fireEvent.click(deleteButtons[deleteButtons.length - 1]);
       fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
       expect(getByText('Confirmation modal')).toBeDefined();
@@ -217,12 +223,13 @@ describe('Given QuickMarcEditor', () => {
     describe('when click Confirm', () => {
       it('should hide ConfirmationModal and handle onSubmit', () => {
         const {
-          getByRole,
+          getAllByRole,
           getByText,
           queryByText,
         } = renderQuickMarcEditor();
+        const deleteButtons = getAllByRole('button', { name: 'ui-quick-marc.record.deleteField' });
 
-        fireEvent.click(getByRole('button', { name: 'ui-quick-marc.record.deleteField' }));
+        fireEvent.click(deleteButtons[deleteButtons.length - 1]);
         fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
         fireEvent.click(getByText('Confirm'));
 
@@ -234,12 +241,13 @@ describe('Given QuickMarcEditor', () => {
     describe('when click Cancel', () => {
       it('should hide ConfirmationModal and restore deleted fields', async () => {
         const {
-          getByRole,
+          getAllByRole,
           getByText,
           queryByText,
         } = renderQuickMarcEditor();
+        const deleteButtons = getAllByRole('button', { name: 'ui-quick-marc.record.deleteField' });
 
-        fireEvent.click(getByRole('button', { name: 'ui-quick-marc.record.deleteField' }));
+        fireEvent.click(deleteButtons[deleteButtons.length - 1]);
 
         expect(queryByText('$a Test title')).toBeNull();
 
@@ -304,14 +312,84 @@ describe('Given QuickMarcEditor', () => {
 
     describe('when delete last 1XX field', () => {
       it('should display edit authority record pane title', () => {
-        const { getByRole, getByText } = renderQuickMarcEditor({
+        const { getAllByRole, getByText } = renderQuickMarcEditor({
           marcType: MARC_TYPES.AUTHORITY,
         });
+        const deleteButtons = getAllByRole('button', { name: 'ui-quick-marc.record.deleteField' });
 
-        fireEvent.click(getByRole('button', { name: 'ui-quick-marc.record.deleteField' }));
+        fireEvent.click(deleteButtons[deleteButtons.length - 1]);
 
         expect(getByText('ui-quick-marc.authority-record.edit.title')).toBeDefined();
       });
+    });
+  });
+
+  describe('when confirmRemoveAuthorityLinking prop is true and records are linked', () => {
+    it('should open remove authority linking modal', () => {
+      const { getByText } = renderQuickMarcEditor({ confirmRemoveAuthorityLinking: true });
+
+      expect(getByText('Confirmation modal')).toBeDefined();
+    });
+
+    it('should close the modal on clicking keep linking button', () => {
+      const { queryByText, getByText } = renderQuickMarcEditor({ confirmRemoveAuthorityLinking: true });
+
+      fireEvent.click(getByText('Cancel'));
+
+      expect(queryByText('Confirmation modal')).toBeNull();
+    });
+
+    it('should close the modal on clicking remove linking button', () => {
+      const { queryByText, getByText } = renderQuickMarcEditor({ confirmRemoveAuthorityLinking: true });
+
+      fireEvent.click(getByText('Confirm'));
+
+      expect(queryByText('Confirmation modal')).toBeNull();
+    });
+  });
+
+  describe('when confirmRemoveAuthorityLinking prop is false or records are not linked', () => {
+    it('should not open remove authority linking modal when record with tag 100 is not linked', () => {
+      const { queryByText } = renderQuickMarcEditor(
+        {
+          confirmRemoveAuthorityLinking: true,
+          initialValues: {
+            leader: 'assdfgs ds sdg',
+            records: [
+              {
+                tag: 'LDR',
+                content: 'assdfgs ds sdg',
+                id: 'LDR',
+              },
+              {
+                tag: '100',
+                content: '$a Coates, Ta-Nehisi $e author.',
+                indicators: ['1', '\\'],
+                _isLinked: false,
+                id: '100',
+              },
+              {
+                tag: '110',
+                content: '$a Test title',
+                indicators: ['2', '\\'],
+                id: 'test-id-1',
+              },
+            ],
+          },
+        },
+      );
+
+      expect(queryByText('Confirmation modal')).toBeNull();
+    });
+
+    it('should not open remove authority linking modal when confirmRemoveAuthorityLinking prop is false', () => {
+      const { queryByText } = renderQuickMarcEditor(
+        {
+          confirmRemoveAuthorityLinking: false,
+        },
+      );
+
+      expect(queryByText('Confirmation modal')).toBeNull();
     });
   });
 });
