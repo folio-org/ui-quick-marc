@@ -1,6 +1,6 @@
 {
   "name": "@folio/quick-marc",
-  "version": "5.1.2",
+  "version": "5.2.0",
   "description": "Quick MARC editor",
   "main": "index.js",
   "repository": "",
@@ -95,7 +95,7 @@
       {
         "permissionName": "ui-quick-marc.quick-marc-authority-records.linkUnlink",
         "displayName": "quickMARC: Can Link/unlink authority records to bib records",
-        "visible": true
+        "visible": false
       }
     ]
   },

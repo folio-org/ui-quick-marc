@@ -41,9 +41,7 @@ import {
   isFixedFieldRow,
 } from './utils';
 import { useAuthorityLinking } from '../../hooks';
-import {
-  QUICK_MARC_ACTIONS,
-} from '../constants';
+import { QUICK_MARC_ACTIONS } from '../constants';
 import {
   LINKED_BIB_TO_AUTHORITY_FIELDS,
   MARC_TYPES,

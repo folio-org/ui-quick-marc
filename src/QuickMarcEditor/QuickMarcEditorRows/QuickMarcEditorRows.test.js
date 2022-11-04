@@ -302,18 +302,21 @@ describe('Given QuickMarcEditorRows', () => {
     });
   });
 
-  describe('when a field is linked', () => {
-    const props = {
-      action: QUICK_MARC_ACTIONS.EDIT,
-      marcType: MARC_TYPES.BIB,
-    };
+  /**
+   * This test will be uncommented after Nolana release
+    describe('when a field is linked', () => {
+      const props = {
+        action: QUICK_MARC_ACTIONS.EDIT,
+        marcType: MARC_TYPES.BIB,
+      };
 
-    it('should display the view authority record icon', () => {
-      const { getAllByTestId, getByTestId, rerender } = renderQuickMarcEditorRows(props);
+      it('should display the view authority record icon', () => {
+        const { getAllByTestId, getByTestId, rerender } = renderQuickMarcEditorRows(props);
 
-      fireEvent.click(getAllByTestId('link-authority-button')[0]);
-      rerender(getComponent(props));
-      expect(getByTestId('view-authority-record-link')).toBeVisible();
+        fireEvent.click(getAllByTestId('link-authority-button')[0]);
+        rerender(getComponent(props));
+        expect(getByTestId('view-authority-record-link')).toBeVisible();
+      });
     });
-  });
+  */
 });
