@@ -9,6 +9,7 @@
 * [UIQM-312](https://issues.folio.org/browse/UIQM-312) Create a test Harness for quick marc tests
 * [UIQM-314](https://issues.folio.org/browse/UIQM-314) Enable authority linking for the following MARC bib fields
 * [UIQM-317](https://issues.folio.org/browse/UIQM-317) Linking of empty field with "MARC Authority" record doesn't happen
+* [UIQM-313](https://issues.folio.org/browse/UIQM-313) Reference "MARC Authority" record is opened when user clicks on the "View MARC authority record" icon
 * [UIQM-315](https://issues.folio.org/browse/UIQM-315) Rename "Duplicate BIB" feature to "Derive BIB" feature
 
 ## [5.2.0](https://github.com/folio-org/ui-quick-marc/tree/v5.2.0) (2022-10-26)
