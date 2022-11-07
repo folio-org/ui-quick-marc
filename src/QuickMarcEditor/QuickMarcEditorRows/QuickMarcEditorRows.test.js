@@ -67,7 +67,7 @@ const initValues = [
   {
     id: '9',
     tag: '100',
-    content: '$a c',
+    content: '$a Kirby, Jack, $e creator. $0 http://id.loc.gov/authorities/names/n2019022493',
     authorityId: 'authority-id',
     _isLinked: true,
     indicators: [],
@@ -302,21 +302,22 @@ describe('Given QuickMarcEditorRows', () => {
     });
   });
 
-  /**
-   * This test will be uncommented after Nolana release
-    describe('when a field is linked', () => {
-      const props = {
-        action: QUICK_MARC_ACTIONS.EDIT,
-        marcType: MARC_TYPES.BIB,
-      };
+  describe('when a field is linked', () => {
+    const props = {
+      action: QUICK_MARC_ACTIONS.EDIT,
+      marcType: MARC_TYPES.BIB,
+    };
 
-      it('should display the view authority record icon', () => {
-        const { getAllByTestId, getByTestId, rerender } = renderQuickMarcEditorRows(props);
+    it('should display the view authority record icon', () => {
+      const { getAllByTestId, getByTestId, rerender } = renderQuickMarcEditorRows(props);
 
-        fireEvent.click(getAllByTestId('link-authority-button')[0]);
-        rerender(getComponent(props));
-        expect(getByTestId('view-authority-record-link')).toBeVisible();
-      });
+      fireEvent.click(getAllByTestId('link-authority-button')[0]);
+      rerender(getComponent(props));
+      expect(getByTestId('view-authority-record-link')).toBeVisible();
+      expect(getByTestId('view-authority-record-link')).toHaveAttribute(
+        'href',
+        '/marc-authorities/authorities/authority-id?authRefType=Authorized&headingRef=Kirby, Jack,&segment=search',
+      );
     });
-  */
+  });
 });
