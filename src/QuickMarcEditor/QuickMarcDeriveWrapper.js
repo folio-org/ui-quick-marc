@@ -20,7 +20,7 @@ import {
 } from '../common/constants';
 import {
   hydrateMarcRecord,
-  removeFieldsForDuplicate,
+  removeFieldsForDerive,
   autopopulateIndicators,
   autopopulateSubfieldSection,
   validateMarcRecord,
@@ -42,7 +42,7 @@ const propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-const QuickMarcDuplicateWrapper = ({
+const QuickMarcDeriveWrapper = ({
   action,
   instance,
   onClose,
@@ -99,15 +99,15 @@ const QuickMarcDuplicateWrapper = ({
       return null;
     }
 
-    const clearFormValues = removeFieldsForDuplicate(formValuesToSave);
+    const clearFormValues = removeFieldsForDerive(formValuesToSave);
     const autopopulatedFormWithIndicators = autopopulateIndicators(clearFormValues);
     const autopopulatedFormWithSubfields = autopopulateSubfieldSection(
       autopopulatedFormWithIndicators,
       initialValues,
       marcType,
     );
-    const formValuesForDuplicate = cleanBytesFields(autopopulatedFormWithSubfields, initialValues, marcType);
-    const validationErrorMessage = validateMarcRecord(formValuesForDuplicate, initialValues);
+    const formValuesForDerive = cleanBytesFields(autopopulatedFormWithSubfields, initialValues, marcType);
+    const validationErrorMessage = validateMarcRecord(formValuesForDerive, initialValues);
 
     if (validationErrorMessage) {
       showCallout({ message: validationErrorMessage, type: 'error' });
@@ -117,7 +117,7 @@ const QuickMarcDuplicateWrapper = ({
 
     showCallout({ messageId: 'ui-quick-marc.record.saveNew.onSave' });
 
-    const formValuesWithCombinedFields = combineSplitFields(formValuesForDuplicate);
+    const formValuesWithCombinedFields = combineSplitFields(formValuesForDerive);
     const marcRecord = hydrateMarcRecord(formValuesWithCombinedFields);
 
     marcRecord.relatedRecordVersion = 1;
@@ -168,6 +168,6 @@ const QuickMarcDuplicateWrapper = ({
   );
 };
 
-QuickMarcDuplicateWrapper.propTypes = propTypes;
+QuickMarcDeriveWrapper.propTypes = propTypes;
 
-export default QuickMarcDuplicateWrapper;
+export default QuickMarcDeriveWrapper;

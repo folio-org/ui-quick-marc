@@ -48,7 +48,7 @@ describe('Given Quick Marc', () => {
         history,
       });
 
-      expect(getByText('QuickMarcEditorContainer duplicate')).toBeDefined();
+      expect(getByText('QuickMarcEditorContainer derive')).toBeDefined();
     });
   });
 

@@ -114,7 +114,7 @@ describe('Given Quick Marc Editor Container', () => {
         renderQuickMarcEditorContainer({
           mutator,
           onClose,
-          action: QUICK_MARC_ACTIONS.DUPLICATE,
+          action: QUICK_MARC_ACTIONS.DERIVE,
           wrapper: QuickMarcEditWrapper,
         });
       });

@@ -44,8 +44,8 @@ describe('QuickMarcEditorRows utils', () => {
       expect(utils.isReadOnly({ tag: '999' })).toBeFalsy();
     });
 
-    it('should be true for tag LDR on duplicate page', () => {
-      expect(utils.isReadOnly({ tag: '005' }, QUICK_MARC_ACTIONS.DUPLICATE)).toBeTruthy();
+    it('should be true for tag LDR on derive page', () => {
+      expect(utils.isReadOnly({ tag: '005' }, QUICK_MARC_ACTIONS.DERIVE)).toBeTruthy();
     });
   });
 
@@ -109,8 +109,8 @@ describe('QuickMarcEditorRows utils', () => {
       expect(utils.hasMoveException({ tag: '001' })).toBeTruthy();
     });
 
-    it('should be true for 003 tag for duplicate action', () => {
-      expect(utils.hasMoveException({ tag: '003' }, { tag: '014' }, QUICK_MARC_ACTIONS.DUPLICATE)).toBeTruthy();
+    it('should be true for 003 tag for derive action', () => {
+      expect(utils.hasMoveException({ tag: '003' }, { tag: '014' }, QUICK_MARC_ACTIONS.DERIVE)).toBeTruthy();
     });
 
     it('should be false for common rows', () => {

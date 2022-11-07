@@ -10,7 +10,7 @@ import { CommandList } from '@folio/stripes/components';
 
 import {
   QuickMarcEditorContainer,
-  QuickMarcDuplicateWrapper,
+  QuickMarcDeriveWrapper,
   QuickMarcCreateWrapper,
   QuickMarcEditWrapper,
 } from './QuickMarcEditor';
@@ -37,10 +37,10 @@ const QuickMarc = ({
     },
     {
       path: `${basePath}/duplicate-bib/:externalId`,
-      permission: 'ui-quick-marc.quick-marc-editor.duplicate',
+      permission: 'ui-quick-marc.quick-marc-editor.derive',
       props: {
-        action: QUICK_MARC_ACTIONS.DUPLICATE,
-        wrapper: QuickMarcDuplicateWrapper,
+        action: QUICK_MARC_ACTIONS.DERIVE,
+        wrapper: QuickMarcDeriveWrapper,
         marcType: MARC_TYPES.BIB,
       },
     },

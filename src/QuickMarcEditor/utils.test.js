@@ -792,7 +792,7 @@ describe('QuickMarcEditor utils', () => {
   });
 
   describe('formatMarcRecordByQuickMarcAction', () => {
-    it('should return original record if action is not "duplicate" or "create"', () => {
+    it('should return original record if action is not "derive" or "create"', () => {
       const record = {
         records: [{
           tag: '001',
@@ -803,7 +803,7 @@ describe('QuickMarcEditor utils', () => {
       expect(utils.formatMarcRecordByQuickMarcAction(record, QUICK_MARC_ACTIONS.EDIT)).toEqual(record);
     });
 
-    it('should return record without 001, 005 and 999ff fields and no updateInfo if action is "duplicate"', () => {
+    it('should return record without 001, 005 and 999ff fields and no updateInfo if action is "derive"', () => {
       const record = {
         records: [{
           tag: '001',
@@ -857,7 +857,7 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.formatMarcRecordByQuickMarcAction(record, QUICK_MARC_ACTIONS.DUPLICATE)).toEqual(expectedRecord);
+      expect(utils.formatMarcRecordByQuickMarcAction(record, QUICK_MARC_ACTIONS.DERIVE)).toEqual(expectedRecord);
     });
 
     it('should return record with additional fields and no updateInfo if action is "create"', () => {
@@ -903,7 +903,7 @@ describe('QuickMarcEditor utils', () => {
     });
   });
 
-  describe('removeFieldsForDuplicate', () => {
+  describe('removeFieldsForDerive', () => {
     const formValues = {
       fields: undefined,
       externalId: 'c58ed340-5123-4c2c-8a99-add5db68c71f',
@@ -973,7 +973,7 @@ describe('QuickMarcEditor utils', () => {
       suppressDiscovery: false,
     };
 
-    expect(utils.removeFieldsForDuplicate(formValues)).toEqual(expectedFormValues);
+    expect(utils.removeFieldsForDerive(formValues)).toEqual(expectedFormValues);
   });
 
   describe('autopopulateIndicators', () => {

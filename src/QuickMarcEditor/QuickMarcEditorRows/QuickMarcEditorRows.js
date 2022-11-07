@@ -207,7 +207,7 @@ const QuickMarcEditorRows = ({
             const isProtectedField = recordRow.isProtected;
             const isLinkVisible = stripes.hasPerm('ui-quick-marc.quick-marc-authority-records.linkUnlink') &&
               marcType === MARC_TYPES.BIB &&
-              (action === QUICK_MARC_ACTIONS.EDIT || action === QUICK_MARC_ACTIONS.DUPLICATE) &&
+              (action === QUICK_MARC_ACTIONS.EDIT || action === QUICK_MARC_ACTIONS.DERIVE) &&
               recordRow.tag in LINKED_BIB_TO_AUTHORITY_FIELDS;
 
             const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') && recordRow._isLinked;

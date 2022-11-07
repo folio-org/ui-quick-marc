@@ -15,7 +15,7 @@ export const isLastRecord = recordRow => {
 
 const READ_ONLY_ROWS = new Set(['001', '005']);
 
-const READ_ONLY_ROWS_FOR_DUPLICATE = new Set(['001', '005']);
+const READ_ONLY_ROWS_FOR_DERIVE = new Set(['001', '005']);
 
 const READ_ONLY_ROWS_FOR_HOLDINGS = new Set(['001', '004', '005']);
 
@@ -33,8 +33,8 @@ export const isReadOnly = (
   }
 
   if (marcType === MARC_TYPES.BIB) {
-    rows = action === QUICK_MARC_ACTIONS.DUPLICATE
-      ? READ_ONLY_ROWS_FOR_DUPLICATE
+    rows = action === QUICK_MARC_ACTIONS.DERIVE
+      ? READ_ONLY_ROWS_FOR_DERIVE
       : READ_ONLY_ROWS;
   } else if (marcType === MARC_TYPES.HOLDINGS) {
     rows = READ_ONLY_ROWS_FOR_HOLDINGS;
@@ -73,11 +73,11 @@ export const hasDeleteException = (recordRow, marcType = MARC_TYPES.BIB) => {
 
 const MOVE_EXCEPTION_ROWS = new Set([LEADER_TAG, '001', '005', '008']);
 
-const MOVE_EXCEPTION_ROWS_FOR_DUPLICATE = new Set([LEADER_TAG, '001', '003', '005', '008']);
+const MOVE_EXCEPTION_ROWS_FOR_DERIVE = new Set([LEADER_TAG, '001', '003', '005', '008']);
 
 export const hasMoveException = (recordRow, sibling, action = QUICK_MARC_ACTIONS.EDIT) => {
-  const rows = action === QUICK_MARC_ACTIONS.DUPLICATE
-    ? MOVE_EXCEPTION_ROWS_FOR_DUPLICATE
+  const rows = action === QUICK_MARC_ACTIONS.DERIVE
+    ? MOVE_EXCEPTION_ROWS_FOR_DERIVE
     : MOVE_EXCEPTION_ROWS;
 
   return (

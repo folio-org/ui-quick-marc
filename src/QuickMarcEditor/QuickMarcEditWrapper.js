@@ -105,7 +105,7 @@ const QuickMarcEditWrapper = ({
     if (prevVersion && lastVersion && prevVersion !== lastVersion) {
       setHttpError({
         errorType: ERROR_TYPES.OPTIMISTIC_LOCKING,
-        message: 'ui-quick-marc.record.save.error.dublicate',
+        message: 'ui-quick-marc.record.save.error.derive',
       });
 
       return null;

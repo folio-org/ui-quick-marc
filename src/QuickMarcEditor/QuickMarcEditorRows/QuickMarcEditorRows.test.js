@@ -282,7 +282,7 @@ describe('Given QuickMarcEditorRows', () => {
     describe('when action is not edit', () => {
       it('should not display protected field popover icons', () => {
         const { queryByTestId } = renderQuickMarcEditorRows({
-          action: QUICK_MARC_ACTIONS.DUPLICATE,
+          action: QUICK_MARC_ACTIONS.DERIVE,
           marcType: MARC_TYPES.BIB,
         });
 
