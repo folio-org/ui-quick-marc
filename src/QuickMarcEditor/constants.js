@@ -36,7 +36,7 @@ export const LEADER_DOCUMENTATION_LINKS = {
 export const QUICK_MARC_ACTIONS = {
   CREATE: 'create',
   EDIT: 'edit',
-  DUPLICATE: 'duplicate',
+  DERIVE: 'derive',
 };
 
 export const FIELD_TAGS_TO_REMOVE = [

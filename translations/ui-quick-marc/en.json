@@ -7,12 +7,12 @@
   "permission.quick-marc-holdings-editor.view": "quickMARC: View MARC holdings record",
   "permission.quick-marc-holdings-editor.all": "quickMARC: View, edit MARC holdings record",
   "permission.quick-marc-holdings-editor.create": "quickMARC: Create a new MARC holdings record",
-  "permission.quick-marc-editor.duplicate": "quickMARC: Derive new MARC bibliographic record",
+  "permission.quick-marc-editor.derive": "quickMARC: Derive new MARC bibliographic record",
   "permission.quick-marc-authorities-editor.all": "quickMARC: View, edit MARC authorities record",
   "permission.quick-marc-authority-records.linkUnlink": "quickMARC: Can Link/unlink authority records to bib records",
 
   "bib-record.edit.title": "Edit MARC record - {title}",
-  "bib-record.duplicate.title": "Derive a new MARC bib record",
+  "bib-record.derive.title": "Derive a new MARC bib record",
   "holdings-record.create.title": "Create a new MARC Holdings record",
   "holdings-record.edit.title": "Edit MARC holdings - Location: {location} - [{callNumber}]",
   "authority-record.edit.title": "Edit MARC authority record - {title}",
@@ -191,7 +191,7 @@
   "record.save.error.illegalFixedLength": "Record not saved. Please check the character length of the fixed fields.",
   "record.save.error.notFound": "This record has been deleted by another user. You can no longer edit this record, hit the cancel button to return to the previous page.",
   "record.save.error.generic": "Record not saved: Communication problem with server. Please try again.",
-  "record.save.error.dublicate": "Instance cannot be updated. Depricated instance version.",
+  "record.save.error.derive": "Instance cannot be updated. Deprecated instance version.",
   "record.save.updated": "Record has been updated.",
   "record.save.continue": "Save & keep editing",
 

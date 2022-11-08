@@ -15,7 +15,7 @@ import {
 import { MARC_TYPES } from '../common/constants';
 import {
   hydrateMarcRecord,
-  removeFieldsForDuplicate,
+  removeFieldsForDerive,
   autopopulateSubfieldSection,
   validateMarcRecord,
   checkControlFieldLength,
@@ -61,7 +61,7 @@ const QuickMarcCreateWrapper = ({
     }
 
     const autopopulatedFormValues = autopopulateSubfieldSection(
-      removeFieldsForDuplicate(formValuesToSave),
+      removeFieldsForDerive(formValuesToSave),
       initialValues,
       marcType,
     );

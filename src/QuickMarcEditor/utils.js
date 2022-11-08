@@ -156,7 +156,7 @@ const getEmptyContent = (field) => {
   return '';
 };
 
-const removeMarcRecordFieldContentForDuplication = marcRecord => {
+const removeMarcRecordFieldContentForDerive = marcRecord => {
   return {
     ...marcRecord,
     records: marcRecord.records.map((field) => (fieldMatchesDescription(field, FIELD_TAGS_TO_REMOVE)
@@ -170,9 +170,9 @@ const removeMarcRecordFieldContentForDuplication = marcRecord => {
 };
 
 export const formatMarcRecordByQuickMarcAction = (marcRecord, action) => {
-  if (action === QUICK_MARC_ACTIONS.DUPLICATE) {
+  if (action === QUICK_MARC_ACTIONS.DERIVE) {
     return {
-      ...removeMarcRecordFieldContentForDuplication(marcRecord),
+      ...removeMarcRecordFieldContentForDerive(marcRecord),
       updateInfo: {
         recordState: RECORD_STATUS_NEW,
       },
@@ -530,7 +530,7 @@ export const removeDeletedRecords = (formValues) => {
   };
 };
 
-export const removeFieldsForDuplicate = (formValues) => {
+export const removeFieldsForDerive = (formValues) => {
   const { records } = formValues;
 
   const filteredRecords = records.filter(recordRow => {

@@ -11,7 +11,7 @@ import { runAxeTest } from '@folio/stripes-testing';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
-import QuickMarcDuplicateWrapper from './QuickMarcDuplicateWrapper';
+import QuickMarcDeriveWrapper from './QuickMarcDeriveWrapper';
 import { QUICK_MARC_ACTIONS } from './constants';
 
 import Harness from '../../test/jest/helpers/harness';
@@ -196,7 +196,7 @@ const initialValues = {
   ],
 };
 
-const renderQuickMarcDuplicateWrapper = ({
+const renderQuickMarcDeriveWrapper = ({
   instance,
   onClose = noop,
   mutator,
@@ -204,11 +204,11 @@ const renderQuickMarcDuplicateWrapper = ({
   location,
 }) => (render(
   <Harness>
-    <QuickMarcDuplicateWrapper
+    <QuickMarcDeriveWrapper
       onClose={onClose}
       instance={instance}
       mutator={mutator}
-      action={QUICK_MARC_ACTIONS.DUPLICATE}
+      action={QUICK_MARC_ACTIONS.DERIVE}
       initialValues={initialValues}
       marcType="bib"
       history={history}
@@ -217,7 +217,7 @@ const renderQuickMarcDuplicateWrapper = ({
   </Harness>,
 ));
 
-describe('Given QuickMarcDuplicateWrapper', () => {
+describe('Given QuickMarcDeriveWrapper', () => {
   let mutator;
   let instance;
   let history;
@@ -247,7 +247,7 @@ describe('Given QuickMarcDuplicateWrapper', () => {
   });
 
   it('should render with no axe errors', async () => {
-    const { container } = renderQuickMarcDuplicateWrapper({
+    const { container } = renderQuickMarcDeriveWrapper({
       instance,
       mutator,
       history,
@@ -264,7 +264,7 @@ describe('Given QuickMarcDuplicateWrapper', () => {
     const onClose = jest.fn();
 
     it('should display pane footer', () => {
-      const { getByRole } = renderQuickMarcDuplicateWrapper({
+      const { getByRole } = renderQuickMarcDeriveWrapper({
         instance,
         mutator,
         history,
@@ -283,7 +283,7 @@ describe('Given QuickMarcDuplicateWrapper', () => {
       let getByText;
 
       await act(async () => {
-        getByText = renderQuickMarcDuplicateWrapper({
+        getByText = renderQuickMarcDeriveWrapper({
           instance,
           mutator,
           history,
@@ -314,7 +314,7 @@ describe('Given QuickMarcDuplicateWrapper', () => {
         let getByText;
 
         await act(async () => {
-          getByText = renderQuickMarcDuplicateWrapper({
+          getByText = renderQuickMarcDeriveWrapper({
             instance,
             mutator,
             history,

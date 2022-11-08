@@ -72,7 +72,7 @@
         "visible": true
       },
       {
-        "permissionName": "ui-quick-marc.quick-marc-editor.duplicate",
+        "permissionName": "ui-quick-marc.quick-marc-editor.derive",
         "displayName": "quickMARC: Derive new MARC bibliographic record",
         "subPermissions": [
           "ui-quick-marc.quick-marc-editor.view",
