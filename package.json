@@ -80,6 +80,7 @@
           "records-editor.records.item.post",
           "instance-authority-links.instances.collection.put"
         ],
+        "replaces": ["ui-quick-marc.quick-marc-editor.duplicate"],
         "visible": true
       },
       {
