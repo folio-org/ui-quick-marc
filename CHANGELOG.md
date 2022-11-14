@@ -12,6 +12,7 @@
 * [UIQM-313](https://issues.folio.org/browse/UIQM-313) Reference "MARC Authority" record is opened when user clicks on the "View MARC authority record" icon
 * [UIQM-315](https://issues.folio.org/browse/UIQM-315) Rename "Duplicate BIB" feature to "Derive BIB" feature
 * [UIQM-320](https://issues.folio.org/browse/UIQM-320) The permission "quickMARC: Can Link/unlink authority records to bib records" is hidden on UI.
+* [UIQM-319](https://issues.folio.org/browse/UIQM-319) Not actual "relatedRecordVersion" value sends when user saves "MARC Bib" record
 
 ## [5.2.0](https://github.com/folio-org/ui-quick-marc/tree/v5.2.0) (2022-10-26)
 
