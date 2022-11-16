@@ -100,6 +100,14 @@ const QuickMarcEditorContainer = ({
 
     await Promise.all([instancePromise, marcRecordPromise, locationsPromise])
       .then(([instanceResponse, marcRecordResponse, locationsResponse]) => {
+        if (action !== QUICK_MARC_ACTIONS.CREATE) {
+          searchParams.set('relatedRecordVersion', instanceResponse._version);
+
+          history.replace({
+            search: searchParams.toString(),
+          });
+        }
+
         const dehydratedMarcRecord = action === QUICK_MARC_ACTIONS.CREATE
           ? getCreateMarcRecordResponse(instanceResponse)
           : dehydrateMarcRecordResponse(marcRecordResponse);
@@ -118,7 +126,7 @@ const QuickMarcEditorContainer = ({
         closeEditor();
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [externalId, relatedRecordVersion]);
+  }, [externalId, relatedRecordVersion, history]);
 
   useEffect(() => {
     loadData();

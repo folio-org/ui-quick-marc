@@ -27,6 +27,7 @@ jest.mock('../queries', () => ({
 const getInstance = () => ({
   id: faker.random.uuid(),
   title: 'ui-quick-marc.bib-record.edit.title',
+  _version: '1',
 });
 
 const match = {
@@ -144,6 +145,46 @@ describe('Given Quick Marc Editor Container', () => {
     });
 
     expect(getByText(instance.title)).toBeDefined();
+  });
+
+  describe('when the action is not CREATE', () => {
+    it('should append the relatedRecordVersion parameter to URL', async () => {
+      const history = createMemoryHistory();
+
+      history.replace = jest.fn();
+
+      await act(async () => {
+        await renderQuickMarcEditorContainer({
+          mutator,
+          onClose: jest.fn(),
+          action: QUICK_MARC_ACTIONS.EDIT,
+          wrapper: QuickMarcEditWrapper,
+          history,
+        });
+      });
+
+      expect(history.replace).toHaveBeenCalledWith({ search: 'relatedRecordVersion=1' });
+    });
+  });
+
+  describe('when the action is CREATE', () => {
+    it('should not append the relatedRecordVersion parameter to URL', async () => {
+      const history = createMemoryHistory();
+
+      history.replace = jest.fn();
+
+      await act(async () => {
+        await renderQuickMarcEditorContainer({
+          mutator,
+          onClose: jest.fn(),
+          action: QUICK_MARC_ACTIONS.CREATE,
+          wrapper: QuickMarcEditWrapper,
+          history,
+        });
+      });
+
+      expect(history.replace).not.toBeCalled();
+    });
   });
 
   describe('When close button is pressed', () => {
