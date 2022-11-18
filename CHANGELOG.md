@@ -1,6 +1,6 @@
 # Change history for ui-quick-marc
 
-## [5.1.3](IN PROGRESS)
+## [5.1.3](https://github.com/folio-org/ui-quick-marc/tree/v5.1.3) (2022-11-18)
 
 * [UIQM-321](https://issues.folio.org/browse/UIQM-321) Deleted fields not processing when deriving a new MARC bibliographic record
 
