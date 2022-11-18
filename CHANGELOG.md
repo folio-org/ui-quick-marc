@@ -40,6 +40,10 @@
 * [UIQM-310](https://issues.folio.org/browse/UIQM-310) Update spacing between Save & continue and Save & close buttons
 * [UIQM-288](https://issues.folio.org/browse/UIQM-288) Authority control: Hide link authority button before Nolana release
 
+## [5.1.3](https://github.com/folio-org/ui-quick-marc/tree/v5.1.3) (2022-11-18)
+
+* [UIQM-321](https://issues.folio.org/browse/UIQM-321) Deleted fields not processing when deriving a new MARC bibliographic record
+
 ## [5.1.2](https://github.com/folio-org/ui-quick-marc/tree/v5.1.2) (2022-08-23)
 
 * [UIQM-266](https://issues.folio.org/browse/UIQM-266) Edit quickMARC: Undoing a delete field is not restored in the same position.
