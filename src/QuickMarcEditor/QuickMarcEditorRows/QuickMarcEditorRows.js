@@ -44,7 +44,6 @@ import { getContentSubfieldValue } from '../utils';
 import { useAuthorityLinking } from '../../hooks';
 import { QUICK_MARC_ACTIONS } from '../constants';
 import {
-  LINKED_BIB_TO_AUTHORITY_FIELDS,
   MARC_TYPES,
   TAG_FIELD_MAX_LENGTH,
 } from '../../common/constants';
@@ -74,7 +73,7 @@ const QuickMarcEditorRows = ({
   const indexOfNewRow = useRef(null);
   const newRowRef = useRef(null);
 
-  const { linkAuthority, unlinkAuthority } = useAuthorityLinking();
+  const { linkAuthority, unlinkAuthority, linkableBibFields } = useAuthorityLinking();
 
   const isNewRow = useCallback((row) => {
     return !initialValues.records.find(record => record.id === row.id);
@@ -209,7 +208,7 @@ const QuickMarcEditorRows = ({
             const isLinkVisible = stripes.hasPerm('ui-quick-marc.quick-marc-authority-records.linkUnlink') &&
               marcType === MARC_TYPES.BIB &&
               (action === QUICK_MARC_ACTIONS.EDIT || action === QUICK_MARC_ACTIONS.DERIVE) &&
-              recordRow.tag in LINKED_BIB_TO_AUTHORITY_FIELDS;
+              linkableBibFields.includes(recordRow.tag);
 
             const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') && recordRow._isLinked;
 

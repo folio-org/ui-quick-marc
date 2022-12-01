@@ -1,62 +1,122 @@
-import { useCallback } from 'react';
+import {
+  useCallback,
+  useMemo,
+} from 'react';
 
-import { useAuthoritySourceFiles } from '../../queries';
+import {
+  useAuthoritySourceFiles,
+  useAuthorityLinkingRules,
+} from '../../queries';
 
 import {
   getContentSubfieldValue,
   groupSubfields,
 } from '../../QuickMarcEditor/utils';
-import { LINKED_BIB_TO_AUTHORITY_FIELDS } from '../../common/constants';
+
+const joinSubfields = (subfields) => Object.keys(subfields).reduce((content, key) => {
+  const subfield = Array.isArray(subfields[key])
+    ? subfields[key].join(` ${key} `) // if the subfield is repeatable - join the items with subfield key
+    : subfields[key];
+
+  return [content, `${key} ${subfield}`].join(' ');
+}, '').trim();
+
+const formatSubfieldCode = (code) => { return code.startsWith('$') ? code : `$${code}`; };
 
 const useAuthorityLinking = () => {
   const { sourceFiles } = useAuthoritySourceFiles();
+  const { linkingRules } = useAuthorityLinkingRules();
 
-  const joinSubfields = (subfields) => Object.keys(subfields).reduce((content, key) => {
-    const subfield = Array.isArray(subfields[key])
-      ? subfields[key].join(` ${key} `) // if the subfield is repeatable - join the items with subfield key
-      : subfields[key];
+  const linkableBibFields = useMemo(() => linkingRules.map(rule => rule.bibField), [linkingRules]);
 
-    return [content, `${key} ${subfield}`].join(' ');
-  }, '').trim();
+  const findLinkingRule = useCallback((bibTag, authorityTag) => {
+    return linkingRules.find(rule => rule.bibField === bibTag && rule.authorityField === authorityTag);
+  }, [linkingRules]);
 
-  const copySubfieldsFromAuthority = (bibSubfields, authField) => {
+  const copySubfieldsFromAuthority = useCallback((bibSubfields, authField, bibTag) => {
+    const linkingRule = findLinkingRule(bibTag, authField.tag);
     const authSubfields = getContentSubfieldValue(authField.content);
 
-    Object.keys(authSubfields).forEach(key => {
-      bibSubfields[key] = authSubfields[key];
+    linkingRule.authoritySubfields.forEach(subfieldCode => {
+      const subfieldModification = linkingRule.subfieldModifications.find(mod => mod.source === subfieldCode);
+
+      if (subfieldModification) {
+        bibSubfields[formatSubfieldCode(subfieldModification.target)] = authSubfields[formatSubfieldCode(subfieldCode)];
+      } else if (authSubfields[formatSubfieldCode(subfieldCode)]) {
+        bibSubfields[formatSubfieldCode(subfieldCode)] = authSubfields[formatSubfieldCode(subfieldCode)];
+      }
     });
 
     return bibSubfields;
-  };
+  }, [findLinkingRule]);
 
-  const linkAuthority = useCallback((authority, authoritySource, field) => {
-    const linkedAuthorityField = authoritySource.fields
-      .find(authorityField => LINKED_BIB_TO_AUTHORITY_FIELDS[field.tag].includes(authorityField.tag));
+  const getLinkableAuthorityField = useCallback((authoritySource, bibField) => {
+    const linkableTags = linkingRules.filter(rule => rule.bibField === bibField.tag).map(rule => rule.authorityField);
 
+    // one bib field may be linked to one of several authority fields so we need to check all available linking options
+    const linkableField = authoritySource.fields.find(field => linkableTags.includes(field.tag));
+
+    return linkableField;
+  }, [linkingRules]);
+
+  const validateLinkage = useCallback((linkedAuthorityField, bibField) => {
     if (!linkedAuthorityField) {
-      // TODO: will handle validation here. Requirements are yet to be defined
-      return field;
+      return true;
     }
 
-    const bibSubfields = getContentSubfieldValue(field.content);
-    const sourceFile = sourceFiles.find(file => file.id === authority.sourceFileId);
+    const authoritySubfields = getContentSubfieldValue(linkedAuthorityField.content);
+
+    const linkingRule = findLinkingRule(bibField.tag, linkedAuthorityField.tag);
+
+    const failedExistence = !linkingRule.validation.existence?.every(rule => {
+      const ruleSubfield = Object.keys(rule)[0];
+      const subfieldShouldExist = rule[ruleSubfield];
+
+      const isValid = authoritySubfields[formatSubfieldCode(ruleSubfield)] && subfieldShouldExist;
+
+      return isValid;
+    });
+
+    if (failedExistence) {
+      return true;
+    }
+
+    return false;
+  }, [findLinkingRule]);
+
+  const updateBibFieldWithLinkingData = useCallback((bibField, linkedAuthorityField, authorityRecord) => {
+    const bibSubfields = getContentSubfieldValue(bibField.content);
+    const sourceFile = sourceFiles.find(file => file.id === authorityRecord.sourceFileId);
 
     let newZeroSubfield = '';
 
     if (sourceFile?.baseUrl) {
-      newZeroSubfield = ['http://', sourceFile?.baseUrl, authority.naturalId].join('').trim();
+      newZeroSubfield = ['http://', sourceFile?.baseUrl, authorityRecord.naturalId].join('').trim();
     } else {
-      newZeroSubfield = authority.naturalId;
+      newZeroSubfield = authorityRecord.naturalId;
     }
 
-    if (!bibSubfields.$0 || bibSubfields.$0 !== authority.naturalId) {
+    if (!bibSubfields.$0 || bibSubfields.$0 !== authorityRecord.naturalId) {
       bibSubfields.$0 = newZeroSubfield;
     }
 
-    bibSubfields.$9 = authority.id;
-    copySubfieldsFromAuthority(bibSubfields, linkedAuthorityField);
-    field.prevContent = field.content;
-    field.content = joinSubfields(bibSubfields);
+    bibSubfields.$9 = authorityRecord.id;
+    copySubfieldsFromAuthority(bibSubfields, linkedAuthorityField, bibField.tag);
+    bibField.prevContent = bibField.content;
+    bibField.content = joinSubfields(bibSubfields);
+  }, [copySubfieldsFromAuthority, sourceFiles]);
+
+  const linkAuthority = useCallback((authority, authoritySource, field) => {
+    const linkedAuthorityField = getLinkableAuthorityField(authoritySource, field);
+
+    const validationError = validateLinkage(linkedAuthorityField, field);
+
+    if (validationError) {
+      // TODO: will handle validation here. Requirements are yet to be defined
+      return field;
+    }
+
+    updateBibFieldWithLinkingData(field, linkedAuthorityField, authority);
 
     const controlledSubfields = Object.keys(getContentSubfieldValue(linkedAuthorityField.content)).map(key => key.replace('$', ''));
 
@@ -67,7 +127,7 @@ const useAuthorityLinking = () => {
       subfieldGroups: groupSubfields(field, controlledSubfields),
       authorityControlledSubfields: controlledSubfields,
     };
-  }, [sourceFiles]);
+  }, [updateBibFieldWithLinkingData, getLinkableAuthorityField, validateLinkage]);
 
   const unlinkAuthority = (field) => {
     const bibSubfields = getContentSubfieldValue(field.content);
@@ -89,6 +149,7 @@ const useAuthorityLinking = () => {
   return {
     linkAuthority,
     unlinkAuthority,
+    linkableBibFields,
   };
 };
 

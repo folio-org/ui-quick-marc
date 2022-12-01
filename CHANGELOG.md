@@ -13,6 +13,7 @@
 * [UIQM-315](https://issues.folio.org/browse/UIQM-315) Rename "Duplicate BIB" feature to "Derive BIB" feature
 * [UIQM-320](https://issues.folio.org/browse/UIQM-320) The permission "quickMARC: Can Link/unlink authority records to bib records" is hidden on UI.
 * [UIQM-319](https://issues.folio.org/browse/UIQM-319) Not actual "relatedRecordVersion" value sends when user saves "MARC Bib" record
+* [UIQM-295](https://issues.folio.org/browse/UIQM-295) FE - Linking Bib field 240 to Authority field 100/110/111
 
 ## [5.2.0](https://github.com/folio-org/ui-quick-marc/tree/v5.2.0) (2022-10-26)
 
