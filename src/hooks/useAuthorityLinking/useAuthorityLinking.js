@@ -2,6 +2,7 @@ import {
   useCallback,
   useMemo,
 } from 'react';
+import get from 'lodash/get';
 
 import {
   useAuthoritySourceFiles,
@@ -68,7 +69,7 @@ const useAuthorityLinking = () => {
 
     const linkingRule = findLinkingRule(bibField.tag, linkedAuthorityField.tag);
 
-    const failedExistence = !linkingRule.validation.existence?.every(rule => {
+    const failedExistence = !get(linkingRule, 'validation.existence', []).every(rule => {
       const ruleSubfield = Object.keys(rule)[0];
       const subfieldShouldExist = rule[ruleSubfield];
 
@@ -96,12 +97,13 @@ const useAuthorityLinking = () => {
       newZeroSubfield = authorityRecord.naturalId;
     }
 
+    copySubfieldsFromAuthority(bibSubfields, linkedAuthorityField, bibField.tag);
+
     if (!bibSubfields.$0 || bibSubfields.$0 !== authorityRecord.naturalId) {
       bibSubfields.$0 = newZeroSubfield;
     }
 
     bibSubfields.$9 = authorityRecord.id;
-    copySubfieldsFromAuthority(bibSubfields, linkedAuthorityField, bibField.tag);
     bibField.prevContent = bibField.content;
     bibField.content = joinSubfields(bibSubfields);
   }, [copySubfieldsFromAuthority, sourceFiles]);

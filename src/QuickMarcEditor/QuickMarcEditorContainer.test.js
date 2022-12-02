@@ -18,7 +18,12 @@ import { MARC_TYPES } from '../common/constants';
 import Harness from '../../test/jest/helpers/harness';
 
 jest.mock('../queries', () => ({
-  useAuthoritySourceFiles: jest.fn().mockResolvedValue({
+  ...jest.requireActual('../queries'),
+  useAuthorityLinkingRules: jest.fn().mockReturnValue({
+    linkingRules: [],
+    isLoading: false,
+  }),
+  useAuthoritySourceFiles: jest.fn().mockReturnValue({
     sourceFiles: [],
     isLoading: false,
   }),
