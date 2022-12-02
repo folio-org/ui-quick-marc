@@ -235,7 +235,7 @@
     "record.link.success": "Field <b>{tag}</b> has been <b>linked</b> to a MARC authority record.",
     "record.unlink.confirm.title": "Unlink from MARC authority record",
     "record.unlink.confirm.message": "By selecting <b>Unlink</b>, then field {tag} will be unlinked from the MARC authority record. Are you sure you want to continue?",
-    "record.unlink.confirm.cancel": "Cancel",
+    "record.unlink.confirm.cancel": "Annuler",
     "record.unlink.confirm.confirm": "Unlink",
     "remove-authority-linking.modal.label": "Remove authority linking",
     "remove-authority-linking.modal.remove-linking": "Remove linking",

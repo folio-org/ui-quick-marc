@@ -234,7 +234,7 @@
     "record.viewMarcAuthorityRecord": "View MARC authority record",
     "record.link.success": "El campo 1{tag}1 ha sido 1linked1 a un registro de autoridad MARC",
     "record.unlink.confirm.title": "Desenlace del registro de autoridad MARC",
-    "record.unlink.confirm.message": "Seleccionando 1Unlink1 , el campo {etiqueta} será desvinculado del registro de autoridad MARC. ¿Está seguro de que desea continuar?",
+    "record.unlink.confirm.message": "Seleccionando <b>Unlink</b>, el campo {tag} será desvinculado del registro de autoridad MARC. ¿Está seguro de que desea continuar?",
     "record.unlink.confirm.cancel": "Cancelar",
     "record.unlink.confirm.confirm": "Desvincular",
     "remove-authority-linking.modal.label": "Eliminar los enlaces de autoridad",
