@@ -16,6 +16,16 @@ const marc = {
       }, {
         '005': '20211207090250.8',
       }, {
+        '100': {
+          'ind1': '/',
+          'ind2': '/',
+          subfields: [{
+            a: 'Some controlled value',
+          }, {
+            9: 'authority-id',
+          }],
+        },
+      }, {
         '245': {
           'ind1': '1',
           'ind2': '0',
@@ -42,6 +52,7 @@ const marc = {
       leader: '00331cam a2200085 a 4500',
     },
   },
+  recordType: 'MARC_BIB',
 };
 
 const mockOnClose = jest.fn();
@@ -103,6 +114,14 @@ describe('Given QuickMarcView', () => {
       const highlightedContent = [...container.querySelectorAll('mark')].map(mark => mark.textContent).join(' ');
 
       expect(highlightedContent).toEqual('Across the line of control : inside Pakistan-administered Jammu and Kashmir / Luv Puri.');
+    });
+  });
+
+  describe('when there is a linked field', () => {
+    it('should display authority link', () => {
+      const { getByTestId } = renderQuickMarcView();
+
+      expect(getByTestId('authority-app-link-authority-id')).toBeDefined();
     });
   });
 
