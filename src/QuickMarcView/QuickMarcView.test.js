@@ -5,6 +5,8 @@ import { runAxeTest } from '@folio/stripes-testing';
 
 import QuickMarcView from './QuickMarcView';
 
+import Harness from '../../test/jest/helpers/harness';
+
 const marc = {
   parsedRecord: {
     id: 'a178daf3-b10a-4ff9-a4bf-703a0091f043',
@@ -57,16 +59,18 @@ const marc = {
 
 const mockOnClose = jest.fn();
 
-const renderQuickMarcView = (props = {}) => (render(
-  <QuickMarcView
-    paneTitle="Pane title"
-    paneSub="Pane sub"
-    marcTitle="MARC title"
-    marc={marc}
-    onClose={mockOnClose}
-    {...props}
-  />,
-));
+const renderQuickMarcView = (props = {}) => render(
+  <Harness>
+    <QuickMarcView
+      paneTitle="Pane title"
+      paneSub="Pane sub"
+      marcTitle="MARC title"
+      marc={marc}
+      onClose={mockOnClose}
+      {...props}
+    />
+  </Harness>,
+);
 
 describe('Given QuickMarcView', () => {
   it('should render with no axe errors', async () => {
