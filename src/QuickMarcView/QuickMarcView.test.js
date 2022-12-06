@@ -5,6 +5,8 @@ import { runAxeTest } from '@folio/stripes-testing';
 
 import QuickMarcView from './QuickMarcView';
 
+import Harness from '../../test/jest/helpers/harness';
+
 const marc = {
   parsedRecord: {
     id: 'a178daf3-b10a-4ff9-a4bf-703a0091f043',
@@ -15,6 +17,16 @@ const marc = {
         '008': '120126r20122010nyu      b    001 0 eng  ',
       }, {
         '005': '20211207090250.8',
+      }, {
+        '100': {
+          'ind1': '/',
+          'ind2': '/',
+          subfields: [{
+            a: 'Some controlled value',
+          }, {
+            9: 'authority-id',
+          }],
+        },
       }, {
         '245': {
           'ind1': '1',
@@ -42,20 +54,23 @@ const marc = {
       leader: '00331cam a2200085 a 4500',
     },
   },
+  recordType: 'MARC_BIB',
 };
 
 const mockOnClose = jest.fn();
 
-const renderQuickMarcView = (props = {}) => (render(
-  <QuickMarcView
-    paneTitle="Pane title"
-    paneSub="Pane sub"
-    marcTitle="MARC title"
-    marc={marc}
-    onClose={mockOnClose}
-    {...props}
-  />,
-));
+const renderQuickMarcView = (props = {}) => render(
+  <Harness>
+    <QuickMarcView
+      paneTitle="Pane title"
+      paneSub="Pane sub"
+      marcTitle="MARC title"
+      marc={marc}
+      onClose={mockOnClose}
+      {...props}
+    />
+  </Harness>,
+);
 
 describe('Given QuickMarcView', () => {
   it('should render with no axe errors', async () => {
@@ -103,6 +118,14 @@ describe('Given QuickMarcView', () => {
       const highlightedContent = [...container.querySelectorAll('mark')].map(mark => mark.textContent).join(' ');
 
       expect(highlightedContent).toEqual('Across the line of control : inside Pakistan-administered Jammu and Kashmir / Luv Puri.');
+    });
+  });
+
+  describe('when there is a linked field', () => {
+    it('should display authority link', () => {
+      const { getByTestId } = renderQuickMarcView();
+
+      expect(getByTestId('authority-app-link-authority-id')).toBeDefined();
     });
   });
 

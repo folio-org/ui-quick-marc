@@ -1,13 +1,22 @@
-import React, { Fragment } from 'react';
+import React, {
+  Fragment,
+  useCallback,
+} from 'react';
+import { useIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import {
-  normalizeIndicator,
-} from './utils';
+import { AppIcon } from '@folio/stripes/core';
+import { Tooltip } from '@folio/stripes/components';
+
+import { normalizeIndicator } from './utils';
 
 const MarcField = ({
   field,
+  showLinkIcon,
 }) => {
+  const intl = useIntl();
+
   const fieldTag = Object.keys(field)[0];
   const hasIndicators = typeof field[fieldTag] !== 'string';
   const subFields = hasIndicators
@@ -30,8 +39,46 @@ const MarcField = ({
     })
     : field[fieldTag].replace(/\\/g, ' ');
 
+  const renderLinkIcon = useCallback(() => {
+    if (!hasIndicators) {
+      return null;
+    }
+
+    // get authority record id from $9 subfield
+    const authorityId = field[fieldTag].subfields.find(subfield => Boolean(subfield['9']))?.['9'];
+
+    if (!authorityId) {
+      return null;
+    }
+
+    return (
+      <Tooltip
+        id="marc-authority-tooltip"
+        text={intl.formatMessage({ id: 'ui-quick-marc.linkedToMarcAuthority' })}
+      >
+        {({ ref, ariaIds }) => (
+          <Link
+            to={`/marc-authorities/authorities/${authorityId}?segment=search`}
+            target="_blank"
+            ref={ref}
+            aria-labelledby={ariaIds.text}
+            data-testid={`authority-app-link-${authorityId}`}
+          >
+            <AppIcon
+              size="small"
+              app="marc-authorities"
+            />
+          </Link>
+        )}
+      </Tooltip>
+    );
+  }, [field, fieldTag, intl, hasIndicators]);
+
   return (
     <tr data-test-instance-marc-field>
+      <td>
+        {showLinkIcon && renderLinkIcon()}
+      </td>
       <td>
         {fieldTag}
       </td>
@@ -53,6 +100,7 @@ const MarcField = ({
 
 MarcField.propTypes = {
   field: PropTypes.object.isRequired,
+  showLinkIcon: PropTypes.bool.isRequired,
 };
 
 export default MarcField;

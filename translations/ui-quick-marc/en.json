@@ -220,6 +220,7 @@
   "record.unlink.confirm.cancel": "Cancel",
   "record.unlink.confirm.confirm": "Unlink",
   "record.viewMarcAuthorityRecord": "View MARC authority record",
+  "linkedToMarcAuthority": "Linked to MARC authority",
 
   "record.materialChars.materialType.a": "Language material",
   "record.materialChars.materialType.c": "Notated music",
