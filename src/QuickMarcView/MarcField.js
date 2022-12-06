@@ -67,7 +67,6 @@ const MarcField = ({
             <AppIcon
               size="small"
               app="marc-authorities"
-              // iconClassName={css.authorityIcon}
             />
           </Link>
         )}

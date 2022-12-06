@@ -5,8 +5,19 @@ import {
 import { renderHook } from '@testing-library/react-hooks';
 
 import useAuthorityLinking from './useAuthorityLinking';
+import { useAuthorityLinkingRules } from '../../queries';
 
 jest.mock('../../queries', () => ({
+  useAuthorityLinkingRules: jest.fn().mockReturnValue({
+    linkingRules: [{
+      bibField: '100',
+      authorityField: '100',
+      authoritySubfields: ['a', 'b', 't'],
+      subfieldModifications: [],
+      validation: {},
+    }],
+    isLoading: false,
+  }),
   useAuthoritySourceFiles: jest.fn().mockReturnValue({
     sourceFiles: [{
       id: '1',
@@ -29,7 +40,7 @@ const wrapper = ({ children }) => (
 const authoritySource = {
   fields: [{
     tag: '100',
-    content: '$a authority value',
+    content: '$a authority value $t field for modification',
   }],
 };
 
@@ -65,7 +76,7 @@ describe('Given useAuthorityLinking', () => {
       };
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
-        content: '$a authority value $b some other value $0 http://some.url/n0001 $9 authority-id',
+        content: '$a authority value $b some other value $t field for modification $0 http://some.url/n0001 $9 authority-id',
       });
     });
   });
@@ -85,7 +96,7 @@ describe('Given useAuthorityLinking', () => {
       };
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
-        content: '$a authority value $b some other value $0 http://some.url/n0001 $9 authority-id',
+        content: '$a authority value $b some other value $0 http://some.url/n0001 $9 authority-id $t field for modification',
       });
     });
   });
@@ -105,7 +116,44 @@ describe('Given useAuthorityLinking', () => {
       };
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
-        content: '$a authority value $b some other value $e author $e illustrator $0 http://some.url/n0001 $9 authority-id',
+        content: '$a authority value $b some other value $e author $e illustrator $t field for modification $0 http://some.url/n0001 $9 authority-id',
+      });
+    });
+  });
+
+  describe('when linking requires subfield modification', () => {
+    it('should return field with correctly formatted subfields', () => {
+      useAuthorityLinkingRules.mockReturnValue({
+        linkingRules: [{
+          bibField: '100',
+          authorityField: '100',
+          authoritySubfields: ['a', 'b', 't'],
+          subfieldModifications: [{
+            source: 't',
+            target: 'c',
+          }],
+          validation: {
+            existence: [{
+              t: true,
+            }],
+          },
+        }],
+      });
+
+      const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+
+      const authority = {
+        id: 'authority-id',
+        sourceFileId: '1',
+        naturalId: 'n0001',
+      };
+      const field = {
+        tag: '100',
+        content: '$a some value $b some other value $e author $e illustrator',
+      };
+
+      expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
+        content: '$a authority value $b some other value $e author $e illustrator $c field for modification $0 http://some.url/n0001 $9 authority-id',
       });
     });
   });
@@ -159,6 +207,56 @@ describe('Given useAuthorityLinking', () => {
         tag: '100',
         content: '$a authority value $b some other value $e author $e illustrator $0 http://some.url/n0001',
       });
+    });
+  });
+
+  describe('when authority record doesnt pass required subfields validation', () => {
+    it('should return field without changes', () => {
+      const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+      const field = {
+        tag: '100',
+        content: '$a Crumb, George. test',
+      };
+      const authority = {
+        id: 'authority-id',
+        sourceFileId: '1',
+        naturalId: 'n0001',
+      };
+      const authoritySourceWithoutMatchingField = {
+        fields: [{
+          tag: '100',
+          content: '$a authority value',
+        }],
+      };
+
+      const linkedField = result.current.linkAuthority(authority, authoritySourceWithoutMatchingField, field);
+
+      expect(linkedField).toMatchObject(field);
+    });
+  });
+
+  describe('when records dont have fields that can be linked', () => {
+    it('should return field without changes', () => {
+      const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+      const field = {
+        tag: '100',
+        content: '$a Crumb, George. test',
+      };
+      const authority = {
+        id: 'authority-id',
+        sourceFileId: '1',
+        naturalId: 'n0001',
+      };
+      const authoritySourceWithoutMatchingField = {
+        fields: [{
+          tag: '110',
+          content: '$a authority value',
+        }],
+      };
+
+      const linkedField = result.current.linkAuthority(authority, authoritySourceWithoutMatchingField, field);
+
+      expect(linkedField).toMatchObject(field);
     });
   });
 });
