@@ -74,7 +74,9 @@ const useAuthorityLinking = () => {
       const ruleSubfield = Object.keys(rule)[0];
       const subfieldShouldExist = rule[ruleSubfield];
 
-      const isValid = authoritySubfields[formatSubfieldCode(ruleSubfield)] === subfieldShouldExist;
+      // should be valid when subfield exists and rule requires it
+      // and not valid when subfield doesn't exist and rule requires it to be empty
+      const isValid = Boolean(authoritySubfields[formatSubfieldCode(ruleSubfield)]) === subfieldShouldExist;
 
       return isValid;
     });

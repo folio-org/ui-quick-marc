@@ -45,6 +45,7 @@ const LinkButton = ({
   const onLinkRecord = async (_authority) => {
     if (_authority.id === authority?.id) {
       const authoritySource = await refetchSource();
+      console.log(authoritySource);
 
       const linkingSuccessful = handleLinkAuthority(_authority, authoritySource);
 
