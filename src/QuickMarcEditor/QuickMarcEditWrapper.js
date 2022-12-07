@@ -1,6 +1,7 @@
 import React, {
   useCallback,
   useState,
+  useEffect,
 } from 'react';
 import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
@@ -26,6 +27,7 @@ import {
   parseHttpError,
   removeDeletedRecords,
   combineSplitFields,
+  are010Or1xxUpdated,
 } from './utils';
 
 const propTypes = {
@@ -38,6 +40,7 @@ const propTypes = {
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
   locations: PropTypes.arrayOf(PropTypes.object).isRequired,
+  resources: PropTypes.object.isRequired,
 };
 
 const QuickMarcEditWrapper = ({
@@ -50,12 +53,16 @@ const QuickMarcEditWrapper = ({
   locations,
   refreshPageData,
   externalRecordPath,
+  resources,
 }) => {
   const showCallout = useShowCallout();
   const location = useLocation();
   const [httpError, setHttpError] = useState(null);
+  const numOfLinks = resources?.quickMarcInstanceLinks?.successfulMutations[0]?.record?.links[0]?.totalLinks;
 
   const onSubmit = useCallback(async (formValues) => {
+    const is1xxOr010Updated = are010Or1xxUpdated(initialValues.records, formValues.records);
+
     const formValuesToSave = removeDeletedRecords(formValues);
     const controlFieldErrorMessage = checkControlFieldLength(formValuesToSave);
     const validationErrorMessage = validateMarcRecord(formValuesToSave, initialValues, marcType, locations);
@@ -117,11 +124,20 @@ const QuickMarcEditWrapper = ({
 
     return mutator.quickMarcEditMarcRecord.PUT(marcRecord)
       .then(async () => {
-        showCallout({
-          messageId: marcType === MARC_TYPES.AUTHORITY
-            ? 'ui-quick-marc.record.save.updated'
-            : 'ui-quick-marc.record.save.success.processing',
-        });
+        if (is1xxOr010Updated && numOfLinks > 0) {
+          const values = { count: numOfLinks };
+
+          showCallout({
+            messageId: 'ui-quick-marc.record.save.updatingLinkedBibRecords',
+            values,
+          });
+        } else {
+          showCallout({
+            messageId: marcType === MARC_TYPES.AUTHORITY
+              ? 'ui-quick-marc.record.save.updated'
+              : 'ui-quick-marc.record.save.success.processing',
+          });
+        }
 
         await refreshPageData();
 
@@ -133,6 +149,48 @@ const QuickMarcEditWrapper = ({
         setHttpError(parsedError);
       });
   }, [showCallout, refreshPageData, location, initialValues, instance, locations, marcType, mutator]);
+
+  useEffect(() => {
+    // if marcType is authority,
+    // get the number of links for marc authority record
+
+    const getLinks = async () => {
+      const id = instance.id;
+      const fetchNumOfLinks = async () => {
+        const fetchedLinks = await mutator.quickMarcInstanceLinks.POST({
+          'ids': [id],
+        });
+
+        return fetchedLinks;
+      };
+
+      let linksResponse;
+
+      try {
+        linksResponse = await fetchNumOfLinks();
+      } catch (errorResponse) {
+        const parsedError = await parseHttpError(errorResponse);
+
+        setHttpError(parsedError);
+
+        return undefined;
+      }
+
+      return linksResponse;
+    };
+
+    if (marcType === MARC_TYPES.AUTHORITY) {
+      const setLinks = async () => {
+        const links = await getLinks();
+
+        // setNumOfLinks(links.links[0].totalLinks);
+      };
+
+      setLinks();
+    }
+  }, [instance, marcType, mutator.quickMarcInstanceLinks]);
+
+  console.log('numOfLinks ', numOfLinks);
 
   return (
     <QuickMarcEditor
@@ -146,6 +204,7 @@ const QuickMarcEditWrapper = ({
       locations={locations}
       httpError={httpError}
       externalRecordPath={externalRecordPath}
+      numOfLinks={numOfLinks}
     />
   );
 };

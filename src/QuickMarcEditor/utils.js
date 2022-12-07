@@ -807,3 +807,34 @@ export const splitFields = marcRecord => {
     }),
   };
 };
+
+export const are010Or1xxUpdated = (initial, updated) => {
+  let is010Updated = false;
+  let is1XXUpdated = false;
+
+  const initial010 = initial.filter(rec => rec.tag === '010');
+  const updated010 = updated.filter(rec => rec.tag === '010');
+
+  if (initial010.length > 0 && updated010.length > 0 && initial010[0].content !== updated010[0].content) {
+    is010Updated = true;
+  }
+
+  const initial1xxRecords = initial.filter(rec => rec.tag[0] === '1');
+  const updated1xxRecords = updated.filter(rec => rec.tag[0] === '1');
+
+  const updated1xxArr = [];
+
+  initial1xxRecords.forEach(recI => {
+    const updatedRec = updated1xxRecords.filter(recU => recU.id === recI.id);
+
+    if (updatedRec.length > 0 && updatedRec[0].content !== recI.content) {
+      updated1xxArr.push(updatedRec);
+    }
+  });
+
+  if (updated1xxArr.length) {
+    is1XXUpdated = true;
+  }
+
+  return is010Updated || is1XXUpdated;
+};
