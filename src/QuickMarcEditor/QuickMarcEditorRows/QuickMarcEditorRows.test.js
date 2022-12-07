@@ -27,12 +27,21 @@ jest.mock('lodash/defer', () => jest.fn());
 
 jest.mock('../../hooks', () => ({
   ...jest.requireActual('../../hooks'),
+  useAuthorityLinking: () => ({
+    linkAuthority: jest.fn(),
+    linkableBibFields: ['100'],
+  }),
+}));
+
+jest.mock('../../queries', () => ({
+  ...jest.requireActual('../../queries'),
+  useAuthorityLinkingRules: jest.fn().mockReturnValue({
+    linkingRules: [],
+    isLoading: false,
+  }),
   useAuthoritySourceFiles: jest.fn().mockResolvedValue({
     sourceFiles: [],
     isLoading: false,
-  }),
-  useAuthorityLinking: () => ({
-    linkAuthority: jest.fn(),
   }),
 }));
 

@@ -50,6 +50,8 @@ const QuickMarcView = ({
     ],
   };
 
+  const showLinkIcon = marc.recordType === 'MARC_BIB';
+
   const optionalProps = {};
 
   if (lastMenu) {
@@ -92,6 +94,7 @@ const QuickMarcView = ({
                   <MarcField
                     field={field}
                     key={idx}
+                    showLinkIcon={showLinkIcon}
                   />
                 ))
             }
