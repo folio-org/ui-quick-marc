@@ -3,6 +3,7 @@ import {
   useMemo,
 } from 'react';
 import get from 'lodash/get';
+import isBoolean from 'lodash/isBoolean';
 
 import {
   useAuthoritySourceFiles,
@@ -73,7 +74,7 @@ const useAuthorityLinking = () => {
       const ruleSubfield = Object.keys(rule)[0];
       const subfieldShouldExist = rule[ruleSubfield];
 
-      const isValid = authoritySubfields[formatSubfieldCode(ruleSubfield)] && subfieldShouldExist;
+      const isValid = authoritySubfields[formatSubfieldCode(ruleSubfield)] === subfieldShouldExist;
 
       return isValid;
     });
@@ -108,14 +109,19 @@ const useAuthorityLinking = () => {
     bibField.content = joinSubfields(bibSubfields);
   }, [copySubfieldsFromAuthority, sourceFiles]);
 
+  const showValidationError = (errorId) => {
+
+  };
+
   const linkAuthority = useCallback((authority, authoritySource, field) => {
     const linkedAuthorityField = getLinkableAuthorityField(authoritySource, field);
 
     const validationError = validateLinkage(linkedAuthorityField, field);
 
     if (validationError) {
-      // TODO: will handle validation here. Requirements are yet to be defined
-      return field;
+      showValidationError(validationError);
+
+      return null;
     }
 
     updateBibFieldWithLinkingData(field, linkedAuthorityField, authority);

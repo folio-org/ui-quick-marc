@@ -155,7 +155,13 @@ const QuickMarcEditorRows = ({
   const handleLinkAuthority = useCallback((authority, marcSource, index) => {
     const field = linkAuthority(authority, marcSource, fields[index]);
 
+    if (!field) {
+      return false;
+    }
+
     markRecordLinked({ index, field });
+
+    return true;
   }, [markRecordLinked, linkAuthority, fields]);
 
   const handleUnlinkAuthority = useCallback(index => {

@@ -40,19 +40,20 @@ const LinkButton = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const callout = useCallout();
 
-  const { isLoading, refetch: refetchSource } = useMarcSource(fieldId, authority?.id, {
-    onSuccess: (authoritySource) => {
-      handleLinkAuthority(authority, authoritySource);
-      callout.sendCallout({
-        type: 'success',
-        message: intl.formatMessage({ id: 'ui-quick-marc.record.link.success' }, { tag }),
-      });
-    },
-  });
+  const { isLoading, refetch: refetchSource } = useMarcSource(fieldId, authority?.id);
 
-  const onLinkRecord = (_authority) => {
+  const onLinkRecord = async (_authority) => {
     if (_authority.id === authority?.id) {
-      refetchSource();
+      const authoritySource = await refetchSource();
+
+      const linkingSuccessful = handleLinkAuthority(_authority, authoritySource);
+
+      if (linkingSuccessful) {
+        callout.sendCallout({
+          type: 'success',
+          message: intl.formatMessage({ id: 'ui-quick-marc.record.link.success' }, { tag }),
+        });
+      }
     }
     setAuthority(_authority);
   };
