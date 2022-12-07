@@ -1,5 +1,6 @@
 import {
   useState,
+  useCallback,
 } from 'react';
 import {
   useIntl,
@@ -10,6 +11,7 @@ import PropTypes from 'prop-types';
 import {
   Pluggable,
   useCallout,
+  useOkapiKy,
 } from '@folio/stripes/core';
 import {
   Tooltip,
@@ -18,45 +20,51 @@ import {
   ConfirmationModal,
 } from '@folio/stripes/components';
 
-import { useMarcSource } from '../../../queries';
+import { MARC_RECORD_API } from '../../../common/constants';
 
 const propTypes = {
   isLinked: PropTypes.bool.isRequired,
   handleLinkAuthority: PropTypes.func.isRequired,
   handleUnlinkAuthority: PropTypes.func.isRequired,
-  fieldId: PropTypes.string.isRequired,
   tag: PropTypes.string.isRequired,
 };
+
+const MARC_SOURCE_API = (id) => `${MARC_RECORD_API}?externalId=${id}`;
 
 const LinkButton = ({
   handleLinkAuthority,
   handleUnlinkAuthority,
   isLinked,
   tag,
-  fieldId,
 }) => {
   const intl = useIntl();
-  const [authority, setAuthority] = useState(null);
+  const ky = useOkapiKy();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const callout = useCallout();
 
-  const { isLoading, refetch: refetchSource } = useMarcSource(fieldId, authority?.id);
+  const fetchMarcSource = useCallback((recordId) => {
+    return ky.get(MARC_SOURCE_API(recordId)).json();
+  }, [ky]);
 
-  const onLinkRecord = async (_authority) => {
-    if (_authority.id === authority?.id) {
-      const authoritySource = await refetchSource();
-      console.log(authoritySource);
+  const onLinkRecord = async (authority) => {
+    setIsLoading(true);
 
-      const linkingSuccessful = handleLinkAuthority(_authority, authoritySource);
+    const authoritySource = await fetchMarcSource(authority.id);
 
-      if (linkingSuccessful) {
-        callout.sendCallout({
-          type: 'success',
-          message: intl.formatMessage({ id: 'ui-quick-marc.record.link.success' }, { tag }),
-        });
-      }
+    setIsLoading(false);
+
+    const linkingSuccessful = handleLinkAuthority(authority, authoritySource);
+
+    if (linkingSuccessful) {
+      callout.sendCallout({
+        type: 'success',
+        message: intl.formatMessage({ id: 'ui-quick-marc.record.link.success' }, { tag }),
+      });
     }
-    setAuthority(_authority);
+
+    return linkingSuccessful;
   };
 
   const toggleModal = () => {
@@ -103,14 +111,21 @@ const LinkButton = ({
             text={intl.formatMessage({ id: 'ui-quick-marc.record.link' })}
           >
             {({ ref, ariaIds }) => (
-              <IconButton
-                ref={ref}
-                data-testid="link-authority-button"
-                icon="link"
-                aria-haspopup="true"
-                aria-labelledby={ariaIds.text}
-                onClick={onClick}
-              />
+              isLoading ? (
+                <Icon
+                  data-testid="link-authority-loading"
+                  icon="spinner-ellipsis"
+                />
+              ) : (
+                <IconButton
+                  ref={ref}
+                  data-testid="link-authority-button"
+                  icon="link"
+                  aria-haspopup="true"
+                  aria-labelledby={ariaIds.text}
+                  onClick={onClick}
+                />
+              )
             )}
           </Tooltip>
         )}
@@ -119,15 +134,6 @@ const LinkButton = ({
       </Pluggable>
     );
   };
-
-  if (isLoading) {
-    return (
-      <Icon
-        data-testid="link-authority-loading"
-        icon="spinner-ellipsis"
-      />
-    );
-  }
 
   return (
     <>
