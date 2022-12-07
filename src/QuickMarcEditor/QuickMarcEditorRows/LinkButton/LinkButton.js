@@ -94,6 +94,7 @@ const LinkButton = ({
     return (
       <Pluggable
         type="find-authority"
+        tag={tag}
         onLinkRecord={onLinkRecord}
         renderCustomTrigger={({ onClick }) => (
           <Tooltip
