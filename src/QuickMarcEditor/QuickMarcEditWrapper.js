@@ -125,7 +125,9 @@ const QuickMarcEditWrapper = ({
     return mutator.quickMarcEditMarcRecord.PUT(marcRecord)
       .then(async () => {
         if (is1xxOr010Updated && numOfLinks > 0) {
-          const values = { count: numOfLinks };
+          const values = {
+            count: resources?.quickMarcInstanceLinks?.successfulMutations[0]?.record?.links[0]?.totalLinks,
+          };
 
           showCallout({
             messageId: 'ui-quick-marc.record.save.updatingLinkedBibRecords',
@@ -182,13 +184,11 @@ const QuickMarcEditWrapper = ({
     if (marcType === MARC_TYPES.AUTHORITY) {
       const setLinks = async () => {
         const links = await getLinks();
-
-        // setNumOfLinks(links.links[0].totalLinks);
       };
 
       setLinks();
     }
-  }, [instance, marcType, mutator.quickMarcInstanceLinks]);
+  }, [instance.id, marcType]);
 
   console.log('numOfLinks ', numOfLinks);
 
