@@ -111,13 +111,19 @@ const useAuthorityLinking = () => {
     bibField.content = joinSubfields(bibSubfields);
   }, [copySubfieldsFromAuthority, sourceFiles]);
 
+  const showValidationError = (errorId) => {
+
+  };
+
   const linkAuthority = useCallback((authority, authoritySource, field) => {
     const linkedAuthorityField = getLinkableAuthorityField(authoritySource, field);
 
     const validationError = validateLinkage(linkedAuthorityField, field);
 
     if (validationError) {
-      throw new Error(validationError);
+      showValidationError(validationError);
+
+      return null;
     }
 
     updateBibFieldWithLinkingData(field, linkedAuthorityField, authority);
