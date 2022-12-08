@@ -84,7 +84,7 @@ const useAuthorityLinking = () => {
       return 'ui-quick-marc.record.link.validation.invalidHeading';
     }
 
-    return false;
+    return null;
   }, [findLinkingRule]);
 
   const updateBibFieldWithLinkingData = useCallback((bibField, linkedAuthorityField, authorityRecord) => {
