@@ -168,6 +168,8 @@ const QuickMarcEditorRows = ({
         type: 'error',
         message: intl.formatMessage({ id: e.message }),
       });
+
+      return false;
     }
   }, [markRecordLinked, linkAuthority, fields, callout, intl]);
 
