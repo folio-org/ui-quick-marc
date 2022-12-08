@@ -3,7 +3,6 @@ import {
   useMemo,
 } from 'react';
 import get from 'lodash/get';
-import isBoolean from 'lodash/isBoolean';
 
 import {
   useAuthoritySourceFiles,
@@ -63,7 +62,7 @@ const useAuthorityLinking = () => {
 
   const validateLinkage = useCallback((linkedAuthorityField, bibField) => {
     if (!linkedAuthorityField) {
-      return true;
+      return 'ui-quick-marc.record.link.validation.invalidHeading';
     }
 
     const authoritySubfields = getContentSubfieldValue(linkedAuthorityField.content);
@@ -82,7 +81,7 @@ const useAuthorityLinking = () => {
     });
 
     if (failedExistence) {
-      return true;
+      return 'ui-quick-marc.record.link.validation.invalidHeading';
     }
 
     return false;
@@ -111,19 +110,13 @@ const useAuthorityLinking = () => {
     bibField.content = joinSubfields(bibSubfields);
   }, [copySubfieldsFromAuthority, sourceFiles]);
 
-  const showValidationError = (errorId) => {
-
-  };
-
   const linkAuthority = useCallback((authority, authoritySource, field) => {
     const linkedAuthorityField = getLinkableAuthorityField(authoritySource, field);
 
     const validationError = validateLinkage(linkedAuthorityField, field);
 
     if (validationError) {
-      showValidationError(validationError);
-
-      return null;
+      throw new Error(validationError);
     }
 
     updateBibFieldWithLinkingData(field, linkedAuthorityField, authority);
