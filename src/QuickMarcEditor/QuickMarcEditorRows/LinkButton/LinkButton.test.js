@@ -74,6 +74,29 @@ describe('Given LinkButton', () => {
       expect(mockOnClick).toHaveBeenCalled();
     });
 
+    it('should pass initial values to plugin', async () => {
+      const { getAllByTestId } = renderComponent();
+
+      const authority = {
+        id: 'authority-id',
+      };
+
+      const initialValues = {
+        'dropdownValue': 'personalNameTitle',
+        'filters': {
+          'references': ['excludeSeeFrom', 'excludeSeeFromAlso'],
+          'sourceFileId': [],
+        },
+        'searchIndex': '',
+      };
+
+      fireEvent.click(getAllByTestId('link-authority-button')[0]);
+
+      await act(async () => { Pluggable.mock.calls[1][0].onLinkRecord(authority); });
+
+      expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
+    });
+
     describe('and the selected authority record is the same as the one previously selected', () => {
       it('should refetch marc source', async () => {
         renderComponent();

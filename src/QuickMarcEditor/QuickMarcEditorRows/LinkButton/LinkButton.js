@@ -75,7 +75,7 @@ const LinkButton = ({
     toggleModal();
   };
 
-  const handleLinkClick = () => {
+  const handleInitialValues = () => {
     const {
       dropdownValue,
       filters: defaultTagFilters,
@@ -136,7 +136,7 @@ const LinkButton = ({
                 aria-haspopup="true"
                 aria-labelledby={ariaIds.text}
                 onClick={e => {
-                  handleLinkClick();
+                  handleInitialValues();
                   onClick(e);
                 }}
               />
