@@ -18,9 +18,12 @@ import {
   ConfirmationModal,
 } from '@folio/stripes/components';
 
-import { FILTERS, REFERENCES_VALUES_MAP } from '@folio/stripes-authority-components';
 import { useMarcSource } from '../../../queries';
-import { DEFAULT_LOOKUP_OPTIONS } from '../../../common/constants';
+import {
+  DEFAULT_LOOKUP_OPTIONS,
+  FILTERS,
+  REFERENCES_VALUES_MAP,
+} from '../../../common/constants';
 
 const propTypes = {
   isLinked: PropTypes.bool.isRequired,

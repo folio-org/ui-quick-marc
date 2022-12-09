@@ -1,4 +1,4 @@
-import { searchableIndexesValues } from '@folio/stripes-authority-components/lib/constants/searchableIndexesValues';
+import { searchableIndexesValues } from './searchableIndexesValues';
 
 const filters = ['af045f2f-e851-4613-984c-4bc13430454a'];
 
