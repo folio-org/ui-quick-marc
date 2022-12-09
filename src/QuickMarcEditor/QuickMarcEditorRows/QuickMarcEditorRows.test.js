@@ -8,28 +8,40 @@ import arrayMutators from 'final-form-arrays';
 import defer from 'lodash/defer';
 
 import { runAxeTest } from '@folio/stripes-testing';
-import * as stripesCore from '@folio/stripes/core';
+import { useCallout } from '@folio/stripes/core';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcEditorRows from './QuickMarcEditorRows';
+import { LinkButton } from './LinkButton';
+import { useAuthorityLinking } from '../../hooks';
 import * as utils from './utils';
 import { QUICK_MARC_ACTIONS } from '../constants';
 import { MARC_TYPES } from '../../common/constants';
 
 import Harness from '../../../test/jest/helpers/harness';
 
-jest.spyOn(stripesCore, 'Pluggable').mockImplementation(({ onLinkRecord, renderCustomTrigger }) => (
-  renderCustomTrigger({ onClick: onLinkRecord })
-));
-
 jest.mock('lodash/defer', () => jest.fn());
+
+jest.mock('@folio/stripes/core', () => ({
+  ...jest.requireActual('@folio/stripes/core'),
+  Pluggable: jest.fn().mockImplementation(({ onLinkRecord, renderCustomTrigger }) => (
+    renderCustomTrigger({ onClick: onLinkRecord })
+  )),
+  useCallout: jest.fn().mockReturnValue({
+    sendCallout: jest.fn(),
+  }),
+}));
+
+jest.mock('./LinkButton', () => ({
+  LinkButton: jest.fn().mockReturnValue('Link button'),
+}));
 
 jest.mock('../../hooks', () => ({
   ...jest.requireActual('../../hooks'),
-  useAuthorityLinking: () => ({
+  useAuthorityLinking: jest.fn().mockReturnValue({
     linkAuthority: jest.fn(),
-    linkableBibFields: ['100'],
+    linkableBibFields: ['100', '240'],
     sourceFiles: [{ id: 'af045f2f-e851-4613-984c-4bc13430454a' }],
   }),
 }));
@@ -80,6 +92,12 @@ const initValues = [
     content: '$a Kirby, Jack, $e creator. $0 http://id.loc.gov/authorities/names/n2019022493',
     authorityId: 'authority-id',
     _isLinked: true,
+    indicators: [],
+  },
+  {
+    id: '10',
+    tag: '240',
+    _isLinked: false,
     indicators: [],
   },
   {
@@ -280,10 +298,7 @@ describe('Given QuickMarcEditorRows', () => {
   describe('when there are protected fields', () => {
     describe('when action is edit and marcType is not holdings', () => {
       it('should display protected field popover icons', () => {
-        const { getAllByTestId } = renderQuickMarcEditorRows({
-          action: QUICK_MARC_ACTIONS.EDIT,
-          marcType: MARC_TYPES.BIB,
-        });
+        const { getAllByTestId } = renderQuickMarcEditorRows();
 
         expect(getAllByTestId('quick-marc-protected-field-popover').length).toBe(2);
       });
@@ -313,21 +328,45 @@ describe('Given QuickMarcEditorRows', () => {
   });
 
   describe('when a field is linked', () => {
-    const props = {
-      action: QUICK_MARC_ACTIONS.EDIT,
-      marcType: MARC_TYPES.BIB,
-    };
-
     it('should display the view authority record icon', () => {
-      const { getAllByTestId, getByTestId, rerender } = renderQuickMarcEditorRows(props);
+      const { getByTestId } = renderQuickMarcEditorRows();
 
-      fireEvent.click(getAllByTestId('link-authority-button')[0]);
-      rerender(getComponent(props));
       expect(getByTestId('view-authority-record-link')).toBeVisible();
       expect(getByTestId('view-authority-record-link')).toHaveAttribute(
         'href',
         '/marc-authorities/authorities/authority-id?authRefType=Authorized&headingRef=Kirby, Jack,&segment=search',
       );
+    });
+  });
+
+  describe('when trying to link to invalid authority', () => {
+    it('should display validation error message', () => {
+      const mockSendCallout = jest.fn();
+
+      LinkButton.mockImplementation(({
+        handleLinkAuthority,
+        fieldId,
+      }) => (
+        <button type="button" onClick={handleLinkAuthority}>Link {fieldId}</button>
+      ));
+
+      useCallout.mockReturnValue({
+        sendCallout: mockSendCallout,
+      });
+
+      useAuthorityLinking.mockReturnValue({
+        linkAuthority: jest.fn().mockImplementation(() => { throw new Error('validation error'); }),
+        linkableBibFields: ['100', '240'],
+      });
+
+      const { getByText } = renderQuickMarcEditorRows();
+
+      fireEvent.click(getByText('Link 10'));
+
+      expect(mockSendCallout).toHaveBeenCalledWith({
+        type: 'error',
+        message: 'validation error',
+      });
     });
   });
 });

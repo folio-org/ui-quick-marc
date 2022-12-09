@@ -61,7 +61,7 @@ describe('Given LinkButton', () => {
     it('should render link button', () => {
       const { getAllByTestId } = renderComponent();
 
-      expect(getAllByTestId('link-authority-button')).toBeDefined();
+      expect(getAllByTestId('link-authority-button-fakeId')).toBeDefined();
     });
   });
 
@@ -69,7 +69,7 @@ describe('Given LinkButton', () => {
     it('should call onClick', () => {
       const { getAllByTestId } = renderComponent();
 
-      fireEvent.click(getAllByTestId('link-authority-button')[0]);
+      fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
 
       expect(mockOnClick).toHaveBeenCalled();
     });
@@ -90,7 +90,7 @@ describe('Given LinkButton', () => {
         'searchIndex': '',
       };
 
-      fireEvent.click(getAllByTestId('link-authority-button')[0]);
+      fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
 
       await act(async () => { Pluggable.mock.calls[1][0].onLinkRecord(authority); });
 
@@ -119,7 +119,7 @@ describe('Given LinkButton', () => {
         isLinked: true,
       });
 
-      expect(getAllByTestId('unlink-authority-button')).toBeDefined();
+      expect(getAllByTestId('unlink-authority-button-fakeId')).toBeDefined();
     });
   });
 
@@ -132,7 +132,7 @@ describe('Given LinkButton', () => {
         isLinked: true,
       });
 
-      fireEvent.click(getAllByTestId('unlink-authority-button')[0]);
+      fireEvent.click(getAllByTestId('unlink-authority-button-fakeId')[0]);
 
       expect(getByText('ui-quick-marc.record.unlink.confirm.title')).toBeDefined();
     });
@@ -147,7 +147,7 @@ describe('Given LinkButton', () => {
         isLinked: true,
       });
 
-      fireEvent.click(getAllByTestId('unlink-authority-button')[0]);
+      fireEvent.click(getAllByTestId('unlink-authority-button-fakeId')[0]);
       fireEvent.click(getByText('ui-quick-marc.record.unlink.confirm.confirm'));
 
       expect(mockHandleUnlinkAuthority).toHaveBeenCalled();
