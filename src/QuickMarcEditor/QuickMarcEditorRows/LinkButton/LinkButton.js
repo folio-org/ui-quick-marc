@@ -42,11 +42,14 @@ const LinkButton = ({
 
   const { isLoading, refetch: refetchSource } = useMarcSource(fieldId, authority?.id, {
     onSuccess: (authoritySource) => {
-      handleLinkAuthority(authority, authoritySource);
-      callout.sendCallout({
-        type: 'success',
-        message: intl.formatMessage({ id: 'ui-quick-marc.record.link.success' }, { tag }),
-      });
+      const linkingSuccessful = handleLinkAuthority(authority, authoritySource);
+
+      if (linkingSuccessful) {
+        callout.sendCallout({
+          type: 'success',
+          message: intl.formatMessage({ id: 'ui-quick-marc.record.link.success' }, { tag }),
+        });
+      }
     },
   });
 
@@ -74,13 +77,13 @@ const LinkButton = ({
     if (isLinked) {
       return (
         <Tooltip
-          id="unlink"
+          id={`unlink-${fieldId}`}
           text={intl.formatMessage({ id: 'ui-quick-marc.record.unlink' })}
         >
           {({ ref, ariaIds }) => (
             <IconButton
               ref={ref}
-              data-testid="unlink-authority-button"
+              data-testid={`unlink-authority-button-${fieldId}`}
               icon="unlink"
               aria-haspopup="true"
               aria-labelledby={ariaIds.text}
@@ -97,13 +100,13 @@ const LinkButton = ({
         onLinkRecord={onLinkRecord}
         renderCustomTrigger={({ onClick }) => (
           <Tooltip
-            id="link"
+            id={`link-${fieldId}`}
             text={intl.formatMessage({ id: 'ui-quick-marc.record.link' })}
           >
             {({ ref, ariaIds }) => (
               <IconButton
                 ref={ref}
-                data-testid="link-authority-button"
+                data-testid={`link-authority-button-${fieldId}`}
                 icon="link"
                 aria-haspopup="true"
                 aria-labelledby={ariaIds.text}

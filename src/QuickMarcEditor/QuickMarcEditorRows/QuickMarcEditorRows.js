@@ -13,7 +13,10 @@ import { useIntl } from 'react-intl';
 import isEqual from 'lodash/isEqual';
 import defer from 'lodash/defer';
 
-import { useStripes } from '@folio/stripes/core';
+import {
+  useStripes,
+  useCallout,
+} from '@folio/stripes/core';
 import {
   TextField,
   Tooltip,
@@ -68,6 +71,7 @@ const QuickMarcEditorRows = ({
 }) => {
   const stripes = useStripes();
   const intl = useIntl();
+  const callout = useCallout();
   const { initialValues } = useFormState();
   const containerRef = useRef(null);
   const indexOfNewRow = useRef(null);
@@ -153,10 +157,21 @@ const QuickMarcEditorRows = ({
   }, [indexOfNewRow, newRowRef]);
 
   const handleLinkAuthority = useCallback((authority, marcSource, index) => {
-    const field = linkAuthority(authority, marcSource, fields[index]);
+    try {
+      const field = linkAuthority(authority, marcSource, fields[index]);
 
-    markRecordLinked({ index, field });
-  }, [markRecordLinked, linkAuthority, fields]);
+      markRecordLinked({ index, field });
+
+      return true;
+    } catch (e) {
+      callout.sendCallout({
+        type: 'error',
+        message: intl.formatMessage({ id: e.message }),
+      });
+
+      return false;
+    }
+  }, [markRecordLinked, linkAuthority, fields, callout, intl]);
 
   const handleUnlinkAuthority = useCallback(index => {
     unlinkAuthority(fields[index]);
