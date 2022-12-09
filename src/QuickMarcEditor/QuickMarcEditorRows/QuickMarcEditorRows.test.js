@@ -42,6 +42,7 @@ jest.mock('../../hooks', () => ({
   useAuthorityLinking: jest.fn().mockReturnValue({
     linkAuthority: jest.fn(),
     linkableBibFields: ['100', '240'],
+    sourceFiles: [{ id: 'af045f2f-e851-4613-984c-4bc13430454a' }],
   }),
 }));
 
@@ -328,10 +329,7 @@ describe('Given QuickMarcEditorRows', () => {
 
   describe('when a field is linked', () => {
     it('should display the view authority record icon', () => {
-      const {
-        getAllByTestId,
-        getByTestId,
-      } = renderQuickMarcEditorRows();
+      const { getByTestId } = renderQuickMarcEditorRows();
 
       expect(getByTestId('view-authority-record-link')).toBeVisible();
       expect(getByTestId('view-authority-record-link')).toHaveAttribute(

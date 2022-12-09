@@ -19,12 +19,18 @@ import {
 } from '@folio/stripes/components';
 
 import { useMarcSource } from '../../../queries';
+import {
+  DEFAULT_LOOKUP_OPTIONS,
+  FILTERS,
+  REFERENCES_VALUES_MAP,
+} from '../../../common/constants';
 
 const propTypes = {
   isLinked: PropTypes.bool.isRequired,
   handleLinkAuthority: PropTypes.func.isRequired,
   handleUnlinkAuthority: PropTypes.func.isRequired,
   fieldId: PropTypes.string.isRequired,
+  sourceFiles: PropTypes.arrayOf(PropTypes.object).isRequired,
   tag: PropTypes.string.isRequired,
 };
 
@@ -34,10 +40,12 @@ const LinkButton = ({
   isLinked,
   tag,
   fieldId,
+  sourceFiles,
 }) => {
   const intl = useIntl();
   const [authority, setAuthority] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [initialValues, setInitialValues] = useState(null);
   const callout = useCallout();
 
   const { isLoading, refetch: refetchSource } = useMarcSource(fieldId, authority?.id, {
@@ -73,6 +81,28 @@ const LinkButton = ({
     toggleModal();
   };
 
+  const handleInitialValues = () => {
+    const {
+      dropdownValue,
+      filters: defaultTagFilters,
+    } = DEFAULT_LOOKUP_OPTIONS[tag];
+
+    const existingAuthSourceFilters = defaultTagFilters.filter(filterId => {
+      return sourceFiles.find(sourceFile => sourceFile.id === filterId);
+    });
+
+    const initialFilters = {
+      [FILTERS.REFERENCES]: [REFERENCES_VALUES_MAP.excludeSeeFrom, REFERENCES_VALUES_MAP.excludeSeeFromAlso],
+      [FILTERS.AUTHORITY_SOURCE]: existingAuthSourceFilters,
+    };
+
+    setInitialValues({
+      filters: initialFilters,
+      searchIndex: '',
+      dropdownValue,
+    });
+  };
+
   const renderButton = () => {
     if (isLinked) {
       return (
@@ -97,6 +127,7 @@ const LinkButton = ({
     return (
       <Pluggable
         type="find-authority"
+        initialValues={initialValues}
         onLinkRecord={onLinkRecord}
         renderCustomTrigger={({ onClick }) => (
           <Tooltip
@@ -110,7 +141,10 @@ const LinkButton = ({
                 icon="link"
                 aria-haspopup="true"
                 aria-labelledby={ariaIds.text}
-                onClick={onClick}
+                onClick={e => {
+                  handleInitialValues();
+                  onClick(e);
+                }}
               />
             )}
           </Tooltip>

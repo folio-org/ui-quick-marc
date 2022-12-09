@@ -37,6 +37,7 @@ const renderComponent = (props = {}) => render(
       handleUnlinkAuthority={mockHandleUnlinkAuthority}
       isLinked={false}
       fieldId="fakeId"
+      sourceFiles={[{}]}
       tag="100"
       {...props}
     />
@@ -71,6 +72,29 @@ describe('Given LinkButton', () => {
       fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
 
       expect(mockOnClick).toHaveBeenCalled();
+    });
+
+    it('should pass initial values to plugin', async () => {
+      const { getAllByTestId } = renderComponent();
+
+      const authority = {
+        id: 'authority-id',
+      };
+
+      const initialValues = {
+        'dropdownValue': 'personalNameTitle',
+        'filters': {
+          'references': ['excludeSeeFrom', 'excludeSeeFromAlso'],
+          'sourceFileId': [],
+        },
+        'searchIndex': '',
+      };
+
+      fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
+
+      await act(async () => { Pluggable.mock.calls[1][0].onLinkRecord(authority); });
+
+      expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
     });
 
     describe('and the selected authority record is the same as the one previously selected', () => {
