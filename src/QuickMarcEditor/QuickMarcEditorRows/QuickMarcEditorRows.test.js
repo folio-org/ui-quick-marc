@@ -30,6 +30,7 @@ jest.mock('../../hooks', () => ({
   useAuthorityLinking: () => ({
     linkAuthority: jest.fn(),
     linkableBibFields: ['100'],
+    sourceFiles: [{ id: 'af045f2f-e851-4613-984c-4bc13430454a' }],
   }),
 }));
 

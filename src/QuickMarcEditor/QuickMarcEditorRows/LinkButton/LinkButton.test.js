@@ -37,6 +37,7 @@ const renderComponent = (props = {}) => render(
       handleUnlinkAuthority={mockHandleUnlinkAuthority}
       isLinked={false}
       fieldId="fakeId"
+      sourceFiles={[{}]}
       tag="100"
       {...props}
     />

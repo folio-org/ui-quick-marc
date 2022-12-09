@@ -152,6 +152,7 @@ const useAuthorityLinking = () => {
     linkAuthority,
     unlinkAuthority,
     linkableBibFields,
+    sourceFiles,
   };
 };
 

@@ -73,7 +73,7 @@ const QuickMarcEditorRows = ({
   const indexOfNewRow = useRef(null);
   const newRowRef = useRef(null);
 
-  const { linkAuthority, unlinkAuthority, linkableBibFields } = useAuthorityLinking();
+  const { linkAuthority, unlinkAuthority, linkableBibFields, sourceFiles } = useAuthorityLinking();
 
   const isNewRow = useCallback((row) => {
     return !initialValues.records.find(record => record.id === row.id);
@@ -430,6 +430,7 @@ const QuickMarcEditorRows = ({
                       isLinked={recordRow._isLinked}
                       tag={recordRow.tag}
                       fieldId={recordRow.id}
+                      sourceFiles={sourceFiles}
                     />
                   )}
                   {canViewAuthorityRecord && (
