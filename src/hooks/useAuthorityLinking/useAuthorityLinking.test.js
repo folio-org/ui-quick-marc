@@ -211,7 +211,7 @@ describe('Given useAuthorityLinking', () => {
   });
 
   describe('when authority record doesnt pass required subfields validation', () => {
-    it('should return field without changes', () => {
+    it('should throw validation error', () => {
       const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
       const field = {
         tag: '100',
@@ -229,9 +229,8 @@ describe('Given useAuthorityLinking', () => {
         }],
       };
 
-      const linkedField = result.current.linkAuthority(authority, authoritySourceWithoutMatchingField, field);
-
-      expect(linkedField).toMatchObject(field);
+      expect(() => result.current.linkAuthority(authority, authoritySourceWithoutMatchingField, field))
+        .toThrow('ui-quick-marc.record.link.validation.invalidHeading');
     });
   });
 
@@ -254,9 +253,8 @@ describe('Given useAuthorityLinking', () => {
         }],
       };
 
-      const linkedField = result.current.linkAuthority(authority, authoritySourceWithoutMatchingField, field);
-
-      expect(linkedField).toMatchObject(field);
+      expect(() => result.current.linkAuthority(authority, authoritySourceWithoutMatchingField, field))
+        .toThrow('ui-quick-marc.record.link.validation.invalidHeading');
     });
   });
 });
