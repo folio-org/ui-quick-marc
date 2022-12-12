@@ -39,7 +39,7 @@ const useAuthorityLinking = () => {
     const authSubfields = getContentSubfieldValue(authField.content);
 
     linkingRule.authoritySubfields.forEach(subfieldCode => {
-      const subfieldModification = linkingRule.subfieldModifications.find(mod => mod.source === subfieldCode);
+      const subfieldModification = linkingRule.subfieldModifications?.find(mod => mod.source === subfieldCode);
 
       if (subfieldModification) {
         bibSubfields[formatSubfieldCode(subfieldModification.target)] = authSubfields[formatSubfieldCode(subfieldCode)];
