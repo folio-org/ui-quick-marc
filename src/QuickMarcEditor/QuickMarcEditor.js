@@ -150,7 +150,7 @@ const QuickMarcEditor = ({
     } else {
       confirmSubmit(e);
     }
-  }, [confirmSubmit, numOfLinks, marcType, are010Or1xxUpdated]);
+  }, [confirmSubmit, numOfLinks, marcType, initialValues, records]);
 
   const paneFooter = useMemo(() => {
     const start = (
@@ -425,7 +425,7 @@ const QuickMarcEditor = ({
         heading={<FormattedMessage id="ui-quick-marc.update-linked-bib-fields.modal.label" />}
         message={
           <FormattedMessage
-            id="ui-quick-marc.update-linked-bib-fields.modal.message"
+            id={continueAfterSave.current ? 'ui-quick-marc.update-linked-bib-fields.modal.message-save-and-editing' : 'ui-quick-marc.update-linked-bib-fields.modal.message-save-and-close'}
             values={{ count: numOfLinks, saveName: continueAfterSave.current ? 'Save & editing' : 'Save & close' }}
           />
         }

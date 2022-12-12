@@ -15,6 +15,7 @@
 * [UIQM-319](https://issues.folio.org/browse/UIQM-319) Not actual "relatedRecordVersion" value sends when user saves "MARC Bib" record
 * [UIQM-295](https://issues.folio.org/browse/UIQM-295) FE - Linking Bib field 240 to Authority field 100/110/111
 * [UIQM-297](https://issues.folio.org/browse/UIQM-297) FE | View Source | If a bib field is authorized then display authorized indicator
+* [UIQM-331](https://issues.folio.org/browse/UIQM-331) Edit MARC authority: Handling updates 1XX or 010 $a value 
 
 ## [5.2.0](https://github.com/folio-org/ui-quick-marc/tree/v5.2.0) (2022-10-26)
 
