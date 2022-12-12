@@ -96,6 +96,10 @@ jest.mock('@folio/stripes-core', () => {
     return <Component {...rest} stripes={fakeStripes} />;
   };
 
+  const useCallout = jest.fn().mockReturnValue({
+    sendCallout: jest.fn(),
+  });
+
   // eslint-disable-next-line react/prop-types
   const IfPermission = ({ children }) => <>{children}</>;
 
@@ -111,6 +115,7 @@ jest.mock('@folio/stripes-core', () => {
     AppContextMenu,
     useOkapiKy,
     useNamespace,
+    useCallout,
   };
 }, { virtual: true });
 

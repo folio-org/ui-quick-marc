@@ -37,6 +37,7 @@ const renderComponent = (props = {}) => render(
       handleUnlinkAuthority={mockHandleUnlinkAuthority}
       isLinked={false}
       fieldId="fakeId"
+      sourceFiles={[{}]}
       tag="100"
       {...props}
     />
@@ -60,7 +61,7 @@ describe('Given LinkButton', () => {
     it('should render link button', () => {
       const { getAllByTestId } = renderComponent();
 
-      expect(getAllByTestId('link-authority-button')).toBeDefined();
+      expect(getAllByTestId('link-authority-button-fakeId')).toBeDefined();
     });
   });
 
@@ -68,9 +69,32 @@ describe('Given LinkButton', () => {
     it('should call onClick', () => {
       const { getAllByTestId } = renderComponent();
 
-      fireEvent.click(getAllByTestId('link-authority-button')[0]);
+      fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
 
       expect(mockOnClick).toHaveBeenCalled();
+    });
+
+    it('should pass initial values to plugin', async () => {
+      const { getAllByTestId } = renderComponent();
+
+      const authority = {
+        id: 'authority-id',
+      };
+
+      const initialValues = {
+        'dropdownValue': 'personalNameTitle',
+        'filters': {
+          'references': ['excludeSeeFrom', 'excludeSeeFromAlso'],
+          'sourceFileId': [],
+        },
+        'searchIndex': '',
+      };
+
+      fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
+
+      await act(async () => { Pluggable.mock.calls[1][0].onLinkRecord(authority); });
+
+      expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
     });
 
     describe('and the selected authority record is the same as the one previously selected', () => {
@@ -95,7 +119,7 @@ describe('Given LinkButton', () => {
         isLinked: true,
       });
 
-      expect(getAllByTestId('unlink-authority-button')).toBeDefined();
+      expect(getAllByTestId('unlink-authority-button-fakeId')).toBeDefined();
     });
   });
 
@@ -108,7 +132,7 @@ describe('Given LinkButton', () => {
         isLinked: true,
       });
 
-      fireEvent.click(getAllByTestId('unlink-authority-button')[0]);
+      fireEvent.click(getAllByTestId('unlink-authority-button-fakeId')[0]);
 
       expect(getByText('ui-quick-marc.record.unlink.confirm.title')).toBeDefined();
     });
@@ -123,7 +147,7 @@ describe('Given LinkButton', () => {
         isLinked: true,
       });
 
-      fireEvent.click(getAllByTestId('unlink-authority-button')[0]);
+      fireEvent.click(getAllByTestId('unlink-authority-button-fakeId')[0]);
       fireEvent.click(getByText('ui-quick-marc.record.unlink.confirm.confirm'));
 
       expect(mockHandleUnlinkAuthority).toHaveBeenCalled();

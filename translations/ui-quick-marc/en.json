@@ -215,6 +215,7 @@
   "record.fieldDeleted.undoLabel": "Undo delete of field {tag}",
   "record.link": "Link to MARC Authority record",
   "record.link.success": "Field <b>{tag}</b> has been <b>linked</b> to a MARC authority record.",
+  "record.link.validation.invalidHeading": "You have selected an invalid heading based on the bibliographic field you want controlled. Please revise your selection.",
   "record.unlink": "Unlink from MARC Authority record",
   "record.unlink.confirm.title": "Unlink from MARC authority record",
   "record.unlink.confirm.message": "By selecting <b>Unlink</b>, then field {tag} will be unlinked from the MARC authority record. Are you sure you want to continue?",

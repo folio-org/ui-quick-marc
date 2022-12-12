@@ -62,7 +62,7 @@ const useAuthorityLinking = () => {
 
   const validateLinkage = useCallback((linkedAuthorityField, bibField) => {
     if (!linkedAuthorityField) {
-      return true;
+      return 'ui-quick-marc.record.link.validation.invalidHeading';
     }
 
     const authoritySubfields = getContentSubfieldValue(linkedAuthorityField.content);
@@ -81,10 +81,10 @@ const useAuthorityLinking = () => {
     });
 
     if (failedExistence) {
-      return true;
+      return 'ui-quick-marc.record.link.validation.invalidHeading';
     }
 
-    return false;
+    return null;
   }, [findLinkingRule]);
 
   const updateBibFieldWithLinkingData = useCallback((bibField, linkedAuthorityField, authorityRecord) => {
@@ -116,8 +116,7 @@ const useAuthorityLinking = () => {
     const validationError = validateLinkage(linkedAuthorityField, field);
 
     if (validationError) {
-      // TODO: will handle validation here. Requirements are yet to be defined
-      return field;
+      throw new Error(validationError);
     }
 
     updateBibFieldWithLinkingData(field, linkedAuthorityField, authority);
@@ -154,6 +153,7 @@ const useAuthorityLinking = () => {
     linkAuthority,
     unlinkAuthority,
     linkableBibFields,
+    sourceFiles,
   };
 };
 
