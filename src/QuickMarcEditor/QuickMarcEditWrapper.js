@@ -61,8 +61,12 @@ const QuickMarcEditWrapper = ({
   const numOfLinks = resources?.quickMarcInstanceLinks?.successfulMutations[0]?.record?.links[0]?.totalLinks;
 
   const onSubmit = useCallback(async (formValues) => {
-    const is1xxOr010Updated = are010Or1xxUpdated(initialValues.records, formValues.records);
+    console.log('[ONSUBMIT]');
+    let is1xxOr010Updated = false;
 
+    if (marcType === MARC_TYPES.AUTHORITY && numOfLinks > 0) {
+      is1xxOr010Updated = are010Or1xxUpdated(initialValues.records, formValues.records);
+    }
     const formValuesToSave = removeDeletedRecords(formValues);
     const controlFieldErrorMessage = checkControlFieldLength(formValuesToSave);
     const validationErrorMessage = validateMarcRecord(formValuesToSave, initialValues, marcType, locations);
@@ -124,7 +128,7 @@ const QuickMarcEditWrapper = ({
 
     return mutator.quickMarcEditMarcRecord.PUT(marcRecord)
       .then(async () => {
-        if (is1xxOr010Updated && numOfLinks > 0) {
+        if (is1xxOr010Updated) {
           const values = {
             count: numOfLinks,
           };
@@ -155,32 +159,32 @@ const QuickMarcEditWrapper = ({
   useEffect(() => {
     // if marcType is authority,
     // get the number of links for marc authority record
-
-    const getLinks = async () => {
-      const fetchNumOfLinks = async () => {
-        const fetchedLinks = await mutator.quickMarcInstanceLinks.POST({
-          'ids': [instance.id],
-        });
-
-        return fetchedLinks;
-      };
-
-      let linksResponse;
-
-      try {
-        linksResponse = await fetchNumOfLinks();
-      } catch (errorResponse) {
-        const parsedError = await parseHttpError(errorResponse);
-
-        setHttpError(parsedError);
-
-        return undefined;
-      }
-
-      return linksResponse;
-    };
+    console.log('[USE EFFECT]');
 
     if (marcType === MARC_TYPES.AUTHORITY) {
+      const getLinks = async () => {
+        const fetchNumOfLinks = async () => {
+          const fetchedLinks = await mutator.quickMarcInstanceLinks.POST({
+            'ids': [instance.id],
+          });
+
+          return fetchedLinks;
+        };
+
+        let linksResponse;
+
+        try {
+          linksResponse = await fetchNumOfLinks();
+        } catch (errorResponse) {
+          const parsedError = await parseHttpError(errorResponse);
+
+          setHttpError(parsedError);
+
+          return undefined;
+        }
+
+        return linksResponse;
+      };
       const setLinks = async () => {
         // const links = await getLinks();
         await getLinks();
@@ -188,7 +192,8 @@ const QuickMarcEditWrapper = ({
 
       setLinks();
     }
-  }, [instance.id, marcType, mutator]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // instance.id, marcType, mutator
 
   console.log('numOfLinks ', numOfLinks);
 

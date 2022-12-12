@@ -190,6 +190,7 @@ const mockFormValues = jest.fn((marcType) => ({
   updateInfo: { recordState: 'NEW' },
 }));
 
+
 jest.mock('@folio/stripes/final-form', () => () => (Component) => ({
   onSubmit,
   marcType,
@@ -289,6 +290,23 @@ describe('Given QuickMarcEditWrapper', () => {
       },
       quickMarcEditInstance: {
         GET: jest.fn(() => Promise.resolve(instance)),
+      },
+      quickMarcInstanceLinks: {
+        POST: jest.fn(() => Promise.resolve(
+          {
+            successfulMutations: [
+              {
+                record: {
+                  link: [
+                    {
+                      totalLinks: 0,
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        )),
       },
       quickMarcEditMarcRecord: {
         GET: jest.fn(() => Promise.resolve(record)),

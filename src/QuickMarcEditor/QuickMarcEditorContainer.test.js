@@ -48,6 +48,8 @@ const record = {
   fields: [],
 };
 
+const resources = {};
+
 const locations = [];
 
 const externalRecordPath = '/external/record/path';
@@ -69,6 +71,7 @@ const renderQuickMarcEditorContainer = ({
       action={action}
       marcType={marcType}
       externalRecordPath={externalRecordPath}
+      resources={resources}
     />
   </Harness>,
 ));
@@ -86,6 +89,23 @@ describe('Given Quick Marc Editor Container', () => {
       },
       quickMarcEditInstance: {
         GET: () => Promise.resolve(instance),
+      },
+      quickMarcInstanceLinks: {
+        POST: jest.fn(() => Promise.resolve(
+          {
+            successfulMutations: [
+              {
+                record: {
+                  link: [
+                    {
+                      totalLinks: 0,
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        )),
       },
       quickMarcEditMarcRecord: {
         GET: jest.fn(() => Promise.resolve(record)),

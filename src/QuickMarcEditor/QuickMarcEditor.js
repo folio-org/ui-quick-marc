@@ -129,6 +129,7 @@ const QuickMarcEditor = ({
   const confirmSubmit = useCallback((e) => {
     if (deletedRecords.length) {
       setIsDeleteModalOpened(true);
+      e.stopPropagation();
     }
 
     handleSubmit(e).then((updatedRecord) => {
@@ -137,18 +138,33 @@ const QuickMarcEditor = ({
   }, [deletedRecords, handleSubmit, handleSubmitResponse]);
 
   const handleFooterSave = useCallback((e, isKeepEditing = false) => {
+    e.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
     continueAfterSave.current = isKeepEditing;
 
     // invoke confirmation modal if
     // 1. marcType is authority
     // 2. there are bib records linked to this authority
     // 3. 010 or 1xx are updated
-    const are1XXor010fieldsUpdated = are010Or1xxUpdated(initialValues.records, records);
 
-    if (marcType === MARC_TYPES.AUTHORITY && numOfLinks > 0 && are1XXor010fieldsUpdated) {
-      setIsUpdateLinkedBibFieldsModalOpen(true);
+    if (marcType === MARC_TYPES.AUTHORITY && numOfLinks > 0) {
+      const are1XXor010fieldsUpdated = are010Or1xxUpdated(initialValues.records, records);
+
+      if (are1XXor010fieldsUpdated) {
+        setIsUpdateLinkedBibFieldsModalOpen(true);
+
+        // eslint-disable-next-line no-useless-return
+        return;
+      }
     } else {
-      confirmSubmit(e);
+      // confirmSubmit(e);
+      if (deletedRecords.length) {
+        setIsDeleteModalOpened(true);
+      }
+
+      handleSubmit(e).then((updatedRecord) => {
+        handleSubmitResponse(updatedRecord);
+      });
     }
   }, [confirmSubmit, numOfLinks, marcType, initialValues, records]);
 
