@@ -243,5 +243,7 @@
     "remove-authority-linking.modal.message": "您要移除此新书目记录的规范链接吗？",
     "bib-record.derive.title": "衍生一条新MARC书目记录",
     "record.save.error.derive": "无法更新实例。弃用的实例版本。",
-    "permission.quick-marc-editor.duplicate": "quickMARC：衍生新MARC书目记录"
+    "permission.quick-marc-editor.duplicate": "quickMARC：衍生新MARC书目记录",
+    "linkedToMarcAuthority": "Linked to MARC authority",
+    "record.link.validation.invalidHeading": "You have selected an invalid heading based on the bibliographic field you want controlled. Please revise your selection."
 }
