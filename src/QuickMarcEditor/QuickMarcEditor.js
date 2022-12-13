@@ -126,20 +126,7 @@ const QuickMarcEditor = ({
     onClose();
   }, [redirectToVersion, onClose]);
 
-  const confirmSubmit = useCallback((e) => {
-    if (deletedRecords.length) {
-      setIsDeleteModalOpened(true);
-      e.stopPropagation();
-    }
-
-    handleSubmit(e).then((updatedRecord) => {
-      handleSubmitResponse(updatedRecord);
-    });
-  }, [deletedRecords, handleSubmit, handleSubmitResponse]);
-
-  const handleFooterSave = useCallback((e, isKeepEditing = false) => {
-    e.stopPropagation();
-    e.nativeEvent.stopImmediatePropagation();
+  const confirmSubmit = useCallback((e, isKeepEditing = false) => {
     continueAfterSave.current = isKeepEditing;
 
     // invoke confirmation modal if
@@ -157,16 +144,17 @@ const QuickMarcEditor = ({
         return;
       }
     } else {
-      // confirmSubmit(e);
       if (deletedRecords.length) {
         setIsDeleteModalOpened(true);
+
+        return;
       }
 
       handleSubmit(e).then((updatedRecord) => {
         handleSubmitResponse(updatedRecord);
       });
     }
-  }, [confirmSubmit, numOfLinks, marcType, initialValues, records]);
+  }, [numOfLinks, marcType, initialValues, records, deletedRecords, handleSubmit, handleSubmitResponse]);
 
   const paneFooter = useMemo(() => {
     const start = (
@@ -187,8 +175,7 @@ const QuickMarcEditor = ({
             buttonClass={css.saveContinueBtn}
             disabled={saveFormDisabled}
             id="quick-marc-record-save-edit"
-            // onClick={(event) => confirmSubmit(event, true)}
-            onClick={(event) => handleFooterSave(event, true)}
+            onClick={(event) => confirmSubmit(event, true)}
             marginBottom0
           >
             <FormattedMessage id="ui-quick-marc.record.save.continue" />
@@ -198,8 +185,7 @@ const QuickMarcEditor = ({
           buttonStyle="primary mega"
           disabled={saveFormDisabled}
           id="quick-marc-record-save"
-          // onClick={confirmSubmit}
-          onClick={handleFooterSave}
+          onClick={confirmSubmit}
           marginBottom0
         >
           <FormattedMessage id="stripes-acq-components.FormFooter.save" />
@@ -213,7 +199,7 @@ const QuickMarcEditor = ({
         renderEnd={end}
       />
     );
-  }, [handleFooterSave, saveFormDisabled, onClose, action]);
+  }, [confirmSubmit, saveFormDisabled, onClose, action]);
 
   const getConfirmModalMessage = () => (
     <FormattedMessage
