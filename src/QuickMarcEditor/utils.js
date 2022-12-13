@@ -812,10 +812,13 @@ export const are010Or1xxUpdated = (initial, updated) => {
   let is010Updated = false;
   let is1XXUpdated = false;
 
-  const initial010 = initial.filter(rec => rec.tag === '010');
-  const updated010 = updated.filter(rec => rec.tag === '010');
+  const initial010 = initial.find(rec => rec.tag === '010');
+  const updated010 = updated.find(rec => rec.tag === '010');
 
-  if (initial010.length > 0 && updated010.length > 0 && initial010[0].content !== updated010[0].content) {
+  if (initial010 &&
+    updated010 &&
+    getContentSubfieldValue(initial010.content).$a !== getContentSubfieldValue(updated010.content).$a
+  ) {
     is010Updated = true;
   }
 

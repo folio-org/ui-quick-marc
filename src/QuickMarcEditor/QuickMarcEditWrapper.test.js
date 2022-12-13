@@ -190,7 +190,6 @@ const mockFormValues = jest.fn((marcType) => ({
   updateInfo: { recordState: 'NEW' },
 }));
 
-
 jest.mock('@folio/stripes/final-form', () => () => (Component) => ({
   onSubmit,
   marcType,
@@ -449,6 +448,19 @@ describe('Given QuickMarcEditWrapper', () => {
   });
 
   describe('when is authority marc type', () => {
+    it('should fetch the number of links associated for the authority', () => {
+      const mockOnClose = jest.fn();
+
+      renderQuickMarcEditWrapper({
+        instance,
+        mutator,
+        marcType: MARC_TYPES.AUTHORITY,
+        onClose: mockOnClose,
+      });
+
+      expect(mutator.quickMarcInstanceLinks.POST).toHaveBeenCalled();
+    });
+
     describe('when click on "Save & keep editing" button', () => {
       it('should show on save message and stay on the edit page', async () => {
         const mockOnClose = jest.fn();

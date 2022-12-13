@@ -161,6 +161,10 @@ const QuickMarcEditWrapper = ({
     // get the number of links for marc authority record
     console.log('[USE EFFECT]');
 
+    // if (marcType !== MARC_TYPES.AUTHORITY) {
+    //   return;
+    // } // shorten this code
+
     if (marcType === MARC_TYPES.AUTHORITY) {
       const getLinks = async () => {
         const fetchNumOfLinks = async () => {

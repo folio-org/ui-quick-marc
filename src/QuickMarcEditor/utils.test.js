@@ -1462,4 +1462,64 @@ describe('QuickMarcEditor utils', () => {
       });
     });
   });
+
+  describe('are010Or1xxUpdated', () => {
+    it('should check if 010 $a is updated', () => {
+      const initial = [
+        {
+          content: 'n  80161705 ',
+          id: 'c1723942-329c-45d4-ac39-a7ac63e015d4',
+          isProtected: true,
+          tag: '001',
+          _isDeleted: false,
+          _isLinked: false,
+        },
+      ];
+      const updated = [
+        {
+          content: 'n  80161705 ',
+          id: 'c1723942-329c-45d4-ac39-a7ac63e015d4',
+          isProtected: true,
+          tag: '001',
+          _isDeleted: false,
+          _isLinked: false,
+        },
+      ];
+
+      expect(utils.are010Or1xxUpdated(initial, updated)).toBeFalsy();
+    });
+
+    it('should check if 1xx is updated', () => {
+      const initial = [
+        {
+          'tag': '100',
+          'content': '$a Kitao, Masayoshi, $d 1764-18245',
+          'indicators': [
+            '1',
+            '\\',
+          ],
+          'isProtected': false,
+          'id': '141fc876-f0eb-40ac-9385-38b9de9a3aeb',
+          '_isDeleted': false,
+          '_isLinked': false,
+        },
+      ];
+      const updated = [
+        {
+          'tag': '100',
+          'content': '$a Kitao, Masayoshi, $d 1764-1824',
+          'indicators': [
+            '1',
+            '\\',
+          ],
+          'isProtected': false,
+          'id': '141fc876-f0eb-40ac-9385-38b9de9a3aeb',
+          '_isDeleted': false,
+          '_isLinked': false,
+        },
+      ];
+
+      expect(utils.are010Or1xxUpdated(initial, updated)).toBeTruthy();
+    });
+  });
 });
