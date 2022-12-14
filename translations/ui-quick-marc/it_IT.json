@@ -243,5 +243,7 @@
     "remove-authority-linking.modal.message": "Do you want to remove authority linking for this new bibliographic record?",
     "bib-record.derive.title": "Derive a new MARC bib record",
     "record.save.error.derive": "Instance cannot be updated. Deprecated instance version.",
-    "permission.quick-marc-editor.duplicate": "quickMARC: Derive new MARC bibliographic record"
+    "permission.quick-marc-editor.duplicate": "quickMARC: Derive new MARC bibliographic record",
+    "linkedToMarcAuthority": "Linked to MARC authority",
+    "record.link.validation.invalidHeading": "You have selected an invalid heading based on the bibliographic field you want controlled. Please revise your selection."
 }

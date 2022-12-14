@@ -243,5 +243,7 @@
     "remove-authority-linking.modal.message": "Você quer remover a vinculação de autoridade para este novo registro bibliográfico?",
     "bib-record.derive.title": "Derivar um novo registro MARC bibliográfico",
     "record.save.error.derive": "A instância não pode ser atualizada. Versão de instância obsoleta.",
-    "permission.quick-marc-editor.duplicate": "quickMARC: Derivar novo registro MARC bibliográfico"
+    "permission.quick-marc-editor.duplicate": "quickMARC: Derivar novo registro MARC bibliográfico",
+    "linkedToMarcAuthority": "Link para registro MARC de Autoridade",
+    "record.link.validation.invalidHeading": "Você selecionou um cabeçalho inválido com base no campo bibliográfico que você deseja controlar. Por favor, revise sua seleção."
 }
