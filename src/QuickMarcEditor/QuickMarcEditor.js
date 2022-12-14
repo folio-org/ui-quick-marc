@@ -126,7 +126,20 @@ const QuickMarcEditor = ({
     onClose();
   }, [redirectToVersion, onClose]);
 
-  const confirmSubmit = useCallback((e, isKeepEditing = false) => {
+  const confirmSubmit = useCallback((e) => {
+    console.log('[confirmSubmit]');
+    if (deletedRecords.length) {
+      setIsDeleteModalOpened(true);
+
+      return;
+    }
+
+    handleSubmit(e).then((updatedRecord) => {
+      handleSubmitResponse(updatedRecord);
+    });
+  }, [deletedRecords, handleSubmit, handleSubmitResponse]);
+
+  const handleFooterSave = useCallback((e, isKeepEditing = false) => {
     continueAfterSave.current = isKeepEditing;
 
     // invoke confirmation modal if
@@ -134,27 +147,12 @@ const QuickMarcEditor = ({
     // 2. there are bib records linked to this authority
     // 3. 010 or 1xx are updated
 
-    if (marcType === MARC_TYPES.AUTHORITY && numOfLinks > 0) {
-      const are1XXor010fieldsUpdated = are010Or1xxUpdated(initialValues.records, records);
-
-      if (are1XXor010fieldsUpdated) {
-        setIsUpdateLinkedBibFieldsModalOpen(true);
-
-        // eslint-disable-next-line no-useless-return
-        return;
-      }
+    if (marcType === MARC_TYPES.AUTHORITY && numOfLinks > 0 && are010Or1xxUpdated(initialValues.records, records)) {
+      setIsUpdateLinkedBibFieldsModalOpen(true);
     } else {
-      if (deletedRecords.length) {
-        setIsDeleteModalOpened(true);
-
-        return;
-      }
-
-      handleSubmit(e).then((updatedRecord) => {
-        handleSubmitResponse(updatedRecord);
-      });
+      confirmSubmit(e);
     }
-  }, [numOfLinks, marcType, initialValues, records, deletedRecords, handleSubmit, handleSubmitResponse]);
+  }, [confirmSubmit, numOfLinks, marcType, initialValues, records]);
 
   const paneFooter = useMemo(() => {
     const start = (
@@ -175,7 +173,8 @@ const QuickMarcEditor = ({
             buttonClass={css.saveContinueBtn}
             disabled={saveFormDisabled}
             id="quick-marc-record-save-edit"
-            onClick={(event) => confirmSubmit(event, true)}
+            // onClick={(event) => confirmSubmit(event, true)}
+            onClick={(event) => handleFooterSave(event, true)}
             marginBottom0
           >
             <FormattedMessage id="ui-quick-marc.record.save.continue" />
@@ -185,7 +184,8 @@ const QuickMarcEditor = ({
           buttonStyle="primary mega"
           disabled={saveFormDisabled}
           id="quick-marc-record-save"
-          onClick={confirmSubmit}
+          // onClick={confirmSubmit}
+          onClick={handleFooterSave}
           marginBottom0
         >
           <FormattedMessage id="stripes-acq-components.FormFooter.save" />
@@ -199,7 +199,7 @@ const QuickMarcEditor = ({
         renderEnd={end}
       />
     );
-  }, [confirmSubmit, saveFormDisabled, onClose, action]);
+  }, [handleFooterSave, saveFormDisabled, onClose, action]);
 
   const getConfirmModalMessage = () => (
     <FormattedMessage
