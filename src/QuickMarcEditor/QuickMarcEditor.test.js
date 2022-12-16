@@ -110,6 +110,7 @@ const renderQuickMarcEditor = (props) => (render(
       initialValues={initialValues}
       marcType={MARC_TYPES.BIB}
       locations={locations}
+      linksCount={0}
       {...props}
     />
   </Harness>,

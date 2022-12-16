@@ -38,6 +38,26 @@ import {
   ERROR_TYPES,
 } from '../common/constants';
 
+export const getContentSubfieldValue = (content) => {
+  return content.split(/\$/)
+    .filter(str => str.length > 0)
+    .reduce((acc, str) => {
+      if (!str) {
+        return acc;
+      }
+
+      const key = `$${str[0]}`;
+      const value = acc[key]
+        ? flatten([acc[key], str.substring(2).trim()]) // repeatable subfields will be stored as an array
+        : str.substring(2).trim();
+
+      return {
+        ...acc,
+        [key]: value,
+      };
+    }, {});
+};
+
 export const parseHttpError = async (httpError) => {
   const contentType = httpError?.headers?.get('content-type');
   let jsonError = {};
@@ -405,7 +425,48 @@ const validateMarcHoldingsRecord = (marcRecords, locations) => {
   return undefined;
 };
 
-const validateMarcAuthorityRecord = (marcRecords) => {
+export const validateIf1xxFieldIsRemoved = (records) => {
+  const toSave1xxField = records.find(field => field.tag.startsWith('1'));
+
+  if (toSave1xxField._isDeleted) {
+    return <FormattedMessage id="ui-quick-marc.record.error.1xx.delete" />;
+  }
+
+  return undefined;
+};
+
+const getIs$tRemoved = (content) => {
+  const contentSubfieldValue = getContentSubfieldValue(content);
+
+  return !('$t' in contentSubfieldValue) || !contentSubfieldValue.$t;
+};
+
+const validateMarcAuthority1xxField = (initialRecords, formValuesToSave) => {
+  const is1xx = field => field.tag.startsWith('1');
+  const { tag: initialTag, content: initialContent } = initialRecords.find(is1xx);
+  const { tag: tagToSave, content: contentToSave } = formValuesToSave.find(is1xx);
+
+  if (initialTag !== tagToSave) {
+    return <FormattedMessage id="ui-quick-marc.record.error.1xx.change" values={{ tag: initialTag }} />;
+  }
+
+  const hasInitially$t = !!getContentSubfieldValue(initialContent).$t;
+  const has$tToSave = '$t' in getContentSubfieldValue(contentToSave);
+  const is$tAdded = !hasInitially$t && has$tToSave;
+  const is$tRemoved = hasInitially$t && getIs$tRemoved(contentToSave);
+
+  if (is$tAdded) {
+    return <FormattedMessage id="ui-quick-marc.record.error.1xx.add$t" values={{ tag: initialTag }} />;
+  }
+
+  if (is$tRemoved) {
+    return <FormattedMessage id="ui-quick-marc.record.error.1xx.remove$t" values={{ tag: initialTag }} />;
+  }
+
+  return undefined;
+};
+
+const validateMarcAuthorityRecord = (marcRecords, linksCount, initialRecords, location) => {
   const correspondingHeadingTypeTags = new Set(CORRESPONDING_HEADING_TYPE_TAGS);
 
   const headingRecords = marcRecords.filter(recordRow => correspondingHeadingTypeTags.has(recordRow.tag));
@@ -418,10 +479,23 @@ const validateMarcAuthorityRecord = (marcRecords) => {
     return <FormattedMessage id="ui-quick-marc.record.error.heading.multiple" />;
   }
 
+  const authRefType = new URLSearchParams(location.search).get('authRefType');
+
+  if (linksCount && authRefType === 'Authorized') {
+    return validateMarcAuthority1xxField(initialRecords, marcRecords);
+  }
+
   return undefined;
 };
 
-export const validateMarcRecord = (marcRecord, initialValues, marcType = MARC_TYPES.BIB, locations = []) => {
+export const validateMarcRecord = ({
+  marcRecord,
+  initialValues,
+  marcType = MARC_TYPES.BIB,
+  locations = [],
+  linksCount,
+  location,
+}) => {
   const marcRecords = marcRecord.records || [];
   const initialMarcRecords = initialValues.records;
   const recordLeader = marcRecords[0];
@@ -439,7 +513,7 @@ export const validateMarcRecord = (marcRecord, initialValues, marcType = MARC_TY
   } else if (marcType === MARC_TYPES.HOLDINGS) {
     validationResult = validateMarcHoldingsRecord(marcRecords, locations);
   } else if (marcType === MARC_TYPES.AUTHORITY) {
-    validationResult = validateMarcAuthorityRecord(marcRecords);
+    validationResult = validateMarcAuthorityRecord(marcRecords, linksCount, initialMarcRecords, location);
   }
 
   if (validationResult) {
@@ -710,26 +784,6 @@ export const getCorrespondingMarcTag = (records) => {
   const correspondingHeadingTypeTags = new Set(CORRESPONDING_HEADING_TYPE_TAGS);
 
   return records.find(recordRow => correspondingHeadingTypeTags.has(recordRow.tag)).tag;
-};
-
-export const getContentSubfieldValue = (content) => {
-  return content.split(/\$/)
-    .filter(str => str.length > 0)
-    .reduce((acc, str) => {
-      if (!str) {
-        return acc;
-      }
-
-      const key = `$${str[0]}`;
-      const value = acc[key]
-        ? flatten([acc[key], str.substring(2).trim()]) // repeatable subfields will be stored as an array
-        : str.substring(2).trim();
-
-      return {
-        ...acc,
-        [key]: value,
-      };
-    }, {});
 };
 
 export const groupSubfields = (field, authorityControlledSubfields = []) => {

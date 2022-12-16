@@ -47,6 +47,7 @@ import {
   getCorrespondingMarcTag,
   getContentSubfieldValue,
   deleteRecordByIndex,
+  validateIf1xxFieldIsRemoved,
 } from './utils';
 import { useAuthorityLinking } from '../hooks';
 
@@ -65,12 +66,14 @@ const QuickMarcEditor = ({
   form: {
     mutators,
     reset,
+    getState,
   },
   marcType,
   locations,
   httpError,
   externalRecordPath,
   confirmRemoveAuthorityLinking,
+  linksCount,
 }) => {
   const history = useHistory();
   const location = useLocation();
@@ -124,7 +127,21 @@ const QuickMarcEditor = ({
   }, [redirectToVersion, onClose]);
 
   const confirmSubmit = useCallback((e, isKeepEditing = false) => {
+    const authRefType = new URLSearchParams(location.search).get('authRefType');
+
     continueAfterSave.current = isKeepEditing;
+
+    // if we handle this validation in parent's onSubmit function,
+    // then the modal for removing the field will appear first, not the callout.
+    if (marcType === MARC_TYPES.AUTHORITY && authRefType === 'Authorized' && linksCount) {
+      const errorMessage = validateIf1xxFieldIsRemoved(getState().values.records);
+
+      if (errorMessage) {
+        showCallout({ message: errorMessage, type: 'error' });
+
+        return;
+      }
+    }
 
     if (deletedRecords.length) {
       setIsDeleteModalOpened(true);
@@ -135,7 +152,16 @@ const QuickMarcEditor = ({
     handleSubmit(e).then((updatedRecord) => {
       handleSubmitResponse(updatedRecord);
     });
-  }, [deletedRecords, handleSubmit, handleSubmitResponse]);
+  }, [
+    deletedRecords,
+    handleSubmit,
+    handleSubmitResponse,
+    marcType,
+    location.search,
+    getState,
+    showCallout,
+    linksCount,
+  ]);
 
   const paneFooter = useMemo(() => {
     const start = (
@@ -416,10 +442,12 @@ QuickMarcEditor.propTypes = {
   pristine: PropTypes.bool,
   initialValues: PropTypes.object.isRequired,
   form: PropTypes.shape({
+    getState: PropTypes.func.isRequired,
     mutators: PropTypes.object.isRequired,
     reset: PropTypes.func.isRequired,
   }),
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
+  linksCount: PropTypes.number.isRequired,
   locations: PropTypes.arrayOf(PropTypes.object).isRequired,
   httpError: PropTypes.shape({
     code: PropTypes.string,

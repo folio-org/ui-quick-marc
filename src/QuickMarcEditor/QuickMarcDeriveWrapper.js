@@ -107,7 +107,7 @@ const QuickMarcDeriveWrapper = ({
       marcType,
     );
     const formValuesForDerive = cleanBytesFields(autopopulatedFormWithSubfields, initialValues, marcType);
-    const validationErrorMessage = validateMarcRecord(formValuesForDerive, initialValues);
+    const validationErrorMessage = validateMarcRecord({ marcRecord: formValuesForDerive, initialValues });
 
     if (validationErrorMessage) {
       showCallout({ message: validationErrorMessage, type: 'error' });

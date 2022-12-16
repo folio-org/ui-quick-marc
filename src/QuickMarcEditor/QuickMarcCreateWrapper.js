@@ -66,7 +66,12 @@ const QuickMarcCreateWrapper = ({
       marcType,
     );
     const formValuesForCreate = cleanBytesFields(autopopulatedFormValues, initialValues, marcType);
-    const validationErrorMessage = validateMarcRecord(formValuesForCreate, initialValues, marcType, locations);
+    const validationErrorMessage = validateMarcRecord({
+      marcRecord: formValuesForCreate,
+      initialValues,
+      marcType,
+      locations,
+    });
 
     if (validationErrorMessage) {
       showCallout({ message: validationErrorMessage, type: 'error' });

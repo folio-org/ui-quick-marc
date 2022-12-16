@@ -7,14 +7,27 @@ import {
 } from '@testing-library/react';
 import faker from 'faker';
 import noop from 'lodash/noop';
+import { useLocation } from 'react-router';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcEditWrapper from './QuickMarcEditWrapper';
+import { useAuthorityLinksCount } from '../queries';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
+
+const mockFetchLinksCount = jest.fn().mockResolvedValue();
+
+jest.mock('../queries', () => ({
+  ...jest.requireActual('../queries'),
+  useAuthorityLinksCount: jest.fn().mockReturnValue({
+    fetchLinksCount: jest.fn().mockResolvedValue({
+      links: [{ totalLinks: 0 }],
+    }),
+  }),
+}));
 
 jest.mock('react-final-form', () => ({
   ...jest.requireActual('react-final-form'),
@@ -23,9 +36,9 @@ jest.mock('react-final-form', () => ({
 
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
-  useLocation: () => ({
+  useLocation: jest.fn().mockReturnValue(({
     search: 'relatedRecordVersion=1',
-  }),
+  })),
 }));
 
 const mockRecords = {
@@ -203,6 +216,7 @@ jest.mock('@folio/stripes/final-form', () => () => (Component) => ({
       form={{
         mutators: {},
         reset: jest.fn(),
+        getState: jest.fn(),
       }}
       marcType={marcType}
       {...props}
@@ -431,6 +445,30 @@ describe('Given QuickMarcEditWrapper', () => {
   });
 
   describe('when is authority marc type', () => {
+    describe('and record is Authorized', () => {
+      beforeEach(() => {
+        useLocation.mockClear().mockReturnValue({
+          search: '?authRefType=Authorized',
+        });
+      });
+
+      it('should make a request to get the number of links', async () => {
+        useAuthorityLinksCount.mockClear().mockReturnValue({
+          fetchLinksCount: mockFetchLinksCount,
+        });
+
+        await act(async () => {
+          renderQuickMarcEditWrapper({
+            instance,
+            mutator,
+            marcType: MARC_TYPES.AUTHORITY,
+          });
+        });
+
+        expect(mockFetchLinksCount).toHaveBeenCalledWith([instance.id]);
+      });
+    });
+
     describe('when click on "Save & keep editing" button', () => {
       it('should show on save message and stay on the edit page', async () => {
         const mockOnClose = jest.fn();

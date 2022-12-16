@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
 import faker from 'faker';
+import cloneDeep from 'lodash/cloneDeep';
 
 import { v4 as uuid } from 'uuid';
 import {
@@ -287,7 +288,12 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.BIB, locations)).not.toBeDefined();
+      expect(utils.validateMarcRecord({
+        marcRecord: record,
+        initialValues,
+        marcType: MARC_TYPES.BIB,
+        locations,
+      })).not.toBeDefined();
     });
 
     it('should return error message when record is invalid', () => {
@@ -302,7 +308,12 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.BIB, locations)).toBeDefined();
+      expect(utils.validateMarcRecord({
+        marcRecord: record,
+        initialValues,
+        marcType: MARC_TYPES.BIB,
+        locations,
+      })).toBeDefined();
     });
 
     it('should return error message when record is without 245 row', () => {
@@ -323,7 +334,12 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.BIB, locations).props.id).toBe('ui-quick-marc.record.error.title.empty');
+      expect(utils.validateMarcRecord({
+        marcRecord: record,
+        initialValues,
+        marcType: MARC_TYPES.BIB,
+        locations,
+      }).props.id).toBe('ui-quick-marc.record.error.title.empty');
     });
 
     it('should return error message when record has several 245 rows', () => {
@@ -350,7 +366,12 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.BIB, locations).props.id).toBe('ui-quick-marc.record.error.title.multiple');
+      expect(utils.validateMarcRecord({
+        marcRecord: record,
+        initialValues,
+        marcType: MARC_TYPES.BIB,
+        locations,
+      }).props.id).toBe('ui-quick-marc.record.error.title.multiple');
     });
 
     describe('when record is MARC Holdings record', () => {
@@ -370,7 +391,12 @@ describe('QuickMarcEditor utils', () => {
           ],
         };
 
-        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS, locations)).not.toBeDefined();
+        expect(utils.validateMarcRecord({
+          marcRecord: record,
+          initialValues,
+          marcType: MARC_TYPES.HOLDINGS,
+          locations,
+        })).not.toBeDefined();
       });
 
       it('should return error message when record is without 852 row', () => {
@@ -385,7 +411,12 @@ describe('QuickMarcEditor utils', () => {
           ],
         };
 
-        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS, locations).props.id).toBe('ui-quick-marc.record.error.location.empty');
+        expect(utils.validateMarcRecord({
+          marcRecord: record,
+          initialValues,
+          marcType: MARC_TYPES.HOLDINGS,
+          locations,
+        }).props.id).toBe('ui-quick-marc.record.error.location.empty');
       });
 
       it('should return error message when record has several 852 rows', () => {
@@ -408,7 +439,12 @@ describe('QuickMarcEditor utils', () => {
           ],
         };
 
-        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS, locations).props.id).toBe('ui-quick-marc.record.error.location.multiple');
+        expect(utils.validateMarcRecord({
+          marcRecord: record,
+          initialValues,
+          marcType: MARC_TYPES.HOLDINGS,
+          locations,
+        }).props.id).toBe('ui-quick-marc.record.error.location.multiple');
       });
 
       it('should return error message when record has several 004 rows', () => {
@@ -425,7 +461,12 @@ describe('QuickMarcEditor utils', () => {
           ],
         };
 
-        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS, locations).props.id).toBe('ui-quick-marc.record.error.instanceHrid.multiple');
+        expect(utils.validateMarcRecord({
+          marcRecord: record,
+          initialValues,
+          marcType: MARC_TYPES.HOLDINGS,
+          locations,
+        }).props.id).toBe('ui-quick-marc.record.error.instanceHrid.multiple');
       });
 
       it('should return error message when record has invalid 852 location', () => {
@@ -445,7 +486,12 @@ describe('QuickMarcEditor utils', () => {
           ],
         };
 
-        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS, locations).props.id).toBe('ui-quick-marc.record.error.location.invalid');
+        expect(utils.validateMarcRecord({
+          marcRecord: record,
+          initialValues,
+          marcType: MARC_TYPES.HOLDINGS,
+          locations,
+        }).props.id).toBe('ui-quick-marc.record.error.location.invalid');
       });
 
       it('should return error message when record is missing 852 location', () => {
@@ -465,7 +511,12 @@ describe('QuickMarcEditor utils', () => {
           ],
         };
 
-        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS, locations).props.id).toBe('ui-quick-marc.record.error.location.invalid');
+        expect(utils.validateMarcRecord({
+          marcRecord: record,
+          initialValues,
+          marcType: MARC_TYPES.HOLDINGS,
+          locations,
+        }).props.id).toBe('ui-quick-marc.record.error.location.invalid');
       });
 
       it('should not return error message when record has 852 location', () => {
@@ -486,7 +537,12 @@ describe('QuickMarcEditor utils', () => {
           ],
         };
 
-        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.HOLDINGS, locationsWithNumbers))
+        expect(utils.validateMarcRecord({
+          marcRecord: record,
+          initialValues,
+          marcType: MARC_TYPES.HOLDINGS,
+          locations: locationsWithNumbers,
+        }))
           .toBe(undefined);
       });
     });
@@ -494,6 +550,7 @@ describe('QuickMarcEditor utils', () => {
     describe('when record is MARC Authority record', () => {
       it('should not return error message when record is valid', () => {
         const initialValues = { records: [] };
+        const location = { search: '' };
         const record = {
           leader: '04706cxm a22008651i 4500',
           records: [
@@ -508,7 +565,12 @@ describe('QuickMarcEditor utils', () => {
           ],
         };
 
-        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.AUTHORITY)).not.toBeDefined();
+        expect(utils.validateMarcRecord({
+          marcRecord: record,
+          initialValues,
+          marcType: MARC_TYPES.AUTHORITY,
+          location,
+        })).not.toBeDefined();
       });
 
       it('should return error message when record is without 1XX row', () => {
@@ -523,7 +585,11 @@ describe('QuickMarcEditor utils', () => {
           ],
         };
 
-        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.AUTHORITY).props.id).toBe('ui-quick-marc.record.error.heading.empty');
+        expect(utils.validateMarcRecord({
+          marcRecord: record,
+          initialValues,
+          marcType: MARC_TYPES.AUTHORITY,
+        }).props.id).toBe('ui-quick-marc.record.error.heading.empty');
       });
 
       it('should return error message when record has several 1XX rows', () => {
@@ -546,7 +612,103 @@ describe('QuickMarcEditor utils', () => {
           ],
         };
 
-        expect(utils.validateMarcRecord(record, initialValues, MARC_TYPES.AUTHORITY).props.id).toBe('ui-quick-marc.record.error.heading.multiple');
+        expect(utils.validateMarcRecord({
+          marcRecord: record,
+          initialValues,
+          marcType: MARC_TYPES.AUTHORITY,
+        }).props.id).toBe('ui-quick-marc.record.error.heading.multiple');
+      });
+
+      describe('when authority linked to bib record (linksCount) and authority record is Authorized', () => {
+        const linksCount = 1;
+        const location = { search: '?authRefType=Authorized' };
+        const initialValues = {
+          leader: '04706cxm a22008651i 4500',
+          records: [
+            {
+              content: '04706cxm a22008651i 4500',
+              tag: 'LDR',
+            },
+            {
+              tag: '110',
+              content: '$a Record title',
+            },
+          ],
+        };
+
+        it('should return an error if 1xx tag is changed', () => {
+          const record = cloneDeep(initialValues);
+
+          record.records[1].tag = '100';
+
+          expect(utils.validateMarcRecord({
+            marcRecord: record,
+            initialValues,
+            marcType: MARC_TYPES.AUTHORITY,
+            location,
+            linksCount,
+          }).props.id).toBe('ui-quick-marc.record.error.1xx.change');
+        });
+
+        it('should return an error if $t is added to 1xx field', () => {
+          const record = cloneDeep(initialValues);
+
+          record.records[1].content += ' $t';
+
+          expect(utils.validateMarcRecord({
+            marcRecord: record,
+            initialValues,
+            marcType: MARC_TYPES.AUTHORITY,
+            location,
+            linksCount,
+          }).props.id).toBe('ui-quick-marc.record.error.1xx.add$t');
+        });
+
+        it('should return an error if $t is removed from 1xx field', () => {
+          const newInitialValues = cloneDeep(initialValues);
+
+          newInitialValues.records[1].content += ' $t some text';
+
+          const record = cloneDeep(initialValues);
+
+          record.records[1].content.replace('$t', '');
+
+          expect(utils.validateMarcRecord({
+            marcRecord: record,
+            initialValues: newInitialValues,
+            marcType: MARC_TYPES.AUTHORITY,
+            location,
+            linksCount: 1,
+          }).props.id).toBe('ui-quick-marc.record.error.1xx.remove$t');
+        });
+
+        it('should return an error if $t value is removed from 1xx field', () => {
+          const newInitialValues = cloneDeep(initialValues);
+
+          newInitialValues.records[1].content += ' $t some text';
+
+          const record = cloneDeep(initialValues);
+
+          record.records[1].content.replace('some text', '');
+
+          expect(utils.validateMarcRecord({
+            marcRecord: record,
+            initialValues: newInitialValues,
+            marcType: MARC_TYPES.AUTHORITY,
+            location,
+            linksCount,
+          }).props.id).toBe('ui-quick-marc.record.error.1xx.remove$t');
+        });
+
+        it('should return an error if 1xx field is removed', () => {
+          const records = [{
+            _isDeleted: true,
+            tag: '110',
+            content: '$a Record title',
+          }];
+
+          expect(utils.validateIf1xxFieldIsRemoved(records).props.id).toBe('ui-quick-marc.record.error.1xx.delete');
+        });
       });
     });
   });
