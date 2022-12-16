@@ -243,5 +243,7 @@
     "remove-authority-linking.modal.message": "¿Desea eliminar el enlace de autoridad para este nuevo registro bibliográfico?",
     "bib-record.derive.title": "Derive a new MARC bib record",
     "record.save.error.derive": "Instance cannot be updated. Deprecated instance version.",
-    "permission.quick-marc-editor.duplicate": "quickMARC: Derivar un nuevo registro bibliográfico MARC"
+    "permission.quick-marc-editor.duplicate": "quickMARC: Derivar un nuevo registro bibliográfico MARC",
+    "linkedToMarcAuthority": "Vinculado a la autoridad MARC",
+    "record.link.validation.invalidHeading": "Ha seleccionado un encabezamiento no válido basado en el campo bibliográfico que desea controlar. Por favor, revise su selección."
 }

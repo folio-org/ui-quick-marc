@@ -243,5 +243,7 @@
     "remove-authority-linking.modal.message": "Chcete u tohoto nového bibliografického záznamu odstranit propojení autorit?",
     "bib-record.derive.title": "Odvození nového záznamu MARC bib",
     "record.save.error.derive": "Titul nelze aktualizovat. Zastaralá verze katalogu.",
-    "permission.quick-marc-editor.duplicate": "quickMARC: Odvození nového MARC bibliografického záznamu"
+    "permission.quick-marc-editor.duplicate": "quickMARC: Odvození nového MARC bibliografického záznamu",
+    "linkedToMarcAuthority": "Propojeno s MARC autoritou",
+    "record.link.validation.invalidHeading": "Vybrali jste neplatný nadpis na základě bibliografického pole, které chcete ovládat. Upravte prosím svůj výběr."
 }
