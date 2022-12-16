@@ -61,7 +61,6 @@ const QuickMarcEditWrapper = ({
   const numOfLinks = resources?.quickMarcInstanceLinks?.successfulMutations[0]?.record?.links[0]?.totalLinks;
 
   const onSubmit = useCallback(async (formValues) => {
-    console.log('[ONSUBMIT]');
     let is1xxOr010Updated = false;
 
     if (marcType === MARC_TYPES.AUTHORITY && numOfLinks > 0) {
@@ -157,14 +156,6 @@ const QuickMarcEditWrapper = ({
   }, [showCallout, refreshPageData, location, initialValues, instance, locations, marcType, mutator, numOfLinks]);
 
   useEffect(() => {
-    // if marcType is authority,
-    // get the number of links for marc authority record
-    console.log('[USE EFFECT]');
-
-    // if (marcType !== MARC_TYPES.AUTHORITY) {
-    //   return;
-    // } // shorten this code
-
     if (marcType === MARC_TYPES.AUTHORITY) {
       const getLinks = async () => {
         const fetchNumOfLinks = async () => {
@@ -190,16 +181,13 @@ const QuickMarcEditWrapper = ({
         return linksResponse;
       };
       const setLinks = async () => {
-        // const links = await getLinks();
         await getLinks();
       };
 
       setLinks();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // instance.id, marcType, mutator
-
-  console.log('numOfLinks ', numOfLinks);
+  }, []);
 
   return (
     <QuickMarcEditor
