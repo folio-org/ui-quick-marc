@@ -4,6 +4,7 @@ import {
   act,
   fireEvent,
   waitFor,
+  screen,
 } from '@testing-library/react';
 import faker from 'faker';
 import noop from 'lodash/noop';
@@ -216,7 +217,7 @@ jest.mock('@folio/stripes/final-form', () => () => (Component) => ({
       form={{
         mutators: {},
         reset: jest.fn(),
-        getState: jest.fn(),
+        getState: jest.fn().mockReturnValue({ values: formValues }),
       }}
       marcType={marcType}
       {...props}
@@ -466,6 +467,44 @@ describe('Given QuickMarcEditWrapper', () => {
         });
 
         expect(mockFetchLinksCount).toHaveBeenCalledWith([instance.id]);
+      });
+
+      describe('and record is linked to a bib record', () => {
+        beforeEach(() => {
+          useAuthorityLinksCount.mockClear().mockReturnValue({
+            fetchLinksCount: jest.fn().mockResolvedValue({
+              links: [{ totalLinks: 1 }],
+            }),
+          });
+        });
+
+        describe('and 1xx tag is changed', () => {
+          describe('and click on save button', () => {
+            it('should display an error', async () => {
+              const errorMessage = 'ui-quick-marc.record.error.1xx.delete';
+              const utils = jest.requireActual('./utils');
+              const validateIf1xxFieldIsRemovedSpy = jest
+                .spyOn(utils, 'validateIf1xxFieldIsRemoved')
+                .mockReturnValue(errorMessage);
+
+              await act(async () => {
+                renderQuickMarcEditWrapper({
+                  instance,
+                  mutator,
+                  marcType: MARC_TYPES.AUTHORITY,
+                });
+              });
+
+              await act(async () => { fireEvent.click(screen.getByText('ui-quick-marc.record.save.continue')); });
+
+              expect(validateIf1xxFieldIsRemovedSpy).toHaveBeenCalled();
+              expect(mockShowCallout).toHaveBeenCalledWith({
+                message: errorMessage,
+                type: 'error',
+              });
+            });
+          });
+        });
       });
     });
 
