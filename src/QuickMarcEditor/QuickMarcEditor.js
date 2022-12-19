@@ -138,14 +138,11 @@ const QuickMarcEditor = ({
     });
   }, [deletedRecords.length, handleSubmit, handleSubmitResponse]);
 
-  const handleFooterSave = useCallback((e, isKeepEditing = false) => {
+  const onFormSubmit = useCallback((e, isKeepEditing = false) => {
     continueAfterSave.current = isKeepEditing;
 
     if (marcType === MARC_TYPES.AUTHORITY && numOfLinks > 0 && are010Or1xxUpdated(initialValues.records, records)) {
       setIsUpdate0101xxfieldsAuthRecModalOpen(true);
-
-      // eslint-disable-next-line no-useless-return
-      return;
     } else {
       confirmSubmit(e);
     }
@@ -170,7 +167,7 @@ const QuickMarcEditor = ({
             buttonClass={css.saveContinueBtn}
             disabled={saveFormDisabled}
             id="quick-marc-record-save-edit"
-            onClick={(event) => handleFooterSave(event, true)}
+            onClick={(event) => onFormSubmit(event, true)}
             marginBottom0
           >
             <FormattedMessage id="ui-quick-marc.record.save.continue" />
@@ -180,7 +177,7 @@ const QuickMarcEditor = ({
           buttonStyle="primary mega"
           disabled={saveFormDisabled}
           id="quick-marc-record-save"
-          onClick={handleFooterSave}
+          onClick={onFormSubmit}
           marginBottom0
         >
           <FormattedMessage id="stripes-acq-components.FormFooter.save" />
@@ -194,7 +191,7 @@ const QuickMarcEditor = ({
         renderEnd={end}
       />
     );
-  }, [handleFooterSave, saveFormDisabled, onClose, action]);
+  }, [onFormSubmit, saveFormDisabled, onClose, action]);
 
   const getConfirmModalMessage = () => (
     <FormattedMessage
@@ -423,7 +420,7 @@ const QuickMarcEditor = ({
         message={
           <FormattedMessage
             id={continueAfterSave.current ? 'ui-quick-marc.update-linked-bib-fields.modal.message-save-and-editing' : 'ui-quick-marc.update-linked-bib-fields.modal.message-save-and-close'}
-            values={{ count: numOfLinks, saveName: continueAfterSave.current ? 'Save & editing' : 'Save & close' }}
+            values={{ count: numOfLinks }}
           />
         }
         confirmLabel={

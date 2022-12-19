@@ -458,7 +458,7 @@ describe('Given QuickMarcEditWrapper', () => {
         onClose: mockOnClose,
       });
 
-      expect(mutator.quickMarcInstanceLinks.POST).toHaveBeenCalled();
+      expect(mutator.quickMarcInstanceLinks.POST).toHaveBeenCalledWith({ 'ids': [instance.id] });
     });
 
     describe('when click on "Save & keep editing" button', () => {

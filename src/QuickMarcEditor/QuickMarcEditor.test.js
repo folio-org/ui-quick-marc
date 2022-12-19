@@ -80,6 +80,15 @@ const initialValues = {
       id: 'LDR',
     },
     {
+      _isDeleted: false,
+      _isLinked: false,
+      content: '$a n  931006645',
+      id: 'af322498-097b-4c74-af15-c9166884aa6a',
+      indicators: ['\\', '\\'],
+      isProtected: false,
+      tag: '010',
+    },
+    {
       tag: '100',
       content: '$a Coates, Ta-Nehisi $e author.',
       indicators: ['1', '\\'],
@@ -179,7 +188,7 @@ describe('Given QuickMarcEditor', () => {
         getByText,
       } = renderQuickMarcEditor();
 
-      const contentField = getByTestId('content-field-2');
+      const contentField = getByTestId('content-field-3');
 
       fireEvent.change(contentField, { target: { value: 'Changed test title' } });
       fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
@@ -196,7 +205,7 @@ describe('Given QuickMarcEditor', () => {
         getByText,
       } = renderQuickMarcEditor();
 
-      const contentField = getByTestId('content-field-2');
+      const contentField = getByTestId('content-field-3');
 
       fireEvent.change(contentField, { target: { value: 'Changed test title' } });
       fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
@@ -332,34 +341,6 @@ describe('Given QuickMarcEditor', () => {
           const { getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
             numOfLinks: 1,
-            initialValues: {
-              leader: 'assdfgs ds sdg',
-              records: [
-                {
-                  tag: 'LDR',
-                  content: 'assdfgs ds sdg',
-                  id: 'LDR',
-                },
-                {
-                  _isDeleted: false,
-                  _isLinked: false,
-                  content: '$a n  931006645',
-                  id: 'af322498-097b-4c74-af15-c9166884aa6a',
-                  indicators: ['\\', '\\'],
-                  isProtected: false,
-                  tag: '010',
-                },
-                {
-                  _isDeleted: false,
-                  _isLinked: false,
-                  content: '$a Yuan, Bing',
-                  id: 'e95af4e5-008c-42c4-999c-4e103da9de13',
-                  indicators: ['1', '\\'],
-                  isProtected: false,
-                  tag: '100',
-                },
-              ],
-            },
           });
 
           const contentField = getByTestId('content-field-1');
@@ -370,38 +351,10 @@ describe('Given QuickMarcEditor', () => {
           expect(getByText('Confirmation modal')).toBeDefined();
         });
 
-        it('should close the modal, save the updates and close the editor on clickng save and close button', async () => {
+        it('should close the modal, save the updates and close the editor on clicking save and close button', async () => {
           const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
             numOfLinks: 1,
-            initialValues: {
-              leader: 'assdfgs ds sdg',
-              records: [
-                {
-                  tag: 'LDR',
-                  content: 'assdfgs ds sdg',
-                  id: 'LDR',
-                },
-                {
-                  _isDeleted: false,
-                  _isLinked: false,
-                  content: '$a n  931006645',
-                  id: 'af322498-097b-4c74-af15-c9166884aa6a',
-                  indicators: ['\\', '\\'],
-                  isProtected: false,
-                  tag: '010',
-                },
-                {
-                  _isDeleted: false,
-                  _isLinked: false,
-                  content: '$a Yuan, Bing',
-                  id: 'e95af4e5-008c-42c4-999c-4e103da9de13',
-                  indicators: ['1', '\\'],
-                  isProtected: false,
-                  tag: '100',
-                },
-              ],
-            },
           });
 
           const contentField = getByTestId('content-field-1');
@@ -547,7 +500,7 @@ describe('Given QuickMarcEditor', () => {
           expect(getByText('ui-quick-marc.authority-record.edit.title')).toBeDefined();
         });
 
-        it('should close the modal on clickinh keep editing button ', () => {
+        it('should close the modal on clicking keep editing button ', () => {
           const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
             numOfLinks: 1,
@@ -732,7 +685,7 @@ describe('Given QuickMarcEditor', () => {
           expect(getByText('Confirmation modal')).toBeDefined();
         });
 
-        it('should close the modal, save the updates and editor should be open - on clickng save and keep editing button', async () => {
+        it('should close the modal, save the updates and editor should be open - on clicking save and keep editing button', async () => {
           const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
             numOfLinks: 1,
@@ -768,7 +721,7 @@ describe('Given QuickMarcEditor', () => {
           expect(getByText('ui-quick-marc.authority-record.edit.title')).toBeDefined();
         });
 
-        it('should close the modal on clickinh keep editing button ', () => {
+        it('should close the modal on clicking keep editing button ', () => {
           const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
             numOfLinks: 1,

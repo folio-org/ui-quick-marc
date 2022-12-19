@@ -812,8 +812,9 @@ export const are010Or1xxUpdated = (initial, updated) => {
   let is010Updated = false;
   let is1XXUpdated = false;
 
-  const initial010 = initial.find(rec => rec.tag === '010');
-  const updated010 = updated.find(rec => rec.tag === '010');
+  const authRec010Tag = '010';
+  const initial010 = initial.find(rec => rec.tag === authRec010Tag);
+  const updated010 = updated.find(rec => rec.tag === authRec010Tag);
 
   if (initial010 &&
     updated010 &&
@@ -822,15 +823,16 @@ export const are010Or1xxUpdated = (initial, updated) => {
     is010Updated = true;
   }
 
-  const initial1xxRecords = initial.filter(rec => rec.tag[0] === '1');
-  const updated1xxRecords = updated.filter(rec => rec.tag[0] === '1');
+  const authRec1XXTagStartsWith = '1';
+  const initial1xxRecords = initial.filter(rec => rec.tag[0] === authRec1XXTagStartsWith);
+  const updated1xxRecords = updated.filter(rec => rec.tag[0] === authRec1XXTagStartsWith);
 
   const updated1xxArr = [];
 
   initial1xxRecords.forEach(recI => {
-    const updatedRec = updated1xxRecords.filter(recU => recU.id === recI.id);
+    const updatedRec = updated1xxRecords.find(recU => recU.id === recI.id);
 
-    if (updatedRec.length > 0 && updatedRec[0].content !== recI.content) {
+    if (updatedRec && updatedRec.content !== recI.content) {
       updated1xxArr.push(updatedRec);
     }
   });
