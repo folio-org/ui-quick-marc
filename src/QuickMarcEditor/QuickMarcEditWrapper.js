@@ -156,38 +156,19 @@ const QuickMarcEditWrapper = ({
   }, [showCallout, refreshPageData, location, initialValues, instance, locations, marcType, mutator, numOfLinks]);
 
   useEffect(() => {
-    if (marcType === MARC_TYPES.AUTHORITY) {
-      const getLinks = async () => {
-        const fetchNumOfLinks = async () => {
-          const fetchedLinks = await mutator.quickMarcInstanceLinks.POST({
-            'ids': [instance.id],
-          });
-
-          return fetchedLinks;
-        };
-
-        let linksResponse;
-
-        try {
-          linksResponse = await fetchNumOfLinks();
-        } catch (errorResponse) {
-          const parsedError = await parseHttpError(errorResponse);
-
-          setHttpError(parsedError);
-
-          return undefined;
-        }
-
-        return linksResponse;
-      };
-      const setLinks = async () => {
-        await getLinks();
-      };
-
-      setLinks();
+    if (marcType !== MARC_TYPES.AUTHORITY) {
+      return;
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+    mutator.quickMarcInstanceLinks.POST({
+      'ids': [instance.id],
+    })
+      .catch(async e => {
+        const parsedError = await parseHttpError(e);
+
+        setHttpError(parsedError);
+      });
+  }, [instance.id, marcType, mutator.quickMarcInstanceLinks]);
 
   return (
     <QuickMarcEditor
