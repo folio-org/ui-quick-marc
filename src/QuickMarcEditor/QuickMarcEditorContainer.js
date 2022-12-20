@@ -168,12 +168,6 @@ QuickMarcEditorContainer.manifest = Object.freeze({
     fetch: false,
     accumulate: true,
   },
-  quickMarcInstanceLinks: {
-    ...baseManifest,
-    fetch: false,
-    accumulate: true,
-    path: 'links/authorities/bulk/count',
-  },
   quickMarcEditMarcRecord: {
     ...baseManifest,
     fetch: false,

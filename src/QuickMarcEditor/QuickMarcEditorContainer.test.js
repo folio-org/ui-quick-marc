@@ -90,23 +90,6 @@ describe('Given Quick Marc Editor Container', () => {
       quickMarcEditInstance: {
         GET: () => Promise.resolve(instance),
       },
-      quickMarcInstanceLinks: {
-        POST: jest.fn(() => Promise.resolve(
-          {
-            successfulMutations: [
-              {
-                record: {
-                  link: [
-                    {
-                      totalLinks: 0,
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        )),
-      },
       quickMarcEditMarcRecord: {
         GET: jest.fn(() => Promise.resolve(record)),
         PUT: jest.fn(() => Promise.resolve()),

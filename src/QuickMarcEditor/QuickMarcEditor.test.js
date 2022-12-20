@@ -104,7 +104,7 @@ const initialValues = {
   ],
 };
 
-const numOfLinks = 0;
+const linksCount = 0;
 
 const renderQuickMarcEditor = (props) => (render(
   <Harness>
@@ -121,7 +121,7 @@ const renderQuickMarcEditor = (props) => (render(
       initialValues={initialValues}
       marcType={MARC_TYPES.BIB}
       locations={locations}
-      numOfLinks={numOfLinks}
+      linksCount={linksCount}
       {...props}
     />
   </Harness>,
@@ -340,7 +340,7 @@ describe('Given QuickMarcEditor', () => {
         it('should open confirmation modal', () => {
           const { getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
-            numOfLinks: 1,
+            linksCount: 1,
           });
 
           const contentField = getByTestId('content-field-1');
@@ -354,7 +354,7 @@ describe('Given QuickMarcEditor', () => {
         it('should close the modal, save the updates and close the editor on clicking save and close button', async () => {
           const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
-            numOfLinks: 1,
+            linksCount: 1,
           });
 
           const contentField = getByTestId('content-field-1');
@@ -371,7 +371,7 @@ describe('Given QuickMarcEditor', () => {
         it('should close the modal on clicking keep editing button ', () => {
           const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
-            numOfLinks: 1,
+            linksCount: 1,
             initialValues: {
               leader: 'assdfgs ds sdg',
               records: [
@@ -416,7 +416,7 @@ describe('Given QuickMarcEditor', () => {
         it('should open confirmation modal', () => {
           const { getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
-            numOfLinks: 1,
+            linksCount: 1,
             initialValues: {
               leader: 'assdfgs ds sdg',
               records: [
@@ -458,7 +458,7 @@ describe('Given QuickMarcEditor', () => {
         it('should close the modal, save the updates and editor should be open - on clickng save and keep editing button', async () => {
           const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
-            numOfLinks: 1,
+            linksCount: 1,
             initialValues: {
               leader: 'assdfgs ds sdg',
               records: [
@@ -503,7 +503,7 @@ describe('Given QuickMarcEditor', () => {
         it('should close the modal on clicking keep editing button ', () => {
           const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
-            numOfLinks: 1,
+            linksCount: 1,
             initialValues: {
               leader: 'assdfgs ds sdg',
               records: [
@@ -550,7 +550,7 @@ describe('Given QuickMarcEditor', () => {
         it('should open confirmation modal', () => {
           const { getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
-            numOfLinks: 1,
+            linksCount: 1,
             initialValues: {
               leader: 'assdfgs ds sdg',
               records: [
@@ -583,7 +583,7 @@ describe('Given QuickMarcEditor', () => {
         it('should close the modal, save the updates and close the editor on clickng save and close button', async () => {
           const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
-            numOfLinks: 1,
+            linksCount: 1,
             initialValues: {
               leader: 'assdfgs ds sdg',
               records: [
@@ -619,7 +619,7 @@ describe('Given QuickMarcEditor', () => {
         it('should close the modal on clicking keep editing button ', () => {
           const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
-            numOfLinks: 1,
+            linksCount: 1,
             initialValues: {
               leader: 'assdfgs ds sdg',
               records: [
@@ -655,7 +655,7 @@ describe('Given QuickMarcEditor', () => {
         it('should open confirmation modal', () => {
           const { getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
-            numOfLinks: 1,
+            linksCount: 1,
             initialValues: {
               leader: 'assdfgs ds sdg',
               records: [
@@ -688,7 +688,7 @@ describe('Given QuickMarcEditor', () => {
         it('should close the modal, save the updates and editor should be open - on clicking save and keep editing button', async () => {
           const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
-            numOfLinks: 1,
+            linksCount: 1,
             initialValues: {
               leader: 'assdfgs ds sdg',
               records: [
@@ -724,7 +724,7 @@ describe('Given QuickMarcEditor', () => {
         it('should close the modal on clicking keep editing button ', () => {
           const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
-            numOfLinks: 1,
+            linksCount: 1,
             initialValues: {
               leader: 'assdfgs ds sdg',
               records: [
@@ -762,7 +762,7 @@ describe('Given QuickMarcEditor', () => {
         it('should not open confirmation modal, but save the updates', () => {
           const { getByTestId, getByText, queryByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
-            numOfLinks: 1,
+            linksCount: 1,
             initialValues: {
               leader: 'assdfgs ds sdg',
               records: [
@@ -816,7 +816,7 @@ describe('Given QuickMarcEditor', () => {
         it('should not open confirmation modal, but save the updates', () => {
           const { getByTestId, getByText, queryByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
-            numOfLinks: 1,
+            linksCount: 1,
             initialValues: {
               leader: 'assdfgs ds sdg',
               records: [

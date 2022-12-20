@@ -155,23 +155,6 @@ describe('Given QuickMarcCreateWrapper', () => {
       quickMarcEditInstance: {
         GET: () => Promise.resolve(instance),
       },
-      quickMarcInstanceLinks: {
-        POST: jest.fn(() => Promise.resolve(
-          {
-            successfulMutations: [
-              {
-                record: {
-                  link: [
-                    {
-                      totalLinks: 0,
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        )),
-      },
       quickMarcEditMarcRecord: {
         GET: jest.fn(() => Promise.resolve(record)),
         POST: jest.fn(() => Promise.resolve({})),
