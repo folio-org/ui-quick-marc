@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useEffect,
   useState,
 } from 'react';
 import { useLocation } from 'react-router';
@@ -10,6 +11,8 @@ import {
 } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
+
+import { useAuthorityLinksCount } from '../queries';
 import { QUICK_MARC_ACTIONS } from './constants';
 import {
   EXTERNAL_INSTANCE_APIS,
@@ -54,11 +57,21 @@ const QuickMarcEditWrapper = ({
   const showCallout = useShowCallout();
   const location = useLocation();
   const [httpError, setHttpError] = useState(null);
+  const [linksCount, setLinksCount] = useState(0);
+
+  const { fetchLinksCount } = useAuthorityLinksCount();
 
   const onSubmit = useCallback(async (formValues) => {
     const formValuesToSave = removeDeletedRecords(formValues);
     const controlFieldErrorMessage = checkControlFieldLength(formValuesToSave);
-    const validationErrorMessage = validateMarcRecord(formValuesToSave, initialValues, marcType, locations);
+    const validationErrorMessage = validateMarcRecord({
+      marcRecord: formValuesToSave,
+      initialValues,
+      marcType,
+      locations,
+      linksCount,
+      location,
+    });
     const errorMessage = controlFieldErrorMessage || validationErrorMessage;
 
     if (errorMessage) {
@@ -132,7 +145,17 @@ const QuickMarcEditWrapper = ({
 
         setHttpError(parsedError);
       });
-  }, [showCallout, refreshPageData, location, initialValues, instance, locations, marcType, mutator]);
+  }, [showCallout, refreshPageData, location, initialValues, instance, locations, marcType, mutator, linksCount]);
+
+  useEffect(() => {
+    const authRefType = new URLSearchParams(location.search).get('authRefType');
+
+    if (marcType === MARC_TYPES.AUTHORITY && authRefType === 'Authorized') {
+      fetchLinksCount([instance.id])
+        .then(res => setLinksCount(res.links[0].totalLinks))
+        .catch(setHttpError);
+    }
+  }, [location.search, marcType, fetchLinksCount, instance.id]);
 
   return (
     <QuickMarcEditor
@@ -146,6 +169,7 @@ const QuickMarcEditWrapper = ({
       locations={locations}
       httpError={httpError}
       externalRecordPath={externalRecordPath}
+      linksCount={linksCount}
     />
   );
 };
