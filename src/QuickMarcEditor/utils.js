@@ -861,3 +861,39 @@ export const splitFields = marcRecord => {
     }),
   };
 };
+
+export const are010Or1xxUpdated = (initial, updated) => {
+  let is010Updated = false;
+  let is1XXUpdated = false;
+
+  const authRec010Tag = '010';
+  const initial010 = initial.find(rec => rec.tag === authRec010Tag);
+  const updated010 = updated.find(rec => rec.tag === authRec010Tag);
+
+  if (initial010 &&
+    updated010 &&
+    getContentSubfieldValue(initial010.content).$a !== getContentSubfieldValue(updated010.content).$a
+  ) {
+    is010Updated = true;
+  }
+
+  const authRec1XXTagStartsWith = '1';
+  const initial1xxRecords = initial.filter(rec => rec.tag[0] === authRec1XXTagStartsWith);
+  const updated1xxRecords = updated.filter(rec => rec.tag[0] === authRec1XXTagStartsWith);
+
+  const updated1xxArr = [];
+
+  initial1xxRecords.forEach(recI => {
+    const updatedRec = updated1xxRecords.find(recU => recU.id === recI.id);
+
+    if (updatedRec && updatedRec.content !== recI.content) {
+      updated1xxArr.push(updatedRec);
+    }
+  });
+
+  if (updated1xxArr.length) {
+    is1XXUpdated = true;
+  }
+
+  return is010Updated || is1XXUpdated;
+};

@@ -200,6 +200,7 @@ const QuickMarcEditorRows = ({
             if (recordRow._isDeleted) {
               return (
                 <DeletedRowPlaceholder
+                  key={recordRow.id}
                   field={recordRow}
                   restoreRow={() => restoreRow(idx)}
                 />

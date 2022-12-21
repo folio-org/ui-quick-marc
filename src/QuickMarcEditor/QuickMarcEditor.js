@@ -5,7 +5,10 @@ import React, {
   useCallback,
   useEffect,
 } from 'react';
-import { useHistory, useLocation } from 'react-router';
+import {
+  useHistory,
+  useLocation,
+} from 'react-router';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import find from 'lodash/find';
@@ -47,6 +50,7 @@ import {
   getCorrespondingMarcTag,
   getContentSubfieldValue,
   deleteRecordByIndex,
+  are010Or1xxUpdated,
   validateIf1xxFieldIsRemoved,
 } from './utils';
 import { useAuthorityLinking } from '../hooks';
@@ -81,8 +85,11 @@ const QuickMarcEditor = ({
   const [records, setRecords] = useState([]);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const [isUnlinkRecordsModalOpen, setIsUnlinkRecordsModalOpen] = useState(false);
+  const [isUpdate0101xxfieldsAuthRecModalOpen, setIsUpdate0101xxfieldsAuthRecModalOpen] = useState(false);
   const continueAfterSave = useRef(false);
   const formRef = useRef(null);
+
+  const authRefType = new URLSearchParams(location.search).get('authRefType');
 
   const { unlinkAuthority } = useAuthorityLinking();
 
@@ -126,11 +133,7 @@ const QuickMarcEditor = ({
     onClose();
   }, [redirectToVersion, onClose]);
 
-  const confirmSubmit = useCallback((e, isKeepEditing = false) => {
-    const authRefType = new URLSearchParams(location.search).get('authRefType');
-
-    continueAfterSave.current = isKeepEditing;
-
+  const confirmSubmit = useCallback((e) => {
     // if we handle this validation in parent's onSubmit function,
     // then the modal for removing the field will appear first, not the callout.
     if (marcType === MARC_TYPES.AUTHORITY && authRefType === 'Authorized' && linksCount) {
@@ -157,11 +160,21 @@ const QuickMarcEditor = ({
     handleSubmit,
     handleSubmitResponse,
     marcType,
-    location.search,
+    authRefType,
     getState,
     showCallout,
     linksCount,
   ]);
+
+  const onFormSubmit = useCallback((e, isKeepEditing = false) => {
+    continueAfterSave.current = isKeepEditing;
+
+    if (marcType === MARC_TYPES.AUTHORITY && authRefType === 'Authorized' && linksCount > 0 && are010Or1xxUpdated(initialValues.records, records)) {
+      setIsUpdate0101xxfieldsAuthRecModalOpen(true);
+    } else {
+      confirmSubmit(e);
+    }
+  }, [confirmSubmit, linksCount, marcType, initialValues, records, authRefType]);
 
   const paneFooter = useMemo(() => {
     const start = (
@@ -182,7 +195,7 @@ const QuickMarcEditor = ({
             buttonClass={css.saveContinueBtn}
             disabled={saveFormDisabled}
             id="quick-marc-record-save-edit"
-            onClick={(event) => confirmSubmit(event, true)}
+            onClick={(event) => onFormSubmit(event, true)}
             marginBottom0
           >
             <FormattedMessage id="ui-quick-marc.record.save.continue" />
@@ -192,7 +205,7 @@ const QuickMarcEditor = ({
           buttonStyle="primary mega"
           disabled={saveFormDisabled}
           id="quick-marc-record-save"
-          onClick={confirmSubmit}
+          onClick={onFormSubmit}
           marginBottom0
         >
           <FormattedMessage id="stripes-acq-components.FormFooter.save" />
@@ -206,7 +219,7 @@ const QuickMarcEditor = ({
         renderEnd={end}
       />
     );
-  }, [confirmSubmit, saveFormDisabled, onClose, action]);
+  }, [onFormSubmit, saveFormDisabled, onClose, action]);
 
   const getConfirmModalMessage = () => (
     <FormattedMessage
@@ -322,6 +335,10 @@ const QuickMarcEditor = ({
     setIsUnlinkRecordsModalOpen(false);
   };
 
+  const handleKeepEditingLinkedFields = () => {
+    setIsUpdate0101xxfieldsAuthRecModalOpen(false);
+  };
+
   useEffect(() => {
     if (!httpError) {
       return;
@@ -424,6 +441,25 @@ const QuickMarcEditor = ({
           </IfPermission>
         )
       }
+      <ConfirmationModal
+        id="quick-marc-update-linked-bib-fields"
+        open={isUpdate0101xxfieldsAuthRecModalOpen}
+        heading={<FormattedMessage id="ui-quick-marc.update-linked-bib-fields.modal.label" />}
+        message={
+          <FormattedMessage
+            id={continueAfterSave.current ? 'ui-quick-marc.update-linked-bib-fields.modal.message-save-and-editing' : 'ui-quick-marc.update-linked-bib-fields.modal.message-save-and-close'}
+            values={{ count: linksCount }}
+          />
+        }
+        confirmLabel={
+          <FormattedMessage
+            id={continueAfterSave.current ? 'ui-quick-marc.update-linked-bib-fields.modal.saveAndEditing' : 'ui-quick-marc.update-linked-bib-fields.modal.saveAndClose'}
+          />
+        }
+        cancelLabel={<FormattedMessage id="ui-quick-marc.update-linked-bib-fields.modal.keep-editing" />}
+        onConfirm={confirmSubmit}
+        onCancel={handleKeepEditingLinkedFields}
+      />
       <FormSpy
         subscription={spySubscription}
         onChange={changeRecords}
