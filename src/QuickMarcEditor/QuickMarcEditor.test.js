@@ -17,6 +17,13 @@ import { MARC_TYPES } from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
 
+jest.mock('react-router', () => ({
+  ...jest.requireActual('react-router'),
+  useLocation: () => ({
+    search: 'authRefType=Authorized',
+  }),
+}));
+
 jest.mock('@folio/stripes/components', () => ({
   ...jest.requireActual('@folio/stripes/components'),
   ConfirmationModal: jest.fn(({

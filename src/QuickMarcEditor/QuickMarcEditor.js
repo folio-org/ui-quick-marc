@@ -5,7 +5,10 @@ import React, {
   useCallback,
   useEffect,
 } from 'react';
-import { useHistory, useLocation } from 'react-router';
+import {
+  useHistory,
+  useLocation,
+} from 'react-router';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import find from 'lodash/find';
@@ -130,9 +133,7 @@ const QuickMarcEditor = ({
     onClose();
   }, [redirectToVersion, onClose]);
 
-  const confirmSubmit = useCallback((e, isKeepEditing = false) => {
-    continueAfterSave.current = isKeepEditing;
-
+  const confirmSubmit = useCallback((e) => {
     // if we handle this validation in parent's onSubmit function,
     // then the modal for removing the field will appear first, not the callout.
     if (marcType === MARC_TYPES.AUTHORITY && authRefType === 'Authorized' && linksCount) {

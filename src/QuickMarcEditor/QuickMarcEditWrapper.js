@@ -40,7 +40,6 @@ const propTypes = {
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
   locations: PropTypes.arrayOf(PropTypes.object).isRequired,
-  resources: PropTypes.object.isRequired,
 };
 
 const QuickMarcEditWrapper = ({
@@ -53,7 +52,6 @@ const QuickMarcEditWrapper = ({
   locations,
   refreshPageData,
   externalRecordPath,
-  resources,
 }) => {
   const showCallout = useShowCallout();
   const location = useLocation();
