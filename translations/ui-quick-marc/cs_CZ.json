@@ -245,5 +245,16 @@
     "record.save.error.derive": "Titul nelze aktualizovat. Zastaralá verze katalogu.",
     "permission.quick-marc-editor.duplicate": "quickMARC: Odvození nového MARC bibliografického záznamu",
     "linkedToMarcAuthority": "Propojeno s MARC autoritou",
-    "record.link.validation.invalidHeading": "Vybrali jste neplatný nadpis na základě bibliografického pole, které chcete ovládat. Upravte prosím svůj výběr."
+    "record.link.validation.invalidHeading": "Vybrali jste neplatný nadpis na základě bibliografického pole, které chcete ovládat. Upravte prosím svůj výběr.",
+    "record.error.1xx.change": "Nelze změnit <b>uložené pole MARC autority {tag}</b>, protože řídí bibliografické pole. Chcete-li změnit toto 1XX, musíte zrušit propojení všech kontrolovaných bibliografických polí.",
+    "record.error.1xx.add$t": "Nelze přidat <b>$t do pole ${tag}</b>, protože řídí bibliografické pole, které nemůže toto podpole řídit. Chcete-li změnit tuto hodnotu 1XX, musíte zrušit propojení všech řízených bibliografických polí, která nemohou řídit $t.",
+    "record.error.1xx.remove$t": "Nelze odstranit <b>$t z pole ${tag}</b>, protože řídí bibliografické pole, které toto podpole vyžaduje. Chcete-li změnit tuto hodnotu 1XX, musíte zrušit propojení všech kontrolovaných bibliografických polí, která vyžadují kontrolu $t.",
+    "record.error.1xx.delete": "Záznam nelze uložit bez pole 1XX.",
+    "record.save.updatingLinkedBibRecords": "Záznam byl aktualizován. Byly zahájeny aktualizace <b>{count}</b> propojených bibliografických záznamů.",
+    "update-linked-bib-fields.modal.label": "Opravdu?",
+    "update-linked-bib-fields.modal.message-save-and-editing": "<b> {count} {count, plural, one {bibliografický záznam} other {bibliografické záznamy}}</b>{count, plural, one {je} other {jsou}} propojen(y) s tímto záznamem autority a bude aktualizován, pokud se klikne na <b>Uložit a upravit</b>.",
+    "update-linked-bib-fields.modal.message-save-and-close": "<b>{count} {count, plural, one {bibliografický záznam} other {bibliografické záznamy}}</b>{count, plural, one {je} other {jsou}} propojen(y) s tímto záznamem autority a bude aktualizován, pokud se klikne na tlačítko <b>Uložit a zavřít</b>.",
+    "update-linked-bib-fields.modal.keep-editing": "Pokračovat v úpravách",
+    "update-linked-bib-fields.modal.saveAndClose": "Uložit a zavřít",
+    "update-linked-bib-fields.modal.saveAndEditing": "Upravit a uložit"
 }
