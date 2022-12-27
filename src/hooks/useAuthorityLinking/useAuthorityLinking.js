@@ -60,6 +60,24 @@ const useAuthorityLinking = () => {
     return linkableField;
   }, [linkingRules]);
 
+  const getControlledSubfields = useCallback((linkingRule) => {
+    // include transformed subfields into list of controlled subfields
+    return linkingRule.authoritySubfields.map(subfield => {
+      if (!linkingRule.subfieldModifications) {
+        return subfield;
+      }
+
+      const subfieldTransformation = linkingRule.subfieldModifications
+        .find(transformation => transformation.source === subfield);
+
+      if (!subfieldTransformation) {
+        return subfield;
+      }
+
+      return subfieldTransformation.target;
+    });
+  }, []);
+
   const validateLinkage = useCallback((linkedAuthorityField, bibField) => {
     if (!linkedAuthorityField) {
       return 'ui-quick-marc.record.link.validation.invalidHeading';
@@ -119,9 +137,11 @@ const useAuthorityLinking = () => {
       throw new Error(validationError);
     }
 
+    const linkingRule = findLinkingRule(field.tag, linkedAuthorityField.tag);
+
     updateBibFieldWithLinkingData(field, linkedAuthorityField, authority);
 
-    const controlledSubfields = Object.keys(getContentSubfieldValue(linkedAuthorityField.content)).map(key => key.replace('$', ''));
+    const controlledSubfields = getControlledSubfields(linkingRule);
 
     return {
       ...field,
@@ -130,7 +150,13 @@ const useAuthorityLinking = () => {
       subfieldGroups: groupSubfields(field, controlledSubfields),
       authorityControlledSubfields: controlledSubfields,
     };
-  }, [updateBibFieldWithLinkingData, getLinkableAuthorityField, validateLinkage]);
+  }, [
+    updateBibFieldWithLinkingData,
+    getLinkableAuthorityField,
+    validateLinkage,
+    findLinkingRule,
+    getControlledSubfields,
+  ]);
 
   const unlinkAuthority = (field) => {
     const bibSubfields = getContentSubfieldValue(field.content);

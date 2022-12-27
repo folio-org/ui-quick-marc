@@ -77,6 +77,7 @@ describe('Given useAuthorityLinking', () => {
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
         content: '$a authority value $b some other value $t field for modification $0 http://some.url/n0001 $9 authority-id',
+        authorityControlledSubfields: ['a', 'b', 't'],
       });
     });
   });
@@ -97,6 +98,7 @@ describe('Given useAuthorityLinking', () => {
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
         content: '$a authority value $b some other value $0 http://some.url/n0001 $9 authority-id $t field for modification',
+        authorityControlledSubfields: ['a', 'b', 't'],
       });
     });
   });
@@ -117,6 +119,7 @@ describe('Given useAuthorityLinking', () => {
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
         content: '$a authority value $b some other value $e author $e illustrator $t field for modification $0 http://some.url/n0001 $9 authority-id',
+        authorityControlledSubfields: ['a', 'b', 't'],
       });
     });
   });
@@ -154,6 +157,7 @@ describe('Given useAuthorityLinking', () => {
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
         content: '$a authority value $b some other value $e author $e illustrator $c field for modification $0 http://some.url/n0001 $9 authority-id',
+        authorityControlledSubfields: ['a', 'b', 'c'],
       });
     });
   });
