@@ -76,6 +76,7 @@ const QuickMarcEditWrapper = ({
       locations,
       linksCount,
     });
+
     const errorMessage = controlFieldErrorMessage || validationErrorMessage;
 
     if (errorMessage) {

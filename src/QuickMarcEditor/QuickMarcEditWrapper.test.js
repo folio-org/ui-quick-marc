@@ -8,7 +8,8 @@ import {
 } from '@testing-library/react';
 import faker from 'faker';
 import noop from 'lodash/noop';
-import { useLocation } from 'react-router';
+import { Form } from 'react-final-form';
+import arrayMutators from 'final-form-arrays';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
@@ -30,11 +31,6 @@ jest.mock('../queries', () => ({
   }),
 }));
 
-jest.mock('react-final-form', () => ({
-  ...jest.requireActual('react-final-form'),
-  FormSpy: jest.fn(() => (<span>FormSpy</span>)),
-}));
-
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
   useLocation: jest.fn().mockReturnValue(({
@@ -50,6 +46,7 @@ const mockRecords = {
       id: 'LDR',
     }, {
       tag: '001',
+      content: 'in00000000003',
       id: '595a98e6-8e59-448d-b866-cd039b990423',
     }, {
       tag: '004',
@@ -81,7 +78,7 @@ const mockRecords = {
         Biog: '|',
       },
     }, {
-      content: '04706cam a2200865Ii 4500',
+      content: '$a Title',
       tag: '245',
     }, {
       tag: '852',
@@ -95,10 +92,12 @@ const mockRecords = {
       id: '5aa1a643-b9f2-47e8-bb68-6c6457b5c9c5',
     }, {
       tag: '005',
+      content: '20221228135005.0',
       id: '5aa1a643-b9f2-47e8-bb68-6c6457b5c9c5',
     }, {
       tag: '999',
       indicators: ['f', 'f'],
+      content: '$s 9585bca7-8e4c-4cbb-bab4-46c5832e7654 $i 9012727e-bffc-4298-a424-7da30d6008aa',
       id: '4a844042-5c7e-4e71-823e-599582a5d7ab',
     },
   ],
@@ -232,12 +231,6 @@ jest.mock('@folio/stripes-acq-components', () => ({
   useShowCallout: jest.fn(() => mockShowCallout),
 }));
 
-jest.mock('./QuickMarcEditorRows', () => {
-  return {
-    QuickMarcEditorRows: () => (<span>QuickMarcEditorRows</span>),
-  };
-});
-
 jest.mock('./QuickMarcRecordInfo', () => {
   return {
     QuickMarcRecordInfo: () => <span>QuickMarcRecordInfo</span>,
@@ -272,22 +265,29 @@ const renderQuickMarcEditWrapper = ({
   ...props
 }) => (render(
   <Harness>
-    <QuickMarcEditWrapper
-      onClose={noop}
-      mutator={mutator}
-      action={QUICK_MARC_ACTIONS.EDIT}
-      marcType={marcType}
+    <Form
+      onSubmit={jest.fn()}
+      mutators={arrayMutators}
       initialValues={{
         leader: mockLeaders[marcType],
-        records: [],
+        records: mockRecords[marcType],
         relatedRecordVersion: 1,
       }}
-      instance={instance}
-      location={{}}
-      locations={locations}
-      externalRecordPath="/some-record"
-      refreshPageData={jest.fn().mockResolvedValue()}
-      {...props}
+      render={(renderProps) => (
+        <QuickMarcEditWrapper
+          onClose={noop}
+          mutator={mutator}
+          action={QUICK_MARC_ACTIONS.EDIT}
+          marcType={marcType}
+          instance={instance}
+          location={{}}
+          locations={locations}
+          externalRecordPath="/some-record"
+          refreshPageData={jest.fn().mockResolvedValue()}
+          {...renderProps}
+          {...props}
+        />
+      )}
     />
   </Harness>,
 ));
@@ -446,64 +446,44 @@ describe('Given QuickMarcEditWrapper', () => {
   });
 
   describe('when is authority marc type', () => {
-    describe('and record is Authorized', () => {
+    it('should make a request to get the number of links', async () => {
+      useAuthorityLinksCount.mockClear().mockReturnValue({
+        fetchLinksCount: mockFetchLinksCount,
+      });
+
+      renderQuickMarcEditWrapper({
+        instance,
+        mutator,
+        marcType: MARC_TYPES.AUTHORITY,
+      });
+
+      expect(mockFetchLinksCount).toHaveBeenCalledWith([instance.id]);
+    });
+
+    describe('and record is linked to a bib record', () => {
       beforeEach(() => {
-        useLocation.mockClear().mockReturnValue({
-          search: '?authRefType=Authorized',
+        useAuthorityLinksCount.mockClear().mockReturnValue({
+          fetchLinksCount: jest.fn().mockResolvedValue({
+            links: [{ totalLinks: 1 }],
+          }),
         });
       });
 
-      it('should make a request to get the number of links', async () => {
-        useAuthorityLinksCount.mockClear().mockReturnValue({
-          fetchLinksCount: mockFetchLinksCount,
-        });
-
-        await act(async () => {
-          renderQuickMarcEditWrapper({
+      describe('and changing 1XX field', () => {
+        it('should display confirmation modal', async () => {
+          const {
+            getByTestId,
+            getByText,
+          } = renderQuickMarcEditWrapper({
             instance,
             mutator,
             marcType: MARC_TYPES.AUTHORITY,
           });
-        });
 
-        expect(mockFetchLinksCount).toHaveBeenCalledWith([instance.id]);
-      });
+          await act(async () => { fireEvent.change(getByTestId('content-field-7'), { target: { value: '$a Civil war edited' } }); });
+          await act(async () => { fireEvent.click(getByText('ui-quick-marc.record.save.continue')); });
 
-      describe('and record is linked to a bib record', () => {
-        beforeEach(() => {
-          useAuthorityLinksCount.mockClear().mockReturnValue({
-            fetchLinksCount: jest.fn().mockResolvedValue({
-              links: [{ totalLinks: 1 }],
-            }),
-          });
-        });
-
-        describe('and 1xx tag is changed', () => {
-          describe('and click on save button', () => {
-            it('should display an error', async () => {
-              const errorMessage = 'ui-quick-marc.record.error.1xx.delete';
-              const utils = jest.requireActual('./utils');
-              const validateIf1xxFieldIsRemovedSpy = jest
-                .spyOn(utils, 'validateIf1xxFieldIsRemoved')
-                .mockReturnValue(errorMessage);
-
-              await act(async () => {
-                renderQuickMarcEditWrapper({
-                  instance,
-                  mutator,
-                  marcType: MARC_TYPES.AUTHORITY,
-                });
-              });
-
-              await act(async () => { fireEvent.click(screen.getByText('ui-quick-marc.record.save.continue')); });
-
-              expect(validateIf1xxFieldIsRemovedSpy).toHaveBeenCalled();
-              expect(mockShowCallout).toHaveBeenCalledWith({
-                message: errorMessage,
-                type: 'error',
-              });
-            });
-          });
+          expect(getByText('ui-quick-marc.update-linked-bib-fields.modal.label')).toBeDefined();
         });
       });
     });
