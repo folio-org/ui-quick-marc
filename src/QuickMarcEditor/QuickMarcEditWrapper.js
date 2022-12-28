@@ -66,6 +66,7 @@ const QuickMarcEditWrapper = ({
     if (marcType === MARC_TYPES.AUTHORITY && linksCount > 0) {
       is1xxOr010Updated = are010Or1xxUpdated(initialValues.records, formValues.records);
     }
+
     const formValuesToSave = removeDeletedRecords(formValues);
     const controlFieldErrorMessage = checkControlFieldLength(formValuesToSave);
     const validationErrorMessage = validateMarcRecord({
@@ -74,7 +75,6 @@ const QuickMarcEditWrapper = ({
       marcType,
       locations,
       linksCount,
-      location,
     });
     const errorMessage = controlFieldErrorMessage || validationErrorMessage;
 
@@ -163,9 +163,7 @@ const QuickMarcEditWrapper = ({
   }, [showCallout, refreshPageData, location, initialValues, instance, locations, marcType, mutator, linksCount]);
 
   useEffect(() => {
-    const authRefType = new URLSearchParams(location.search).get('authRefType');
-
-    if (marcType === MARC_TYPES.AUTHORITY && authRefType === 'Authorized') {
+    if (marcType === MARC_TYPES.AUTHORITY) {
       fetchLinksCount([instance.id])
         .then(res => setLinksCount(res.links[0].totalLinks))
         .catch(setHttpError);
