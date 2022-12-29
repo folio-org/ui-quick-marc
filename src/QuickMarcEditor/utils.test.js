@@ -699,16 +699,6 @@ describe('QuickMarcEditor utils', () => {
             linksCount,
           }).props.id).toBe('ui-quick-marc.record.error.1xx.remove$t');
         });
-
-        it('should return an error if 1xx field is removed', () => {
-          const records = [{
-            _isDeleted: true,
-            tag: '110',
-            content: '$a Record title',
-          }];
-
-          expect(utils.validateIf1xxFieldIsRemoved(records).props.id).toBe('ui-quick-marc.record.error.1xx.delete');
-        });
       });
     });
   });
