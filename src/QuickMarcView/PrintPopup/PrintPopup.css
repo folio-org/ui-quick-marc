@@ -1,0 +1,22 @@
+.hidden {
+  display: none;
+}
+
+.paneTitle {
+  position: relative;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  font-size: var(--font-size-medium);
+  font-weight: var(--text-weight-bold);
+  letter-spacing: 0.04em;
+  color: var(--color-text);
+
+  & span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

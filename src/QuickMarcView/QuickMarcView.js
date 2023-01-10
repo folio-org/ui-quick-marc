@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 
+import { IfPermission } from '@folio/stripes/core';
 import {
+  PaneMenu,
   Pane,
   Paneset,
-  Headline,
+  Button,
 } from '@folio/stripes/components';
 
-import MarcField from './MarcField';
-import { isControlField } from './utils';
-
-import styles from './QuickMarcView.css';
+import MarcContent from './MarcContent';
+import PrintPopup from './PrintPopup';
 
 const propTypes = {
   isPaneset: PropTypes.bool,
@@ -41,21 +42,43 @@ const QuickMarcView = ({
   lastMenu,
   isPaneset,
 }) => {
-  const parsedContent = marc.parsedRecord.content;
-  const parsedMarc = {
-    leader: parsedContent.leader,
-    fields: [
-      ...parsedContent.fields.filter(isControlField),
-      ...parsedContent.fields.filter(field => !isControlField(field)),
-    ],
+  const [showPrintPopup, setShowPrintPopup] = useState(false);
+
+  const isMarcBibRecord = marc.recordType === 'MARC_BIB';
+
+  const openPrintPopup = () => {
+    setShowPrintPopup(true);
   };
 
-  const showLinkIcon = marc.recordType === 'MARC_BIB';
+  const closePrintPopup = () => {
+    setShowPrintPopup(false);
+  };
+
+  const renderPrintButton = () => (
+    <IfPermission perm="ui-quick-marc.quick-marc-editor.view">
+      <Button
+        marginBottom0
+        buttonStyle="primary"
+        onClick={openPrintPopup}
+      >
+        <FormattedMessage id="ui-quick-marc.print" />
+      </Button>
+    </IfPermission>
+  );
 
   const optionalProps = {};
 
+  if (isMarcBibRecord && !lastMenu) {
+    optionalProps.lastMenu = renderPrintButton();
+  }
+
   if (lastMenu) {
-    optionalProps.lastMenu = lastMenu;
+    optionalProps.lastMenu = (
+      <PaneMenu>
+        {lastMenu}
+        {isMarcBibRecord && renderPrintButton()}
+      </PaneMenu>
+    );
   }
 
   const renderContent = () => (
@@ -71,36 +94,18 @@ const QuickMarcView = ({
       height={paneHeight}
       {...optionalProps}
     >
-      <section className={styles.marcWrapper}>
-        <Headline
-          size="large"
-          margin="small"
-          tag="h3"
-        >
-          {marcTitle}
-        </Headline>
-
-        <table className={styles.marc}>
-          <tbody>
-            <tr data-test-instance-marc-field>
-              <td colSpan="4">
-                {`LEADER ${parsedMarc.leader}`}
-              </td>
-            </tr>
-
-            {
-              parsedMarc.fields
-                .map((field, idx) => (
-                  <MarcField
-                    field={field}
-                    key={idx}
-                    showLinkIcon={showLinkIcon}
-                  />
-                ))
-            }
-          </tbody>
-        </table>
-      </section>
+      <MarcContent
+        marcTitle={marcTitle}
+        marc={marc}
+      />
+      {showPrintPopup && (
+        <PrintPopup
+          marc={marc}
+          paneTitle={paneTitle}
+          marcTitle={marcTitle}
+          onAfterPrint={closePrintPopup}
+        />
+      )}
     </Pane>
   );
 
