@@ -425,16 +425,6 @@ const validateMarcHoldingsRecord = (marcRecords, locations) => {
   return undefined;
 };
 
-export const validateIf1xxFieldIsRemoved = (records) => {
-  const toSave1xxField = records.find(field => field.tag.startsWith('1'));
-
-  if (toSave1xxField._isDeleted) {
-    return <FormattedMessage id="ui-quick-marc.record.error.1xx.delete" />;
-  }
-
-  return undefined;
-};
-
 const getIs$tRemoved = (content) => {
   const contentSubfieldValue = getContentSubfieldValue(content);
 
@@ -466,7 +456,7 @@ const validateMarcAuthority1xxField = (initialRecords, formValuesToSave) => {
   return undefined;
 };
 
-const validateMarcAuthorityRecord = (marcRecords, linksCount, initialRecords, location) => {
+const validateMarcAuthorityRecord = (marcRecords, linksCount, initialRecords) => {
   const correspondingHeadingTypeTags = new Set(CORRESPONDING_HEADING_TYPE_TAGS);
 
   const headingRecords = marcRecords.filter(recordRow => correspondingHeadingTypeTags.has(recordRow.tag));
@@ -479,9 +469,7 @@ const validateMarcAuthorityRecord = (marcRecords, linksCount, initialRecords, lo
     return <FormattedMessage id="ui-quick-marc.record.error.heading.multiple" />;
   }
 
-  const authRefType = new URLSearchParams(location.search).get('authRefType');
-
-  if (linksCount && authRefType === 'Authorized') {
+  if (linksCount) {
     return validateMarcAuthority1xxField(initialRecords, marcRecords);
   }
 
@@ -494,7 +482,6 @@ export const validateMarcRecord = ({
   marcType = MARC_TYPES.BIB,
   locations = [],
   linksCount,
-  location,
 }) => {
   const marcRecords = marcRecord.records || [];
   const initialMarcRecords = initialValues.records;
@@ -513,7 +500,7 @@ export const validateMarcRecord = ({
   } else if (marcType === MARC_TYPES.HOLDINGS) {
     validationResult = validateMarcHoldingsRecord(marcRecords, locations);
   } else if (marcType === MARC_TYPES.AUTHORITY) {
-    validationResult = validateMarcAuthorityRecord(marcRecords, linksCount, initialMarcRecords, location);
+    validationResult = validateMarcAuthorityRecord(marcRecords, linksCount, initialMarcRecords);
   }
 
   if (validationResult) {
@@ -860,4 +847,40 @@ export const splitFields = marcRecord => {
       };
     }),
   };
+};
+
+export const are010Or1xxUpdated = (initial, updated) => {
+  let is010Updated = false;
+  let is1XXUpdated = false;
+
+  const authRec010Tag = '010';
+  const initial010 = initial.find(rec => rec.tag === authRec010Tag);
+  const updated010 = updated.find(rec => rec.tag === authRec010Tag);
+
+  if (initial010 &&
+    updated010 &&
+    getContentSubfieldValue(initial010.content).$a !== getContentSubfieldValue(updated010.content).$a
+  ) {
+    is010Updated = true;
+  }
+
+  const authRec1XXTagStartsWith = '1';
+  const initial1xxRecords = initial.filter(rec => rec.tag[0] === authRec1XXTagStartsWith);
+  const updated1xxRecords = updated.filter(rec => rec.tag[0] === authRec1XXTagStartsWith);
+
+  const updated1xxArr = [];
+
+  initial1xxRecords.forEach(recI => {
+    const updatedRec = updated1xxRecords.find(recU => recU.id === recI.id);
+
+    if (updatedRec && updatedRec.content !== recI.content) {
+      updated1xxArr.push(updatedRec);
+    }
+  });
+
+  if (updated1xxArr.length) {
+    is1XXUpdated = true;
+  }
+
+  return is010Updated || is1XXUpdated;
 };

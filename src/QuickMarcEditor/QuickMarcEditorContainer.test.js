@@ -48,6 +48,8 @@ const record = {
   fields: [],
 };
 
+const resources = {};
+
 const locations = [];
 
 const externalRecordPath = '/external/record/path';
@@ -69,6 +71,7 @@ const renderQuickMarcEditorContainer = ({
       action={action}
       marcType={marcType}
       externalRecordPath={externalRecordPath}
+      resources={resources}
     />
   </Harness>,
 ));

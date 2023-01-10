@@ -17,6 +17,13 @@ import { MARC_TYPES } from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
 
+jest.mock('react-router', () => ({
+  ...jest.requireActual('react-router'),
+  useLocation: () => ({
+    search: 'authRefType=Authorized',
+  }),
+}));
+
 jest.mock('@folio/stripes/components', () => ({
   ...jest.requireActual('@folio/stripes/components'),
   ConfirmationModal: jest.fn(({
@@ -80,6 +87,15 @@ const initialValues = {
       id: 'LDR',
     },
     {
+      _isDeleted: false,
+      _isLinked: false,
+      content: '$a n  931006645',
+      id: 'af322498-097b-4c74-af15-c9166884aa6a',
+      indicators: ['\\', '\\'],
+      isProtected: false,
+      tag: '010',
+    },
+    {
       tag: '100',
       content: '$a Coates, Ta-Nehisi $e author.',
       indicators: ['1', '\\'],
@@ -94,6 +110,8 @@ const initialValues = {
     },
   ],
 };
+
+const linksCount = 0;
 
 const renderQuickMarcEditor = (props) => (render(
   <Harness>
@@ -110,7 +128,7 @@ const renderQuickMarcEditor = (props) => (render(
       initialValues={initialValues}
       marcType={MARC_TYPES.BIB}
       locations={locations}
-      linksCount={0}
+      linksCount={linksCount}
       {...props}
     />
   </Harness>,
@@ -177,7 +195,7 @@ describe('Given QuickMarcEditor', () => {
         getByText,
       } = renderQuickMarcEditor();
 
-      const contentField = getByTestId('content-field-2');
+      const contentField = getByTestId('content-field-3');
 
       fireEvent.change(contentField, { target: { value: 'Changed test title' } });
       fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
@@ -194,7 +212,7 @@ describe('Given QuickMarcEditor', () => {
         getByText,
       } = renderQuickMarcEditor();
 
-      const contentField = getByTestId('content-field-2');
+      const contentField = getByTestId('content-field-3');
 
       fireEvent.change(contentField, { target: { value: 'Changed test title' } });
       fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
@@ -321,6 +339,538 @@ describe('Given QuickMarcEditor', () => {
         fireEvent.click(deleteButtons[deleteButtons.length - 1]);
 
         expect(getByText('ui-quick-marc.authority-record.edit.title')).toBeDefined();
+      });
+    });
+
+    describe('when 010 $a field is updated', () => {
+      describe('when click on save&close button', () => {
+        it('should open confirmation modal', () => {
+          const { getByTestId, getByText } = renderQuickMarcEditor({
+            marcType: MARC_TYPES.AUTHORITY,
+            linksCount: 1,
+          });
+
+          const contentField = getByTestId('content-field-1');
+
+          fireEvent.change(contentField, { target: { value: '$a n  9310066' } });
+          fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+
+          expect(getByText('Confirmation modal')).toBeDefined();
+        });
+
+        it('should close the modal, save the updates and close the editor on clicking save and close button', async () => {
+          const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
+            marcType: MARC_TYPES.AUTHORITY,
+            linksCount: 1,
+          });
+
+          const contentField = getByTestId('content-field-1');
+
+          fireEvent.change(contentField, { target: { value: '1xx update' } });
+          fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+          fireEvent.click(getByText('Confirm'));
+
+          expect(onSubmitMock).toHaveBeenCalled();
+          waitFor(() => expect(queryByText('Confirmation modal')).toBeNull());
+          waitFor(() => expect(onCloseMock).toHaveBeenCalledWith());
+        });
+
+        it('should close the modal on clicking keep editing button ', () => {
+          const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
+            marcType: MARC_TYPES.AUTHORITY,
+            linksCount: 1,
+            initialValues: {
+              leader: 'assdfgs ds sdg',
+              records: [
+                {
+                  tag: 'LDR',
+                  content: 'assdfgs ds sdg',
+                  id: 'LDR',
+                },
+                {
+                  _isDeleted: false,
+                  _isLinked: false,
+                  content: '$a n  931006645',
+                  id: 'af322498-097b-4c74-af15-c9166884aa6a',
+                  indicators: ['\\', '\\'],
+                  isProtected: false,
+                  tag: '010',
+                },
+                {
+                  _isDeleted: false,
+                  _isLinked: false,
+                  content: '$a Yuan, Bing',
+                  id: 'e95af4e5-008c-42c4-999c-4e103da9de13',
+                  indicators: ['1', '\\'],
+                  isProtected: false,
+                  tag: '100',
+                },
+              ],
+            },
+          });
+
+          const contentField = getByTestId('content-field-1');
+
+          fireEvent.change(contentField, { target: { value: '1xx update' } });
+          fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
+          fireEvent.click(getByText('Cancel'));
+
+          waitFor(() => expect(queryByText('Confirmation modal')).toBeNull());
+        });
+      });
+
+      describe('when click on save&keep editing button', () => {
+        it('should open confirmation modal', () => {
+          const { getByTestId, getByText } = renderQuickMarcEditor({
+            marcType: MARC_TYPES.AUTHORITY,
+            linksCount: 1,
+            initialValues: {
+              leader: 'assdfgs ds sdg',
+              records: [
+                {
+                  tag: 'LDR',
+                  content: 'assdfgs ds sdg',
+                  id: 'LDR',
+                },
+                {
+                  _isDeleted: false,
+                  _isLinked: false,
+                  content: '$a n  931006645',
+                  id: 'af322498-097b-4c74-af15-c9166884aa6a',
+                  indicators: ['\\', '\\'],
+                  isProtected: false,
+                  tag: '010',
+                },
+                {
+                  _isDeleted: false,
+                  _isLinked: false,
+                  content: '$a Yuan, Bing',
+                  id: 'e95af4e5-008c-42c4-999c-4e103da9de13',
+                  indicators: ['1', '\\'],
+                  isProtected: false,
+                  tag: '100',
+                },
+              ],
+            },
+          });
+
+          const contentField = getByTestId('content-field-1');
+
+          fireEvent.change(contentField, { target: { value: '1xx update' } });
+          fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+
+          expect(getByText('Confirmation modal')).toBeDefined();
+        });
+
+        it('should close the modal, save the updates and editor should be open - on clickng save and keep editing button', async () => {
+          const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
+            marcType: MARC_TYPES.AUTHORITY,
+            linksCount: 1,
+            initialValues: {
+              leader: 'assdfgs ds sdg',
+              records: [
+                {
+                  tag: 'LDR',
+                  content: 'assdfgs ds sdg',
+                  id: 'LDR',
+                },
+                {
+                  _isDeleted: false,
+                  _isLinked: false,
+                  content: '$a n  931006645',
+                  id: 'af322498-097b-4c74-af15-c9166884aa6a',
+                  indicators: ['\\', '\\'],
+                  isProtected: false,
+                  tag: '010',
+                },
+                {
+                  _isDeleted: false,
+                  _isLinked: false,
+                  content: '$a Yuan, Bing',
+                  id: 'e95af4e5-008c-42c4-999c-4e103da9de13',
+                  indicators: ['1', '\\'],
+                  isProtected: false,
+                  tag: '100',
+                },
+              ],
+            },
+          });
+
+          const contentField = getByTestId('content-field-1');
+
+          fireEvent.change(contentField, { target: { value: '1xx update' } });
+          fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
+          fireEvent.click(getByText('Confirm'));
+
+          expect(onSubmitMock).toHaveBeenCalled();
+          waitFor(() => expect(queryByText('Confirmation modal')).toBeNull());
+          expect(getByText('ui-quick-marc.authority-record.edit.title')).toBeDefined();
+        });
+
+        it('should close the modal on clicking keep editing button ', () => {
+          const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
+            marcType: MARC_TYPES.AUTHORITY,
+            linksCount: 1,
+            initialValues: {
+              leader: 'assdfgs ds sdg',
+              records: [
+                {
+                  tag: 'LDR',
+                  content: 'assdfgs ds sdg',
+                  id: 'LDR',
+                },
+                {
+                  _isDeleted: false,
+                  _isLinked: false,
+                  content: '$a n  931006645',
+                  id: 'af322498-097b-4c74-af15-c9166884aa6a',
+                  indicators: ['\\', '\\'],
+                  isProtected: false,
+                  tag: '010',
+                },
+                {
+                  _isDeleted: false,
+                  _isLinked: false,
+                  content: '$a Yuan, Bing',
+                  id: 'e95af4e5-008c-42c4-999c-4e103da9de13',
+                  indicators: ['1', '\\'],
+                  isProtected: false,
+                  tag: '100',
+                },
+              ],
+            },
+          });
+
+          const contentField = getByTestId('content-field-1');
+
+          fireEvent.change(contentField, { target: { value: '1xx update' } });
+          fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
+          fireEvent.click(getByText('Cancel'));
+
+          waitFor(() => expect(queryByText('Confirmation modal')).toBeNull());
+        });
+      });
+    });
+
+    describe('when update 1xx field', () => {
+      describe('when click on save&close button', () => {
+        it('should open confirmation modal', () => {
+          const { getByTestId, getByText } = renderQuickMarcEditor({
+            marcType: MARC_TYPES.AUTHORITY,
+            linksCount: 1,
+            initialValues: {
+              leader: 'assdfgs ds sdg',
+              records: [
+                {
+                  tag: 'LDR',
+                  content: 'assdfgs ds sdg',
+                  id: 'LDR',
+                },
+                {
+                  _isDeleted: false,
+                  _isLinked: false,
+                  content: '$a Yuan, Bing',
+                  id: 'e95af4e5-008c-42c4-999c-4e103da9de13',
+                  indicators: ['1', '\\'],
+                  isProtected: false,
+                  tag: '100',
+                },
+              ],
+            },
+          });
+
+          const contentField = getByTestId('content-field-1');
+
+          fireEvent.change(contentField, { target: { value: '1xx update' } });
+          fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+
+          expect(getByText('Confirmation modal')).toBeDefined();
+        });
+
+        it('should close the modal, save the updates and close the editor on clickng save and close button', async () => {
+          const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
+            marcType: MARC_TYPES.AUTHORITY,
+            linksCount: 1,
+            initialValues: {
+              leader: 'assdfgs ds sdg',
+              records: [
+                {
+                  tag: 'LDR',
+                  content: 'assdfgs ds sdg',
+                  id: 'LDR',
+                },
+                {
+                  _isDeleted: false,
+                  _isLinked: false,
+                  content: '$a Yuan, Bing',
+                  id: 'e95af4e5-008c-42c4-999c-4e103da9de13',
+                  indicators: ['1', '\\'],
+                  isProtected: false,
+                  tag: '100',
+                },
+              ],
+            },
+          });
+
+          const contentField = getByTestId('content-field-1');
+
+          fireEvent.change(contentField, { target: { value: '1xx update' } });
+          fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+          fireEvent.click(getByText('Confirm'));
+
+          expect(onSubmitMock).toHaveBeenCalled();
+          waitFor(() => expect(queryByText('Confirmation modal')).toBeNull());
+          waitFor(() => expect(onCloseMock).toHaveBeenCalledWith());
+        });
+
+        it('should close the modal on clicking keep editing button ', () => {
+          const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
+            marcType: MARC_TYPES.AUTHORITY,
+            linksCount: 1,
+            initialValues: {
+              leader: 'assdfgs ds sdg',
+              records: [
+                {
+                  tag: 'LDR',
+                  content: 'assdfgs ds sdg',
+                  id: 'LDR',
+                },
+                {
+                  _isDeleted: false,
+                  _isLinked: false,
+                  content: '$a Yuan, Bing',
+                  id: 'e95af4e5-008c-42c4-999c-4e103da9de13',
+                  indicators: ['1', '\\'],
+                  isProtected: false,
+                  tag: '100',
+                },
+              ],
+            },
+          });
+
+          const contentField = getByTestId('content-field-1');
+
+          fireEvent.change(contentField, { target: { value: '1xx update' } });
+          fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
+          fireEvent.click(getByText('Cancel'));
+
+          waitFor(() => expect(queryByText('Confirmation modal')).toBeNull());
+        });
+      });
+
+      describe('when click on save&keep editing button', () => {
+        it('should open confirmation modal', () => {
+          const { getByTestId, getByText } = renderQuickMarcEditor({
+            marcType: MARC_TYPES.AUTHORITY,
+            linksCount: 1,
+            initialValues: {
+              leader: 'assdfgs ds sdg',
+              records: [
+                {
+                  tag: 'LDR',
+                  content: 'assdfgs ds sdg',
+                  id: 'LDR',
+                },
+                {
+                  _isDeleted: false,
+                  _isLinked: false,
+                  content: '$a Yuan, Bing',
+                  id: 'e95af4e5-008c-42c4-999c-4e103da9de13',
+                  indicators: ['1', '\\'],
+                  isProtected: false,
+                  tag: '100',
+                },
+              ],
+            },
+          });
+
+          const contentField = getByTestId('content-field-1');
+
+          fireEvent.change(contentField, { target: { value: '1xx update' } });
+          fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+
+          expect(getByText('Confirmation modal')).toBeDefined();
+        });
+
+        it('should close the modal, save the updates and editor should be open - on clicking save and keep editing button', async () => {
+          const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
+            marcType: MARC_TYPES.AUTHORITY,
+            linksCount: 1,
+            initialValues: {
+              leader: 'assdfgs ds sdg',
+              records: [
+                {
+                  tag: 'LDR',
+                  content: 'assdfgs ds sdg',
+                  id: 'LDR',
+                },
+                {
+                  _isDeleted: false,
+                  _isLinked: false,
+                  content: '$a Yuan, Bing',
+                  id: 'e95af4e5-008c-42c4-999c-4e103da9de13',
+                  indicators: ['1', '\\'],
+                  isProtected: false,
+                  tag: '100',
+                },
+              ],
+            },
+          });
+
+          const contentField = getByTestId('content-field-1');
+
+          fireEvent.change(contentField, { target: { value: '1xx update' } });
+          fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
+          fireEvent.click(getByText('Confirm'));
+
+          expect(onSubmitMock).toHaveBeenCalled();
+          waitFor(() => expect(queryByText('Confirmation modal')).toBeNull());
+          expect(getByText('ui-quick-marc.authority-record.edit.title')).toBeDefined();
+        });
+
+        it('should close the modal on clicking keep editing button ', () => {
+          const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
+            marcType: MARC_TYPES.AUTHORITY,
+            linksCount: 1,
+            initialValues: {
+              leader: 'assdfgs ds sdg',
+              records: [
+                {
+                  tag: 'LDR',
+                  content: 'assdfgs ds sdg',
+                  id: 'LDR',
+                },
+                {
+                  _isDeleted: false,
+                  _isLinked: false,
+                  content: '$a Yuan, Bing',
+                  id: 'e95af4e5-008c-42c4-999c-4e103da9de13',
+                  indicators: ['1', '\\'],
+                  isProtected: false,
+                  tag: '100',
+                },
+              ],
+            },
+          });
+
+          const contentField = getByTestId('content-field-1');
+
+          fireEvent.change(contentField, { target: { value: '1xx update' } });
+          fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
+          fireEvent.click(getByText('Cancel'));
+
+          waitFor(() => expect(queryByText('Confirmation modal')).toBeNull());
+        });
+      });
+    });
+
+    describe('when fields other than 010 or 1xx are updated', () => {
+      describe('when click on save&close button', () => {
+        it('should not open confirmation modal, but save the updates', () => {
+          const { getByTestId, getByText, queryByText } = renderQuickMarcEditor({
+            marcType: MARC_TYPES.AUTHORITY,
+            linksCount: 1,
+            initialValues: {
+              leader: 'assdfgs ds sdg',
+              records: [
+                {
+                  tag: 'LDR',
+                  content: 'assdfgs ds sdg',
+                  id: 'LDR',
+                },
+                {
+                  _isDeleted: false,
+                  _isLinked: false,
+                  content: '$a n  931006645',
+                  id: 'af322498-097b-4c74-af15-c9166884aa6a',
+                  indicators: ['\\', '\\'],
+                  isProtected: false,
+                  tag: '010',
+                },
+                {
+                  _isDeleted: false,
+                  _isLinked: false,
+                  content: '$a (OCoLC)oca034754512',
+                  id: 'ec7304d1-929c-403a-bf4c-8d51c5f50b2a',
+                  indicators: ['\\', '\\'],
+                  isProtected: false,
+                  tag: '035',
+                },
+                {
+                  _isDeleted: false,
+                  _isLinked: false,
+                  content: '$a Yuan, Bing',
+                  id: 'e95af4e5-008c-42c4-999c-4e103da9de13',
+                  indicators: ['1', '\\'],
+                  isProtected: false,
+                  tag: '100',
+                },
+              ],
+            },
+          });
+
+          const contentField = getByTestId('content-field-2');
+
+          fireEvent.change(contentField, { target: { value: '$a (OCoLC)oca03475451' } });
+          fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+
+          expect(queryByText('Confirmation modal')).toBeNull();
+          expect(onSubmitMock).toHaveBeenCalled();
+        });
+      });
+
+      describe('when click on save&keep editing button', () => {
+        it('should not open confirmation modal, but save the updates', () => {
+          const { getByTestId, getByText, queryByText } = renderQuickMarcEditor({
+            marcType: MARC_TYPES.AUTHORITY,
+            linksCount: 1,
+            initialValues: {
+              leader: 'assdfgs ds sdg',
+              records: [
+                {
+                  tag: 'LDR',
+                  content: 'assdfgs ds sdg',
+                  id: 'LDR',
+                },
+                {
+                  _isDeleted: false,
+                  _isLinked: false,
+                  content: '$a n  931006645',
+                  id: 'af322498-097b-4c74-af15-c9166884aa6a',
+                  indicators: ['\\', '\\'],
+                  isProtected: false,
+                  tag: '010',
+                },
+                {
+                  _isDeleted: false,
+                  _isLinked: false,
+                  content: '$a (OCoLC)oca034754512',
+                  id: 'ec7304d1-929c-403a-bf4c-8d51c5f50b2a',
+                  indicators: ['\\', '\\'],
+                  isProtected: false,
+                  tag: '035',
+                },
+                {
+                  _isDeleted: false,
+                  _isLinked: false,
+                  content: '$a Yuan, Bing',
+                  id: 'e95af4e5-008c-42c4-999c-4e103da9de13',
+                  indicators: ['1', '\\'],
+                  isProtected: false,
+                  tag: '100',
+                },
+              ],
+            },
+          });
+
+          const contentField = getByTestId('content-field-2');
+
+          fireEvent.change(contentField, { target: { value: '$a (OCoLC)oca03475451' } });
+          fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+
+          expect(queryByText('Confirmation modal')).toBeNull();
+          expect(onSubmitMock).toHaveBeenCalled();
+        });
       });
     });
   });

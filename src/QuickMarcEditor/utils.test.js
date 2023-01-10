@@ -699,16 +699,6 @@ describe('QuickMarcEditor utils', () => {
             linksCount,
           }).props.id).toBe('ui-quick-marc.record.error.1xx.remove$t');
         });
-
-        it('should return an error if 1xx field is removed', () => {
-          const records = [{
-            _isDeleted: true,
-            tag: '110',
-            content: '$a Record title',
-          }];
-
-          expect(utils.validateIf1xxFieldIsRemoved(records).props.id).toBe('ui-quick-marc.record.error.1xx.delete');
-        });
       });
     });
   });
@@ -1622,6 +1612,45 @@ describe('QuickMarcEditor utils', () => {
       it('should return an empty string', () => {
         expect(utils.getLocationValue('$t 3 $h M3')).toEqual('');
       });
+    });
+  });
+
+  describe('are010Or1xxUpdated', () => {
+    it('should check if 010 $a is updated', () => {
+      const recordContent = {
+        content: 'n  80161705 ',
+        id: 'c1723942-329c-45d4-ac39-a7ac63e015d4',
+        isProtected: true,
+        tag: '001',
+        _isDeleted: false,
+        _isLinked: false,
+      };
+      const initial = [{ ...recordContent }];
+      const updated = [{ ...recordContent }];
+
+      expect(utils.are010Or1xxUpdated(initial, updated)).toBeFalsy();
+    });
+
+    it('should check if 1xx is updated', () => {
+      const recordContent = {
+        tag: '100',
+        content: '$a Kitao, Masayoshi, $d 1764-18245',
+        indicators: [
+          '1',
+          '\\',
+        ],
+        isProtected: false,
+        id: '141fc876-f0eb-40ac-9385-38b9de9a3aeb',
+        _isDeleted: false,
+        _isLinked: false,
+      };
+      const initial = [{ ...recordContent }];
+      const updated = [{
+        ...recordContent,
+        content: '$a Kitao, Masayoshi, $d 1764-1824',
+      }];
+
+      expect(utils.are010Or1xxUpdated(initial, updated)).toBeTruthy();
     });
   });
 });
