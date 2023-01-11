@@ -374,6 +374,16 @@ export const checkControlFieldLength = (formValues) => {
   return undefined;
 };
 
+export const checkDuplicate010Field = (marcRecords) => {
+  const marc010Records = marcRecords.filter(({ tag }) => tag === '010');
+
+  if (marc010Records.length > 1) {
+    return <FormattedMessage id="ui-quick-marc.record.error.010Field.multiple" />;
+  }
+
+  return undefined;
+};
+
 export const validateSubfield = (marcRecords, initialMarcRecords) => {
   const marcRecordsWithSubfields = marcRecords.filter(marcRecord => marcRecord.indicators);
   const isEmptySubfield = marcRecordsWithSubfields.some(marcRecord => {
@@ -468,6 +478,10 @@ const validateMarcAuthorityRecord = (marcRecords, linksCount, initialRecords) =>
   if (headingRecords.length > 1) {
     return <FormattedMessage id="ui-quick-marc.record.error.heading.multiple" />;
   }
+
+  const duplicate010FieldError = checkDuplicate010Field(marcRecords);
+
+  if (duplicate010FieldError) return duplicate010FieldError;
 
   if (linksCount) {
     return validateMarcAuthority1xxField(initialRecords, marcRecords);

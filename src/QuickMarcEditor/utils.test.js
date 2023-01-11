@@ -777,7 +777,7 @@ describe('QuickMarcEditor utils', () => {
   });
 
   describe('checkControlFieldLength', () => {
-    it('should not return error message when only one 001 field is present', () => {
+    it('should not return error message when only one 001 and 010 fields are present', () => {
       const formValues = {
         records: [{
           tag: '001',
@@ -801,6 +801,7 @@ describe('QuickMarcEditor utils', () => {
       };
 
       expect(utils.checkControlFieldLength(formValues)).not.toBeDefined();
+      expect(utils.checkDuplicate010Field(formValues.records)).not.toBeDefined();
     });
 
     it('should return error message when more than one 001 field is present', () => {
@@ -831,6 +832,36 @@ describe('QuickMarcEditor utils', () => {
       };
 
       expect(utils.checkControlFieldLength(formValues).props.id).toBe('ui-quick-marc.record.error.controlField.multiple');
+    });
+
+    it('should return error message when more than one 010 field is present', () => {
+      const formValues = {
+        records: [{
+          tag: '010',
+          content: 'some content',
+          id: 'id010-1',
+        }, {
+          tag: '010',
+          content: 'some other content',
+          id: 'id010-2',
+        }, {
+          tag: '035',
+          content: 'some content',
+          id: 'id035',
+          indicators: ['0', '\\'],
+        }, {
+          content: '',
+          id: 'id999ff-746e-4058-a35b-8130e4f6d277',
+          indicators: ['f', 'f'],
+          tag: '999',
+        }],
+        updateInfo: {
+          recordState: 'actual',
+          updateDate: '01/01/1970',
+        },
+      };
+
+      expect(utils.checkDuplicate010Field(formValues.records).props.id).toBe('ui-quick-marc.record.error.010Field.multiple');
     });
   });
 
