@@ -20,6 +20,7 @@
 * [UIQM-331](https://issues.folio.org/browse/UIQM-331) Edit MARC authority: Handling updates 1XX or 010 $a value 
 * [UIQM-339](https://issues.folio.org/browse/UIQM-339) Uncontrolled subfield moved to read only box when linked "MARC Authority" has the same subfield indicator
 * [UIQM-335](https://issues.folio.org/browse/UIQM-335) MARC Bibliographic | Print Source record
+* [UIQM-353](https://issues.folio.org/browse/UIQM-353) Fix "Reference" record opens when user clicks on the "View" icon next to the linked "MARC Bib" field
 
 ## [5.2.0](https://github.com/folio-org/ui-quick-marc/tree/v5.2.0) (2022-10-26)
 
