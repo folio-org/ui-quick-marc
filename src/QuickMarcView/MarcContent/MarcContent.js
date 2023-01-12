@@ -9,6 +9,7 @@ import styles from './MarcContent.css';
 const MarcContent = ({
   marcTitle,
   marc,
+  isPrint,
 }) => {
   const showLinkIcon = marc.recordType === 'MARC_BIB';
   const parsedContent = marc.parsedRecord.content;
@@ -38,6 +39,7 @@ const MarcContent = ({
           </tr>
           {parsedMarc.fields.map((field, idx) => (
             <MarcField
+              isPrint={isPrint}
               field={field}
               key={idx}
               showLinkIcon={showLinkIcon}
@@ -50,8 +52,13 @@ const MarcContent = ({
 };
 
 MarcContent.propTypes = {
+  isPrint: PropTypes.bool,
   marcTitle: PropTypes.node.isRequired,
   marc: PropTypes.object.isRequired,
+};
+
+MarcContent.defaultProps = {
+  isPrint: false,
 };
 
 export default MarcContent;
