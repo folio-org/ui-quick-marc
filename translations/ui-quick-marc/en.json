@@ -171,6 +171,7 @@
   "record.error.bib.leader.invalid005PositionValue": "Record cannot be saved. Invalid value entered for position 5.",
   "record.error.controlField.multiple": "Record cannot be saved. Can only have one MARC 001.",
   "record.error.instanceHrid.multiple": "Record cannot be saved. Can only have one MARC 004.",
+  "record.error.010Field.multiple": "Cannot save multiple 010 fields.",
   "record.error.heading.empty": "Record cannot be saved without 1XX field.",
   "record.error.heading.multiple": "Record cannot be saved. Cannot have multiple 1XXs",
   "record.error.title.multiple": "Record cannot be saved with more than one field 245.",
@@ -266,6 +267,7 @@
 
   "permanentLocationLookup": "Permanent location look-up",
   "noPlugin": "No plugin is installed",
+  "print": "Print",
 
   "remove-authority-linking.modal.label": "Remove authority linking",
   "remove-authority-linking.modal.remove-linking": "Remove linking",

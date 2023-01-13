@@ -334,7 +334,7 @@ describe('Given QuickMarcEditorRows', () => {
       expect(getByTestId('view-authority-record-link')).toBeVisible();
       expect(getByTestId('view-authority-record-link')).toHaveAttribute(
         'href',
-        '/marc-authorities/authorities/authority-id?authRefType=Authorized&headingRef=Kirby, Jack,&segment=search',
+        '/marc-authorities/authorities/authority-id?authRefType=Authorized&segment=search',
       );
     });
   });

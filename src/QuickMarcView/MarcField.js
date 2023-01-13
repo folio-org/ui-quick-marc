@@ -10,6 +10,7 @@ import { AppIcon } from '@folio/stripes/core';
 import { Tooltip } from '@folio/stripes/components';
 
 import { normalizeIndicator } from './utils';
+import styles from './MarcField.css';
 
 const MarcField = ({
   field,
@@ -85,7 +86,7 @@ const MarcField = ({
 
       {
         hasIndicators && (
-          <td>
+          <td className={styles.indicators}>
             {`${normalizeIndicator(field[fieldTag].ind1)} ${normalizeIndicator(field[fieldTag].ind2)}`}
           </td>
         )
