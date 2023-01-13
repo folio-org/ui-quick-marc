@@ -101,6 +101,12 @@ describe('QuickMarcEditorRows utils', () => {
         expect(utils.hasDeleteException({ tag: '004' }, MARC_TYPES.HOLDINGS)).toBeTruthy();
       });
     });
+
+    describe('when record type equals AUTHORITY', () => {
+      it('should be true for 1XX tags', () => {
+        expect(utils.hasDeleteException({ tag: '150' }, MARC_TYPES.HOLDINGS)).toBeTruthy();
+      });
+    });
   });
 
   describe('hasMoveException', () => {
