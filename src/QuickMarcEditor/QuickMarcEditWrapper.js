@@ -10,7 +10,10 @@ import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 
-import { useAuthorityLinksCount } from '../queries';
+import {
+  useAuthorityLinksCount,
+  useAuthorityLinkingRules,
+} from '../queries';
 import { QUICK_MARC_ACTIONS } from './constants';
 import {
   EXTERNAL_INSTANCE_APIS,
@@ -39,6 +42,7 @@ const propTypes = {
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
+  stripes: PropTypes.object.isRequired,
   locations: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
@@ -52,6 +56,7 @@ const QuickMarcEditWrapper = ({
   locations,
   refreshPageData,
   externalRecordPath,
+  stripes,
 }) => {
   const showCallout = useShowCallout();
   const location = useLocation();
@@ -59,6 +64,7 @@ const QuickMarcEditWrapper = ({
   const [linksCount, setLinksCount] = useState(0);
 
   const { fetchLinksCount } = useAuthorityLinksCount();
+  const { linkingRules } = useAuthorityLinkingRules();
 
   const onSubmit = useCallback(async (formValues) => {
     let is1xxOr010Updated = false;
@@ -75,6 +81,9 @@ const QuickMarcEditWrapper = ({
       marcType,
       locations,
       linksCount,
+      linkingRules,
+      stripes,
+      action,
     });
 
     const errorMessage = controlFieldErrorMessage || validationErrorMessage;
@@ -161,7 +170,20 @@ const QuickMarcEditWrapper = ({
 
         setHttpError(parsedError);
       });
-  }, [showCallout, refreshPageData, location, initialValues, instance, locations, marcType, mutator, linksCount]);
+  }, [
+    showCallout,
+    refreshPageData,
+    location,
+    initialValues,
+    instance,
+    locations,
+    marcType,
+    mutator,
+    linksCount,
+    stripes,
+    action,
+    linkingRules,
+  ]);
 
   useEffect(() => {
     if (marcType === MARC_TYPES.AUTHORITY) {

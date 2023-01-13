@@ -11,6 +11,7 @@ import {
 
 import QuickMarcEditor from './QuickMarcEditor';
 import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
+import { useAuthorityLinkingRules } from '../queries';
 import {
   QUICK_MARC_ACTIONS,
 } from './constants';
@@ -40,6 +41,7 @@ const propTypes = {
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
+  stripes: PropTypes.object.isRequired,
 };
 
 const QuickMarcDeriveWrapper = ({
@@ -51,9 +53,12 @@ const QuickMarcDeriveWrapper = ({
   history,
   location,
   marcType,
+  stripes,
 }) => {
   const showCallout = useShowCallout();
   const [httpError, setHttpError] = useState(null);
+
+  const { linkingRules } = useAuthorityLinkingRules();
 
   const saveLinksToNewRecord = async (externalId, marcRecord) => {
     // request derived Instance record
@@ -107,7 +112,13 @@ const QuickMarcDeriveWrapper = ({
       marcType,
     );
     const formValuesForDerive = cleanBytesFields(autopopulatedFormWithSubfields, initialValues, marcType);
-    const validationErrorMessage = validateMarcRecord({ marcRecord: formValuesForDerive, initialValues });
+    const validationErrorMessage = validateMarcRecord({
+      marcRecord: formValuesForDerive,
+      initialValues,
+      linkingRules,
+      stripes,
+      action,
+    });
 
     if (validationErrorMessage) {
       showCallout({ message: validationErrorMessage, type: 'error' });
@@ -152,7 +163,7 @@ const QuickMarcDeriveWrapper = ({
         setHttpError(parsedError);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onClose, showCallout]);
+  }, [onClose, showCallout, stripes, linkingRules, action]);
 
   return (
     <QuickMarcEditor

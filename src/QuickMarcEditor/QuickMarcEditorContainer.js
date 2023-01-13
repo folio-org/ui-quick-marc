@@ -41,6 +41,7 @@ const propTypes = {
   mutator: PropTypes.object.isRequired,
   match: ReactRouterPropTypes.match.isRequired,
   resources: PropTypes.object.isRequired,
+  stripes: PropTypes.object.isRequired,
   wrapper: PropTypes.func.isRequired,
 };
 
@@ -55,6 +56,7 @@ const QuickMarcEditorContainer = ({
   marcType,
   externalRecordPath,
   resources,
+  stripes,
 }) => {
   const {
     externalId,
@@ -158,6 +160,7 @@ const QuickMarcEditorContainer = ({
       refreshPageData={loadData}
       externalRecordPath={externalRecordUrl}
       resources={resources}
+      stripes={stripes}
     />
   );
 };
