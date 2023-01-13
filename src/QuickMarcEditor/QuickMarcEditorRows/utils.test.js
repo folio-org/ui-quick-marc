@@ -104,7 +104,7 @@ describe('QuickMarcEditorRows utils', () => {
 
     describe('when record type equals AUTHORITY', () => {
       it('should be true for 1XX tags', () => {
-        expect(utils.hasDeleteException({ tag: '150' }, MARC_TYPES.HOLDINGS)).toBeTruthy();
+        expect(utils.hasDeleteException({ tag: '150' }, MARC_TYPES.AUTHORITY)).toBeTruthy();
       });
     });
   });
