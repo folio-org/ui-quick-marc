@@ -22,6 +22,8 @@
 * [UIQM-335](https://issues.folio.org/browse/UIQM-335) MARC Bibliographic | Print Source record
 * [UIQM-330](https://issues.folio.org/browse/UIQM-330) FE - Edit MARC Authority record | MARC field 010 is not repeatable
 * [UIQM-353](https://issues.folio.org/browse/UIQM-353) Fix "Reference" record opens when user clicks on the "View" icon next to the linked "MARC Bib" field
+* [UIQM-345](https://issues.folio.org/browse/UIQM-345) Edit a MARC authority record | Do not allow user to delete 1XX field
+* [UIQM-349](https://issues.folio.org/browse/UIQM-349) Align the module with mod-search API breaking change
 * [UIQM-341](https://issues.folio.org/browse/UIQM-341) Error handling | Edit/Derive a new MARC bib record | User adds an invalid $9
 
 ## [5.2.0](https://github.com/folio-org/ui-quick-marc/tree/v5.2.0) (2022-10-26)
