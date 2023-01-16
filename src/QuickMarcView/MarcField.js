@@ -15,7 +15,6 @@ import styles from './MarcField.css';
 const MarcField = ({
   field,
   showLinkIcon,
-  isPrint,
 }) => {
   const intl = useIntl();
 
@@ -42,7 +41,7 @@ const MarcField = ({
     : field[fieldTag].replace(/\\/g, ' ');
 
   const renderLinkIcon = useCallback(() => {
-    if (!hasIndicators || isPrint) {
+    if (!hasIndicators) {
       return null;
     }
 
@@ -74,7 +73,7 @@ const MarcField = ({
         )}
       </Tooltip>
     );
-  }, [field, fieldTag, intl, hasIndicators, isPrint]);
+  }, [field, fieldTag, intl, hasIndicators]);
 
   return (
     <tr data-test-instance-marc-field>
@@ -102,12 +101,7 @@ const MarcField = ({
 
 MarcField.propTypes = {
   field: PropTypes.object.isRequired,
-  isPrint: PropTypes.bool,
   showLinkIcon: PropTypes.bool.isRequired,
-};
-
-MarcField.defaultProps = {
-  isPrint: false,
 };
 
 export default MarcField;
