@@ -43,7 +43,6 @@ import {
   isPhysDescriptionRecord,
   isFixedFieldRow,
 } from './utils';
-import { getContentSubfieldValue } from '../utils';
 import { useAuthorityLinking } from '../../hooks';
 import { QUICK_MARC_ACTIONS } from '../constants';
 import {
@@ -454,24 +453,20 @@ const QuickMarcEditorRows = ({
                       id={`view-marc-authority-record-tooltip-${idx}`}
                       text={intl.formatMessage({ id: 'ui-quick-marc.record.viewMarcAuthorityRecord' })}
                     >
-                      {({ ref, ariaIds }) => {
-                        const headingRef = getContentSubfieldValue(recordRow.content).$a;
-
-                        return (
-                          <Link
-                            to={`/marc-authorities/authorities/${recordRow.authorityId}?authRefType=Authorized&headingRef=${headingRef}&segment=search`}
-                            target="_blank"
-                            data-testid="view-authority-record-link"
-                            tabIndex="-1"
-                          >
-                            <IconButton
-                              icon="eye-open"
-                              ref={ref}
-                              aria-labelledby={ariaIds.text}
-                            />
-                          </Link>
-                        );
-                      }}
+                      {({ ref, ariaIds }) => (
+                        <Link
+                          to={`/marc-authorities/authorities/${recordRow.authorityId}?authRefType=Authorized&segment=search`}
+                          target="_blank"
+                          data-testid="view-authority-record-link"
+                          tabIndex="-1"
+                        >
+                          <IconButton
+                            icon="eye-open"
+                            ref={ref}
+                            aria-labelledby={ariaIds.text}
+                          />
+                        </Link>
+                      )}
                     </Tooltip>
                   )}
                 </div>
