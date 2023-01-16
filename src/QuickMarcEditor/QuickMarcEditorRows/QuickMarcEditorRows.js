@@ -43,7 +43,6 @@ import {
   isPhysDescriptionRecord,
   isFixedFieldRow,
 } from './utils';
-import { getContentSubfieldValue } from '../utils';
 import { useAuthorityLinking } from '../../hooks';
 import { QUICK_MARC_ACTIONS } from '../constants';
 import {

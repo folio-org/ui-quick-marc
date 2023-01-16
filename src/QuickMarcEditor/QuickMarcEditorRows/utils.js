@@ -63,10 +63,14 @@ const DELETE_EXCEPTION_ROWS = new Set([LEADER_TAG, '001', '003', '005', '008']);
 
 const DELETE_EXCEPTION_ROWS_FOR_HOLDINGS = new Set([LEADER_TAG, '001', '003', '004', '005', '008']);
 
+const is1XXField = (tag) => tag[0] === '1';
+
 export const hasDeleteException = (recordRow, marcType = MARC_TYPES.BIB) => {
   const rows = marcType === MARC_TYPES.HOLDINGS
     ? DELETE_EXCEPTION_ROWS_FOR_HOLDINGS
     : DELETE_EXCEPTION_ROWS;
+
+  if (marcType === MARC_TYPES.AUTHORITY && is1XXField(recordRow.tag)) return true;
 
   return rows.has(recordRow.tag) || isLastRecord(recordRow);
 };
