@@ -387,7 +387,6 @@ export const checkDuplicate010Field = (marcRecords) => {
 export const checkCanBeLinked = (stripes, marcType, action, linkableBibFields, tag) => (
   stripes.hasPerm('ui-quick-marc.quick-marc-authority-records.linkUnlink') &&
   marcType === MARC_TYPES.BIB &&
-  (action === QUICK_MARC_ACTIONS.EDIT || action === QUICK_MARC_ACTIONS.DERIVE) &&
   linkableBibFields.includes(tag)
 );
 

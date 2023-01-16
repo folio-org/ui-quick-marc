@@ -5,6 +5,7 @@ import React, {
 import PropTypes from 'prop-types';
 import ReactRouterPropTypes from 'react-router-prop-types';
 
+import { useStripes } from '@folio/stripes/core';
 import {
   useShowCallout,
 } from '@folio/stripes-acq-components';
@@ -41,7 +42,6 @@ const propTypes = {
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
-  stripes: PropTypes.object.isRequired,
 };
 
 const QuickMarcDeriveWrapper = ({
@@ -53,9 +53,9 @@ const QuickMarcDeriveWrapper = ({
   history,
   location,
   marcType,
-  stripes,
 }) => {
   const showCallout = useShowCallout();
+  const stripes = useStripes();
   const [httpError, setHttpError] = useState(null);
 
   const { linkingRules } = useAuthorityLinkingRules();

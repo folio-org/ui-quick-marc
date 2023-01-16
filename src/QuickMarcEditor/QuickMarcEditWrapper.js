@@ -6,6 +6,7 @@ import React, {
 import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 
+import { useStripes } from '@folio/stripes/core';
 import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
@@ -42,7 +43,6 @@ const propTypes = {
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
-  stripes: PropTypes.object.isRequired,
   locations: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
@@ -56,10 +56,10 @@ const QuickMarcEditWrapper = ({
   locations,
   refreshPageData,
   externalRecordPath,
-  stripes,
 }) => {
   const showCallout = useShowCallout();
   const location = useLocation();
+  const stripes = useStripes();
   const [httpError, setHttpError] = useState(null);
   const [linksCount, setLinksCount] = useState(0);
 
