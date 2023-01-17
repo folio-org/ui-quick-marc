@@ -442,7 +442,7 @@ const QuickMarcEditor = ({
         heading={<FormattedMessage id="ui-quick-marc.update-linked-bib-fields.modal.label" />}
         message={
           <FormattedMessage
-            id={continueAfterSave.current ? 'ui-quick-marc.update-linked-bib-fields.modal.message-save-and-editing' : 'ui-quick-marc.update-linked-bib-fields.modal.message-save-and-close'}
+            id="ui-quick-marc.update-linked-bib-fields.modal.message-save"
             values={{ count: linksCount }}
           />
         }
