@@ -43,6 +43,7 @@ import {
   isPhysDescriptionRecord,
   isFixedFieldRow,
 } from './utils';
+import { checkCanBeLinked } from '../utils';
 import { useAuthorityLinking } from '../../hooks';
 import { QUICK_MARC_ACTIONS } from '../constants';
 import {
@@ -220,10 +221,7 @@ const QuickMarcEditorRows = ({
             const isContentField = !(isLocationField || isFixedField || isMaterialCharsField || isPhysDescriptionField);
             const isMARCFieldProtections = marcType !== MARC_TYPES.HOLDINGS && action === QUICK_MARC_ACTIONS.EDIT;
             const isProtectedField = recordRow.isProtected;
-            const isLinkVisible = stripes.hasPerm('ui-quick-marc.quick-marc-authority-records.linkUnlink') &&
-              marcType === MARC_TYPES.BIB &&
-              (action === QUICK_MARC_ACTIONS.EDIT || action === QUICK_MARC_ACTIONS.DERIVE) &&
-              linkableBibFields.includes(recordRow.tag);
+            const isLinkVisible = checkCanBeLinked(stripes, marcType, action, linkableBibFields, recordRow.tag);
 
             const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') && recordRow._isLinked;
 
