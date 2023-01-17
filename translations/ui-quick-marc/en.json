@@ -274,7 +274,6 @@
   "update-linked-bib-fields.modal.label": "Are you sure?",
   "update-linked-bib-fields.modal.message-save-and-editing": "<b>{count} {count, plural, one {bibliographic record} other {bibliographic records}}</b> {count, plural, one {is} other {are}} linked to this authority record and will be updated if the <b>Save & editing</b> is clicked.",
   "update-linked-bib-fields.modal.message-save-and-close": "<b>{count} {count, plural, one {bibliographic record} other {bibliographic records}}</b> {count, plural, one {is} other {are}} linked to this authority record and will be updated if the <b>Save & close</b> is clicked.",
-  "update-linked-bib-fields.modal.keep-editing": "Keep editing",
-  "update-linked-bib-fields.modal.saveAndClose": "Save & close",
-  "update-linked-bib-fields.modal.saveAndEditing": "Save & editing"
+  "update-linked-bib-fields.modal.save": "Save",
+  "update-linked-bib-fields.modal.keep-editing": "Keep editing"
 }

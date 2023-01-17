@@ -446,11 +446,7 @@ const QuickMarcEditor = ({
             values={{ count: linksCount }}
           />
         }
-        confirmLabel={
-          <FormattedMessage
-            id={continueAfterSave.current ? 'ui-quick-marc.update-linked-bib-fields.modal.saveAndEditing' : 'ui-quick-marc.update-linked-bib-fields.modal.saveAndClose'}
-          />
-        }
+        confirmLabel={<FormattedMessage id="ui-quick-marc.update-linked-bib-fields.modal.save" />}
         cancelLabel={<FormattedMessage id="ui-quick-marc.update-linked-bib-fields.modal.keep-editing" />}
         onConfirm={handleUpdateLinkedFields}
         onCancel={handleKeepEditingLinkedFields}
