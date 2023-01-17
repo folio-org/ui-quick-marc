@@ -374,6 +374,109 @@ describe('QuickMarcEditor utils', () => {
       }).props.id).toBe('ui-quick-marc.record.error.title.multiple');
     });
 
+    describe('$9', () => {
+      const initialValues = {
+        leader: '04706cam a2200865Ii 4500',
+        records: [
+          {
+            content: '04706cam a2200865Ii 4500',
+            tag: 'LDR',
+          },
+          {
+            tag: '008',
+            content: {
+              Desc: 'i',
+            },
+          },
+          {
+            tag: '245',
+          },
+          {
+            'tag': '100',
+            'content': '$a Chin, Staceyann, $d 1972-2050 $0 http://id.loc.gov/authorities/names/n2008052404 $9 1170f654-61f3-4d54-808b-9375147fb420',
+            'indicators': ['1', '\\'],
+            'isProtected': false,
+            'authorityId': '1170f654-61f3-4d54-808b-9375147fb420',
+            'authorityNaturalId': 'n2008052404',
+            'authorityControlledSubfields': ['a', 'b', 'c', 'd', 'j', 'q'],
+            'id': '6cf6c680-359b-40d8-b93f-7d5ad181d821',
+            '_isDeleted': false,
+            '_isLinked': true,
+            'subfieldGroups': {
+              'controlled': '$a Chin, Staceyann, $d 1972-2050',
+              'uncontrolledAlpha': '',
+              'zeroSubfield': '$0 http://id.loc.gov/authorities/names/n2008052404',
+              'nineSubfield': '$9 1170f654-61f3-4d54-808b-9375147fb420',
+              'uncontrolledNumber': '',
+            },
+          },
+          {
+            'tag': '600',
+            'content': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc.',
+            'indicators': [
+              '0',
+              '0',
+            ],
+            'isProtected': false,
+            'id': '402c0aec-5e1b-49a3-83a2-da788f48b27a',
+            '_isDeleted': false,
+            '_isLinked': false,
+          },
+        ],
+      };
+
+      const linkingRules = [{ 'bibField': '100' }, { 'bibField': '600' }];
+      const stripes = { hasPerm: jest.fn().mockReturnValue(true) };
+
+      describe('when $9 entered to the already linked field', () => {
+        it('should return the error', () => {
+          const record = cloneDeep(initialValues);
+
+          record.records[3].subfieldGroups.uncontrolledAlpha = '$9 fakeValue';
+
+          expect(utils.validateMarcRecord({
+            marcRecord: record,
+            initialValues,
+            linkingRules,
+            stripes,
+            action: 'edit',
+          }).props.id).toBe('ui-quick-marc.record.error.$9.nonRepeatable');
+        });
+      });
+
+      describe('when $9 entered to the field that can be linked', () => {
+        it('should return the error', () => {
+          const record = cloneDeep(initialValues);
+
+          record.records[4].content += ' $9 fakeValue';
+
+          expect(utils.validateMarcRecord({
+            marcRecord: record,
+            initialValues,
+            linkingRules,
+            stripes,
+            action: 'edit',
+          }).props.id).toBe('ui-quick-marc.record.error.$9');
+        });
+      });
+
+      describe('when $9 entered to the field that can not be linked', () => {
+        it('should return the error', () => {
+          const record = cloneDeep(initialValues);
+
+          record.records[2].content += '$9 fakeValue';
+
+          expect(utils.validateMarcRecord({
+            marcRecord: record,
+            initialValues,
+            linkingRules,
+            stripes,
+            action: 'edit',
+          }).props.id).toBe('ui-quick-marc.record.error.$9.cannotBeLinked');
+        });
+      });
+    });
+
     describe('when record is MARC Holdings record', () => {
       it('should not return error message when record is valid', () => {
         const initialValues = { records: [] };

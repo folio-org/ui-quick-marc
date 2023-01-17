@@ -6,11 +6,15 @@ import React, {
 import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 
+import { useStripes } from '@folio/stripes/core';
 import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 
-import { useAuthorityLinksCount } from '../queries';
+import {
+  useAuthorityLinksCount,
+  useAuthorityLinkingRules,
+} from '../queries';
 import { QUICK_MARC_ACTIONS } from './constants';
 import {
   EXTERNAL_INSTANCE_APIS,
@@ -55,10 +59,12 @@ const QuickMarcEditWrapper = ({
 }) => {
   const showCallout = useShowCallout();
   const location = useLocation();
+  const stripes = useStripes();
   const [httpError, setHttpError] = useState(null);
   const [linksCount, setLinksCount] = useState(0);
 
   const { fetchLinksCount } = useAuthorityLinksCount();
+  const { linkingRules } = useAuthorityLinkingRules();
 
   const onSubmit = useCallback(async (formValues) => {
     let is1xxOr010Updated = false;
@@ -75,6 +81,9 @@ const QuickMarcEditWrapper = ({
       marcType,
       locations,
       linksCount,
+      linkingRules,
+      stripes,
+      action,
     });
 
     const errorMessage = controlFieldErrorMessage || validationErrorMessage;
@@ -161,7 +170,20 @@ const QuickMarcEditWrapper = ({
 
         setHttpError(parsedError);
       });
-  }, [showCallout, refreshPageData, location, initialValues, instance, locations, marcType, mutator, linksCount]);
+  }, [
+    showCallout,
+    refreshPageData,
+    location,
+    initialValues,
+    instance,
+    locations,
+    marcType,
+    mutator,
+    linksCount,
+    stripes,
+    action,
+    linkingRules,
+  ]);
 
   useEffect(() => {
     if (marcType === MARC_TYPES.AUTHORITY) {

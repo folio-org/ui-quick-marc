@@ -5,12 +5,14 @@ import React, {
 import PropTypes from 'prop-types';
 import ReactRouterPropTypes from 'react-router-prop-types';
 
+import { useStripes } from '@folio/stripes/core';
 import {
   useShowCallout,
 } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
+import { useAuthorityLinkingRules } from '../queries';
 import {
   QUICK_MARC_ACTIONS,
 } from './constants';
@@ -53,7 +55,10 @@ const QuickMarcDeriveWrapper = ({
   marcType,
 }) => {
   const showCallout = useShowCallout();
+  const stripes = useStripes();
   const [httpError, setHttpError] = useState(null);
+
+  const { linkingRules } = useAuthorityLinkingRules();
 
   const saveLinksToNewRecord = async (externalId, marcRecord) => {
     // request derived Instance record
@@ -107,7 +112,13 @@ const QuickMarcDeriveWrapper = ({
       marcType,
     );
     const formValuesForDerive = cleanBytesFields(autopopulatedFormWithSubfields, initialValues, marcType);
-    const validationErrorMessage = validateMarcRecord({ marcRecord: formValuesForDerive, initialValues });
+    const validationErrorMessage = validateMarcRecord({
+      marcRecord: formValuesForDerive,
+      initialValues,
+      linkingRules,
+      stripes,
+      action,
+    });
 
     if (validationErrorMessage) {
       showCallout({ message: validationErrorMessage, type: 'error' });
@@ -152,7 +163,7 @@ const QuickMarcDeriveWrapper = ({
         setHttpError(parsedError);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onClose, showCallout]);
+  }, [onClose, showCallout, stripes, linkingRules, action]);
 
   return (
     <QuickMarcEditor
