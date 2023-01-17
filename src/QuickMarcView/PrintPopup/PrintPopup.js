@@ -49,7 +49,6 @@ const PrintPopup = ({
         </h2>
         <hr />
         <MarcContent
-          isPrint
           marcTitle={marcTitle}
           marc={marc}
         />
