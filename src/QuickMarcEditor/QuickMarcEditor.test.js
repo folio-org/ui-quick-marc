@@ -60,6 +60,7 @@ jest.mock('./QuickMarcRecordInfo', () => {
 
 const onCloseMock = jest.fn();
 const onSubmitMock = jest.fn(() => Promise.resolve({ version: 1 }));
+const mockValidate = jest.fn().mockReturnValue(undefined);
 
 const instance = {
   id: faker.random.uuid(),
@@ -129,6 +130,7 @@ const renderQuickMarcEditor = (props) => (render(
       marcType={MARC_TYPES.BIB}
       locations={locations}
       linksCount={linksCount}
+      validate={mockValidate}
       {...props}
     />
   </Harness>,

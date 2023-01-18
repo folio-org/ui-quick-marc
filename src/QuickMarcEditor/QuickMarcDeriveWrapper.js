@@ -5,9 +5,7 @@ import React, {
 import PropTypes from 'prop-types';
 import ReactRouterPropTypes from 'react-router-prop-types';
 
-import {
-  useShowCallout,
-} from '@folio/stripes-acq-components';
+import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
@@ -89,16 +87,8 @@ const QuickMarcDeriveWrapper = ({
     });
   };
 
-  const onSubmit = useCallback(async (formValues) => {
+  const prepareForSubmit = (formValues) => {
     const formValuesToSave = removeDeletedRecords(formValues);
-    const controlFieldErrorMessage = checkControlFieldLength(formValuesToSave);
-
-    if (controlFieldErrorMessage) {
-      showCallout({ message: controlFieldErrorMessage, type: 'error' });
-
-      return null;
-    }
-
     const clearFormValues = removeFieldsForDerive(formValuesToSave);
     const autopopulatedFormWithIndicators = autopopulateIndicators(clearFormValues);
     const autopopulatedFormWithSubfields = autopopulateSubfieldSection(
@@ -107,13 +97,29 @@ const QuickMarcDeriveWrapper = ({
       marcType,
     );
     const formValuesForDerive = cleanBytesFields(autopopulatedFormWithSubfields, initialValues, marcType);
-    const validationErrorMessage = validateMarcRecord({ marcRecord: formValuesForDerive, initialValues });
+
+    return formValuesForDerive;
+  };
+
+  const validate = (formValues) => {
+    const formValuesForValidation = prepareForSubmit(formValues);
+    const controlFieldErrorMessage = checkControlFieldLength(formValuesForValidation);
+
+    if (controlFieldErrorMessage) {
+      return controlFieldErrorMessage;
+    }
+
+    const validationErrorMessage = validateMarcRecord({ marcRecord: formValuesForValidation, initialValues });
 
     if (validationErrorMessage) {
-      showCallout({ message: validationErrorMessage, type: 'error' });
-
-      return null;
+      return validationErrorMessage;
     }
+
+    return undefined;
+  };
+
+  const onSubmit = useCallback(async (formValues) => {
+    const formValuesForDerive = prepareForSubmit(formValues);
 
     showCallout({ messageId: 'ui-quick-marc.record.saveNew.onSave' });
 
@@ -164,6 +170,7 @@ const QuickMarcDeriveWrapper = ({
       marcType={marcType}
       httpError={httpError}
       confirmRemoveAuthorityLinking
+      validate={validate}
     />
   );
 };
