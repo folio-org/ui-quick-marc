@@ -91,8 +91,8 @@ describe('QuickMarcEditorRows utils', () => {
     });
 
     describe('when record type equals BIB', () => {
-      it('should be true for tag 004', () => {
-        expect(utils.hasDeleteException({ tag: '004' }, MARC_TYPES.BIB)).toBeFalsy();
+      it('should be true for tag 245', () => {
+        expect(utils.hasDeleteException({ tag: '245' }, MARC_TYPES.BIB)).toBeTruthy();
       });
     });
 

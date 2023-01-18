@@ -6,11 +6,15 @@ import React, {
 import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 
+import { useStripes } from '@folio/stripes/core';
 import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 
-import { useAuthorityLinksCount } from '../queries';
+import {
+  useAuthorityLinksCount,
+  useAuthorityLinkingRules,
+} from '../queries';
 import { QUICK_MARC_ACTIONS } from './constants';
 import {
   EXTERNAL_INSTANCE_APIS,
@@ -55,10 +59,12 @@ const QuickMarcEditWrapper = ({
 }) => {
   const showCallout = useShowCallout();
   const location = useLocation();
+  const stripes = useStripes();
   const [httpError, setHttpError] = useState(null);
   const [linksCount, setLinksCount] = useState(0);
 
   const { fetchLinksCount } = useAuthorityLinksCount();
+  const { linkingRules } = useAuthorityLinkingRules();
 
   const prepareForSubmit = (formValues) => {
     const formValuesToSave = removeDeletedRecords(formValues);
@@ -75,11 +81,14 @@ const QuickMarcEditWrapper = ({
     }
 
     const validationErrorMessage = validateMarcRecord({
-      marcRecord: formValuesForValidation,
+      marcRecord: formValuesToSave,
       initialValues,
       marcType,
       locations,
       linksCount,
+      linkingRules,
+      stripes,
+      action,
     });
 
     if (validationErrorMessage) {
@@ -171,7 +180,16 @@ const QuickMarcEditWrapper = ({
 
         setHttpError(parsedError);
       });
-  }, [showCallout, refreshPageData, location, initialValues, instance, marcType, mutator, linksCount]);
+  }, [
+    showCallout,
+    refreshPageData,
+    initialValues,
+    instance,
+    marcType,
+    mutator,
+    linksCount,
+    location.search,
+  ]);
 
   useEffect(() => {
     if (marcType === MARC_TYPES.AUTHORITY) {

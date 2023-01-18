@@ -23,7 +23,11 @@
 * [UIQM-330](https://issues.folio.org/browse/UIQM-330) FE - Edit MARC Authority record | MARC field 010 is not repeatable
 * [UIQM-353](https://issues.folio.org/browse/UIQM-353) Fix "Reference" record opens when user clicks on the "View" icon next to the linked "MARC Bib" field
 * [UIQM-345](https://issues.folio.org/browse/UIQM-345) Edit a MARC authority record | Do not allow user to delete 1XX field
-* [UIQM-349](https://issues.folio.org/browse/UIQM-349) Align the module with mod-search API breaking change
+* [UIQM-343](https://issues.folio.org/browse/UIQM-343) Edit/Derive a MARC bib record | Do not allow a user to delete MARC field 245
+* [UIQM-344](https://issues.folio.org/browse/UIQM-344) Create/Edit MARC holdings | Do not allow user to delete MARC field 852
+* [UIQM-341](https://issues.folio.org/browse/UIQM-341) Error handling | Edit/Derive a new MARC bib record | User adds an invalid $9
+* [UIQM-368](https://issues.folio.org/browse/UIQM-368) Bump stripes to 8.0.0 for Orchid/2023-R1
+* [UIQM-359](https://issues.folio.org/browse/UIQM-359) Change to Linked MARC authority record has been updated confirmation messaging
 * [UIQM-347](https://issues.folio.org/browse/UIQM-347) quickMARC | Show errors messages then show confirmation messages
 
 ## [5.2.0](https://github.com/folio-org/ui-quick-marc/tree/v5.2.0) (2022-10-26)

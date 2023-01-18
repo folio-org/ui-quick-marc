@@ -5,10 +5,12 @@ import React, {
 import PropTypes from 'prop-types';
 import ReactRouterPropTypes from 'react-router-prop-types';
 
+import { useStripes } from '@folio/stripes/core';
 import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
+import { useAuthorityLinkingRules } from '../queries';
 import {
   QUICK_MARC_ACTIONS,
 } from './constants';
@@ -51,7 +53,10 @@ const QuickMarcDeriveWrapper = ({
   marcType,
 }) => {
   const showCallout = useShowCallout();
+  const stripes = useStripes();
   const [httpError, setHttpError] = useState(null);
+
+  const { linkingRules } = useAuthorityLinkingRules();
 
   const saveLinksToNewRecord = async (externalId, marcRecord) => {
     // request derived Instance record
@@ -109,7 +114,13 @@ const QuickMarcDeriveWrapper = ({
       return controlFieldErrorMessage;
     }
 
-    const validationErrorMessage = validateMarcRecord({ marcRecord: formValuesForValidation, initialValues });
+    const validationErrorMessage = validateMarcRecord({
+      marcRecord: formValuesForValidation,
+      initialValues,
+      linkingRules,
+      stripes,
+      action,
+    });
 
     if (validationErrorMessage) {
       return validationErrorMessage;
@@ -158,7 +169,7 @@ const QuickMarcDeriveWrapper = ({
         setHttpError(parsedError);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onClose, showCallout]);
+  }, [onClose, showCallout, stripes, linkingRules, action]);
 
   return (
     <QuickMarcEditor
