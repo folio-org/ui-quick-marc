@@ -81,7 +81,7 @@ const QuickMarcEditWrapper = ({
     }
 
     const validationErrorMessage = validateMarcRecord({
-      marcRecord: formValuesToSave,
+      marcRecord: formValuesForValidation,
       initialValues,
       marcType,
       locations,
@@ -188,7 +188,7 @@ const QuickMarcEditWrapper = ({
     marcType,
     mutator,
     linksCount,
-    location.search,
+    location,
   ]);
 
   useEffect(() => {
