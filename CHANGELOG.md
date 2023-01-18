@@ -27,6 +27,7 @@
 * [UIQM-344](https://issues.folio.org/browse/UIQM-344) Create/Edit MARC holdings | Do not allow user to delete MARC field 852
 * [UIQM-341](https://issues.folio.org/browse/UIQM-341) Error handling | Edit/Derive a new MARC bib record | User adds an invalid $9
 * [UIQM-370](https://issues.folio.org/browse/UIQM-370) Error when clearing "1XX" field tag for "MARC authority" record
+* [UIQM-368](https://issues.folio.org/browse/UIQM-368) Bump stripes to 8.0.0 for Orchid/2023-R1
 
 ## [5.2.0](https://github.com/folio-org/ui-quick-marc/tree/v5.2.0) (2022-10-26)
 
