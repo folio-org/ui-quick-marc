@@ -106,6 +106,9 @@ describe('QuickMarcEditorRows utils', () => {
       it('should be true for 1XX tags', () => {
         expect(utils.hasDeleteException({ tag: '150' }, MARC_TYPES.AUTHORITY)).toBeTruthy();
       });
+      it('should be true for tag 010 that populates bib field(s)', () => {
+        expect(utils.hasDeleteException({ tag: '010' }, MARC_TYPES.AUTHORITY, 1)).toBeTruthy();
+      });
     });
   });
 

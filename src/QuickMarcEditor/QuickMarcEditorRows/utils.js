@@ -67,10 +67,14 @@ const DELETE_EXCEPTION_ROWS = {
 
 const is1XXField = (tag) => tag[0] === '1';
 
-export const hasDeleteException = (recordRow, marcType = MARC_TYPES.BIB) => {
+export const hasDeleteException = (recordRow, marcType = MARC_TYPES.BIB, linksCount = 0) => {
   const rows = DELETE_EXCEPTION_ROWS[marcType];
 
-  if (marcType === MARC_TYPES.AUTHORITY && is1XXField(recordRow.tag)) return true;
+  if (marcType === MARC_TYPES.AUTHORITY) {
+    if (is1XXField(recordRow.tag) || (recordRow.tag === '010' && linksCount > 0)) {
+      return true;
+    }
+  }
 
   return rows.has(recordRow.tag) || isLastRecord(recordRow);
 };

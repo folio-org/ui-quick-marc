@@ -919,24 +919,18 @@ export const splitFields = marcRecord => {
   };
 };
 
-export const are010Or1xxUpdated = (initial, updated) => {
-  let is010Updated = false;
-  let is1XXUpdated = false;
+export const is010Updated = (initial, updated) => {
+  const initial010 = initial.find(rec => rec.tag === '010');
+  const updated010 = updated.find(rec => rec.tag === '010');
 
-  const authRec010Tag = '010';
-  const initial010 = initial.find(rec => rec.tag === authRec010Tag);
-  const updated010 = updated.find(rec => rec.tag === authRec010Tag);
-
-  if (initial010 &&
+  return initial010 &&
     updated010 &&
-    getContentSubfieldValue(initial010.content).$a !== getContentSubfieldValue(updated010.content).$a
-  ) {
-    is010Updated = true;
-  }
+    getContentSubfieldValue(initial010.content).$a !== getContentSubfieldValue(updated010.content).$a;
+};
 
-  const authRec1XXTagStartsWith = '1';
-  const initial1xxRecords = initial.filter(rec => rec.tag[0] === authRec1XXTagStartsWith);
-  const updated1xxRecords = updated.filter(rec => rec.tag[0] === authRec1XXTagStartsWith);
+export const is1XXUpdated = (initial, updated) => {
+  const initial1xxRecords = initial.filter(rec => rec.tag[0] === '1');
+  const updated1xxRecords = updated.filter(rec => rec.tag[0] === '1');
 
   const updated1xxArr = [];
 
@@ -948,9 +942,9 @@ export const are010Or1xxUpdated = (initial, updated) => {
     }
   });
 
-  if (updated1xxArr.length) {
-    is1XXUpdated = true;
-  }
+  return !!updated1xxArr.length;
+};
 
-  return is010Updated || is1XXUpdated;
+export const are010Or1xxUpdated = (initial, updated) => {
+  return is010Updated(initial, updated) || is1XXUpdated(initial, updated);
 };
