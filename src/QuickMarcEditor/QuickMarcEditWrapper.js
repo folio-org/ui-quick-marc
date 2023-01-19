@@ -72,7 +72,7 @@ const QuickMarcEditWrapper = ({
     return formValuesToSave;
   };
 
-  const validate = (formValues) => {
+  const validate = useCallback((formValues) => {
     const formValuesForValidation = prepareForSubmit(formValues);
     const controlFieldErrorMessage = checkControlFieldLength(formValuesForValidation);
 
@@ -96,7 +96,7 @@ const QuickMarcEditWrapper = ({
     }
 
     return undefined;
-  };
+  }, [action, initialValues, linkingRules, linksCount, locations, marcType, stripes]);
 
   const onSubmit = useCallback(async (formValues) => {
     let is1xxOr010Updated = false;

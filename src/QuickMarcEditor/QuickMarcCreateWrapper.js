@@ -48,7 +48,7 @@ const QuickMarcCreateWrapper = ({
   const showCallout = useShowCallout();
   const [httpError, setHttpError] = useState(null);
 
-  const prepareForSubmit = (formValues) => {
+  const prepareForSubmit = useCallback((formValues) => {
     const formValuesToSave = removeDeletedRecords(formValues);
     const autopopulatedFormValues = autopopulateSubfieldSection(
       removeFieldsForDerive(formValuesToSave),
@@ -58,9 +58,9 @@ const QuickMarcCreateWrapper = ({
     const formValuesForCreate = cleanBytesFields(autopopulatedFormValues, initialValues, marcType);
 
     return formValuesForCreate;
-  };
+  }, [initialValues, marcType]);
 
-  const validate = (formValues) => {
+  const validate = useCallback((formValues) => {
     const formValuesForValidation = prepareForSubmit(formValues);
     const controlFieldErrorMessage = checkControlFieldLength(formValuesForValidation);
 
@@ -80,7 +80,7 @@ const QuickMarcCreateWrapper = ({
     }
 
     return undefined;
-  };
+  }, [initialValues, locations, marcType, prepareForSubmit]);
 
   const onSubmit = useCallback(async (formValues) => {
     const formValuesForCreate = prepareForSubmit(formValues);

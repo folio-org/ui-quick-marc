@@ -28,9 +28,7 @@ import {
   checkScope,
   Layer,
 } from '@folio/stripes/components';
-import {
-  useShowCallout,
-} from '@folio/stripes-acq-components';
+import { useShowCallout } from '@folio/stripes-acq-components';
 
 import { QuickMarcRecordInfo } from './QuickMarcRecordInfo';
 import { QuickMarcEditorRows } from './QuickMarcEditorRows';
