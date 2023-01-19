@@ -66,11 +66,11 @@ const QuickMarcEditWrapper = ({
   const { fetchLinksCount } = useAuthorityLinksCount();
   const { linkingRules } = useAuthorityLinkingRules();
 
-  const prepareForSubmit = (formValues) => {
+  const prepareForSubmit = useCallback((formValues) => {
     const formValuesToSave = removeDeletedRecords(formValues);
 
     return formValuesToSave;
-  };
+  }, []);
 
   const validate = useCallback((formValues) => {
     const formValuesForValidation = prepareForSubmit(formValues);
@@ -96,7 +96,7 @@ const QuickMarcEditWrapper = ({
     }
 
     return undefined;
-  }, [action, initialValues, linkingRules, linksCount, locations, marcType, stripes]);
+  }, [action, initialValues, linkingRules, linksCount, locations, marcType, stripes, prepareForSubmit]);
 
   const onSubmit = useCallback(async (formValues) => {
     let is1xxOr010Updated = false;
@@ -189,6 +189,7 @@ const QuickMarcEditWrapper = ({
     mutator,
     linksCount,
     location,
+    prepareForSubmit,
   ]);
 
   useEffect(() => {

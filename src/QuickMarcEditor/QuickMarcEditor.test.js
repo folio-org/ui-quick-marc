@@ -291,7 +291,7 @@ describe('Given QuickMarcEditor', () => {
     });
   });
 
-  describe.only('when saving form with validation errors and deleted fields', () => {
+  describe('when saving form with validation errors and deleted fields', () => {
     beforeAll(() => {
       mockValidate.mockClear().mockReturnValue('Validation error');
     });

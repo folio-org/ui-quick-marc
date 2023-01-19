@@ -119,7 +119,7 @@ const QuickMarcCreateWrapper = ({
         setHttpError(parsedError);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onClose, showCallout]);
+  }, [onClose, showCallout, prepareForSubmit]);
 
   return (
     <QuickMarcEditor
