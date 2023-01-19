@@ -34,6 +34,20 @@ const useAuthorityLinking = () => {
     return linkingRules.find(rule => rule.bibField === bibTag && rule.authorityField === authorityTag);
   }, [linkingRules]);
 
+  const removeSubfieldsIfThereAreNotInAuthority = useCallback((bibSubfields, authField, bibTag) => {
+    const authSubfields = getContentSubfieldValue(authField.content);
+    const linkingRule = findLinkingRule(bibTag, authField.tag);
+
+    Object.keys(bibSubfields).forEach(subfieldCode => {
+      if (
+        linkingRule.authoritySubfields.includes(subfieldCode.replace('$', '')) &&
+        !(subfieldCode in authSubfields)
+      ) {
+        delete bibSubfields[subfieldCode];
+      }
+    });
+  }, [findLinkingRule]);
+
   const copySubfieldsFromAuthority = useCallback((bibSubfields, authField, bibTag) => {
     const linkingRule = findLinkingRule(bibTag, authField.tag);
     const authSubfields = getContentSubfieldValue(authField.content);
@@ -117,6 +131,8 @@ const useAuthorityLinking = () => {
       newZeroSubfield = authorityRecord.naturalId;
     }
 
+    removeSubfieldsIfThereAreNotInAuthority(bibSubfields, linkedAuthorityField, bibField.tag);
+
     copySubfieldsFromAuthority(bibSubfields, linkedAuthorityField, bibField.tag);
 
     if (!bibSubfields.$0 || bibSubfields.$0 !== authorityRecord.naturalId) {
@@ -126,7 +142,7 @@ const useAuthorityLinking = () => {
     bibSubfields.$9 = authorityRecord.id;
     bibField.prevContent = bibField.content;
     bibField.content = joinSubfields(bibSubfields);
-  }, [copySubfieldsFromAuthority, sourceFiles]);
+  }, [copySubfieldsFromAuthority, sourceFiles, removeSubfieldsIfThereAreNotInAuthority]);
 
   const linkAuthority = useCallback((authority, authoritySource, field) => {
     const linkedAuthorityField = getLinkableAuthorityField(authoritySource, field);
