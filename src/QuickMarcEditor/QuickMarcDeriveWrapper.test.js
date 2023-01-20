@@ -109,6 +109,7 @@ jest.mock('@folio/stripes/final-form', () => () => (Component) => ({ onSubmit, .
       form={{
         mutators: {},
         reset: jest.fn(),
+        getState: jest.fn().mockReturnValue({ values: formValues }),
       }}
       {...props}
     />
