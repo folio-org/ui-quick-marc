@@ -66,8 +66,8 @@ jest.mock('./QuickMarcRecordInfo', () => {
 
 const onCloseMock = jest.fn();
 const onSubmitMock = jest.fn(() => Promise.resolve({ version: 1 }));
-const mockValidate = jest.fn().mockReturnValue(undefined);
 const mockShowCallout = jest.fn();
+const mockValidate = jest.fn();
 
 useShowCallout.mockClear().mockReturnValue(mockShowCallout);
 
@@ -146,6 +146,10 @@ const renderQuickMarcEditor = (props) => (render(
 ));
 
 describe('Given QuickMarcEditor', () => {
+  beforeEach(() => {
+    mockValidate.mockClear().mockReturnValue(undefined);
+  });
+
   it('should render with no axe errors', async () => {
     const { container } = renderQuickMarcEditor();
 
@@ -292,7 +296,7 @@ describe('Given QuickMarcEditor', () => {
   });
 
   describe('when saving form with validation errors and deleted fields', () => {
-    beforeAll(() => {
+    beforeEach(() => {
       mockValidate.mockClear().mockReturnValue('Validation error');
     });
 
