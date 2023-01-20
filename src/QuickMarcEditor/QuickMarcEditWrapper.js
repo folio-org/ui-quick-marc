@@ -66,17 +66,22 @@ const QuickMarcEditWrapper = ({
   const { fetchLinksCount } = useAuthorityLinksCount();
   const { linkingRules } = useAuthorityLinkingRules();
 
-  const onSubmit = useCallback(async (formValues) => {
-    let is1xxOr010Updated = false;
+  const prepareForSubmit = useCallback((formValues) => {
+    const formValuesToSave = removeDeletedRecords(formValues);
 
-    if (marcType === MARC_TYPES.AUTHORITY && linksCount > 0) {
-      is1xxOr010Updated = are010Or1xxUpdated(initialValues.records, formValues.records);
+    return formValuesToSave;
+  }, []);
+
+  const validate = useCallback((formValues) => {
+    const formValuesForValidation = prepareForSubmit(formValues);
+    const controlFieldErrorMessage = checkControlFieldLength(formValuesForValidation);
+
+    if (controlFieldErrorMessage) {
+      return controlFieldErrorMessage;
     }
 
-    const formValuesToSave = removeDeletedRecords(formValues);
-    const controlFieldErrorMessage = checkControlFieldLength(formValuesToSave);
     const validationErrorMessage = validateMarcRecord({
-      marcRecord: formValuesToSave,
+      marcRecord: formValuesForValidation,
       initialValues,
       marcType,
       locations,
@@ -86,16 +91,21 @@ const QuickMarcEditWrapper = ({
       action,
     });
 
-    const errorMessage = controlFieldErrorMessage || validationErrorMessage;
-
-    if (errorMessage) {
-      showCallout({
-        message: errorMessage,
-        type: 'error',
-      });
-
-      return null;
+    if (validationErrorMessage) {
+      return validationErrorMessage;
     }
+
+    return undefined;
+  }, [action, initialValues, linkingRules, linksCount, locations, marcType, stripes, prepareForSubmit]);
+
+  const onSubmit = useCallback(async (formValues) => {
+    let is1xxOr010Updated = false;
+
+    if (marcType === MARC_TYPES.AUTHORITY && linksCount > 0) {
+      is1xxOr010Updated = are010Or1xxUpdated(initialValues.records, formValues.records);
+    }
+
+    const formValuesToSave = prepareForSubmit(formValues);
 
     const autopopulatedFormWithIndicators = autopopulateIndicators(formValuesToSave);
     const autopopulatedFormWithSubfields = autopopulateSubfieldSection(
@@ -173,16 +183,13 @@ const QuickMarcEditWrapper = ({
   }, [
     showCallout,
     refreshPageData,
-    location,
     initialValues,
     instance,
-    locations,
     marcType,
     mutator,
     linksCount,
-    stripes,
-    action,
-    linkingRules,
+    location,
+    prepareForSubmit,
   ]);
 
   useEffect(() => {
@@ -206,6 +213,7 @@ const QuickMarcEditWrapper = ({
       httpError={httpError}
       externalRecordPath={externalRecordPath}
       linksCount={linksCount}
+      validate={validate}
     />
   );
 };
