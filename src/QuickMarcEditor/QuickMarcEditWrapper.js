@@ -6,15 +6,11 @@ import React, {
 import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 
-import { useStripes } from '@folio/stripes/core';
 import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 
-import {
-  useAuthorityLinksCount,
-  useAuthorityLinkingRules,
-} from '../queries';
+import { useAuthorityLinksCount } from '../queries';
 import { QUICK_MARC_ACTIONS } from './constants';
 import {
   EXTERNAL_INSTANCE_APIS,
@@ -59,12 +55,10 @@ const QuickMarcEditWrapper = ({
 }) => {
   const showCallout = useShowCallout();
   const location = useLocation();
-  const stripes = useStripes();
   const [httpError, setHttpError] = useState(null);
   const [linksCount, setLinksCount] = useState(0);
 
   const { fetchLinksCount } = useAuthorityLinksCount();
-  const { linkingRules } = useAuthorityLinkingRules();
 
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesToSave = removeDeletedRecords(formValues);
@@ -86,9 +80,6 @@ const QuickMarcEditWrapper = ({
       marcType,
       locations,
       linksCount,
-      linkingRules,
-      stripes,
-      action,
     });
 
     if (validationErrorMessage) {
@@ -96,7 +87,7 @@ const QuickMarcEditWrapper = ({
     }
 
     return undefined;
-  }, [action, initialValues, linkingRules, linksCount, locations, marcType, stripes, prepareForSubmit]);
+  }, [initialValues, linksCount, locations, marcType, prepareForSubmit]);
 
   const onSubmit = useCallback(async (formValues) => {
     let is1xxOr010Updated = false;
