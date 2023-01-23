@@ -31,6 +31,7 @@
 * [UIQM-347](https://issues.folio.org/browse/UIQM-347) quickMARC | Show errors messages then show confirmation messages
 * [UIQM-337](https://issues.folio.org/browse/UIQM-337) Controlled subfield is displayed as not controlled after linking of MARC Bib field with MARC Authority
 * [UIQM-373](https://issues.folio.org/browse/UIQM-373) Save buttons are not disabled after removing unsaved updates from linked field in "MARC bib" record
+* [UIQM-376](https://issues.folio.org/browse/UIQM-376) Reference MARC Authority record is opened when user clicks on the "MARC Authority" icon next to the controlled field
 
 ## [5.2.0](https://github.com/folio-org/ui-quick-marc/tree/v5.2.0) (2022-10-26)
 
