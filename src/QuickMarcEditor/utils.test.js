@@ -374,7 +374,7 @@ describe('QuickMarcEditor utils', () => {
       }).props.id).toBe('ui-quick-marc.record.error.title.multiple');
     });
 
-    describe('$9', () => {
+    describe('when $9 entered', () => {
       const initialValues = {
         leader: '04706cam a2200865Ii 4500',
         records: [
@@ -413,10 +413,7 @@ describe('QuickMarcEditor utils', () => {
           {
             'tag': '600',
             'content': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc.',
-            'indicators': [
-              '0',
-              '0',
-            ],
+            'indicators': ['0', '0'],
             'isProtected': false,
             'id': '402c0aec-5e1b-49a3-83a2-da788f48b27a',
             '_isDeleted': false,
@@ -425,55 +422,26 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      const linkingRules = [{ 'bibField': '100' }, { 'bibField': '600' }];
-      const stripes = { hasPerm: jest.fn().mockReturnValue(true) };
+      it('should return an error for an already linked field', () => {
+        const record = cloneDeep(initialValues);
 
-      describe('when $9 entered to the already linked field', () => {
-        it('should return the error', () => {
-          const record = cloneDeep(initialValues);
+        record.records[3].subfieldGroups.uncontrolledAlpha = '$9 fakeValue';
 
-          record.records[3].subfieldGroups.uncontrolledAlpha = '$9 fakeValue';
-
-          expect(utils.validateMarcRecord({
-            marcRecord: record,
-            initialValues,
-            linkingRules,
-            stripes,
-            action: 'edit',
-          }).props.id).toBe('ui-quick-marc.record.error.$9.nonRepeatable');
-        });
+        expect(utils.validateMarcRecord({
+          marcRecord: record,
+          initialValues,
+        }).props.id).toBe('ui-quick-marc.record.error.$9');
       });
 
-      describe('when $9 entered to the field that can be linked', () => {
-        it('should return the error', () => {
-          const record = cloneDeep(initialValues);
+      it('should return an error for a not linked field', () => {
+        const record = cloneDeep(initialValues);
 
-          record.records[4].content += ' $9 fakeValue';
+        record.records[4].content += ' $9 fakeValue';
 
-          expect(utils.validateMarcRecord({
-            marcRecord: record,
-            initialValues,
-            linkingRules,
-            stripes,
-            action: 'edit',
-          }).props.id).toBe('ui-quick-marc.record.error.$9');
-        });
-      });
-
-      describe('when $9 entered to the field that can not be linked', () => {
-        it('should return the error', () => {
-          const record = cloneDeep(initialValues);
-
-          record.records[2].content += '$9 fakeValue';
-
-          expect(utils.validateMarcRecord({
-            marcRecord: record,
-            initialValues,
-            linkingRules,
-            stripes,
-            action: 'edit',
-          }).props.id).toBe('ui-quick-marc.record.error.$9.cannotBeLinked');
-        });
+        expect(utils.validateMarcRecord({
+          marcRecord: record,
+          initialValues,
+        }).props.id).toBe('ui-quick-marc.record.error.$9');
       });
     });
 

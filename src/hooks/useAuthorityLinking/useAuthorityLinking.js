@@ -45,6 +45,8 @@ const useAuthorityLinking = () => {
         bibSubfields[formatSubfieldCode(subfieldModification.target)] = authSubfields[formatSubfieldCode(subfieldCode)];
       } else if (authSubfields[formatSubfieldCode(subfieldCode)]) {
         bibSubfields[formatSubfieldCode(subfieldCode)] = authSubfields[formatSubfieldCode(subfieldCode)];
+      } else {
+        delete bibSubfields[formatSubfieldCode(subfieldCode)];
       }
     });
 
