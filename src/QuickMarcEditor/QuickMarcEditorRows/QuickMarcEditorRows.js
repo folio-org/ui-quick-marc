@@ -47,7 +47,10 @@ import {
   hasDeleteException,
 } from '../utils';
 import { useAuthorityLinking } from '../../hooks';
-import { QUICK_MARC_ACTIONS } from '../constants';
+import {
+  QUICK_MARC_ACTIONS,
+  LEADER_TAG,
+} from '../constants';
 import {
   MARC_TYPES,
   TAG_FIELD_MAX_LENGTH,
@@ -79,8 +82,14 @@ const QuickMarcEditorRows = ({
   const containerRef = useRef(null);
   const indexOfNewRow = useRef(null);
   const newRowRef = useRef(null);
+  const leaderInputWidth = useRef(null); // for max-width of resizable textareas
 
-  const { linkAuthority, unlinkAuthority, linkableBibFields, sourceFiles } = useAuthorityLinking();
+  const {
+    linkAuthority,
+    unlinkAuthority,
+    linkableBibFields,
+    sourceFiles,
+  } = useAuthorityLinking();
 
   const isNewRow = useCallback((row) => {
     return !initialValues.records.find(record => record.id === row.id);
@@ -95,6 +104,10 @@ const QuickMarcEditorRows = ({
       newRowRef.current.focus();
     });
   }, [addRecord]);
+
+  const setLeaderInputWidth = (el) => {
+    leaderInputWidth.current = el?.offsetWidth;
+  };
 
   const getNextFocusableElement = (row) => {
     const prevRow = row.previousElementSibling;
@@ -210,6 +223,7 @@ const QuickMarcEditorRows = ({
               );
             }
 
+            const isLeader = recordRow.tag === LEADER_TAG;
             const isDisabled = isReadOnly(recordRow, action, marcType);
             const withIndicators = !hasIndicatorException(recordRow);
             const withAddRowAction = hasAddException(recordRow, marcType);
@@ -374,7 +388,10 @@ const QuickMarcEditorRows = ({
                   }
                 </div>
 
-                <div className={styles.quickMarcEditorRowContent}>
+                <div
+                  className={styles.quickMarcEditorRowContent}
+                  ref={isLeader ? setLeaderInputWidth : null}
+                >
                   {
                     isMaterialCharsField && (
                       <MaterialCharsField
@@ -412,7 +429,10 @@ const QuickMarcEditorRows = ({
                     isContentField && (
                       recordRow._isLinked
                         ? (
-                          <SplitField name={name} />
+                          <SplitField
+                            name={name}
+                            maxWidth={leaderInputWidth.current}
+                          />
                         )
                         : (
                           <Field

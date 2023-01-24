@@ -1,5 +1,12 @@
 .splitFieldWrapper {
-  display: inline-block;
   width: auto;
   margin-right: 15px;
+  resize: horizontal;
+  max-height: 24px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.splitFieldRoot {
+  display: inline-block;
 }

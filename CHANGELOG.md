@@ -36,6 +36,7 @@
 * [UIQM-349](https://issues.folio.org/browse/UIQM-349) Align the module with mod-search API breaking change
 * [UIQM-348](https://issues.folio.org/browse/UIQM-348) Change to Linked MARC authority record has been updated confirmation messaging
 * [UIQM-390](https://issues.folio.org/browse/UIQM-390) Fix exception when changing tag value to "010" in "MARC authority" record without "010" field
+* [UIQM-385](https://issues.folio.org/browse/UIQM-385) Edit/Derive quickMARC | Allow user to drag text boxes to view all content 
 
 ## [5.2.0](https://github.com/folio-org/ui-quick-marc/tree/v5.2.0) (2022-10-26)
 

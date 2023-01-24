@@ -39,10 +39,10 @@ describe('Given SplitField', () => {
   it('should disable controlled and zero subfield inputs', async () => {
     const { container } = renderSplitField();
 
-    const controlled = container.querySelector('input[name="test.subfieldGroups.controlled"]');
-    const uncontrolledAlpha = container.querySelector('input[name="test.subfieldGroups.uncontrolledAlpha"]');
-    const uncontrolledNumber = container.querySelector('input[name="test.subfieldGroups.uncontrolledNumber"]');
-    const zeroSubfield = container.querySelector('input[name="test.subfieldGroups.zeroSubfield"]');
+    const controlled = container.querySelector('textarea[name="test.subfieldGroups.controlled"]');
+    const uncontrolledAlpha = container.querySelector('textarea[name="test.subfieldGroups.uncontrolledAlpha"]');
+    const uncontrolledNumber = container.querySelector('textarea[name="test.subfieldGroups.uncontrolledNumber"]');
+    const zeroSubfield = container.querySelector('textarea[name="test.subfieldGroups.zeroSubfield"]');
 
     expect(controlled.disabled).toBeTruthy();
     expect(uncontrolledAlpha.disabled).toBeFalsy();
