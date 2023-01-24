@@ -403,48 +403,31 @@ export const validateSubfield = (marcRecords, initialMarcRecords) => {
   return undefined;
 };
 
-const getFieldWithEntered$9 = (marcRecords) => {
-  return marcRecords.find(field => {
+const validate$9 = (marcRecords) => {
+  const hasEntered$9 = marcRecords.some(field => {
     if (typeof field.content !== 'string') {
-      return null;
+      return false;
     }
 
     if (field.subfieldGroups) {
       const uncontrolledSubfields = ['uncontrolledAlpha', 'uncontrolledNumber'];
 
-      const hasEntered$9 = uncontrolledSubfields.some(subfield => {
-        return field.subfieldGroups[subfield] && getContentSubfieldValue(field.subfieldGroups[subfield]).$9;
+      return uncontrolledSubfields.some(subfield => {
+        return field.subfieldGroups[subfield] && '$9' in getContentSubfieldValue(field.subfieldGroups[subfield]);
       });
-
-      return hasEntered$9 ? field : null;
     }
 
-    return getContentSubfieldValue(field.content).$9 ? field : null;
+    return '$9' in getContentSubfieldValue(field.content);
   });
-};
 
-const validate$9 = (marcRecords, linkingRules, stripes, marcType, action) => {
-  const fieldWithEntered$9 = getFieldWithEntered$9(marcRecords);
-
-  if (!fieldWithEntered$9) {
-    return null;
-  }
-
-  const linkableBibFields = linkingRules.map(rule => rule.bibField);
-  const canBeLinked = checkCanBeLinked(stripes, marcType, action, linkableBibFields, fieldWithEntered$9.tag);
-
-  if (fieldWithEntered$9._isLinked) {
-    return <FormattedMessage id="ui-quick-marc.record.error.$9.nonRepeatable" />;
-  }
-
-  if (canBeLinked) {
+  if (hasEntered$9) {
     return <FormattedMessage id="ui-quick-marc.record.error.$9" />;
   }
 
-  return <FormattedMessage id="ui-quick-marc.record.error.$9.cannotBeLinked" />;
+  return null;
 };
 
-const validateMarcBibRecord = (marcRecords, linkingRules, stripes, marcType, action) => {
+const validateMarcBibRecord = (marcRecords) => {
   const titleRecords = marcRecords.filter(({ tag }) => tag === '245');
 
   if (titleRecords.length === 0) {
@@ -455,7 +438,7 @@ const validateMarcBibRecord = (marcRecords, linkingRules, stripes, marcType, act
     return <FormattedMessage id="ui-quick-marc.record.error.title.multiple" />;
   }
 
-  const $9Error = validate$9(marcRecords, linkingRules, stripes, marcType, action);
+  const $9Error = validate$9(marcRecords);
 
   if ($9Error) {
     return $9Error;
@@ -549,9 +532,6 @@ export const validateMarcRecord = ({
   marcType = MARC_TYPES.BIB,
   locations = [],
   linksCount,
-  linkingRules,
-  stripes,
-  action,
 }) => {
   const marcRecords = marcRecord.records || [];
   const initialMarcRecords = initialValues.records;
@@ -566,7 +546,7 @@ export const validateMarcRecord = ({
   let validationResult;
 
   if (marcType === MARC_TYPES.BIB) {
-    validationResult = validateMarcBibRecord(marcRecords, linkingRules, stripes, marcType, action);
+    validationResult = validateMarcBibRecord(marcRecords);
   } else if (marcType === MARC_TYPES.HOLDINGS) {
     validationResult = validateMarcHoldingsRecord(marcRecords, locations);
   } else if (marcType === MARC_TYPES.AUTHORITY) {

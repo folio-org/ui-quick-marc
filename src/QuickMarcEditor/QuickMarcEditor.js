@@ -28,9 +28,7 @@ import {
   checkScope,
   Layer,
 } from '@folio/stripes/components';
-import {
-  useShowCallout,
-} from '@folio/stripes-acq-components';
+import { useShowCallout } from '@folio/stripes-acq-components';
 
 import { QuickMarcRecordInfo } from './QuickMarcRecordInfo';
 import { QuickMarcEditorRows } from './QuickMarcEditorRows';
@@ -69,6 +67,7 @@ const QuickMarcEditor = ({
   form: {
     mutators,
     reset,
+    getState,
   },
   marcType,
   locations,
@@ -76,6 +75,7 @@ const QuickMarcEditor = ({
   externalRecordPath,
   confirmRemoveAuthorityLinking,
   linksCount,
+  validate,
 }) => {
   const history = useHistory();
   const location = useLocation();
@@ -142,6 +142,17 @@ const QuickMarcEditor = ({
   const confirmSubmit = useCallback((e, isKeepEditing = false) => {
     continueAfterSave.current = isKeepEditing;
 
+    const validationError = validate(getState().values);
+
+    if (validationError) {
+      showCallout({
+        message: validationError,
+        type: 'error',
+      });
+
+      return;
+    }
+
     if (deletedRecords.length) {
       setIsDeleteModalOpened(true);
 
@@ -165,6 +176,9 @@ const QuickMarcEditor = ({
     initialValues,
     linksCount,
     records,
+    getState,
+    validate,
+    showCallout,
   ]);
 
   const paneFooter = useMemo(() => {
@@ -483,6 +497,7 @@ QuickMarcEditor.propTypes = {
     errorType: PropTypes.string,
   }),
   confirmRemoveAuthorityLinking: PropTypes.bool,
+  validate: PropTypes.func.isRequired,
 };
 
 QuickMarcEditor.defaultProps = {

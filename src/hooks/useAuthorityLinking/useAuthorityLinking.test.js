@@ -12,7 +12,7 @@ jest.mock('../../queries', () => ({
     linkingRules: [{
       bibField: '100',
       authorityField: '100',
-      authoritySubfields: ['a', 'b', 't'],
+      authoritySubfields: ['a', 'b', 't', 'd'],
       subfieldModifications: [],
       validation: {},
     }],
@@ -40,7 +40,7 @@ const wrapper = ({ children }) => (
 const authoritySource = {
   fields: [{
     tag: '100',
-    content: '$a authority value $t field for modification',
+    content: '$a authority value $b fakeB $t field for modification',
   }],
 };
 
@@ -61,6 +61,33 @@ describe('Given useAuthorityLinking', () => {
     });
   });
 
+  describe('when calling linkAuthority and some subfields are in the linking rule but not in authority', () => {
+    it('should return field without invalid subfields', () => {
+      const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+
+      const authSource = {
+        fields: [{
+          tag: '100',
+          content: '$a Beethoven, Ludwig van',
+        }],
+      };
+      const authority = {
+        id: 'authority-id',
+        sourceFileId: '1',
+        naturalId: 'n0001',
+      };
+      const field = {
+        tag: '100',
+        content: '$a Beethoven, Ludwig van, $d 1770-1827, $e composer.',
+      };
+
+      expect(result.current.linkAuthority(authority, authSource, field)).toMatchObject({
+        content: '$a Beethoven, Ludwig van $e composer. $0 http://some.url/n0001 $9 authority-id',
+        authorityControlledSubfields: ['a', 'b', 't', 'd'],
+      });
+    });
+  });
+
   describe('when calling linkAuthority with not existing $0 subfield', () => {
     it('should return field with new $0 and $9 subfields and authority subfields', () => {
       const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
@@ -76,8 +103,8 @@ describe('Given useAuthorityLinking', () => {
       };
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
-        content: '$a authority value $b some other value $t field for modification $0 http://some.url/n0001 $9 authority-id',
-        authorityControlledSubfields: ['a', 'b', 't'],
+        content: '$a authority value $b fakeB $t field for modification $0 http://some.url/n0001 $9 authority-id',
+        authorityControlledSubfields: ['a', 'b', 't', 'd'],
       });
     });
   });
@@ -97,8 +124,8 @@ describe('Given useAuthorityLinking', () => {
       };
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
-        content: '$a authority value $b some other value $0 http://some.url/n0001 $9 authority-id $t field for modification',
-        authorityControlledSubfields: ['a', 'b', 't'],
+        content: '$a authority value $b fakeB $0 http://some.url/n0001 $9 authority-id $t field for modification',
+        authorityControlledSubfields: ['a', 'b', 't', 'd'],
       });
     });
   });
@@ -118,8 +145,8 @@ describe('Given useAuthorityLinking', () => {
       };
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
-        content: '$a authority value $b some other value $e author $e illustrator $t field for modification $0 http://some.url/n0001 $9 authority-id',
-        authorityControlledSubfields: ['a', 'b', 't'],
+        content: '$a authority value $b fakeB $e author $e illustrator $t field for modification $0 http://some.url/n0001 $9 authority-id',
+        authorityControlledSubfields: ['a', 'b', 't', 'd'],
       });
     });
   });
@@ -156,7 +183,7 @@ describe('Given useAuthorityLinking', () => {
       };
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
-        content: '$a authority value $b some other value $e author $e illustrator $c field for modification $0 http://some.url/n0001 $9 authority-id',
+        content: '$a authority value $b fakeB $e author $e illustrator $c field for modification $0 http://some.url/n0001 $9 authority-id',
         authorityControlledSubfields: ['a', 'b', 'c'],
       });
     });
