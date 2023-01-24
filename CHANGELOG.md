@@ -26,6 +26,7 @@
 * [UIQM-343](https://issues.folio.org/browse/UIQM-343) Edit/Derive a MARC bib record | Do not allow a user to delete MARC field 245
 * [UIQM-344](https://issues.folio.org/browse/UIQM-344) Create/Edit MARC holdings | Do not allow user to delete MARC field 852
 * [UIQM-341](https://issues.folio.org/browse/UIQM-341) Error handling | Edit/Derive a new MARC bib record | User adds an invalid $9
+* [UIQM-370](https://issues.folio.org/browse/UIQM-370) Error when clearing "1XX" field tag for "MARC authority" record
 * [UIQM-368](https://issues.folio.org/browse/UIQM-368) Bump stripes to 8.0.0 for Orchid/2023-R1
 * [UIQM-359](https://issues.folio.org/browse/UIQM-359) Change to Linked MARC authority record has been updated confirmation messaging
 * [UIQM-347](https://issues.folio.org/browse/UIQM-347) quickMARC | Show errors messages then show confirmation messages
