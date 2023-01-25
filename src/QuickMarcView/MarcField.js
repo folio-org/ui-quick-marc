@@ -60,7 +60,7 @@ const MarcField = ({
       >
         {({ ref, ariaIds }) => (
           <Link
-            to={`/marc-authorities/authorities/${authorityId}?segment=search`}
+            to={`/marc-authorities/authorities/${authorityId}?authRefType=Authorized&segment=search`}
             target="_blank"
             ref={ref}
             aria-labelledby={ariaIds.text}

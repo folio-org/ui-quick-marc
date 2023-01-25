@@ -58,6 +58,16 @@ import css from './QuickMarcEditor.css';
 
 const spySubscription = { values: true };
 
+const CONFIRMATIONS = {
+  DELETE_RECORDS: 'DELETE_RECORDS',
+  UPDATE_LINKED: 'UPDATE_LINKED',
+};
+
+const REQUIRED_CONFIRMATIONS = {
+  [CONFIRMATIONS.DELETE_RECORDS]: true,
+  [CONFIRMATIONS.UPDATE_LINKED]: true,
+};
+
 const QuickMarcEditor = ({
   action,
   instance,
@@ -88,6 +98,7 @@ const QuickMarcEditor = ({
   const [isUpdate0101xxfieldsAuthRecModalOpen, setIsUpdate0101xxfieldsAuthRecModalOpen] = useState(false);
   const continueAfterSave = useRef(false);
   const formRef = useRef(null);
+  const confirmationChecks = useRef({ ...REQUIRED_CONFIRMATIONS });
 
   const { unlinkAuthority } = useAuthorityLinking();
 
@@ -131,10 +142,6 @@ const QuickMarcEditor = ({
     onClose();
   }, [redirectToVersion, onClose]);
 
-  const handleKeepEditingLinkedFields = () => {
-    setIsUpdate0101xxfieldsAuthRecModalOpen(false);
-  };
-
   const closeModals = () => {
     setIsDeleteModalOpened(false);
     setIsUpdate0101xxfieldsAuthRecModalOpen(false);
@@ -155,13 +162,13 @@ const QuickMarcEditor = ({
       return;
     }
 
-    if (deletedRecords.length) {
+    if (confirmationChecks.current[CONFIRMATIONS.DELETE_RECORDS] && deletedRecords.length) {
       setIsDeleteModalOpened(true);
 
       return;
     }
 
-    if (marcType === MARC_TYPES.AUTHORITY && linksCount) {
+    if (confirmationChecks.current[CONFIRMATIONS.UPDATE_LINKED] && marcType === MARC_TYPES.AUTHORITY && linksCount) {
       if (is1XXUpdated(initialValues.records, records)) {
         setIsUpdate0101xxfieldsAuthRecModalOpen(true);
 
@@ -214,7 +221,10 @@ const QuickMarcEditor = ({
             buttonClass={css.saveContinueBtn}
             disabled={saveFormDisabled}
             id="quick-marc-record-save-edit"
-            onClick={(event) => confirmSubmit(event, true)}
+            onClick={(event) => {
+              confirmationChecks.current = { ...REQUIRED_CONFIRMATIONS };
+              confirmSubmit(event, true);
+            }}
             marginBottom0
           >
             <FormattedMessage id="ui-quick-marc.record.save.continue" />
@@ -224,7 +234,10 @@ const QuickMarcEditor = ({
           buttonStyle="primary mega"
           disabled={saveFormDisabled}
           id="quick-marc-record-save"
-          onClick={confirmSubmit}
+          onClick={(e) => {
+            confirmationChecks.current = { ...REQUIRED_CONFIRMATIONS };
+            confirmSubmit(e);
+          }}
           marginBottom0
         >
           <FormattedMessage id="stripes-acq-components.FormFooter.save" />
@@ -303,20 +316,22 @@ const QuickMarcEditor = ({
     deletedRecords.forEach(mutators.restoreRecord);
   };
 
-  const handleUpdateLinkedFields = (e) => {
-    handleSubmit(e)
-      .then(handleSubmitResponse)
-      .finally(closeModals);
+  const cancelUpdateLinks = () => {
+    setIsUpdate0101xxfieldsAuthRecModalOpen(false);
   };
 
-  const onConfirmModal = (e) => {
+  const confirmUpdateLinks = (e) => {
+    confirmationChecks.current[CONFIRMATIONS.UPDATE_LINKED] = false;
+    confirmSubmit(e, continueAfterSave.current);
+  };
+
+  const confirmDeleteFields = (e) => {
     setIsDeleteModalOpened(false);
-    handleSubmit(e)
-      .then(handleSubmitResponse)
-      .finally(closeModals);
+    confirmationChecks.current[CONFIRMATIONS.DELETE_RECORDS] = false;
+    confirmSubmit(e, continueAfterSave.current);
   };
 
-  const onCancelModal = () => {
+  const cancelDeleteFields = () => {
     setIsDeleteModalOpened(false);
 
     if (deletedRecords.length) {
@@ -324,6 +339,19 @@ const QuickMarcEditor = ({
     } else {
       reset();
     }
+  };
+
+  const cancelRemoveLinking = () => {
+    setIsUnlinkRecordsModalOpen(false);
+  };
+
+  const confirmRemoveLinking = () => {
+    // unlink all linked records
+    initialValues.records.filter(record => record._isLinked).forEach(record => {
+      unlinkAuthority(record);
+      mutators.markRecordUnlinked({ index: records.findIndex(rec => rec.id === record.id) });
+    });
+    setIsUnlinkRecordsModalOpen(false);
   };
 
   const changeRecords = useCallback(({ values }) => {
@@ -338,7 +366,8 @@ const QuickMarcEditor = ({
     handler: (e) => {
       if (!saveFormDisabled) {
         e.preventDefault();
-        confirmSubmit();
+        confirmationChecks.current = { ...REQUIRED_CONFIRMATIONS };
+        confirmSubmit(e, continueAfterSave.current);
       }
     },
   }, {
@@ -348,19 +377,6 @@ const QuickMarcEditor = ({
       onClose();
     },
   }]), [saveFormDisabled, confirmSubmit, onClose]);
-
-  const handleKeepLinking = () => {
-    setIsUnlinkRecordsModalOpen(false);
-  };
-
-  const handleRemoveLinking = () => {
-    // unlink all linked records
-    initialValues.records.filter(record => record._isLinked).forEach(record => {
-      unlinkAuthority(record);
-      mutators.markRecordUnlinked({ index: records.findIndex(rec => rec.id === record.id) });
-    });
-    setIsUnlinkRecordsModalOpen(false);
-  };
 
   useEffect(() => {
     if (!httpError) {
@@ -446,8 +462,8 @@ const QuickMarcEditor = ({
         message={getConfirmModalMessage()}
         confirmLabel={<FormattedMessage id="ui-quick-marc.record.delete.confirmLabel" />}
         cancelLabel={<FormattedMessage id="ui-quick-marc.record.delete.cancelLabel" />}
-        onConfirm={onConfirmModal}
-        onCancel={onCancelModal}
+        onConfirm={confirmDeleteFields}
+        onCancel={cancelDeleteFields}
       />
       {
         confirmRemoveAuthorityLinking && (
@@ -459,8 +475,8 @@ const QuickMarcEditor = ({
               message={<FormattedMessage id="ui-quick-marc.remove-authority-linking.modal.message" />}
               confirmLabel={<FormattedMessage id="ui-quick-marc.remove-authority-linking.modal.remove-linking" />}
               cancelLabel={<FormattedMessage id="ui-quick-marc.remove-authority-linking.modal.keep-linking" />}
-              onConfirm={handleRemoveLinking}
-              onCancel={handleKeepLinking}
+              onConfirm={confirmRemoveLinking}
+              onCancel={cancelRemoveLinking}
               buttonStyle="danger"
             />
           </IfPermission>
@@ -478,8 +494,8 @@ const QuickMarcEditor = ({
         }
         confirmLabel={<FormattedMessage id="ui-quick-marc.update-linked-bib-fields.modal.save" />}
         cancelLabel={<FormattedMessage id="ui-quick-marc.update-linked-bib-fields.modal.keep-editing" />}
-        onConfirm={handleUpdateLinkedFields}
-        onCancel={handleKeepEditingLinkedFields}
+        onConfirm={confirmUpdateLinks}
+        onCancel={cancelUpdateLinks}
       />
       <FormSpy
         subscription={spySubscription}
