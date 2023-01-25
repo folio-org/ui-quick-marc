@@ -34,16 +34,18 @@ import { DeletedRowPlaceholder } from './DeletedRowPlaceholder';
 import { LinkButton } from './LinkButton';
 import { SplitField } from './SplitField';
 import {
-  isReadOnly,
   hasIndicatorException,
   hasAddException,
-  hasDeleteException,
   hasMoveException,
+} from './utils';
+import {
+  checkCanBeLinked,
+  isFixedFieldRow,
   isMaterialCharsRecord,
   isPhysDescriptionRecord,
-  isFixedFieldRow,
-} from './utils';
-import { checkCanBeLinked } from '../utils';
+  isReadOnly,
+  hasDeleteException,
+} from '../utils';
 import { useAuthorityLinking } from '../../hooks';
 import { QUICK_MARC_ACTIONS } from '../constants';
 import {
@@ -69,6 +71,7 @@ const QuickMarcEditorRows = ({
   },
   marcType,
   linksCount,
+  instance,
 }) => {
   const stripes = useStripes();
   const intl = useIntl();
@@ -211,7 +214,7 @@ const QuickMarcEditorRows = ({
             const isDisabled = isReadOnly(recordRow, action, marcType);
             const withIndicators = !hasIndicatorException(recordRow);
             const withAddRowAction = hasAddException(recordRow, marcType);
-            const withDeleteRowAction = hasDeleteException(recordRow, marcType, linksCount);
+            const withDeleteRowAction = hasDeleteException(recordRow, marcType, linksCount, instance, initialValues);
             const withMoveUpRowAction = hasMoveException(recordRow, fields[idx - 1]);
             const withMoveDownRowAction = hasMoveException(recordRow, fields[idx + 1]);
 
@@ -480,6 +483,7 @@ const QuickMarcEditorRows = ({
 
 QuickMarcEditorRows.propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
+  instance: PropTypes.object,
   type: PropTypes.string.isRequired,
   subtype: PropTypes.string.isRequired,
   fields: PropTypes.arrayOf(PropTypes.shape({

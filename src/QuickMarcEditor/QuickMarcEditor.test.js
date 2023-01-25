@@ -386,11 +386,14 @@ describe('Given QuickMarcEditor', () => {
     });
 
     describe('when 010 $a field is updated', () => {
+      const authority = { naturalId: 'n931006645' };
+
       describe('when click on save&close button', () => {
         it('should open confirmation modal', () => {
           const { getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
             linksCount: 1,
+            instance: authority,
           });
 
           const contentField = getByTestId('content-field-1');
@@ -405,6 +408,7 @@ describe('Given QuickMarcEditor', () => {
           const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
             linksCount: 1,
+            instance: authority,
           });
 
           const contentField = getByTestId('content-field-1');
@@ -422,6 +426,7 @@ describe('Given QuickMarcEditor', () => {
           const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
             linksCount: 1,
+            instance: authority,
             initialValues: {
               leader: 'assdfgs ds sdg',
               records: [
@@ -467,6 +472,7 @@ describe('Given QuickMarcEditor', () => {
           const { getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
             linksCount: 1,
+            instance: authority,
             initialValues: {
               leader: 'assdfgs ds sdg',
               records: [
@@ -509,6 +515,7 @@ describe('Given QuickMarcEditor', () => {
           const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
             linksCount: 1,
+            instance: authority,
             initialValues: {
               leader: 'assdfgs ds sdg',
               records: [
@@ -554,6 +561,7 @@ describe('Given QuickMarcEditor', () => {
           const { queryByText, getByTestId, getByText } = renderQuickMarcEditor({
             marcType: MARC_TYPES.AUTHORITY,
             linksCount: 1,
+            instance: authority,
             initialValues: {
               leader: 'assdfgs ds sdg',
               records: [

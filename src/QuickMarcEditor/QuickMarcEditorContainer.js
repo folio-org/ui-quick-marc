@@ -30,6 +30,7 @@ import {
   splitFields,
 } from './utils';
 import { QUICK_MARC_ACTIONS } from './constants';
+import { useAuthorityLinksCount } from '../queries';
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
@@ -64,11 +65,13 @@ const QuickMarcEditorContainer = ({
   const [marcRecord, setMarcRecord] = useState();
   const [locations, setLocations] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  const [linksCount, setLinksCount] = useState(0);
 
   const searchParams = new URLSearchParams(location.search);
   const relatedRecordVersion = searchParams.get('relatedRecordVersion');
 
   const showCallout = useShowCallout();
+  const { fetchLinksCount } = useAuthorityLinksCount();
 
   const closeEditor = useCallback(() => {
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
@@ -99,9 +102,14 @@ const QuickMarcEditorContainer = ({
       ? Promise.resolve({})
       : mutator.quickMarcEditMarcRecord.GET({ params: { externalId } });
     const locationsPromise = mutator.locations.GET();
+    const linksCountPromise = marcType === MARC_TYPES.AUTHORITY ? fetchLinksCount([externalId]) : Promise.resolve();
 
-    await Promise.all([instancePromise, marcRecordPromise, locationsPromise])
-      .then(([instanceResponse, marcRecordResponse, locationsResponse]) => {
+    await Promise.all([instancePromise, marcRecordPromise, locationsPromise, linksCountPromise])
+      .then(([instanceResponse, marcRecordResponse, locationsResponse, linksCountResponse]) => {
+        if (marcType === MARC_TYPES.AUTHORITY) {
+          setLinksCount(linksCountResponse.links[0].totalLinks);
+        }
+
         if (action !== QUICK_MARC_ACTIONS.CREATE) {
           searchParams.set('relatedRecordVersion', instanceResponse._version);
 
@@ -128,7 +136,7 @@ const QuickMarcEditorContainer = ({
         closeEditor();
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [externalId, relatedRecordVersion, history]);
+  }, [externalId, relatedRecordVersion, history, marcType, fetchLinksCount]);
 
   useEffect(() => {
     loadData();
@@ -152,6 +160,7 @@ const QuickMarcEditorContainer = ({
       action={action}
       mutator={mutator}
       history={history}
+      linksCount={linksCount}
       location={location}
       locations={locations}
       marcType={marcType}

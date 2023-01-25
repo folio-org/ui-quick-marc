@@ -13,22 +13,10 @@ import arrayMutators from 'final-form-arrays';
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcEditWrapper from './QuickMarcEditWrapper';
-import { useAuthorityLinksCount } from '../queries';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
-
-const mockFetchLinksCount = jest.fn().mockResolvedValue();
-
-jest.mock('../queries', () => ({
-  ...jest.requireActual('../queries'),
-  useAuthorityLinksCount: jest.fn().mockReturnValue({
-    fetchLinksCount: jest.fn().mockResolvedValue({
-      links: [{ totalLinks: 0 }],
-    }),
-  }),
-}));
 
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
@@ -92,7 +80,7 @@ const mockRecords = {
     }, {
       tag: '005',
       content: '20221228135005.0',
-      id: '5aa1a643-b9f2-47e8-bb68-6c6457b5c9c5',
+      id: '5aa1a643-b9f2-47e8-bb68-6c6457b5c9c6',
     }, {
       tag: '999',
       indicators: ['f', 'f'],
@@ -445,29 +433,7 @@ describe('Given QuickMarcEditWrapper', () => {
   });
 
   describe('when is authority marc type', () => {
-    it('should make a request to get the number of links', async () => {
-      useAuthorityLinksCount.mockClear().mockReturnValue({
-        fetchLinksCount: mockFetchLinksCount,
-      });
-
-      renderQuickMarcEditWrapper({
-        instance,
-        mutator,
-        marcType: MARC_TYPES.AUTHORITY,
-      });
-
-      expect(mockFetchLinksCount).toHaveBeenCalledWith([instance.id]);
-    });
-
     describe('and record is linked to a bib record', () => {
-      beforeEach(() => {
-        useAuthorityLinksCount.mockClear().mockReturnValue({
-          fetchLinksCount: jest.fn().mockResolvedValue({
-            links: [{ totalLinks: 1 }],
-          }),
-        });
-      });
-
       describe('and changing 1XX field', () => {
         it('should display confirmation modal', async () => {
           const {
@@ -477,6 +443,7 @@ describe('Given QuickMarcEditWrapper', () => {
             instance,
             mutator,
             marcType: MARC_TYPES.AUTHORITY,
+            linksCount: 1,
           });
 
           await act(async () => { fireEvent.change(getByTestId('content-field-7'), { target: { value: '$a Civil war edited' } }); });
