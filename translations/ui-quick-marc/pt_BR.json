@@ -245,5 +245,16 @@
     "record.save.error.derive": "A instância não pode ser atualizada. Versão de instância obsoleta.",
     "permission.quick-marc-editor.duplicate": "quickMARC: Derivar novo registro MARC bibliográfico",
     "linkedToMarcAuthority": "Link para registro MARC de Autoridade",
-    "record.link.validation.invalidHeading": "Você selecionou um cabeçalho inválido com base no campo bibliográfico que você deseja controlar. Por favor, revise sua seleção."
+    "record.link.validation.invalidHeading": "Você selecionou um cabeçalho inválido com base no campo bibliográfico que você deseja controlar. Por favor, revise sua seleção.",
+    "record.error.1xx.change": "Não é possível alterar o <b> campo MARC de autoridade salvo {tag} </b> porque ele controla um(s) campo(s) bibliográfico(s). Para alterar este 1XX, você deve desvincular todos os campos bibliográficos controlados.",
+    "record.error.1xx.add$t": "Não é possível adicionar um <b>$t ao campo ${tag}</b> porque ele controla um campo bibliográfico que não pode controlar este subcampo. Para alterar este valor 1XX, você deve desvincular todos os campos bibliográficos controlados que não podem controlar $t.",
+    "record.error.1xx.remove$t": "Não é possível remover <b>$t do campo ${tag}</b> porque ele controla um campo(s) bibliográfico(s) que requer este subcampo. Para alterar este valor 1XX, você deve desvincular todos os campos bibliográficos controlados que requerem $t para serem controlados.",
+    "record.save.updatingLinkedBibRecords": "O registro foi atualizado. <b> {count} </b> atualizações do(s) registro(s) bibliográfico(s) vinculado(s) começaram.",
+    "update-linked-bib-fields.modal.label": "Tem certeza?",
+    "update-linked-bib-fields.modal.keep-editing": "Continuar editando",
+    "print": "Imprimir",
+    "record.error.010Field.multiple": "Não é possível salvar vários campos 010.",
+    "record.error.$9": "$9 não é um subcampo válido.",
+    "update-linked-bib-fields.modal.message-save": "<b>{count} {count, plural, one {registros bibliográfico} other {registros bibliográfico}} {count, plural, one</b> {is} other {are}} vinculado a este registro de autoridade e será atualizado se o botão <b>Salvar e continuar editando</b> for clicado.",
+    "update-linked-bib-fields.modal.save": "Salvar"
 }
