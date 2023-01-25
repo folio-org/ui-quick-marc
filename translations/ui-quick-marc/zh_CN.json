@@ -244,6 +244,17 @@
     "bib-record.derive.title": "衍生一条新MARC书目记录",
     "record.save.error.derive": "无法更新实例。弃用的实例版本。",
     "permission.quick-marc-editor.duplicate": "quickMARC：衍生新MARC书目记录",
-    "linkedToMarcAuthority": "Linked to MARC authority",
-    "record.link.validation.invalidHeading": "You have selected an invalid heading based on the bibliographic field you want controlled. Please revise your selection."
+    "linkedToMarcAuthority": "链接到MARC规范",
+    "record.link.validation.invalidHeading": "您根据要控制的书目字段选择了无效的标题。请修改您的选择。",
+    "record.error.1xx.change": "无法更改<b>保存的 MARC 规范字段{tag} </b> ，因为它控制书目字段。要更改此 1XX，必须取消链接所有受控书目字段。",
+    "record.error.1xx.add$t": "无法将<b> $t 添加到 $ {tag}字段</b> ，因为它控制无法控制此子字段的书目字段。要更改此 1XX 值，必须取消链接所有无法控制 $t 的受控书目字段。",
+    "record.error.1xx.remove$t": "无法从 $ {tag}字段中删除<b> $t </b> ，因为它控制需要该子字段的书目字段。要更改此 1XX 值，必须取消链接所有需要控制 $t 的受控书目字段。",
+    "record.save.updatingLinkedBibRecords": "记录已更新。 <b> {count} </b>个链接的书目记录更新已经开始。",
+    "update-linked-bib-fields.modal.label": "是否确定？",
+    "update-linked-bib-fields.modal.keep-editing": "继续编辑",
+    "print": "Print",
+    "record.error.010Field.multiple": "Cannot save multiple 010 fields.",
+    "record.error.$9": "$9 is not a valid subfield.",
+    "update-linked-bib-fields.modal.message-save": "<b>{count} {count, plural, one {bibliographic record} other {bibliographic records}}</b> {count, plural, one {is} other {are}} linked to this authority record and will be updated by clicking the <b>Save</b> button.",
+    "update-linked-bib-fields.modal.save": "Save"
 }
