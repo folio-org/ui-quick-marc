@@ -65,7 +65,7 @@ const DELETE_EXCEPTION_ROWS = {
   [MARC_TYPES.BIB]: new Set([LEADER_TAG, '001', '003', '005', '008', '245']),
 };
 
-const is1XXField = (tag) => tag[0] === '1';
+const is1XXField = (tag) => tag && tag[0] === '1';
 
 export const hasDeleteException = (recordRow, marcType = MARC_TYPES.BIB) => {
   const rows = DELETE_EXCEPTION_ROWS[marcType];
