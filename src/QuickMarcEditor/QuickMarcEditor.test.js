@@ -7,6 +7,7 @@ import {
 import faker from 'faker';
 
 import { runAxeTest } from '@folio/stripes-testing';
+import { useShowCallout } from '@folio/stripes-acq-components';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
@@ -22,6 +23,11 @@ jest.mock('react-router', () => ({
   useLocation: () => ({
     search: 'authRefType=Authorized',
   }),
+}));
+
+jest.mock('@folio/stripes-acq-components', () => ({
+  ...jest.requireActual('@folio/stripes-acq-components'),
+  useShowCallout: jest.fn(),
 }));
 
 jest.mock('@folio/stripes/components', () => ({
@@ -60,6 +66,10 @@ jest.mock('./QuickMarcRecordInfo', () => {
 
 const onCloseMock = jest.fn();
 const onSubmitMock = jest.fn(() => Promise.resolve({ version: 1 }));
+const mockShowCallout = jest.fn();
+const mockValidate = jest.fn();
+
+useShowCallout.mockClear().mockReturnValue(mockShowCallout);
 
 const instance = {
   id: faker.random.uuid(),
@@ -129,12 +139,17 @@ const renderQuickMarcEditor = (props) => (render(
       marcType={MARC_TYPES.BIB}
       locations={locations}
       linksCount={linksCount}
+      validate={mockValidate}
       {...props}
     />
   </Harness>,
 ));
 
 describe('Given QuickMarcEditor', () => {
+  beforeEach(() => {
+    mockValidate.mockClear().mockReturnValue(undefined);
+  });
+
   it('should render with no axe errors', async () => {
     const { container } = renderQuickMarcEditor();
 
@@ -276,6 +291,34 @@ describe('Given QuickMarcEditor', () => {
         expect(queryByText('Confirmation modal')).toBeNull();
 
         expect(getByText('$a Test title')).toBeDefined();
+      });
+    });
+  });
+
+  describe('when saving form with validation errors and deleted fields', () => {
+    beforeEach(() => {
+      mockValidate.mockClear().mockReturnValue('Validation error');
+    });
+
+    it('should show errors and not show confirmation modal', () => {
+      const {
+        getAllByRole,
+        getByText,
+        queryByText,
+        getByTestId,
+      } = renderQuickMarcEditor();
+
+      const deleteButtons = getAllByRole('button', { name: 'ui-quick-marc.record.deleteField' });
+      const contentField = getByTestId('content-field-3');
+
+      fireEvent.change(contentField, { target: { value: '' } });
+      fireEvent.click(deleteButtons[0]);
+      fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+
+      expect(queryByText('Confirmation modal')).toBeNull();
+      expect(mockShowCallout).toHaveBeenCalledWith({
+        message: 'Validation error',
+        type: 'error',
       });
     });
   });

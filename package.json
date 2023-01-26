@@ -1,6 +1,6 @@
 {
   "name": "@folio/quick-marc",
-  "version": "5.2.0",
+  "version": "6.0.0",
   "description": "Quick MARC editor",
   "main": "index.js",
   "repository": "",
@@ -119,9 +119,9 @@
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.7.4",
     "@folio/eslint-config-stripes": "^6.1.0",
-    "@folio/stripes": "^7.0.0",
+    "@folio/stripes": "^8.0.0",
     "@folio/stripes-cli": "^2.4.0",
-    "@folio/stripes-core": "^8.3.0",
+    "@folio/stripes-core": "^9.0.0",
     "@folio/stripes-testing": "^4.2.0",
     "@formatjs/cli": "^4.2.7",
     "@testing-library/jest-dom": "^5.11.1",
@@ -161,7 +161,7 @@
     "uuid": "^8.3.2"
   },
   "peerDependencies": {
-    "@folio/stripes": "^7.0.0",
+    "@folio/stripes": "^8.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-intl": "^5.8.1",

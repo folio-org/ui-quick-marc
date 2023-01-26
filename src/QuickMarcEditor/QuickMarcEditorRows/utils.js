@@ -59,16 +59,16 @@ export const hasAddException = (recordRow, marcType = MARC_TYPES.BIB) => {
   return ADD_EXCEPTION_ROWS[marcType].has(recordRow.tag);
 };
 
-const DELETE_EXCEPTION_ROWS = new Set([LEADER_TAG, '001', '003', '005', '008']);
+const DELETE_EXCEPTION_ROWS = {
+  [MARC_TYPES.AUTHORITY]: new Set([LEADER_TAG, '001', '003', '005', '008']),
+  [MARC_TYPES.HOLDINGS]: new Set([LEADER_TAG, '001', '003', '004', '005', '008', '852']),
+  [MARC_TYPES.BIB]: new Set([LEADER_TAG, '001', '003', '005', '008', '245']),
+};
 
-const DELETE_EXCEPTION_ROWS_FOR_HOLDINGS = new Set([LEADER_TAG, '001', '003', '004', '005', '008']);
-
-const is1XXField = (tag) => tag[0] === '1';
+const is1XXField = (tag) => tag && tag[0] === '1';
 
 export const hasDeleteException = (recordRow, marcType = MARC_TYPES.BIB) => {
-  const rows = marcType === MARC_TYPES.HOLDINGS
-    ? DELETE_EXCEPTION_ROWS_FOR_HOLDINGS
-    : DELETE_EXCEPTION_ROWS;
+  const rows = DELETE_EXCEPTION_ROWS[marcType];
 
   if (marcType === MARC_TYPES.AUTHORITY && is1XXField(recordRow.tag)) return true;
 

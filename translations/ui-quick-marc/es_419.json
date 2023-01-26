@@ -241,9 +241,20 @@
     "remove-authority-linking.modal.remove-linking": "Eliminar el enlace",
     "remove-authority-linking.modal.keep-linking": "Seguir vinculando",
     "remove-authority-linking.modal.message": "¿Desea eliminar el enlace de autoridad para este nuevo registro bibliográfico?",
-    "bib-record.derive.title": "Derive a new MARC bib record",
-    "record.save.error.derive": "Instance cannot be updated. Deprecated instance version.",
+    "bib-record.derive.title": "Derivar un nuevo registro bib MARC",
+    "record.save.error.derive": "No se puede actualizar la instancia. Versión de instancia obsoleta.",
     "permission.quick-marc-editor.duplicate": "quickMARC: Derivar un nuevo registro bibliográfico MARC",
     "linkedToMarcAuthority": "Vinculado a la autoridad MARC",
-    "record.link.validation.invalidHeading": "Ha seleccionado un encabezamiento no válido basado en el campo bibliográfico que desea controlar. Por favor, revise su selección."
+    "record.link.validation.invalidHeading": "Ha seleccionado un encabezamiento no válido basado en el campo bibliográfico que desea controlar. Por favor, revise su selección.",
+    "record.error.1xx.change": "No se puede cambiar el <b>campo de autoridad MARC {tag} guardado</b> porque controla un(os) campo(s) bibliográfico(s). Para cambiar este 1XX, debe desvincular todos los campos bibliográficos controlados.",
+    "record.error.1xx.add$t": "No se puede añadir un <b>$t al campo ${tag}</b> porque controla uno o varios campos bibliográficos que no pueden controlar este subcampo. Para cambiar este valor 1XX, debe desvincular todos los campos bibliográficos controlados que no pueden controlar $t.",
+    "record.error.1xx.remove$t": "No se puede eliminar <b>$t del campo ${tag}</b> porque controla uno o varios campos bibliográficos que requieren este subcampo. Para cambiar este valor 1XX, debe desvincular todos los campos bibliográficos controlados que requieran el control de $t.",
+    "record.save.updatingLinkedBibRecords": "El registro ha sido actualizado. Han comenzado las actualizaciones de <b> {count} </b> registros bibliográficos vinculados.",
+    "update-linked-bib-fields.modal.label": "Está segura/o?",
+    "update-linked-bib-fields.modal.keep-editing": "Seguir editando",
+    "print": "Print",
+    "record.error.010Field.multiple": "Cannot save multiple 010 fields.",
+    "record.error.$9": "$9 is not a valid subfield.",
+    "update-linked-bib-fields.modal.message-save": "<b>{count} {count, plural, one {bibliographic record} other {bibliographic records}}</b> {count, plural, one {is} other {are}} linked to this authority record and will be updated by clicking the <b>Save</b> button.",
+    "update-linked-bib-fields.modal.save": "Save"
 }

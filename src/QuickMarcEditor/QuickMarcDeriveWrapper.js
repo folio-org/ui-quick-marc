@@ -5,9 +5,7 @@ import React, {
 import PropTypes from 'prop-types';
 import ReactRouterPropTypes from 'react-router-prop-types';
 
-import {
-  useShowCallout,
-} from '@folio/stripes-acq-components';
+import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
@@ -89,16 +87,8 @@ const QuickMarcDeriveWrapper = ({
     });
   };
 
-  const onSubmit = useCallback(async (formValues) => {
+  const prepareForSubmit = useCallback((formValues) => {
     const formValuesToSave = removeDeletedRecords(formValues);
-    const controlFieldErrorMessage = checkControlFieldLength(formValuesToSave);
-
-    if (controlFieldErrorMessage) {
-      showCallout({ message: controlFieldErrorMessage, type: 'error' });
-
-      return null;
-    }
-
     const clearFormValues = removeFieldsForDerive(formValuesToSave);
     const autopopulatedFormWithIndicators = autopopulateIndicators(clearFormValues);
     const autopopulatedFormWithSubfields = autopopulateSubfieldSection(
@@ -107,13 +97,32 @@ const QuickMarcDeriveWrapper = ({
       marcType,
     );
     const formValuesForDerive = cleanBytesFields(autopopulatedFormWithSubfields, initialValues, marcType);
-    const validationErrorMessage = validateMarcRecord({ marcRecord: formValuesForDerive, initialValues });
+
+    return formValuesForDerive;
+  }, [initialValues, marcType]);
+
+  const validate = useCallback((formValues) => {
+    const formValuesForValidation = prepareForSubmit(formValues);
+    const controlFieldErrorMessage = checkControlFieldLength(formValuesForValidation);
+
+    if (controlFieldErrorMessage) {
+      return controlFieldErrorMessage;
+    }
+
+    const validationErrorMessage = validateMarcRecord({
+      marcRecord: formValuesForValidation,
+      initialValues,
+    });
 
     if (validationErrorMessage) {
-      showCallout({ message: validationErrorMessage, type: 'error' });
-
-      return null;
+      return validationErrorMessage;
     }
+
+    return undefined;
+  }, [initialValues, prepareForSubmit]);
+
+  const onSubmit = useCallback(async (formValues) => {
+    const formValuesForDerive = prepareForSubmit(formValues);
 
     showCallout({ messageId: 'ui-quick-marc.record.saveNew.onSave' });
 
@@ -152,7 +161,7 @@ const QuickMarcDeriveWrapper = ({
         setHttpError(parsedError);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onClose, showCallout]);
+  }, [onClose, showCallout, prepareForSubmit]);
 
   return (
     <QuickMarcEditor
@@ -164,6 +173,7 @@ const QuickMarcDeriveWrapper = ({
       marcType={marcType}
       httpError={httpError}
       confirmRemoveAuthorityLinking
+      validate={validate}
     />
   );
 };

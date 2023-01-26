@@ -60,6 +60,35 @@ const QuickMarcEditWrapper = ({
 
   const { fetchLinksCount } = useAuthorityLinksCount();
 
+  const prepareForSubmit = useCallback((formValues) => {
+    const formValuesToSave = removeDeletedRecords(formValues);
+
+    return formValuesToSave;
+  }, []);
+
+  const validate = useCallback((formValues) => {
+    const formValuesForValidation = prepareForSubmit(formValues);
+    const controlFieldErrorMessage = checkControlFieldLength(formValuesForValidation);
+
+    if (controlFieldErrorMessage) {
+      return controlFieldErrorMessage;
+    }
+
+    const validationErrorMessage = validateMarcRecord({
+      marcRecord: formValuesForValidation,
+      initialValues,
+      marcType,
+      locations,
+      linksCount,
+    });
+
+    if (validationErrorMessage) {
+      return validationErrorMessage;
+    }
+
+    return undefined;
+  }, [initialValues, linksCount, locations, marcType, prepareForSubmit]);
+
   const onSubmit = useCallback(async (formValues) => {
     let is1xxOr010Updated = false;
 
@@ -67,26 +96,7 @@ const QuickMarcEditWrapper = ({
       is1xxOr010Updated = are010Or1xxUpdated(initialValues.records, formValues.records);
     }
 
-    const formValuesToSave = removeDeletedRecords(formValues);
-    const controlFieldErrorMessage = checkControlFieldLength(formValuesToSave);
-    const validationErrorMessage = validateMarcRecord({
-      marcRecord: formValuesToSave,
-      initialValues,
-      marcType,
-      locations,
-      linksCount,
-    });
-
-    const errorMessage = controlFieldErrorMessage || validationErrorMessage;
-
-    if (errorMessage) {
-      showCallout({
-        message: errorMessage,
-        type: 'error',
-      });
-
-      return null;
-    }
+    const formValuesToSave = prepareForSubmit(formValues);
 
     const autopopulatedFormWithIndicators = autopopulateIndicators(formValuesToSave);
     const autopopulatedFormWithSubfields = autopopulateSubfieldSection(
@@ -161,7 +171,17 @@ const QuickMarcEditWrapper = ({
 
         setHttpError(parsedError);
       });
-  }, [showCallout, refreshPageData, location, initialValues, instance, locations, marcType, mutator, linksCount]);
+  }, [
+    showCallout,
+    refreshPageData,
+    initialValues,
+    instance,
+    marcType,
+    mutator,
+    linksCount,
+    location,
+    prepareForSubmit,
+  ]);
 
   useEffect(() => {
     if (marcType === MARC_TYPES.AUTHORITY) {
@@ -184,6 +204,7 @@ const QuickMarcEditWrapper = ({
       httpError={httpError}
       externalRecordPath={externalRecordPath}
       linksCount={linksCount}
+      validate={validate}
     />
   );
 };

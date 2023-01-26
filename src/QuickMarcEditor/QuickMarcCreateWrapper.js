@@ -9,9 +9,7 @@ import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
-import {
-  QUICK_MARC_ACTIONS,
-} from './constants';
+import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 import {
   hydrateMarcRecord,
@@ -50,34 +48,42 @@ const QuickMarcCreateWrapper = ({
   const showCallout = useShowCallout();
   const [httpError, setHttpError] = useState(null);
 
-  const onSubmit = useCallback(async (formValues) => {
+  const prepareForSubmit = useCallback((formValues) => {
     const formValuesToSave = removeDeletedRecords(formValues);
-    const controlFieldErrorMessage = checkControlFieldLength(formValuesToSave);
-
-    if (controlFieldErrorMessage) {
-      showCallout({ message: controlFieldErrorMessage, type: 'error' });
-
-      return null;
-    }
-
     const autopopulatedFormValues = autopopulateSubfieldSection(
       removeFieldsForDerive(formValuesToSave),
       initialValues,
       marcType,
     );
     const formValuesForCreate = cleanBytesFields(autopopulatedFormValues, initialValues, marcType);
+
+    return formValuesForCreate;
+  }, [initialValues, marcType]);
+
+  const validate = useCallback((formValues) => {
+    const formValuesForValidation = prepareForSubmit(formValues);
+    const controlFieldErrorMessage = checkControlFieldLength(formValuesForValidation);
+
+    if (controlFieldErrorMessage) {
+      return controlFieldErrorMessage;
+    }
+
     const validationErrorMessage = validateMarcRecord({
-      marcRecord: formValuesForCreate,
+      marcRecord: formValuesForValidation,
       initialValues,
       marcType,
       locations,
     });
 
     if (validationErrorMessage) {
-      showCallout({ message: validationErrorMessage, type: 'error' });
-
-      return null;
+      return validationErrorMessage;
     }
+
+    return undefined;
+  }, [initialValues, locations, marcType, prepareForSubmit]);
+
+  const onSubmit = useCallback(async (formValues) => {
+    const formValuesForCreate = prepareForSubmit(formValues);
 
     return mutator.quickMarcEditMarcRecord.POST(hydrateMarcRecord(formValuesForCreate))
       .then(async ({ qmRecordId }) => {
@@ -113,7 +119,7 @@ const QuickMarcCreateWrapper = ({
         setHttpError(parsedError);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onClose, showCallout]);
+  }, [onClose, showCallout, prepareForSubmit]);
 
   return (
     <QuickMarcEditor
@@ -124,6 +130,7 @@ const QuickMarcCreateWrapper = ({
       action={action}
       marcType={marcType}
       httpError={httpError}
+      validate={validate}
     />
   );
 };

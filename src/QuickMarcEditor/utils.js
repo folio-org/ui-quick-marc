@@ -384,6 +384,12 @@ export const checkDuplicate010Field = (marcRecords) => {
   return undefined;
 };
 
+export const checkCanBeLinked = (stripes, marcType, action, linkableBibFields, tag) => (
+  stripes.hasPerm('ui-quick-marc.quick-marc-authority-records.linkUnlink') &&
+  marcType === MARC_TYPES.BIB &&
+  linkableBibFields.includes(tag)
+);
+
 export const validateSubfield = (marcRecords, initialMarcRecords) => {
   const marcRecordsWithSubfields = marcRecords.filter(marcRecord => marcRecord.indicators);
   const isEmptySubfield = marcRecordsWithSubfields.some(marcRecord => {
@@ -397,6 +403,30 @@ export const validateSubfield = (marcRecords, initialMarcRecords) => {
   return undefined;
 };
 
+const validate$9 = (marcRecords) => {
+  const hasEntered$9 = marcRecords.some(field => {
+    if (typeof field.content !== 'string') {
+      return false;
+    }
+
+    if (field.subfieldGroups) {
+      const uncontrolledSubfields = ['uncontrolledAlpha', 'uncontrolledNumber'];
+
+      return uncontrolledSubfields.some(subfield => {
+        return field.subfieldGroups[subfield] && '$9' in getContentSubfieldValue(field.subfieldGroups[subfield]);
+      });
+    }
+
+    return '$9' in getContentSubfieldValue(field.content);
+  });
+
+  if (hasEntered$9) {
+    return <FormattedMessage id="ui-quick-marc.record.error.$9" />;
+  }
+
+  return null;
+};
+
 const validateMarcBibRecord = (marcRecords) => {
   const titleRecords = marcRecords.filter(({ tag }) => tag === '245');
 
@@ -406,6 +436,12 @@ const validateMarcBibRecord = (marcRecords) => {
 
   if (titleRecords.length > 1) {
     return <FormattedMessage id="ui-quick-marc.record.error.title.multiple" />;
+  }
+
+  const $9Error = validate$9(marcRecords);
+
+  if ($9Error) {
+    return $9Error;
   }
 
   return undefined;
