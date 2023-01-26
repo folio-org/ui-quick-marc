@@ -33,6 +33,7 @@
 * [UIQM-337](https://issues.folio.org/browse/UIQM-337) Controlled subfield is displayed as not controlled after linking of MARC Bib field with MARC Authority
 * [UIQM-373](https://issues.folio.org/browse/UIQM-373) Save buttons are not disabled after removing unsaved updates from linked field in "MARC bib" record
 * [UIQM-376](https://issues.folio.org/browse/UIQM-376) Reference MARC Authority record is opened when user clicks on the "MARC Authority" icon next to the controlled field
+* [UIQM-349](https://issues.folio.org/browse/UIQM-349) Align the module with mod-search API breaking change
 
 ## [5.2.0](https://github.com/folio-org/ui-quick-marc/tree/v5.2.0) (2022-10-26)
 
