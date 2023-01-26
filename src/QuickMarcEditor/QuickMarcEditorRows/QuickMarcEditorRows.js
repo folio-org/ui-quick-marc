@@ -70,7 +70,6 @@ const QuickMarcEditorRows = ({
     restoreRecord,
   },
   marcType,
-  linksCount,
   instance,
 }) => {
   const stripes = useStripes();
@@ -214,7 +213,7 @@ const QuickMarcEditorRows = ({
             const isDisabled = isReadOnly(recordRow, action, marcType);
             const withIndicators = !hasIndicatorException(recordRow);
             const withAddRowAction = hasAddException(recordRow, marcType);
-            const withDeleteRowAction = hasDeleteException(recordRow, marcType, linksCount, instance, initialValues);
+            const withDeleteRowAction = hasDeleteException(recordRow, marcType, instance, initialValues);
             const withMoveUpRowAction = hasMoveException(recordRow, fields[idx - 1]);
             const withMoveDownRowAction = hasMoveException(recordRow, fields[idx + 1]);
 
@@ -506,7 +505,6 @@ QuickMarcEditorRows.propTypes = {
     restoreRecord: PropTypes.func.isRequired,
   }),
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
-  linksCount: PropTypes.number,
 };
 
 export default QuickMarcEditorRows;

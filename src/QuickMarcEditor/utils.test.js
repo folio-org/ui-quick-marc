@@ -1790,9 +1790,8 @@ describe('QuickMarcEditor utils', () => {
       it('should be true for tag 010 that populates bib field(s)', () => {
         const authority = { naturalId: 'n79018119' };
         const initialValues = { records: [{ tag: '010', content: '$a n  79018119' }] };
-        const linksCount = 1;
 
-        expect(utils.hasDeleteException({ tag: '010' }, MARC_TYPES.AUTHORITY, linksCount, authority, initialValues)).toBeTruthy();
+        expect(utils.hasDeleteException({ tag: '010' }, MARC_TYPES.AUTHORITY, authority, initialValues)).toBeTruthy();
       });
     });
   });

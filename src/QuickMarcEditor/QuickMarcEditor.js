@@ -446,7 +446,6 @@ const QuickMarcEditor = ({
                     type={type}
                     subtype={subtype}
                     marcType={marcType}
-                    linksCount={linksCount}
                     instance={instance}
                   />
                 </Col>
