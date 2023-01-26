@@ -234,7 +234,7 @@
     "record.viewMarcAuthorityRecord": "Zobrazit záznam MARC autority",
     "record.link.success": "Pole <b>{tag}</b> bylo <b>propojeno</b> se záznamem MARC autority.",
     "record.unlink.confirm.title": "Zrušit propojení se záznamem MARC autority",
-    "record.unlink.confirm.message": "Výběrem možnosti <b>Odpojit</b> se pole {tag} zruší ze záznamu MARC autority. Opravdu chcete pokračovat?",
+    "record.unlink.confirm.message": "Výběrem možnosti <b>Odpojit</b> se pole {tag} odpojí ze záznamu MARC autority. Opravdu chcete pokračovat?",
     "record.unlink.confirm.cancel": "Zrušit",
     "record.unlink.confirm.confirm": "Odpojit",
     "remove-authority-linking.modal.label": "Odstranění propojení autorit",
@@ -245,5 +245,16 @@
     "record.save.error.derive": "Titul nelze aktualizovat. Zastaralá verze katalogu.",
     "permission.quick-marc-editor.duplicate": "quickMARC: Odvození nového MARC bibliografického záznamu",
     "linkedToMarcAuthority": "Propojeno s MARC autoritou",
-    "record.link.validation.invalidHeading": "Vybrali jste neplatný nadpis na základě bibliografického pole, které chcete ovládat. Upravte prosím svůj výběr."
+    "record.link.validation.invalidHeading": "Vybrali jste neplatný nadpis na základě bibliografického pole, které chcete řídit. Upravte prosím svůj výběr.",
+    "record.error.1xx.change": "Nelze změnit <b>uložené pole MARC autority {tag}</b>, protože řídí bibliografické pole. Chcete-li změnit toto 1XX, musíte zrušit propojení všech řízených bibliografických polí.",
+    "record.error.1xx.add$t": "Nelze přidat <b>$t do pole ${tag}</b>, protože řídí bibliografické pole, které nemůže toto podpole řídit. Chcete-li změnit tuto hodnotu 1XX, musíte zrušit propojení všech řízených bibliografických polí, která nemohou řídit $t.",
+    "record.error.1xx.remove$t": "Nelze odstranit <b>$t z pole ${tag}</b>, protože řídí bibliografické pole, které toto podpole vyžaduje. Chcete-li změnit tuto hodnotu 1XX, musíte zrušit propojení všech řízených bibliografických polí, která vyžadují kontrolu $t.",
+    "record.save.updatingLinkedBibRecords": "Záznam byl aktualizován. Byly zahájeny aktualizace <b>{count}</b> propojených bibliografických záznamů.",
+    "update-linked-bib-fields.modal.label": "Opravdu?",
+    "update-linked-bib-fields.modal.keep-editing": "Pokračovat v úpravách",
+    "print": "Tisk",
+    "record.error.010Field.multiple": "Nelze uložit více polí 010.",
+    "record.error.$9": "$9 není platné podpole.",
+    "update-linked-bib-fields.modal.message-save": "<b>{count} {count, plural, one {bibliografický záznam} other {bibliografické záznamy}} </b>{count, plural, one {je} other {jsou}} propojen s tímto záznamem autority a bude aktualizován kliknutím na <b>Uložit</b> .",
+    "update-linked-bib-fields.modal.save": "Uložit"
 }
