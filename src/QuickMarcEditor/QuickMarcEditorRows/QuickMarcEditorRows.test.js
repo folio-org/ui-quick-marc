@@ -16,6 +16,7 @@ import QuickMarcEditorRows from './QuickMarcEditorRows';
 import { LinkButton } from './LinkButton';
 import { useAuthorityLinking } from '../../hooks';
 import * as utils from './utils';
+import * as parentUtils from '../utils';
 import { QUICK_MARC_ACTIONS } from '../constants';
 import { MARC_TYPES } from '../../common/constants';
 
@@ -186,14 +187,14 @@ describe('Given QuickMarcEditorRows', () => {
   });
 
   it('should display row for each record value', () => {
-    const isReadOnlySpy = jest.spyOn(utils, 'isReadOnly');
+    const isReadOnlySpy = jest.spyOn(parentUtils, 'isReadOnly');
     const hasIndicatorExceptionSpy = jest.spyOn(utils, 'hasIndicatorException');
     const hasAddExceptionSpy = jest.spyOn(utils, 'hasAddException');
-    const hasDeleteExceptionSpy = jest.spyOn(utils, 'hasDeleteException');
+    const hasDeleteExceptionSpy = jest.spyOn(parentUtils, 'hasDeleteException');
     const hasMoveExceptionSpy = jest.spyOn(utils, 'hasMoveException');
-    const isFixedRowSpy = jest.spyOn(utils, 'isFixedFieldRow');
-    const isMaterialCharsRecordSpy = jest.spyOn(utils, 'isPhysDescriptionRecord');
-    const isPhysDescriptionRecordSpy = jest.spyOn(utils, 'isMaterialCharsRecord');
+    const isFixedRowSpy = jest.spyOn(parentUtils, 'isFixedFieldRow');
+    const isMaterialCharsRecordSpy = jest.spyOn(parentUtils, 'isPhysDescriptionRecord');
+    const isPhysDescriptionRecordSpy = jest.spyOn(parentUtils, 'isMaterialCharsRecord');
 
     renderQuickMarcEditorRows();
 

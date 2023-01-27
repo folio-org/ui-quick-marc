@@ -48,7 +48,9 @@ import {
   getCorrespondingMarcTag,
   getContentSubfieldValue,
   deleteRecordByIndex,
-  are010Or1xxUpdated,
+  is1XXUpdated,
+  is010Updated,
+  is010$aPopulatesBibField$0,
 } from './utils';
 import { useAuthorityLinking } from '../hooks';
 
@@ -166,12 +168,21 @@ const QuickMarcEditor = ({
       return;
     }
 
-    if (confirmationChecks.current[CONFIRMATIONS.UPDATE_LINKED]
-      && marcType === MARC_TYPES.AUTHORITY && linksCount > 0
-      && are010Or1xxUpdated(initialValues.records, records)) {
-      setIsUpdate0101xxfieldsAuthRecModalOpen(true);
+    if (confirmationChecks.current[CONFIRMATIONS.UPDATE_LINKED] && marcType === MARC_TYPES.AUTHORITY && linksCount) {
+      if (is1XXUpdated(initialValues.records, records)) {
+        setIsUpdate0101xxfieldsAuthRecModalOpen(true);
 
-      return;
+        return;
+      }
+
+      if (
+        is010Updated(initialValues.records, records) &&
+        is010$aPopulatesBibField$0(initialValues.records, instance.naturalId)
+      ) {
+        setIsUpdate0101xxfieldsAuthRecModalOpen(true);
+
+        return;
+      }
     }
 
     handleSubmit(e)
@@ -188,6 +199,7 @@ const QuickMarcEditor = ({
     getState,
     validate,
     showCallout,
+    instance,
   ]);
 
   const paneFooter = useMemo(() => {
@@ -434,6 +446,7 @@ const QuickMarcEditor = ({
                     type={type}
                     subtype={subtype}
                     marcType={marcType}
+                    instance={instance}
                   />
                 </Col>
               </Row>
@@ -506,7 +519,7 @@ QuickMarcEditor.propTypes = {
     reset: PropTypes.func.isRequired,
   }),
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
-  linksCount: PropTypes.number.isRequired,
+  linksCount: PropTypes.number,
   locations: PropTypes.arrayOf(PropTypes.object).isRequired,
   httpError: PropTypes.shape({
     code: PropTypes.string,

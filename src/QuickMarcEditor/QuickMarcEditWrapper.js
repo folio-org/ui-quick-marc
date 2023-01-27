@@ -1,6 +1,5 @@
 import React, {
   useCallback,
-  useEffect,
   useState,
 } from 'react';
 import { useLocation } from 'react-router';
@@ -10,7 +9,6 @@ import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 
-import { useAuthorityLinksCount } from '../queries';
 import { QUICK_MARC_ACTIONS } from './constants';
 import {
   EXTERNAL_INSTANCE_APIS,
@@ -32,6 +30,7 @@ import {
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
+  linksCount: PropTypes.number,
   refreshPageData: PropTypes.func.isRequired,
   externalRecordPath: PropTypes.string.isRequired,
   initialValues: PropTypes.object.isRequired,
@@ -49,6 +48,7 @@ const QuickMarcEditWrapper = ({
   initialValues,
   mutator,
   marcType,
+  linksCount,
   locations,
   refreshPageData,
   externalRecordPath,
@@ -56,9 +56,6 @@ const QuickMarcEditWrapper = ({
   const showCallout = useShowCallout();
   const location = useLocation();
   const [httpError, setHttpError] = useState(null);
-  const [linksCount, setLinksCount] = useState(0);
-
-  const { fetchLinksCount } = useAuthorityLinksCount();
 
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesToSave = removeDeletedRecords(formValues);
@@ -182,14 +179,6 @@ const QuickMarcEditWrapper = ({
     location,
     prepareForSubmit,
   ]);
-
-  useEffect(() => {
-    if (marcType === MARC_TYPES.AUTHORITY) {
-      fetchLinksCount([instance.id])
-        .then(res => setLinksCount(res.links[0].totalLinks))
-        .catch(setHttpError);
-    }
-  }, [location.search, marcType, fetchLinksCount, instance.id]);
 
   return (
     <QuickMarcEditor

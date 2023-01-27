@@ -10,12 +10,6 @@ import toPairs from 'lodash/toPairs';
 import flatten from 'lodash/flatten';
 
 import {
-  isLastRecord,
-  isFixedFieldRow,
-  isMaterialCharsRecord,
-  isPhysDescriptionRecord,
-} from './QuickMarcEditorRows/utils';
-import {
   LEADER_TAG,
   FIELD_TAGS_TO_REMOVE,
   FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS,
@@ -37,6 +31,19 @@ import {
   MARC_TYPES,
   ERROR_TYPES,
 } from '../common/constants';
+
+export const isLastRecord = recordRow => {
+  return (
+    recordRow.tag === '999'
+    && recordRow.indicators
+    && recordRow.indicators[0] === 'f'
+    && recordRow.indicators[1] === 'f'
+  );
+};
+
+export const isFixedFieldRow = recordRow => recordRow.tag === '008';
+export const isMaterialCharsRecord = recordRow => recordRow.tag === '006';
+export const isPhysDescriptionRecord = recordRow => recordRow.tag === '007';
 
 export const getContentSubfieldValue = (content) => {
   return content.split(/\$/)
@@ -899,24 +906,25 @@ export const splitFields = marcRecord => {
   };
 };
 
-export const are010Or1xxUpdated = (initial, updated) => {
-  let is010Updated = false;
-  let is1XXUpdated = false;
+export const is010$aPopulatesBibField$0 = (initialRecords, naturalId) => {
+  const initial010Field = initialRecords.find(record => record.tag === '010');
+  const initial010$a = getContentSubfieldValue(initial010Field.content).$a;
 
-  const authRec010Tag = '010';
-  const initial010 = initial.find(rec => rec.tag === authRec010Tag);
-  const updated010 = updated.find(rec => rec.tag === authRec010Tag);
+  return naturalId === initial010$a?.replaceAll(' ', '');
+};
 
-  if (initial010 &&
+export const is010Updated = (initial, updated) => {
+  const initial010 = initial.find(rec => rec.tag === '010');
+  const updated010 = updated.find(rec => rec.tag === '010');
+
+  return initial010 &&
     updated010 &&
-    getContentSubfieldValue(initial010.content).$a !== getContentSubfieldValue(updated010.content).$a
-  ) {
-    is010Updated = true;
-  }
+    getContentSubfieldValue(initial010.content).$a !== getContentSubfieldValue(updated010.content).$a;
+};
 
-  const authRec1XXTagStartsWith = '1';
-  const initial1xxRecords = initial.filter(rec => rec.tag[0] === authRec1XXTagStartsWith);
-  const updated1xxRecords = updated.filter(rec => rec.tag[0] === authRec1XXTagStartsWith);
+export const is1XXUpdated = (initial, updated) => {
+  const initial1xxRecords = initial.filter(rec => rec.tag[0] === '1');
+  const updated1xxRecords = updated.filter(rec => rec.tag[0] === '1');
 
   const updated1xxArr = [];
 
@@ -928,9 +936,64 @@ export const are010Or1xxUpdated = (initial, updated) => {
     }
   });
 
-  if (updated1xxArr.length) {
-    is1XXUpdated = true;
+  return !!updated1xxArr.length;
+};
+
+export const are010Or1xxUpdated = (initial, updated) => {
+  return is010Updated(initial, updated) || is1XXUpdated(initial, updated);
+};
+
+const DELETE_EXCEPTION_ROWS = {
+  [MARC_TYPES.AUTHORITY]: new Set([LEADER_TAG, '001', '003', '005', '008']),
+  [MARC_TYPES.HOLDINGS]: new Set([LEADER_TAG, '001', '003', '004', '005', '008', '852']),
+  [MARC_TYPES.BIB]: new Set([LEADER_TAG, '001', '003', '005', '008', '245']),
+};
+
+const is1XXField = (tag) => tag && tag[0] === '1';
+
+export const hasDeleteException = (recordRow, marcType = MARC_TYPES.BIB, authority, initialValues) => {
+  const rows = DELETE_EXCEPTION_ROWS[marcType];
+
+  if (marcType === MARC_TYPES.AUTHORITY) {
+    if (
+      is1XXField(recordRow.tag) ||
+      (recordRow.tag === '010' && is010$aPopulatesBibField$0(initialValues.records, authority.naturalId))
+    ) {
+      return true;
+    }
   }
 
-  return is010Updated || is1XXUpdated;
+  return rows.has(recordRow.tag) || isLastRecord(recordRow);
+};
+
+const READ_ONLY_ROWS = new Set(['001', '005']);
+
+const READ_ONLY_ROWS_FOR_DERIVE = new Set(['001', '005']);
+
+const READ_ONLY_ROWS_FOR_HOLDINGS = new Set(['001', '004', '005']);
+
+const READ_ONLY_ROWS_FOR_AUTHORITIES = new Set(['001', '005']);
+
+export const isReadOnly = (
+  recordRow,
+  action = QUICK_MARC_ACTIONS.EDIT,
+  marcType = MARC_TYPES.BIB,
+) => {
+  let rows;
+
+  if (marcType === MARC_TYPES.BIB && recordRow._isLinked) {
+    return true;
+  }
+
+  if (marcType === MARC_TYPES.BIB) {
+    rows = action === QUICK_MARC_ACTIONS.DERIVE
+      ? READ_ONLY_ROWS_FOR_DERIVE
+      : READ_ONLY_ROWS;
+  } else if (marcType === MARC_TYPES.HOLDINGS) {
+    rows = READ_ONLY_ROWS_FOR_HOLDINGS;
+  } else {
+    rows = READ_ONLY_ROWS_FOR_AUTHORITIES;
+  }
+
+  return rows.has(recordRow.tag) || isLastRecord(recordRow);
 };

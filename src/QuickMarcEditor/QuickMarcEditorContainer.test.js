@@ -16,6 +16,32 @@ import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
+import { useAuthorityLinksCount } from '../queries';
+
+const mockFetchLinksCount = jest.fn().mockResolvedValue();
+
+const match = {
+  path: '/marc-authorities/quick-marc/edit-authority/:externalId',
+  url: '/marc-authorities/quick-marc/edit-authority/external-id',
+  params: {
+    externalId: 'external-id',
+    instanceId: 'instance-id',
+  },
+};
+
+const location = {
+  pathname: '/marc-authorities/quick-marc/edit-authority/external-id',
+  search: '?authRefType=Authorized&headingRef=Beatles&segment=search&relatedRecordVersion=3',
+  hash: '',
+  key: 'vepmmg',
+};
+
+const mockHistory = createMemoryHistory();
+
+jest.mock('react-router', () => ({
+  ...jest.requireActual('react-router'),
+  withRouter: Component => props => <Component {...props} match={match} location={location} history={mockHistory} />,
+}));
 
 jest.mock('../queries', () => ({
   ...jest.requireActual('../queries'),
@@ -27,6 +53,11 @@ jest.mock('../queries', () => ({
     sourceFiles: [],
     isLoading: false,
   }),
+  useAuthorityLinksCount: jest.fn().mockReturnValue({
+    fetchLinksCount: jest.fn().mockResolvedValue({
+      links: [{ totalLinks: 0 }],
+    }),
+  }),
 }));
 
 const getInstance = () => ({
@@ -34,13 +65,6 @@ const getInstance = () => ({
   title: 'ui-quick-marc.bib-record.edit.title',
   _version: '1',
 });
-
-const match = {
-  params: {
-    externalId: 'external-id',
-    instanceId: 'instance-id',
-  },
-};
 
 const record = {
   id: faker.random.uuid(),
@@ -65,7 +89,6 @@ const renderQuickMarcEditorContainer = ({
   <Harness history={history}>
     <QuickMarcEditorContainer
       onClose={onClose}
-      match={match}
       mutator={mutator}
       wrapper={wrapper}
       action={action}
@@ -113,6 +136,26 @@ describe('Given Quick Marc Editor Container', () => {
     expect(mutator.quickMarcEditMarcRecord.GET).toHaveBeenCalled();
   });
 
+  describe('when the marc type is authority', () => {
+    it('should make a request to get the number of links', async () => {
+      useAuthorityLinksCount.mockClear().mockReturnValue({
+        fetchLinksCount: mockFetchLinksCount,
+      });
+
+      await act(async () => {
+        await renderQuickMarcEditorContainer({
+          mutator,
+          onClose: jest.fn(),
+          action: QUICK_MARC_ACTIONS.EDIT,
+          wrapper: QuickMarcEditWrapper,
+          marcType: MARC_TYPES.AUTHORITY,
+        });
+      });
+
+      expect(mockFetchLinksCount).toHaveBeenCalledWith([match.params.externalId]);
+    });
+  });
+
   describe('when data cannot be fetched', () => {
     const onClose = jest.fn();
 
@@ -157,9 +200,7 @@ describe('Given Quick Marc Editor Container', () => {
 
   describe('when the action is not CREATE', () => {
     it('should append the relatedRecordVersion parameter to URL', async () => {
-      const history = createMemoryHistory();
-
-      history.replace = jest.fn();
+      const spyHistory = jest.spyOn(mockHistory, 'replace');
 
       await act(async () => {
         await renderQuickMarcEditorContainer({
@@ -167,11 +208,10 @@ describe('Given Quick Marc Editor Container', () => {
           onClose: jest.fn(),
           action: QUICK_MARC_ACTIONS.EDIT,
           wrapper: QuickMarcEditWrapper,
-          history,
         });
       });
 
-      expect(history.replace).toHaveBeenCalledWith({ search: 'relatedRecordVersion=1' });
+      expect(spyHistory).toHaveBeenCalledWith({ search: expect.stringContaining('relatedRecordVersion=1') });
     });
   });
 
