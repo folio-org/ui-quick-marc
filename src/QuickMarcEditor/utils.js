@@ -908,6 +908,11 @@ export const splitFields = marcRecord => {
 
 export const is010$aPopulatesBibField$0 = (initialRecords, naturalId) => {
   const initial010Field = initialRecords.find(record => record.tag === '010');
+
+  if (!initial010Field) {
+    return false;
+  }
+
   const initial010$a = getContentSubfieldValue(initial010Field.content).$a;
 
   return naturalId === initial010$a?.replaceAll(' ', '');
