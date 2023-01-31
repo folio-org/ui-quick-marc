@@ -445,6 +445,132 @@ describe('QuickMarcEditor utils', () => {
       });
     });
 
+    describe('when a user enters into the linked field subfield(s) that can be controlled', () => {
+      const initialValues = {
+        leader: '04706cam a2200865Ii 4500',
+        records: [
+          {
+            content: '04706cam a2200865Ii 4500',
+            tag: 'LDR',
+          },
+          {
+            tag: '008',
+            content: {
+              Desc: 'i',
+            },
+          },
+          {
+            tag: '245',
+          },
+          {
+            'tag': '100',
+            'content': '$a Kerouac, Jack, $d 1922-1969 $0 http://id.loc.gov/authorities/names/n80036674 $9 7e192d19-1e56-4f0e-9c06-8c601504377e',
+            'indicators': ['1', '\\'],
+            'isProtected': false,
+            'authorityId': '7e192d19-1e56-4f0e-9c06-8c601504377e',
+            'authorityNaturalId': 'n80036674',
+            'authorityControlledSubfields': ['a', 'b', 'c', 'd', 'j', 'q'],
+            'subfieldGroups': {
+              'controlled': '$a Kerouac, Jack, $d 1922-1969',
+              'uncontrolledAlpha': '',
+              'zeroSubfield': '$0 http://id.loc.gov/authorities/names/n80036674',
+              'nineSubfield': '$9 7e192d19-1e56-4f0e-9c06-8c601504377e',
+              'uncontrolledNumber': '',
+            },
+          },
+          {
+            'tag': '600',
+            'content': '$a Kerouac, Jack, $d 1922-1969 $0 http://id.loc.gov/authorities/names/n80036674 $9 7e192d19-1e56-4f0e-9c06-8c601504377e',
+            'indicators': ['1', '0'],
+            'isProtected': false,
+            'authorityId': '7e192d19-1e56-4f0e-9c06-8c601504377e',
+            'authorityNaturalId': 'n80036674',
+            'authorityControlledSubfields': ['a', 'b', 'c', 'd', 'g', 'j', 'q', 'f', 'h', 'k', 'l', 'm', 'n'],
+            'subfieldGroups': {
+              'controlled': '$a Kerouac, Jack, $d 1922-1969',
+              'uncontrolledAlpha': '',
+              'zeroSubfield': '$0 http://id.loc.gov/authorities/names/n80036674',
+              'nineSubfield': '$9 7e192d19-1e56-4f0e-9c06-8c601504377e',
+              'uncontrolledNumber': '',
+            },
+          },
+          {
+            'tag': '600',
+            'content': '$a Chin, Staceyann, $d 1972- $0 http://id.loc.gov/authorities/names/n2008052404 $9 2f4f9df2-3ee1-4fd7-8ab0-63bdc16f5c4a $2 fast',
+            'indicators': ['1', '7'],
+            'isProtected': false,
+            'authorityId': '2f4f9df2-3ee1-4fd7-8ab0-63bdc16f5c4a',
+            'authorityNaturalId': 'n2008052404',
+            'authorityControlledSubfields': ['a', 'b', 'c', 'd', 'g', 'j', 'q', 'f', 'h', 'k', 'l', 'm', 'n'],
+            'subfieldGroups': {
+              'controlled': '$a Chin, Staceyann, $d 1972-',
+              'uncontrolledAlpha': '',
+              'zeroSubfield': '$0 http://id.loc.gov/authorities/names/n2008052404',
+              'nineSubfield': '$9 2f4f9df2-3ee1-4fd7-8ab0-63bdc16f5c4a',
+              'uncontrolledNumber': '$2 fast',
+            },
+          },
+          {
+            'tag': '650',
+            'content': '$a Speaking Oratory $b debating $0 http://id.loc.gov/authorities/subjects/sh85095299 $9 40415102-4205-455d-94bd-d1a655f91e90 $2 fast',
+            'indicators': ['\\', '7'],
+            'isProtected': false,
+            'authorityId': '40415102-4205-455d-94bd-d1a655f91e90',
+            'authorityNaturalId': 'sh85095299',
+            'authorityControlledSubfields': ['a', 'b', 'g', 'v', 'x', 'y', 'z'],
+            'subfieldGroups': {
+              'controlled': '$a Speaking Oratory $b debating',
+              'uncontrolledAlpha': '',
+              'zeroSubfield': '$0 http://id.loc.gov/authorities/subjects/sh85095299',
+              'nineSubfield': '$9 40415102-4205-455d-94bd-d1a655f91e90',
+              'uncontrolledNumber': '$2 fast',
+            },
+          },
+        ],
+      };
+
+      it('should return an error', () => {
+        const record = cloneDeep(initialValues);
+
+        record.records[3].subfieldGroups.uncontrolledAlpha = '$q fakeValue1';
+
+        expect(utils.validateMarcRecord({
+          marcRecord: record,
+          initialValues,
+        }).props).toEqual({
+          id: 'ui-quick-marc.record.error.subfield(s)CantBeSaved',
+          values: {
+            fieldCount: 1,
+            fieldTags: 'MARC 100',
+            lastFieldTag: 'MARC 100',
+          },
+        });
+      });
+
+      describe('and there are fields with the same tags', () => {
+        it('should return an error without duplicate tags', () => {
+          const record = cloneDeep(initialValues);
+
+          record.records[3].subfieldGroups.uncontrolledAlpha = '$q fakeValue1';
+          record.records[4].subfieldGroups.uncontrolledAlpha = '$m fakeValue2';
+          record.records[5].subfieldGroups.uncontrolledAlpha = '$n fakeValue3';
+          record.records[6].subfieldGroups.uncontrolledAlpha = '$g fakeValue4';
+
+          expect(utils.validateMarcRecord({
+            marcRecord: record,
+            initialValues,
+          }).props).toEqual({
+            id: 'ui-quick-marc.record.error.subfield(s)CantBeSaved',
+            values: {
+              fieldCount: 3,
+              fieldTags: 'MARC 100, MARC 600',
+              lastFieldTag: 'MARC 650',
+            },
+          });
+        });
+      });
+    });
+
     describe('when record is MARC Holdings record', () => {
       it('should not return error message when record is valid', () => {
         const initialValues = { records: [] };

@@ -32,6 +32,7 @@ import {
   ERROR_TYPES,
 } from '../common/constants';
 
+/* eslint-disable max-lines */
 export const isLastRecord = recordRow => {
   return (
     recordRow.tag === '999'
@@ -410,15 +411,13 @@ export const validateSubfield = (marcRecords, initialMarcRecords) => {
   return undefined;
 };
 
-const validate$9 = (marcRecords) => {
+const validate$9 = (marcRecords, uncontrolledSubfields) => {
   const hasEntered$9 = marcRecords.some(field => {
     if (typeof field.content !== 'string') {
       return false;
     }
 
     if (field.subfieldGroups) {
-      const uncontrolledSubfields = ['uncontrolledAlpha', 'uncontrolledNumber'];
-
       return uncontrolledSubfields.some(subfield => {
         return field.subfieldGroups[subfield] && '$9' in getContentSubfieldValue(field.subfieldGroups[subfield]);
       });
@@ -429,6 +428,44 @@ const validate$9 = (marcRecords) => {
 
   if (hasEntered$9) {
     return <FormattedMessage id="ui-quick-marc.record.error.$9" />;
+  }
+
+  return null;
+};
+
+const validateSubfieldsThatCanBeControlled = (marcRecords, uncontrolledSubfields) => {
+  const linkedFields = marcRecords.filter(field => field.subfieldGroups);
+
+  const linkedFieldsWithEnteredSubfieldsThatCanBeControlled = linkedFields.filter(linkedField => {
+    return uncontrolledSubfields.some(subfield => {
+      if (linkedField.subfieldGroups[subfield]) {
+        const contentSubfieldValue = getContentSubfieldValue(linkedField.subfieldGroups[subfield]);
+
+        return linkedField.authorityControlledSubfields.some(authSubfield => {
+          return `$${authSubfield}` in contentSubfieldValue;
+        });
+      }
+
+      return false;
+    });
+  });
+
+  const fieldTags = linkedFieldsWithEnteredSubfieldsThatCanBeControlled.map(field => field.tag);
+  const uniqueTags = [...new Set(fieldTags)];
+
+  if (uniqueTags.length) {
+    return (
+      <FormattedMessage
+        id="ui-quick-marc.record.error.subfield(s)CantBeSaved"
+        values={{
+          fieldCount: uniqueTags.length,
+          fieldTags: uniqueTags.length > 1
+            ? uniqueTags.slice(0, -1).map(tag => `MARC ${tag}`).join(', ')
+            : `MARC ${uniqueTags[0]}`,
+          lastFieldTag: `MARC ${uniqueTags[uniqueTags.length - 1]}`,
+        }}
+      />
+    );
   }
 
   return null;
@@ -445,10 +482,18 @@ const validateMarcBibRecord = (marcRecords) => {
     return <FormattedMessage id="ui-quick-marc.record.error.title.multiple" />;
   }
 
-  const $9Error = validate$9(marcRecords);
+  const uncontrolledSubfields = ['uncontrolledAlpha', 'uncontrolledNumber'];
+
+  const $9Error = validate$9(marcRecords, uncontrolledSubfields);
 
   if ($9Error) {
     return $9Error;
+  }
+
+  const subfieldsThatCanBeControlledError = validateSubfieldsThatCanBeControlled(marcRecords, uncontrolledSubfields);
+
+  if (subfieldsThatCanBeControlledError) {
+    return subfieldsThatCanBeControlledError;
   }
 
   return undefined;
