@@ -37,6 +37,7 @@
 * [UIQM-348](https://issues.folio.org/browse/UIQM-348) Change to Linked MARC authority record has been updated confirmation messaging
 * [UIQM-390](https://issues.folio.org/browse/UIQM-390) Fix exception when changing tag value to "010" in "MARC authority" record without "010" field
 * [UIQM-367](https://issues.folio.org/browse/UIQM-367) Show an error toast message when user enters a subfield that is/can be controlled by an authority record or is the linking match point
+* [UIQM-375](https://issues.folio.org/browse/UIQM-375) Do not add "http://" to "base url" when user links "MARC Bib's" field with "MARC Authority"
 
 ## [5.2.0](https://github.com/folio-org/ui-quick-marc/tree/v5.2.0) (2022-10-26)
 
