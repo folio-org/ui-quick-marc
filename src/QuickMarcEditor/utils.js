@@ -1001,13 +1001,13 @@ const DELETE_EXCEPTION_ROWS = {
 
 const is1XXField = (tag) => tag && tag[0] === '1';
 
-export const hasDeleteException = (recordRow, marcType = MARC_TYPES.BIB, authority, initialValues) => {
+export const hasDeleteException = (recordRow, marcType = MARC_TYPES.BIB, authority, initialValues, linksCount) => {
   const rows = DELETE_EXCEPTION_ROWS[marcType];
 
   if (marcType === MARC_TYPES.AUTHORITY) {
     if (
       is1XXField(recordRow.tag) ||
-      (recordRow.tag === '010' && is010$aPopulatesBibField$0(initialValues.records, authority.naturalId))
+      (recordRow.tag === '010' && linksCount && is010$aPopulatesBibField$0(initialValues.records, authority.naturalId))
     ) {
       return true;
     }
