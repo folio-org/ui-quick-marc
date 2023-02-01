@@ -82,7 +82,7 @@ const QuickMarcEditorRows = ({
   const containerRef = useRef(null);
   const indexOfNewRow = useRef(null);
   const newRowRef = useRef(null);
-  const leaderInputWidth = useRef(null); // for max-width of resizable textareas
+  const rowContentWidth = useRef(null); // for max-width of resizable textareas
 
   const {
     linkAuthority,
@@ -105,8 +105,8 @@ const QuickMarcEditorRows = ({
     });
   }, [addRecord]);
 
-  const setLeaderInputWidth = (el) => {
-    leaderInputWidth.current = el?.offsetWidth;
+  const setRowContentWidthOnce = (el) => {
+    rowContentWidth.current = el?.offsetWidth;
   };
 
   const getNextFocusableElement = (row) => {
@@ -390,7 +390,7 @@ const QuickMarcEditorRows = ({
 
                 <div
                   className={styles.quickMarcEditorRowContent}
-                  ref={isLeader ? setLeaderInputWidth : null}
+                  ref={isLeader ? setRowContentWidthOnce : null}
                 >
                   {
                     isMaterialCharsField && (
@@ -431,7 +431,7 @@ const QuickMarcEditorRows = ({
                         ? (
                           <SplitField
                             name={name}
-                            maxWidth={leaderInputWidth.current}
+                            maxWidth={rowContentWidth.current}
                           />
                         )
                         : (
