@@ -114,7 +114,7 @@ const useAuthorityLinking = () => {
     let newZeroSubfield = '';
 
     if (sourceFile?.baseUrl) {
-      newZeroSubfield = ['http://', sourceFile?.baseUrl, authorityRecord.naturalId].join('').trim();
+      newZeroSubfield = [sourceFile?.baseUrl, authorityRecord.naturalId].join('').trim();
     } else {
       newZeroSubfield = authorityRecord.naturalId;
     }
