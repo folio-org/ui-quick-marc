@@ -77,6 +77,7 @@ const QuickMarcEditWrapper = ({
       marcType,
       locations,
       linksCount,
+      naturalId: instance.naturalId,
     });
 
     if (validationErrorMessage) {
@@ -84,7 +85,7 @@ const QuickMarcEditWrapper = ({
     }
 
     return undefined;
-  }, [initialValues, linksCount, locations, marcType, prepareForSubmit]);
+  }, [initialValues, linksCount, locations, marcType, prepareForSubmit, instance.naturalId]);
 
   const onSubmit = useCallback(async (formValues) => {
     let is1xxOr010Updated = false;

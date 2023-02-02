@@ -49,8 +49,8 @@ import {
   getContentSubfieldValue,
   deleteRecordByIndex,
   is1XXUpdated,
-  is010Updated,
-  is010$aPopulatesBibField$0,
+  is010$aUpdated,
+  is010LinkedToBibRecord,
 } from './utils';
 import { useAuthorityLinking } from '../hooks';
 
@@ -176,8 +176,8 @@ const QuickMarcEditor = ({
       }
 
       if (
-        is010Updated(initialValues.records, records) &&
-        is010$aPopulatesBibField$0(initialValues.records, instance.naturalId)
+        is010$aUpdated(initialValues.records, records) &&
+        is010LinkedToBibRecord(initialValues.records, instance.naturalId)
       ) {
         setIsUpdate0101xxfieldsAuthRecModalOpen(true);
 
