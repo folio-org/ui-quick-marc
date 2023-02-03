@@ -538,11 +538,10 @@ describe('QuickMarcEditor utils', () => {
           marcRecord: record,
           initialValues,
         }).props).toEqual({
-          id: 'ui-quick-marc.record.error.subfield(s)CantBeSaved',
+          id: 'ui-quick-marc.record.error.fieldCantBeSaved',
           values: {
-            fieldCount: 1,
+            count: 1,
             fieldTags: 'MARC 100',
-            lastFieldTag: 'MARC 100',
           },
         });
       });
@@ -560,9 +559,9 @@ describe('QuickMarcEditor utils', () => {
             marcRecord: record,
             initialValues,
           }).props).toEqual({
-            id: 'ui-quick-marc.record.error.subfield(s)CantBeSaved',
+            id: 'ui-quick-marc.record.error.fieldsCantBeSaved',
             values: {
-              fieldCount: 3,
+              count: 3,
               fieldTags: 'MARC 100, MARC 600',
               lastFieldTag: 'MARC 650',
             },
@@ -816,7 +815,7 @@ describe('QuickMarcEditor utils', () => {
         }).props.id).toBe('ui-quick-marc.record.error.heading.multiple');
       });
 
-      describe('when authority linked to bib record (linksCount) and authority record is Authorized', () => {
+      describe('when authority linked to bib record', () => {
         const linksCount = 1;
         const location = { search: '?authRefType=Authorized' };
         const initialValues = {
@@ -895,6 +894,36 @@ describe('QuickMarcEditor utils', () => {
             location,
             linksCount,
           }).props.id).toBe('ui-quick-marc.record.error.1xx.remove$t');
+        });
+
+        it('should return an error if 010 $a edited and 001 is linked', () => {
+          const newInitialValues = {
+            ...initialValues,
+            records: [
+              ...initialValues.records,
+              {
+                content: 'n  83073672 ',
+                tag: '001',
+              },
+              {
+                tag: '010',
+                content: '$a 63943573',
+              },
+            ],
+          };
+
+          const record = cloneDeep(newInitialValues);
+
+          record.records[3].content += 'test';
+
+          expect(utils.validateMarcRecord({
+            marcRecord: record,
+            initialValues: newInitialValues,
+            marcType: MARC_TYPES.AUTHORITY,
+            location,
+            linksCount,
+            naturalId: 'n83073672',
+          }).props.id).toBe('ui-quick-marc.record.error.010.edit$a');
         });
       });
     });
@@ -1913,11 +1942,12 @@ describe('QuickMarcEditor utils', () => {
         expect(utils.hasDeleteException({ tag: '150' }, MARC_TYPES.AUTHORITY)).toBeTruthy();
       });
 
-      it('should be true for tag 010 that populates bib field(s)', () => {
+      it('should be true for tag 010 when $a is linked to a bib record', () => {
         const authority = { naturalId: 'n79018119' };
         const initialValues = { records: [{ tag: '010', content: '$a n  79018119' }] };
+        const linksCount = 1;
 
-        expect(utils.hasDeleteException({ tag: '010' }, MARC_TYPES.AUTHORITY, authority, initialValues)).toBeTruthy();
+        expect(utils.hasDeleteException({ tag: '010' }, MARC_TYPES.AUTHORITY, authority, initialValues, linksCount)).toBeTruthy();
       });
     });
   });
