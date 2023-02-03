@@ -538,11 +538,10 @@ describe('QuickMarcEditor utils', () => {
           marcRecord: record,
           initialValues,
         }).props).toEqual({
-          id: 'ui-quick-marc.record.error.subfield(s)CantBeSaved',
+          id: 'ui-quick-marc.record.error.fieldCantBeSaved',
           values: {
-            fieldCount: 1,
+            count: 1,
             fieldTags: 'MARC 100',
-            lastFieldTag: 'MARC 100',
           },
         });
       });
@@ -560,9 +559,9 @@ describe('QuickMarcEditor utils', () => {
             marcRecord: record,
             initialValues,
           }).props).toEqual({
-            id: 'ui-quick-marc.record.error.subfield(s)CantBeSaved',
+            id: 'ui-quick-marc.record.error.fieldsCantBeSaved',
             values: {
-              fieldCount: 3,
+              count: 3,
               fieldTags: 'MARC 100, MARC 600',
               lastFieldTag: 'MARC 650',
             },
