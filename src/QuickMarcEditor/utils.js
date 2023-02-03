@@ -66,6 +66,21 @@ export const getContentSubfieldValue = (content) => {
     }, {});
 };
 
+const is001LinkedToBibRecord = (initialRecords, naturalId) => {
+  const field001 = initialRecords.find(record => record.tag === '001');
+
+  return naturalId === field001.content.replaceAll(' ', '');
+};
+
+export const is010$aUpdated = (initial, updated) => {
+  const initial010 = initial.find(rec => rec.tag === '010');
+  const updated010 = updated.find(rec => rec.tag === '010');
+
+  return initial010 &&
+    updated010 &&
+    getContentSubfieldValue(initial010.content).$a !== getContentSubfieldValue(updated010.content).$a;
+};
+
 export const parseHttpError = async (httpError) => {
   const contentType = httpError?.headers?.get('content-type');
   let jsonError = {};
@@ -564,7 +579,15 @@ const validateMarcAuthority1xxField = (initialRecords, formValuesToSave) => {
   return undefined;
 };
 
-const validateMarcAuthorityRecord = (marcRecords, linksCount, initialRecords) => {
+const validateAuthority010Field = (initialRecords, records, naturalId) => {
+  if (is010$aUpdated(initialRecords, records) && is001LinkedToBibRecord(initialRecords, naturalId)) {
+    return <FormattedMessage id="ui-quick-marc.record.error.010.edit$a" />;
+  }
+
+  return undefined;
+};
+
+const validateMarcAuthorityRecord = (marcRecords, linksCount, initialRecords, naturalId) => {
   const correspondingHeadingTypeTags = new Set(CORRESPONDING_HEADING_TYPE_TAGS);
 
   const headingRecords = marcRecords.filter(recordRow => correspondingHeadingTypeTags.has(recordRow.tag));
@@ -582,7 +605,13 @@ const validateMarcAuthorityRecord = (marcRecords, linksCount, initialRecords) =>
   if (duplicate010FieldError) return duplicate010FieldError;
 
   if (linksCount) {
-    return validateMarcAuthority1xxField(initialRecords, marcRecords);
+    const errorIn1xxField = validateMarcAuthority1xxField(initialRecords, marcRecords);
+
+    if (errorIn1xxField) return errorIn1xxField;
+
+    const errorIn010Field = validateAuthority010Field(initialRecords, marcRecords, naturalId);
+
+    if (errorIn010Field) return errorIn010Field;
   }
 
   return undefined;
@@ -594,6 +623,7 @@ export const validateMarcRecord = ({
   marcType = MARC_TYPES.BIB,
   locations = [],
   linksCount,
+  naturalId,
 }) => {
   const marcRecords = marcRecord.records || [];
   const initialMarcRecords = initialValues.records;
@@ -612,7 +642,7 @@ export const validateMarcRecord = ({
   } else if (marcType === MARC_TYPES.HOLDINGS) {
     validationResult = validateMarcHoldingsRecord(marcRecords, locations);
   } else if (marcType === MARC_TYPES.AUTHORITY) {
-    validationResult = validateMarcAuthorityRecord(marcRecords, linksCount, initialMarcRecords);
+    validationResult = validateMarcAuthorityRecord(marcRecords, linksCount, initialMarcRecords, naturalId);
   }
 
   if (validationResult) {
@@ -961,7 +991,7 @@ export const splitFields = marcRecord => {
   };
 };
 
-export const is010$aPopulatesBibField$0 = (initialRecords, naturalId) => {
+export const is010LinkedToBibRecord = (initialRecords, naturalId) => {
   const initial010Field = initialRecords.find(record => record.tag === '010');
 
   if (!initial010Field) {
@@ -971,15 +1001,6 @@ export const is010$aPopulatesBibField$0 = (initialRecords, naturalId) => {
   const initial010$a = getContentSubfieldValue(initial010Field.content).$a;
 
   return naturalId === initial010$a?.replaceAll(' ', '');
-};
-
-export const is010Updated = (initial, updated) => {
-  const initial010 = initial.find(rec => rec.tag === '010');
-  const updated010 = updated.find(rec => rec.tag === '010');
-
-  return initial010 &&
-    updated010 &&
-    getContentSubfieldValue(initial010.content).$a !== getContentSubfieldValue(updated010.content).$a;
 };
 
 export const is1XXUpdated = (initial, updated) => {
@@ -1000,7 +1021,7 @@ export const is1XXUpdated = (initial, updated) => {
 };
 
 export const are010Or1xxUpdated = (initial, updated) => {
-  return is010Updated(initial, updated) || is1XXUpdated(initial, updated);
+  return is010$aUpdated(initial, updated) || is1XXUpdated(initial, updated);
 };
 
 const DELETE_EXCEPTION_ROWS = {
@@ -1017,7 +1038,7 @@ export const hasDeleteException = (recordRow, marcType = MARC_TYPES.BIB, authori
   if (marcType === MARC_TYPES.AUTHORITY) {
     if (
       is1XXField(recordRow.tag) ||
-      (recordRow.tag === '010' && linksCount && is010$aPopulatesBibField$0(initialValues.records, authority.naturalId))
+      (recordRow.tag === '010' && linksCount && is010LinkedToBibRecord(initialValues.records, authority.naturalId))
     ) {
       return true;
     }
