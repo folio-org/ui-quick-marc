@@ -468,15 +468,25 @@ const validateSubfieldsThatCanBeControlled = (marcRecords, uncontrolledSubfields
   const fieldTags = linkedFieldsWithEnteredSubfieldsThatCanBeControlled.map(field => field.tag);
   const uniqueTags = [...new Set(fieldTags)];
 
-  if (uniqueTags.length) {
+  if (uniqueTags.length === 1) {
     return (
       <FormattedMessage
-        id="ui-quick-marc.record.error.subfield(s)CantBeSaved"
+        id="ui-quick-marc.record.error.fieldCantBeSaved"
         values={{
-          fieldCount: uniqueTags.length,
-          fieldTags: uniqueTags.length > 1
-            ? uniqueTags.slice(0, -1).map(tag => `MARC ${tag}`).join(', ')
-            : `MARC ${uniqueTags[0]}`,
+          count: 1,
+          fieldTags: `MARC ${uniqueTags[0]}`,
+        }}
+      />
+    );
+  }
+
+  if (uniqueTags.length > 1) {
+    return (
+      <FormattedMessage
+        id="ui-quick-marc.record.error.fieldsCantBeSaved"
+        values={{
+          count: uniqueTags.length,
+          fieldTags: uniqueTags.slice(0, -1).map(tag => `MARC ${tag}`).join(', '),
           lastFieldTag: `MARC ${uniqueTags[uniqueTags.length - 1]}`,
         }}
       />
