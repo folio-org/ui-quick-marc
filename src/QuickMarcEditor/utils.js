@@ -72,6 +72,18 @@ const is001LinkedToBibRecord = (initialRecords, naturalId) => {
   return naturalId === field001.content.replaceAll(' ', '');
 };
 
+export const is010LinkedToBibRecord = (initialRecords, naturalId) => {
+  const initial010Field = initialRecords.find(record => record.tag === '010');
+
+  if (!initial010Field) {
+    return false;
+  }
+
+  const initial010$a = getContentSubfieldValue(initial010Field.content).$a?.[0];
+
+  return naturalId === initial010$a?.replaceAll(' ', '');
+};
+
 export const is010$aCreated = (initial, updated) => {
   const initial010 = initial.find(rec => rec.tag === '010');
   const updated010 = updated.find(rec => rec.tag === '010');
@@ -587,6 +599,22 @@ const validateMarcAuthority1xxField = (initialRecords, formValuesToSave) => {
 };
 
 const validateAuthority010Field = (initialRecords, records, naturalId) => {
+  if (is010LinkedToBibRecord(initialRecords, naturalId)) {
+    const field010 = records.find(field => field.tag === '010');
+
+    if (!field010) {
+      return <FormattedMessage id="ui-quick-marc.record.error.010.removed" />;
+    }
+
+    const is010$aRemoved = !getContentSubfieldValue(field010.content).$a?.[0];
+
+    if (is010$aRemoved) {
+      return <FormattedMessage id="ui-quick-marc.record.error.010.$aRemoved" />;
+    }
+
+    return undefined;
+  }
+
   if (
     is001LinkedToBibRecord(initialRecords, naturalId)
     && (is010$aCreated(initialRecords, records) || is010$aUpdated(initialRecords, records))
@@ -997,18 +1025,6 @@ export const splitFields = marcRecord => {
       };
     }),
   };
-};
-
-export const is010LinkedToBibRecord = (initialRecords, naturalId) => {
-  const initial010Field = initialRecords.find(record => record.tag === '010');
-
-  if (!initial010Field) {
-    return false;
-  }
-
-  const initial010$a = getContentSubfieldValue(initial010Field.content).$a?.[0];
-
-  return naturalId === initial010$a?.replaceAll(' ', '');
 };
 
 export const is1XXUpdated = (initial, updated) => {

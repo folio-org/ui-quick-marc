@@ -945,6 +945,82 @@ describe('QuickMarcEditor utils', () => {
             naturalId: 'n83073672',
           }).props.id).toBe('ui-quick-marc.record.error.010.edit$a');
         });
+
+        it('should return an error if 010 $a removed and 010 is linked', () => {
+          const newInitialValues = {
+            ...initialValues,
+            records: [
+              ...initialValues.records,
+              {
+                content: '7394284',
+                tag: '001',
+              },
+              {
+                tag: '010',
+                content: '$a n 83073672 $k naf',
+              },
+            ],
+          };
+
+          const record = {
+            ...initialValues,
+            records: [
+              ...initialValues.records,
+              {
+                content: '7394284',
+                tag: '001',
+              },
+              {
+                tag: '010',
+                content: '$a  $k naf',
+              },
+            ],
+          };
+
+          expect(utils.validateMarcRecord({
+            marcRecord: record,
+            initialValues: newInitialValues,
+            marcType: MARC_TYPES.AUTHORITY,
+            linksCount,
+            naturalId: 'n83073672',
+          }).props.id).toBe('ui-quick-marc.record.error.010.$aRemoved');
+        });
+
+        it('should return an error if 010 field is deleted and 010 is linked', () => {
+          const newInitialValues = {
+            ...initialValues,
+            records: [
+              ...initialValues.records,
+              {
+                content: '7394284',
+                tag: '001',
+              },
+              {
+                tag: '010',
+                content: '$a n 83073672',
+              },
+            ],
+          };
+
+          const record = {
+            ...initialValues,
+            records: [
+              ...initialValues.records,
+              {
+                content: '7394284',
+                tag: '001',
+              },
+            ],
+          };
+
+          expect(utils.validateMarcRecord({
+            marcRecord: record,
+            initialValues: newInitialValues,
+            marcType: MARC_TYPES.AUTHORITY,
+            linksCount,
+            naturalId: 'n83073672',
+          }).props.id).toBe('ui-quick-marc.record.error.010.removed');
+        });
       });
     });
   });
