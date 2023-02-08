@@ -72,6 +72,13 @@ const is001LinkedToBibRecord = (initialRecords, naturalId) => {
   return naturalId === field001.content.replaceAll(' ', '');
 };
 
+export const is010$aCreated = (initial, updated) => {
+  const initial010 = initial.find(rec => rec.tag === '010');
+  const updated010 = updated.find(rec => rec.tag === '010');
+
+  return !initial010 && updated010 && !!getContentSubfieldValue(updated010.content).$a;
+};
+
 export const is010$aUpdated = (initial, updated) => {
   const initial010 = initial.find(rec => rec.tag === '010');
   const updated010 = updated.find(rec => rec.tag === '010');
@@ -580,7 +587,10 @@ const validateMarcAuthority1xxField = (initialRecords, formValuesToSave) => {
 };
 
 const validateAuthority010Field = (initialRecords, records, naturalId) => {
-  if (is010$aUpdated(initialRecords, records) && is001LinkedToBibRecord(initialRecords, naturalId)) {
+  if (
+    is001LinkedToBibRecord(initialRecords, naturalId)
+    && (is010$aCreated(initialRecords, records) || is010$aUpdated(initialRecords, records))
+  ) {
     return <FormattedMessage id="ui-quick-marc.record.error.010.edit$a" />;
   }
 
