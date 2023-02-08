@@ -297,7 +297,7 @@ const QuickMarcEditor = ({
         const headingContent = currentHeading?.content || initialHeading?.content;
 
         formattedMessageValues = {
-          title: getContentSubfieldValue(headingContent).$a,
+          title: getContentSubfieldValue(headingContent).$a?.[0],
         };
       } else {
         formattedMessageValues = instance;

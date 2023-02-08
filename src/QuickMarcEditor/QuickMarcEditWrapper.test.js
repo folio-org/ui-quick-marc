@@ -95,6 +95,11 @@ const mockRecords = {
       id: 'LDR',
     },
     {
+      tag: '001',
+      content: '971255',
+      isProtected: true,
+    },
+    {
       tag: '005',
       content: '20120323070509.0',
     },
@@ -446,7 +451,7 @@ describe('Given QuickMarcEditWrapper', () => {
             linksCount: 1,
           });
 
-          await act(async () => { fireEvent.change(getByTestId('content-field-7'), { target: { value: '$a Civil war edited' } }); });
+          await act(async () => { fireEvent.change(getByTestId('content-field-8'), { target: { value: '$a Civil war edited' } }); });
           await act(async () => { fireEvent.click(getByText('ui-quick-marc.record.save.continue')); });
 
           expect(getByText('ui-quick-marc.update-linked-bib-fields.modal.label')).toBeDefined();

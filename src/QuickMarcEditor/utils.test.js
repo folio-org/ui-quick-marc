@@ -746,7 +746,6 @@ describe('QuickMarcEditor utils', () => {
     describe('when record is MARC Authority record', () => {
       it('should not return error message when record is valid', () => {
         const initialValues = { records: [] };
-        const location = { search: '' };
         const record = {
           leader: '04706cxm a22008651i 4500',
           records: [
@@ -765,7 +764,6 @@ describe('QuickMarcEditor utils', () => {
           marcRecord: record,
           initialValues,
           marcType: MARC_TYPES.AUTHORITY,
-          location,
         })).not.toBeDefined();
       });
 
@@ -817,7 +815,6 @@ describe('QuickMarcEditor utils', () => {
 
       describe('when authority linked to bib record', () => {
         const linksCount = 1;
-        const location = { search: '?authRefType=Authorized' };
         const initialValues = {
           leader: '04706cxm a22008651i 4500',
           records: [
@@ -841,7 +838,6 @@ describe('QuickMarcEditor utils', () => {
             marcRecord: record,
             initialValues,
             marcType: MARC_TYPES.AUTHORITY,
-            location,
             linksCount,
           }).props.id).toBe('ui-quick-marc.record.error.1xx.change');
         });
@@ -855,7 +851,6 @@ describe('QuickMarcEditor utils', () => {
             marcRecord: record,
             initialValues,
             marcType: MARC_TYPES.AUTHORITY,
-            location,
             linksCount,
           }).props.id).toBe('ui-quick-marc.record.error.1xx.add$t');
         });
@@ -873,7 +868,6 @@ describe('QuickMarcEditor utils', () => {
             marcRecord: record,
             initialValues: newInitialValues,
             marcType: MARC_TYPES.AUTHORITY,
-            location,
             linksCount: 1,
           }).props.id).toBe('ui-quick-marc.record.error.1xx.remove$t');
         });
@@ -891,7 +885,6 @@ describe('QuickMarcEditor utils', () => {
             marcRecord: record,
             initialValues: newInitialValues,
             marcType: MARC_TYPES.AUTHORITY,
-            location,
             linksCount,
           }).props.id).toBe('ui-quick-marc.record.error.1xx.remove$t');
         });
@@ -920,7 +913,34 @@ describe('QuickMarcEditor utils', () => {
             marcRecord: record,
             initialValues: newInitialValues,
             marcType: MARC_TYPES.AUTHORITY,
-            location,
+            linksCount,
+            naturalId: 'n83073672',
+          }).props.id).toBe('ui-quick-marc.record.error.010.edit$a');
+        });
+
+        it('should return an error if 010 $a created and 001 is linked', () => {
+          const newInitialValues = {
+            ...initialValues,
+            records: [
+              ...initialValues.records,
+              {
+                content: 'n  83073672 ',
+                tag: '001',
+              },
+            ],
+          };
+
+          const record = cloneDeep(newInitialValues);
+
+          record.records.push({
+            tag: '010',
+            content: '$a 63943573',
+          });
+
+          expect(utils.validateMarcRecord({
+            marcRecord: record,
+            initialValues: newInitialValues,
+            marcType: MARC_TYPES.AUTHORITY,
             linksCount,
             naturalId: 'n83073672',
           }).props.id).toBe('ui-quick-marc.record.error.010.edit$a');
@@ -1837,12 +1857,12 @@ describe('QuickMarcEditor utils', () => {
 
   describe('getContentSubfieldValue', () => {
     it('should return splited string by subfields into object', () => {
-      expect(utils.getContentSubfieldValue('$a Test Title')).toEqual({ $a: 'Test Title' });
+      expect(utils.getContentSubfieldValue('$a Test Title')).toEqual({ $a: ['Test Title'] });
     });
 
     it('should return repeatable subfields as an array', () => {
       expect(utils.getContentSubfieldValue('$a Test Title $b Repeat 1 $b Repeat 2')).toEqual({
-        $a: 'Test Title',
+        $a: ['Test Title'],
         $b: ['Repeat 1', 'Repeat 2'],
       });
     });
