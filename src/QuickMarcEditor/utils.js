@@ -57,7 +57,7 @@ export const getContentSubfieldValue = (content) => {
       const key = `$${str[0]}`;
       const value = acc[key]
         ? flatten([acc[key], str.substring(2).trim()]) // repeatable subfields will be stored as an array
-        : str.substring(2).trim();
+        : [str.substring(2).trim()];
 
       return {
         ...acc,
@@ -76,7 +76,7 @@ export const is010$aCreated = (initial, updated) => {
   const initial010 = initial.find(rec => rec.tag === '010');
   const updated010 = updated.find(rec => rec.tag === '010');
 
-  return !initial010 && updated010 && !!getContentSubfieldValue(updated010.content).$a;
+  return !initial010 && updated010 && !!getContentSubfieldValue(updated010.content).$a?.[0];
 };
 
 export const is010$aUpdated = (initial, updated) => {
@@ -85,7 +85,7 @@ export const is010$aUpdated = (initial, updated) => {
 
   return initial010 &&
     updated010 &&
-    getContentSubfieldValue(initial010.content).$a !== getContentSubfieldValue(updated010.content).$a;
+    getContentSubfieldValue(initial010.content).$a?.[0] !== getContentSubfieldValue(updated010.content).$a?.[0];
 };
 
 export const parseHttpError = async (httpError) => {
@@ -558,7 +558,7 @@ const validateMarcHoldingsRecord = (marcRecords, locations) => {
 const getIs$tRemoved = (content) => {
   const contentSubfieldValue = getContentSubfieldValue(content);
 
-  return !('$t' in contentSubfieldValue) || !contentSubfieldValue.$t;
+  return !('$t' in contentSubfieldValue) || !contentSubfieldValue.$t[0];
 };
 
 const validateMarcAuthority1xxField = (initialRecords, formValuesToSave) => {
@@ -570,7 +570,7 @@ const validateMarcAuthority1xxField = (initialRecords, formValuesToSave) => {
     return <FormattedMessage id="ui-quick-marc.record.error.1xx.change" values={{ tag: initialTag }} />;
   }
 
-  const hasInitially$t = !!getContentSubfieldValue(initialContent).$t;
+  const hasInitially$t = !!getContentSubfieldValue(initialContent).$t?.[0];
   const has$tToSave = '$t' in getContentSubfieldValue(contentToSave);
   const is$tAdded = !hasInitially$t && has$tToSave;
   const is$tRemoved = hasInitially$t && getIs$tRemoved(contentToSave);
@@ -934,9 +934,7 @@ export const groupSubfields = (field, authorityControlledSubfields = []) => {
     const isZero = /\$0/.test(subfield[0]);
     const isNine = /\$9/.test(subfield[0]);
 
-    const fieldContent = Array.isArray(subfield[1])
-      ? subfield[1].reduce((content, value) => [content, `${subfield[0]} ${value}`].join(' '), '')
-      : `${subfield[0]} ${subfield[1]}`;
+    const fieldContent = subfield[1].reduce((content, value) => [content, `${subfield[0]} ${value}`].join(' '), '');
 
     const formattedSubfield = {
       content: fieldContent,
@@ -1008,7 +1006,7 @@ export const is010LinkedToBibRecord = (initialRecords, naturalId) => {
     return false;
   }
 
-  const initial010$a = getContentSubfieldValue(initial010Field.content).$a;
+  const initial010$a = getContentSubfieldValue(initial010Field.content).$a?.[0];
 
   return naturalId === initial010$a?.replaceAll(' ', '');
 };

@@ -1857,12 +1857,12 @@ describe('QuickMarcEditor utils', () => {
 
   describe('getContentSubfieldValue', () => {
     it('should return splited string by subfields into object', () => {
-      expect(utils.getContentSubfieldValue('$a Test Title')).toEqual({ $a: 'Test Title' });
+      expect(utils.getContentSubfieldValue('$a Test Title')).toEqual({ $a: ['Test Title'] });
     });
 
     it('should return repeatable subfields as an array', () => {
       expect(utils.getContentSubfieldValue('$a Test Title $b Repeat 1 $b Repeat 2')).toEqual({
-        $a: 'Test Title',
+        $a: ['Test Title'],
         $b: ['Repeat 1', 'Repeat 2'],
       });
     });

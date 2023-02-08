@@ -15,9 +15,7 @@ import {
 } from '../../QuickMarcEditor/utils';
 
 const joinSubfields = (subfields) => Object.keys(subfields).reduce((content, key) => {
-  const subfield = Array.isArray(subfields[key])
-    ? subfields[key].join(` ${key} `) // if the subfield is repeatable - join the items with subfield key
-    : subfields[key];
+  const subfield = subfields[key].join(` ${key} `);
 
   return [content, `${key} ${subfield}`].join(' ');
 }, '').trim();
@@ -43,7 +41,7 @@ const useAuthorityLinking = () => {
 
       if (subfieldModification) {
         bibSubfields[formatSubfieldCode(subfieldModification.target)] = authSubfields[formatSubfieldCode(subfieldCode)];
-      } else if (authSubfields[formatSubfieldCode(subfieldCode)]) {
+      } else if (authSubfields[formatSubfieldCode(subfieldCode)]?.[0]) {
         bibSubfields[formatSubfieldCode(subfieldCode)] = authSubfields[formatSubfieldCode(subfieldCode)];
       } else {
         delete bibSubfields[formatSubfieldCode(subfieldCode)];
@@ -95,7 +93,7 @@ const useAuthorityLinking = () => {
 
       // should be valid when subfield exists and rule requires it
       // and not valid when subfield doesn't exist and rule requires it to be empty
-      const isValid = Boolean(authoritySubfields[formatSubfieldCode(ruleSubfield)]) === subfieldShouldExist;
+      const isValid = Boolean(authoritySubfields[formatSubfieldCode(ruleSubfield)]?.[0]) === subfieldShouldExist;
 
       return isValid;
     });
@@ -121,11 +119,11 @@ const useAuthorityLinking = () => {
 
     copySubfieldsFromAuthority(bibSubfields, linkedAuthorityField, bibField.tag);
 
-    if (!bibSubfields.$0 || bibSubfields.$0 !== authorityRecord.naturalId) {
-      bibSubfields.$0 = newZeroSubfield;
+    if (!bibSubfields.$0 || bibSubfields.$0[0] !== authorityRecord.naturalId) {
+      bibSubfields.$0 = [newZeroSubfield];
     }
 
-    bibSubfields.$9 = authorityRecord.id;
+    bibSubfields.$9 = [authorityRecord.id];
     bibField.prevContent = bibField.content;
     bibField.content = joinSubfields(bibSubfields);
   }, [copySubfieldsFromAuthority, sourceFiles]);
