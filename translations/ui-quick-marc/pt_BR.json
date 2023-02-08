@@ -256,5 +256,8 @@
     "record.error.010Field.multiple": "Não é possível salvar vários campos 010.",
     "record.error.$9": "$9 não é um subcampo válido.",
     "update-linked-bib-fields.modal.message-save": "<b>{count} {count, plural, one {registros bibliográfico} other {registros bibliográfico}} {count, plural, one {is} other {are}}</b> vinculado a este registro de autoridade e será atualizado se o botão <b>Salvar e continuar editando</b> for clicado.",
-    "update-linked-bib-fields.modal.save": "Salvar"
+    "update-linked-bib-fields.modal.save": "Salvar",
+    "record.error.fieldCantBeSaved": "<b>{fieldTags}</b> has a subfield(s) that cannot be saved because the field is controlled by an authority record.",
+    "record.error.fieldsCantBeSaved": "<b>{fieldTags}{count, plural, one {} =2 { and {lastFieldTag}} other {, and {lastFieldTag}}}</b> has a subfield(s) that cannot be saved because the fields are controlled by authority records.",
+    "record.error.010.edit$a": "Cannot add or edit 010 $a for an authority record linked to a bibliographic record. To make this change, you must unlink this authority record from bibliographic records."
 }
