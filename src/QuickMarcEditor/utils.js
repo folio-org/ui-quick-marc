@@ -277,6 +277,7 @@ export const hydrateMarcRecord = marcRecord => ({
     authorityId: record.authorityId,
     authorityNaturalId: record.authorityNaturalId,
     authorityControlledSubfields: record.authorityControlledSubfields,
+    linkingRuleId: record.linkingRuleId,
   })),
   records: undefined,
 });

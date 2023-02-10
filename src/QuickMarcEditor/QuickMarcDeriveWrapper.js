@@ -72,6 +72,7 @@ const QuickMarcDeriveWrapper = ({
 
         field.authorityNaturalId = matchingLinkedField.authorityNaturalId;
         field.authorityControlledSubfields = matchingLinkedField.authorityControlledSubfields;
+        field.linkingRuleId = matchingLinkedField.linkingRuleId;
 
         return field;
       });
