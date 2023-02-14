@@ -42,12 +42,16 @@ const PrintPopup = ({
   return (
     <div className={styles.hidden}>
       <div ref={contentToPrintRef} data-testid="print-popup">
-        <h2 className={styles.paneTitle}>
-          <span>
-            {paneTitle}
-          </span>
-        </h2>
-        <hr />
+        {paneTitle &&
+        <>
+          <h2 className={styles.paneTitle}>
+            <span>
+              {paneTitle}
+            </span>
+          </h2>
+          <hr />
+        </>
+        }
         <MarcContent
           isPrint
           marcTitle={marcTitle}
@@ -65,7 +69,7 @@ PrintPopup.propTypes = {
   paneTitle: PropTypes.oneOfType([
     PropTypes.node,
     PropTypes.string,
-  ]).isRequired,
+  ]),
 };
 
 export default PrintPopup;
