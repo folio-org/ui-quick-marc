@@ -44,7 +44,7 @@ const PrintPopup = ({
       <div ref={contentToPrintRef} data-testid="print-popup">
         {paneTitle &&
         <>
-          <h2 className={styles.paneTitle}>
+          <h2 className={styles.paneTitle} data-testid="print-popup-title">
             <span>
               {paneTitle}
             </span>
