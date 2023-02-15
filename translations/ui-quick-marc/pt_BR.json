@@ -257,7 +257,9 @@
     "record.error.$9": "$9 não é um subcampo válido.",
     "update-linked-bib-fields.modal.message-save": "<b>{count} {count, plural, one {registros bibliográfico} other {registros bibliográfico}} {count, plural, one {is} other {are}}</b> vinculado a este registro de autoridade e será atualizado se o botão <b>Salvar e continuar editando</b> for clicado.",
     "update-linked-bib-fields.modal.save": "Salvar",
-    "record.error.fieldCantBeSaved": "<b>{fieldTags}</b> has a subfield(s) that cannot be saved because the field is controlled by an authority record.",
-    "record.error.fieldsCantBeSaved": "<b>{fieldTags}{count, plural, one {} =2 { and {lastFieldTag}} other {, and {lastFieldTag}}}</b> has a subfield(s) that cannot be saved because the fields are controlled by authority records.",
-    "record.error.010.edit$a": "Cannot add or edit 010 $a for an authority record linked to a bibliographic record. To make this change, you must unlink this authority record from bibliographic records."
+    "record.error.fieldCantBeSaved": "<b>{fieldTags}</b> tem um subcampo(s) que não pode(m) ser salvo(s) porque o campo é controlado por um registro de autoridade.",
+    "record.error.fieldsCantBeSaved": "<b>{fieldTags}{count, plural, one {} =2 { and {lastFieldTag}}} other {, and {lastFieldTag}}}</b> tem subcampo(s) que não podem ser salvos porque os campos são controlados por registros de autoridade.",
+    "record.error.010.edit$a": "Não é possível adicionar ou editar 010 $a um registro de autoridade vinculado a um registro bibliográfico. Para fazer essa alteração, você deve desvincular esse registro de autoridade dos registros bibliográficos.",
+    "record.error.010.removed": "Não é possível excluir 010. É obrigatório.",
+    "record.error.010.$aRemoved": "Não é possível remover 010 $a para este registro."
 }
