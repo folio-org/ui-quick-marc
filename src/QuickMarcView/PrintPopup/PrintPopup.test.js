@@ -30,10 +30,16 @@ describe('Given PrintPopup', () => {
     });
   });
 
-  it('should show the pane title', () => {
+  it('should show the pane title if a paneTitle prop is given', () => {
     const { getByText } = renderPrintPopup();
 
     expect(getByText('fakePaneTitle')).toBeVisible();
+  });
+
+  it('should not show the pane title if a paneTitle prop is not given', () => {
+    const { queryByTestId } = renderPrintPopup({ paneTitle: undefined });
+
+    expect(queryByTestId('print-popup-title')).not.toBeInTheDocument();
   });
 
   it('should display the content of the marc record', () => {

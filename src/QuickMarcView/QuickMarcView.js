@@ -1,17 +1,12 @@
-import React, { useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-import { IfPermission } from '@folio/stripes/core';
 import {
-  PaneMenu,
   Pane,
   Paneset,
-  Button,
 } from '@folio/stripes/components';
 
 import MarcContent from './MarcContent';
-import PrintPopup from './PrintPopup';
 
 const propTypes = {
   isPaneset: PropTypes.bool,
@@ -42,45 +37,6 @@ const QuickMarcView = ({
   lastMenu,
   isPaneset,
 }) => {
-  const [showPrintPopup, setShowPrintPopup] = useState(false);
-
-  const isMarcBibRecord = marc.recordType === 'MARC_BIB';
-
-  const openPrintPopup = () => {
-    setShowPrintPopup(true);
-  };
-
-  const closePrintPopup = () => {
-    setShowPrintPopup(false);
-  };
-
-  const renderPrintButton = () => (
-    <IfPermission perm="ui-quick-marc.quick-marc-editor.view">
-      <Button
-        marginBottom0
-        buttonStyle="primary"
-        onClick={openPrintPopup}
-      >
-        <FormattedMessage id="ui-quick-marc.print" />
-      </Button>
-    </IfPermission>
-  );
-
-  const optionalProps = {};
-
-  if (isMarcBibRecord && !lastMenu) {
-    optionalProps.lastMenu = renderPrintButton();
-  }
-
-  if (lastMenu) {
-    optionalProps.lastMenu = (
-      <PaneMenu>
-        {lastMenu}
-        {isMarcBibRecord && renderPrintButton()}
-      </PaneMenu>
-    );
-  }
-
   const renderContent = () => (
     <Pane
       paneTitle={paneTitle}
@@ -92,20 +48,12 @@ const QuickMarcView = ({
       data-test-instance-marc
       data-testid="marc-view-pane"
       height={paneHeight}
-      {...optionalProps}
+      lastMenu={lastMenu}
     >
       <MarcContent
         marcTitle={marcTitle}
         marc={marc}
       />
-      {showPrintPopup && (
-        <PrintPopup
-          marc={marc}
-          paneTitle={paneTitle}
-          marcTitle={marcTitle}
-          onAfterPrint={closePrintPopup}
-        />
-      )}
     </Pane>
   );
 

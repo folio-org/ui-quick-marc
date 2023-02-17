@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
 
 import { runAxeTest } from '@folio/stripes-testing';
 
@@ -146,35 +146,6 @@ describe('Given QuickMarcView', () => {
       });
 
       expect(getByText('Last Menu Node')).toBeDefined();
-    });
-  });
-
-  describe('when it is the marc bib record', () => {
-    describe('and "lastMenu" is present', () => {
-      it('should render "lastMenu" and "Print" button', () => {
-        const { getByText } = renderQuickMarcView({
-          lastMenu: <div>Last Menu Node</div>,
-        });
-
-        expect(getByText('Last Menu Node')).toBeDefined();
-        expect(getByText('ui-quick-marc.print')).toBeDefined();
-      });
-    });
-
-    describe('and the "lastMenu" is not present', () => {
-      it('should render the "Print" button', () => {
-        const { getByText } = renderQuickMarcView();
-
-        expect(getByText('ui-quick-marc.print')).toBeDefined();
-      });
-    });
-
-    it('should display the print popup after clicking on the "Print" button', () => {
-      const { getByText, getByTestId } = renderQuickMarcView();
-
-      fireEvent.click(getByText('ui-quick-marc.print'));
-
-      expect(getByTestId('print-popup')).toBeInTheDocument();
     });
   });
 });
