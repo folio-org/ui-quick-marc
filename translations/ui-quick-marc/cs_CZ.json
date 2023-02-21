@@ -257,7 +257,9 @@
     "record.error.$9": "$9 není platné podpole.",
     "update-linked-bib-fields.modal.message-save": "<b>{count} {count, plural, one {bibliografický záznam} other {bibliografické záznamy}} </b>{count, plural, one {je} other {jsou}} propojen s tímto záznamem autority a bude aktualizován kliknutím na <b>Uložit</b> .",
     "update-linked-bib-fields.modal.save": "Uložit",
-    "record.error.fieldCantBeSaved": "<b>{fieldTags}</b> has a subfield(s) that cannot be saved because the field is controlled by an authority record.",
-    "record.error.fieldsCantBeSaved": "<b>{fieldTags}{count, plural, one {} =2 { and {lastFieldTag}} other {, and {lastFieldTag}}}</b> has a subfield(s) that cannot be saved because the fields are controlled by authority records.",
-    "record.error.010.edit$a": "Cannot add or edit 010 $a for an authority record linked to a bibliographic record. To make this change, you must unlink this authority record from bibliographic records."
+    "record.error.fieldCantBeSaved": "<b>{fieldTags}</b> má podpole, které nelze uložit, protože pole je řízeno autoritním záznamem.",
+    "record.error.fieldsCantBeSaved": "<b>{fieldTags}{count, plural, one {} =2 { a {lastFieldTag}} other {, a {lastFieldTag}}}</b> má podpole, která nelze uložit, protože pole jsou řízena podle autoritních záznamů.",
+    "record.error.010.edit$a": "Nelze přidat nebo upravit 010 $a pro autoritní záznam propojený s bibliografickým záznamem. Chcete-li provést tuto změnu, musíte odpojit tento autoritní záznam od bibliografických záznamů.",
+    "record.error.010.removed": "Nelze smazat 010. Je vyžadováno.",
+    "record.error.010.$aRemoved": "Nelze odebrat 010 $a pro tento záznam."
 }
