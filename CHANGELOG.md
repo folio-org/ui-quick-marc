@@ -1,6 +1,6 @@
 # Change history for ui-quick-marc
 
-## [6.0.0](IN PROGRESS)
+## [6.0.0](https://github.com/folio-org/ui-quick-marc/tree/v6.0.0) (2023-02-23)
 
 * [UIQM-275](https://issues.folio.org/browse/UIQM-275) Derive a new MARC bib/Edit a MARC bib | Link/Unlink a MARC bib field to/from an Authority record
 * [UIQM-309](https://issues.folio.org/browse/UIQM-309) Make PUT /records request to save authority links after deriving a MARC Bib record
@@ -14,6 +14,7 @@
 * [UIQM-320](https://issues.folio.org/browse/UIQM-320) The permission "quickMARC: Can Link/unlink authority records to bib records" is hidden on UI.
 * [UIQM-319](https://issues.folio.org/browse/UIQM-319) Not actual "relatedRecordVersion" value sends when user saves "MARC Bib" record
 * [UIQM-295](https://issues.folio.org/browse/UIQM-295) FE - Linking Bib field 240 to Authority field 100/110/111
+* [UIQM-333](https://issues.folio.org/browse/UIQM-333) Display an error message when user attempts to select an invalid authority heading
 * [UIQM-297](https://issues.folio.org/browse/UIQM-297) FE | View Source | If a bib field is authorized then display authorized indicator
 * [UIQM-332](https://issues.folio.org/browse/UIQM-332) Default search/browse option and Authority source file selections based on MARC bib field to be linked
 * [UIQM-322](https://issues.folio.org/browse/UIQM-322) Edit MARC authority app | User edits the 1XX value and has linked bib fields
