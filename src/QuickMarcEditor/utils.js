@@ -69,7 +69,7 @@ export const getContentSubfieldValue = (content) => {
 const is001LinkedToBibRecord = (initialRecords, naturalId) => {
   const field001 = initialRecords.find(record => record.tag === '001');
 
-  return naturalId === field001.content.replaceAll(' ', '');
+  return naturalId === field001?.content.replaceAll(' ', '');
 };
 
 export const is010LinkedToBibRecord = (initialRecords, naturalId) => {
