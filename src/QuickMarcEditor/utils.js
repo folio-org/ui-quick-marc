@@ -69,7 +69,7 @@ export const getContentSubfieldValue = (content) => {
 const is001LinkedToBibRecord = (initialRecords, naturalId) => {
   const field001 = initialRecords.find(record => record.tag === '001');
 
-  return naturalId === field001.content.replaceAll(' ', '');
+  return naturalId === field001?.content.replaceAll(' ', '');
 };
 
 export const is010LinkedToBibRecord = (initialRecords, naturalId) => {
@@ -599,10 +599,8 @@ const validateMarcAuthority1xxField = (initialRecords, formValuesToSave) => {
   return undefined;
 };
 
-const validateAuthority010Field = (initialRecords, records, naturalId) => {
+const validateLinkedAuthority010Field = (field010, initialRecords, records, naturalId) => {
   if (is010LinkedToBibRecord(initialRecords, naturalId)) {
-    const field010 = records.find(field => field.tag === '010');
-
     if (!field010) {
       return <FormattedMessage id="ui-quick-marc.record.error.010.removed" />;
     }
@@ -618,9 +616,33 @@ const validateAuthority010Field = (initialRecords, records, naturalId) => {
 
   if (
     is001LinkedToBibRecord(initialRecords, naturalId)
-    && (is010$aCreated(initialRecords, records) || is010$aUpdated(initialRecords, records))
+      && (is010$aCreated(initialRecords, records) || is010$aUpdated(initialRecords, records))
   ) {
     return <FormattedMessage id="ui-quick-marc.record.error.010.edit$a" />;
+  }
+
+  return undefined;
+};
+
+const validateAuthority010Field = (initialRecords, records, naturalId, marcRecords, isLinked) => {
+  const duplicate010FieldError = checkDuplicate010Field(marcRecords);
+
+  if (duplicate010FieldError) {
+    return duplicate010FieldError;
+  }
+
+  const field010 = records.find(field => field.tag === '010');
+
+  if (field010) {
+    const subfieldCount = getContentSubfieldValue(field010.content).$a?.length ?? 0;
+
+    if (subfieldCount > 1) {
+      return <FormattedMessage id="ui-quick-marc.record.error.010.$aOnlyOne" />;
+    }
+  }
+
+  if (isLinked) {
+    return validateLinkedAuthority010Field(field010, initialRecords, records, naturalId);
   }
 
   return undefined;
@@ -639,18 +661,18 @@ const validateMarcAuthorityRecord = (marcRecords, linksCount, initialRecords, na
     return <FormattedMessage id="ui-quick-marc.record.error.heading.multiple" />;
   }
 
-  const duplicate010FieldError = checkDuplicate010Field(marcRecords);
-
-  if (duplicate010FieldError) return duplicate010FieldError;
-
   if (linksCount) {
     const errorIn1xxField = validateMarcAuthority1xxField(initialRecords, marcRecords);
 
-    if (errorIn1xxField) return errorIn1xxField;
+    if (errorIn1xxField) {
+      return errorIn1xxField;
+    }
+  }
 
-    const errorIn010Field = validateAuthority010Field(initialRecords, marcRecords, naturalId);
+  const errorIn010Field = validateAuthority010Field(initialRecords, marcRecords, naturalId, marcRecords, linksCount);
 
-    if (errorIn010Field) return errorIn010Field;
+  if (errorIn010Field) {
+    return errorIn010Field;
   }
 
   return undefined;

@@ -813,6 +813,33 @@ describe('QuickMarcEditor utils', () => {
         }).props.id).toBe('ui-quick-marc.record.error.heading.multiple');
       });
 
+      it('should return error message when record has 010 field with several $a subfields', () => {
+        const initialValues = { records: [] };
+        const record = {
+          leader: '04706cxm a22008651i 4500',
+          records: [
+            {
+              content: '04706cxm a22008651i 4500',
+              tag: 'LDR',
+            },
+            {
+              tag: '100',
+              content: '$a',
+            },
+            {
+              tag: '010',
+              content: '$a Record $a title',
+            },
+          ],
+        };
+
+        expect(utils.validateMarcRecord({
+          marcRecord: record,
+          initialValues,
+          marcType: MARC_TYPES.AUTHORITY,
+        }).props.id).toBe('ui-quick-marc.record.error.010.$aOnlyOne');
+      });
+
       describe('when authority linked to bib record', () => {
         const linksCount = 1;
         const initialValues = {
