@@ -627,7 +627,9 @@ const validateLinkedAuthority010Field = (field010, initialRecords, records, natu
 const validateAuthority010Field = (initialRecords, records, naturalId, marcRecords, isLinked) => {
   const duplicate010FieldError = checkDuplicate010Field(marcRecords);
 
-  if (duplicate010FieldError) return duplicate010FieldError;
+  if (duplicate010FieldError) {
+    return duplicate010FieldError;
+  }
 
   const field010 = records.find(field => field.tag === '010');
 
@@ -662,12 +664,16 @@ const validateMarcAuthorityRecord = (marcRecords, linksCount, initialRecords, na
   if (linksCount) {
     const errorIn1xxField = validateMarcAuthority1xxField(initialRecords, marcRecords);
 
-    if (errorIn1xxField) return errorIn1xxField;
+    if (errorIn1xxField) {
+      return errorIn1xxField;
+    }
   }
 
   const errorIn010Field = validateAuthority010Field(initialRecords, marcRecords, naturalId, marcRecords, linksCount);
 
-  if (errorIn010Field) return errorIn010Field;
+  if (errorIn010Field) {
+    return errorIn010Field;
+  }
 
   return undefined;
 };
