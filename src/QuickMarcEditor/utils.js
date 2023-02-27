@@ -599,17 +599,7 @@ const validateMarcAuthority1xxField = (initialRecords, formValuesToSave) => {
   return undefined;
 };
 
-const validateAuthority010Field = (initialRecords, records, naturalId, marcRecords, isLinked) => {
-  const duplicate010FieldError = checkDuplicate010Field(marcRecords);
-
-  if (duplicate010FieldError) return duplicate010FieldError;
-
-  const field010 = records.find(field => field.tag === '010');
-
-  if (!isLinked && field010) {
-    return field010.content.match(/\$a/g).length > 1 ? <FormattedMessage id="ui-quick-marc.record.error.010.$aOnlyOne" /> : undefined;
-  }
-
+const validateLinkedAuthority010Field = (field010, initialRecords, records, naturalId) => {
   if (is010LinkedToBibRecord(initialRecords, naturalId)) {
     if (!field010) {
       return <FormattedMessage id="ui-quick-marc.record.error.010.removed" />;
@@ -626,9 +616,31 @@ const validateAuthority010Field = (initialRecords, records, naturalId, marcRecor
 
   if (
     is001LinkedToBibRecord(initialRecords, naturalId)
-    && (is010$aCreated(initialRecords, records) || is010$aUpdated(initialRecords, records))
+      && (is010$aCreated(initialRecords, records) || is010$aUpdated(initialRecords, records))
   ) {
     return <FormattedMessage id="ui-quick-marc.record.error.010.edit$a" />;
+  }
+
+  return undefined;
+};
+
+const validateAuthority010Field = (initialRecords, records, naturalId, marcRecords, isLinked) => {
+  const duplicate010FieldError = checkDuplicate010Field(marcRecords);
+
+  if (duplicate010FieldError) return duplicate010FieldError;
+
+  const field010 = records.find(field => field.tag === '010');
+
+  if (field010) {
+    const subfieldCount = getContentSubfieldValue(field010.content).$a?.length ?? 0;
+
+    if (subfieldCount > 1) {
+      return <FormattedMessage id="ui-quick-marc.record.error.010.$aOnlyOne" />;
+    }
+  }
+
+  if (isLinked) {
+    return validateLinkedAuthority010Field(field010, initialRecords, records, naturalId);
   }
 
   return undefined;
