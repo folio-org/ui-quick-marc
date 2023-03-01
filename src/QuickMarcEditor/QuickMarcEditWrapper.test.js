@@ -29,7 +29,7 @@ const mockRecords = {
   [MARC_TYPES.BIB]: [
     {
       tag: 'LDR',
-      content: '01178nam\\a22002773c\\4500',
+      content: '01178nam\\a2200277ic\\4500',
       id: 'LDR',
     }, {
       tag: '001',
@@ -91,7 +91,7 @@ const mockRecords = {
   [MARC_TYPES.AUTHORITY]: [
     {
       tag: 'LDR',
-      content: '02949cama2200517Kii50000',
+      content: '02949cama2200517Kni50000',
       id: 'LDR',
     },
     {
@@ -180,8 +180,8 @@ const mockRecords = {
 };
 
 const mockLeaders = {
-  [MARC_TYPES.BIB]: '01178nam\\a22002773c\\4500',
-  [MARC_TYPES.AUTHORITY]: '02949cama2200517Kii50000',
+  [MARC_TYPES.BIB]: '01178nam\\a2200277ic\\4500',
+  [MARC_TYPES.AUTHORITY]: '02949cama2200517Kni50000',
 };
 
 const mockFormValues = jest.fn((marcType) => ({
