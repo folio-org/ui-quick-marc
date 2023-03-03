@@ -8,7 +8,7 @@ export const LEADER_EDITABLE_BYTES = {
   [MARC_TYPES.AUTHORITY]: [5, 17, 18],
 };
 
-const NON_BREAKING_SPACE = '\u00A0';
+export const NON_BREAKING_SPACE = '\u00A0';
 
 export const LEADER_VALUES_FOR_POSITION = {
   [MARC_TYPES.BIB]: {
@@ -25,7 +25,11 @@ export const LEADER_VALUES_FOR_POSITION = {
     17: ['1', '2', '3', '4', '5', 'm', 'u', 'z'],
     18: ['\\', ' ', NON_BREAKING_SPACE, 'i', 'n'],
   },
-  [MARC_TYPES.AUTHORITY]: [],
+  [MARC_TYPES.AUTHORITY]: {
+    5: ['a', 'c', 'd', 'n', 'o', 's', 'x'],
+    17: ['n', 'o'],
+    18: ['\\', ' ', NON_BREAKING_SPACE, 'c', 'i', 'u'],
+  },
 };
 
 export const LEADER_DOCUMENTATION_LINKS = {

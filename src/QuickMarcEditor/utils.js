@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
 import omit from 'lodash/omit';
@@ -20,7 +19,7 @@ import {
   HOLDINGS_FIXED_FIELD_DEFAULT_VALUES,
   CORRESPONDING_HEADING_TYPE_TAGS,
   LEADER_VALUES_FOR_POSITION,
-  LEADER_DOCUMENTATION_LINKS,
+  NON_BREAKING_SPACE,
   ELVL_BYTE,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
@@ -309,37 +308,19 @@ const getInvalidLeaderPositions = (leader, marcType) => {
   return failedPositions;
 };
 
-const joinFailedPositions = (failedPositions) => {
-  const formattedFailedPositions = failedPositions.map(position => `Leader 0${position}`);
-
-  const last = formattedFailedPositions.pop();
-  const joinedPositions = formattedFailedPositions.length > 0
-    ? formattedFailedPositions.join(', ') + ' and ' + last
-    : last;
-
-  return joinedPositions;
-};
-
 const validateLeaderPositions = (leader, marcType) => {
   const failedPositions = getInvalidLeaderPositions(leader, marcType);
-  const joinedPositions = joinFailedPositions(failedPositions);
 
   if (failedPositions.length) {
     return (
       <FormattedMessage
         id="ui-quick-marc.record.error.leader.invalidPositionValue"
         values={{
-          positions: joinedPositions,
-          link: (
-            <Link
-              to={{
-                pathname: LEADER_DOCUMENTATION_LINKS[marcType],
-              }}
-              target="_blank"
-            >
-              {LEADER_DOCUMENTATION_LINKS[marcType]}
-            </Link>
-          ),
+          value: leader[failedPositions[0]],
+          position: failedPositions[0],
+          values: LEADER_VALUES_FOR_POSITION[marcType][failedPositions[0]]
+            .filter(pos => pos !== NON_BREAKING_SPACE)
+            .join(', '),
         }}
       />
     );
