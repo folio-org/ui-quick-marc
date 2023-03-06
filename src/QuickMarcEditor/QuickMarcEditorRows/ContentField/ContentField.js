@@ -1,7 +1,6 @@
 import React, {
   useRef,
   useLayoutEffect,
-  useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
 
@@ -10,12 +9,10 @@ import {
   HasCommand,
 } from '@folio/stripes/components';
 
+import { useSubfieldNavigation } from '../../../hooks';
 import {
   getResizeStyles,
-  cursorToNextSubfield,
-  cursorToPrevSubfield,
 } from './utils';
-import { KEYBOARD_COMMAND_NAMES } from '../../../common/constants';
 
 export const ContentField = ({
   input,
@@ -24,19 +21,10 @@ export const ContentField = ({
 }) => {
   const ref = useRef();
 
-  const processSubfieldFocus = useCallback(({ target }) => {
-    const end = target.value.length;
-
-    target.setSelectionRange(end, end);
-  }, []);
-
-  const keyCommands = [{
-    name: KEYBOARD_COMMAND_NAMES.NEXT_SUBFIELD,
-    handler: cursorToNextSubfield,
-  }, {
-    name: KEYBOARD_COMMAND_NAMES.PREV_SUBFIELD,
-    handler: cursorToPrevSubfield,
-  }];
+  const {
+    keyCommands,
+    processSubfieldFocus,
+  } = useSubfieldNavigation();
 
   useLayoutEffect(() => {
     if (ref.current) {

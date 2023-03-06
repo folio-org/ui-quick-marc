@@ -4,7 +4,12 @@ import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
 
-import { TextArea } from '@folio/stripes/components';
+import {
+  TextArea,
+  HasCommand,
+} from '@folio/stripes/components';
+
+import { useSubfieldNavigation } from '../../../hooks';
 
 import css from './SplitField.css';
 
@@ -19,6 +24,11 @@ const SplitField = ({
 }) => {
   const intl = useIntl();
 
+  const {
+    keyCommands,
+    processSubfieldFocus,
+  } = useSubfieldNavigation();
+
   const renderSubfieldGroup = (fieldProps) => {
     return (
       <Field
@@ -31,39 +41,42 @@ const SplitField = ({
         marginBottom0
         parse={v => v}
         style={{ maxWidth: maxWidth - 15 }} // 15px for margin-right
+        onFocus={processSubfieldFocus}
         {...fieldProps}
       />
     );
   };
 
   return (
-    <FieldArray
-      name={`${name}.subfieldGroups`}
-      isEqual={isEqual}
-    >
-      {() => (
-        <>
-          {renderSubfieldGroup({
-            disabled: true,
-            name: `${name}.subfieldGroups.controlled`,
-            fitContent: true,
-          })}
-          {renderSubfieldGroup({
-            disabled: false,
-            name: `${name}.subfieldGroups.uncontrolledAlpha`,
-          })}
-          {renderSubfieldGroup({
-            disabled: true,
-            name: `${name}.subfieldGroups.zeroSubfield`,
-            fitContent: true,
-          })}
-          {renderSubfieldGroup({
-            disabled: false,
-            name: `${name}.subfieldGroups.uncontrolledNumber`,
-          })}
-        </>
-      )}
-    </FieldArray>
+    <HasCommand commands={keyCommands}>
+      <FieldArray
+        name={`${name}.subfieldGroups`}
+        isEqual={isEqual}
+      >
+        {() => (
+          <>
+            {renderSubfieldGroup({
+              disabled: true,
+              name: `${name}.subfieldGroups.controlled`,
+              fitContent: true,
+            })}
+            {renderSubfieldGroup({
+              disabled: false,
+              name: `${name}.subfieldGroups.uncontrolledAlpha`,
+            })}
+            {renderSubfieldGroup({
+              disabled: true,
+              name: `${name}.subfieldGroups.zeroSubfield`,
+              fitContent: true,
+            })}
+            {renderSubfieldGroup({
+              disabled: false,
+              name: `${name}.subfieldGroups.uncontrolledNumber`,
+            })}
+          </>
+        )}
+      </FieldArray>
+    </HasCommand>
   );
 };
 
