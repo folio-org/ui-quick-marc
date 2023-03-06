@@ -31,52 +31,52 @@ const SplitField = ({
 
   const renderSubfieldGroup = (fieldProps) => {
     return (
-      <Field
-        className={css.splitFieldWrapper}
-        component={TextArea}
-        rootClass={css.splitFieldRoot}
-        hasClearIcon={false}
-        dirty={false}
-        aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
-        marginBottom0
-        parse={v => v}
-        style={{ maxWidth: maxWidth - 15 }} // 15px for margin-right
-        onFocus={processSubfieldFocus}
-        {...fieldProps}
-      />
+      <HasCommand commands={keyCommands}>
+        <Field
+          className={css.splitFieldWrapper}
+          component={TextArea}
+          rootClass={css.splitFieldRoot}
+          hasClearIcon={false}
+          dirty={false}
+          aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
+          marginBottom0
+          parse={v => v}
+          style={{ maxWidth: maxWidth - 15 }} // 15px for margin-right
+          onFocus={processSubfieldFocus}
+          {...fieldProps}
+        />
+      </HasCommand>
     );
   };
 
   return (
-    <HasCommand commands={keyCommands}>
-      <FieldArray
-        name={`${name}.subfieldGroups`}
-        isEqual={isEqual}
-      >
-        {() => (
-          <>
-            {renderSubfieldGroup({
-              disabled: true,
-              name: `${name}.subfieldGroups.controlled`,
-              fitContent: true,
-            })}
-            {renderSubfieldGroup({
-              disabled: false,
-              name: `${name}.subfieldGroups.uncontrolledAlpha`,
-            })}
-            {renderSubfieldGroup({
-              disabled: true,
-              name: `${name}.subfieldGroups.zeroSubfield`,
-              fitContent: true,
-            })}
-            {renderSubfieldGroup({
-              disabled: false,
-              name: `${name}.subfieldGroups.uncontrolledNumber`,
-            })}
-          </>
-        )}
-      </FieldArray>
-    </HasCommand>
+    <FieldArray
+      name={`${name}.subfieldGroups`}
+      isEqual={isEqual}
+    >
+      {() => (
+        <>
+          {renderSubfieldGroup({
+            disabled: true,
+            name: `${name}.subfieldGroups.controlled`,
+            fitContent: true,
+          })}
+          {renderSubfieldGroup({
+            disabled: false,
+            name: `${name}.subfieldGroups.uncontrolledAlpha`,
+          })}
+          {renderSubfieldGroup({
+            disabled: true,
+            name: `${name}.subfieldGroups.zeroSubfield`,
+            fitContent: true,
+          })}
+          {renderSubfieldGroup({
+            disabled: false,
+            name: `${name}.subfieldGroups.uncontrolledNumber`,
+          })}
+        </>
+      )}
+    </FieldArray>
   );
 };
 
