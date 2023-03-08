@@ -3,6 +3,7 @@
 ## [7.0.0](IN PROGRESS)
 
 * [UIQM-395](https://issues.folio.org/browse/UIQM-395) Adding multiple "$a" in "010" field of linked "MARC Authority" leads to error.
+* [UIQM-399](https://issues.folio.org/browse/UIQM-399) Linked MARC bib field - editable textbox does not support shortcut keys
 
 ## [6.0.0](https://github.com/folio-org/ui-quick-marc/tree/v6.0.0) (2023-02-23)
 
