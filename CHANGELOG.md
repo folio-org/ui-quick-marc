@@ -6,6 +6,7 @@
 * [UIQM-250](https://issues.folio.org/browse/UIQM-250) Updated invalid Leader position values error messages to be more informative.
 * [UIQM-410](https://issues.folio.org/browse/UIQM-410) Add support for values 'b' and 'c' in Bib Leader/19
 * [UIQM-399](https://issues.folio.org/browse/UIQM-399) Linked MARC bib field - editable textbox does not support shortcut keys
+* [UIQM-355](https://issues.folio.org/browse/UIQM-355) Added a new permission "quickMARC: Create a new MARC bibliographic record"  
 
 ## [6.0.0](https://github.com/folio-org/ui-quick-marc/tree/v6.0.0) (2023-02-23)
 
