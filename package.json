@@ -34,6 +34,16 @@
         "visible": true
       },
       {
+        "permissionName": "ui-quick-marc.quick-marc-editor.create",
+        "displayName": "quickMARC: Create a new MARC bibliographic record",
+        "subPermissions": [
+          "ui-quick-marc.quick-marc-editor.view",
+          "records-editor.records.item.put",
+          "instance-authority-links.instances.collection.put"
+        ],
+        "visible": true
+      },
+      {
         "permissionName": "ui-quick-marc.quick-marc-editor.all",
         "displayName": "quickMARC: View, edit MARC bibliographic record",
         "subPermissions": [
