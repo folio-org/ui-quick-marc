@@ -38,8 +38,8 @@
         "displayName": "quickMARC: Create a new MARC bibliographic record",
         "subPermissions": [
           "ui-quick-marc.quick-marc-editor.view",
-          "records-editor.records.item.put",
-          "instance-authority-links.instances.collection.put"
+          "records-editor.records.item.post",
+          "instance-authority-links.instances.collection.post"
         ],
         "visible": true
       },
