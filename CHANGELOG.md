@@ -4,6 +4,7 @@
 
 * [UIQM-395](https://issues.folio.org/browse/UIQM-395) Adding multiple "$a" in "010" field of linked "MARC Authority" leads to error.
 * [UIQM-250](https://issues.folio.org/browse/UIQM-250) Updated invalid Leader position values error messages to be more informative.
+* [UIQM-420](https://issues.folio.org/browse/UIQM-420) Remove initial values for Find Authority plugin References filter.
 
 ## [6.0.0](https://github.com/folio-org/ui-quick-marc/tree/v6.0.0) (2023-02-23)
 

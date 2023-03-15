@@ -92,7 +92,7 @@ const LinkButton = ({
     });
 
     const initialFilters = {
-      [FILTERS.REFERENCES]: [REFERENCES_VALUES_MAP.excludeSeeFrom, REFERENCES_VALUES_MAP.excludeSeeFromAlso],
+      [FILTERS.REFERENCES]: [],
       [FILTERS.AUTHORITY_SOURCE]: existingAuthSourceFilters,
     };
 
