@@ -22,7 +22,6 @@ import { useMarcSource } from '../../../queries';
 import {
   DEFAULT_LOOKUP_OPTIONS,
   FILTERS,
-  REFERENCES_VALUES_MAP,
 } from '../../../common/constants';
 
 const propTypes = {
