@@ -84,7 +84,7 @@ describe('Given LinkButton', () => {
       const initialValues = {
         'dropdownValue': 'personalNameTitle',
         'filters': {
-          'references': ['excludeSeeFrom', 'excludeSeeFromAlso'],
+          'references': [],
           'sourceFileId': [],
         },
         'searchIndex': '',
