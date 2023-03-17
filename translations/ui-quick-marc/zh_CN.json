@@ -262,5 +262,6 @@
     "record.error.010.edit$a": "无法为链接到书目记录的规范记录添加或编辑010$a。要进行此更改，必须取消此规范记录与书目记录的链接。",
     "record.error.010.removed": "无法删除010。它是必需的。",
     "record.error.010.$aRemoved": "无法移除此记录的010$a。",
-    "record.error.010.$aOnlyOne": "010 can only have one $a."
+    "record.error.010.$aOnlyOne": "010 can only have one $a.",
+    "permission.quick-marc-editor.create": "quickMARC: Create a new MARC bibliographic record"
 }
