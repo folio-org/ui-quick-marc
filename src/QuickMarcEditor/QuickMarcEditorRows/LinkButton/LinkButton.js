@@ -14,7 +14,6 @@ import {
 import {
   Tooltip,
   IconButton,
-  Icon,
   ConfirmationModal,
 } from '@folio/stripes/components';
 
@@ -26,6 +25,10 @@ import {
 } from '../../../common/constants';
 
 const propTypes = {
+  calloutRef: PropTypes.oneOf([
+    PropTypes.object,
+    PropTypes.func,
+  ]),
   isLinked: PropTypes.bool.isRequired,
   handleLinkAuthority: PropTypes.func.isRequired,
   handleUnlinkAuthority: PropTypes.func.isRequired,
@@ -41,6 +44,7 @@ const LinkButton = ({
   tag,
   fieldId,
   sourceFiles,
+  calloutRef,
 }) => {
   const intl = useIntl();
   const [authority, setAuthority] = useState(null);
@@ -127,6 +131,8 @@ const LinkButton = ({
     return (
       <Pluggable
         type="find-authority"
+        isLinkingLoading={isLoading}
+        calloutRef={calloutRef}
         initialValues={initialValues}
         onLinkRecord={onLinkRecord}
         renderCustomTrigger={({ onClick }) => (
@@ -154,15 +160,6 @@ const LinkButton = ({
       </Pluggable>
     );
   };
-
-  if (isLoading) {
-    return (
-      <Icon
-        data-testid="link-authority-loading"
-        icon="spinner-ellipsis"
-      />
-    );
-  }
 
   return (
     <>

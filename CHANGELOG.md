@@ -1,5 +1,9 @@
 # Change history for ui-quick-marc
 
+## [6.1.0] IN PROGRESS
+
+* [UIQM-428](https://issues.folio.org/browse/UIQM-428) Show an error message in modal after linking.
+
 ## [6.0.0](https://github.com/folio-org/ui-quick-marc/tree/v6.0.0) (2023-02-23)
 
 * [UIQM-275](https://issues.folio.org/browse/UIQM-275) Derive a new MARC bib/Edit a MARC bib | Link/Unlink a MARC bib field to/from an Authority record
