@@ -158,7 +158,7 @@
     "record.physDescription.categoryOfMaterial.v": "Videozáznam",
     "record.physDescription.categoryOfMaterial.z": "Nespecifikováno",
     "record.error.tag.nonDigits": "Neplatný MARC tag. Prosím zkuste to znovu.",
-    "record.error.subfield": "Chybí hodnota podpole pro tag MARC",
+    "record.error.subfield": "Chybí hodnota podpole pro MARC tag",
     "bib-record.edit.title": "Upravit záznam MARC - {title}",
     "holdings-record.edit.title": "Upravit MARC holding - Lokace: {location} - [{callNumber}]",
     "record.fixedField.AcqStatus": "AcqStatus",
@@ -262,5 +262,6 @@
     "record.error.010.edit$a": "Nelze přidat nebo upravit 010 $a pro autoritní záznam propojený s bibliografickým záznamem. Chcete-li provést tuto změnu, musíte odpojit tento autoritní záznam od bibliografických záznamů.",
     "record.error.010.removed": "Nelze smazat 010. Je vyžadováno.",
     "record.error.010.$aRemoved": "Nelze odebrat 010 $a pro tento záznam.",
-    "record.error.010.$aOnlyOne": "010 může mít pouze jeden $a."
+    "record.error.010.$aOnlyOne": "010 může mít pouze jeden $a.",
+    "permission.quick-marc-editor.create": "quickMARC: Vytvoření nového MARC bibliografického záznamu"
 }

@@ -262,5 +262,6 @@
     "record.error.010.edit$a": "Cannot add or edit 010 $a for an authority record linked to a bibliographic record. To make this change, you must unlink this authority record from bibliographic records.",
     "record.error.010.removed": "Cannot delete 010. It is required.",
     "record.error.010.$aRemoved": "Cannot remove 010 $a for this record.",
-    "record.error.010.$aOnlyOne": "010 can only have one $a."
+    "record.error.010.$aOnlyOne": "010 can only have one $a.",
+    "permission.quick-marc-editor.create": "quickMARC: 新しい MARC 書誌レコードを作成する"
 }

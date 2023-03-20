@@ -262,5 +262,6 @@
     "record.error.010.edit$a": "Não é possível adicionar ou editar 010 $a um registro de autoridade vinculado a um registro bibliográfico. Para fazer essa alteração, você deve desvincular esse registro de autoridade dos registros bibliográficos.",
     "record.error.010.removed": "Não é possível excluir 010. É obrigatório.",
     "record.error.010.$aRemoved": "Não é possível remover 010 $a para este registro.",
-    "record.error.010.$aOnlyOne": "010 só pode ter um $a."
+    "record.error.010.$aOnlyOne": "010 só pode ter um $a.",
+    "permission.quick-marc-editor.create": "quickMARC: Criar um novo registro MARC bibliográfico"
 }
