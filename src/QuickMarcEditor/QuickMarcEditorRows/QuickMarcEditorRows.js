@@ -13,10 +13,7 @@ import { useIntl } from 'react-intl';
 import isEqual from 'lodash/isEqual';
 import defer from 'lodash/defer';
 
-import {
-  useStripes,
-  useCallout,
-} from '@folio/stripes/core';
+import { useStripes } from '@folio/stripes/core';
 import {
   TextField,
   Tooltip,
@@ -78,12 +75,12 @@ const QuickMarcEditorRows = ({
 }) => {
   const stripes = useStripes();
   const intl = useIntl();
-  const callout = useCallout();
   const { initialValues } = useFormState();
   const containerRef = useRef(null);
   const indexOfNewRow = useRef(null);
   const newRowRef = useRef(null);
   const rowContentWidth = useRef(null); // for max-width of resizable textareas
+  const childCalloutRef = useRef(null);
 
   const {
     linkAuthority,
@@ -181,14 +178,14 @@ const QuickMarcEditorRows = ({
 
       return true;
     } catch (e) {
-      callout.sendCallout({
+      childCalloutRef.current.sendCallout({
         type: 'error',
         message: intl.formatMessage({ id: e.message }),
       });
 
       return false;
     }
-  }, [markRecordLinked, linkAuthority, fields, callout, intl]);
+  }, [markRecordLinked, linkAuthority, fields, intl]);
 
   const handleUnlinkAuthority = useCallback(index => {
     unlinkAuthority(fields[index]);
@@ -468,6 +465,7 @@ const QuickMarcEditorRows = ({
                       tag={recordRow.tag}
                       fieldId={recordRow.id}
                       sourceFiles={sourceFiles}
+                      calloutRef={childCalloutRef}
                     />
                   )}
                   {canViewAuthorityRecord && (

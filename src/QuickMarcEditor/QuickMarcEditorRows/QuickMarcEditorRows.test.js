@@ -8,7 +8,6 @@ import arrayMutators from 'final-form-arrays';
 import defer from 'lodash/defer';
 
 import { runAxeTest } from '@folio/stripes-testing';
-import { useCallout } from '@folio/stripes/core';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
@@ -347,12 +346,13 @@ describe('Given QuickMarcEditorRows', () => {
       LinkButton.mockImplementation(({
         handleLinkAuthority,
         fieldId,
-      }) => (
-        <button type="button" onClick={handleLinkAuthority}>Link {fieldId}</button>
-      ));
+        calloutRef,
+      }) => {
+        calloutRef.current = { sendCallout: mockSendCallout };
 
-      useCallout.mockReturnValue({
-        sendCallout: mockSendCallout,
+        return (
+          <button type="button" onClick={handleLinkAuthority}>Link {fieldId}</button>
+        );
       });
 
       useAuthorityLinking.mockReturnValue({
