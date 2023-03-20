@@ -1,6 +1,6 @@
 {
   "name": "@folio/quick-marc",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "description": "Quick MARC editor",
   "main": "index.js",
   "repository": "",
@@ -30,6 +30,16 @@
           "records-editor.records.item.get",
           "inventory.instances.item.get",
           "instance-authority-links.instances.collection.get"
+        ],
+        "visible": true
+      },
+      {
+        "permissionName": "ui-quick-marc.quick-marc-editor.create",
+        "displayName": "quickMARC: Create a new MARC bibliographic record",
+        "subPermissions": [
+          "ui-quick-marc.quick-marc-editor.view",
+          "records-editor.records.item.post",
+          "instance-authority-links.instances.collection.post"
         ],
         "visible": true
       },
@@ -169,6 +179,6 @@
     "react-router-dom": "^5.2.0"
   },
   "optionalDependencies": {
-    "@folio/plugin-find-authority": "^1.0.0"
+    "@folio/plugin-find-authority": "^2.0.0"
   }
 }

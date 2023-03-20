@@ -21,7 +21,6 @@ import { useMarcSource } from '../../../queries';
 import {
   DEFAULT_LOOKUP_OPTIONS,
   FILTERS,
-  REFERENCES_VALUES_MAP,
 } from '../../../common/constants';
 
 const propTypes = {
@@ -96,7 +95,7 @@ const LinkButton = ({
     });
 
     const initialFilters = {
-      [FILTERS.REFERENCES]: [REFERENCES_VALUES_MAP.excludeSeeFrom, REFERENCES_VALUES_MAP.excludeSeeFromAlso],
+      [FILTERS.REFERENCES]: [],
       [FILTERS.AUTHORITY_SOURCE]: existingAuthSourceFilters,
     };
 

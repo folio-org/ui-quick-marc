@@ -4,7 +4,12 @@ import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
 
-import { TextArea } from '@folio/stripes/components';
+import {
+  TextArea,
+  HasCommand,
+} from '@folio/stripes/components';
+
+import { useSubfieldNavigation } from '../../../hooks';
 
 import css from './SplitField.css';
 
@@ -19,20 +24,28 @@ const SplitField = ({
 }) => {
   const intl = useIntl();
 
+  const {
+    keyCommands,
+    processSubfieldFocus,
+  } = useSubfieldNavigation();
+
   const renderSubfieldGroup = (fieldProps) => {
     return (
-      <Field
-        className={css.splitFieldWrapper}
-        component={TextArea}
-        rootClass={css.splitFieldRoot}
-        hasClearIcon={false}
-        dirty={false}
-        aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
-        marginBottom0
-        parse={v => v}
-        style={{ maxWidth: maxWidth - 15 }} // 15px for margin-right
-        {...fieldProps}
-      />
+      <HasCommand commands={keyCommands}>
+        <Field
+          className={css.splitFieldWrapper}
+          component={TextArea}
+          rootClass={css.splitFieldRoot}
+          hasClearIcon={false}
+          dirty={false}
+          aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
+          marginBottom0
+          parse={v => v}
+          style={{ maxWidth: maxWidth - 15 }} // 15px for margin-right
+          onFocus={processSubfieldFocus}
+          {...fieldProps}
+        />
+      </HasCommand>
     );
   };
 

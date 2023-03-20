@@ -201,14 +201,14 @@ describe('QuickMarcEditor utils', () => {
   describe('validateLeader', () => {
     it('should return an error message when position 18 is invalid', () => {
       expect(
-        utils.validateLeader('04706cam a2200865Iia4500', '04706dam a2200865nfa4500').props.values.positions,
-      ).toBe('Leader 018');
+        utils.validateLeader('04706cam a2200865Iia4500', '04706dam a2200865nfa4500').props.values.position,
+      ).toBe('18');
     });
 
     it('should return an error message when position 19 is invalid', () => {
       expect(
-        utils.validateLeader('04706cam a2200865Ici4500', '04706dam a2200865nai4500').props.values.positions,
-      ).toBe('Leader 019');
+        utils.validateLeader('04706cam a2200865Ici4500', '04706dam a2200865nai4500').props.values.position,
+      ).toBe('19');
     });
 
     it('should not return error message when leader is valid', () => {
@@ -574,10 +574,10 @@ describe('QuickMarcEditor utils', () => {
       it('should not return error message when record is valid', () => {
         const initialValues = { records: [] };
         const record = {
-          leader: '04706cxm a22008651i 4500',
+          leader: '04706cxm a2200865mi 4500',
           records: [
             {
-              content: '04706cxm a22008651i 4500',
+              content: '04706cxm a2200865mi 4500',
               tag: 'LDR',
             },
             {
@@ -598,10 +598,10 @@ describe('QuickMarcEditor utils', () => {
       it('should return error message when record is without 852 row', () => {
         const initialValues = { records: [] };
         const record = {
-          leader: '04706cxm a22008651i 4500',
+          leader: '04706cxm a2200865mi 4500',
           records: [
             {
-              content: '04706cxm a22008651i 4500',
+              content: '04706cxm a2200865mi 4500',
               tag: 'LDR',
             },
           ],
@@ -618,10 +618,10 @@ describe('QuickMarcEditor utils', () => {
       it('should return error message when record has several 852 rows', () => {
         const initialValues = { records: [] };
         const record = {
-          leader: '04706cxm a22008651i 4500',
+          leader: '04706cxm a2200865mi 4500',
           records: [
             {
-              content: '04706cxm a22008651i 4500',
+              content: '04706cxm a2200865mi 4500',
               tag: 'LDR',
             },
             {
@@ -646,10 +646,10 @@ describe('QuickMarcEditor utils', () => {
       it('should return error message when record has several 004 rows', () => {
         const initialValues = { records: [] };
         const record = {
-          leader: '04706cxm a22008651i 4500',
+          leader: '04706cxm a2200865mi 4500',
           records: [
             {
-              content: '04706cxm a22008651i 4500',
+              content: '04706cxm a2200865mi 4500',
               tag: 'LDR',
             },
             { tag: '004' },
@@ -668,10 +668,10 @@ describe('QuickMarcEditor utils', () => {
       it('should return error message when record has invalid 852 location', () => {
         const initialValues = { records: [] };
         const record = {
-          leader: '04706cxm a22008651i 4500',
+          leader: '04706cxm a2200865mi 4500',
           records: [
             {
-              content: '04706cxm a22008651i 4500',
+              content: '04706cxm a2200865mi 4500',
               tag: 'LDR',
             },
             { tag: '004' },
@@ -693,10 +693,10 @@ describe('QuickMarcEditor utils', () => {
       it('should return error message when record is missing 852 location', () => {
         const initialValues = { records: [] };
         const record = {
-          leader: '04706cxm a22008651i 4500',
+          leader: '04706cxm a2200865mi 4500',
           records: [
             {
-              content: '04706cxm a22008651i 4500',
+              content: '04706cxm a2200865mi 4500',
               tag: 'LDR',
             },
             { tag: '004' },
@@ -719,10 +719,10 @@ describe('QuickMarcEditor utils', () => {
         const initialValues = { records: [] };
         const locationsWithNumbers = [{ code: 'location.with.numbers.and.symbols123123' }];
         const record = {
-          leader: '04706cxm a22008651i 4500',
+          leader: '04706cxm a2200865mi 4500',
           records: [
             {
-              content: '04706cxm a22008651i 4500',
+              content: '04706cxm a2200865mi 4500',
               tag: 'LDR',
             },
             { tag: '004' },
@@ -747,10 +747,10 @@ describe('QuickMarcEditor utils', () => {
       it('should not return error message when record is valid', () => {
         const initialValues = { records: [] };
         const record = {
-          leader: '04706cxm a22008651i 4500',
+          leader: '04706cxm a2200865ni 4500',
           records: [
             {
-              content: '04706cxm a22008651i 4500',
+              content: '04706cxm a2200865ni 4500',
               tag: 'LDR',
             },
             {
@@ -770,10 +770,10 @@ describe('QuickMarcEditor utils', () => {
       it('should return error message when record is without 1XX row', () => {
         const initialValues = { records: [] };
         const record = {
-          leader: '04706cxm a22008651i 4500',
+          leader: '04706cxm a2200865ni 4500',
           records: [
             {
-              content: '04706cxm a22008651i 4500',
+              content: '04706cxm a2200865ni 4500',
               tag: 'LDR',
             },
           ],
@@ -789,10 +789,10 @@ describe('QuickMarcEditor utils', () => {
       it('should return error message when record has several 1XX rows', () => {
         const initialValues = { records: [] };
         const record = {
-          leader: '04706cxm a22008651i 4500',
+          leader: '04706cxm a2200865ni 4500',
           records: [
             {
-              content: '04706cxm a22008651i 4500',
+              content: '04706cxm a2200865ni 4500',
               tag: 'LDR',
             },
             {
@@ -813,13 +813,40 @@ describe('QuickMarcEditor utils', () => {
         }).props.id).toBe('ui-quick-marc.record.error.heading.multiple');
       });
 
+      it('should return error message when record has 010 field with several $a subfields', () => {
+        const initialValues = { records: [] };
+        const record = {
+          leader: '04706cxm a2200865ni 4500',
+          records: [
+            {
+              content: '04706cxm a2200865ni 4500',
+              tag: 'LDR',
+            },
+            {
+              tag: '100',
+              content: '$a',
+            },
+            {
+              tag: '010',
+              content: '$a Record $a title',
+            },
+          ],
+        };
+
+        expect(utils.validateMarcRecord({
+          marcRecord: record,
+          initialValues,
+          marcType: MARC_TYPES.AUTHORITY,
+        }).props.id).toBe('ui-quick-marc.record.error.010.$aOnlyOne');
+      });
+
       describe('when authority linked to bib record', () => {
         const linksCount = 1;
         const initialValues = {
-          leader: '04706cxm a22008651i 4500',
+          leader: '04706cxm a2200865ni 4500',
           records: [
             {
-              content: '04706cxm a22008651i 4500',
+              content: '04706cxm a2200865ni 4500',
               tag: 'LDR',
             },
             {
