@@ -172,7 +172,7 @@
     "record.fixedField.Sep/comp": "Sep/comp",
     "record.error.leader.forbiddenBytes.bib": "O registro não pode ser salvo. Por favor, verifique o Líder. Apenas as posições 5, 6, 7, 8, 17, 18 e/ou 19 podem ser editadas no Líder.",
     "record.error.leader.forbiddenBytes.holdings": "O registro não pode ser salvo. Por favor, verifique o Líder. Apenas as posições 5, 6, 17 e/ou 18 podem ser editadas no Líder.",
-    "record.error.leader.invalidPositionValue": "O registro não pode ser salvo. Insira valores válidos para {positions}. Os valores válidos estão listados em {link}",
+    "record.error.leader.invalidPositionValue": "Record cannot be saved. Wrong value \"{value}\" on position {position} of the Leader. Allowed only: [{values}]",
     "permission.quick-marc-holdings-editor.all": "quickMARC: Ver, editar registros MARC coleções",
     "permission.quick-marc-holdings-editor.create": "quickMARC: Criar um novo registro MARC coleções",
     "record.fixedField.Rept date": "Data rept",
@@ -262,5 +262,6 @@
     "record.error.010.edit$a": "Não é possível adicionar ou editar 010 $a um registro de autoridade vinculado a um registro bibliográfico. Para fazer essa alteração, você deve desvincular esse registro de autoridade dos registros bibliográficos.",
     "record.error.010.removed": "Não é possível excluir 010. É obrigatório.",
     "record.error.010.$aRemoved": "Não é possível remover 010 $a para este registro.",
-    "record.error.010.$aOnlyOne": "010 só pode ter um $a."
+    "record.error.010.$aOnlyOne": "010 só pode ter um $a.",
+    "permission.quick-marc-editor.create": "quickMARC: Criar um novo registro MARC bibliográfico"
 }
