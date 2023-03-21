@@ -172,7 +172,7 @@
     "record.fixedField.Sep/comp": "分离/完整",
     "record.error.leader.forbiddenBytes.bib": "记录无法保存。请检查头标。头标中只能编辑位置5、6、7、8、17、18和/或19。",
     "record.error.leader.forbiddenBytes.holdings": "记录无法保存。请检查头标。在头标中只能编辑5、6、17、18位。",
-    "record.error.leader.invalidPositionValue": "无法保存记录。请输入有效的{positions} 。有效值列在{link}",
+    "record.error.leader.invalidPositionValue": "Record cannot be saved. Wrong value \"{value}\" on position {position} of the Leader. Allowed only: [{values}]",
     "permission.quick-marc-holdings-editor.all": "quickMARC：查看、编辑MARC馆藏记录",
     "permission.quick-marc-holdings-editor.create": "quickMARC：创建新MARC馆藏记录",
     "record.fixedField.Rept date": "报告日期",
@@ -262,5 +262,6 @@
     "record.error.010.edit$a": "无法为链接到书目记录的规范记录添加或编辑010$a。要进行此更改，必须取消此规范记录与书目记录的链接。",
     "record.error.010.removed": "无法删除010。它是必需的。",
     "record.error.010.$aRemoved": "无法移除此记录的010$a。",
-    "record.error.010.$aOnlyOne": "010 can only have one $a."
+    "record.error.010.$aOnlyOne": "010 can only have one $a.",
+    "permission.quick-marc-editor.create": "quickMARC: Create a new MARC bibliographic record"
 }
