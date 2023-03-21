@@ -172,7 +172,7 @@
     "record.fixedField.Sep/comp": "منفصل/مركب",
     "record.error.leader.forbiddenBytes.bib": "لا يمكن حفظ التسجيلة. يرجى التحقق من الفاتح. يمكن تحرير المواضع 5،6،7،8،17،18 و19 فقط في الفاتح.",
     "record.error.leader.forbiddenBytes.holdings": "لا يمكن حفظ التسجيلة. يرجى التحقق من الفاتح. يمكن تحرير المواضع 5، 6، 17 و 18 فقط في الفاتح.",
-    "record.error.leader.invalidPositionValue": "لا يمكن حفظ التسجيلة. يرجى إدخال {positions} صالح. القيم الصالحة موجودة في {link}",
+    "record.error.leader.invalidPositionValue": "Record cannot be saved. Wrong value \"{value}\" on position {position} of the Leader. Allowed only: [{values}]",
     "permission.quick-marc-holdings-editor.all": "quickMARC: اعرض، وحرر تسجيلة مقتنيات مارك",
     "permission.quick-marc-holdings-editor.create": "quickMARC : أنشئ تسجيلة مقتنيات مارك جديدة",
     "record.fixedField.Rept date": "تاريخ التقرير",
@@ -262,5 +262,6 @@
     "record.error.010.edit$a": "Cannot add or edit 010 $a for an authority record linked to a bibliographic record. To make this change, you must unlink this authority record from bibliographic records.",
     "record.error.010.removed": "Cannot delete 010. It is required.",
     "record.error.010.$aRemoved": "Cannot remove 010 $a for this record.",
-    "record.error.010.$aOnlyOne": "010 can only have one $a."
+    "record.error.010.$aOnlyOne": "010 can only have one $a.",
+    "permission.quick-marc-editor.create": "quickMARC: Create a new MARC bibliographic record"
 }
