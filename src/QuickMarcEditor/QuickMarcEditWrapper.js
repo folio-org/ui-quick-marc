@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
-
+import { useAuthorityLinking } from '../hooks';
 import { QUICK_MARC_ACTIONS } from './constants';
 import {
   EXTERNAL_INSTANCE_APIS,
@@ -56,6 +56,7 @@ const QuickMarcEditWrapper = ({
   const showCallout = useShowCallout();
   const location = useLocation();
   const [httpError, setHttpError] = useState(null);
+  const { linkableBibFields } = useAuthorityLinking();
 
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesToSave = removeDeletedRecords(formValues);
@@ -78,6 +79,7 @@ const QuickMarcEditWrapper = ({
       locations,
       linksCount,
       naturalId: instance.naturalId,
+      linkableBibFields,
     });
 
     if (validationErrorMessage) {
@@ -85,7 +87,7 @@ const QuickMarcEditWrapper = ({
     }
 
     return undefined;
-  }, [initialValues, linksCount, locations, marcType, prepareForSubmit, instance.naturalId]);
+  }, [initialValues, linksCount, locations, marcType, prepareForSubmit, instance.naturalId, linkableBibFields]);
 
   const onSubmit = useCallback(async (formValues) => {
     let is1xxOr010Updated = false;
