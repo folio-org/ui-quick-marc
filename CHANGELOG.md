@@ -9,6 +9,7 @@
 * [UIQM-420](https://issues.folio.org/browse/UIQM-420) Remove initial values for Find Authority plugin References filter.
 * [UIQM-428](https://issues.folio.org/browse/UIQM-428) Show an error message in modal after linking.
 * [UIQM-432](https://issues.folio.org/browse/UIQM-432) Avoid private paths in stripes-core imports.
+* [UIQM-426](https://issues.folio.org/browse/UIQM-426) Allow a user to manual enter/edit $9 for non-linkable/non-controllable bib field
 
 ## [6.0.1](https://github.com/folio-org/ui-quick-marc/tree/v6.0.1) (2023-03-14)
 
