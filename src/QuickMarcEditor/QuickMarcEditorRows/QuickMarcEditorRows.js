@@ -239,7 +239,7 @@ const QuickMarcEditorRows = ({
             const isContentField = !(isLocationField || isFixedField || isMaterialCharsField || isPhysDescriptionField);
             const isMARCFieldProtections = marcType !== MARC_TYPES.HOLDINGS && action === QUICK_MARC_ACTIONS.EDIT;
             const isProtectedField = recordRow.isProtected;
-            const isLinkVisible = checkCanBeLinked(stripes, marcType, action, linkableBibFields, recordRow.tag);
+            const isLinkVisible = checkCanBeLinked(stripes, marcType, linkableBibFields, recordRow.tag);
 
             const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') && recordRow._isLinked;
 

@@ -419,6 +419,15 @@ describe('QuickMarcEditor utils', () => {
             '_isDeleted': false,
             '_isLinked': false,
           },
+          {
+            'tag': '500',
+            'content': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc.',
+            'indicators': ['0', '0'],
+            'isProtected': false,
+            'id': '402c0aec-5e1b-49a3-83a2-da788f48b27a',
+            '_isDeleted': false,
+            '_isLinked': false,
+          },
         ],
       };
 
@@ -430,18 +439,32 @@ describe('QuickMarcEditor utils', () => {
         expect(utils.validateMarcRecord({
           marcRecord: record,
           initialValues,
+          linkableBibFields: ['100', '600'],
         }).props.id).toBe('ui-quick-marc.record.error.$9');
       });
 
-      it('should return an error for a not linked field', () => {
+      it('should return an error for linkable field', () => {
         const record = cloneDeep(initialValues);
 
-        record.records[4].content += ' $9 fakeValue';
+        record.records[4].content = '$9 fakeValue';
 
         expect(utils.validateMarcRecord({
           marcRecord: record,
           initialValues,
+          linkableBibFields: ['100', '600'],
         }).props.id).toBe('ui-quick-marc.record.error.$9');
+      });
+
+      it('should not return an error for a not linkable field', () => {
+        const record = cloneDeep(initialValues);
+
+        record.records[5].content += ' $9 fakeValue';
+
+        expect(utils.validateMarcRecord({
+          marcRecord: record,
+          initialValues,
+          linkableBibFields: ['100', '600'],
+        })).toBeUndefined();
       });
     });
 

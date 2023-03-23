@@ -427,7 +427,7 @@ export const checkDuplicate010Field = (marcRecords) => {
   return undefined;
 };
 
-export const checkCanBeLinked = (stripes, marcType, action, linkableBibFields, tag) => (
+export const checkCanBeLinked = (stripes, marcType, linkableBibFields, tag) => (
   stripes.hasPerm('ui-quick-marc.quick-marc-authority-records.linkUnlink') &&
   marcType === MARC_TYPES.BIB &&
   linkableBibFields.includes(tag)
@@ -446,19 +446,17 @@ export const validateSubfield = (marcRecords, initialMarcRecords) => {
   return undefined;
 };
 
-const validate$9 = (marcRecords, uncontrolledSubfields) => {
-  const hasEntered$9 = marcRecords.some(field => {
-    if (typeof field.content !== 'string') {
-      return false;
+const validate$9InLinkable = (marcRecords, linkableBibFields, uncontrolledSubfields) => {
+  const fieldsToCheck = marcRecords.filter(field => linkableBibFields.includes(field.tag));
+
+  const hasEntered$9 = fieldsToCheck.some(field => {
+    if (!field.subfieldGroups) {
+      return '$9' in getContentSubfieldValue(field.content);
     }
 
-    if (field.subfieldGroups) {
-      return uncontrolledSubfields.some(subfield => {
-        return field.subfieldGroups[subfield] && '$9' in getContentSubfieldValue(field.subfieldGroups[subfield]);
-      });
-    }
-
-    return '$9' in getContentSubfieldValue(field.content);
+    return uncontrolledSubfields.some(subfield => {
+      return field.subfieldGroups[subfield] && '$9' in getContentSubfieldValue(field.subfieldGroups[subfield]);
+    });
   });
 
   if (hasEntered$9) {
@@ -516,7 +514,7 @@ const validateSubfieldsThatCanBeControlled = (marcRecords, uncontrolledSubfields
   return null;
 };
 
-const validateMarcBibRecord = (marcRecords) => {
+const validateMarcBibRecord = (marcRecords, linkableBibFields) => {
   const titleRecords = marcRecords.filter(({ tag }) => tag === '245');
 
   if (titleRecords.length === 0) {
@@ -529,7 +527,7 @@ const validateMarcBibRecord = (marcRecords) => {
 
   const uncontrolledSubfields = ['uncontrolledAlpha', 'uncontrolledNumber'];
 
-  const $9Error = validate$9(marcRecords, uncontrolledSubfields);
+  const $9Error = validate$9InLinkable(marcRecords, linkableBibFields, uncontrolledSubfields);
 
   if ($9Error) {
     return $9Error;
@@ -685,6 +683,7 @@ export const validateMarcRecord = ({
   locations = [],
   linksCount,
   naturalId,
+  linkableBibFields = [],
 }) => {
   const marcRecords = marcRecord.records || [];
   const initialMarcRecords = initialValues.records;
@@ -699,7 +698,7 @@ export const validateMarcRecord = ({
   let validationResult;
 
   if (marcType === MARC_TYPES.BIB) {
-    validationResult = validateMarcBibRecord(marcRecords);
+    validationResult = validateMarcBibRecord(marcRecords, linkableBibFields);
   } else if (marcType === MARC_TYPES.HOLDINGS) {
     validationResult = validateMarcHoldingsRecord(marcRecords, locations);
   } else if (marcType === MARC_TYPES.AUTHORITY) {
