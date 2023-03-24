@@ -7,6 +7,15 @@ import QuickMarcView from './QuickMarcView';
 
 import Harness from '../../test/jest/helpers/harness';
 
+jest.mock('../hooks', () => ({
+  ...jest.requireActual('../hooks'),
+  useAuthorityLinking: jest.fn().mockReturnValue({
+    linkAuthority: jest.fn(),
+    linkableBibFields: ['100', '240'],
+    sourceFiles: [{ id: 'af045f2f-e851-4613-984c-4bc13430454a' }],
+  }),
+}));
+
 const marc = {
   parsedRecord: {
     id: 'a178daf3-b10a-4ff9-a4bf-703a0091f043',
