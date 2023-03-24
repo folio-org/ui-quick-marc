@@ -254,7 +254,7 @@
     "update-linked-bib-fields.modal.keep-editing": "Pokračovat v úpravách",
     "print": "Tisk",
     "record.error.010Field.multiple": "Nelze uložit více polí 010.",
-    "record.error.$9": "$9 není platné podpole.",
+    "record.error.$9": "$9 je neplatné podpole pro propojitelná bibliografická pole.",
     "update-linked-bib-fields.modal.message-save": "<b>{count} {count, plural, one {bibliografický záznam} other {bibliografické záznamy}} </b>{count, plural, one {je} other {jsou}} propojen s tímto záznamem autority a bude aktualizován kliknutím na <b>Uložit</b> .",
     "update-linked-bib-fields.modal.save": "Uložit",
     "record.error.fieldCantBeSaved": "<b>{fieldTags}</b> má podpole, které nelze uložit, protože pole je řízeno autoritním záznamem.",

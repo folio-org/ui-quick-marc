@@ -254,7 +254,7 @@
     "update-linked-bib-fields.modal.keep-editing": "Keep editing",
     "print": "Print",
     "record.error.010Field.multiple": "Cannot save multiple 010 fields.",
-    "record.error.$9": "$9 is not a valid subfield.",
+    "record.error.$9": "$9 is an invalid subfield for linkable bibliographic fields.",
     "update-linked-bib-fields.modal.message-save": "<b> {count} {count, plural, one {書誌レコード} other {書誌レコード}} </b> {count, plural, one { is } other { are }}この典拠レコードにリンクされており、によって更新されます<b>保存</b>ボタンをクリックします。",
     "update-linked-bib-fields.modal.save": "Save",
     "record.error.fieldCantBeSaved": "<b>{fieldTags}</b> has a subfield(s) that cannot be saved because the field is controlled by an authority record.",
