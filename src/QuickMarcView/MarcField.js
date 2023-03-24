@@ -11,6 +11,7 @@ import { Tooltip } from '@folio/stripes/components';
 
 import { normalizeIndicator } from './utils';
 import styles from './MarcField.css';
+import { useAuthorityLinking } from '../hooks';
 
 const MarcField = ({
   field,
@@ -18,6 +19,7 @@ const MarcField = ({
   isPrint,
 }) => {
   const intl = useIntl();
+  const { linkableBibFields } = useAuthorityLinking();
 
   const fieldTag = Object.keys(field)[0];
   const hasIndicators = typeof field[fieldTag] !== 'string';
@@ -42,7 +44,9 @@ const MarcField = ({
     : field[fieldTag].replace(/\\/g, ' ');
 
   const renderLinkIcon = useCallback(() => {
-    if (!hasIndicators || isPrint) {
+    const isLinkableField = linkableBibFields.includes(fieldTag);
+
+    if (!hasIndicators || isPrint || !isLinkableField) {
       return null;
     }
 
@@ -74,7 +78,7 @@ const MarcField = ({
         )}
       </Tooltip>
     );
-  }, [field, fieldTag, intl, hasIndicators, isPrint]);
+  }, [field, fieldTag, intl, hasIndicators, isPrint, linkableBibFields]);
 
   return (
     <tr data-test-instance-marc-field>
