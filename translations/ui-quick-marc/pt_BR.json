@@ -254,7 +254,7 @@
     "update-linked-bib-fields.modal.keep-editing": "Continuar editando",
     "print": "Imprimir",
     "record.error.010Field.multiple": "Não é possível salvar vários campos 010.",
-    "record.error.$9": "$9 não é um subcampo válido.",
+    "record.error.$9": "$9 é um subcampo inválido para campos bibliográficos vinculáveis.",
     "update-linked-bib-fields.modal.message-save": "<b>{count} {count, plural, one {registros bibliográfico} other {registros bibliográfico}} {count, plural, one {is} other {are}}</b> vinculado a este registro de autoridade e será atualizado se o botão <b>Salvar e continuar editando</b> for clicado.",
     "update-linked-bib-fields.modal.save": "Salvar",
     "record.error.fieldCantBeSaved": "<b>{fieldTags}</b> tem um subcampo(s) que não pode(m) ser salvo(s) porque o campo é controlado por um registro de autoridade.",
