@@ -172,7 +172,7 @@
     "record.fixedField.Sep/comp": "分离/完整",
     "record.error.leader.forbiddenBytes.bib": "记录无法保存。请检查头标。头标中只能编辑位置5、6、7、8、17、18和/或19。",
     "record.error.leader.forbiddenBytes.holdings": "记录无法保存。请检查头标。在头标中只能编辑5、6、17、18位。",
-    "record.error.leader.invalidPositionValue": "Record cannot be saved. Wrong value \"{value}\" on position {position} of the Leader. Allowed only: [{values}]",
+    "record.error.leader.invalidPositionValue": "无法保存记录。头标位置{position}上的错误值“ {value} ”。仅允许：[ {values} ]",
     "permission.quick-marc-holdings-editor.all": "quickMARC：查看、编辑MARC馆藏记录",
     "permission.quick-marc-holdings-editor.create": "quickMARC：创建新MARC馆藏记录",
     "record.fixedField.Rept date": "报告日期",
@@ -254,7 +254,7 @@
     "update-linked-bib-fields.modal.keep-editing": "继续编辑",
     "print": "印本",
     "record.error.010Field.multiple": "无法保存多个 010 字段。",
-    "record.error.$9": "$9 不是有效的子字段。",
+    "record.error.$9": "$9 是可链接书目字段的无效子字段。",
     "update-linked-bib-fields.modal.message-save": "<b> {count} {count, plural, one {书目记录} other {书目记录}} </b> {count, plural, one { is } other { are }}链接到该规范记录并将由单击<b>保存</b>按钮更新。",
     "update-linked-bib-fields.modal.save": "保存",
     "record.error.fieldCantBeSaved": "<b> {fieldTags} </b>有一个无法保存的子字段，因为该字段由规范记录控制。",
@@ -262,6 +262,6 @@
     "record.error.010.edit$a": "无法为链接到书目记录的规范记录添加或编辑010$a。要进行此更改，必须取消此规范记录与书目记录的链接。",
     "record.error.010.removed": "无法删除010。它是必需的。",
     "record.error.010.$aRemoved": "无法移除此记录的010$a。",
-    "record.error.010.$aOnlyOne": "010 can only have one $a.",
-    "permission.quick-marc-editor.create": "quickMARC: Create a new MARC bibliographic record"
+    "record.error.010.$aOnlyOne": "010 只能有一个$a。",
+    "permission.quick-marc-editor.create": "quickMARC：创建新的MARC书目记录"
 }
