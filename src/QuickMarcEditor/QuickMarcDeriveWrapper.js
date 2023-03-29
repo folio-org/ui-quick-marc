@@ -9,6 +9,7 @@ import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
+import { useAuthorityLinking } from '../hooks';
 import {
   QUICK_MARC_ACTIONS,
 } from './constants';
@@ -51,6 +52,7 @@ const QuickMarcDeriveWrapper = ({
   marcType,
 }) => {
   const showCallout = useShowCallout();
+  const { linkableBibFields } = useAuthorityLinking();
   const [httpError, setHttpError] = useState(null);
 
   const saveLinksToNewRecord = async (externalId, marcRecord) => {
@@ -113,6 +115,7 @@ const QuickMarcDeriveWrapper = ({
     const validationErrorMessage = validateMarcRecord({
       marcRecord: formValuesForValidation,
       initialValues,
+      linkableBibFields,
     });
 
     if (validationErrorMessage) {
@@ -120,7 +123,7 @@ const QuickMarcDeriveWrapper = ({
     }
 
     return undefined;
-  }, [initialValues, prepareForSubmit]);
+  }, [initialValues, prepareForSubmit, linkableBibFields]);
 
   const onSubmit = useCallback(async (formValues) => {
     const formValuesForDerive = prepareForSubmit(formValues);
