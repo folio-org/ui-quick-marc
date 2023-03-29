@@ -74,10 +74,9 @@ const renderSubField = (name, config) => {
     return (
       <div className={styles.bytesFieldSubFieldSelect}>
         <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`}>
-          {([ariaLabel]) => (
+          {() => (
             <Field
               dirty={false}
-              aria-label={ariaLabel}
               name={fieldName}
               label={label}
               component={Select}
