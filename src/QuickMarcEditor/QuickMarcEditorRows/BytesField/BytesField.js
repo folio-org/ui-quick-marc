@@ -73,19 +73,15 @@ const renderSubField = (name, config) => {
   if (config.type === SUBFIELD_TYPES.SELECT) {
     return (
       <div className={styles.bytesFieldSubFieldSelect}>
-        <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`}>
-          {() => (
-            <Field
-              dirty={false}
-              name={fieldName}
-              label={label}
-              component={Select}
-              disabled={config.disabled}
-              dataOptions={config.options}
-              data-testid={`fixed-field-${config.type}`}
-            />
-          )}
-        </FormattedMessage>
+        <Field
+          dirty={false}
+          name={fieldName}
+          label={label}
+          component={Select}
+          disabled={config.disabled}
+          dataOptions={config.options}
+          data-testid={`fixed-field-${config.type}`}
+        />
       </div>
     );
   }
