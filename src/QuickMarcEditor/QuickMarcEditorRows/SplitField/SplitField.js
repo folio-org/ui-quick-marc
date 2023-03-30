@@ -43,6 +43,11 @@ const SplitField = ({
           parse={v => v}
           style={{ maxWidth: maxWidth - 15 }} // 15px for margin-right
           onFocus={processSubfieldFocus}
+          onKeyDown={e => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+            }
+          }}
           {...fieldProps}
         />
       </HasCommand>
