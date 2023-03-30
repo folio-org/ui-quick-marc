@@ -1,13 +1,16 @@
 # Change history for ui-quick-marc
 
-## [6.0.1](https://github.com/folio-org/ui-quick-marc/tree/v6.0.1) (2023-03-14)
+## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
 
-* [UIQM-395](https://issues.folio.org/browse/UIQM-395) Adding multiple "$a" in "010" field of linked "MARC Authority" leads to error.
-* [UIQM-399](https://issues.folio.org/browse/UIQM-399) Linked MARC bib field - editable textbox does not support shortcut keys
 * [UIQM-413](https://issues.folio.org/browse/UIQM-413) Updated the @folio/plugin-find-authority dependency to ^2.0.0
 * [UIQM-430](https://issues.folio.org/browse/UIQM-430) If the user manually enters the $9 field on a non-linkable, then hide the authorized icon on the view source.
 * [UIQM-426](https://issues.folio.org/browse/UIQM-426) Show error if $9 is added during deriving.
 * [UIQM-422](https://issues.folio.org/browse/UIQM-422) Edit/Derive MARC bib | Show Type label on 006 and 007 MARC fields.
+
+## [6.0.1](https://github.com/folio-org/ui-quick-marc/tree/v6.0.1) (2023-03-14)
+
+* [UIQM-395](https://issues.folio.org/browse/UIQM-395) Adding multiple "$a" in "010" field of linked "MARC Authority" leads to error.
+* [UIQM-399](https://issues.folio.org/browse/UIQM-399) Linked MARC bib field - editable textbox does not support shortcut keys
 
 ## [6.0.0](https://github.com/folio-org/ui-quick-marc/tree/v6.0.0) (2023-02-23)
 
