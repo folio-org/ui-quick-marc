@@ -4,15 +4,18 @@
 
 * [UIQM-250](https://issues.folio.org/browse/UIQM-250) Updated invalid Leader position values error messages to be more informative.
 * [UIQM-410](https://issues.folio.org/browse/UIQM-410) Add support for values 'b' and 'c' in Bib Leader/19
-* [UIQM-413](https://issues.folio.org/browse/UIQM-413) Updated the @folio/plugin-find-authority dependency to ^2.0.0
 * [UIQM-355](https://issues.folio.org/browse/UIQM-355) Added a new permission "quickMARC: Create a new MARC bibliographic record" 
 * [UIQM-420](https://issues.folio.org/browse/UIQM-420) Remove initial values for Find Authority plugin References filter.
 * [UIQM-428](https://issues.folio.org/browse/UIQM-428) Show an error message in modal after linking.
-* [UIQM-426](https://issues.folio.org/browse/UIQM-426) Allow a user to manual enter/edit $9 for non-linkable/non-controllable bib field
-* [UIQM-430](https://issues.folio.org/browse/UIQM-430) If the user manually enters the $9 field on a non-linkable, then hide the authorized icon on the view source.
-* [UIQM-422](https://issues.folio.org/browse/UIQM-422) Edit/Derive MARC bib | Show Type label on 006 and 007 MARC fields.
-* [UIQM-426](https://issues.folio.org/browse/UIQM-426) Show error if $9 is added during deriving.
 * [UIQM-424](https://issues.folio.org/browse/UIQM-424) Disable pressing `Enter` for linked fields.
+
+## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
+
+* [UIQM-413](https://issues.folio.org/browse/UIQM-413) Updated the @folio/plugin-find-authority dependency to ^2.0.0
+* [UIQM-430](https://issues.folio.org/browse/UIQM-430) If the user manually enters the $9 field on a non-linkable, then hide the authorized icon on the view source.
+* [UIQM-426](https://issues.folio.org/browse/UIQM-426) Show error if $9 is added during deriving.
+* [UIQM-422](https://issues.folio.org/browse/UIQM-422) Edit/Derive MARC bib | Show Type label on 006 and 007 MARC fields.
+* [UIQM-426](https://issues.folio.org/browse/UIQM-426) Allow a user to manual enter/edit $9 for non-linkable/non-controllable bib field
 
 ## [6.0.1](https://github.com/folio-org/ui-quick-marc/tree/v6.0.1) (2023-03-14)
 
