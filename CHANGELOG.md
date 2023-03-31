@@ -13,6 +13,7 @@
 * [UIQM-422](https://issues.folio.org/browse/UIQM-422) Edit/Derive MARC bib | Show Type label on 006 and 007 MARC fields.
 * [UIQM-426](https://issues.folio.org/browse/UIQM-426) Show error if $9 is added during deriving.
 * [UIQM-424](https://issues.folio.org/browse/UIQM-424) Disable pressing `Enter` for linked fields.
+* [UIQM-361](https://issues.folio.org/browse/UIQM-361) Create Orig Bib Record: Open new record in quickMARC UI.
 
 ## [6.0.1](https://github.com/folio-org/ui-quick-marc/tree/v6.0.1) (2023-03-14)
 
