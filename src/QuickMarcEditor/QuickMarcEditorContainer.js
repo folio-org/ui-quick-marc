@@ -31,6 +31,7 @@ import {
 } from './utils';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { useAuthorityLinksCount } from '../queries';
+import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
@@ -139,8 +140,20 @@ const QuickMarcEditorContainer = ({
   }, [externalId, relatedRecordVersion, history, marcType, fetchLinksCount]);
 
   useEffect(() => {
+    if (action === QUICK_MARC_ACTIONS.CREATE_BIB) {
+      // TODO: Temporary decision. Will be implemented in UQIM-415.
+      setMarcRecord({
+        'updateInfo': {
+          'recordState': RECORD_STATUS_NEW,
+        },
+      });
+      setIsLoading(false);
+
+      return;
+    }
+
     loadData();
-  }, [loadData]);
+  }, [action, loadData]);
 
   if (isLoading) {
     return (
