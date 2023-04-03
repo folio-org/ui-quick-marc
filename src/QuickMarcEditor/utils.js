@@ -506,6 +506,12 @@ const validateMarcBibRecord = (marcRecords, linkableBibFields) => {
     return <FormattedMessage id="ui-quick-marc.record.error.title.multiple" />;
   }
 
+  const locControlNumberFields = marcRecords.filter(({ tag }) => tag === '010');
+
+  if (locControlNumberFields.length > 1) {
+    return <FormattedMessage id="ui-quick-marc.record.error.locControlNumber.multiple" />;
+  }
+
   const uncontrolledSubfields = ['uncontrolledAlpha', 'uncontrolledNumber'];
 
   const $9Error = validate$9InLinkable(marcRecords, linkableBibFields, uncontrolledSubfields);

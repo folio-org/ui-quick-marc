@@ -863,6 +863,37 @@ describe('QuickMarcEditor utils', () => {
         }).props.id).toBe('ui-quick-marc.record.error.010.$aOnlyOne');
       });
 
+      it('should return error message when record has multiple 010 fields', () => {
+        const initialValues = { records: [] };
+        const record = {
+          leader: '04706cxm a2200865ni 4500',
+          records: [
+            {
+              content: '04706cxm a2200865ni 4500',
+              tag: 'LDR',
+            },
+            {
+              tag: '100',
+              content: '$a',
+            },
+            {
+              tag: '010',
+              content: '$a Record',
+            },
+            {
+              tag: '010',
+              content: '$a Record 2',
+            },
+          ],
+        };
+
+        expect(utils.validateMarcRecord({
+          marcRecord: record,
+          initialValues,
+          marcType: MARC_TYPES.AUTHORITY,
+        }).props.id).toBe('ui-quick-marc.record.error.locControlNumber.multiple');
+      });
+
       describe('when authority linked to bib record', () => {
         const linksCount = 1;
         const initialValues = {
