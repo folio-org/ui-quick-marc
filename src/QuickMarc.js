@@ -13,13 +13,13 @@ import {
   QuickMarcDeriveWrapper,
   QuickMarcCreateWrapper,
   QuickMarcEditWrapper,
+  QuickMarcCreateBibWrapper,
 } from './QuickMarcEditor';
 import { QUICK_MARC_ACTIONS } from './QuickMarcEditor/constants';
 import {
   MARC_TYPES,
   keyboardCommands,
 } from './common/constants';
-import QuickMarcCreateBibWrapper from './QuickMarcEditor/QuickMarcCreateBibWrapper';
 
 const QuickMarc = ({
   basePath,
