@@ -164,6 +164,16 @@ describe('Given QuickMarcEditor', () => {
     expect(getByText('ui-quick-marc.bib-record.edit.title')).toBeDefined();
   });
 
+  describe('when action is CREATE_BIB', () => {
+    it('should display instance title in pane title', () => {
+      const { getByText } = renderQuickMarcEditor({
+        action: QUICK_MARC_ACTIONS.CREATE_BIB,
+      });
+
+      expect(getByText('ui-quick-marc.bib-record.create-bib.title')).toBeDefined();
+    });
+  });
+
   it('should display pane footer', () => {
     const { getByText } = renderQuickMarcEditor();
 

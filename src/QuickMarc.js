@@ -13,6 +13,7 @@ import {
   QuickMarcDeriveWrapper,
   QuickMarcCreateWrapper,
   QuickMarcEditWrapper,
+  QuickMarcCreateBibWrapper,
 } from './QuickMarcEditor';
 import { QUICK_MARC_ACTIONS } from './QuickMarcEditor/constants';
 import {
@@ -41,6 +42,15 @@ const QuickMarc = ({
       props: {
         action: QUICK_MARC_ACTIONS.DERIVE,
         wrapper: QuickMarcDeriveWrapper,
+        marcType: MARC_TYPES.BIB,
+      },
+    },
+    {
+      path: `${basePath}/create-bib`,
+      permission: 'ui-quick-marc.quick-marc-editor.create',
+      props: {
+        action: QUICK_MARC_ACTIONS.CREATE_BIB,
+        wrapper: QuickMarcCreateBibWrapper,
         marcType: MARC_TYPES.BIB,
       },
     },

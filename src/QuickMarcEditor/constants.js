@@ -39,6 +39,7 @@ export const LEADER_DOCUMENTATION_LINKS = {
 
 export const QUICK_MARC_ACTIONS = {
   CREATE: 'create',
+  CREATE_BIB: 'create-bib',
   EDIT: 'edit',
   DERIVE: 'derive',
 };
