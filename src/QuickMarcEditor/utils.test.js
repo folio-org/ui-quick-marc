@@ -374,6 +374,38 @@ describe('QuickMarcEditor utils', () => {
       }).props.id).toBe('ui-quick-marc.record.error.title.multiple');
     });
 
+    it('should return error message when record has several 010 rows', () => {
+      const initialValues = { records: [] };
+      const record = {
+        leader: '04706cam a2200865Ii 4500',
+        records: [
+          {
+            content: '04706cam a2200865Ii 4500',
+            tag: 'LDR',
+          },
+          {
+            tag: '008',
+            content: {
+              Desc: 'i',
+            },
+          },
+          {
+            tag: '010',
+          },
+          {
+            tag: '010',
+          },
+        ],
+      };
+
+      expect(utils.validateMarcRecord({
+        marcRecord: record,
+        initialValues,
+        marcType: MARC_TYPES.BIB,
+        locations,
+      }).props.id).toBe('ui-quick-marc.record.error.locControlNumber.multiple');
+    });
+
     describe('when $9 entered', () => {
       const initialValues = {
         leader: '04706cam a2200865Ii 4500',
@@ -1264,7 +1296,7 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.checkDuplicate010Field(formValues.records).props.id).toBe('ui-quick-marc.record.error.010Field.multiple');
+      expect(utils.checkDuplicate010Field(formValues.records).props.id).toBe('ui-quick-marc.record.error.locControlNumber.multiple');
     });
   });
 

@@ -402,7 +402,7 @@ export const checkDuplicate010Field = (marcRecords) => {
   const marc010Records = marcRecords.filter(({ tag }) => tag === '010');
 
   if (marc010Records.length > 1) {
-    return <FormattedMessage id="ui-quick-marc.record.error.010Field.multiple" />;
+    return <FormattedMessage id="ui-quick-marc.record.error.locControlNumber.multiple" />;
   }
 
   return undefined;
@@ -506,10 +506,10 @@ const validateMarcBibRecord = (marcRecords, linkableBibFields) => {
     return <FormattedMessage id="ui-quick-marc.record.error.title.multiple" />;
   }
 
-  const locControlNumberFields = marcRecords.filter(({ tag }) => tag === '010');
+  const duplicate010FieldError = checkDuplicate010Field(marcRecords);
 
-  if (locControlNumberFields.length > 1) {
-    return <FormattedMessage id="ui-quick-marc.record.error.locControlNumber.multiple" />;
+  if (duplicate010FieldError) {
+    return duplicate010FieldError;
   }
 
   const uncontrolledSubfields = ['uncontrolledAlpha', 'uncontrolledNumber'];
