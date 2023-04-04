@@ -29,7 +29,8 @@
         "subPermissions": [
           "records-editor.records.item.get",
           "inventory.instances.item.get",
-          "instance-authority-links.instances.collection.get"
+          "instance-authority-links.instances.collection.get",
+          "instance-authority.linking-rules.collection.get"
         ],
         "visible": true
       },
