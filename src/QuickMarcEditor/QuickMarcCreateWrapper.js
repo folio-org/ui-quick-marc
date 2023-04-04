@@ -61,13 +61,13 @@ const QuickMarcCreateWrapper = ({
   }, [initialValues, marcType]);
 
   const validate = useCallback((formValues) => {
-    const formValuesForValidation = prepareForSubmit(formValues);
-    const controlFieldErrorMessage = checkControlFieldLength(formValuesForValidation);
+    const controlFieldErrorMessage = checkControlFieldLength(removeDeletedRecords(formValues));
 
     if (controlFieldErrorMessage) {
       return controlFieldErrorMessage;
     }
 
+    const formValuesForValidation = prepareForSubmit(formValues);
     const validationErrorMessage = validateMarcRecord({
       marcRecord: formValuesForValidation,
       initialValues,
