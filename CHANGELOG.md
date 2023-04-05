@@ -2,6 +2,7 @@
 
 ## [6.1.0](IN PROGRESS)
 
+* [UIQM-429](https://issues.folio.org/browse/UIQM-429) Prevent many location in Marc holdings record.
 * [UIQM-250](https://issues.folio.org/browse/UIQM-250) Updated invalid Leader position values error messages to be more informative.
 * [UIQM-410](https://issues.folio.org/browse/UIQM-410) Add support for values 'b' and 'c' in Bib Leader/19
 * [UIQM-355](https://issues.folio.org/browse/UIQM-355) Added a new permission "quickMARC: Create a new MARC bibliographic record" 

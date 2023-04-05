@@ -194,6 +194,7 @@
   "record.error.1xx.remove$t": "Cannot remove <b>$t from the ${tag} field</b> because it controls a bibliographic field(s) that requires  this subfield. To change this 1XX value, you must unlink all controlled bibliographic fields that requires $t to be controlled.",
   "record.error.fieldCantBeSaved": "<b>{fieldTags}</b> has a subfield(s) that cannot be saved because the field is controlled by an authority record.",
   "record.error.fieldsCantBeSaved": "<b>{fieldTags}{count, plural, one {} =2 { and {lastFieldTag}} other {, and {lastFieldTag}}}</b> has a subfield(s) that cannot be saved because the fields are controlled by authority records.",
+  "record.error.field.onlyOneSubfield":"<b>{fieldTag}</b> can only have one <b>{subField}</b>.",
 
   "record.delete.confirmLabel": "Continue with save",
   "record.delete.cancelLabel": "Restore deleted field(s)",

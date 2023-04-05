@@ -356,14 +356,22 @@ export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYP
 };
 
 export const getLocationValue = (value) => {
-  const matches = value?.match(/\$b\s+([^$\s]+\/?)+/) || [];
-
+  const matches = value?.match(/\$b\s+([^$\s]+\/?)+/) || [];  
   return matches[0] || '';
 };
 
-export const validateLocationSubfield = (field, locations) => {
-  const [, locationValue] = getLocationValue(field.content)?.split(' ');
+export const countSubField = (field, subField) => {    
+  const reg = new RegExp('\\'+subField, "g");
+  const matches = field?.content.match(reg) || [];  
+  return matches.length;
+}
 
+export const validateSingleNoneSubfield = (field, subField) => {
+  return countSubField(field, subField)<=1;  
+}
+  
+export const validateLocationSubfield = (field, locations) => {
+  const [, locationValue] = getLocationValue(field.content)?.replace(/\s+/,' ').split(' ');
   return !!locations.find(location => location.code === locationValue);
 };
 
@@ -538,6 +546,10 @@ const validateMarcHoldingsRecord = (marcRecords, locations) => {
 
   if (locationRecords.length > 1) {
     return <FormattedMessage id="ui-quick-marc.record.error.location.multiple" />;
+  }
+
+  if (!validateSingleNoneSubfield(marcRecords.find(({ tag }) => tag === '852'), '$b')) {    
+    return <FormattedMessage id="ui-quick-marc.record.error.field.onlyOneSubfield" values={{ fieldTag: '852', subField: '$b' }}/>;
   }
 
   if (!validateLocationSubfield(marcRecords.find(({ tag }) => tag === '852'), locations)) {
