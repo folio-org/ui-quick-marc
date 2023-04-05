@@ -17,7 +17,7 @@
     "okapiInterfaces": {
       "inventory": "13.0",
       "records-editor.records": "3.1",
-      "instance-authority-links": "1.0"
+      "instance-authority-links": "2.0"
     },
     "stripesDeps": [
       "@folio/stripes-acq-components"
