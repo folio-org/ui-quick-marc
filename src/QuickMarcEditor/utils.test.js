@@ -2012,6 +2012,10 @@ describe('QuickMarcEditor utils', () => {
     it ('shoud return correct numer of subfield in content of field', () => {
       expect(utils.countSubField({ content: '$b   $bb$b '}, '$b')).toEqual(3);
     });
+
+    it ('shoud return 0 of subfield where no content of field', () => {
+      expect(utils.countSubField({ }, '$b')).toEqual(0);
+    });
   });
 
   describe('validateLocationSubfield', () => {
@@ -2026,6 +2030,10 @@ describe('QuickMarcEditor utils', () => {
     it('should return false for locations that do not exist', () => {
       expect(utils.validateLocationSubfield({ content: '$b NOT/VA/LI/D ' }, locations)).toBe(false);
     });
+
+    it('should return false for locations that Field no content', () => {
+      expect(utils.validateLocationSubfield({}, locations)).toBe(false);
+    })
   });
 
   describe('getLocationValue', () => {

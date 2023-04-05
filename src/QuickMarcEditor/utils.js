@@ -362,7 +362,7 @@ export const getLocationValue = (value) => {
 
 export const countSubField = (field, subField) => {    
   const reg = new RegExp('\\'+subField, "g");
-  const matches = field?.content.match(reg) || [];  
+  const matches = field.content?.match(reg) || [];   
   return matches.length;
 }
 
@@ -371,7 +371,7 @@ export const validateSingleNoneSubfield = (field, subField) => {
 }
   
 export const validateLocationSubfield = (field, locations) => {
-  const [, locationValue] = getLocationValue(field.content)?.replace(/\s+/,' ').split(' ');
+  const [, locationValue] = getLocationValue(field.content)?.replace(/\s+/,' ').split(' ') || '';  
   return !!locations.find(location => location.code === locationValue);
 };
 
