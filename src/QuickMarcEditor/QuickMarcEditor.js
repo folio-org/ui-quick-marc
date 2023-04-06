@@ -282,6 +282,10 @@ const QuickMarcEditor = ({
       };
     } else {
       if (!instance) {
+        if (action === QUICK_MARC_ACTIONS.CREATE_BIB) {
+          return <FormattedMessage id={`ui-quick-marc.${marcType}-record.${action}.title`} />;
+        }
+
         return '';
       }
 

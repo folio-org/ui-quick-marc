@@ -17,6 +17,7 @@ import { MARC_TYPES } from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
 import { useAuthorityLinksCount } from '../queries';
+import QuickMarcCreateBibWrapper from './QuickMarcCreateBibWrapper';
 
 const mockFetchLinksCount = jest.fn().mockResolvedValue();
 
@@ -111,14 +112,14 @@ describe('Given Quick Marc Editor Container', () => {
         update: jest.fn(),
       },
       quickMarcEditInstance: {
-        GET: () => Promise.resolve(instance),
+        GET: jest.fn(() => Promise.resolve(instance)),
       },
       quickMarcEditMarcRecord: {
         GET: jest.fn(() => Promise.resolve(record)),
         PUT: jest.fn(() => Promise.resolve()),
       },
       locations: {
-        GET: () => Promise.resolve(locations),
+        GET: jest.fn(() => Promise.resolve(locations)),
       },
     };
   });
@@ -212,6 +213,22 @@ describe('Given Quick Marc Editor Container', () => {
       });
 
       expect(spyHistory).toHaveBeenCalledWith({ search: expect.stringContaining('relatedRecordVersion=1') });
+    });
+  });
+
+  describe('when the action is CREATE_BIB', () => {
+    it('should not to fetch the data', async () => {
+      renderQuickMarcEditorContainer({
+        mutator,
+        onClose: jest.fn(),
+        action: QUICK_MARC_ACTIONS.CREATE_BIB,
+        wrapper: QuickMarcCreateBibWrapper,
+        marcType: MARC_TYPES.BIB,
+      });
+
+      expect(mutator.quickMarcEditInstance.GET).not.toHaveBeenCalled();
+      expect(mutator.quickMarcEditMarcRecord.GET).not.toHaveBeenCalled();
+      expect(mutator.locations.GET).not.toHaveBeenCalled();
     });
   });
 
