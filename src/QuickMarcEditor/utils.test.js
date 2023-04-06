@@ -390,6 +390,10 @@ describe('QuickMarcEditor utils', () => {
             },
           },
           {
+            tag: '245',
+            content: '',
+          },
+          {
             tag: '010',
           },
           {
