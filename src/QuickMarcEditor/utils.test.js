@@ -1992,29 +1992,9 @@ describe('QuickMarcEditor utils', () => {
         $b: ['Repeat 1', 'Repeat 2'],
       });
     });
-  });
 
-  describe('validate852OnlyOneSubfield', () => {
-    it ('should return true for only one or none location subfield', () => {
-      expect(utils.validateSingleNoneSubfield({ content: '$b VA/LI/D'}, '$b')).toBe(true);
-    });
-
-    it ('should return true for none location subfield', () => {
-      expect(utils.validateSingleNoneSubfield({ content: '$a VA/LI/D'}, '$b')).toBe(true);
-    });
-
-    it ('sholud retun false for more the one location subfield', () => {
-      expect(utils.validateSingleNoneSubfield({ content: '$b VA/LI/D $b NO/VA/LI/D'}, '$b')).toBe(false);
-    });
-  });
-
-  describe('countSubField', () => {
-    it ('shoud return correct numer of subfield in content of field', () => {
-      expect(utils.countSubField({ content: '$b   $bb$b '}, '$b')).toEqual(3);
-    });
-
-    it ('shoud return 0 of subfield where no content of field', () => {
-      expect(utils.countSubField({ }, '$b')).toEqual(0);
+    it('shoud return empty body when content is undefined', () => {
+      expect(utils.getContentSubfieldValue(undefined)).toEqual({});
     });
   });
 
@@ -2026,14 +2006,14 @@ describe('QuickMarcEditor utils', () => {
     it('should return true for valid location subfield even more space between', () => {
       expect(utils.validateLocationSubfield({ content: '$b    VA/LI/D ' }, locations)).toBe(true);
     });
-    
+
     it('should return false for locations that do not exist', () => {
       expect(utils.validateLocationSubfield({ content: '$b NOT/VA/LI/D ' }, locations)).toBe(false);
     });
 
     it('should return false for locations that Field no content', () => {
       expect(utils.validateLocationSubfield({}, locations)).toBe(false);
-    })
+    });
   });
 
   describe('getLocationValue', () => {
