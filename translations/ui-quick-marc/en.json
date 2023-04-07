@@ -173,7 +173,7 @@
   "record.error.bib.leader.invalid005PositionValue": "Record cannot be saved. Invalid value entered for position 5.",
   "record.error.controlField.multiple": "Record cannot be saved. Can only have one MARC 001.",
   "record.error.instanceHrid.multiple": "Record cannot be saved. Can only have one MARC 004.",
-  "record.error.010Field.multiple": "Cannot save multiple 010 fields.",
+  "record.error.locControlNumber.multiple": "Record cannot be saved with more than one field 010",
   "record.error.010.edit$a": "Cannot add or edit 010 $a for an authority record linked to a bibliographic record. To make this change, you must unlink this authority record from bibliographic records.",
   "record.error.010.removed": "Cannot delete 010. It is required.",
   "record.error.010.$aRemoved": "Cannot remove 010 $a for this record.",
