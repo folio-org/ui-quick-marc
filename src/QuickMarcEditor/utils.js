@@ -21,6 +21,7 @@ import {
   LEADER_VALUES_FOR_POSITION,
   NON_BREAKING_SPACE,
   ELVL_BYTE,
+  CREATE_BIB_MARC_RECORD_DEFAULT_FIELD_TAGS,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import getMaterialCharsFieldConfig from './QuickMarcEditorRows/MaterialCharsField/getMaterialCharsFieldConfig';
@@ -167,6 +168,49 @@ const getCreateMarcRecordDefaultFields = (instanceRecord) => {
   });
 };
 
+const getCreateBibMarcRecordDefaultFields = (instanceRecord) => {
+  const contentMap = {
+    '001': instanceRecord.hrid,
+    '005': 'n',
+    '006': '\\',
+    '007': '\\',
+    '008': HOLDINGS_FIXED_FIELD_DEFAULT_VALUES,
+    '009': '$a ',
+    '010': '2',
+    '011': '2',
+    '017': 'u',
+    '018': 'u',
+    '019': '\\',
+    '245': '$a ',
+    '999': '$s ',
+  };
+
+  const indicatorMap = {
+    '245': ['\\', '\\'],
+    '999': ['f', 'f'],
+  };
+
+  return CREATE_BIB_MARC_RECORD_DEFAULT_FIELD_TAGS.map(tag => {
+    const field = {
+      tag,
+      id: uuidv4(),
+    };
+
+    const content = contentMap[tag];
+    const indicators = indicatorMap[tag];
+
+    if (indicators) {
+      field.indicators = indicatorMap[tag];
+    }
+
+    if (content) {
+      field.content = contentMap[tag];
+    }
+
+    return field;
+  });
+};
+
 export const getCreateMarcRecordResponse = (instanceResponse) => {
   const instanceId = instanceResponse.id;
 
@@ -181,6 +225,25 @@ export const getCreateMarcRecordResponse = (instanceResponse) => {
         id: LEADER_TAG,
       },
       ...getCreateMarcRecordDefaultFields(instanceResponse),
+    ],
+    parsedRecordDtoId: instanceId,
+  };
+};
+
+export const getCreateBibMarcRecordResponse = (instanceResponse) => {
+  const instanceId = instanceResponse.id;
+
+  return {
+    externalId: instanceId,
+    leader: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+    fields: undefined,
+    records: [
+      {
+        tag: LEADER_TAG,
+        content: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+        id: LEADER_TAG,
+      },
+      ...getCreateBibMarcRecordDefaultFields(instanceResponse),
     ],
     parsedRecordDtoId: instanceId,
   };
@@ -231,7 +294,7 @@ const removeMarcRecordFieldContentForDerive = marcRecord => {
 };
 
 export const formatMarcRecordByQuickMarcAction = (marcRecord, action) => {
-  if (action === QUICK_MARC_ACTIONS.DERIVE) {
+  if (action === QUICK_MARC_ACTIONS.DERIVE || action === QUICK_MARC_ACTIONS.CREATE_BIB) {
     return {
       ...removeMarcRecordFieldContentForDerive(marcRecord),
       updateInfo: {
