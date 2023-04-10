@@ -14,6 +14,7 @@
 * [UIQM-445](https://issues.folio.org/browse/UIQM-445) Fix missing permission to view MARC Authority icon in MARC bib source view
 * [UIQM-447](https://issues.folio.org/browse/UIQM-447) Upgrade instance-authority-links interface to 2.0
 * [UIQM-415](https://issues.folio.org/browse/UIQM-415) Create original bib record in quickMARC UI
+* [UIQM-382](https://issues.folio.org/browse/UIQM-382) quickMARC Bib Validation: Make 010 a non-repeatable field in create, edit, and derive bib records
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
 
