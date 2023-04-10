@@ -32,7 +32,6 @@ import {
 } from './utils';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { useAuthorityLinksCount } from '../queries';
-import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,

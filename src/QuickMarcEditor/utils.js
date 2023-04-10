@@ -231,7 +231,7 @@ export const getCreateMarcRecordResponse = (instanceResponse) => {
 };
 
 export const getCreateBibMarcRecordResponse = (instanceResponse) => {
-  const instanceId = instanceResponse.id;
+  const instanceId = '00000000-0000-0000-0000-000000000000'; // For create we need to send any UUID
 
   return {
     externalId: instanceId,
@@ -297,6 +297,17 @@ export const formatMarcRecordByQuickMarcAction = (marcRecord, action) => {
   if (action === QUICK_MARC_ACTIONS.DERIVE || action === QUICK_MARC_ACTIONS.CREATE_BIB) {
     return {
       ...removeMarcRecordFieldContentForDerive(marcRecord),
+      updateInfo: {
+        recordState: RECORD_STATUS_NEW,
+      },
+    };
+  }
+
+  if (action === QUICK_MARC_ACTIONS.CREATE_BIB) {
+    return {
+      ...removeMarcRecordFieldContentForDerive(marcRecord),
+      relatedRecordVersion: 1,
+      marcFormat: MARC_TYPES.BIBLIOGRAPHIC.toUpperCase(),
       updateInfo: {
         recordState: RECORD_STATUS_NEW,
       },
@@ -949,7 +960,7 @@ export const cleanBytesFields = (formValues, initialValues, marcType) => {
 
     if (isFixedFieldRow(field)) {
       fieldConfigByType = FixedFieldFactory
-        .getFixedFieldByType(marcType, field.content.Type, initialValues?.leader[7]).configFields;
+        .getFixedFieldByType(marcType, field.content.Type, formValues?.leader[7])?.configFields ?? [];
     }
 
     const content = Object.entries(field.content).reduce((acc, [key, value]) => {

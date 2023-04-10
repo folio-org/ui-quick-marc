@@ -13,7 +13,6 @@ import {
   QUICK_MARC_ACTIONS,
 } from './constants';
 import {
-  EXTERNAL_INSTANCE_APIS,
   MARC_TYPES,
 } from '../common/constants';
 import { removeDeletedRecords, checkControlFieldLength, validateMarcRecord, removeFieldsForDerive, autopopulateIndicators, autopopulateSubfieldSection, cleanBytesFields, combineSplitFields, hydrateMarcRecord, parseHttpError } from './utils';
@@ -62,41 +61,6 @@ const QuickMarcCreateBibWrapper = ({
     return formValuesForDerive;
   }, [initialValues, marcType]);
 
-  const saveLinksToNewRecord = async (externalId, marcRecord) => {
-    // request derived Instance record
-    const instancePromise = mutator.quickMarcEditInstance.GET({ path: `${EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]}/${externalId}` });
-    // request derived MARC Bib record
-    const marcPromise = mutator.quickMarcEditMarcRecord.GET({ params: { externalId } });
-
-    Promise.all([instancePromise, marcPromise]).then(([{ _version }, derivedRecord]) => {
-      // copy linking data to new record
-      derivedRecord.fields = derivedRecord.fields.map((field) => {
-        // matching field from POST request
-        const matchingLinkedField = marcRecord.fields
-          .find(_field => _field.authorityId && _field.tag === field.tag && _field.authorityId === field.authorityId);
-
-        if (!matchingLinkedField) {
-          return field;
-        }
-
-        field.authorityNaturalId = matchingLinkedField.authorityNaturalId;
-        field.authorityControlledSubfields = matchingLinkedField.authorityControlledSubfields;
-        field.linkingRuleId = matchingLinkedField.linkingRuleId;
-
-        return field;
-      });
-
-      derivedRecord.relatedRecordVersion = parseInt(_version, 10);
-      mutator.quickMarcEditMarcRecord.PUT(derivedRecord)
-        .finally(() => {
-          history.push({
-            pathname: `/inventory/view/${externalId}`,
-            search: location.search,
-          });
-        });
-    });
-  };
-
   const validate = useCallback((formValues) => {
     const formValuesForValidation = prepareForValidate(formValues);
     const controlFieldErrorMessage = checkControlFieldLength(formValuesForValidation);
@@ -126,24 +90,21 @@ const QuickMarcCreateBibWrapper = ({
     const formValuesWithCombinedFields = combineSplitFields(formValuesForDerive);
     const marcRecord = hydrateMarcRecord(formValuesWithCombinedFields);
 
-    marcRecord.relatedRecordVersion = 1;
-
     return mutator.quickMarcEditMarcRecord.POST(marcRecord)
       .then(async ({ qmRecordId }) => {
         history.push({
-          pathname: '/inventory/view/id',
+          pathname: '/inventory/view',
           search: location.search,
         });
 
         try {
-          const { externalId } = await getQuickMarcRecordStatus({
+          await getQuickMarcRecordStatus({
             quickMarcRecordStatusGETRequest: mutator.quickMarcRecordStatus.GET,
             qmRecordId,
             showCallout,
           });
 
           showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
-          saveLinksToNewRecord(externalId, marcRecord);
         } catch (e) {
           showCallout({
             messageId: 'ui-quick-marc.record.saveNew.error',

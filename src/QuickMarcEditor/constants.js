@@ -84,7 +84,7 @@ export const CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE = '00000nu\\\\\\2200000un\\
 
 export const CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS = ['001', '004', '005', '008', '852', '999'];
 
-export const CREATE_BIB_MARC_RECORD_DEFAULT_FIELD_TAGS = ['001', '004', '005', '006', '007', '009', '010', '011', '017', '018', '019', '245', '999'];
+export const CREATE_BIB_MARC_RECORD_DEFAULT_FIELD_TAGS = ['001', '004', '005', '006', '007', '008', '009', '010', '011', '017', '018', '019', '245', '999'];
 
 export const QM_RECORD_STATUS_TIMEOUT = 5000;
 
