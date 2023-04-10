@@ -217,7 +217,7 @@ describe('Given Quick Marc Editor Container', () => {
   });
 
   describe('when the action is CREATE_BIB', () => {
-    it('should not to fetch the data', async () => {
+    it('should not to fetch the data and should fetch location', async () => {
       renderQuickMarcEditorContainer({
         mutator,
         onClose: jest.fn(),
@@ -228,7 +228,7 @@ describe('Given Quick Marc Editor Container', () => {
 
       expect(mutator.quickMarcEditInstance.GET).not.toHaveBeenCalled();
       expect(mutator.quickMarcEditMarcRecord.GET).not.toHaveBeenCalled();
-      expect(mutator.locations.GET).not.toHaveBeenCalled();
+      expect(mutator.locations.GET).toHaveBeenCalled();
     });
   });
 

@@ -23,47 +23,115 @@ jest.mock('react-final-form', () => ({
 }));
 
 const mockFormValues = jest.fn(() => ({
-  fields: undefined,
-  externalHrid: 'in00000000022',
-  externalId: '17064f9d-0362-468d-8317-5984b7efd1b5',
-  leader: '00000nu\\\\\\2200000un\\4500',
-  marcFormat: 'HOLDINGS',
-  parsedRecordDtoId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
-  parsedRecordId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
-  records: [
+  'externalId': '00000000-0000-0000-0000-000000000000',
+  'leader': '00000nu\\\\\\2200000un\\4500',
+  'records': [
     {
-      tag: 'LDR',
-      content: '00000nu\\\\\\2200000un\\4500',
-      id: 'LDR',
-    }, {
-      tag: '001',
-      id: '595a98e6-8e59-448d-b866-cd039b990423',
-    }, {
-      tag: '004',
-      content: 'in00000000022',
-      id: '93213747-46fb-4861-b8e8-8774bf4a46a4',
-    }, {
-      tag: '852',
-      content: '$b KU/CC/DI/A $t 3 $h M3 $i .M93 1955 $m + $x Rec\'d in Music Lib ;',
-      indicators: ['0', '1'],
-      id: '6abdaf9b-ac58-4f83-9687-73c939c3c21a',
-    }, {
-      tag: '014',
-      content: '$a ABS3966CU004',
-      indicators: ['1', '\\'],
-      id: '5aa1a643-b9f2-47e8-bb68-6c6457b5c9c5',
-    }, {
-      tag: '005',
-      id: '5aa1a643-b9f2-47e8-bb68-6c6457b5c9c5',
-    }, {
-      tag: '999',
-      indicators: ['f', 'f'],
-      id: '4a844042-5c7e-4e71-823e-599582a5d7ab',
+      'tag': 'LDR',
+      'content': '00000nai\\\\2200000un\\4500',
+      'id': 'LDR',
+    },
+    {
+      'tag': '001',
+      'id': '6706b028-fa0e-4877-aa47-e79c90174a71',
+      'content': '',
+    },
+    {
+      'tag': '004',
+      'id': '49af6f3d-9bfc-427d-bfa1-fb08c209af45',
+    },
+    {
+      'tag': '005',
+      'id': 'f1bfe5f1-c730-4cd1-bd0a-0f2c8c9537d0',
+      'content': '',
+    },
+    {
+      'tag': '006',
+      'id': 'c81e4197-b742-4bbd-a7ef-d7d17b2f759e',
+      'content': '\\',
+    },
+    {
+      'tag': '007',
+      'id': 'fef31f69-15cb-4705-8ee0-44f663f6ce7d',
+      'content': '\\',
+    },
+    {
+      'tag': '008',
+      'id': '2a2d672f-f1c7-47ab-abad-a6f026466ce1',
+      'content': {
+        'AcqStatus': 0,
+        'AcqMethod': 'u',
+        'AcqEndDate': '\\\\\\\\',
+        'Gen ret': 0,
+        'Spec ret': [
+          '\\',
+          '\\',
+          '\\',
+        ],
+        'Compl': 0,
+        'Copies': '\\\\\\',
+        'Lend': 'u',
+        'Repro': 'u',
+        'Lang': 'eng',
+        'Sep/comp': 0,
+        'Rept date': '\\\\\\\\\\\\',
+      },
+    },
+    {
+      'tag': '009',
+      'id': '1091a566-dd47-4282-a67b-f1293a47e96d',
+      'content': '$a ',
+    },
+    {
+      'tag': '010',
+      'id': '13990a70-4ce1-4a63-b9c4-8e9dee71e74c',
+      'content': '2',
+    },
+    {
+      'tag': '011',
+      'id': '4205d0d2-c47f-4693-889d-476469517a8e',
+      'content': '2',
+    },
+    {
+      'tag': '017',
+      'id': 'bc199797-5c86-40db-b25e-d9333863e462',
+      'content': 'u',
+    },
+    {
+      'tag': '018',
+      'id': 'c4b77352-f663-4716-a20e-583a6a4edcfe',
+      'content': 'u',
+    },
+    {
+      'tag': '019',
+      'id': 'fcf41674-17ab-400e-b80c-84a2784426e9',
+      'content': '$a',
+    },
+    {
+      'tag': '245',
+      'id': '72c48376-afb3-44fe-8438-2af49fe1be15',
+      'indicators': [
+        '\\',
+        '\\',
+      ],
+      'content': '$a ',
+    },
+    {
+      'tag': '999',
+      'id': '6eba49f4-30c6-4948-84cc-47741924c161',
+      'indicators': [
+        'f',
+        'f',
+      ],
+      'content': '',
     },
   ],
-  relatedRecordVersion: 1,
-  suppressDiscovery: false,
-  updateInfo: { recordState: 'NEW' },
+  'parsedRecordDtoId': '00000000-0000-0000-0000-000000000000',
+  'relatedRecordVersion': 1,
+  'marcFormat': 'BIBLIOGRAPHIC',
+  'updateInfo': {
+    'recordState': 'NEW',
+  },
 }));
 
 jest.mock('@folio/stripes/final-form', () => () => (Component) => ({ onSubmit, ...props }) => {
@@ -135,7 +203,7 @@ const renderQuickMarcCreateBibWrapper = ({
       instance={instance}
       mutator={mutator}
       action={QUICK_MARC_ACTIONS.CREATE_BIB}
-      initialValues={{ leader: 'assdfgs ds sdg' }}
+      initialValues={{ leader: 'assdfgs ds sdg', records: [] }}
       history={history}
       location={location}
       marcType={MARC_TYPES.BIB}
@@ -218,7 +286,18 @@ describe('Given QuickMarcCreateWrapper', () => {
 
       await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
-      expect(mockShowCallout).toHaveBeenCalledWith({ message: 'Not implemented', type: 'error' });
+      expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.onSave' });
+
+      await new Promise(resolve => {
+        setTimeout(() => {
+          expect(history.push).toHaveBeenCalledWith({
+            pathname: '/inventory/view',
+            search: location.search,
+          });
+
+          resolve();
+        }, 10);
+      });
     }, 100);
   });
 });
