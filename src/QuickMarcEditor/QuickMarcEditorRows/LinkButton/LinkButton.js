@@ -89,7 +89,7 @@ const LinkButton = ({
   };
 
   const selectIdentifierFromSubfield = (subfield) => {
-    const match = subfield.match(/.+\/([^/]+)$/)?.[1];
+    const match = subfield.substring(subfield.lastIndexOf('/') + 1);
 
     return match || subfield;
   };
