@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import {
+  useState,
+  useMemo,
+} from 'react';
 import {
   useIntl,
   FormattedMessage,
@@ -49,7 +52,6 @@ const LinkButton = ({
   const intl = useIntl();
   const [authority, setAuthority] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [initialValues, setInitialValues] = useState({});
   const callout = useCallout();
 
   const { isLoading, refetch: refetchSource } = useMarcSource(fieldId, authority?.id, {
@@ -91,41 +93,45 @@ const LinkButton = ({
     return match || subfield;
   };
 
-  const handleInitialValues = () => {
+  const initialValues = useMemo(() => {
     const { dropdownValue } = DEFAULT_LOOKUP_OPTIONS[tag];
 
     let initialDropdownValue = dropdownValue;
     let initialSearchInputValue = '';
     let initialSegment = navigationSegments.search;
+    let initialSearchQuery = '';
 
     const fieldContent = getContentSubfieldValue(content);
 
     if (fieldContent.$0?.length === 1) {
       initialDropdownValue = searchableIndexesValues.IDENTIFIER;
       initialSearchInputValue = selectIdentifierFromSubfield(fieldContent.$0[0]);
+      initialSearchQuery = initialSearchInputValue;
     } else if (fieldContent.$0?.length > 1) {
       initialDropdownValue = searchableIndexesValues.ADVANCED_SEARCH;
       initialSearchInputValue = fieldContent.$0
         .map(selectIdentifierFromSubfield)
         .map(identifier => `${searchableIndexesValues.IDENTIFIER}==${identifier}`)
         .join(' or ');
+      initialSearchQuery = initialSearchInputValue;
     } else if (fieldContent.$a?.length || fieldContent.$d?.length || fieldContent.$t?.length) {
       initialSegment = navigationSegments.browse;
-      console.log(flatten([fieldContent.$a, fieldContent.$d, fieldContent.$t]));
       initialSearchInputValue = flatten([fieldContent.$a, fieldContent.$d, fieldContent.$t])
         .filter(value => !isNil(value))
         .join(' ');
+      initialSearchQuery = initialSearchInputValue;
     } else {
       initialSegment = navigationSegments.browse;
     }
 
-    setInitialValues({
+    return {
       searchIndex: '',
       dropdownValue: initialDropdownValue,
       searchInputValue: initialSearchInputValue,
+      searchQuery: initialSearchQuery,
       segment: initialSegment,
-    });
-  };
+    };
+  }, [content, tag]);
 
   const renderButton = () => {
     if (isLinked) {
@@ -168,7 +174,6 @@ const LinkButton = ({
                 aria-haspopup="true"
                 aria-labelledby={ariaIds.text}
                 onClick={e => {
-                  handleInitialValues();
                   onClick(e);
                 }}
               />
