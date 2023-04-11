@@ -374,6 +374,42 @@ describe('QuickMarcEditor utils', () => {
       }).props.id).toBe('ui-quick-marc.record.error.title.multiple');
     });
 
+    it('should return error message when record has several 010 rows', () => {
+      const initialValues = { records: [] };
+      const record = {
+        leader: '04706cam a2200865Ii 4500',
+        records: [
+          {
+            content: '04706cam a2200865Ii 4500',
+            tag: 'LDR',
+          },
+          {
+            tag: '008',
+            content: {
+              Desc: 'i',
+            },
+          },
+          {
+            tag: '245',
+            content: '',
+          },
+          {
+            tag: '010',
+          },
+          {
+            tag: '010',
+          },
+        ],
+      };
+
+      expect(utils.validateMarcRecord({
+        marcRecord: record,
+        initialValues,
+        marcType: MARC_TYPES.BIB,
+        locations,
+      }).props.id).toBe('ui-quick-marc.record.error.locControlNumber.multiple');
+    });
+
     describe('when $9 entered', () => {
       const initialValues = {
         leader: '04706cam a2200865Ii 4500',
@@ -863,6 +899,37 @@ describe('QuickMarcEditor utils', () => {
         }).props.id).toBe('ui-quick-marc.record.error.010.$aOnlyOne');
       });
 
+      it('should return error message when record has multiple 010 fields', () => {
+        const initialValues = { records: [] };
+        const record = {
+          leader: '04706cxm a2200865ni 4500',
+          records: [
+            {
+              content: '04706cxm a2200865ni 4500',
+              tag: 'LDR',
+            },
+            {
+              tag: '100',
+              content: '$a',
+            },
+            {
+              tag: '010',
+              content: '$a Record',
+            },
+            {
+              tag: '010',
+              content: '$a Record 2',
+            },
+          ],
+        };
+
+        expect(utils.validateMarcRecord({
+          marcRecord: record,
+          initialValues,
+          marcType: MARC_TYPES.AUTHORITY,
+        }).props.id).toBe('ui-quick-marc.record.error.locControlNumber.multiple');
+      });
+
       describe('when authority linked to bib record', () => {
         const linksCount = 1;
         const initialValues = {
@@ -1233,7 +1300,7 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.checkDuplicate010Field(formValues.records).props.id).toBe('ui-quick-marc.record.error.010Field.multiple');
+      expect(utils.checkDuplicate010Field(formValues.records).props.id).toBe('ui-quick-marc.record.error.locControlNumber.multiple');
     });
   });
 
@@ -1992,6 +2059,10 @@ describe('QuickMarcEditor utils', () => {
         $b: ['Repeat 1', 'Repeat 2'],
       });
     });
+
+    it('shoud return empty body when content is undefined', () => {
+      expect(utils.getContentSubfieldValue(undefined)).toEqual({});
+    });
   });
 
   describe('validateLocationSubfield', () => {
@@ -1999,8 +2070,16 @@ describe('QuickMarcEditor utils', () => {
       expect(utils.validateLocationSubfield({ content: '$b VA/LI/D ' }, locations)).toBe(true);
     });
 
+    it('should return true for valid location subfield even more space between', () => {
+      expect(utils.validateLocationSubfield({ content: '$b    VA/LI/D ' }, locations)).toBe(true);
+    });
+
     it('should return false for locations that do not exist', () => {
       expect(utils.validateLocationSubfield({ content: '$b NOT/VA/LI/D ' }, locations)).toBe(false);
+    });
+
+    it('should return false for locations that Field no content', () => {
+      expect(utils.validateLocationSubfield({}, locations)).toBe(false);
     });
   });
 
