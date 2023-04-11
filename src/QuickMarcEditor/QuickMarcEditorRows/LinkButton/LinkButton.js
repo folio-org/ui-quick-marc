@@ -1,11 +1,11 @@
-import {
-  useState,
-} from 'react';
+import { useState } from 'react';
 import {
   useIntl,
   FormattedMessage,
 } from 'react-intl';
 import PropTypes from 'prop-types';
+import flatten from 'lodash/flatten';
+import isNil from 'lodash/isNil';
 
 import {
   Pluggable,
@@ -18,9 +18,11 @@ import {
 } from '@folio/stripes/components';
 
 import { useMarcSource } from '../../../queries';
+import { getContentSubfieldValue } from '../../utils';
 import {
   DEFAULT_LOOKUP_OPTIONS,
-  FILTERS,
+  searchableIndexesValues,
+  navigationSegments,
 } from '../../../common/constants';
 
 const propTypes = {
@@ -32,7 +34,6 @@ const propTypes = {
   handleLinkAuthority: PropTypes.func.isRequired,
   handleUnlinkAuthority: PropTypes.func.isRequired,
   fieldId: PropTypes.string.isRequired,
-  sourceFiles: PropTypes.arrayOf(PropTypes.object).isRequired,
   tag: PropTypes.string.isRequired,
 };
 
@@ -42,13 +43,13 @@ const LinkButton = ({
   isLinked,
   tag,
   fieldId,
-  sourceFiles,
   calloutRef,
+  content,
 }) => {
   const intl = useIntl();
   const [authority, setAuthority] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [initialValues, setInitialValues] = useState(null);
+  const [initialValues, setInitialValues] = useState({});
   const callout = useCallout();
 
   const { isLoading, refetch: refetchSource } = useMarcSource(fieldId, authority?.id, {
@@ -84,25 +85,45 @@ const LinkButton = ({
     toggleModal();
   };
 
+  const selectIdentifierFromSubfield = (subfield) => {
+    const match = subfield.match(/.+\/([^/]+)$/)?.[1];
+
+    return match || subfield;
+  };
+
   const handleInitialValues = () => {
-    const {
-      dropdownValue,
-      filters: defaultTagFilters,
-    } = DEFAULT_LOOKUP_OPTIONS[tag];
+    const { dropdownValue } = DEFAULT_LOOKUP_OPTIONS[tag];
 
-    const existingAuthSourceFilters = defaultTagFilters.filter(filterId => {
-      return sourceFiles.find(sourceFile => sourceFile.id === filterId);
-    });
+    let initialDropdownValue = dropdownValue;
+    let initialSearchInputValue = '';
+    let initialSegment = navigationSegments.search;
 
-    const initialFilters = {
-      [FILTERS.REFERENCES]: [],
-      [FILTERS.AUTHORITY_SOURCE]: existingAuthSourceFilters,
-    };
+    const fieldContent = getContentSubfieldValue(content);
+
+    if (fieldContent.$0?.length === 1) {
+      initialDropdownValue = searchableIndexesValues.IDENTIFIER;
+      initialSearchInputValue = selectIdentifierFromSubfield(fieldContent.$0[0]);
+    } else if (fieldContent.$0?.length > 1) {
+      initialDropdownValue = searchableIndexesValues.ADVANCED_SEARCH;
+      initialSearchInputValue = fieldContent.$0
+        .map(selectIdentifierFromSubfield)
+        .map(identifier => `${searchableIndexesValues.IDENTIFIER}==${identifier}`)
+        .join(' or ');
+    } else if (fieldContent.$a?.length || fieldContent.$d?.length || fieldContent.$t?.length) {
+      initialSegment = navigationSegments.browse;
+      console.log(flatten([fieldContent.$a, fieldContent.$d, fieldContent.$t]));
+      initialSearchInputValue = flatten([fieldContent.$a, fieldContent.$d, fieldContent.$t])
+        .filter(value => !isNil(value))
+        .join(' ');
+    } else {
+      initialSegment = navigationSegments.browse;
+    }
 
     setInitialValues({
-      filters: initialFilters,
       searchIndex: '',
-      dropdownValue,
+      dropdownValue: initialDropdownValue,
+      searchInputValue: initialSearchInputValue,
+      segment: initialSegment,
     });
   };
 
