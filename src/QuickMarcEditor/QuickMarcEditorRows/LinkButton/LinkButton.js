@@ -127,6 +127,7 @@ const LinkButton = ({
     return {
       searchIndex: '',
       dropdownValue: initialDropdownValue,
+      searchIndex: initialDropdownValue,
       searchInputValue: initialSearchInputValue,
       searchQuery: initialSearchQuery,
       segment: initialSegment,
