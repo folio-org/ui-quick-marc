@@ -33,6 +33,7 @@ const propTypes = {
     PropTypes.object,
     PropTypes.func,
   ]),
+  content: PropTypes.string,
   isLinked: PropTypes.bool.isRequired,
   handleLinkAuthority: PropTypes.func.isRequired,
   handleUnlinkAuthority: PropTypes.func.isRequired,
@@ -125,7 +126,6 @@ const LinkButton = ({
     }
 
     return {
-      searchIndex: '',
       dropdownValue: initialDropdownValue,
       searchIndex: initialDropdownValue,
       searchInputValue: initialSearchInputValue,
