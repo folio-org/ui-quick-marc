@@ -37,8 +37,8 @@ const renderComponent = (props = {}) => render(
       handleUnlinkAuthority={mockHandleUnlinkAuthority}
       isLinked={false}
       fieldId="fakeId"
-      sourceFiles={[{}]}
       tag="100"
+      content=""
       {...props}
     />
   </Harness>,
@@ -74,29 +74,6 @@ describe('Given LinkButton', () => {
       expect(mockOnClick).toHaveBeenCalled();
     });
 
-    it('should pass initial values to plugin', async () => {
-      const { getAllByTestId } = renderComponent();
-
-      const authority = {
-        id: 'authority-id',
-      };
-
-      const initialValues = {
-        'dropdownValue': 'personalNameTitle',
-        'filters': {
-          'references': [],
-          'sourceFileId': [],
-        },
-        'searchIndex': '',
-      };
-
-      fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
-
-      await act(async () => { Pluggable.mock.calls[1][0].onLinkRecord(authority); });
-
-      expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
-    });
-
     describe('and the selected authority record is the same as the one previously selected', () => {
       it('should refetch marc source', async () => {
         renderComponent();
@@ -109,6 +86,84 @@ describe('Given LinkButton', () => {
         act(() => { Pluggable.mock.calls[1][0].onLinkRecord(authority); });
 
         expect(mockGetMarcSource).toHaveBeenCalledTimes(2);
+      });
+    });
+
+    describe('when linking Authority to empty field', () => {
+      it('should pass initial values to plugin', async () => {
+        const { getAllByTestId } = renderComponent();
+
+        const initialValues = {
+          dropdownValue: 'personalNameTitle',
+          searchIndex: 'personalNameTitle',
+          searchInputValue: '',
+          searchQuery: '',
+          segment: 'browse',
+        };
+
+        fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
+
+        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
+      });
+    });
+
+    describe('when linking Authority to a field with $0', () => {
+      it('should pass initial values to plugin', async () => {
+        const { getAllByTestId } = renderComponent({
+          content: '$0 n123456789',
+        });
+
+        const initialValues = {
+          dropdownValue: 'identifiers.value',
+          searchIndex: 'identifiers.value',
+          searchInputValue: 'n123456789',
+          searchQuery: 'n123456789',
+          segment: 'search',
+        };
+
+        fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
+
+        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
+      });
+    });
+
+    describe('when linking Authority to a field with multiple $0', () => {
+      it('should pass initial values to plugin', async () => {
+        const { getAllByTestId } = renderComponent({
+          content: '$0 n123456789 $0 n987654321',
+        });
+
+        const initialValues = {
+          dropdownValue: 'advancedSearch',
+          searchIndex: 'advancedSearch',
+          searchInputValue: 'identifiers.value==n123456789 or identifiers.value==n987654321',
+          searchQuery: 'identifiers.value==n123456789 or identifiers.value==n987654321',
+          segment: 'search',
+        };
+
+        fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
+
+        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
+      });
+    });
+
+    describe('when linking Authority to a field with $a, $d or $t', () => {
+      it('should pass initial values to plugin', async () => {
+        const { getAllByTestId } = renderComponent({
+          content: '$a value1 $d value2 $t value3',
+        });
+
+        const initialValues = {
+          dropdownValue: 'personalNameTitle',
+          searchIndex: 'personalNameTitle',
+          searchInputValue: 'value1 value2 value3',
+          searchQuery: 'value1 value2 value3',
+          segment: 'browse',
+        };
+
+        fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
+
+        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
       });
     });
   });

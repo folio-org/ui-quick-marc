@@ -6,3 +6,4 @@ export * from './keyboardCommands';
 export * from './searchableIndexesValues';
 export * from './filters';
 export * from './defaultLookup';
+export * from './navigationSegments';

@@ -86,7 +86,6 @@ const QuickMarcEditorRows = ({
     linkAuthority,
     unlinkAuthority,
     linkableBibFields,
-    sourceFiles,
   } = useAuthorityLinking();
 
   const isNewRow = useCallback((row) => {
@@ -463,8 +462,8 @@ const QuickMarcEditorRows = ({
                       handleUnlinkAuthority={() => handleUnlinkAuthority(idx)}
                       isLinked={recordRow._isLinked}
                       tag={recordRow.tag}
+                      content={recordRow.content}
                       fieldId={recordRow.id}
-                      sourceFiles={sourceFiles}
                       calloutRef={childCalloutRef}
                     />
                   )}
