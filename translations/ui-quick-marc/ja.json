@@ -253,7 +253,6 @@
     "update-linked-bib-fields.modal.label": "本当にいいですか？",
     "update-linked-bib-fields.modal.keep-editing": "Keep editing",
     "print": "Print",
-    "record.error.010Field.multiple": "Cannot save multiple 010 fields.",
     "record.error.$9": "$9 is an invalid subfield for linkable bibliographic fields.",
     "update-linked-bib-fields.modal.message-save": "<b> {count} {count, plural, one {書誌レコード} other {書誌レコード}} </b> {count, plural, one { is } other { are }}この典拠レコードにリンクされており、によって更新されます<b>保存</b>ボタンをクリックします。",
     "update-linked-bib-fields.modal.save": "Save",
@@ -263,5 +262,8 @@
     "record.error.010.removed": "Cannot delete 010. It is required.",
     "record.error.010.$aRemoved": "このレコードの 010 $a は削除できません。",
     "record.error.010.$aOnlyOne": "010 can only have one $a.",
-    "permission.quick-marc-editor.create": "quickMARC: 新しい MARC 書誌レコードを作成する"
+    "permission.quick-marc-editor.create": "quickMARC: 新しい MARC 書誌レコードを作成する",
+    "bib-record.create-bib.title": "Create a new MARC bib record",
+    "record.error.locControlNumber.multiple": "Record cannot be saved with more than one field 010",
+    "record.error.field.onlyOneSubfield": "<b>{fieldTag}</b> can only have one <b>{subField}</b>."
 }
