@@ -24,7 +24,7 @@ import {
 
 import {
   dehydrateMarcRecordResponse,
-  getCreateMarcRecordResponse,
+  getCreateHoldingsMarcRecordResponse,
   formatMarcRecordByQuickMarcAction,
   addInternalFieldProperties,
   splitFields,
@@ -98,12 +98,19 @@ const QuickMarcEditorContainer = ({
       ? EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]
       : EXTERNAL_INSTANCE_APIS[marcType];
 
-    const instancePromise = action === QUICK_MARC_ACTIONS.CREATE_BIB ? Promise.resolve({}) : mutator.quickMarcEditInstance.GET({ path: `${path}/${externalId}` });
-    const marcRecordPromise = action === QUICK_MARC_ACTIONS.CREATE || action === QUICK_MARC_ACTIONS.CREATE_BIB
+    const instancePromise = action === QUICK_MARC_ACTIONS.CREATE && marcType === MARC_TYPES.BIB
+      ? Promise.resolve({})
+      : mutator.quickMarcEditInstance.GET({ path: `${path}/${externalId}` });
+
+    const marcRecordPromise = action === QUICK_MARC_ACTIONS.CREATE
       ? Promise.resolve({})
       : mutator.quickMarcEditMarcRecord.GET({ params: { externalId } });
+
     const locationsPromise = mutator.locations.GET();
-    const linksCountPromise = marcType === MARC_TYPES.AUTHORITY ? fetchLinksCount([externalId]) : Promise.resolve();
+
+    const linksCountPromise = marcType === MARC_TYPES.AUTHORITY
+      ? fetchLinksCount([externalId])
+      : Promise.resolve();
 
     await Promise.all([instancePromise, marcRecordPromise, locationsPromise, linksCountPromise])
       .then(([instanceResponse, marcRecordResponse, locationsResponse, linksCountResponse]) => {
@@ -111,7 +118,7 @@ const QuickMarcEditorContainer = ({
           setLinksCount(linksCountResponse.links[0].totalLinks);
         }
 
-        if (action !== QUICK_MARC_ACTIONS.CREATE && action !== QUICK_MARC_ACTIONS.CREATE_BIB) {
+        if (action !== QUICK_MARC_ACTIONS.CREATE) {
           searchParams.set('relatedRecordVersion', instanceResponse._version);
 
           history.replace({
@@ -121,15 +128,15 @@ const QuickMarcEditorContainer = ({
 
         let dehydratedMarcRecord;
 
-        if (action === QUICK_MARC_ACTIONS.CREATE_BIB) {
+        if (action === QUICK_MARC_ACTIONS.CREATE && marcType === MARC_TYPES.BIB) {
           dehydratedMarcRecord = getCreateBibMarcRecordResponse(instanceResponse);
         } else if (action === QUICK_MARC_ACTIONS.CREATE) {
-          dehydratedMarcRecord = getCreateMarcRecordResponse(instanceResponse);
+          dehydratedMarcRecord = getCreateHoldingsMarcRecordResponse(instanceResponse);
         } else {
           dehydratedMarcRecord = dehydrateMarcRecordResponse(marcRecordResponse);
         }
 
-        const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, action);
+        const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, action, marcType);
         const marcRecordWithInternalProps = addInternalFieldProperties(formattedMarcRecord);
         const marcRecordWithSplitFields = splitFields(marcRecordWithInternalProps);
 

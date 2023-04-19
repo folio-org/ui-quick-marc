@@ -14,14 +14,16 @@ import {
   FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS,
   QUICK_MARC_ACTIONS,
   LEADER_EDITABLE_BYTES,
-  CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
-  CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS,
+  CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
+  CREATE_BIB_RECORD_DEFAULT_LEADER_VALUE,
+  CREATE_HOLDINGS_RECORD_DEFAULT_FIELD_TAGS,
   HOLDINGS_FIXED_FIELD_DEFAULT_VALUES,
   CORRESPONDING_HEADING_TYPE_TAGS,
   LEADER_VALUES_FOR_POSITION,
   NON_BREAKING_SPACE,
   ELVL_BYTE,
-  CREATE_BIB_MARC_RECORD_DEFAULT_FIELD_TAGS,
+  CREATE_BIB_RECORD_DEFAULT_FIELD_TAGS,
+  BIB_FIXED_FIELD_DEFAULT_VALUES,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import getMaterialCharsFieldConfig from './QuickMarcEditorRows/MaterialCharsField/getMaterialCharsFieldConfig';
@@ -142,7 +144,7 @@ export const dehydrateMarcRecordResponse = marcRecordResponse => ({
 });
 
 const getCreateMarcRecordDefaultFields = (instanceRecord) => {
-  return CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS.map(tag => {
+  return CREATE_HOLDINGS_RECORD_DEFAULT_FIELD_TAGS.map(tag => {
     const field = {
       tag,
       id: uuidv4(),
@@ -171,18 +173,9 @@ const getCreateMarcRecordDefaultFields = (instanceRecord) => {
 const getCreateBibMarcRecordDefaultFields = (instanceRecord) => {
   const contentMap = {
     '001': instanceRecord.hrid,
-    '005': 'n',
-    '006': '\\',
-    '007': '\\',
-    '008': HOLDINGS_FIXED_FIELD_DEFAULT_VALUES,
-    '009': '$a ',
-    '010': '2',
-    '011': '2',
-    '017': 'u',
-    '018': 'u',
-    '019': '\\',
+    '008': BIB_FIXED_FIELD_DEFAULT_VALUES,
     '245': '$a ',
-    '999': '$s ',
+    '999': '',
   };
 
   const indicatorMap = {
@@ -190,7 +183,7 @@ const getCreateBibMarcRecordDefaultFields = (instanceRecord) => {
     '999': ['f', 'f'],
   };
 
-  return CREATE_BIB_MARC_RECORD_DEFAULT_FIELD_TAGS.map(tag => {
+  return CREATE_BIB_RECORD_DEFAULT_FIELD_TAGS.map(tag => {
     const field = {
       tag,
       id: uuidv4(),
@@ -211,17 +204,17 @@ const getCreateBibMarcRecordDefaultFields = (instanceRecord) => {
   });
 };
 
-export const getCreateMarcRecordResponse = (instanceResponse) => {
+export const getCreateHoldingsMarcRecordResponse = (instanceResponse) => {
   const instanceId = instanceResponse.id;
 
   return {
     externalId: instanceId,
-    leader: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+    leader: CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
     fields: undefined,
     records: [
       {
         tag: LEADER_TAG,
-        content: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+        content: CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
         id: LEADER_TAG,
       },
       ...getCreateMarcRecordDefaultFields(instanceResponse),
@@ -235,12 +228,12 @@ export const getCreateBibMarcRecordResponse = (instanceResponse) => {
 
   return {
     externalId: instanceId,
-    leader: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+    leader: CREATE_BIB_RECORD_DEFAULT_LEADER_VALUE,
     fields: undefined,
     records: [
       {
         tag: LEADER_TAG,
-        content: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+        content: CREATE_BIB_RECORD_DEFAULT_LEADER_VALUE,
         id: LEADER_TAG,
       },
       ...getCreateBibMarcRecordDefaultFields(instanceResponse),
@@ -293,7 +286,7 @@ const removeMarcRecordFieldContentForDerive = marcRecord => {
   };
 };
 
-export const formatMarcRecordByQuickMarcAction = (marcRecord, action) => {
+export const formatMarcRecordByQuickMarcAction = (marcRecord, action, marcType) => {
   if (action === QUICK_MARC_ACTIONS.DERIVE) {
     return {
       ...removeMarcRecordFieldContentForDerive(marcRecord),
@@ -303,27 +296,29 @@ export const formatMarcRecordByQuickMarcAction = (marcRecord, action) => {
     };
   }
 
-  if (action === QUICK_MARC_ACTIONS.CREATE_BIB) {
-    return {
-      ...removeMarcRecordFieldContentForDerive(marcRecord),
-      relatedRecordVersion: 1,
-      marcFormat: MARC_TYPES.BIBLIOGRAPHIC.toUpperCase(),
-      updateInfo: {
-        recordState: RECORD_STATUS_NEW,
-      },
-    };
-  }
-
   if (action === QUICK_MARC_ACTIONS.CREATE) {
-    return {
-      ...marcRecord,
-      relatedRecordVersion: 1,
-      marcFormat: MARC_TYPES.HOLDINGS.toUpperCase(),
-      suppressDiscovery: false,
-      updateInfo: {
-        recordState: RECORD_STATUS_NEW,
-      },
-    };
+    if (marcType === MARC_TYPES.BIB) {
+      return {
+        ...marcRecord,
+        relatedRecordVersion: 1,
+        marcFormat: MARC_TYPES.BIBLIOGRAPHIC.toUpperCase(),
+        updateInfo: {
+          recordState: RECORD_STATUS_NEW,
+        },
+      };
+    }
+
+    if (marcType === MARC_TYPES.HOLDINGS) {
+      return {
+        ...marcRecord,
+        relatedRecordVersion: 1,
+        marcFormat: MARC_TYPES.HOLDINGS.toUpperCase(),
+        suppressDiscovery: false,
+        updateInfo: {
+          recordState: RECORD_STATUS_NEW,
+        },
+      };
+    }
   }
 
   return marcRecord;
@@ -403,7 +398,7 @@ const validateLeaderPositions = (leader, marcType) => {
   return undefined;
 };
 
-export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYPES.BIB) => {
+export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYPES.BIB, action) => {
   const cutEditableBytes = (str) => (
     LEADER_EDITABLE_BYTES[marcType].reduce((acc, byte, idx) => {
       const position = byte - idx;
@@ -740,6 +735,7 @@ const validateMarcAuthorityRecord = (marcRecords, linksCount, initialRecords, na
 export const validateMarcRecord = ({
   marcRecord,
   initialValues,
+  action,
   marcType = MARC_TYPES.BIB,
   locations = [],
   linksCount,
@@ -750,7 +746,7 @@ export const validateMarcRecord = ({
   const initialMarcRecords = initialValues.records;
   const recordLeader = marcRecords[0];
 
-  const leaderError = validateLeader(marcRecord?.leader, recordLeader?.content, marcType);
+  const leaderError = validateLeader(marcRecord?.leader, recordLeader?.content, marcType, action);
 
   if (leaderError) {
     return leaderError;
