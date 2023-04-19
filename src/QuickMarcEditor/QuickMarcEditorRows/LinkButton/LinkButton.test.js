@@ -94,10 +94,12 @@ describe('Given LinkButton', () => {
         const { getAllByTestId } = renderComponent();
 
         const initialValues = {
-          dropdownValue: 'personalNameTitle',
-          searchIndex: 'personalNameTitle',
-          searchInputValue: '',
-          searchQuery: '',
+          search: {
+            dropdownValue: 'personalNameTitle',
+          },
+          browse: {
+            dropdownValue: 'personalNameTitle',
+          },
           segment: 'browse',
         };
 
@@ -114,10 +116,14 @@ describe('Given LinkButton', () => {
         });
 
         const initialValues = {
-          dropdownValue: 'identifiers.value',
-          searchIndex: 'identifiers.value',
-          searchInputValue: 'n123456789',
-          searchQuery: 'n123456789',
+          search: {
+            dropdownValue: 'identifiers.value',
+            searchInputValue: 'n123456789',
+            searchQuery: 'n123456789',
+          },
+          browse: {
+            dropdownValue: 'personalNameTitle',
+          },
           segment: 'search',
         };
 
@@ -134,10 +140,14 @@ describe('Given LinkButton', () => {
         });
 
         const initialValues = {
-          dropdownValue: 'advancedSearch',
-          searchIndex: 'advancedSearch',
-          searchInputValue: 'identifiers.value==n123456789 or identifiers.value==n987654321',
-          searchQuery: 'identifiers.value==n123456789 or identifiers.value==n987654321',
+          search: {
+            dropdownValue: 'advancedSearch',
+            searchInputValue: 'identifiers.value==n123456789 or identifiers.value==n987654321',
+            searchQuery: 'identifiers.value==n123456789 or identifiers.value==n987654321',
+          },
+          browse: {
+            dropdownValue: 'personalNameTitle',
+          },
           segment: 'search',
         };
 
@@ -154,10 +164,14 @@ describe('Given LinkButton', () => {
         });
 
         const initialValues = {
-          dropdownValue: 'personalNameTitle',
-          searchIndex: 'personalNameTitle',
-          searchInputValue: 'value1 value2 value3',
-          searchQuery: 'value1 value2 value3',
+          search: {
+            dropdownValue: 'personalNameTitle',
+          },
+          browse: {
+            dropdownValue: 'personalNameTitle',
+            searchInputValue: 'value1 value2 value3',
+            searchQuery: 'value1 value2 value3',
+          },
           segment: 'browse',
         };
 

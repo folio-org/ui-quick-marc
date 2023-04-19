@@ -95,12 +95,18 @@ const LinkButton = ({
   };
 
   const initialValues = useMemo(() => {
-    const { dropdownValue } = DEFAULT_LOOKUP_OPTIONS[tag];
+    const { dropdownValue: dropdownValueByTag } = DEFAULT_LOOKUP_OPTIONS[tag];
 
-    let initialDropdownValue = dropdownValue;
+    let initialDropdownValue = dropdownValueByTag;
     let initialSearchInputValue = '';
     let initialSegment = navigationSegments.search;
     let initialSearchQuery = '';
+
+    const _initialValues = {
+      [navigationSegments.search]: {},
+      [navigationSegments.browse]: {},
+      segment: initialSegment,
+    };
 
     const fieldContent = getContentSubfieldValue(content);
 
@@ -108,6 +114,15 @@ const LinkButton = ({
       initialDropdownValue = searchableIndexesValues.IDENTIFIER;
       initialSearchInputValue = selectIdentifierFromSubfield(fieldContent.$0[0]);
       initialSearchQuery = initialSearchInputValue;
+
+      _initialValues[navigationSegments.search] = {
+        dropdownValue: initialDropdownValue,
+        searchInputValue: initialSearchInputValue,
+        searchQuery: initialSearchQuery,
+      };
+      _initialValues[navigationSegments.browse] = {
+        dropdownValue: dropdownValueByTag,
+      };
     } else if (fieldContent.$0?.length > 1) {
       initialDropdownValue = searchableIndexesValues.ADVANCED_SEARCH;
       initialSearchInputValue = fieldContent.$0
@@ -115,23 +130,44 @@ const LinkButton = ({
         .map(identifier => `${searchableIndexesValues.IDENTIFIER}==${identifier}`)
         .join(' or ');
       initialSearchQuery = initialSearchInputValue;
+
+      _initialValues[navigationSegments.search] = {
+        dropdownValue: initialDropdownValue,
+        searchInputValue: initialSearchInputValue,
+        searchQuery: initialSearchQuery,
+      };
+      _initialValues[navigationSegments.browse] = {
+        dropdownValue: dropdownValueByTag,
+      };
     } else if (fieldContent.$a?.length || fieldContent.$d?.length || fieldContent.$t?.length) {
       initialSegment = navigationSegments.browse;
       initialSearchInputValue = flatten([fieldContent.$a, fieldContent.$d, fieldContent.$t])
         .filter(value => !isNil(value))
         .join(' ');
       initialSearchQuery = initialSearchInputValue;
+
+      _initialValues[navigationSegments.browse] = {
+        dropdownValue: initialDropdownValue,
+        searchInputValue: initialSearchInputValue,
+        searchQuery: initialSearchQuery,
+      };
+      _initialValues[navigationSegments.search] = {
+        dropdownValue: dropdownValueByTag,
+      };
     } else {
       initialSegment = navigationSegments.browse;
+
+      _initialValues[navigationSegments.browse] = {
+        dropdownValue: dropdownValueByTag,
+      };
+      _initialValues[navigationSegments.search] = {
+        dropdownValue: dropdownValueByTag,
+      };
     }
 
-    return {
-      dropdownValue: initialDropdownValue,
-      searchIndex: initialDropdownValue,
-      searchInputValue: initialSearchInputValue,
-      searchQuery: initialSearchQuery,
-      segment: initialSegment,
-    };
+    _initialValues.segment = initialSegment;
+
+    return _initialValues;
   }, [content, tag]);
 
   const renderButton = () => {
