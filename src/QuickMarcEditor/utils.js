@@ -1024,7 +1024,7 @@ export const groupSubfields = (field, authorityControlledSubfields = []) => {
   });
 };
 
-export const splitFields = marcRecord => {
+export const splitFields = (marcRecord, linkingRules) => {
   return {
     ...marcRecord,
     records: marcRecord.records.map(record => {
@@ -1032,7 +1032,8 @@ export const splitFields = marcRecord => {
         return record;
       }
 
-      const subfieldGroups = groupSubfields(record, record.authorityControlledSubfields);
+      const linkingRule = linkingRules.find(rule => rule.id === record.linkingRuleId);
+      const subfieldGroups = groupSubfields(record, linkingRule?.authoritySubfields);
 
       return {
         ...record,

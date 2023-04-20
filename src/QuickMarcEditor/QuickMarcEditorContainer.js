@@ -30,7 +30,10 @@ import {
   splitFields,
 } from './utils';
 import { QUICK_MARC_ACTIONS } from './constants';
-import { useAuthorityLinksCount } from '../queries';
+import {
+  useAuthorityLinkingRules,
+  useAuthorityLinksCount,
+} from '../queries';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 
 const propTypes = {
@@ -73,6 +76,7 @@ const QuickMarcEditorContainer = ({
 
   const showCallout = useShowCallout();
   const { fetchLinksCount } = useAuthorityLinksCount();
+  const { linkingRules } = useAuthorityLinkingRules();
 
   const closeEditor = useCallback(() => {
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
@@ -125,7 +129,7 @@ const QuickMarcEditorContainer = ({
 
         const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, action);
         const marcRecordWithInternalProps = addInternalFieldProperties(formattedMarcRecord);
-        const marcRecordWithSplitFields = splitFields(marcRecordWithInternalProps);
+        const marcRecordWithSplitFields = splitFields(marcRecordWithInternalProps, linkingRules);
 
         setInstance(instanceResponse);
         setMarcRecord(marcRecordWithSplitFields);
@@ -137,7 +141,7 @@ const QuickMarcEditorContainer = ({
         closeEditor();
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [externalId, relatedRecordVersion, history, marcType, fetchLinksCount]);
+  }, [externalId, relatedRecordVersion, history, marcType, fetchLinksCount, linkingRules]);
 
   useEffect(() => {
     if (action === QUICK_MARC_ACTIONS.CREATE_BIB) {
@@ -152,8 +156,10 @@ const QuickMarcEditorContainer = ({
       return;
     }
 
-    loadData();
-  }, [action, loadData]);
+    if (linkingRules.length) {
+      loadData();
+    }
+  }, [action, loadData, linkingRules]);
 
   if (isLoading) {
     return (

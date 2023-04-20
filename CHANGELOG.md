@@ -16,6 +16,7 @@
 * [UIQM-382](https://issues.folio.org/browse/UIQM-382) quickMARC Bib Validation: Make 010 a non-repeatable field in create, edit, and derive bib records
 * [UIQM-429](https://issues.folio.org/browse/UIQM-429) Prevent many location in Marc holdings record.
 * [UIQM-449](https://issues.folio.org/browse/UIQM-449) Link Authority: Pre-populate search/browse box with bib subfield values 
+* [UIQM-450](https://issues.folio.org/browse/UIQM-450) Take the authority control subfields from the linking rules. 
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
 
