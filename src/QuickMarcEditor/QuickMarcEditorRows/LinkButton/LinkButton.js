@@ -117,11 +117,13 @@ const LinkButton = ({
 
       _initialValues[navigationSegments.search] = {
         dropdownValue: initialDropdownValue,
+        searchIndex: initialDropdownValue,
         searchInputValue: initialSearchInputValue,
         searchQuery: initialSearchQuery,
       };
       _initialValues[navigationSegments.browse] = {
         dropdownValue: dropdownValueByTag,
+        searchIndex: dropdownValueByTag,
       };
     } else if (fieldContent.$0?.length > 1) {
       initialDropdownValue = searchableIndexesValues.ADVANCED_SEARCH;
@@ -133,11 +135,13 @@ const LinkButton = ({
 
       _initialValues[navigationSegments.search] = {
         dropdownValue: initialDropdownValue,
+        searchIndex: initialDropdownValue,
         searchInputValue: initialSearchInputValue,
         searchQuery: initialSearchQuery,
       };
       _initialValues[navigationSegments.browse] = {
         dropdownValue: dropdownValueByTag,
+        searchIndex: dropdownValueByTag,
       };
     } else if (fieldContent.$a?.length || fieldContent.$d?.length || fieldContent.$t?.length) {
       initialSegment = navigationSegments.browse;
@@ -148,20 +152,24 @@ const LinkButton = ({
 
       _initialValues[navigationSegments.browse] = {
         dropdownValue: initialDropdownValue,
+        searchIndex: initialDropdownValue,
         searchInputValue: initialSearchInputValue,
         searchQuery: initialSearchQuery,
       };
       _initialValues[navigationSegments.search] = {
         dropdownValue: dropdownValueByTag,
+        searchIndex: dropdownValueByTag,
       };
     } else {
       initialSegment = navigationSegments.browse;
 
       _initialValues[navigationSegments.browse] = {
         dropdownValue: dropdownValueByTag,
+        searchIndex: dropdownValueByTag,
       };
       _initialValues[navigationSegments.search] = {
         dropdownValue: dropdownValueByTag,
+        searchIndex: dropdownValueByTag,
       };
     }
 
