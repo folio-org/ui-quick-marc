@@ -96,9 +96,11 @@ describe('Given LinkButton', () => {
         const initialValues = {
           search: {
             dropdownValue: 'personalNameTitle',
+            searchIndex: 'personalNameTitle',
           },
           browse: {
             dropdownValue: 'personalNameTitle',
+            searchIndex: 'personalNameTitle',
           },
           segment: 'browse',
         };
@@ -118,11 +120,13 @@ describe('Given LinkButton', () => {
         const initialValues = {
           search: {
             dropdownValue: 'identifiers.value',
+            searchIndex: 'identifiers.value',
             searchInputValue: 'n123456789',
             searchQuery: 'n123456789',
           },
           browse: {
             dropdownValue: 'personalNameTitle',
+            searchIndex: 'personalNameTitle',
           },
           segment: 'search',
         };
@@ -142,11 +146,13 @@ describe('Given LinkButton', () => {
         const initialValues = {
           search: {
             dropdownValue: 'advancedSearch',
+            searchIndex: 'advancedSearch',
             searchInputValue: 'identifiers.value==n123456789 or identifiers.value==n987654321',
             searchQuery: 'identifiers.value==n123456789 or identifiers.value==n987654321',
           },
           browse: {
             dropdownValue: 'personalNameTitle',
+            searchIndex: 'personalNameTitle',
           },
           segment: 'search',
         };
@@ -166,9 +172,11 @@ describe('Given LinkButton', () => {
         const initialValues = {
           search: {
             dropdownValue: 'personalNameTitle',
+            searchIndex: 'personalNameTitle',
           },
           browse: {
             dropdownValue: 'personalNameTitle',
+            searchIndex: 'personalNameTitle',
             searchInputValue: 'value1 value2 value3',
             searchQuery: 'value1 value2 value3',
           },
