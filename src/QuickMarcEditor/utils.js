@@ -48,7 +48,7 @@ export const isFixedFieldRow = recordRow => recordRow.tag === '008';
 export const isMaterialCharsRecord = recordRow => recordRow.tag === '006';
 export const isPhysDescriptionRecord = recordRow => recordRow.tag === '007';
 
-export const getContentSubfieldValue = (content) => {
+export const getContentSubfieldValue = (content = '') => {
   return content.split(/\$/)
     .filter(str => str.length > 0)
     .reduce((acc, str) => {
@@ -431,7 +431,7 @@ export const getLocationValue = (value) => {
 };
 
 export const validateLocationSubfield = (field, locations) => {
-  const [, locationValue] = getLocationValue(field.content)?.split(' ');
+  const [, locationValue] = getLocationValue(field.content)?.replace(/\s+/, ' ').split(' ') || '';
 
   return !!locations.find(location => location.code === locationValue);
 };
@@ -613,6 +613,12 @@ const validateMarcHoldingsRecord = (marcRecords, locations) => {
 
   if (locationRecords.length > 1) {
     return <FormattedMessage id="ui-quick-marc.record.error.location.multiple" />;
+  }
+
+  if (locationRecords.length) {
+    if (getContentSubfieldValue(locationRecords[0].content).$b?.length > 1) {
+      return <FormattedMessage id="ui-quick-marc.record.error.field.onlyOneSubfield" values={{ fieldTag: '852', subField: '$b' }} />;
+    }
   }
 
   if (!validateLocationSubfield(marcRecords.find(({ tag }) => tag === '852'), locations)) {

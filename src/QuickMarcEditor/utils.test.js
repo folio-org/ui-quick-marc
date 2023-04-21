@@ -2060,6 +2060,10 @@ describe('QuickMarcEditor utils', () => {
         $b: ['Repeat 1', 'Repeat 2'],
       });
     });
+
+    it('shoud return empty body when content is undefined', () => {
+      expect(utils.getContentSubfieldValue(undefined)).toEqual({});
+    });
   });
 
   describe('validateLocationSubfield', () => {
@@ -2067,8 +2071,16 @@ describe('QuickMarcEditor utils', () => {
       expect(utils.validateLocationSubfield({ content: '$b VA/LI/D ' }, locations)).toBe(true);
     });
 
+    it('should return true for valid location subfield even more space between', () => {
+      expect(utils.validateLocationSubfield({ content: '$b    VA/LI/D ' }, locations)).toBe(true);
+    });
+
     it('should return false for locations that do not exist', () => {
       expect(utils.validateLocationSubfield({ content: '$b NOT/VA/LI/D ' }, locations)).toBe(false);
+    });
+
+    it('should return false for locations that Field no content', () => {
+      expect(utils.validateLocationSubfield({}, locations)).toBe(false);
     });
   });
 

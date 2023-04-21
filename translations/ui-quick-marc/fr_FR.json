@@ -253,7 +253,6 @@
     "update-linked-bib-fields.modal.label": "Êtes-vous sûr(e)?",
     "update-linked-bib-fields.modal.keep-editing": "Keep editing",
     "print": "Papier",
-    "record.error.010Field.multiple": "Cannot save multiple 010 fields.",
     "record.error.$9": "$9 is an invalid subfield for linkable bibliographic fields.",
     "update-linked-bib-fields.modal.message-save": "<b>{count} {count, plural, one {bibliographic record} other {bibliographic records}}</b> {count, plural, one {is} other {are}} linked to this authority record and will be updated by clicking the <b>Save</b> button.",
     "update-linked-bib-fields.modal.save": "Save",
@@ -263,5 +262,8 @@
     "record.error.010.removed": "Cannot delete 010. It is required.",
     "record.error.010.$aRemoved": "Cannot remove 010 $a for this record.",
     "record.error.010.$aOnlyOne": "010 can only have one $a.",
-    "permission.quick-marc-editor.create": "quickMARC: Create a new MARC bibliographic record"
+    "permission.quick-marc-editor.create": "quickMARC: Create a new MARC bibliographic record",
+    "bib-record.create-bib.title": "Create a new MARC bib record",
+    "record.error.locControlNumber.multiple": "Record cannot be saved with more than one field 010",
+    "record.error.field.onlyOneSubfield": "<b>{fieldTag}</b> can only have one <b>{subField}</b>."
 }

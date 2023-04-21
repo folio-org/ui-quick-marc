@@ -1,11 +1,14 @@
 import {
   useState,
+  useMemo,
 } from 'react';
 import {
   useIntl,
   FormattedMessage,
 } from 'react-intl';
 import PropTypes from 'prop-types';
+import flatten from 'lodash/flatten';
+import isNil from 'lodash/isNil';
 
 import {
   Pluggable,
@@ -18,9 +21,11 @@ import {
 } from '@folio/stripes/components';
 
 import { useMarcSource } from '../../../queries';
+import { getContentSubfieldValue } from '../../utils';
 import {
   DEFAULT_LOOKUP_OPTIONS,
-  FILTERS,
+  searchableIndexesValues,
+  navigationSegments,
 } from '../../../common/constants';
 
 const propTypes = {
@@ -28,11 +33,11 @@ const propTypes = {
     PropTypes.object,
     PropTypes.func,
   ]),
+  content: PropTypes.string,
   isLinked: PropTypes.bool.isRequired,
   handleLinkAuthority: PropTypes.func.isRequired,
   handleUnlinkAuthority: PropTypes.func.isRequired,
   fieldId: PropTypes.string.isRequired,
-  sourceFiles: PropTypes.arrayOf(PropTypes.object).isRequired,
   tag: PropTypes.string.isRequired,
 };
 
@@ -42,13 +47,12 @@ const LinkButton = ({
   isLinked,
   tag,
   fieldId,
-  sourceFiles,
   calloutRef,
+  content,
 }) => {
   const intl = useIntl();
   const [authority, setAuthority] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [initialValues, setInitialValues] = useState(null);
   const callout = useCallout();
 
   const { isLoading, refetch: refetchSource } = useMarcSource(fieldId, authority?.id, {
@@ -84,27 +88,95 @@ const LinkButton = ({
     toggleModal();
   };
 
-  const handleInitialValues = () => {
-    const {
-      dropdownValue,
-      filters: defaultTagFilters,
-    } = DEFAULT_LOOKUP_OPTIONS[tag];
+  const selectIdentifierFromSubfield = (subfield) => {
+    const match = subfield.substring(subfield.lastIndexOf('/') + 1);
 
-    const existingAuthSourceFilters = defaultTagFilters.filter(filterId => {
-      return sourceFiles.find(sourceFile => sourceFile.id === filterId);
-    });
+    return match || subfield;
+  };
 
-    const initialFilters = {
-      [FILTERS.REFERENCES]: [],
-      [FILTERS.AUTHORITY_SOURCE]: existingAuthSourceFilters,
+  const initialValues = useMemo(() => {
+    const { dropdownValue: dropdownValueByTag } = DEFAULT_LOOKUP_OPTIONS[tag];
+
+    let initialDropdownValue = dropdownValueByTag;
+    let initialSearchInputValue = '';
+    let initialSegment = navigationSegments.search;
+    let initialSearchQuery = '';
+
+    const _initialValues = {
+      [navigationSegments.search]: {},
+      [navigationSegments.browse]: {},
+      segment: initialSegment,
     };
 
-    setInitialValues({
-      filters: initialFilters,
-      searchIndex: '',
-      dropdownValue,
-    });
-  };
+    const fieldContent = getContentSubfieldValue(content);
+
+    if (fieldContent.$0?.length === 1) {
+      initialDropdownValue = searchableIndexesValues.IDENTIFIER;
+      initialSearchInputValue = selectIdentifierFromSubfield(fieldContent.$0[0]);
+      initialSearchQuery = initialSearchInputValue;
+
+      _initialValues[navigationSegments.search] = {
+        dropdownValue: initialDropdownValue,
+        searchIndex: initialDropdownValue,
+        searchInputValue: initialSearchInputValue,
+        searchQuery: initialSearchQuery,
+      };
+      _initialValues[navigationSegments.browse] = {
+        dropdownValue: dropdownValueByTag,
+        searchIndex: dropdownValueByTag,
+      };
+    } else if (fieldContent.$0?.length > 1) {
+      initialDropdownValue = searchableIndexesValues.ADVANCED_SEARCH;
+      initialSearchInputValue = fieldContent.$0
+        .map(selectIdentifierFromSubfield)
+        .map(identifier => `${searchableIndexesValues.IDENTIFIER}==${identifier}`)
+        .join(' or ');
+      initialSearchQuery = initialSearchInputValue;
+
+      _initialValues[navigationSegments.search] = {
+        dropdownValue: initialDropdownValue,
+        searchIndex: initialDropdownValue,
+        searchInputValue: initialSearchInputValue,
+        searchQuery: initialSearchQuery,
+      };
+      _initialValues[navigationSegments.browse] = {
+        dropdownValue: dropdownValueByTag,
+        searchIndex: dropdownValueByTag,
+      };
+    } else if (fieldContent.$a?.length || fieldContent.$d?.length || fieldContent.$t?.length) {
+      initialSegment = navigationSegments.browse;
+      initialSearchInputValue = flatten([fieldContent.$a, fieldContent.$d, fieldContent.$t])
+        .filter(value => !isNil(value))
+        .join(' ');
+      initialSearchQuery = initialSearchInputValue;
+
+      _initialValues[navigationSegments.browse] = {
+        dropdownValue: initialDropdownValue,
+        searchIndex: initialDropdownValue,
+        searchInputValue: initialSearchInputValue,
+        searchQuery: initialSearchQuery,
+      };
+      _initialValues[navigationSegments.search] = {
+        dropdownValue: dropdownValueByTag,
+        searchIndex: dropdownValueByTag,
+      };
+    } else {
+      initialSegment = navigationSegments.browse;
+
+      _initialValues[navigationSegments.browse] = {
+        dropdownValue: dropdownValueByTag,
+        searchIndex: dropdownValueByTag,
+      };
+      _initialValues[navigationSegments.search] = {
+        dropdownValue: dropdownValueByTag,
+        searchIndex: dropdownValueByTag,
+      };
+    }
+
+    _initialValues.segment = initialSegment;
+
+    return _initialValues;
+  }, [content, tag]);
 
   const renderButton = () => {
     if (isLinked) {
@@ -147,7 +219,6 @@ const LinkButton = ({
                 aria-haspopup="true"
                 aria-labelledby={ariaIds.text}
                 onClick={e => {
-                  handleInitialValues();
                   onClick(e);
                 }}
               />

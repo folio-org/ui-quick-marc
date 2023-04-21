@@ -253,7 +253,6 @@
     "update-linked-bib-fields.modal.label": "Opravdu?",
     "update-linked-bib-fields.modal.keep-editing": "Pokračovat v úpravách",
     "print": "Tisk",
-    "record.error.010Field.multiple": "Nelze uložit více polí 010.",
     "record.error.$9": "$9 je neplatné podpole pro propojitelná bibliografická pole.",
     "update-linked-bib-fields.modal.message-save": "<b>{count} {count, plural, one {bibliografický záznam} other {bibliografické záznamy}} </b>{count, plural, one {je} other {jsou}} propojen s tímto záznamem autority a bude aktualizován kliknutím na <b>Uložit</b> .",
     "update-linked-bib-fields.modal.save": "Uložit",
@@ -263,5 +262,8 @@
     "record.error.010.removed": "Nelze smazat 010. Je vyžadováno.",
     "record.error.010.$aRemoved": "Nelze odebrat 010 $a pro tento záznam.",
     "record.error.010.$aOnlyOne": "010 může mít pouze jeden $a.",
-    "permission.quick-marc-editor.create": "quickMARC: Vytvoření nového MARC bibliografického záznamu"
+    "permission.quick-marc-editor.create": "quickMARC: Vytvoření nového MARC bibliografického záznamu",
+    "bib-record.create-bib.title": "Vytvořit nový MARC bib záznam",
+    "record.error.locControlNumber.multiple": "Záznam nelze uložit s více než jedním polem 010",
+    "record.error.field.onlyOneSubfield": "<b>{fieldTag}</b> může mít pouze jedno <b>{subField}</b>."
 }
