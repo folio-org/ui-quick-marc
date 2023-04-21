@@ -24,14 +24,14 @@ import {
 
 import {
   dehydrateMarcRecordResponse,
-  getCreateMarcRecordResponse,
+  getCreateHoldingsMarcRecordResponse,
   formatMarcRecordByQuickMarcAction,
   addInternalFieldProperties,
   splitFields,
+  getCreateBibMarcRecordResponse,
 } from './utils';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { useAuthorityLinksCount } from '../queries';
-import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
@@ -98,12 +98,19 @@ const QuickMarcEditorContainer = ({
       ? EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]
       : EXTERNAL_INSTANCE_APIS[marcType];
 
-    const instancePromise = mutator.quickMarcEditInstance.GET({ path: `${path}/${externalId}` });
+    const instancePromise = action === QUICK_MARC_ACTIONS.CREATE && marcType === MARC_TYPES.BIB
+      ? Promise.resolve({})
+      : mutator.quickMarcEditInstance.GET({ path: `${path}/${externalId}` });
+
     const marcRecordPromise = action === QUICK_MARC_ACTIONS.CREATE
       ? Promise.resolve({})
       : mutator.quickMarcEditMarcRecord.GET({ params: { externalId } });
+
     const locationsPromise = mutator.locations.GET();
-    const linksCountPromise = marcType === MARC_TYPES.AUTHORITY ? fetchLinksCount([externalId]) : Promise.resolve();
+
+    const linksCountPromise = marcType === MARC_TYPES.AUTHORITY
+      ? fetchLinksCount([externalId])
+      : Promise.resolve();
 
     await Promise.all([instancePromise, marcRecordPromise, locationsPromise, linksCountPromise])
       .then(([instanceResponse, marcRecordResponse, locationsResponse, linksCountResponse]) => {
@@ -119,11 +126,17 @@ const QuickMarcEditorContainer = ({
           });
         }
 
-        const dehydratedMarcRecord = action === QUICK_MARC_ACTIONS.CREATE
-          ? getCreateMarcRecordResponse(instanceResponse)
-          : dehydrateMarcRecordResponse(marcRecordResponse);
+        let dehydratedMarcRecord;
 
-        const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, action);
+        if (action === QUICK_MARC_ACTIONS.CREATE && marcType === MARC_TYPES.BIB) {
+          dehydratedMarcRecord = getCreateBibMarcRecordResponse(instanceResponse);
+        } else if (action === QUICK_MARC_ACTIONS.CREATE) {
+          dehydratedMarcRecord = getCreateHoldingsMarcRecordResponse(instanceResponse);
+        } else {
+          dehydratedMarcRecord = dehydrateMarcRecordResponse(marcRecordResponse);
+        }
+
+        const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, action, marcType);
         const marcRecordWithInternalProps = addInternalFieldProperties(formattedMarcRecord);
         const marcRecordWithSplitFields = splitFields(marcRecordWithInternalProps);
 
@@ -140,18 +153,6 @@ const QuickMarcEditorContainer = ({
   }, [externalId, relatedRecordVersion, history, marcType, fetchLinksCount]);
 
   useEffect(() => {
-    if (action === QUICK_MARC_ACTIONS.CREATE_BIB) {
-      // TODO: Temporary decision. Will be implemented in UQIM-415.
-      setMarcRecord({
-        'updateInfo': {
-          'recordState': RECORD_STATUS_NEW,
-        },
-      });
-      setIsLoading(false);
-
-      return;
-    }
-
     loadData();
   }, [action, loadData]);
 

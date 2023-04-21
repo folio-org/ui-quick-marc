@@ -73,6 +73,7 @@ const QuickMarcCreateWrapper = ({
       initialValues,
       marcType,
       locations,
+      action,
     });
 
     if (validationErrorMessage) {
@@ -80,7 +81,22 @@ const QuickMarcCreateWrapper = ({
     }
 
     return undefined;
-  }, [initialValues, locations, marcType, prepareForSubmit]);
+  }, [initialValues, locations, marcType, action, prepareForSubmit]);
+
+  const redirectToRecord = (externalId, instanceId) => {
+    let path;
+
+    if (marcType === MARC_TYPES.HOLDINGS) {
+      path = `/inventory/view/${instanceId}/${externalId}`;
+    } else if (marcType === MARC_TYPES.BIB) {
+      path = `/inventory/view/${externalId}`;
+    }
+
+    history.push({
+      pathname: path,
+      search: location.search,
+    });
+  };
 
   const onSubmit = useCallback(async (formValues) => {
     const formValuesForCreate = prepareForSubmit(formValues);
@@ -100,12 +116,7 @@ const QuickMarcCreateWrapper = ({
 
           showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
 
-          const path = `/inventory/view/${instanceId}/${externalId}`;
-
-          history.push({
-            pathname: path,
-            search: location.search,
-          });
+          redirectToRecord(externalId, instanceId);
         } catch (e) {
           showCallout({
             messageId: 'ui-quick-marc.record.saveNew.error',

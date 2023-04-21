@@ -6,7 +6,7 @@ import { v4 as uuid } from 'uuid';
 import {
   LEADER_TAG,
   QUICK_MARC_ACTIONS,
-  CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+  CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
   HOLDINGS_FIXED_FIELD_DEFAULT_VALUES,
 } from './constants';
 import { MARC_TYPES } from '../common/constants';
@@ -1487,11 +1487,11 @@ describe('QuickMarcEditor utils', () => {
 
       const record = {
         externalId: instanceId,
-        leader: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+        leader: CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
         fields: undefined,
         records: [{
           tag: LEADER_TAG,
-          content: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+          content: CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
           id: LEADER_TAG,
         }, {
           tag: '001',
@@ -1521,7 +1521,8 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.formatMarcRecordByQuickMarcAction(record, QUICK_MARC_ACTIONS.CREATE)).toEqual(expectedRecord);
+      expect(utils.formatMarcRecordByQuickMarcAction(record, QUICK_MARC_ACTIONS.CREATE, MARC_TYPES.HOLDINGS))
+        .toEqual(expectedRecord);
     });
   });
 
@@ -1976,7 +1977,7 @@ describe('QuickMarcEditor utils', () => {
     });
   });
 
-  describe('getCreateMarcRecordResponse', () => {
+  describe('getCreateHoldingsMarcRecordResponse', () => {
     it('should return correct response for creating MARC Holdings record', () => {
       const instanceResponse = {
         id: 'instanceId',
@@ -2009,12 +2010,12 @@ describe('QuickMarcEditor utils', () => {
 
       const expectedResult = {
         externalId: instanceResponse.id,
-        leader: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+        leader: CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
         fields: undefined,
         records: [
           {
             tag: LEADER_TAG,
-            content: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+            content: CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
             id: LEADER_TAG,
           },
           ...defaultFields,
@@ -2022,7 +2023,7 @@ describe('QuickMarcEditor utils', () => {
         parsedRecordDtoId: instanceResponse.id,
       };
 
-      expect(utils.getCreateMarcRecordResponse(instanceResponse)).toEqual(expectedResult);
+      expect(utils.getCreateHoldingsMarcRecordResponse(instanceResponse)).toEqual(expectedResult);
     });
   });
 

@@ -280,32 +280,22 @@ const QuickMarcEditor = ({
         location: find(locations, { id: instance?.effectiveLocationId })?.name,
         callNumber: instance?.callNumber,
       };
+    } else if ((marcType === MARC_TYPES.AUTHORITY) && records.length) {
+      const currentHeading = records.find((recordRow) => {
+        return recordRow.tag === recordInfoProps.correspondingMarcTag;
+      });
+
+      const initialHeading = initialValues.records.find((recordRow) => {
+        return recordRow.tag === recordInfoProps.correspondingMarcTag;
+      });
+
+      const headingContent = currentHeading?.content || initialHeading?.content;
+
+      formattedMessageValues = {
+        title: getContentSubfieldValue(headingContent).$a?.[0],
+      };
     } else {
-      if (!instance) {
-        if (action === QUICK_MARC_ACTIONS.CREATE_BIB) {
-          return <FormattedMessage id={`ui-quick-marc.${marcType}-record.${action}.title`} />;
-        }
-
-        return '';
-      }
-
-      if ((marcType === MARC_TYPES.AUTHORITY) && records.length) {
-        const currentHeading = records.find((recordRow) => {
-          return recordRow.tag === recordInfoProps.correspondingMarcTag;
-        });
-
-        const initialHeading = initialValues.records.find((recordRow) => {
-          return recordRow.tag === recordInfoProps.correspondingMarcTag;
-        });
-
-        const headingContent = currentHeading?.content || initialHeading?.content;
-
-        formattedMessageValues = {
-          title: getContentSubfieldValue(headingContent).$a?.[0],
-        };
-      } else {
-        formattedMessageValues = instance;
-      }
+      formattedMessageValues = instance;
     }
 
     return (
