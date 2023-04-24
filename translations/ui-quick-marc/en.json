@@ -232,7 +232,7 @@
   "record.link.validation.invalidHeading": "You have selected an invalid heading based on the bibliographic field you want controlled. Please revise your selection.",
   "record.unlink": "Unlink from MARC Authority record",
   "record.unlink.confirm.title": "Unlink from MARC authority record",
-  "record.unlink.confirm.message": "By selecting <b>Unlink</b>, then field {tag} will be unlinked from the MARC authority record. Are you sure you want to continue?",
+  "record.unlink.confirm.message": "By selecting <b>Unlink</b>, then field <b>{tag}</b> will be unlinked from the MARC authority record. Are you sure you want to continue?",
   "record.unlink.confirm.cancel": "Cancel",
   "record.unlink.confirm.confirm": "Unlink",
   "record.viewMarcAuthorityRecord": "View MARC authority record",
