@@ -471,7 +471,7 @@ export const checkDuplicate010Field = (marcRecords) => {
   const marc010Records = marcRecords.filter(({ tag }) => tag === '010');
 
   if (marc010Records.length > 1) {
-    return <FormattedMessage id="ui-quick-marc.record.error.locControlNumber.multiple" />;
+    return <FormattedMessage id="ui-quick-marc.record.error.010.multiple" />;
   }
 
   return undefined;
