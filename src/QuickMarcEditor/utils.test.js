@@ -407,7 +407,7 @@ describe('QuickMarcEditor utils', () => {
         initialValues,
         marcType: MARC_TYPES.BIB,
         locations,
-      }).props.id).toBe('ui-quick-marc.record.error.locControlNumber.multiple');
+      }).props.id).toBe('ui-quick-marc.record.error.010.multiple');
     });
 
     describe('when $9 entered', () => {
@@ -927,7 +927,7 @@ describe('QuickMarcEditor utils', () => {
           marcRecord: record,
           initialValues,
           marcType: MARC_TYPES.AUTHORITY,
-        }).props.id).toBe('ui-quick-marc.record.error.locControlNumber.multiple');
+        }).props.id).toBe('ui-quick-marc.record.error.010.multiple');
       });
 
       describe('when authority linked to bib record', () => {
@@ -1300,7 +1300,7 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.checkDuplicate010Field(formValues.records).props.id).toBe('ui-quick-marc.record.error.locControlNumber.multiple');
+      expect(utils.checkDuplicate010Field(formValues.records).props.id).toBe('ui-quick-marc.record.error.010.multiple');
     });
   });
 
