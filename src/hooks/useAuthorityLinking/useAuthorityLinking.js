@@ -117,11 +117,9 @@ const useAuthorityLinking = () => {
       newZeroSubfield = authorityRecord.naturalId;
     }
 
-    copySubfieldsFromAuthority(bibSubfields, linkedAuthorityField, bibField.tag);
+    bibSubfields.$0 = [newZeroSubfield];
 
-    if (!bibSubfields.$0 || bibSubfields.$0[0] !== authorityRecord.naturalId) {
-      bibSubfields.$0 = [newZeroSubfield];
-    }
+    copySubfieldsFromAuthority(bibSubfields, linkedAuthorityField, bibField.tag);
 
     bibSubfields.$9 = [authorityRecord.id];
     bibField.linkingRuleId = linkingRule.id;
