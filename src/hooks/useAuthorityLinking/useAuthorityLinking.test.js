@@ -103,7 +103,7 @@ describe('Given useAuthorityLinking', () => {
       };
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
-        content: '$a authority value $b fakeB $t field for modification $0 some.url/n0001 $9 authority-id',
+        content: '$a authority value $b fakeB $0 some.url/n0001 $t field for modification $9 authority-id',
         authorityControlledSubfields: ['a', 'b', 't', 'd'],
       });
     });
@@ -130,6 +130,27 @@ describe('Given useAuthorityLinking', () => {
     });
   });
 
+  describe('when calling linkAuthority with matched $0 subfield and authority.naturalId', () => {
+    it('should return field with new $0 and $9 subfields and authority subfields', () => {
+      const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+
+      const authority = {
+        id: 'authority-id',
+        sourceFileId: '1',
+        naturalId: 'n0001',
+      };
+      const field = {
+        tag: '100',
+        content: '$a some value $b some other value $0 n0001 $9 authority-other-id',
+      };
+
+      expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
+        content: '$a authority value $b fakeB $0 some.url/n0001 $9 authority-id $t field for modification',
+        authorityControlledSubfields: ['a', 'b', 't', 'd'],
+      });
+    });
+  });
+
   describe('when calling linkAuthority with repeated subfields', () => {
     it('should return field with correctly formatted subfields', () => {
       const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
@@ -145,7 +166,7 @@ describe('Given useAuthorityLinking', () => {
       };
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
-        content: '$a authority value $b fakeB $e author $e illustrator $t field for modification $0 some.url/n0001 $9 authority-id',
+        content: '$a authority value $b fakeB $e author $e illustrator $0 some.url/n0001 $t field for modification $9 authority-id',
         authorityControlledSubfields: ['a', 'b', 't', 'd'],
       });
     });
@@ -183,7 +204,7 @@ describe('Given useAuthorityLinking', () => {
       };
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
-        content: '$a authority value $b fakeB $e author $e illustrator $c field for modification $0 some.url/n0001 $9 authority-id',
+        content: '$a authority value $b fakeB $e author $e illustrator $0 some.url/n0001 $c field for modification $9 authority-id',
         authorityControlledSubfields: ['a', 'b', 'c'],
       });
     });
