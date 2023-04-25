@@ -234,7 +234,7 @@
     "record.viewMarcAuthorityRecord": "View MARC authority record",
     "record.link.success": "Field <b>{tag}</b> has been <b>linked</b> to a MARC authority record.",
     "record.unlink.confirm.title": "Unlink from MARC authority record",
-    "record.unlink.confirm.message": "By selecting <b>Unlink</b>, then field {tag} will be unlinked from the MARC authority record. Are you sure you want to continue?",
+    "record.unlink.confirm.message": "By selecting <b>Unlink</b>, then field <b>{tag}</b> will be unlinked from the MARC authority record. Are you sure you want to continue?",
     "record.unlink.confirm.cancel": "Annuler",
     "record.unlink.confirm.confirm": "Unlink",
     "remove-authority-linking.modal.label": "Remove authority linking",
@@ -263,7 +263,7 @@
     "record.error.010.$aRemoved": "Cannot remove 010 $a for this record.",
     "record.error.010.$aOnlyOne": "010 can only have one $a.",
     "permission.quick-marc-editor.create": "quickMARC: Create a new MARC bibliographic record",
-    "bib-record.create-bib.title": "Create a new MARC bib record",
-    "record.error.locControlNumber.multiple": "Record cannot be saved with more than one field 010",
-    "record.error.field.onlyOneSubfield": "<b>{fieldTag}</b> can only have one <b>{subField}</b>."
+    "record.error.field.onlyOneSubfield": "<b>{fieldTag}</b> can only have one <b>{subField}</b>.",
+    "bib-record.create.title": "Create a new MARC bib record",
+    "record.error.010.multiple": "Record cannot be saved with more than one 010 field"
 }
