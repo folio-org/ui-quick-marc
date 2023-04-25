@@ -59,7 +59,7 @@ describe('Given Quick Marc Record Info', () => {
     const { getByText } = renderQuickMarcRecordInfo();
 
     expect(getByText('stripes-components.metaSection.source', { exact: false })).toBeDefined();
-    expect(getByText('John, Doe', { exact: false })).toBeDefined();
+    expect(getByText('Doe, John', { exact: false })).toBeDefined();
   });
 
   describe('when marc type is authority', () => {
