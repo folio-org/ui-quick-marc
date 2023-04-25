@@ -263,7 +263,7 @@
     "record.error.010.$aRemoved": "Nelze odebrat 010 $a pro tento záznam.",
     "record.error.010.$aOnlyOne": "010 může mít pouze jeden $a.",
     "permission.quick-marc-editor.create": "quickMARC: Vytvoření nového MARC bibliografického záznamu",
-    "bib-record.create-bib.title": "Vytvořit nový MARC bib záznam",
-    "record.error.locControlNumber.multiple": "Záznam nelze uložit s více než jedním polem 010",
-    "record.error.field.onlyOneSubfield": "<b>{fieldTag}</b> může mít pouze jedno <b>{subField}</b>."
+    "record.error.field.onlyOneSubfield": "<b>{fieldTag}</b> může mít pouze jedno <b>{subField}</b>.",
+    "bib-record.create.title": "Create a new MARC bib record",
+    "record.error.010.multiple": "Record cannot be saved with more than one 010 field"
 }
