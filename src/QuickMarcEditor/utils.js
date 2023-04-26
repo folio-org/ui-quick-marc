@@ -23,6 +23,7 @@ import {
   NON_BREAKING_SPACE,
   ELVL_BYTE,
   CREATE_BIB_RECORD_DEFAULT_FIELD_TAGS,
+  BIB_FIXED_FIELD_DEFAULT_VALUES,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import getMaterialCharsFieldConfig from './QuickMarcEditorRows/MaterialCharsField/getMaterialCharsFieldConfig';
@@ -172,6 +173,7 @@ const getCreateMarcRecordDefaultFields = (instanceRecord) => {
 const getCreateBibMarcRecordDefaultFields = (instanceRecord) => {
   const contentMap = {
     '001': instanceRecord.hrid,
+    '008': BIB_FIXED_FIELD_DEFAULT_VALUES,
     '245': '$a ',
     '999': '',
   };
@@ -522,7 +524,7 @@ const validateSubfieldsThatCanBeControlled = (marcRecords, uncontrolledSubfields
       if (linkedField.subfieldGroups[subfield]) {
         const contentSubfieldValue = getContentSubfieldValue(linkedField.subfieldGroups[subfield]);
 
-        return linkedField.authorityControlledSubfields.some(authSubfield => {
+        return linkedField.authorityControlledSubfields?.some(authSubfield => {
           return `$${authSubfield}` in contentSubfieldValue;
         });
       }
