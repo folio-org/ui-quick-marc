@@ -39,7 +39,6 @@ export const LEADER_DOCUMENTATION_LINKS = {
 
 export const QUICK_MARC_ACTIONS = {
   CREATE: 'create',
-  CREATE_BIB: 'create-bib',
   EDIT: 'edit',
   DERIVE: 'derive',
 };
@@ -80,9 +79,13 @@ export const FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS = {
   ],
 };
 
-export const CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE = '00000nu\\\\\\2200000un\\4500';
+export const CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE = '00000nu\\\\\\2200000un\\4500';
 
-export const CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS = ['001', '004', '005', '008', '852', '999'];
+export const CREATE_BIB_RECORD_DEFAULT_LEADER_VALUE = '00000n\\\\\\a2200000uu\\4500';
+
+export const CREATE_HOLDINGS_RECORD_DEFAULT_FIELD_TAGS = ['001', '004', '005', '008', '852', '999'];
+
+export const CREATE_BIB_RECORD_DEFAULT_FIELD_TAGS = ['001', '005', '008', '245', '999'];
 
 export const QM_RECORD_STATUS_TIMEOUT = 5000;
 
@@ -103,6 +106,29 @@ export const HOLDINGS_FIXED_FIELD_DEFAULT_VALUES = {
   Lang: 'eng',
   'Sep/comp': 0,
   'Rept date': '\\\\\\\\\\\\',
+};
+
+export const BIB_FIXED_FIELD_DEFAULT_VALUES = {
+  Srce: '',
+  Audn: '',
+  Ctrl: '',
+  Lang: '',
+  Form: '',
+  Conf: '',
+  Biog: '',
+  MRec: '',
+  Ctry: '',
+  Cont: [],
+  GPub: '',
+  LitF: '',
+  Indx: '',
+  Ills: [],
+  Fest: '',
+  DtSt: '',
+  Date1: '',
+  Date2: '',
+  Type: 'a',
+  BLvl: 'm',
 };
 
 export const CORRESPONDING_HEADING_TYPE_TAGS = ['100', '110', '111', '151', '130', '150', '155'];

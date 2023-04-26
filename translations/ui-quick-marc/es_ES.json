@@ -263,7 +263,7 @@
     "record.error.010.$aRemoved": "Cannot remove 010 $a for this record.",
     "record.error.010.$aOnlyOne": "010 can only have one $a.",
     "permission.quick-marc-editor.create": "record",
-    "bib-record.create-bib.title": "Create a new MARC bib record",
-    "record.error.locControlNumber.multiple": "Record cannot be saved with more than one field 010",
-    "record.error.field.onlyOneSubfield": "<b>{fieldTag}</b> can only have one <b>{subField}</b>."
+    "record.error.field.onlyOneSubfield": "<b>{fieldTag}</b> can only have one <b>{subField}</b>.",
+    "bib-record.create.title": "Create a new MARC bib record",
+    "record.error.010.multiple": "Record cannot be saved with more than one 010 field"
 }

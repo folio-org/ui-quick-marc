@@ -32,7 +32,7 @@ export const QuickMarcRecordInfo = ({
       return <FormattedMessage id="ui-quick-marc.meta.source.system" />;
     }
 
-    const notEmptyNames = [updatedBy.firstName, updatedBy.lastName].filter(name => !!name);
+    const notEmptyNames = [updatedBy.lastName, updatedBy.firstName].filter(name => !!name);
 
     if (!notEmptyNames.length) {
       source = updatedBy.username;

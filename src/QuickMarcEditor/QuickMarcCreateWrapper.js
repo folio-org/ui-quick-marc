@@ -9,6 +9,7 @@ import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
+import { useAuthorityLinking } from '../hooks';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 import {
@@ -47,6 +48,7 @@ const QuickMarcCreateWrapper = ({
 }) => {
   const showCallout = useShowCallout();
   const [httpError, setHttpError] = useState(null);
+  const { linkableBibFields } = useAuthorityLinking();
 
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesToSave = removeDeletedRecords(formValues);
@@ -73,6 +75,8 @@ const QuickMarcCreateWrapper = ({
       initialValues,
       marcType,
       locations,
+      action,
+      linkableBibFields,
     });
 
     if (validationErrorMessage) {
@@ -80,7 +84,22 @@ const QuickMarcCreateWrapper = ({
     }
 
     return undefined;
-  }, [initialValues, locations, marcType, prepareForSubmit]);
+  }, [initialValues, locations, marcType, action, linkableBibFields, prepareForSubmit]);
+
+  const redirectToRecord = (externalId, instanceId) => {
+    let path;
+
+    if (marcType === MARC_TYPES.HOLDINGS) {
+      path = `/inventory/view/${instanceId}/${externalId}`;
+    } else if (marcType === MARC_TYPES.BIB) {
+      path = `/inventory/view/${externalId}`;
+    }
+
+    history.push({
+      pathname: path,
+      search: location.search,
+    });
+  };
 
   const onSubmit = useCallback(async (formValues) => {
     const formValuesForCreate = prepareForSubmit(formValues);
@@ -100,12 +119,7 @@ const QuickMarcCreateWrapper = ({
 
           showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
 
-          const path = `/inventory/view/${instanceId}/${externalId}`;
-
-          history.push({
-            pathname: path,
-            search: location.search,
-          });
+          redirectToRecord(externalId, instanceId);
         } catch (e) {
           showCallout({
             messageId: 'ui-quick-marc.record.saveNew.error',

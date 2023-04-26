@@ -14,13 +14,15 @@ import {
   FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS,
   QUICK_MARC_ACTIONS,
   LEADER_EDITABLE_BYTES,
-  CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
-  CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS,
+  CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
+  CREATE_BIB_RECORD_DEFAULT_LEADER_VALUE,
+  CREATE_HOLDINGS_RECORD_DEFAULT_FIELD_TAGS,
   HOLDINGS_FIXED_FIELD_DEFAULT_VALUES,
   CORRESPONDING_HEADING_TYPE_TAGS,
   LEADER_VALUES_FOR_POSITION,
   NON_BREAKING_SPACE,
   ELVL_BYTE,
+  CREATE_BIB_RECORD_DEFAULT_FIELD_TAGS,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import getMaterialCharsFieldConfig from './QuickMarcEditorRows/MaterialCharsField/getMaterialCharsFieldConfig';
@@ -141,7 +143,7 @@ export const dehydrateMarcRecordResponse = marcRecordResponse => ({
 });
 
 const getCreateMarcRecordDefaultFields = (instanceRecord) => {
-  return CREATE_MARC_RECORD_DEFAULT_FIELD_TAGS.map(tag => {
+  return CREATE_HOLDINGS_RECORD_DEFAULT_FIELD_TAGS.map(tag => {
     const field = {
       tag,
       id: uuidv4(),
@@ -167,20 +169,72 @@ const getCreateMarcRecordDefaultFields = (instanceRecord) => {
   });
 };
 
-export const getCreateMarcRecordResponse = (instanceResponse) => {
+const getCreateBibMarcRecordDefaultFields = (instanceRecord) => {
+  const contentMap = {
+    '001': instanceRecord.hrid,
+    '245': '$a ',
+    '999': '',
+  };
+
+  const indicatorMap = {
+    '245': ['\\', '\\'],
+    '999': ['f', 'f'],
+  };
+
+  return CREATE_BIB_RECORD_DEFAULT_FIELD_TAGS.map(tag => {
+    const field = {
+      tag,
+      id: uuidv4(),
+    };
+
+    const content = contentMap[tag];
+    const indicators = indicatorMap[tag];
+
+    if (indicators) {
+      field.indicators = indicatorMap[tag];
+    }
+
+    if (content) {
+      field.content = contentMap[tag];
+    }
+
+    return field;
+  });
+};
+
+export const getCreateHoldingsMarcRecordResponse = (instanceResponse) => {
   const instanceId = instanceResponse.id;
 
   return {
     externalId: instanceId,
-    leader: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+    leader: CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
     fields: undefined,
     records: [
       {
         tag: LEADER_TAG,
-        content: CREATE_MARC_RECORD_DEFAULT_LEADER_VALUE,
+        content: CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
         id: LEADER_TAG,
       },
       ...getCreateMarcRecordDefaultFields(instanceResponse),
+    ],
+    parsedRecordDtoId: instanceId,
+  };
+};
+
+export const getCreateBibMarcRecordResponse = (instanceResponse) => {
+  const instanceId = '00000000-0000-0000-0000-000000000000'; // For create we need to send any UUID
+
+  return {
+    externalId: instanceId,
+    leader: CREATE_BIB_RECORD_DEFAULT_LEADER_VALUE,
+    fields: undefined,
+    records: [
+      {
+        tag: LEADER_TAG,
+        content: CREATE_BIB_RECORD_DEFAULT_LEADER_VALUE,
+        id: LEADER_TAG,
+      },
+      ...getCreateBibMarcRecordDefaultFields(instanceResponse),
     ],
     parsedRecordDtoId: instanceId,
   };
@@ -230,7 +284,7 @@ const removeMarcRecordFieldContentForDerive = marcRecord => {
   };
 };
 
-export const formatMarcRecordByQuickMarcAction = (marcRecord, action) => {
+export const formatMarcRecordByQuickMarcAction = (marcRecord, action, marcType) => {
   if (action === QUICK_MARC_ACTIONS.DERIVE) {
     return {
       ...removeMarcRecordFieldContentForDerive(marcRecord),
@@ -241,15 +295,28 @@ export const formatMarcRecordByQuickMarcAction = (marcRecord, action) => {
   }
 
   if (action === QUICK_MARC_ACTIONS.CREATE) {
-    return {
-      ...marcRecord,
-      relatedRecordVersion: 1,
-      marcFormat: MARC_TYPES.HOLDINGS.toUpperCase(),
-      suppressDiscovery: false,
-      updateInfo: {
-        recordState: RECORD_STATUS_NEW,
-      },
-    };
+    if (marcType === MARC_TYPES.BIB) {
+      return {
+        ...marcRecord,
+        relatedRecordVersion: 1,
+        marcFormat: MARC_TYPES.BIBLIOGRAPHIC.toUpperCase(),
+        updateInfo: {
+          recordState: RECORD_STATUS_NEW,
+        },
+      };
+    }
+
+    if (marcType === MARC_TYPES.HOLDINGS) {
+      return {
+        ...marcRecord,
+        relatedRecordVersion: 1,
+        marcFormat: MARC_TYPES.HOLDINGS.toUpperCase(),
+        suppressDiscovery: false,
+        updateInfo: {
+          recordState: RECORD_STATUS_NEW,
+        },
+      };
+    }
   }
 
   return marcRecord;
@@ -329,7 +396,7 @@ const validateLeaderPositions = (leader, marcType) => {
   return undefined;
 };
 
-export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYPES.BIB) => {
+export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYPES.BIB, action) => {
   const cutEditableBytes = (str) => (
     LEADER_EDITABLE_BYTES[marcType].reduce((acc, byte, idx) => {
       const position = byte - idx;
@@ -402,7 +469,7 @@ export const checkDuplicate010Field = (marcRecords) => {
   const marc010Records = marcRecords.filter(({ tag }) => tag === '010');
 
   if (marc010Records.length > 1) {
-    return <FormattedMessage id="ui-quick-marc.record.error.locControlNumber.multiple" />;
+    return <FormattedMessage id="ui-quick-marc.record.error.010.multiple" />;
   }
 
   return undefined;
@@ -672,6 +739,7 @@ const validateMarcAuthorityRecord = (marcRecords, linksCount, initialRecords, na
 export const validateMarcRecord = ({
   marcRecord,
   initialValues,
+  action,
   marcType = MARC_TYPES.BIB,
   locations = [],
   linksCount,
@@ -682,7 +750,7 @@ export const validateMarcRecord = ({
   const initialMarcRecords = initialValues.records;
   const recordLeader = marcRecords[0];
 
-  const leaderError = validateLeader(marcRecord?.leader, recordLeader?.content, marcType);
+  const leaderError = validateLeader(marcRecord?.leader, recordLeader?.content, marcType, action);
 
   if (leaderError) {
     return leaderError;
@@ -898,7 +966,7 @@ export const cleanBytesFields = (formValues, initialValues, marcType) => {
 
     if (isFixedFieldRow(field)) {
       fieldConfigByType = FixedFieldFactory
-        .getFixedFieldByType(marcType, field.content.Type, initialValues?.leader[7]).configFields;
+        .getFixedFieldByType(marcType, field.content.Type, initialValues?.leader[7])?.configFields ?? [];
     }
 
     const content = Object.entries(field.content).reduce((acc, [key, value]) => {

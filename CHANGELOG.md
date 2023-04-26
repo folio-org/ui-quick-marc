@@ -16,6 +16,10 @@
 * [UIQM-382](https://issues.folio.org/browse/UIQM-382) quickMARC Bib Validation: Make 010 a non-repeatable field in create, edit, and derive bib records
 * [UIQM-429](https://issues.folio.org/browse/UIQM-429) Prevent many location in Marc holdings record.
 * [UIQM-449](https://issues.folio.org/browse/UIQM-449) Link Authority: Pre-populate search/browse box with bib subfield values 
+* [UIQM-415](https://issues.folio.org/browse/UIQM-415) Create original bib record in quickMARC UI
+* [UIQM-412](https://issues.folio.org/browse/UIQM-412) Fix translation format: MARC field number isn't highlighted in bold
+* [UIQM-423](https://issues.folio.org/browse/UIQM-423) Fix display person who last edited quickMARC record
+* [UIQM-457](https://issues.folio.org/browse/UIQM-457) Always replace bib $0 with Authority's baseURL + naturalId.
 * [UIQM-450](https://issues.folio.org/browse/UIQM-450) Take the authority control subfields from the linking rules. 
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
