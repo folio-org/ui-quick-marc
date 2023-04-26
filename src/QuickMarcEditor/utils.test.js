@@ -1554,76 +1554,78 @@ describe('QuickMarcEditor utils', () => {
   });
 
   describe('removeFieldsForDerive', () => {
-    const formValues = {
-      fields: undefined,
-      externalId: 'c58ed340-5123-4c2c-8a99-add5db68c71f',
-      leader: '01897cas\\a2200493\\a\\4500',
-      parsedRecordDtoId: '73f23ed5-4981-4cb2-8cdf-1ec644bd8f34',
-      parsedRecordId: '3f75732f-53b9-44ed-b097-0cd14e5867b2',
-      records: [{
-        content: '01897cas\\a2200493\\a\\4500',
-        id: 'LDR',
-        tag: 'LDR',
-      }, {
-        content: '',
-        id: '9fbd621c-138c-41f7-ad97-9b70b5b0f228',
-        indicators: [],
-        tag: '001',
-      }, {
-        content: '$a QL640',
-        id: '0ae03c65-629d-4bad-ae46-69746a7e13b0',
-        indicators: ['1', '4'],
-        tag: '050',
-      }, {
-        content: '',
-        id: '2247ab92-91c0-47f7-8a35-cdd8b54604c1',
-        indicators: [],
-        tag: '005',
-      }, {
-        content: '$a v.1- (1992-)',
-        id: '061c0259-8fbb-42b4-b463-9f307295f2a2',
-        indicators: ['\\', '\\'],
-        tag: '841',
-      }, {
-        content: '',
-        id: '2247ab92-91c0-47f7-8a35-cdd8b54604c2',
-        indicators: [],
-        tag: '035',
-      }, {
-        content: '',
-        id: '6a6582ea-746e-4058-a35b-8130e4f6d277',
-        indicators: ['f', 'f'],
-        tag: '999',
-      }],
-      suppressDiscovery: false,
-      updateInfo: { recordState: 'NEW' },
-    };
+    it('should remove 001 and 005 fields', () => {
+      const formValues = {
+        fields: undefined,
+        externalId: 'c58ed340-5123-4c2c-8a99-add5db68c71f',
+        leader: '01897cas\\a2200493\\a\\4500',
+        parsedRecordDtoId: '73f23ed5-4981-4cb2-8cdf-1ec644bd8f34',
+        parsedRecordId: '3f75732f-53b9-44ed-b097-0cd14e5867b2',
+        records: [{
+          content: '01897cas\\a2200493\\a\\4500',
+          id: 'LDR',
+          tag: 'LDR',
+        }, {
+          content: '',
+          id: '9fbd621c-138c-41f7-ad97-9b70b5b0f228',
+          indicators: [],
+          tag: '001',
+        }, {
+          content: '$a QL640',
+          id: '0ae03c65-629d-4bad-ae46-69746a7e13b0',
+          indicators: ['1', '4'],
+          tag: '050',
+        }, {
+          content: '',
+          id: '2247ab92-91c0-47f7-8a35-cdd8b54604c1',
+          indicators: [],
+          tag: '005',
+        }, {
+          content: '$a v.1- (1992-)',
+          id: '061c0259-8fbb-42b4-b463-9f307295f2a2',
+          indicators: ['\\', '\\'],
+          tag: '841',
+        }, {
+          content: '',
+          id: '2247ab92-91c0-47f7-8a35-cdd8b54604c2',
+          indicators: [],
+          tag: '035',
+        }, {
+          content: '',
+          id: '6a6582ea-746e-4058-a35b-8130e4f6d277',
+          indicators: ['f', 'f'],
+          tag: '999',
+        }],
+        suppressDiscovery: false,
+        updateInfo: { recordState: 'NEW' },
+      };
 
-    const expectedFormValues = {
-      fields: undefined,
-      externalId: 'c58ed340-5123-4c2c-8a99-add5db68c71f',
-      leader: '01897cas\\a2200493\\a\\4500',
-      parsedRecordDtoId: '73f23ed5-4981-4cb2-8cdf-1ec644bd8f34',
-      parsedRecordId: '3f75732f-53b9-44ed-b097-0cd14e5867b2',
-      records: [{
-        content: '01897cas\\a2200493\\a\\4500',
-        id: 'LDR',
-        tag: 'LDR',
-      }, {
-        content: '$a QL640',
-        id: '0ae03c65-629d-4bad-ae46-69746a7e13b0',
-        indicators: ['1', '4'],
-        tag: '050',
-      }, {
-        content: '$a v.1- (1992-)',
-        id: '061c0259-8fbb-42b4-b463-9f307295f2a2',
-        indicators: ['\\', '\\'],
-        tag: '841',
-      }],
-      suppressDiscovery: false,
-    };
+      const expectedFormValues = {
+        fields: undefined,
+        externalId: 'c58ed340-5123-4c2c-8a99-add5db68c71f',
+        leader: '01897cas\\a2200493\\a\\4500',
+        parsedRecordDtoId: '73f23ed5-4981-4cb2-8cdf-1ec644bd8f34',
+        parsedRecordId: '3f75732f-53b9-44ed-b097-0cd14e5867b2',
+        records: [{
+          content: '01897cas\\a2200493\\a\\4500',
+          id: 'LDR',
+          tag: 'LDR',
+        }, {
+          content: '$a QL640',
+          id: '0ae03c65-629d-4bad-ae46-69746a7e13b0',
+          indicators: ['1', '4'],
+          tag: '050',
+        }, {
+          content: '$a v.1- (1992-)',
+          id: '061c0259-8fbb-42b4-b463-9f307295f2a2',
+          indicators: ['\\', '\\'],
+          tag: '841',
+        }],
+        suppressDiscovery: false,
+      };
 
-    expect(utils.removeFieldsForDerive(formValues)).toEqual(expectedFormValues);
+      expect(utils.removeFieldsForDerive(formValues)).toEqual(expectedFormValues);
+    });
   });
 
   describe('autopopulateIndicators', () => {

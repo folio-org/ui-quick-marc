@@ -91,12 +91,6 @@ const QuickMarcDeriveWrapper = ({
     });
   };
 
-  const prepareForValidate = useCallback((formValues) => {
-    const formValuesToSave = removeDeletedRecords(formValues);
-
-    return formValuesToSave;
-  }, []);
-
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesToSave = removeDeletedRecords(formValues);
     const clearFormValues = removeFieldsForDerive(formValuesToSave);
@@ -112,7 +106,7 @@ const QuickMarcDeriveWrapper = ({
   }, [initialValues, marcType]);
 
   const validate = useCallback((formValues) => {
-    const formValuesForValidation = prepareForValidate(formValues);
+    const formValuesForValidation = prepareForSubmit(formValues);
     const controlFieldErrorMessage = checkControlFieldLength(formValuesForValidation);
 
     if (controlFieldErrorMessage) {
@@ -131,7 +125,7 @@ const QuickMarcDeriveWrapper = ({
     }
 
     return undefined;
-  }, [prepareForValidate, initialValues, linkableBibFields, linkingRules]);
+  }, [prepareForSubmit, initialValues, linkableBibFields, linkingRules]);
 
   const onSubmit = useCallback(async (formValues) => {
     const formValuesForDerive = prepareForSubmit(formValues);
