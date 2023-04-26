@@ -17,12 +17,17 @@ import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
-
+/* eslint-disable max-lines */
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
   useLocation: () => ({
     search: 'authRefType=Authorized',
   }),
+}));
+
+jest.mock('../queries', () => ({
+  ...jest.requireActual('../queries'),
+  useAuthorityLinkingRules: jest.fn().mockReturnValue({ linkingRules: [] }),
 }));
 
 jest.mock('@folio/stripes-acq-components', () => ({

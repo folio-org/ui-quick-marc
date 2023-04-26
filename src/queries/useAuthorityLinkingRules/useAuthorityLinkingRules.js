@@ -5,6 +5,8 @@ import {
   useNamespace,
 } from '@folio/stripes/core';
 
+import { LINKING_RULES_API } from '../../common/constants';
+
 const useAuthorityLinkingRules = () => {
   const ky = useOkapiKy();
   const [namespace] = useNamespace({ key: 'authority-linking-rules' });
@@ -12,7 +14,7 @@ const useAuthorityLinkingRules = () => {
   const { isFetching, data } = useQuery(
     [namespace],
     async () => {
-      return ky.get('linking-rules/instance-authority').json();
+      return ky.get(LINKING_RULES_API).json();
     },
   );
 

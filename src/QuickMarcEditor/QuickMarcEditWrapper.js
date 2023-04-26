@@ -27,6 +27,7 @@ import {
   combineSplitFields,
   are010Or1xxUpdated,
 } from './utils';
+import { useAuthorityLinkingRules } from '../queries';
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
@@ -57,6 +58,7 @@ const QuickMarcEditWrapper = ({
   const location = useLocation();
   const [httpError, setHttpError] = useState(null);
   const { linkableBibFields } = useAuthorityLinking();
+  const { linkingRules } = useAuthorityLinkingRules();
 
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesToSave = removeDeletedRecords(formValues);
@@ -80,6 +82,7 @@ const QuickMarcEditWrapper = ({
       linksCount,
       naturalId: instance.naturalId,
       linkableBibFields,
+      linkingRules,
     });
 
     if (validationErrorMessage) {
@@ -87,7 +90,16 @@ const QuickMarcEditWrapper = ({
     }
 
     return undefined;
-  }, [initialValues, linksCount, locations, marcType, prepareForSubmit, instance.naturalId, linkableBibFields]);
+  }, [
+    initialValues,
+    linksCount,
+    locations,
+    marcType,
+    prepareForSubmit,
+    instance.naturalId,
+    linkableBibFields,
+    linkingRules,
+  ]);
 
   const onSubmit = useCallback(async (formValues) => {
     let is1xxOr010Updated = false;

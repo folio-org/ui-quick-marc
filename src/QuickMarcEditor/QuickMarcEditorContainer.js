@@ -20,6 +20,7 @@ import {
   MARC_RECORD_API,
   MARC_RECORD_STATUS_API,
   MARC_TYPES,
+  LINKING_RULES_API,
 } from '../common/constants';
 
 import {
@@ -69,7 +70,6 @@ const QuickMarcEditorContainer = ({
   const [linksCount, setLinksCount] = useState(0);
 
   const searchParams = new URLSearchParams(location.search);
-  const relatedRecordVersion = searchParams.get('relatedRecordVersion');
 
   const showCallout = useShowCallout();
   const { fetchLinksCount } = useAuthorityLinksCount();
@@ -107,13 +107,14 @@ const QuickMarcEditorContainer = ({
       : mutator.quickMarcEditMarcRecord.GET({ params: { externalId } });
 
     const locationsPromise = mutator.locations.GET();
+    const linkingRulesPromise = mutator.linkingRules.GET();
 
     const linksCountPromise = marcType === MARC_TYPES.AUTHORITY
       ? fetchLinksCount([externalId])
       : Promise.resolve();
 
-    await Promise.all([instancePromise, marcRecordPromise, locationsPromise, linksCountPromise])
-      .then(([instanceResponse, marcRecordResponse, locationsResponse, linksCountResponse]) => {
+    await Promise.all([instancePromise, marcRecordPromise, locationsPromise, linksCountPromise, linkingRulesPromise])
+      .then(([instanceResponse, marcRecordResponse, locationsResponse, linksCountResponse, linkingRulesResponse]) => {
         if (marcType === MARC_TYPES.AUTHORITY) {
           setLinksCount(linksCountResponse.links[0].totalLinks);
         }
@@ -138,7 +139,7 @@ const QuickMarcEditorContainer = ({
 
         const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, action, marcType);
         const marcRecordWithInternalProps = addInternalFieldProperties(formattedMarcRecord);
-        const marcRecordWithSplitFields = splitFields(marcRecordWithInternalProps);
+        const marcRecordWithSplitFields = splitFields(marcRecordWithInternalProps, linkingRulesResponse);
 
         setInstance(instanceResponse);
         setMarcRecord(marcRecordWithSplitFields);
@@ -150,11 +151,11 @@ const QuickMarcEditorContainer = ({
         closeEditor();
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [externalId, relatedRecordVersion, history, marcType, fetchLinksCount]);
+  }, [externalId, history, marcType, fetchLinksCount]);
 
   useEffect(() => {
     loadData();
-  }, [action, loadData]);
+  }, [loadData]);
 
   if (isLoading) {
     return (
@@ -213,6 +214,13 @@ QuickMarcEditorContainer.manifest = Object.freeze({
     path: 'locations?limit=1000',
     accumulate: true,
     fetch: false,
+  },
+  linkingRules: {
+    type: 'okapi',
+    fetch: false,
+    accumulate: true,
+    path: LINKING_RULES_API,
+    throwErrors: false,
   },
 });
 

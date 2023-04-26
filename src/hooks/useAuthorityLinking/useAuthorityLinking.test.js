@@ -10,6 +10,7 @@ import { useAuthorityLinkingRules } from '../../queries';
 jest.mock('../../queries', () => ({
   useAuthorityLinkingRules: jest.fn().mockReturnValue({
     linkingRules: [{
+      id: 1,
       bibField: '100',
       authorityField: '100',
       authoritySubfields: ['a', 'b', 't', 'd'],
@@ -83,7 +84,7 @@ describe('Given useAuthorityLinking', () => {
 
       expect(result.current.linkAuthority(authority, authSource, field)).toMatchObject({
         content: '$a Beethoven, Ludwig van $e composer. $0 some.url/n0001 $9 authority-id',
-        authorityControlledSubfields: ['a', 'b', 't', 'd'],
+        linkingRuleId: 1,
       });
     });
   });
@@ -104,7 +105,7 @@ describe('Given useAuthorityLinking', () => {
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
         content: '$a authority value $b fakeB $0 some.url/n0001 $t field for modification $9 authority-id',
-        authorityControlledSubfields: ['a', 'b', 't', 'd'],
+        linkingRuleId: 1,
       });
     });
   });
@@ -125,7 +126,7 @@ describe('Given useAuthorityLinking', () => {
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
         content: '$a authority value $b fakeB $0 some.url/n0001 $9 authority-id $t field for modification',
-        authorityControlledSubfields: ['a', 'b', 't', 'd'],
+        linkingRuleId: 1,
       });
     });
   });
@@ -146,7 +147,7 @@ describe('Given useAuthorityLinking', () => {
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
         content: '$a authority value $b fakeB $0 some.url/n0001 $9 authority-id $t field for modification',
-        authorityControlledSubfields: ['a', 'b', 't', 'd'],
+        linkingRuleId: 1,
       });
     });
   });
@@ -167,7 +168,7 @@ describe('Given useAuthorityLinking', () => {
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
         content: '$a authority value $b fakeB $e author $e illustrator $0 some.url/n0001 $t field for modification $9 authority-id',
-        authorityControlledSubfields: ['a', 'b', 't', 'd'],
+        linkingRuleId: 1,
       });
     });
   });
@@ -176,6 +177,7 @@ describe('Given useAuthorityLinking', () => {
     it('should return field with correctly formatted subfields', () => {
       useAuthorityLinkingRules.mockReturnValue({
         linkingRules: [{
+          id: 1,
           bibField: '100',
           authorityField: '100',
           authoritySubfields: ['a', 'b', 't'],
@@ -205,7 +207,7 @@ describe('Given useAuthorityLinking', () => {
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
         content: '$a authority value $b fakeB $e author $e illustrator $0 some.url/n0001 $c field for modification $9 authority-id',
-        authorityControlledSubfields: ['a', 'b', 'c'],
+        linkingRuleId: 1,
       });
     });
   });
