@@ -22,6 +22,11 @@ jest.mock('react-final-form', () => ({
   FormSpy: jest.fn(() => (<span>FormSpy</span>)),
 }));
 
+jest.mock('../queries', () => ({
+  ...jest.requireActual('../queries'),
+  useAuthorityLinkingRules: jest.fn().mockReturnValue({ linkingRules: [] }),
+}));
+
 const mockFormValues = jest.fn(() => ({
   fields: undefined,
   externalHrid: 'in00000000022',

@@ -20,6 +20,7 @@
 * [UIQM-412](https://issues.folio.org/browse/UIQM-412) Fix translation format: MARC field number isn't highlighted in bold
 * [UIQM-423](https://issues.folio.org/browse/UIQM-423) Fix display person who last edited quickMARC record
 * [UIQM-457](https://issues.folio.org/browse/UIQM-457) Always replace bib $0 with Authority's baseURL + naturalId.
+* [UIQM-450](https://issues.folio.org/browse/UIQM-450) Take the authority control subfields from the linking rules. 
 * [UIQM-448](https://issues.folio.org/browse/UIQM-448) Fix validation of 001 fields when creating/deriving/editing all record types.
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)

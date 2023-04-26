@@ -29,6 +29,7 @@ import {
   removeDeletedRecords,
   combineSplitFields,
 } from './utils';
+import { useAuthorityLinkingRules } from '../queries';
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
@@ -53,6 +54,7 @@ const QuickMarcDeriveWrapper = ({
 }) => {
   const showCallout = useShowCallout();
   const { linkableBibFields } = useAuthorityLinking();
+  const { linkingRules } = useAuthorityLinkingRules();
   const [httpError, setHttpError] = useState(null);
 
   const saveLinksToNewRecord = async (externalId, marcRecord) => {
@@ -73,7 +75,6 @@ const QuickMarcDeriveWrapper = ({
         }
 
         field.authorityNaturalId = matchingLinkedField.authorityNaturalId;
-        field.authorityControlledSubfields = matchingLinkedField.authorityControlledSubfields;
         field.linkingRuleId = matchingLinkedField.linkingRuleId;
 
         return field;
@@ -116,6 +117,7 @@ const QuickMarcDeriveWrapper = ({
       marcRecord: formValuesForValidation,
       initialValues,
       linkableBibFields,
+      linkingRules,
     });
 
     if (validationErrorMessage) {
@@ -123,7 +125,7 @@ const QuickMarcDeriveWrapper = ({
     }
 
     return undefined;
-  }, [prepareForSubmit, initialValues, linkableBibFields]);
+  }, [prepareForSubmit, initialValues, linkableBibFields, linkingRules]);
 
   const onSubmit = useCallback(async (formValues) => {
     const formValuesForDerive = prepareForSubmit(formValues);

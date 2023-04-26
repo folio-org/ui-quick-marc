@@ -120,6 +120,9 @@ describe('Given Quick Marc Editor Container', () => {
       locations: {
         GET: jest.fn(() => Promise.resolve(locations)),
       },
+      linkingRules: {
+        GET: jest.fn().mockResolvedValue([]),
+      },
     };
   });
 

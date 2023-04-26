@@ -19,6 +19,31 @@ jest.mock('uuid', () => {
   };
 });
 
+const linkingRules = [
+  {
+    'id': 1,
+    'bibField': '100',
+    'authorityField': '100',
+    'authoritySubfields': ['a', 'b', 'c', 'd', 'j', 'q'],
+    'validation': { 'existence': [{ 't': false }] },
+    'autoLinkingEnabled': true,
+  },
+  {
+    'id': 8,
+    'bibField': '600',
+    'authorityField': '100',
+    'authoritySubfields': ['a', 'b', 'c', 'd', 'g', 'j', 'q', 'f', 'h', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't'],
+    'autoLinkingEnabled': false,
+  },
+  {
+    'id': 12,
+    'bibField': '650',
+    'authorityField': '150',
+    'authoritySubfields': ['a', 'b', 'g'],
+    'autoLinkingEnabled': false,
+  },
+];
+
 describe('QuickMarcEditor utils', () => {
   const locations = [{
     code: 'VA/LI/D',
@@ -526,9 +551,9 @@ describe('QuickMarcEditor utils', () => {
             'content': '$a Kerouac, Jack, $d 1922-1969 $0 http://id.loc.gov/authorities/names/n80036674 $9 7e192d19-1e56-4f0e-9c06-8c601504377e',
             'indicators': ['1', '\\'],
             'isProtected': false,
+            linkingRuleId: 1,
             'authorityId': '7e192d19-1e56-4f0e-9c06-8c601504377e',
             'authorityNaturalId': 'n80036674',
-            'authorityControlledSubfields': ['a', 'b', 'c', 'd', 'j', 'q'],
             'subfieldGroups': {
               'controlled': '$a Kerouac, Jack, $d 1922-1969',
               'uncontrolledAlpha': '',
@@ -542,9 +567,9 @@ describe('QuickMarcEditor utils', () => {
             'content': '$a Kerouac, Jack, $d 1922-1969 $0 http://id.loc.gov/authorities/names/n80036674 $9 7e192d19-1e56-4f0e-9c06-8c601504377e',
             'indicators': ['1', '0'],
             'isProtected': false,
+            linkingRuleId: 8,
             'authorityId': '7e192d19-1e56-4f0e-9c06-8c601504377e',
             'authorityNaturalId': 'n80036674',
-            'authorityControlledSubfields': ['a', 'b', 'c', 'd', 'g', 'j', 'q', 'f', 'h', 'k', 'l', 'm', 'n'],
             'subfieldGroups': {
               'controlled': '$a Kerouac, Jack, $d 1922-1969',
               'uncontrolledAlpha': '',
@@ -558,9 +583,9 @@ describe('QuickMarcEditor utils', () => {
             'content': '$a Chin, Staceyann, $d 1972- $0 http://id.loc.gov/authorities/names/n2008052404 $9 2f4f9df2-3ee1-4fd7-8ab0-63bdc16f5c4a $2 fast',
             'indicators': ['1', '7'],
             'isProtected': false,
+            linkingRuleId: 8,
             'authorityId': '2f4f9df2-3ee1-4fd7-8ab0-63bdc16f5c4a',
             'authorityNaturalId': 'n2008052404',
-            'authorityControlledSubfields': ['a', 'b', 'c', 'd', 'g', 'j', 'q', 'f', 'h', 'k', 'l', 'm', 'n'],
             'subfieldGroups': {
               'controlled': '$a Chin, Staceyann, $d 1972-',
               'uncontrolledAlpha': '',
@@ -574,9 +599,9 @@ describe('QuickMarcEditor utils', () => {
             'content': '$a Speaking Oratory $b debating $0 http://id.loc.gov/authorities/subjects/sh85095299 $9 40415102-4205-455d-94bd-d1a655f91e90 $2 fast',
             'indicators': ['\\', '7'],
             'isProtected': false,
+            linkingRuleId: 12,
             'authorityId': '40415102-4205-455d-94bd-d1a655f91e90',
             'authorityNaturalId': 'sh85095299',
-            'authorityControlledSubfields': ['a', 'b', 'g', 'v', 'x', 'y', 'z'],
             'subfieldGroups': {
               'controlled': '$a Speaking Oratory $b debating',
               'uncontrolledAlpha': '',
@@ -596,6 +621,7 @@ describe('QuickMarcEditor utils', () => {
         expect(utils.validateMarcRecord({
           marcRecord: record,
           initialValues,
+          linkingRules,
         }).props).toEqual({
           id: 'ui-quick-marc.record.error.fieldCantBeSaved',
           values: {
@@ -617,6 +643,7 @@ describe('QuickMarcEditor utils', () => {
           expect(utils.validateMarcRecord({
             marcRecord: record,
             initialValues,
+            linkingRules,
           }).props).toEqual({
             id: 'ui-quick-marc.record.error.fieldsCantBeSaved',
             values: {
