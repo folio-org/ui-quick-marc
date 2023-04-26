@@ -25,6 +25,11 @@ jest.mock('react-router', () => ({
   }),
 }));
 
+jest.mock('../queries', () => ({
+  ...jest.requireActual('../queries'),
+  useAuthorityLinkingRules: jest.fn().mockReturnValue({ linkingRules: [] }),
+}));
+
 jest.mock('@folio/stripes-acq-components', () => ({
   ...jest.requireActual('@folio/stripes-acq-components'),
   useShowCallout: jest.fn(),

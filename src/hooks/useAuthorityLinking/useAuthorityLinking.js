@@ -12,6 +12,7 @@ import {
 import {
   getContentSubfieldValue,
   groupSubfields,
+  getControlledSubfields,
 } from '../../QuickMarcEditor/utils';
 
 const joinSubfields = (subfields) => Object.keys(subfields).reduce((content, key) => {
@@ -59,24 +60,6 @@ const useAuthorityLinking = () => {
 
     return linkableField;
   }, [linkingRules]);
-
-  const getControlledSubfields = useCallback((linkingRule) => {
-    // include transformed subfields into list of controlled subfields
-    return linkingRule.authoritySubfields.map(subfield => {
-      if (!linkingRule.subfieldModifications) {
-        return subfield;
-      }
-
-      const subfieldTransformation = linkingRule.subfieldModifications
-        .find(transformation => transformation.source === subfield);
-
-      if (!subfieldTransformation) {
-        return subfield;
-      }
-
-      return subfieldTransformation.target;
-    });
-  }, []);
 
   const validateLinkage = useCallback((linkedAuthorityField, bibField) => {
     if (!linkedAuthorityField) {
@@ -153,10 +136,9 @@ const useAuthorityLinking = () => {
     getLinkableAuthorityField,
     validateLinkage,
     findLinkingRule,
-    getControlledSubfields,
   ]);
 
-  const unlinkAuthority = (field) => {
+  const unlinkAuthority = useCallback((field) => {
     const bibSubfields = getContentSubfieldValue(field.content);
 
     delete bibSubfields.$9;
@@ -171,7 +153,7 @@ const useAuthorityLinking = () => {
       ...field,
       subfieldGroups: null,
     };
-  };
+  }, []);
 
   return {
     linkAuthority,

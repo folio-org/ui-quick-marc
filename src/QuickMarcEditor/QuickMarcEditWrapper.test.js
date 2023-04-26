@@ -25,6 +25,11 @@ jest.mock('react-router', () => ({
   })),
 }));
 
+jest.mock('../queries', () => ({
+  ...jest.requireActual('../queries'),
+  useAuthorityLinkingRules: jest.fn().mockReturnValue({ linkingRules: [] }),
+}));
+
 const mockRecords = {
   [MARC_TYPES.BIB]: [
     {

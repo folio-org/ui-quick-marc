@@ -513,6 +513,24 @@ const validate$9InLinkable = (marcRecords, linkableBibFields, uncontrolledSubfie
   return null;
 };
 
+export const getControlledSubfields = (linkingRule) => {
+  // include transformed subfields into list of controlled subfields
+  return linkingRule.authoritySubfields.map(subfield => {
+    if (!linkingRule.subfieldModifications) {
+      return subfield;
+    }
+
+    const subfieldTransformation = linkingRule.subfieldModifications
+      .find(transformation => transformation.source === subfield);
+
+    if (!subfieldTransformation) {
+      return subfield;
+    }
+
+    return subfieldTransformation.target;
+  });
+};
+
 const validateSubfieldsThatCanBeControlled = (marcRecords, uncontrolledSubfields, linkingRules) => {
   const linkedFields = marcRecords.filter(field => field.subfieldGroups);
 
@@ -521,8 +539,9 @@ const validateSubfieldsThatCanBeControlled = (marcRecords, uncontrolledSubfields
       if (linkedField.subfieldGroups[subfield]) {
         const contentSubfieldValue = getContentSubfieldValue(linkedField.subfieldGroups[subfield]);
         const linkingRule = linkingRules.find(rule => rule.id === linkedField.linkingRuleId);
+        const controlledSubfields = getControlledSubfields(linkingRule);
 
-        return linkingRule?.authoritySubfields?.some(authSubfield => {
+        return controlledSubfields.some(authSubfield => {
           return `$${authSubfield}` in contentSubfieldValue;
         });
       }
@@ -1105,7 +1124,8 @@ export const splitFields = (marcRecord, linkingRules) => {
       }
 
       const linkingRule = linkingRules.find(rule => rule.id === record.linkingRuleId);
-      const subfieldGroups = groupSubfields(record, linkingRule?.authoritySubfields);
+      const controlledSubfields = getControlledSubfields(linkingRule);
+      const subfieldGroups = groupSubfields(record, controlledSubfields);
 
       return {
         ...record,
