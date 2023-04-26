@@ -83,7 +83,6 @@ describe('Given useAuthorityLinking', () => {
 
       expect(result.current.linkAuthority(authority, authSource, field)).toMatchObject({
         content: '$a Beethoven, Ludwig van $e composer. $0 some.url/n0001 $9 authority-id',
-        authorityControlledSubfields: ['a', 'b', 't', 'd'],
       });
     });
   });
@@ -104,7 +103,6 @@ describe('Given useAuthorityLinking', () => {
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
         content: '$a authority value $b fakeB $0 some.url/n0001 $t field for modification $9 authority-id',
-        authorityControlledSubfields: ['a', 'b', 't', 'd'],
       });
     });
   });
@@ -125,7 +123,6 @@ describe('Given useAuthorityLinking', () => {
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
         content: '$a authority value $b fakeB $0 some.url/n0001 $9 authority-id $t field for modification',
-        authorityControlledSubfields: ['a', 'b', 't', 'd'],
       });
     });
   });
@@ -146,7 +143,6 @@ describe('Given useAuthorityLinking', () => {
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
         content: '$a authority value $b fakeB $0 some.url/n0001 $9 authority-id $t field for modification',
-        authorityControlledSubfields: ['a', 'b', 't', 'd'],
       });
     });
   });
@@ -167,7 +163,6 @@ describe('Given useAuthorityLinking', () => {
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
         content: '$a authority value $b fakeB $e author $e illustrator $0 some.url/n0001 $t field for modification $9 authority-id',
-        authorityControlledSubfields: ['a', 'b', 't', 'd'],
       });
     });
   });
@@ -205,7 +200,6 @@ describe('Given useAuthorityLinking', () => {
 
       expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
         content: '$a authority value $b fakeB $e author $e illustrator $0 some.url/n0001 $c field for modification $9 authority-id',
-        authorityControlledSubfields: ['a', 'b', 'c'],
       });
     });
   });

@@ -342,7 +342,6 @@ export const hydrateMarcRecord = marcRecord => ({
     indicators: record.indicators,
     authorityId: record.authorityId,
     authorityNaturalId: record.authorityNaturalId,
-    authorityControlledSubfields: record.authorityControlledSubfields,
     linkingRuleId: record.linkingRuleId,
   })),
   records: undefined,
@@ -396,7 +395,7 @@ const validateLeaderPositions = (leader, marcType) => {
   return undefined;
 };
 
-export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYPES.BIB, action) => {
+export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYPES.BIB) => {
   const cutEditableBytes = (str) => (
     LEADER_EDITABLE_BYTES[marcType].reduce((acc, byte, idx) => {
       const position = byte - idx;
@@ -514,15 +513,16 @@ const validate$9InLinkable = (marcRecords, linkableBibFields, uncontrolledSubfie
   return null;
 };
 
-const validateSubfieldsThatCanBeControlled = (marcRecords, uncontrolledSubfields) => {
+const validateSubfieldsThatCanBeControlled = (marcRecords, uncontrolledSubfields, linkingRules) => {
   const linkedFields = marcRecords.filter(field => field.subfieldGroups);
 
   const linkedFieldsWithEnteredSubfieldsThatCanBeControlled = linkedFields.filter(linkedField => {
     return uncontrolledSubfields.some(subfield => {
       if (linkedField.subfieldGroups[subfield]) {
         const contentSubfieldValue = getContentSubfieldValue(linkedField.subfieldGroups[subfield]);
+        const linkingRule = linkingRules.find(rule => rule.id === linkedField.linkingRuleId);
 
-        return linkedField.authorityControlledSubfields.some(authSubfield => {
+        return linkingRule?.authoritySubfields?.some(authSubfield => {
           return `$${authSubfield}` in contentSubfieldValue;
         });
       }
@@ -562,7 +562,7 @@ const validateSubfieldsThatCanBeControlled = (marcRecords, uncontrolledSubfields
   return null;
 };
 
-const validateMarcBibRecord = (marcRecords, linkableBibFields) => {
+const validateMarcBibRecord = (marcRecords, linkableBibFields, linkingRules) => {
   const titleRecords = marcRecords.filter(({ tag }) => tag === '245');
 
   if (titleRecords.length === 0) {
@@ -587,7 +587,11 @@ const validateMarcBibRecord = (marcRecords, linkableBibFields) => {
     return $9Error;
   }
 
-  const subfieldsThatCanBeControlledError = validateSubfieldsThatCanBeControlled(marcRecords, uncontrolledSubfields);
+  const subfieldsThatCanBeControlledError = validateSubfieldsThatCanBeControlled(
+    marcRecords,
+    uncontrolledSubfields,
+    linkingRules,
+  );
 
   if (subfieldsThatCanBeControlledError) {
     return subfieldsThatCanBeControlledError;
@@ -739,18 +743,18 @@ const validateMarcAuthorityRecord = (marcRecords, linksCount, initialRecords, na
 export const validateMarcRecord = ({
   marcRecord,
   initialValues,
-  action,
   marcType = MARC_TYPES.BIB,
   locations = [],
   linksCount,
   naturalId,
   linkableBibFields = [],
+  linkingRules = [],
 }) => {
   const marcRecords = marcRecord.records || [];
   const initialMarcRecords = initialValues.records;
   const recordLeader = marcRecords[0];
 
-  const leaderError = validateLeader(marcRecord?.leader, recordLeader?.content, marcType, action);
+  const leaderError = validateLeader(marcRecord?.leader, recordLeader?.content, marcType);
 
   if (leaderError) {
     return leaderError;
@@ -759,7 +763,7 @@ export const validateMarcRecord = ({
   let validationResult;
 
   if (marcType === MARC_TYPES.BIB) {
-    validationResult = validateMarcBibRecord(marcRecords, linkableBibFields);
+    validationResult = validateMarcBibRecord(marcRecords, linkableBibFields, linkingRules);
   } else if (marcType === MARC_TYPES.HOLDINGS) {
     validationResult = validateMarcHoldingsRecord(marcRecords, locations);
   } else if (marcType === MARC_TYPES.AUTHORITY) {

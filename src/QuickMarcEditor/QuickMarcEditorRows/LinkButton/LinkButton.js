@@ -29,7 +29,7 @@ import {
 } from '../../../common/constants';
 
 const propTypes = {
-  calloutRef: PropTypes.oneOf([
+  calloutRef: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.func,
   ]),

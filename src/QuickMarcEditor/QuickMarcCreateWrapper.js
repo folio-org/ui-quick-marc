@@ -75,7 +75,6 @@ const QuickMarcCreateWrapper = ({
       initialValues,
       marcType,
       locations,
-      action,
       linkableBibFields,
     });
 
@@ -84,7 +83,7 @@ const QuickMarcCreateWrapper = ({
     }
 
     return undefined;
-  }, [initialValues, locations, marcType, action, linkableBibFields, prepareForSubmit]);
+  }, [initialValues, locations, marcType, linkableBibFields, prepareForSubmit]);
 
   const redirectToRecord = (externalId, instanceId) => {
     let path;

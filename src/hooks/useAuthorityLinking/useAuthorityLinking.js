@@ -147,7 +147,6 @@ const useAuthorityLinking = () => {
       authorityNaturalId: authority.naturalId,
       authorityId: authority.id,
       subfieldGroups: groupSubfields(field, controlledSubfields),
-      authorityControlledSubfields: controlledSubfields,
     };
   }, [
     updateBibFieldWithLinkingData,
@@ -171,7 +170,6 @@ const useAuthorityLinking = () => {
     return {
       ...field,
       subfieldGroups: null,
-      authorityControlledSubfields: [],
     };
   };
 
