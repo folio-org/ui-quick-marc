@@ -145,13 +145,13 @@ const useAuthorityLinking = () => {
     delete field.linkingRuleId;
     delete field.authorityNaturalId;
     delete field.authorityId;
+    delete field.subfieldGroups;
 
     field.content = field.prevContent ?? joinSubfields(bibSubfields);
     delete field.prevContent;
 
     return {
       ...field,
-      subfieldGroups: null,
     };
   }, []);
 
