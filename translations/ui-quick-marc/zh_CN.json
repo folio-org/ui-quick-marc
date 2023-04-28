@@ -263,7 +263,7 @@
     "record.error.010.$aRemoved": "无法移除此记录的010$a。",
     "record.error.010.$aOnlyOne": "010 只能有一个$a。",
     "permission.quick-marc-editor.create": "quickMARC：创建新的MARC书目记录",
-    "record.error.field.onlyOneSubfield": "<b>{fieldTag}</b> can only have one <b>{subField}</b>.",
-    "bib-record.create.title": "Create a new MARC bib record",
-    "record.error.010.multiple": "Record cannot be saved with more than one 010 field"
+    "record.error.field.onlyOneSubfield": "<b> {fieldTag} </b>只能有一个<b> {subField} </b> 。",
+    "bib-record.create.title": "创建新的MARC书目记录",
+    "record.error.010.multiple": "不能保存超过一个 010 字段的记录"
 }
