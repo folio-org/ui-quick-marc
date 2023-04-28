@@ -234,7 +234,7 @@
     "record.viewMarcAuthorityRecord": "Ver registro de autoridade MARC",
     "record.link.success": "O campo <b> {tag} </b> foi <b> vinculado </b> a um registro MARC de autoridade.",
     "record.unlink.confirm.title": "Desvincular do registro MARC de autoridade",
-    "record.unlink.confirm.message": "Ao selecionar <b> Desvincular </b> , o campo {tag} será desvinculado do registro de autoridade MARC. Você tem certeza que quer continuar?",
+    "record.unlink.confirm.message": "Ao selecionar <b> Desvincular </b>, o campo {tag} será desvinculado do registro MARC de autoridade. Você tem certeza que quer continuar?",
     "record.unlink.confirm.cancel": "Cancelar",
     "record.unlink.confirm.confirm": "Desvincular",
     "remove-authority-linking.modal.label": "Remover vinculação de autoridade",
@@ -265,5 +265,5 @@
     "permission.quick-marc-editor.create": "quickMARC: Criar um novo registro MARC bibliográfico",
     "record.error.field.onlyOneSubfield": "<b> {fieldTag} </b> só pode ter um <b> {subField} </b> .",
     "bib-record.create.title": "Criar um novo registro MARC bibliográfico",
-    "record.error.010.multiple": "Record cannot be saved with more than one 010 field"
+    "record.error.010.multiple": "O registro não pode ser salvo com mais de um campo 010"
 }
