@@ -151,6 +151,7 @@ const QuickMarcEditWrapper = ({
       return null;
     }
 
+    marcRecord._actionType = 'edit';
     marcRecord.relatedRecordVersion = marcType === MARC_TYPES.AUTHORITY
       ? instance._version
       : new URLSearchParams(location.search).get('relatedRecordVersion');

@@ -81,6 +81,7 @@ const QuickMarcDeriveWrapper = ({
       });
 
       derivedRecord.relatedRecordVersion = parseInt(_version, 10);
+      derivedRecord._actionType = 'edit';
       mutator.quickMarcEditMarcRecord.PUT(derivedRecord)
         .finally(() => {
           history.push({
@@ -136,6 +137,7 @@ const QuickMarcDeriveWrapper = ({
     const marcRecord = hydrateMarcRecord(formValuesWithCombinedFields);
 
     marcRecord.relatedRecordVersion = 1;
+    marcRecord._actionType = 'create';
 
     return mutator.quickMarcEditMarcRecord.POST(marcRecord)
       .then(async ({ qmRecordId }) => {

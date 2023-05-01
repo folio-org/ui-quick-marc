@@ -102,8 +102,10 @@ const QuickMarcCreateWrapper = ({
 
   const onSubmit = useCallback(async (formValues) => {
     const formValuesForCreate = prepareForSubmit(formValues);
+    const marcRecord = hydrateMarcRecord(formValuesForCreate);
+    marcRecord._actionType = 'create';
 
-    return mutator.quickMarcEditMarcRecord.POST(hydrateMarcRecord(formValuesForCreate))
+    return mutator.quickMarcEditMarcRecord.POST(marcRecord)
       .then(async ({ qmRecordId }) => {
         const instanceId = formValues.externalId;
 
