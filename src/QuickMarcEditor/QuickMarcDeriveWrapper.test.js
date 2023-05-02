@@ -335,7 +335,7 @@ describe('Given QuickMarcDeriveWrapper', () => {
           json: () => Promise.resolve({}),
         }));
 
-        await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); })
+        await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
         expect(mutator.quickMarcEditMarcRecord.POST).toHaveBeenCalled();
 
