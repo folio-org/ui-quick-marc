@@ -68,14 +68,17 @@ const QuickMarcDeriveWrapper = ({
       derivedRecord.fields = derivedRecord.fields.map((field) => {
         // matching field from POST request
         const matchingLinkedField = marcRecord.fields
-          .find(_field => _field.authorityId && _field.tag === field.tag && _field.authorityId === field.authorityId);
+          .find(_field => (
+            _field.linkDetails?.authorityId
+            && _field.tag === field.tag
+            && _field.linkDetails?.authorityId === field.linkDetails?.authorityId
+          ));
 
         if (!matchingLinkedField) {
           return field;
         }
 
-        field.authorityNaturalId = matchingLinkedField.authorityNaturalId;
-        field.linkingRuleId = matchingLinkedField.linkingRuleId;
+        field.linkDetails = matchingLinkedField.linkDetails;
 
         return field;
       });

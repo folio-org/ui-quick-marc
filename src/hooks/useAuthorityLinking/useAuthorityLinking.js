@@ -88,7 +88,7 @@ const useAuthorityLinking = () => {
     return null;
   }, [findLinkingRule]);
 
-  const updateBibFieldWithLinkingData = useCallback((bibField, linkedAuthorityField, authorityRecord, linkingRule) => {
+  const updateBibFieldWithLinkingData = useCallback((bibField, linkedAuthorityField, authorityRecord) => {
     const bibSubfields = getContentSubfieldValue(bibField.content);
     const sourceFile = sourceFiles.find(file => file.id === authorityRecord.sourceFileId);
 
@@ -105,7 +105,6 @@ const useAuthorityLinking = () => {
     copySubfieldsFromAuthority(bibSubfields, linkedAuthorityField, bibField.tag);
 
     bibSubfields.$9 = [authorityRecord.id];
-    bibField.linkingRuleId = linkingRule.id;
     bibField.prevContent = bibField.content;
     bibField.content = joinSubfields(bibSubfields);
   }, [copySubfieldsFromAuthority, sourceFiles]);
@@ -127,8 +126,11 @@ const useAuthorityLinking = () => {
 
     return {
       ...field,
-      authorityNaturalId: authority.naturalId,
-      authorityId: authority.id,
+      linkDetails: {
+        authorityNaturalId: authority.naturalId,
+        authorityId: authority.id,
+        linkingRuleId: linkingRule.id,
+      },
       subfieldGroups: groupSubfields(field, controlledSubfields),
     };
   }, [
@@ -142,9 +144,7 @@ const useAuthorityLinking = () => {
     const bibSubfields = getContentSubfieldValue(field.content);
 
     delete bibSubfields.$9;
-    delete field.linkingRuleId;
-    delete field.authorityNaturalId;
-    delete field.authorityId;
+    delete field.linkDetails;
     delete field.subfieldGroups;
 
     field.content = field.prevContent ?? joinSubfields(bibSubfields);

@@ -16,8 +16,8 @@
     "displayName": "ui-quick-marc.meta.title",
     "okapiInterfaces": {
       "inventory": "13.0",
-      "records-editor.records": "3.1",
-      "instance-authority-links": "2.0"
+      "records-editor.records": "4.0",
+      "instance-authority-links": "2.1"
     },
     "stripesDeps": [
       "@folio/stripes-acq-components"

@@ -90,7 +90,11 @@ const initValues = [
     id: '9',
     tag: '100',
     content: '$a Kirby, Jack, $e creator. $0 http://id.loc.gov/authorities/names/n2019022493',
-    authorityId: 'authority-id',
+    linkDetails: {
+      authorityId: 'authority-id',
+      authorityNaturalId: 'naturalId',
+      linkingRuleId: 1,
+    },
     _isLinked: true,
     indicators: [],
   },
@@ -114,7 +118,11 @@ const initValues = [
   },
   {
     id: '8',
-    authorityId: '09140d44-a515-4b64-9261-845639e75db4',
+    linkDetails: {
+      authorityId: '09140d44-a515-4b64-9261-845639e75db4',
+      authorityNaturalId: 'naturalId',
+      linkingRuleId: 1,
+    },
     _isLinked: false,
     tag: '100',
   },

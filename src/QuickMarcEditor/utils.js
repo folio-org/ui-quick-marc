@@ -330,7 +330,7 @@ export const addInternalFieldProperties = (marcRecord) => {
     records: marcRecord.records.map(record => ({
       ...record,
       _isDeleted: false,
-      _isLinked: !!record.authorityId,
+      _isLinked: !!record.linkDetails?.authorityId,
     })),
   };
 };
@@ -342,9 +342,7 @@ export const hydrateMarcRecord = marcRecord => ({
     tag: record.tag,
     content: record.content,
     indicators: record.indicators,
-    authorityId: record.authorityId,
-    authorityNaturalId: record.authorityNaturalId,
-    linkingRuleId: record.linkingRuleId,
+    linkDetails: record.linkDetails,
   })),
   records: undefined,
 });
@@ -540,7 +538,7 @@ const validateSubfieldsThatCanBeControlled = (marcRecords, uncontrolledSubfields
     return uncontrolledSubfields.some(subfield => {
       if (linkedField.subfieldGroups[subfield]) {
         const contentSubfieldValue = getContentSubfieldValue(linkedField.subfieldGroups[subfield]);
-        const linkingRule = linkingRules.find(rule => rule.id === linkedField.linkingRuleId);
+        const linkingRule = linkingRules.find(rule => rule.id === linkedField.linkDetails?.linkingRuleId);
         const controlledSubfields = getControlledSubfields(linkingRule);
 
         return controlledSubfields.some(authSubfield => {
@@ -1125,7 +1123,7 @@ export const splitFields = (marcRecord, linkingRules) => {
         return record;
       }
 
-      const linkingRule = linkingRules.find(rule => rule.id === record.linkingRuleId);
+      const linkingRule = linkingRules.find(rule => rule.id === record.linkDetails?.linkingRuleId);
       const controlledSubfields = getControlledSubfields(linkingRule);
       const subfieldGroups = groupSubfields(record, controlledSubfields);
 

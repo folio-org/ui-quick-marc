@@ -474,7 +474,7 @@ const QuickMarcEditorRows = ({
                     >
                       {({ ref, ariaIds }) => (
                         <Link
-                          to={`/marc-authorities/authorities/${recordRow.authorityId}?authRefType=Authorized&segment=search`}
+                          to={`/marc-authorities/authorities/${recordRow.linkDetails?.authorityId}?authRefType=Authorized&segment=search`}
                           target="_blank"
                           data-testid="view-authority-record-link"
                           tabIndex="-1"
@@ -505,12 +505,16 @@ QuickMarcEditorRows.propTypes = {
   type: PropTypes.string.isRequired,
   subtype: PropTypes.string.isRequired,
   fields: PropTypes.arrayOf(PropTypes.shape({
-    authorityId: PropTypes.string,
     id: PropTypes.string.isRequired,
     tag: PropTypes.string.isRequired,
     indicators: PropTypes.arrayOf(PropTypes.string),
     isProtected: PropTypes.bool,
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+    linkDetails: PropTypes.shape({
+      authorityId: PropTypes.string.isRequired,
+      authorityNaturalId: PropTypes.string.isRequired,
+      linkingRuleId: PropTypes.number.isRequired,
+    }),
     _isDeleted: PropTypes.bool,
     _isLinked: PropTypes.bool,
   })),
