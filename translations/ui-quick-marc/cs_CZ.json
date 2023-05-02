@@ -234,7 +234,7 @@
     "record.viewMarcAuthorityRecord": "Zobrazit záznam MARC autority",
     "record.link.success": "Pole <b>{tag}</b> bylo <b>propojeno</b> se záznamem MARC autority.",
     "record.unlink.confirm.title": "Zrušit propojení se záznamem MARC autority",
-    "record.unlink.confirm.message": "Výběrem možnosti <b>Odpojit</b> se pole {tag} odpojí ze záznamu MARC autority. Opravdu chcete pokračovat?",
+    "record.unlink.confirm.message": "Výběrem možnosti <b>Odpojit</b> se pole <b>{tag}</b> odpojí ze záznamu MARC autority. Opravdu chcete pokračovat?",
     "record.unlink.confirm.cancel": "Zrušit",
     "record.unlink.confirm.confirm": "Odpojit",
     "remove-authority-linking.modal.label": "Odstranění propojení autorit",
@@ -264,6 +264,6 @@
     "record.error.010.$aOnlyOne": "010 může mít pouze jeden $a.",
     "permission.quick-marc-editor.create": "quickMARC: Vytvoření nového MARC bibliografického záznamu",
     "record.error.field.onlyOneSubfield": "<b>{fieldTag}</b> může mít pouze jedno <b>{subField}</b>.",
-    "bib-record.create.title": "Create a new MARC bib record",
-    "record.error.010.multiple": "Record cannot be saved with more than one 010 field"
+    "bib-record.create.title": "Vytvořit nový MARC bib záznam",
+    "record.error.010.multiple": "Záznam nelze uložit s více než jedním polem 010"
 }

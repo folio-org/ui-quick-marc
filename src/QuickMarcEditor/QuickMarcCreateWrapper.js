@@ -10,6 +10,7 @@ import { useShowCallout } from '@folio/stripes-acq-components';
 import QuickMarcEditor from './QuickMarcEditor';
 import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
 import { useAuthorityLinking } from '../hooks';
+import { useAuthorityLinkingRules } from '../queries';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 import {
@@ -49,6 +50,7 @@ const QuickMarcCreateWrapper = ({
   const showCallout = useShowCallout();
   const [httpError, setHttpError] = useState(null);
   const { linkableBibFields } = useAuthorityLinking();
+  const { linkingRules } = useAuthorityLinkingRules();
 
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesToSave = removeDeletedRecords(formValues);
@@ -76,6 +78,7 @@ const QuickMarcCreateWrapper = ({
       marcType,
       locations,
       linkableBibFields,
+      linkingRules,
     });
 
     if (validationErrorMessage) {
@@ -83,7 +86,7 @@ const QuickMarcCreateWrapper = ({
     }
 
     return undefined;
-  }, [initialValues, locations, marcType, linkableBibFields, prepareForSubmit]);
+  }, [initialValues, locations, marcType, linkableBibFields, linkingRules, prepareForSubmit]);
 
   const redirectToRecord = (externalId, instanceId) => {
     let path;

@@ -255,6 +255,7 @@ describe('Given useAuthorityLinking', () => {
         content: '$a authority value $b some other value $e author $e illustrator $0 http://some.url/n0001 $9 authority-id',
         authorityNaturalId: 'n0001',
         authorityId: 'authority-id',
+        subfieldGroups: {},
       };
 
       expect(result.current.unlinkAuthority(field)).toMatchObject({
