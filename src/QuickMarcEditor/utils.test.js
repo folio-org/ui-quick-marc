@@ -1658,19 +1658,6 @@ describe('QuickMarcEditor utils', () => {
 
   describe('autopopulateSubfieldSection', () => {
     it('should return record with added subfield', () => {
-      const initialValues = {
-        records: [{
-          tag: '001',
-          id: 'id001',
-        }, {
-          tag: '003',
-          id: 'id003',
-        }, {
-          tag: '240',
-          id: 'id240',
-        }],
-      };
-
       const record = {
         records: [{
           tag: '001',
@@ -1725,13 +1712,6 @@ describe('QuickMarcEditor utils', () => {
     });
 
     it('should remove fields with empty content', () => {
-      const initialValues = {
-        records: [{
-          tag: '001',
-          id: 'id001',
-        }],
-      };
-
       const record = {
         records: [{
           tag: '001',
@@ -1787,13 +1767,6 @@ describe('QuickMarcEditor utils', () => {
     });
 
     it('should not remove fields when subfield code and subfield value not separated with space', () => {
-      const initialValues = {
-        records: [{
-          tag: '001',
-          id: 'id001',
-        }],
-      };
-
       const record = {
         records: [{
           tag: '001',
