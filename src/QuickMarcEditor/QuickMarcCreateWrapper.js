@@ -4,6 +4,8 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import ReactRouterPropTypes from 'react-router-prop-types';
+import flow from 'lodash/flow';
+import map from 'lodash/map';
 
 import { useShowCallout } from '@folio/stripes-acq-components';
 
@@ -53,13 +55,12 @@ const QuickMarcCreateWrapper = ({
   const { linkingRules } = useAuthorityLinkingRules();
 
   const prepareForSubmit = useCallback((formValues) => {
-    const formValuesToSave = removeDeletedRecords(formValues);
-    const autopopulatedFormValues = autopopulateSubfieldSection(
-      removeFieldsForDerive(formValuesToSave),
-      initialValues,
-      marcType,
-    );
-    const formValuesForCreate = cleanBytesFields(autopopulatedFormValues, initialValues, marcType);
+    const formValuesForCreate = flow(
+      removeDeletedRecords,
+      removeFieldsForDerive,
+      map(marcRecord => autopopulateSubfieldSection(marcRecord, marcType)),
+      map(marcRecord => cleanBytesFields(marcRecord, initialValues, marcType)),
+    )(formValues);
 
     return formValuesForCreate;
   }, [initialValues, marcType]);

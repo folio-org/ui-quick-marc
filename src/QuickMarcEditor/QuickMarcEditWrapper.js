@@ -4,6 +4,8 @@ import React, {
 } from 'react';
 import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
+import flow from 'lodash/flow';
+import map from 'lodash/map';
 
 import { useShowCallout } from '@folio/stripes-acq-components';
 
@@ -26,6 +28,7 @@ import {
   removeDeletedRecords,
   combineSplitFields,
   are010Or1xxUpdated,
+  removeDuplicateSystemGeneratedFields,
 } from './utils';
 import { useAuthorityLinkingRules } from '../queries';
 
@@ -61,7 +64,10 @@ const QuickMarcEditWrapper = ({
   const { linkingRules } = useAuthorityLinkingRules();
 
   const prepareForSubmit = useCallback((formValues) => {
-    const formValuesToSave = removeDeletedRecords(formValues);
+    const formValuesToSave = flow(
+      removeDeletedRecords,
+      removeDuplicateSystemGeneratedFields,
+    )(formValues);
 
     return formValuesToSave;
   }, []);
@@ -108,21 +114,19 @@ const QuickMarcEditWrapper = ({
       is1xxOr010Updated = are010Or1xxUpdated(initialValues.records, formValues.records);
     }
 
-    const formValuesToSave = prepareForSubmit(formValues);
+    const formValuesToSave = flow(
+      prepareForSubmit,
+      autopopulateIndicators,
+      map(marcRecord => autopopulateSubfieldSection(marcRecord, marcType)),
+      map(marcRecord => cleanBytesFields(marcRecord, initialValues, marcType)),
+      combineSplitFields,
+      hydrateMarcRecord,
+    )(formValues);
 
-    const autopopulatedFormWithIndicators = autopopulateIndicators(formValuesToSave);
-    const autopopulatedFormWithSubfields = autopopulateSubfieldSection(
-      autopopulatedFormWithIndicators,
-      initialValues,
-      marcType,
-    );
-    const formValuesForEdit = cleanBytesFields(autopopulatedFormWithSubfields, initialValues, marcType);
-    const formValuesWithCombinedFields = combineSplitFields(formValuesForEdit);
-    const marcRecord = hydrateMarcRecord(formValuesWithCombinedFields);
     const path = EXTERNAL_INSTANCE_APIS[marcType];
 
     const fetchInstance = async () => {
-      const fetchedInstance = await mutator.quickMarcEditInstance.GET({ path: `${path}/${marcRecord.externalId}` });
+      const fetchedInstance = await mutator.quickMarcEditInstance.GET({ path: `${path}/${formValuesToSave.externalId}` });
 
       return fetchedInstance;
     };
@@ -151,11 +155,11 @@ const QuickMarcEditWrapper = ({
       return null;
     }
 
-    marcRecord.relatedRecordVersion = marcType === MARC_TYPES.AUTHORITY
+    formValuesToSave.relatedRecordVersion = marcType === MARC_TYPES.AUTHORITY
       ? instance._version
       : new URLSearchParams(location.search).get('relatedRecordVersion');
 
-    return mutator.quickMarcEditMarcRecord.PUT(marcRecord)
+    return mutator.quickMarcEditMarcRecord.PUT(formValuesToSave)
       .then(async () => {
         if (is1xxOr010Updated) {
           const values = {
@@ -176,7 +180,7 @@ const QuickMarcEditWrapper = ({
 
         await refreshPageData();
 
-        return { version: parseInt(marcRecord.relatedRecordVersion, 10) + 1 };
+        return { version: parseInt(formValuesToSave.relatedRecordVersion, 10) + 1 };
       })
       .catch(async (errorResponse) => {
         const parsedError = await parseHttpError(errorResponse);
