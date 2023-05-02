@@ -1222,33 +1222,17 @@ describe('QuickMarcEditor utils', () => {
 
   describe('checkIsInitialRecord', () => {
     it('should return true if this record row is initial', () => {
-      const initialRecords = [
-        {
-          id: 'id1',
-        },
-        {
-          id: 'id2',
-        },
-      ];
-
-      const recordId = 'id2';
-
-      expect(utils.checkIsInitialRecord(initialRecords, recordId)).toBeTruthy();
+      expect(utils.checkIsInitialRecord({
+        id: '123-456',
+        _isAdded: false,
+      })).toBeTruthy();
     });
 
     it('should return false if this record row is not initial', () => {
-      const initialRecords = [
-        {
-          id: 'id1',
-        },
-        {
-          id: 'id2',
-        },
-      ];
-
-      const recordId = 'id3';
-
-      expect(utils.checkIsInitialRecord(initialRecords, recordId)).toBeFalsy();
+      expect(utils.checkIsInitialRecord({
+        id: '123-456',
+        _isAdded: true,
+      })).toBeFalsy();
     });
   });
 
@@ -1343,14 +1327,6 @@ describe('QuickMarcEditor utils', () => {
 
   describe('validateSubfield', () => {
     it('should not return error message when indicators are present and content is not empty', () => {
-      const initialRecords = [
-        {
-          id: 'id1',
-        },
-        {
-          id: 'id2',
-        },
-      ];
       const records = [
         {
           indicators: ['\\', '\\'],
@@ -1364,18 +1340,10 @@ describe('QuickMarcEditor utils', () => {
         },
       ];
 
-      expect(utils.validateSubfield(records, initialRecords)).not.toBeDefined();
+      expect(utils.validateSubfield(records)).not.toBeDefined();
     });
 
     it('should return error message when content is empty', () => {
-      const initialRecords = [
-        {
-          id: 'id1',
-        },
-        {
-          id: 'id2',
-        },
-      ];
       const records = [
         {
           indicators: ['\\', '\\'],
@@ -1387,7 +1355,7 @@ describe('QuickMarcEditor utils', () => {
         },
       ];
 
-      expect(utils.validateSubfield(records, initialRecords).props.id).toBe('ui-quick-marc.record.error.subfield');
+      expect(utils.validateSubfield(records).props.id).toBe('ui-quick-marc.record.error.subfield');
     });
   });
 
@@ -1700,19 +1668,6 @@ describe('QuickMarcEditor utils', () => {
 
   describe('autopopulateSubfieldSection', () => {
     it('should return record with added subfield', () => {
-      const initialValues = {
-        records: [{
-          tag: '001',
-          id: 'id001',
-        }, {
-          tag: '003',
-          id: 'id003',
-        }, {
-          tag: '240',
-          id: 'id240',
-        }],
-      };
-
       const record = {
         records: [{
           tag: '001',
@@ -1763,17 +1718,10 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.autopopulateSubfieldSection(record, initialValues)).toEqual(expectedRecord);
+      expect(utils.autopopulateSubfieldSection(record)).toEqual(expectedRecord);
     });
 
     it('should remove fields with empty content', () => {
-      const initialValues = {
-        records: [{
-          tag: '001',
-          id: 'id001',
-        }],
-      };
-
       const record = {
         records: [{
           tag: '001',
@@ -1825,17 +1773,10 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.autopopulateSubfieldSection(record, initialValues)).toEqual(expectedRecord);
+      expect(utils.autopopulateSubfieldSection(record)).toEqual(expectedRecord);
     });
 
     it('should not remove fields when subfield code and subfield value not separated with space', () => {
-      const initialValues = {
-        records: [{
-          tag: '001',
-          id: 'id001',
-        }],
-      };
-
       const record = {
         records: [{
           tag: '001',
@@ -1894,7 +1835,7 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.autopopulateSubfieldSection(record, initialValues)).toEqual(expectedRecord);
+      expect(utils.autopopulateSubfieldSection(record)).toEqual(expectedRecord);
     });
   });
 

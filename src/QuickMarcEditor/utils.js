@@ -273,6 +273,19 @@ const getEmptyContent = (field) => {
   return '';
 };
 
+export const removeDuplicateSystemGeneratedFields = (marcRecord) => {
+  return {
+    ...marcRecord,
+    records: marcRecord.records.filter(field => {
+      if (field.tag === '001' && field._isAdded) {
+        return false;
+      }
+
+      return true;
+    }),
+  };
+};
+
 const removeMarcRecordFieldContentForDerive = marcRecord => {
   return {
     ...marcRecord,
@@ -355,6 +368,7 @@ export const addNewRecord = (index, state) => {
     tag: '',
     content: '$a ',
     indicators: ['\\', '\\'],
+    _isAdded: true,
   };
 
   records.splice(newIndex, 0, emptyRow);
@@ -447,10 +461,8 @@ export const validateRecordTag = marcRecords => {
   return undefined;
 };
 
-export const checkIsInitialRecord = (initialMarcRecord, marcRecordId) => {
-  const initialMarcRecordIds = new Set(initialMarcRecord.map(record => record.id));
-
-  return initialMarcRecordIds.has(marcRecordId);
+export const checkIsInitialRecord = (field) => {
+  return !field._isAdded;
 };
 
 export const checkControlFieldLength = (formValues) => {
@@ -480,10 +492,10 @@ export const checkCanBeLinked = (stripes, marcType, linkableBibFields, tag) => (
   linkableBibFields.includes(tag)
 );
 
-export const validateSubfield = (marcRecords, initialMarcRecords) => {
+export const validateSubfield = (marcRecords) => {
   const marcRecordsWithSubfields = marcRecords.filter(marcRecord => marcRecord.indicators);
   const isEmptySubfield = marcRecordsWithSubfields.some(marcRecord => {
-    return !marcRecord.content && checkIsInitialRecord(initialMarcRecords, marcRecord.id);
+    return !marcRecord.content && checkIsInitialRecord(marcRecord);
   });
 
   if (isEmptySubfield) {
@@ -799,7 +811,7 @@ export const validateMarcRecord = ({
     return tagError;
   }
 
-  const subfieldError = validateSubfield(marcRecords, initialMarcRecords);
+  const subfieldError = validateSubfield(marcRecords);
 
   if (subfieldError) {
     return subfieldError;
@@ -930,16 +942,15 @@ export const autopopulateIndicators = (formValues) => {
   };
 };
 
-export const autopopulateSubfieldSection = (formValues, initialValues, marcType = MARC_TYPES.BIB) => {
+export const autopopulateSubfieldSection = (formValues, marcType = MARC_TYPES.BIB) => {
   const { records } = formValues;
-  const { records: initialMarcRecords } = initialValues;
 
   const recordsWithSubfields = records.reduce((acc, field) => {
     if (!field.content && field.indicators && field.indicators.every(value => !value)) {
       return acc;
     }
 
-    if (!field.content && !checkIsInitialRecord(initialMarcRecords, field.id)) {
+    if (!field.content && !checkIsInitialRecord(field)) {
       return acc;
     }
 

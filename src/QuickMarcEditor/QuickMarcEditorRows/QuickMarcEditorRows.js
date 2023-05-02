@@ -517,6 +517,7 @@ QuickMarcEditorRows.propTypes = {
     }),
     _isDeleted: PropTypes.bool,
     _isLinked: PropTypes.bool,
+    _isAdded: PropTypes.bool,
   })),
   mutators: PropTypes.shape({
     addRecord: PropTypes.func.isRequired,
