@@ -1,6 +1,6 @@
 {
   "name": "@folio/quick-marc",
-  "version": "6.0.2",
+  "version": "7.0.0",
   "description": "Quick MARC editor",
   "main": "index.js",
   "repository": "",
