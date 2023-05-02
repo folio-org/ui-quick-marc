@@ -265,5 +265,5 @@
     "permission.quick-marc-editor.create": "Cargar registros bibliográficos MARC.",
     "record.error.field.onlyOneSubfield": "<b>{fieldTag}</b> sólo puede tener un <b>{subField}</b>.",
     "bib-record.create.title": "Crear un nuevo registro bibliográfico MARC",
-    "record.error.010.multiple": "Record cannot be saved with more than one 010 field"
+    "record.error.010.multiple": "No se puede guardar un registro con más de un campo 010"
 }
