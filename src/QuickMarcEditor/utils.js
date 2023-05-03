@@ -526,7 +526,7 @@ export const checkCanBeLinked = (stripes, marcType, linkableBibFields, tag) => (
   linkableBibFields.includes(tag)
 );
 
-export const recordHasLinks = (fields) => fields.some(field => field.linkingRuleId);
+export const recordHasLinks = (fields) => fields.some(field => field.linkDetails?.linkingRuleId);
 
 export const validateSubfield = (marcRecords) => {
   const marcRecordsWithSubfields = marcRecords.filter(marcRecord => marcRecord.indicators);
