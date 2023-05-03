@@ -25,6 +25,7 @@ import {
   removeDeletedRecords,
   combineSplitFields,
   saveLinksToNewRecord,
+  recordHasLinks,
 } from './utils';
 import { useAuthorityLinkingRules } from '../queries';
 
@@ -90,6 +91,13 @@ const QuickMarcDeriveWrapper = ({
     return undefined;
   }, [prepareForSubmit, initialValues, linkableBibFields, linkingRules]);
 
+  const redirectToRecord = (externalId) => {
+    history.push({
+      pathname: `/inventory/view/${externalId}`,
+      search: location.search,
+    });
+  };
+
   const onSubmit = useCallback(async (formValues) => {
     const formValuesForDerive = prepareForSubmit(formValues);
 
@@ -116,13 +124,12 @@ const QuickMarcDeriveWrapper = ({
 
           showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
 
-          saveLinksToNewRecord(mutator, externalId, marcRecord)
-            .finally(() => {
-              history.push({
-                pathname: `/inventory/view/${externalId}`,
-                search: location.search,
-              });
-            });
+          if (recordHasLinks(marcRecord.fields)) {
+            saveLinksToNewRecord(mutator, externalId, marcRecord)
+              .finally(() => redirectToRecord(externalId));
+          } else {
+            redirectToRecord(externalId);
+          }
         } catch (e) {
           showCallout({
             messageId: 'ui-quick-marc.record.saveNew.error',

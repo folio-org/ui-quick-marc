@@ -24,6 +24,7 @@ import {
   parseHttpError,
   removeDeletedRecords,
   saveLinksToNewRecord,
+  recordHasLinks,
 } from './utils';
 
 const propTypes = {
@@ -122,7 +123,7 @@ const QuickMarcCreateWrapper = ({
 
           showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
 
-          if (marcType === MARC_TYPES.BIB) {
+          if (marcType === MARC_TYPES.BIB && recordHasLinks(formValuesForCreate.fields)) {
             saveLinksToNewRecord(mutator, externalId, formValuesForCreate)
               .finally(() => redirectToRecord(externalId, instanceId));
           } else {
