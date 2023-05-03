@@ -23,6 +23,7 @@ import {
   cleanBytesFields,
   parseHttpError,
   removeDeletedRecords,
+  saveLinksToNewRecord,
 } from './utils';
 
 const propTypes = {
@@ -104,9 +105,9 @@ const QuickMarcCreateWrapper = ({
   };
 
   const onSubmit = useCallback(async (formValues) => {
-    const formValuesForCreate = prepareForSubmit(formValues);
+    const formValuesForCreate = hydrateMarcRecord(prepareForSubmit(formValues));
 
-    return mutator.quickMarcEditMarcRecord.POST(hydrateMarcRecord(formValuesForCreate))
+    return mutator.quickMarcEditMarcRecord.POST(formValuesForCreate)
       .then(async ({ qmRecordId }) => {
         const instanceId = formValues.externalId;
 
@@ -121,7 +122,12 @@ const QuickMarcCreateWrapper = ({
 
           showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
 
-          redirectToRecord(externalId, instanceId);
+          if (marcType === MARC_TYPES.BIB) {
+            saveLinksToNewRecord(mutator, externalId, formValuesForCreate)
+              .finally(() => redirectToRecord(externalId, instanceId));
+          } else {
+            redirectToRecord(externalId, instanceId);
+          }
         } catch (e) {
           showCallout({
             messageId: 'ui-quick-marc.record.saveNew.error',
