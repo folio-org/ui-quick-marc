@@ -55,8 +55,6 @@ const QuickMarcDeriveWrapper = ({
   const { linkingRules } = useAuthorityLinkingRules();
   const [httpError, setHttpError] = useState(null);
 
-  
-
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesForDerive = flow(
       removeDeletedRecords,

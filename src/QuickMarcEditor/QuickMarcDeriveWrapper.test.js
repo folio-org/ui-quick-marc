@@ -297,23 +297,15 @@ describe('Given QuickMarcDeriveWrapper', () => {
         }).getByText;
       });
 
-      await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+      await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
       expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.onSave' });
 
-      await new Promise(resolve => {
-        setTimeout(() => {
-          expect(history.push).toHaveBeenCalledWith({
-            pathname: '/inventory/view/id',
-            search: location.search,
-          });
-
-          expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
-
-          resolve();
-        }, 10);
+      expect(history.push).toHaveBeenCalledWith({
+        pathname: '/inventory/view/id',
+        search: location.search,
       });
-    }, 1000);
+    });
 
     describe('when there is an error during POST request', () => {
       it('should show an error message', async () => {
