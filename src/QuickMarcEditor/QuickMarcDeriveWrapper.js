@@ -11,13 +11,8 @@ import { useShowCallout } from '@folio/stripes-acq-components';
 import QuickMarcEditor from './QuickMarcEditor';
 import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
 import { useAuthorityLinking } from '../hooks';
-import {
-  QUICK_MARC_ACTIONS,
-} from './constants';
-import {
-  MARC_TYPES,
-  EXTERNAL_INSTANCE_APIS,
-} from '../common/constants';
+import { QUICK_MARC_ACTIONS } from './constants';
+import { MARC_TYPES } from '../common/constants';
 import {
   hydrateMarcRecord,
   removeFieldsForDerive,
@@ -29,6 +24,8 @@ import {
   parseHttpError,
   removeDeletedRecords,
   combineSplitFields,
+  saveLinksToNewRecord,
+  recordHasLinks,
 } from './utils';
 import { useAuthorityLinkingRules } from '../queries';
 
@@ -57,40 +54,6 @@ const QuickMarcDeriveWrapper = ({
   const { linkableBibFields } = useAuthorityLinking();
   const { linkingRules } = useAuthorityLinkingRules();
   const [httpError, setHttpError] = useState(null);
-
-  const saveLinksToNewRecord = async (externalId, marcRecord) => {
-    // request derived Instance record
-    const instancePromise = mutator.quickMarcEditInstance.GET({ path: `${EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]}/${externalId}` });
-    // request derived MARC Bib record
-    const marcPromise = mutator.quickMarcEditMarcRecord.GET({ params: { externalId } });
-
-    Promise.all([instancePromise, marcPromise]).then(([{ _version }, derivedRecord]) => {
-      // copy linking data to new record
-      derivedRecord.fields = derivedRecord.fields.map((field) => {
-        // matching field from POST request
-        const matchingLinkedField = marcRecord.fields
-          .find(_field => _field.authorityId && _field.tag === field.tag && _field.authorityId === field.authorityId);
-
-        if (!matchingLinkedField) {
-          return field;
-        }
-
-        field.authorityNaturalId = matchingLinkedField.authorityNaturalId;
-        field.linkingRuleId = matchingLinkedField.linkingRuleId;
-
-        return field;
-      });
-
-      derivedRecord.relatedRecordVersion = parseInt(_version, 10);
-      mutator.quickMarcEditMarcRecord.PUT(derivedRecord)
-        .finally(() => {
-          history.push({
-            pathname: `/inventory/view/${externalId}`,
-            search: location.search,
-          });
-        });
-    });
-  };
 
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesForDerive = flow(
@@ -126,6 +89,13 @@ const QuickMarcDeriveWrapper = ({
     return undefined;
   }, [prepareForSubmit, initialValues, linkableBibFields, linkingRules]);
 
+  const redirectToRecord = (externalId) => {
+    history.push({
+      pathname: `/inventory/view/${externalId}`,
+      search: location.search,
+    });
+  };
+
   const onSubmit = useCallback(async (formValues) => {
     const formValuesForDerive = prepareForSubmit(formValues);
 
@@ -152,7 +122,12 @@ const QuickMarcDeriveWrapper = ({
 
           showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
 
-          saveLinksToNewRecord(externalId, marcRecord);
+          if (recordHasLinks(marcRecord.fields)) {
+            saveLinksToNewRecord(mutator, externalId, marcRecord)
+              .finally(() => redirectToRecord(externalId));
+          } else {
+            redirectToRecord(externalId);
+          }
         } catch (e) {
           showCallout({
             messageId: 'ui-quick-marc.record.saveNew.error',

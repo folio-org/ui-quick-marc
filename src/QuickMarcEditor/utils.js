@@ -32,6 +32,7 @@ import { FixedFieldFactory } from './QuickMarcEditorRows/FixedField';
 import {
   MARC_TYPES,
   ERROR_TYPES,
+  EXTERNAL_INSTANCE_APIS,
 } from '../common/constants';
 
 /* eslint-disable max-lines */
@@ -125,6 +126,35 @@ export const parseHttpError = async (httpError) => {
   } catch (err) {
     return httpError;
   }
+};
+
+export const saveLinksToNewRecord = async (mutator, externalId, marcRecord) => {
+  // request derived Instance record
+  const instancePromise = mutator.quickMarcEditInstance.GET({ path: `${EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]}/${externalId}` });
+  // request derived MARC Bib record
+  const marcPromise = mutator.quickMarcEditMarcRecord.GET({ params: { externalId } });
+
+  Promise.all([instancePromise, marcPromise]).then(([{ _version }, derivedRecord]) => {
+    // copy linking data to new record
+    derivedRecord.fields = derivedRecord.fields.map((field) => {
+      // matching field from POST request
+      const matchingLinkedField = marcRecord.fields
+        .find(_field => _field.authorityId && _field.tag === field.tag && _field.authorityId === field.authorityId);
+
+      if (!matchingLinkedField) {
+        return field;
+      }
+
+      field.authorityNaturalId = matchingLinkedField.authorityNaturalId;
+      field.linkingRuleId = matchingLinkedField.linkingRuleId;
+
+      return field;
+    });
+
+    derivedRecord.relatedRecordVersion = parseInt(_version, 10);
+
+    return mutator.quickMarcEditMarcRecord.PUT(derivedRecord);
+  });
 };
 
 export const dehydrateMarcRecordResponse = marcRecordResponse => ({
@@ -493,6 +523,8 @@ export const checkCanBeLinked = (stripes, marcType, linkableBibFields, tag) => (
   marcType === MARC_TYPES.BIB &&
   linkableBibFields.includes(tag)
 );
+
+export const recordHasLinks = (fields) => fields.some(field => field.linkingRuleId);
 
 export const validateSubfield = (marcRecords) => {
   const marcRecordsWithSubfields = marcRecords.filter(marcRecord => marcRecord.indicators);
