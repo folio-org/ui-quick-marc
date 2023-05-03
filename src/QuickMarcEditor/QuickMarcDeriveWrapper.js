@@ -105,6 +105,7 @@ const QuickMarcDeriveWrapper = ({
     const marcRecord = hydrateMarcRecord(formValuesWithCombinedFields);
 
     marcRecord.relatedRecordVersion = 1;
+    marcRecord._actionType = 'create';
 
     return mutator.quickMarcEditMarcRecord.POST(marcRecord)
       .then(async ({ qmRecordId }) => {

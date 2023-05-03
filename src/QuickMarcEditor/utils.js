@@ -139,19 +139,23 @@ export const saveLinksToNewRecord = async (mutator, externalId, marcRecord) => {
     derivedRecord.fields = derivedRecord.fields.map((field) => {
       // matching field from POST request
       const matchingLinkedField = marcRecord.fields
-        .find(_field => _field.authorityId && _field.tag === field.tag && _field.authorityId === field.authorityId);
+        .find(_field => (
+          _field.linkDetails?.authorityId
+          && _field.tag === field.tag
+          && _field.linkDetails?.authorityId === field.linkDetails?.authorityId
+        ));
 
       if (!matchingLinkedField) {
         return field;
       }
 
-      field.authorityNaturalId = matchingLinkedField.authorityNaturalId;
-      field.linkingRuleId = matchingLinkedField.linkingRuleId;
+      field.linkDetails = matchingLinkedField.linkDetails;
 
       return field;
     });
 
     derivedRecord.relatedRecordVersion = parseInt(_version, 10);
+    derivedRecord._actionType = 'edit';
 
     return mutator.quickMarcEditMarcRecord.PUT(derivedRecord);
   });
@@ -373,7 +377,7 @@ export const addInternalFieldProperties = (marcRecord) => {
     records: marcRecord.records.map(record => ({
       ...record,
       _isDeleted: false,
-      _isLinked: !!record.authorityId,
+      _isLinked: !!record.linkDetails?.authorityId,
     })),
   };
 };
@@ -385,9 +389,7 @@ export const hydrateMarcRecord = marcRecord => ({
     tag: record.tag,
     content: record.content,
     indicators: record.indicators,
-    authorityId: record.authorityId,
-    authorityNaturalId: record.authorityNaturalId,
-    linkingRuleId: record.linkingRuleId,
+    linkDetails: record.linkDetails,
   })),
   records: undefined,
 });
@@ -524,7 +526,7 @@ export const checkCanBeLinked = (stripes, marcType, linkableBibFields, tag) => (
   linkableBibFields.includes(tag)
 );
 
-export const recordHasLinks = (fields) => fields.some(field => field.linkingRuleId);
+export const recordHasLinks = (fields) => fields.some(field => field.linkDetails?.linkingRuleId);
 
 export const validateSubfield = (marcRecords) => {
   const marcRecordsWithSubfields = marcRecords.filter(marcRecord => marcRecord.indicators);
@@ -584,7 +586,7 @@ const validateSubfieldsThatCanBeControlled = (marcRecords, uncontrolledSubfields
     return uncontrolledSubfields.some(subfield => {
       if (linkedField.subfieldGroups[subfield]) {
         const contentSubfieldValue = getContentSubfieldValue(linkedField.subfieldGroups[subfield]);
-        const linkingRule = linkingRules.find(rule => rule.id === linkedField.linkingRuleId);
+        const linkingRule = linkingRules.find(rule => rule.id === linkedField.linkDetails?.linkingRuleId);
         const controlledSubfields = getControlledSubfields(linkingRule);
 
         return controlledSubfields.some(authSubfield => {
@@ -1168,7 +1170,7 @@ export const splitFields = (marcRecord, linkingRules) => {
         return record;
       }
 
-      const linkingRule = linkingRules.find(rule => rule.id === record.linkingRuleId);
+      const linkingRule = linkingRules.find(rule => rule.id === record.linkDetails?.linkingRuleId);
       const controlledSubfields = getControlledSubfields(linkingRule);
       const subfieldGroups = groupSubfields(record, controlledSubfields);
 

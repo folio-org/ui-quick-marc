@@ -77,9 +77,11 @@ const mockFormValues = jest.fn(() => ({
     }, {
       tag: '100',
       content: '$a value $0 http://some-url/naturalId',
-      authorityId: 'authority-id',
-      authorityNaturalId: 'naturalId',
-      authorityControlledSubfields: ['a'],
+      linkDetails: {
+        authorityId: 'authority-id',
+        authorityNaturalId: 'naturalId',
+        linkingRuleId: 1,
+      },
     }, {
       content: '$a (derived2)/Ezekiel / $c Robert W. Jenson.',
       id: '5aa1a643-b9f2-47e8-bb68-6c6457b5c9c5',
@@ -325,7 +327,7 @@ describe('Given QuickMarcDeriveWrapper', () => {
           json: () => Promise.resolve({}),
         }));
 
-        await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+        await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
         expect(mutator.quickMarcEditMarcRecord.POST).toHaveBeenCalled();
 
