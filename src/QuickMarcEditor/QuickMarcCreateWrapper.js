@@ -5,7 +5,6 @@ import React, {
 import PropTypes from 'prop-types';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import flow from 'lodash/flow';
-import map from 'lodash/map';
 
 import { useShowCallout } from '@folio/stripes-acq-components';
 
@@ -24,6 +23,8 @@ import {
   cleanBytesFields,
   parseHttpError,
   removeDeletedRecords,
+  saveLinksToNewRecord,
+  recordHasLinks,
 } from './utils';
 
 const propTypes = {
@@ -58,8 +59,8 @@ const QuickMarcCreateWrapper = ({
     const formValuesForCreate = flow(
       removeDeletedRecords,
       removeFieldsForDerive,
-      map(marcRecord => autopopulateSubfieldSection(marcRecord, marcType)),
-      map(marcRecord => cleanBytesFields(marcRecord, initialValues, marcType)),
+      marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
+      marcRecord => cleanBytesFields(marcRecord, initialValues, marcType),
     )(formValues);
 
     return formValuesForCreate;
@@ -105,12 +106,11 @@ const QuickMarcCreateWrapper = ({
   };
 
   const onSubmit = useCallback(async (formValues) => {
-    const formValuesForCreate = prepareForSubmit(formValues);
-    const marcRecord = hydrateMarcRecord(formValuesForCreate);
+    const formValuesForCreate = hydrateMarcRecord(prepareForSubmit(formValues));
 
-    marcRecord._actionType = 'create';
+    formValuesForCreate._actionType = 'create';
 
-    return mutator.quickMarcEditMarcRecord.POST(marcRecord)
+    return mutator.quickMarcEditMarcRecord.POST(formValuesForCreate)
       .then(async ({ qmRecordId }) => {
         const instanceId = formValues.externalId;
 
@@ -125,7 +125,12 @@ const QuickMarcCreateWrapper = ({
 
           showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
 
-          redirectToRecord(externalId, instanceId);
+          if (marcType === MARC_TYPES.BIB && recordHasLinks(formValuesForCreate.fields)) {
+            saveLinksToNewRecord(mutator, externalId, formValuesForCreate)
+              .finally(() => redirectToRecord(externalId, instanceId));
+          } else {
+            redirectToRecord(externalId, instanceId);
+          }
         } catch (e) {
           showCallout({
             messageId: 'ui-quick-marc.record.saveNew.error',

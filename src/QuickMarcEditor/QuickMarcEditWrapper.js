@@ -5,7 +5,6 @@ import React, {
 import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 import flow from 'lodash/flow';
-import map from 'lodash/map';
 
 import { useShowCallout } from '@folio/stripes-acq-components';
 
@@ -117,8 +116,8 @@ const QuickMarcEditWrapper = ({
     const formValuesToSave = flow(
       prepareForSubmit,
       autopopulateIndicators,
-      map(marcRecord => autopopulateSubfieldSection(marcRecord, marcType)),
-      map(marcRecord => cleanBytesFields(marcRecord, initialValues, marcType)),
+      marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
+      marcRecord => cleanBytesFields(marcRecord, initialValues, marcType),
       combineSplitFields,
       hydrateMarcRecord,
     )(formValues);
