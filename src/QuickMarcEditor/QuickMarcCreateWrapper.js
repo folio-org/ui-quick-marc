@@ -25,6 +25,7 @@ import {
   removeDeletedRecords,
   saveLinksToNewRecord,
   recordHasLinks,
+  combineSplitFields,
 } from './utils';
 
 const propTypes = {
@@ -106,7 +107,11 @@ const QuickMarcCreateWrapper = ({
   };
 
   const onSubmit = useCallback(async (formValues) => {
-    const formValuesForCreate = hydrateMarcRecord(prepareForSubmit(formValues));
+    const formValuesForCreate = flow(
+      prepareForSubmit,
+      combineSplitFields,
+      hydrateMarcRecord,
+    )(formValues);
 
     formValuesForCreate._actionType = 'create';
 
