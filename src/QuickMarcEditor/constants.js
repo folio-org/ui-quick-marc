@@ -35,6 +35,7 @@ export const LEADER_VALUES_FOR_POSITION = {
 export const LEADER_DOCUMENTATION_LINKS = {
   [MARC_TYPES.BIB]: 'https://loc.gov/marc/bibliographic/bdleader.html',
   [MARC_TYPES.HOLDINGS]: 'https://www.loc.gov/marc/holdings/hdleader.html',
+  [MARC_TYPES.AUTHORITY]: 'https://www.loc.gov/marc/authority/adleader.html',
 };
 
 export const QUICK_MARC_ACTIONS = {
