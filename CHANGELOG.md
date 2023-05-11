@@ -24,6 +24,7 @@
 * [UIQM-448](https://issues.folio.org/browse/UIQM-448) Fix validation of 001 fields when creating/deriving/editing all record types.
 * [UIQM-463](https://issues.folio.org/browse/UIQM-463) Upgrade to new interfaces.
 * [UIQM-470](https://issues.folio.org/browse/UIQM-470) Add permission for editing MARC Holdings records.
+* [UIQM-419](https://issues.folio.org/browse/UIQM-419) Make Leader validation error message consistent for all MARC types.
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
 

@@ -226,14 +226,14 @@ describe('QuickMarcEditor utils', () => {
   describe('validateLeader', () => {
     it('should return an error message when position 18 is invalid', () => {
       expect(
-        utils.validateLeader('04706cam a2200865Iia4500', '04706dam a2200865nfa4500').props.values.position,
-      ).toBe('18');
+        utils.validateLeader('04706cam a2200865Iia4500', '04706dam a2200865nfa4500').props.values.positions,
+      ).toBe('Leader 18');
     });
 
     it('should return an error message when position 19 is invalid', () => {
       expect(
-        utils.validateLeader('04706cam a2200865Ici4500', '04706dam a2200865nai4500').props.values.position,
-      ).toBe('19');
+        utils.validateLeader('04706cam a2200865Ici4500', '04706dam a2200865nai4500').props.values.positions,
+      ).toBe('Leader 19');
     });
 
     it('should not return error message when leader is valid', () => {
