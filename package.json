@@ -60,7 +60,8 @@
         "displayName": "quickMARC: View MARC holdings record",
         "subPermissions": [
           "records-editor.records.item.get",
-          "inventory.instances.item.get"
+          "inventory.instances.item.get",
+          "instance-authority.linking-rules.collection.get"
         ],
         "visible": true
       },
