@@ -172,7 +172,7 @@
     "record.fixedField.Sep/comp": "منفصل/مركب",
     "record.error.leader.forbiddenBytes.bib": "لا يمكن حفظ التسجيلة. يرجى التحقق من الفاتح. يمكن تحرير المواضع 5،6،7،8،17،18 و19 فقط في الفاتح.",
     "record.error.leader.forbiddenBytes.holdings": "لا يمكن حفظ التسجيلة. يرجى التحقق من الفاتح. يمكن تحرير المواضع 5، 6، 17 و 18 فقط في الفاتح.",
-    "record.error.leader.invalidPositionValue": "Record cannot be saved. Wrong value \"{value}\" on position {position} of the Leader. Allowed only: [{values}]",
+    "record.error.leader.invalidPositionValue": "Record cannot be saved. Please enter a valid {positions}. Valid values are listed at {link}",
     "permission.quick-marc-holdings-editor.all": "quickMARC: اعرض، وحرر تسجيلة مقتنيات مارك",
     "permission.quick-marc-holdings-editor.create": "quickMARC : أنشئ تسجيلة مقتنيات مارك جديدة",
     "record.fixedField.Rept date": "تاريخ التقرير",
