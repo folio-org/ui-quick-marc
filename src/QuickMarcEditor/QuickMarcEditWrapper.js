@@ -28,6 +28,7 @@ import {
   combineSplitFields,
   are010Or1xxUpdated,
   removeDuplicateSystemGeneratedFields,
+  autopopulateFixedField,
 } from './utils';
 import { useAuthorityLinkingRules } from '../queries';
 
@@ -116,8 +117,9 @@ const QuickMarcEditWrapper = ({
     const formValuesToSave = flow(
       prepareForSubmit,
       autopopulateIndicators,
+      marcRecord => autopopulateFixedField(marcRecord, marcType),
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
-      marcRecord => cleanBytesFields(marcRecord, initialValues, marcType),
+      marcRecord => cleanBytesFields(marcRecord, marcType),
       combineSplitFields,
       hydrateMarcRecord,
     )(formValues);

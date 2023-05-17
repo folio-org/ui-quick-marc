@@ -26,6 +26,7 @@ import {
   CREATE_BIB_RECORD_DEFAULT_FIELD_TAGS,
   BIB_FIXED_FIELD_DEFAULT_TYPE,
   BIB_FIXED_FIELD_DEFAULT_BLVL,
+  DATE_ON_ENTERED_PLACEHOLDER,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import { SUBFIELD_TYPES } from './QuickMarcEditorRows/BytesField';
@@ -233,6 +234,7 @@ export const fillEmptyFixedFieldValues = (marcType, type, blvl, field) => {
     ...field?.content,
     Type: type,
     BLvl: blvl,
+    Entered: DATE_ON_ENTERED_PLACEHOLDER,
   });
 };
 
@@ -1088,7 +1090,7 @@ export const autopopulateSubfieldSection = (formValues, marcType = MARC_TYPES.BI
   };
 };
 
-export const cleanBytesFields = (formValues, initialValues, marcType) => {
+export const cleanBytesFields = (formValues, marcType) => {
   const { records } = formValues;
 
   const cleanedRecords = records.map((field) => {
@@ -1108,7 +1110,7 @@ export const cleanBytesFields = (formValues, initialValues, marcType) => {
 
     if (isFixedFieldRow(field)) {
       fieldConfigByType = FixedFieldFactory
-        .getFixedFieldByType(marcType, field.content.Type, initialValues?.leader[7])?.configFields ?? [];
+        .getFixedFieldByType(marcType, field.content.Type, field.content.BLvl)?.configFields ?? [];
     }
 
     const content = Object.entries(field.content).reduce((acc, [key, value]) => {

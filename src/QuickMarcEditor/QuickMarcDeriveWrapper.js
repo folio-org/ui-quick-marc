@@ -26,6 +26,7 @@ import {
   combineSplitFields,
   saveLinksToNewRecord,
   recordHasLinks,
+  autopopulateFixedField,
 } from './utils';
 import { useAuthorityLinkingRules } from '../queries';
 
@@ -60,12 +61,13 @@ const QuickMarcDeriveWrapper = ({
       removeDeletedRecords,
       removeFieldsForDerive,
       autopopulateIndicators,
+      marcRecord => autopopulateFixedField(marcRecord, marcType),
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
-      marcRecord => cleanBytesFields(marcRecord, initialValues, marcType),
+      marcRecord => cleanBytesFields(marcRecord, marcType),
     )(formValues);
 
     return formValuesForDerive;
-  }, [initialValues, marcType]);
+  }, [marcType]);
 
   const validate = useCallback((formValues) => {
     const formValuesForValidation = prepareForSubmit(formValues);

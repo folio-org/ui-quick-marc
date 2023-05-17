@@ -1424,7 +1424,9 @@ describe('QuickMarcEditor utils', () => {
       const type = 'a';
       const blvl = 'm';
       const field = {
-        Lang: 'eng',
+        content: {
+          Lang: 'eng',
+        },
       };
 
       expect(utils.fillEmptyFixedFieldValues(marcType, type, blvl, field)).toMatchObject({
@@ -1448,6 +1450,7 @@ describe('QuickMarcEditor utils', () => {
         Date2: '\\\\\\\\',
         Type: type,
         BLvl: blvl,
+        Entered: '000000',
       });
     });
   });
@@ -1930,9 +1933,6 @@ describe('QuickMarcEditor utils', () => {
           updateDate: '01/01/1970',
         },
       };
-      const initialValues = {
-        leader: '01577crm\\a2200397Ia\\4500',
-      };
       const expectedRecord = {
         records: [{
           tag: '001',
@@ -1987,7 +1987,7 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.cleanBytesFields(record, initialValues, 'bib')).toEqual(expectedRecord);
+      expect(utils.cleanBytesFields(record, 'bib')).toEqual(expectedRecord);
     });
   });
 
