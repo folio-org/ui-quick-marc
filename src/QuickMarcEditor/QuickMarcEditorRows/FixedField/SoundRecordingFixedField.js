@@ -23,27 +23,30 @@ const config = {
     {
       name: 'Lang',
       type: SUBFIELD_TYPES.STRING,
+      length: 3,
     },
     {
       name: 'Form',
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      type: SUBFIELD_TYPES.STRING,
       name: 'Comp',
+      type: SUBFIELD_TYPES.STRING,
+      length: 2,
     },
     {
-      bytes: 6,
       name: 'AccM',
       type: SUBFIELD_TYPES.BYTES,
+      bytes: 6,
     },
     {
-      type: SUBFIELD_TYPES.BYTE,
       name: 'MRec',
+      type: SUBFIELD_TYPES.BYTE,
     },
     {
       name: 'Ctry',
       type: SUBFIELD_TYPES.STRING,
+      length: 3,
     },
     {
       name: 'Part',
@@ -54,8 +57,8 @@ const config = {
       name: 'TrAr',
     },
     {
-      type: SUBFIELD_TYPES.BYTE,
       name: 'FMus',
+      type: SUBFIELD_TYPES.BYTE,
     },
     {
       name: 'LTxt',
@@ -69,10 +72,12 @@ const config = {
     {
       name: 'Date1',
       type: SUBFIELD_TYPES.STRING,
+      length: 4,
     },
     {
-      type: SUBFIELD_TYPES.STRING,
       name: 'Date2',
+      type: SUBFIELD_TYPES.STRING,
+      length: 4,
     },
   ],
 };

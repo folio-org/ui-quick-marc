@@ -24,6 +24,7 @@ const config = {
     {
       name: 'Lang',
       type: SUBFIELD_TYPES.STRING,
+      length: 3,
     },
     {
       name: 'Form',
@@ -45,6 +46,7 @@ const config = {
     {
       name: 'Ctry',
       type: SUBFIELD_TYPES.STRING,
+      length: 3,
     },
     {
       name: 'CrTp',
@@ -66,10 +68,12 @@ const config = {
     {
       name: 'Date1',
       type: SUBFIELD_TYPES.STRING,
+      length: 4,
     },
     {
       name: 'Date2',
       type: SUBFIELD_TYPES.STRING,
+      length: 4,
     },
   ],
 };

@@ -24,6 +24,7 @@ export const SUBFIELD_TYPES = {
 const renderSubField = (name, config) => {
   const fieldName = `${name}.${config.name}`;
   const label = <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`} />;
+  const defaultValue = new Array(config.length || 1).fill('\\').join('');
 
   if (config.type === SUBFIELD_TYPES.BYTES) {
     return (
@@ -54,8 +55,8 @@ const renderSubField = (name, config) => {
                             className={styles.fixedFieldSubFieldByte}
                             hasClearIcon={false}
                             data-testid={`fixed-field-${config.type}`}
-                            parse={value => value || '\\'}
-                            defaultValue=""
+                            parse={value => value || defaultValue}
+                            defaultValue={defaultValue}
                           />
                         )}
                       </FormattedMessage>
@@ -86,7 +87,7 @@ const renderSubField = (name, config) => {
     );
   }
 
-  const getMaxLengthByType = config.type === SUBFIELD_TYPES.BYTE ? FIXED_FIELD_MAX_LENGTH : undefined;
+  const getMaxLengthByType = config.type === SUBFIELD_TYPES.BYTE ? FIXED_FIELD_MAX_LENGTH : config.length;
 
   return (
     <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`}>
@@ -102,6 +103,7 @@ const renderSubField = (name, config) => {
           className={styles[`bytesFieldSubField${config.type}`]}
           hasClearIcon={false}
           data-testid={`fixed-field-${config.type}`}
+          defaultValue={defaultValue}
         />
       )}
     </FormattedMessage>

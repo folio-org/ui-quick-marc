@@ -109,27 +109,30 @@ export const HOLDINGS_FIXED_FIELD_DEFAULT_VALUES = {
   'Rept date': '\\\\\\\\\\\\',
 };
 
+export const BIB_FIXED_FIELD_DEFAULT_TYPE = 'a';
+export const BIB_FIXED_FIELD_DEFAULT_BLVL = 'b';
+
 export const BIB_FIXED_FIELD_DEFAULT_VALUES = {
-  Srce: '',
-  Audn: '',
+  Srce: '\\',
+  Audn: '\\',
   Ctrl: '',
-  Lang: '',
-  Form: '',
-  Conf: '',
-  Biog: '',
-  MRec: '',
-  Ctry: '',
-  Cont: [],
-  GPub: '',
-  LitF: '',
-  Indx: '',
-  Ills: [],
-  Fest: '',
-  DtSt: '',
-  Date1: '',
-  Date2: '',
-  Type: 'a',
-  BLvl: 'm',
+  Lang: '\\\\\\',
+  Form: '\\',
+  Conf: '\\',
+  Biog: '\\',
+  MRec: '\\',
+  Ctry: '\\\\\\',
+  Cont: ['\\', '\\', '\\', '\\'],
+  GPub: '\\',
+  LitF: '\\',
+  Indx: '\\',
+  Ills: ['\\', '\\', '\\', '\\'],
+  Fest: '\\',
+  DtSt: '\\',
+  Date1: '\\\\\\\\',
+  Date2: '\\\\\\\\',
+  Type: BIB_FIXED_FIELD_DEFAULT_TYPE,
+  BLvl: BIB_FIXED_FIELD_DEFAULT_BLVL,
 };
 
 export const CORRESPONDING_HEADING_TYPE_TAGS = ['100', '110', '111', '151', '130', '150', '155'];

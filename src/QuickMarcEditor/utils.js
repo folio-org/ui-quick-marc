@@ -24,9 +24,11 @@ import {
   LEADER_DOCUMENTATION_LINKS,
   ELVL_BYTE,
   CREATE_BIB_RECORD_DEFAULT_FIELD_TAGS,
-  BIB_FIXED_FIELD_DEFAULT_VALUES,
+  BIB_FIXED_FIELD_DEFAULT_TYPE,
+  BIB_FIXED_FIELD_DEFAULT_BLVL,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
+import { SUBFIELD_TYPES } from './QuickMarcEditorRows/BytesField';
 import getMaterialCharsFieldConfig from './QuickMarcEditorRows/MaterialCharsField/getMaterialCharsFieldConfig';
 import getPhysDescriptionFieldConfig from './QuickMarcEditorRows/PhysDescriptionField/getPhysDescriptionFieldConfig';
 import { FixedFieldFactory } from './QuickMarcEditorRows/FixedField';
@@ -205,10 +207,39 @@ const getCreateMarcRecordDefaultFields = (instanceRecord) => {
   });
 };
 
+const fillEmptyFixedFieldValues = (marcType, type, blvl, field) => {
+  const fieldConfigByType = FixedFieldFactory
+    .getFixedFieldByType(
+      marcType,
+      type,
+      blvl,
+    )?.configFields ?? [];
+
+  return fieldConfigByType.reduce((fixedField, fieldConfig) => {
+    if (fixedField?.[fieldConfig.name]) {
+      return fixedField;
+    }
+
+    if (fieldConfig.type === SUBFIELD_TYPES.BYTE) {
+      return { ...fixedField, [fieldConfig.name]: '\\' };
+    } else if (fieldConfig.type === SUBFIELD_TYPES.BYTES) {
+      return { ...fixedField, [fieldConfig.name]: new Array(fieldConfig.bytes).fill('\\') };
+    } else if (fieldConfig.type === SUBFIELD_TYPES.STRING) {
+      return { ...fixedField, [fieldConfig.name]: new Array(fieldConfig.length).fill('\\').join('') };
+    }
+
+    return fixedField;
+  }, {
+    ...field?.content,
+    Type: type,
+    BLvl: blvl,
+  });
+};
+
 const getCreateBibMarcRecordDefaultFields = (instanceRecord) => {
   const contentMap = {
     '001': instanceRecord.hrid,
-    '008': BIB_FIXED_FIELD_DEFAULT_VALUES,
+    '008': fillEmptyFixedFieldValues(MARC_TYPES.BIB, BIB_FIXED_FIELD_DEFAULT_TYPE, BIB_FIXED_FIELD_DEFAULT_BLVL),
     '245': '$a ',
     '999': '',
   };
@@ -994,6 +1025,28 @@ export const autopopulateIndicators = (formValues) => {
   return {
     ...formValues,
     records: recordsWithIndicators,
+  };
+};
+
+export const autopopulateFixedField = (formValues, marcType) => {
+  const { records } = formValues;
+
+  const leader = records.find(field => field.tag === LEADER_TAG);
+  const type = leader.content[6];
+  const blvl = leader.content[7];
+
+  return {
+    ...formValues,
+    records: records.map(field => {
+      if (!isFixedFieldRow(field)) {
+        return field;
+      }
+
+      return {
+        ...field,
+        content: fillEmptyFixedFieldValues(marcType, type, blvl, field),
+      };
+    }),
   };
 };
 
