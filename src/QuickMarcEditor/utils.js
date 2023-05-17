@@ -207,7 +207,7 @@ const getCreateMarcRecordDefaultFields = (instanceRecord) => {
   });
 };
 
-const fillEmptyFixedFieldValues = (marcType, type, blvl, field) => {
+export const fillEmptyFixedFieldValues = (marcType, type, blvl, field) => {
   const fieldConfigByType = FixedFieldFactory
     .getFixedFieldByType(
       marcType,

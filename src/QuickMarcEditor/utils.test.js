@@ -1418,6 +1418,40 @@ describe('QuickMarcEditor utils', () => {
     });
   });
 
+  describe('fillEmptyFixedFieldValues', () => {
+    it('should return 008 field with all filled values', () => {
+      const marcType = MARC_TYPES.BIB;
+      const type = 'a';
+      const blvl = 'm';
+      const field = {
+        Lang: 'eng',
+      };
+
+      expect(utils.fillEmptyFixedFieldValues(marcType, type, blvl, field)).toMatchObject({
+        Srce: '\\',
+        Audn: '\\',
+        Ctrl: '\\',
+        Lang: 'eng',
+        Form: '\\',
+        Conf: '\\',
+        Biog: '\\',
+        MRec: '\\',
+        Ctry: '\\\\\\',
+        Cont: ['\\', '\\', '\\', '\\'],
+        GPub: '\\',
+        LitF: '\\',
+        Indx: '\\',
+        Ills: ['\\', '\\', '\\', '\\'],
+        Fest: '\\',
+        DtSt: '\\',
+        Date1: '\\\\\\\\',
+        Date2: '\\\\\\\\',
+        Type: type,
+        BLvl: blvl,
+      });
+    });
+  });
+
   describe('formatMarcRecordByQuickMarcAction', () => {
     it('should return original record if action is not "derive" or "create"', () => {
       const record = {
