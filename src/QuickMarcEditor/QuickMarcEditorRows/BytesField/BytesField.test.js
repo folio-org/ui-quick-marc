@@ -26,10 +26,6 @@ const config = {
       name: 'Relf',
     },
     {
-      type: SUBFIELD_TYPES.BYTE,
-      name: 'Ctrl',
-    },
-    {
       type: SUBFIELD_TYPES.BYTES,
       name: 'Lang',
       bytes: 3,

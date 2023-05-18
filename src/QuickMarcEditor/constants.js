@@ -112,7 +112,6 @@ export const HOLDINGS_FIXED_FIELD_DEFAULT_VALUES = {
 export const BIB_FIXED_FIELD_DEFAULT_VALUES = {
   Srce: '',
   Audn: '',
-  Ctrl: '',
   Lang: '',
   Form: '',
   Conf: '',

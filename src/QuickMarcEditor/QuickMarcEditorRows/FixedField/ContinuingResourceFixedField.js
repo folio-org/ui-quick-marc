@@ -17,10 +17,6 @@ const config = {
       name: 'GPub',
     },
     {
-      type: SUBFIELD_TYPES.BYTE,
-      name: 'Ctrl',
-    },
-    {
       type: SUBFIELD_TYPES.STRING,
       name: 'Lang',
     },
