@@ -10,6 +10,8 @@ export const LEADER_EDITABLE_BYTES = {
 
 export const NON_BREAKING_SPACE = '\u00A0';
 
+export const DATE_ON_ENTERED_PLACEHOLDER = '000000';
+
 export const LEADER_VALUES_FOR_POSITION = {
   [MARC_TYPES.BIB]: {
     5: ['a', 'c', 'd', 'n', 'p'],
@@ -109,26 +111,7 @@ export const HOLDINGS_FIXED_FIELD_DEFAULT_VALUES = {
   'Rept date': '\\\\\\\\\\\\',
 };
 
-export const BIB_FIXED_FIELD_DEFAULT_VALUES = {
-  Srce: '',
-  Audn: '',
-  Lang: '',
-  Form: '',
-  Conf: '',
-  Biog: '',
-  MRec: '',
-  Ctry: '',
-  Cont: [],
-  GPub: '',
-  LitF: '',
-  Indx: '',
-  Ills: [],
-  Fest: '',
-  DtSt: '',
-  Date1: '',
-  Date2: '',
-  Type: 'a',
-  BLvl: 'm',
-};
+export const BIB_FIXED_FIELD_DEFAULT_TYPE = 'a';
+export const BIB_FIXED_FIELD_DEFAULT_BLVL = 'm';
 
 export const CORRESPONDING_HEADING_TYPE_TAGS = ['100', '110', '111', '151', '130', '150', '155'];

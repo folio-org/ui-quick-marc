@@ -19,6 +19,7 @@ const config = {
     {
       type: SUBFIELD_TYPES.STRING,
       name: 'Lang',
+      length: 3,
     },
     {
       type: SUBFIELD_TYPES.BYTE,
@@ -27,6 +28,7 @@ const config = {
     {
       name: 'Comp',
       type: SUBFIELD_TYPES.STRING,
+      length: 2,
     },
     {
       type: SUBFIELD_TYPES.BYTES,
@@ -40,6 +42,7 @@ const config = {
     {
       type: SUBFIELD_TYPES.STRING,
       name: 'Ctry',
+      length: 3,
     },
     {
       type: SUBFIELD_TYPES.BYTE,
@@ -65,10 +68,12 @@ const config = {
     {
       name: 'Date1',
       type: SUBFIELD_TYPES.STRING,
+      length: 4,
     },
     {
-      type: SUBFIELD_TYPES.STRING,
       name: 'Date2',
+      type: SUBFIELD_TYPES.STRING,
+      length: 4,
     },
   ],
 };

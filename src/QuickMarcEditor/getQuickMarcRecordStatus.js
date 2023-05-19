@@ -36,6 +36,7 @@ const getQuickMarcRecordStatus = ({
           }
         })
         .catch(() => {
+          clearInterval(intervalId);
           reject();
         });
     }

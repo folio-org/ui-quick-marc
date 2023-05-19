@@ -26,6 +26,7 @@ import {
   saveLinksToNewRecord,
   recordHasLinks,
   combineSplitFields,
+  autopopulateFixedField,
 } from './utils';
 
 const propTypes = {
@@ -60,12 +61,13 @@ const QuickMarcCreateWrapper = ({
     const formValuesForCreate = flow(
       removeDeletedRecords,
       removeFieldsForDerive,
+      marcRecord => autopopulateFixedField(marcRecord, marcType),
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
-      marcRecord => cleanBytesFields(marcRecord, initialValues, marcType),
+      marcRecord => cleanBytesFields(marcRecord, marcType),
     )(formValues);
 
     return formValuesForCreate;
-  }, [initialValues, marcType]);
+  }, [marcType]);
 
   const validate = useCallback((formValues) => {
     const formValuesForValidation = prepareForSubmit(formValues);

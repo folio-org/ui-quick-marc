@@ -19,6 +19,7 @@ const config = {
     {
       name: 'AcqEndDate',
       type: SUBFIELD_TYPES.STRING,
+      length: 4,
     },
     {
       name: 'Gen ret',
@@ -36,6 +37,7 @@ const config = {
     {
       name: 'Copies',
       type: SUBFIELD_TYPES.STRING,
+      length: 4,
     },
     {
       name: 'Lend',
@@ -44,10 +46,12 @@ const config = {
     {
       name: 'Repro',
       type: SUBFIELD_TYPES.STRING,
+      length: 4,
     },
     {
       name: 'Lang',
       type: SUBFIELD_TYPES.STRING,
+      length: 4,
     },
     {
       name: 'Sep/comp',
@@ -56,6 +60,7 @@ const config = {
     {
       name: 'Rept date',
       type: SUBFIELD_TYPES.STRING,
+      length: 4,
     },
   ],
 };

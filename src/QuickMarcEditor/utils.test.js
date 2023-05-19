@@ -1418,6 +1418,42 @@ describe('QuickMarcEditor utils', () => {
     });
   });
 
+  describe('fillEmptyFixedFieldValues', () => {
+    it('should return 008 field with all filled values', () => {
+      const marcType = MARC_TYPES.BIB;
+      const type = 'a';
+      const blvl = 'm';
+      const field = {
+        content: {
+          Lang: 'eng',
+        },
+      };
+
+      expect(utils.fillEmptyFixedFieldValues(marcType, type, blvl, field)).toMatchObject({
+        Srce: '\\',
+        Audn: '\\',
+        Lang: 'eng',
+        Form: '\\',
+        Conf: '\\',
+        Biog: '\\',
+        MRec: '\\',
+        Ctry: '\\\\\\',
+        Cont: ['\\', '\\', '\\', '\\'],
+        GPub: '\\',
+        LitF: '\\',
+        Indx: '\\',
+        Ills: ['\\', '\\', '\\', '\\'],
+        Fest: '\\',
+        DtSt: '\\',
+        Date1: '\\\\\\\\',
+        Date2: '\\\\\\\\',
+        Type: type,
+        BLvl: blvl,
+        Entered: '000000',
+      });
+    });
+  });
+
   describe('formatMarcRecordByQuickMarcAction', () => {
     it('should return original record if action is not "derive" or "create"', () => {
       const record = {
@@ -1896,9 +1932,6 @@ describe('QuickMarcEditor utils', () => {
           updateDate: '01/01/1970',
         },
       };
-      const initialValues = {
-        leader: '01577crm\\a2200397Ia\\4500',
-      };
       const expectedRecord = {
         records: [{
           tag: '001',
@@ -1953,7 +1986,7 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.cleanBytesFields(record, initialValues, 'bib')).toEqual(expectedRecord);
+      expect(utils.cleanBytesFields(record, 'bib')).toEqual(expectedRecord);
     });
   });
 
