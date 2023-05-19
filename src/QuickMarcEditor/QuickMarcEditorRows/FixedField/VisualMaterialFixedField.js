@@ -17,12 +17,8 @@ const config = {
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      name: 'Ctrl',
-      type: SUBFIELD_TYPES.BYTE,
-    },
-    {
-      type: SUBFIELD_TYPES.STRING,
       name: 'Lang',
+      type: SUBFIELD_TYPES.STRING,
     },
     {
       name: 'Form',
