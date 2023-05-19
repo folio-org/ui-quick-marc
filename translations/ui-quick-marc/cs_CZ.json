@@ -172,7 +172,7 @@
     "record.fixedField.Sep/comp": "Září/srov",
     "record.error.leader.forbiddenBytes.bib": "Záznam nelze uložit. Zkontrolujte prosím návěští. V návěští lze upravovat pouze pozice 5, 6, 7, 8, 17, 18 a/nebo 19.",
     "record.error.leader.forbiddenBytes.holdings": "Záznam nelze uložit. Zkontrolujte prosím návěští. V návěští lze upravovat pouze pozice 5, 6, 17, 18.",
-    "record.error.leader.invalidPositionValue": "Záznam nelze uložit. Nesprávná hodnota \"{value}\" na pozici {position} návěští. Povoleno pouze: [{values}]",
+    "record.error.leader.invalidPositionValue": "Record cannot be saved. Please enter a valid {positions}. Valid values are listed at {link}",
     "permission.quick-marc-holdings-editor.all": "quickMARC: Zobrazení, úprava záznamu MARC holdingu",
     "permission.quick-marc-holdings-editor.create": "quickMARC: Vytvoření nového záznamu MARC holdingu",
     "record.fixedField.Rept date": "Datum opakování",

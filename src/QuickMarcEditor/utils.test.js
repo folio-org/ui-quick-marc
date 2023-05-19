@@ -1432,7 +1432,6 @@ describe('QuickMarcEditor utils', () => {
       expect(utils.fillEmptyFixedFieldValues(marcType, type, blvl, field)).toMatchObject({
         Srce: '\\',
         Audn: '\\',
-        Ctrl: '\\',
         Lang: 'eng',
         Form: '\\',
         Conf: '\\',

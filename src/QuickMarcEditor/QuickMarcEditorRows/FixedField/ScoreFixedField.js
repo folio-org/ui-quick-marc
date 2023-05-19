@@ -17,10 +17,6 @@ const config = {
       name: 'Audn',
     },
     {
-      name: 'Ctrl',
-      type: SUBFIELD_TYPES.BYTE,
-    },
-    {
       type: SUBFIELD_TYPES.STRING,
       name: 'Lang',
       length: 3,

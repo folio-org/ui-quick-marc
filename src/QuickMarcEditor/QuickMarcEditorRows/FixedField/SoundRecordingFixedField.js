@@ -17,10 +17,6 @@ const config = {
       type: SUBFIELD_TYPES.BYTE,
     },
     {
-      type: SUBFIELD_TYPES.BYTE,
-      name: 'Ctrl',
-    },
-    {
       name: 'Lang',
       type: SUBFIELD_TYPES.STRING,
       length: 3,

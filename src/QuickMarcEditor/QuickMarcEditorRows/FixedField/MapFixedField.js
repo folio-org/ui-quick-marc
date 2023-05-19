@@ -18,10 +18,6 @@ const config = {
       bytes: 4,
     },
     {
-      name: 'Ctrl',
-      type: SUBFIELD_TYPES.BYTE,
-    },
-    {
       name: 'Lang',
       type: SUBFIELD_TYPES.STRING,
       length: 3,
