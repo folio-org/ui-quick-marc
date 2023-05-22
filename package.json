@@ -16,7 +16,7 @@
     "displayName": "ui-quick-marc.meta.title",
     "okapiInterfaces": {
       "inventory": "13.0",
-      "records-editor.records": "4.0",
+      "marc-records-editor": "5.0",
       "instance-authority-links": "2.1"
     },
     "stripesDeps": [
@@ -27,7 +27,7 @@
         "permissionName": "ui-quick-marc.quick-marc-editor.view",
         "displayName": "quickMARC: View MARC bibliographic record",
         "subPermissions": [
-          "records-editor.records.item.get",
+          "marc-records-editor.item.get",
           "inventory.instances.item.get",
           "instance-authority-links.instances.collection.get",
           "instance-authority.linking-rules.collection.get"
@@ -39,9 +39,9 @@
         "displayName": "quickMARC: Create a new MARC bibliographic record",
         "subPermissions": [
           "ui-quick-marc.quick-marc-editor.view",
-          "records-editor.records.item.post",
+          "marc-records-editor.item.post",
           "instance-authority-links.instances.collection.post",
-          "records-editor.records.status.item.get"
+          "marc-records-editor.status.item.get"
         ],
         "visible": true
       },
@@ -50,7 +50,7 @@
         "displayName": "quickMARC: View, edit MARC bibliographic record",
         "subPermissions": [
           "ui-quick-marc.quick-marc-editor.view",
-          "records-editor.records.item.put",
+          "marc-records-editor.item.put",
           "instance-authority-links.instances.collection.put"
         ],
         "visible": true
@@ -59,7 +59,7 @@
         "permissionName": "ui-quick-marc.quick-marc-holdings-editor.view",
         "displayName": "quickMARC: View MARC holdings record",
         "subPermissions": [
-          "records-editor.records.item.get",
+          "marc-records-editor.item.get",
           "inventory.instances.item.get",
           "instance-authority.linking-rules.collection.get"
         ],
@@ -70,7 +70,7 @@
         "displayName": "quickMARC: View, edit MARC holdings record",
         "subPermissions": [
           "ui-quick-marc.quick-marc-holdings-editor.view",
-          "records-editor.records.item.put"
+          "marc-records-editor.item.put"
         ],
         "visible": true
       },
@@ -79,8 +79,8 @@
         "displayName": "quickMARC: Create a new MARC holdings record",
         "subPermissions": [
           "ui-quick-marc.quick-marc-holdings-editor.view",
-          "records-editor.records.status.item.get",
-          "records-editor.records.item.post"
+          "marc-records-editor.status.item.get",
+          "marc-records-editor.item.post"
         ],
         "visible": true
       },
@@ -89,8 +89,8 @@
         "displayName": "quickMARC: Derive new MARC bibliographic record",
         "subPermissions": [
           "ui-quick-marc.quick-marc-editor.view",
-          "records-editor.records.status.item.get",
-          "records-editor.records.item.post",
+          "marc-records-editor.status.item.get",
+          "marc-records-editor.item.post",
           "instance-authority-links.instances.collection.put"
         ],
         "visible": true
@@ -99,8 +99,8 @@
         "permissionName": "ui-quick-marc.quick-marc-authorities-editor.all",
         "displayName": "quickMARC: View, edit MARC authorities record",
         "subPermissions": [
-          "records-editor.records.item.get",
-          "records-editor.records.item.put",
+          "marc-records-editor.item.get",
+          "marc-records-editor.item.put",
           "inventory-storage.locations.collection.get"
         ],
         "visible": true
