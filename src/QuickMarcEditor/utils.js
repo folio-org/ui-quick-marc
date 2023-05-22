@@ -216,6 +216,14 @@ export const fillEmptyFixedFieldValues = (marcType, type, blvl, field) => {
       blvl,
     )?.configFields ?? [];
 
+  const hiddenValues = marcType === MARC_TYPES.BIB
+    ? {
+      Type: type,
+      BLvl: blvl,
+      Entered: DATE_ON_ENTERED_PLACEHOLDER,
+    }
+    : {};
+
   return fieldConfigByType.reduce((fixedField, fieldConfig) => {
     if (fixedField?.[fieldConfig.name]) {
       return fixedField;
@@ -232,9 +240,7 @@ export const fillEmptyFixedFieldValues = (marcType, type, blvl, field) => {
     return fixedField;
   }, {
     ...field?.content,
-    Type: type,
-    BLvl: blvl,
-    Entered: DATE_ON_ENTERED_PLACEHOLDER,
+    ...hiddenValues,
   });
 };
 
