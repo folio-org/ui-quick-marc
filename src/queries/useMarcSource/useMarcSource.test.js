@@ -34,6 +34,6 @@ describe('Given useMarcSource', () => {
 
     renderHook(() => useMarcSource(fieldId, recordId, { onSuccess: jest.fn() }), { wrapper });
 
-    expect(mockGet).toHaveBeenCalledWith('marc-records-editor/records?externalId=record-id');
+    expect(mockGet).toHaveBeenCalledWith('records-editor/records?externalId=record-id');
   });
 });
