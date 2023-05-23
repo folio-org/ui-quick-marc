@@ -52,6 +52,13 @@ export const isLastRecord = recordRow => {
 export const isFixedFieldRow = recordRow => recordRow.tag === '008';
 export const isMaterialCharsRecord = recordRow => recordRow.tag === '006';
 export const isPhysDescriptionRecord = recordRow => recordRow.tag === '007';
+export const isLocationRow = (recordRow, marcType) => marcType === MARC_TYPES.HOLDINGS && recordRow.tag === '852';
+export const isContentRow = (recordRow, marcType) => {
+  return !(isLocationRow(recordRow, marcType)
+    || isFixedFieldRow(recordRow)
+    || isMaterialCharsRecord(recordRow)
+    || isPhysDescriptionRecord(recordRow));
+};
 
 export const getContentSubfieldValue = (content = '') => {
   return content.split(/\$/)
@@ -970,6 +977,14 @@ export const restoreRecordAtIndex = (index, state) => {
     ...records[index],
     _isDeleted: false,
   };
+
+  return records;
+};
+
+export const updateRecordAtIndex = (index, field, state) => {
+  const records = [...state.formState.values.records];
+
+  records[index] = field;
 
   return records;
 };
