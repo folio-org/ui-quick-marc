@@ -172,7 +172,7 @@
     "record.fixedField.Sep/comp": "Sep/comp",
     "record.error.leader.forbiddenBytes.bib": "No se puede guardar el registro. Por favor, compruebe el Leader. Sólo las posiciones 5, 6, 7, 8, 17, 18 y/o 19 pueden ser editadas en el Leader.",
     "record.error.leader.forbiddenBytes.holdings": "No se puede guardar el registro. Por favor, compruebe el Leader. Sólo las posiciones 5, 6, 17, 18 pueden ser editadas en el Leader.",
-    "record.error.leader.invalidPositionValue": "Record cannot be saved. Please enter a valid {positions}. Valid values are listed at {link}",
+    "record.error.leader.invalidPositionValue": "No se puede guardar el registro. Por favor, introduzca un {positions} válido. Los valores válidos se enumeran en {link}",
     "permission.quick-marc-holdings-editor.all": "quickMARC: Ver y editar registros de existencias MARC",
     "permission.quick-marc-holdings-editor.create": "quickMARC: Crear un nuevo registro de existencias MARC",
     "record.fixedField.Rept date": "Fecha del informe",
