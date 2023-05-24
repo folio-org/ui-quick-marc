@@ -110,27 +110,18 @@ const LinkButton = ({
 
     const fieldContent = getContentSubfieldValue(content);
 
-    if (fieldContent.$0?.length === 1) {
-      initialDropdownValue = searchableIndexesValues.IDENTIFIER;
-      initialSearchInputValue = selectIdentifierFromSubfield(fieldContent.$0[0]);
-      initialSearchQuery = initialSearchInputValue;
-
-      _initialValues[navigationSegments.search] = {
-        dropdownValue: initialDropdownValue,
-        searchIndex: initialDropdownValue,
-        searchInputValue: initialSearchInputValue,
-        searchQuery: initialSearchQuery,
-      };
-      _initialValues[navigationSegments.browse] = {
-        dropdownValue: dropdownValueByTag,
-        searchIndex: dropdownValueByTag,
-      };
-    } else if (fieldContent.$0?.length > 1) {
-      initialDropdownValue = searchableIndexesValues.ADVANCED_SEARCH;
-      initialSearchInputValue = fieldContent.$0
+    if (fieldContent.$0?.length) {
+      const keywordValue = [fieldContent.$a, fieldContent.$d, fieldContent.$t].flat().filter(Boolean).join(' ');
+      const keywordQuery = keywordValue
+        ? `${searchableIndexesValues.KEYWORD}==${keywordValue}`
+        : '';
+      const identifierQuery = fieldContent.$0
         .map(selectIdentifierFromSubfield)
         .map(identifier => `${searchableIndexesValues.IDENTIFIER}==${identifier}`)
         .join(' or ');
+
+      initialDropdownValue = searchableIndexesValues.ADVANCED_SEARCH;
+      initialSearchInputValue = [keywordQuery, identifierQuery].filter(Boolean).join(' or ');
       initialSearchQuery = initialSearchInputValue;
 
       _initialValues[navigationSegments.search] = {
