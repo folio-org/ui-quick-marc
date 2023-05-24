@@ -51,6 +51,7 @@ import {
   is1XXUpdated,
   is010$aUpdated,
   is010LinkedToBibRecord,
+  updateRecordAtIndex,
 } from './utils';
 import { useAuthorityLinking } from '../hooks';
 
@@ -565,6 +566,11 @@ export default stripesFinalForm({
     },
     restoreRecord: ([{ index }], state, tools) => {
       const records = restoreRecordAtIndex(index, state);
+
+      tools.changeValue(state, 'records', () => records);
+    },
+    updateRecord: ([{ index, field }], state, tools) => {
+      const records = updateRecordAtIndex(index, field, state);
 
       tools.changeValue(state, 'records', () => records);
     },
