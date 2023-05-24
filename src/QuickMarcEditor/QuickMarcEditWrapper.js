@@ -31,6 +31,7 @@ import {
   autopopulateFixedField,
 } from './utils';
 import { useAuthorityLinkingRules } from '../queries';
+import useValidation from '../hooks/useValidation/useValidation';
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
@@ -63,6 +64,19 @@ const QuickMarcEditWrapper = ({
   const { linkableBibFields } = useAuthorityLinking();
   const { linkingRules } = useAuthorityLinkingRules();
 
+
+
+  const { validate } = useValidation({
+    initialValues,
+    marcType,
+    action: QUICK_MARC_ACTIONS.EDIT,
+    locations,
+    linksCount,
+    naturalId: instance.naturalId,
+    linkableBibFields,
+    linkingRules,
+  });
+
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesToSave = flow(
       removeDeletedRecords,
@@ -72,40 +86,11 @@ const QuickMarcEditWrapper = ({
     return formValuesToSave;
   }, []);
 
-  const validate = useCallback((formValues) => {
+  const runValidation = useCallback((formValues) => {
     const formValuesForValidation = prepareForSubmit(formValues);
-    const controlFieldErrorMessage = checkControlFieldLength(formValuesForValidation);
 
-    if (controlFieldErrorMessage) {
-      return controlFieldErrorMessage;
-    }
-
-    const validationErrorMessage = validateMarcRecord({
-      marcRecord: formValuesForValidation,
-      initialValues,
-      marcType,
-      locations,
-      linksCount,
-      naturalId: instance.naturalId,
-      linkableBibFields,
-      linkingRules,
-    });
-
-    if (validationErrorMessage) {
-      return validationErrorMessage;
-    }
-
-    return undefined;
-  }, [
-    initialValues,
-    linksCount,
-    locations,
-    marcType,
-    prepareForSubmit,
-    instance.naturalId,
-    linkableBibFields,
-    linkingRules,
-  ]);
+    return validate(formValuesForValidation.records);
+  }, [validate, prepareForSubmit]);
 
   const onSubmit = useCallback(async (formValues) => {
     let is1xxOr010Updated = false;
@@ -214,7 +199,7 @@ const QuickMarcEditWrapper = ({
       httpError={httpError}
       externalRecordPath={externalRecordPath}
       linksCount={linksCount}
-      validate={validate}
+      validate={runValidation}
     />
   );
 };
