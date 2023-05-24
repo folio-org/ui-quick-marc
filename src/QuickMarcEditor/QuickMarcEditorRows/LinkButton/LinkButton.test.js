@@ -119,10 +119,10 @@ describe('Given LinkButton', () => {
 
         const initialValues = {
           search: {
-            dropdownValue: 'identifiers.value',
-            searchIndex: 'identifiers.value',
-            searchInputValue: 'n123456789',
-            searchQuery: 'n123456789',
+            dropdownValue: 'advancedSearch',
+            searchIndex: 'advancedSearch',
+            searchInputValue: 'identifiers.value==n123456789',
+            searchQuery: 'identifiers.value==n123456789',
           },
           browse: {
             dropdownValue: 'personalNameTitle',
@@ -181,6 +181,32 @@ describe('Given LinkButton', () => {
             searchQuery: 'value1 value2 value3',
           },
           segment: 'browse',
+        };
+
+        fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
+
+        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
+      });
+    });
+
+    describe('when linking Authority to a field with $a, $d or $t and with multiple $0', () => {
+      it('should pass initial values to plugin', async () => {
+        const { getAllByTestId } = renderComponent({
+          content: '$a value1 $d value2 $t value3 $0 value4 $0 http://id.workldcat.org/fast/value5',
+        });
+
+        const initialValues = {
+          search: {
+            dropdownValue: 'advancedSearch',
+            searchIndex: 'advancedSearch',
+            searchInputValue: 'keyword==value1 value2 value3 or identifiers.value==value4 or identifiers.value==value5',
+            searchQuery: 'keyword==value1 value2 value3 or identifiers.value==value4 or identifiers.value==value5',
+          },
+          browse: {
+            dropdownValue: 'personalNameTitle',
+            searchIndex: 'personalNameTitle',
+          },
+          segment: 'search',
         };
 
         fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
