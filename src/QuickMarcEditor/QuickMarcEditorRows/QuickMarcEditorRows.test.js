@@ -402,4 +402,24 @@ describe('Given QuickMarcEditorRows', () => {
       });
     });
   });
+
+  describe('when changing tag from any text content field to other text content field', () => {
+    it('should change tag value and keep content', () => {
+      const { getByTestId } = renderQuickMarcEditorRows();
+
+      const tagField006 = getByTestId('tag-field-4');
+
+      fireEvent.change(tagField006, { target: { value: '700' } });
+
+      expect(mockUpdateRecord).toHaveBeenCalledWith({
+        index: 4,
+        field: {
+          id: '2',
+          tag: '700',
+          content: '$a c',
+          indicators: [],
+        },
+      });
+    });
+  });
 });

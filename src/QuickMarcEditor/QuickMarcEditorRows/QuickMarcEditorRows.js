@@ -129,8 +129,16 @@ const QuickMarcEditorRows = ({
     const wasContentField = isContentRow(fields[index], marcType);
     const isContentField = isContentRow({ ...fields[index], tag: value }, marcType); // type of content after we apply new tag value
 
-    // if type of field isn't changed we don't need to make any updates to content
+    // if type of field isn't changed we only need to change tag value
     if (wasContentField === isContentField) {
+      updateRecord({
+        index,
+        field: {
+          ...fields[index],
+          tag: value,
+        },
+      });
+
       return;
     }
 
