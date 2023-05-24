@@ -103,6 +103,7 @@ const initValues = [
     tag: '240',
     _isLinked: false,
     indicators: [],
+    content: '',
   },
   {
     id: '7',
@@ -125,6 +126,7 @@ const initValues = [
     },
     _isLinked: false,
     tag: '100',
+    content: '',
   },
 ];
 
@@ -138,6 +140,7 @@ const addRecordMock = jest.fn().mockImplementation(({ index }) => {
 const deleteRecordMock = jest.fn();
 const moveRecordMock = jest.fn();
 const markRecordDeletedMock = jest.fn();
+const mockUpdateRecord = jest.fn();
 
 const getComponent = (props) => (
   <Harness>
@@ -162,8 +165,9 @@ const getComponent = (props) => (
             markRecordLinked: jest.fn(),
             markRecordUnlinked: jest.fn(),
             restoreRecord: jest.fn(),
+            updateRecord: mockUpdateRecord,
           }}
-          subtype="test"
+          subtype="m"
           {...props}
         />
       )}
@@ -375,6 +379,46 @@ describe('Given QuickMarcEditorRows', () => {
       expect(mockSendCallout).toHaveBeenCalledWith({
         type: 'error',
         message: 'validation error',
+      });
+    });
+  });
+
+  describe('when changing tag from 00X to any text content field', () => {
+    it('should change field content to empty string and save old value', () => {
+      const { getByTestId } = renderQuickMarcEditorRows();
+
+      const tagField006 = getByTestId('tag-field-1');
+
+      fireEvent.change(tagField006, { target: { value: '700' } });
+
+      expect(mockUpdateRecord).toHaveBeenCalledWith({
+        index: 1,
+        field: {
+          id: '4',
+          tag: '700',
+          content: '',
+          _fieldTypeSwapContent: {},
+        },
+      });
+    });
+  });
+
+  describe('when changing tag from any text content field to other text content field', () => {
+    it('should change tag value and keep content', () => {
+      const { getByTestId } = renderQuickMarcEditorRows();
+
+      const tagField006 = getByTestId('tag-field-4');
+
+      fireEvent.change(tagField006, { target: { value: '700' } });
+
+      expect(mockUpdateRecord).toHaveBeenCalledWith({
+        index: 4,
+        field: {
+          id: '2',
+          tag: '700',
+          content: '$a c',
+          indicators: [],
+        },
       });
     });
   });
