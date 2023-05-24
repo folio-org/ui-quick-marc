@@ -29,6 +29,7 @@
 * [UIQM-464](https://issues.folio.org/browse/UIQM-464) Create Orig Bib Record: Populate new record with 008.
 * [UIQM-492](https://issues.folio.org/browse/UIQM-492) Fix error when changing field type from 00X to content and vice versa.
 * [UIQM-496](https://issues.folio.org/browse/UIQM-496) Conduct an Advanced search when $0 is present.
+* [UIQM-485](https://issues.folio.org/browse/UIQM-485) Replace "align-items: start;" with "align-items: flex-start;" for better support.
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
 
