@@ -42,6 +42,8 @@ import {
   isPhysDescriptionRecord,
   isReadOnly,
   hasDeleteException,
+  isLocationRow,
+  isContentRow,
 } from '../utils';
 import { useAuthorityLinking } from '../../hooks';
 import {
@@ -68,6 +70,7 @@ const QuickMarcEditorRows = ({
     deleteRecord,
     moveRecord,
     restoreRecord,
+    updateRecord,
   },
   marcType,
   instance,
@@ -118,6 +121,39 @@ const QuickMarcEditorRows = ({
     return prevRow.querySelector('[data-icon="delete-row"]') ||
       prevRow.querySelector('[data-icon="move-up"]');
   };
+
+  const onTagChange = useCallback(({ target }) => {
+    const index = parseInt(target.dataset.index, 10);
+    const { value } = target;
+
+    const wasContentField = isContentRow(fields[index], marcType);
+    const isContentField = isContentRow({ ...fields[index], tag: value }, marcType); // type of content after we apply new tag value
+
+    // if type of field isn't changed we only need to change tag value
+    if (wasContentField === isContentField) {
+      updateRecord({
+        index,
+        field: {
+          ...fields[index],
+          tag: value,
+        },
+      });
+
+      return;
+    }
+
+    const newContent = fields[index]._fieldTypeSwapContent || '';
+
+    updateRecord({
+      index,
+      field: {
+        ...fields[index],
+        tag: value,
+        content: newContent,
+        _fieldTypeSwapContent: fields[index].content,
+      },
+    });
+  }, [fields, marcType, updateRecord]);
 
   const deleteRow = useCallback(({ target }) => {
     const index = parseInt(target.dataset.index, 10);
@@ -231,8 +267,8 @@ const QuickMarcEditorRows = ({
             const isMaterialCharsField = isMaterialCharsRecord(recordRow);
             const isPhysDescriptionField = isPhysDescriptionRecord(recordRow);
             const isFixedField = isFixedFieldRow(recordRow);
-            const isLocationField = marcType === MARC_TYPES.HOLDINGS && recordRow.tag === '852';
-            const isContentField = !(isLocationField || isFixedField || isMaterialCharsField || isPhysDescriptionField);
+            const isLocationField = isLocationRow(recordRow, marcType);
+            const isContentField = isContentRow(recordRow, marcType);
             const isMARCFieldProtections = marcType !== MARC_TYPES.HOLDINGS && action === QUICK_MARC_ACTIONS.EDIT;
             const isProtectedField = recordRow.isProtected;
             const isLinkVisible = checkCanBeLinked(stripes, marcType, linkableBibFields, recordRow.tag);
@@ -348,6 +384,8 @@ const QuickMarcEditorRows = ({
                     fullWidth
                     disabled={isDisabled || !idx}
                     hasClearIcon={false}
+                    onChange={onTagChange}
+                    data-testid={`tag-field-${idx}`}
                   />
                 </div>
 
@@ -441,6 +479,7 @@ const QuickMarcEditorRows = ({
                             disabled={isDisabled}
                             id={`content-field-${idx}`}
                             component={ContentField}
+                            data-testid={`content-field-${idx}`}
                           />
                         )
                     )
@@ -518,6 +557,7 @@ QuickMarcEditorRows.propTypes = {
     _isDeleted: PropTypes.bool,
     _isLinked: PropTypes.bool,
     _isAdded: PropTypes.bool,
+    _fieldTypeSwapContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   })),
   mutators: PropTypes.shape({
     addRecord: PropTypes.func.isRequired,
@@ -527,6 +567,7 @@ QuickMarcEditorRows.propTypes = {
     markRecordUnlinked: PropTypes.func.isRequired,
     moveRecord: PropTypes.func.isRequired,
     restoreRecord: PropTypes.func.isRequired,
+    updateRecord: PropTypes.func.isRequired,
   }),
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
 };
