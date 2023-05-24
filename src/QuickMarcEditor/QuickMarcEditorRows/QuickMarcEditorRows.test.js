@@ -2,7 +2,6 @@ import React from 'react';
 import {
   render,
   fireEvent,
-  act,
 } from '@testing-library/react';
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
