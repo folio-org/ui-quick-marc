@@ -534,6 +534,20 @@ export const validateLeader = (prevLeader = '', leader = '', marcType = MARC_TYP
   return undefined;
 };
 
+export const validateFixedField = (marcRecords) => {
+  const fixedFields = marcRecords.filter(isFixedFieldRow);
+
+  if (!fixedFields.length) {
+    return <FormattedMessage id="ui-quick-marc.record.error.008.empty" />;
+  }
+
+  if (fixedFields.length > 1) {
+    return <FormattedMessage id="ui-quick-marc.record.error.008.multiple" />;
+  }
+
+  return undefined;
+};
+
 export const getLocationValue = (value) => {
   const matches = value?.match(/\$b\s+([^$\s]+\/?)+/) || [];
 
@@ -890,6 +904,12 @@ export const validateMarcRecord = ({
 
   if (leaderError) {
     return leaderError;
+  }
+
+  const fixedFieldError = validateFixedField(marcRecords);
+
+  if (fixedFieldError) {
+    return fixedFieldError;
   }
 
   let validationResult;
