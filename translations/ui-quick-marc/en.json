@@ -178,6 +178,8 @@
   "record.error.010.removed": "Cannot delete 010. It is required.",
   "record.error.010.$aRemoved": "Cannot remove 010 $a for this record.",
   "record.error.010.$aOnlyOne": "010 can only have one $a.",
+  "record.error.008.empty": "Record cannot be saved without 008 field",
+  "record.error.008.multiple": "Record cannot be saved with more than one 008 field",
   "record.error.heading.empty": "Record cannot be saved without 1XX field.",
   "record.error.heading.multiple": "Record cannot be saved. Cannot have multiple 1XXs",
   "record.error.title.multiple": "Record cannot be saved with more than one field 245.",

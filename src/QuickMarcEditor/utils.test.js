@@ -677,6 +677,10 @@ describe('QuickMarcEditor utils', () => {
               tag: 'LDR',
             },
             {
+              content: {},
+              tag: '008',
+            },
+            {
               tag: '852',
               content: '$b VA/LI/D',
             },
@@ -700,6 +704,10 @@ describe('QuickMarcEditor utils', () => {
               content: '04706cxm a2200865mi 4500',
               tag: 'LDR',
             },
+            {
+              content: {},
+              tag: '008',
+            },
           ],
         };
 
@@ -719,6 +727,10 @@ describe('QuickMarcEditor utils', () => {
             {
               content: '04706cxm a2200865mi 4500',
               tag: 'LDR',
+            },
+            {
+              content: {},
+              tag: '008',
             },
             {
               tag: '852',
@@ -750,6 +762,10 @@ describe('QuickMarcEditor utils', () => {
             },
             { tag: '004' },
             { tag: '004' },
+            {
+              content: {},
+              tag: '008',
+            },
           ],
         };
 
@@ -771,6 +787,10 @@ describe('QuickMarcEditor utils', () => {
               tag: 'LDR',
             },
             { tag: '004' },
+            {
+              content: {},
+              tag: '008',
+            },
             {
               tag: '852',
               content: '$b IN/VA/LI/D',
@@ -797,6 +817,10 @@ describe('QuickMarcEditor utils', () => {
             },
             { tag: '004' },
             {
+              content: {},
+              tag: '008',
+            },
+            {
               tag: '852',
               content: '$a',
             },
@@ -822,6 +846,10 @@ describe('QuickMarcEditor utils', () => {
               tag: 'LDR',
             },
             { tag: '004' },
+            {
+              content: {},
+              tag: '008',
+            },
             {
               tag: '852',
               content: '$b location.with.numbers.and.symbols123123',
@@ -850,6 +878,10 @@ describe('QuickMarcEditor utils', () => {
               tag: 'LDR',
             },
             {
+              content: {},
+              tag: '008',
+            },
+            {
               tag: '110',
               content: '$a Record title',
             },
@@ -872,6 +904,10 @@ describe('QuickMarcEditor utils', () => {
               content: '04706cxm a2200865ni 4500',
               tag: 'LDR',
             },
+            {
+              content: {},
+              tag: '008',
+            },
           ],
         };
 
@@ -890,6 +926,10 @@ describe('QuickMarcEditor utils', () => {
             {
               content: '04706cxm a2200865ni 4500',
               tag: 'LDR',
+            },
+            {
+              content: {},
+              tag: '008',
             },
             {
               tag: '100',
@@ -919,6 +959,10 @@ describe('QuickMarcEditor utils', () => {
               tag: 'LDR',
             },
             {
+              content: {},
+              tag: '008',
+            },
+            {
               tag: '100',
               content: '$a',
             },
@@ -944,6 +988,10 @@ describe('QuickMarcEditor utils', () => {
             {
               content: '04706cxm a2200865ni 4500',
               tag: 'LDR',
+            },
+            {
+              content: {},
+              tag: '008',
             },
             {
               tag: '100',
@@ -979,6 +1027,10 @@ describe('QuickMarcEditor utils', () => {
             {
               tag: '110',
               content: '$a Record title',
+            },
+            {
+              content: {},
+              tag: '008',
             },
           ],
         };
@@ -1061,7 +1113,7 @@ describe('QuickMarcEditor utils', () => {
 
           const record = cloneDeep(newInitialValues);
 
-          record.records[3].content += 'test';
+          record.records[4].content += 'test';
 
           expect(utils.validateMarcRecord({
             marcRecord: record,

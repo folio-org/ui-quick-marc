@@ -30,6 +30,8 @@
 * [UIQM-492](https://issues.folio.org/browse/UIQM-492) Fix error when changing field type from 00X to content and vice versa.
 * [UIQM-496](https://issues.folio.org/browse/UIQM-496) Conduct an Advanced search when $0 is present.
 * [UIQM-485](https://issues.folio.org/browse/UIQM-485) Replace "align-items: start;" with "align-items: flex-start;" for better support.
+* [UIQM-488](https://issues.folio.org/browse/UIQM-488) Change records-editor.records interface name and permission names to marc-records-editor
+* [UIQM-459](https://issues.folio.org/browse/UIQM-459) Make 008 field required for MARC bibliographic/authority/holdings records.
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
 
