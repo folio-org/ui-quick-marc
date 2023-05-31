@@ -1501,7 +1501,44 @@ describe('QuickMarcEditor utils', () => {
         Date2: '\\\\\\\\',
         Type: type,
         BLvl: blvl,
-        Entered: '000000',
+      });
+    });
+
+    describe('when marc type is Authority', () => {
+      it('should add Authority specific hidden fields', () => {
+        const marcType = MARC_TYPES.AUTHORITY;
+        const type = '';
+        const blvl = '';
+        const field = {
+          content: {
+            Roman: 'n',
+          },
+        };
+
+        expect(utils.fillEmptyFixedFieldValues(marcType, type, blvl, field)).toMatchObject({
+          'Geo Subd': '\\',
+          'Kind rec': '\\',
+          'SH Sys': '\\',
+          Series: '\\',
+          'Numb Series': '\\',
+          'Main use': '\\',
+          'Subj use': '\\',
+          'Series use': '\\',
+          'Type Subd': '\\',
+          'Govt Ag': '\\',
+          RefEval: '\\',
+          RecUpd: '\\',
+          'Pers Name': '\\',
+          'Level Est': '\\',
+          'Mod Rec Est': '\\',
+          Source: '\\',
+          Roman: 'n',
+          Lang: '\\',
+          'Cat Rules': '\\',
+          Undef_18: '\\\\\\\\\\\\\\\\\\\\',
+          Undef_30: '\\',
+          Undef_34: '\\\\\\\\',
+        });
       });
     });
   });

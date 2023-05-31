@@ -26,7 +26,6 @@ import {
   CREATE_BIB_RECORD_DEFAULT_FIELD_TAGS,
   BIB_FIXED_FIELD_DEFAULT_TYPE,
   BIB_FIXED_FIELD_DEFAULT_BLVL,
-  DATE_ON_ENTERED_PLACEHOLDER,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import { SUBFIELD_TYPES } from './QuickMarcEditorRows/BytesField';
@@ -223,13 +222,20 @@ export const fillEmptyFixedFieldValues = (marcType, type, blvl, field) => {
       blvl,
     )?.configFields ?? [];
 
-  const hiddenValues = marcType === MARC_TYPES.BIB
-    ? {
+  let hiddenValues = {};
+
+  if (marcType === MARC_TYPES.BIB) {
+    hiddenValues = {
       Type: type,
       BLvl: blvl,
-      Entered: DATE_ON_ENTERED_PLACEHOLDER,
-    }
-    : {};
+    };
+  } else if (marcType === MARC_TYPES.AUTHORITY) {
+    hiddenValues = {
+      Undef_18: '\\\\\\\\\\\\\\\\\\\\',
+      Undef_30: '\\',
+      Undef_34: '\\\\\\\\',
+    };
+  }
 
   return fieldConfigByType.reduce((fixedField, fieldConfig) => {
     if (fixedField?.[fieldConfig.name]) {

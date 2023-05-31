@@ -10,8 +10,6 @@ export const LEADER_EDITABLE_BYTES = {
 
 export const NON_BREAKING_SPACE = '\u00A0';
 
-export const DATE_ON_ENTERED_PLACEHOLDER = '000000';
-
 export const LEADER_VALUES_FOR_POSITION = {
   [MARC_TYPES.BIB]: {
     5: ['a', 'c', 'd', 'n', 'p'],
