@@ -265,5 +265,7 @@
     "permission.quick-marc-editor.create": "quickMARC: Crear un nuevo registro bibliográfico MARC",
     "record.error.field.onlyOneSubfield": "<b>{fieldTag}</b> can only have one <b>{subField}</b>.",
     "bib-record.create.title": "Create a new MARC bib record",
-    "record.error.010.multiple": "Record cannot be saved with more than one 010 field"
+    "record.error.010.multiple": "Record cannot be saved with more than one 010 field",
+    "record.error.008.empty": "Record cannot be saved without 008 field",
+    "record.error.008.multiple": "Record cannot be saved with more than one 008 field"
 }
