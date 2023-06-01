@@ -30,6 +30,7 @@ const RSImagePhysDescriptionFieldConfig = [
   {
     type: SUBFIELD_TYPES.STRING,
     name: 'Data type',
+    length: 2,
   },
 ];
 

@@ -55,15 +55,35 @@ describe('QuickMarcEditor utils', () => {
     it('should return dehydrated marc record', () => {
       const marcRecord = {
         id: faker.random.uuid(),
-        leader: faker.random.uuid(),
+        leader: '02164cam\\a2200469La\\4500',
         fields: [
           {
             tag: '001',
             content: '$a fss $b asd',
           },
+          {
+            tag: '006',
+            content: {
+              Type: 'c',
+            },
+          },
+          {
+            tag: '007',
+            content: {
+              Category: 'c',
+            },
+          },
+          {
+            tag: '008',
+            content: {},
+          },
         ],
       };
-      const dehydratedMarcRecord = utils.dehydrateMarcRecordResponse(marcRecord);
+      const marcType = 'bib';
+      const dehydratedMarcRecord = utils.dehydrateMarcRecordResponse(marcRecord, marcType);
+      const field006 = dehydratedMarcRecord.records[2];
+      const field007 = dehydratedMarcRecord.records[3];
+      const field008 = dehydratedMarcRecord.records[4];
 
       expect(dehydratedMarcRecord.fields).not.toBeDefined();
 
@@ -72,6 +92,54 @@ describe('QuickMarcEditor utils', () => {
       expect(dehydratedMarcRecord.records[0].content).toBe(marcRecord.leader);
 
       expect(dehydratedMarcRecord.records[1].id).toBe('uuid');
+
+      expect(field006.content).toMatchObject({
+        Type: 'c',
+        Comp: '\\\\',
+        FMus: '\\',
+        Part: '\\',
+        Audn: '\\',
+        Form: '\\',
+        AccM: ['\\', '\\', '\\', '\\', '\\', '\\'],
+        LTxt: ['\\', '\\'],
+        TrAr: '\\',
+      });
+
+      expect(field007.content).toMatchObject({
+        Category: 'c',
+        SMD: '\\',
+        Color: '\\',
+        Dimensions: '\\',
+        Sound: '\\',
+        'Image bit depth': '\\\\\\',
+        'File formats': '\\',
+        'Quality assurance target(s)': '\\',
+        'Antecedent/ Source': '\\',
+        'Level of compression': '\\',
+        'Reformatting quality': '\\',
+      });
+
+      expect(field008.content).toMatchObject({
+        Type: 'a',
+        BLvl: 'm',
+        Srce: '\\',
+        Audn: '\\',
+        Lang: '\\\\\\',
+        Form: '\\',
+        Conf: '\\',
+        Biog: '\\',
+        MRec: '\\',
+        Ctry: '\\\\\\',
+        Cont: ['\\', '\\', '\\', '\\'],
+        GPub: '\\',
+        LitF: '\\',
+        Indx: '\\',
+        Ills: ['\\', '\\', '\\', '\\'],
+        Fest: '\\',
+        DtSt: '\\',
+        Date1: '\\\\\\\\',
+        Date2: '\\\\\\\\',
+      });
     });
   });
 

@@ -27,6 +27,8 @@ import {
   recordHasLinks,
   combineSplitFields,
   autopopulateFixedField,
+  autopopulatePhysDescriptionField,
+  autopopulateMaterialCharsField,
 } from './utils';
 
 const propTypes = {
@@ -62,6 +64,8 @@ const QuickMarcCreateWrapper = ({
       removeDeletedRecords,
       removeFieldsForDerive,
       marcRecord => autopopulateFixedField(marcRecord, marcType),
+      autopopulatePhysDescriptionField,
+      autopopulateMaterialCharsField,
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
       marcRecord => cleanBytesFields(marcRecord, marcType),
     )(formValues);

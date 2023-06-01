@@ -4,6 +4,7 @@ const MediaMaterialCharsFieldConfig = [
   {
     name: 'Comp',
     type: SUBFIELD_TYPES.STRING,
+    length: 2,
   },
   {
     name: 'FMus',

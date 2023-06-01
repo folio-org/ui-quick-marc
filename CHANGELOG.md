@@ -32,6 +32,7 @@
 * [UIQM-485](https://issues.folio.org/browse/UIQM-485) Replace "align-items: start;" with "align-items: flex-start;" for better support.
 * [UIQM-488](https://issues.folio.org/browse/UIQM-488) Change records-editor.records interface name and permission names to marc-records-editor
 * [UIQM-459](https://issues.folio.org/browse/UIQM-459) Make 008 field required for MARC bibliographic/authority/holdings records.
+* [UIQM-499](https://issues.folio.org/browse/UIQM-499) Auto-populate empty positions for fields 006, 007 and 008.
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
 

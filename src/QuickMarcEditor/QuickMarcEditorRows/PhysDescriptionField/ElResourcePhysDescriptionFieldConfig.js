@@ -18,6 +18,7 @@ const ElResourcePhysDescriptionFieldConfig = [
   {
     name: 'Image bit depth',
     type: SUBFIELD_TYPES.STRING,
+    length: 3,
   },
   {
     type: SUBFIELD_TYPES.BYTE,
