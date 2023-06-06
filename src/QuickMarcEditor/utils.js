@@ -26,6 +26,7 @@ import {
   CREATE_BIB_RECORD_DEFAULT_FIELD_TAGS,
   BIB_FIXED_FIELD_DEFAULT_TYPE,
   BIB_FIXED_FIELD_DEFAULT_BLVL,
+  ENTERED_KEY,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import { SUBFIELD_TYPES } from './QuickMarcEditorRows/BytesField';
@@ -1022,6 +1023,20 @@ export const removeDeletedRecords = (formValues) => {
     ...formValues,
     records: records.filter(record => !record._isDeleted),
   };
+};
+
+export const removeEnteredDate = (formValues) => {
+  const { records } = formValues;
+
+  const fixedField = records.find(isFixedFieldRow);
+
+  if (!fixedField) {
+    return formValues;
+  }
+
+  delete fixedField.content[ENTERED_KEY];
+
+  return formValues;
 };
 
 export const removeFieldsForDerive = (formValues) => {
