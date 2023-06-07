@@ -62,6 +62,7 @@ const PicturePhysDescriptionFieldConfig = [
   {
     name: 'Film inspection date',
     type: SUBFIELD_TYPES.STRING,
+    length: 6,
   },
 ];
 

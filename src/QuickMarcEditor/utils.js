@@ -8,6 +8,7 @@ import isString from 'lodash/isString';
 import isNumber from 'lodash/isNumber';
 import toPairs from 'lodash/toPairs';
 import flatten from 'lodash/flatten';
+import flow from 'lodash/flow';
 
 import {
   LEADER_TAG,
@@ -172,22 +173,6 @@ export const saveLinksToNewRecord = async (mutator, externalId, marcRecord) => {
   });
 };
 
-export const dehydrateMarcRecordResponse = marcRecordResponse => ({
-  ...marcRecordResponse,
-  fields: undefined,
-  records: [
-    {
-      tag: LEADER_TAG,
-      content: marcRecordResponse.leader,
-      id: LEADER_TAG,
-    },
-    ...marcRecordResponse.fields.map(record => ({
-      ...record,
-      id: uuidv4(),
-    })),
-  ],
-});
-
 const getCreateMarcRecordDefaultFields = (instanceRecord) => {
   return CREATE_HOLDINGS_RECORD_DEFAULT_FIELD_TAGS.map(tag => {
     const field = {
@@ -215,6 +200,39 @@ const getCreateMarcRecordDefaultFields = (instanceRecord) => {
   });
 };
 
+const fillEmptyFieldValues = ({ fieldConfigByType, field, hiddenValues }) => {
+  return fieldConfigByType.reduce((acc, fieldConfig) => {
+    if (acc[fieldConfig.name]) {
+      return acc;
+    }
+
+    if (fieldConfig.type === SUBFIELD_TYPES.BYTE) {
+      return { ...acc, [fieldConfig.name]: '\\' };
+    } else if (fieldConfig.type === SUBFIELD_TYPES.BYTES) {
+      return { ...acc, [fieldConfig.name]: new Array(fieldConfig.bytes).fill('\\') };
+    } else if (fieldConfig.type === SUBFIELD_TYPES.STRING) {
+      return { ...acc, [fieldConfig.name]: new Array(fieldConfig.length).fill('\\').join('') };
+    }
+
+    return acc;
+  }, {
+    ...field?.content,
+    ...hiddenValues,
+  });
+};
+
+export const fillEmptyMaterialCharsFieldValues = (type, field) => {
+  const fieldConfigByType = getMaterialCharsFieldConfig(type);
+
+  return fillEmptyFieldValues({ fieldConfigByType, field });
+};
+
+export const fillEmptyPhysDescriptionFieldValues = (type, field) => {
+  const fieldConfigByType = getPhysDescriptionFieldConfig(type);
+
+  return fillEmptyFieldValues({ fieldConfigByType, field });
+};
+
 export const fillEmptyFixedFieldValues = (marcType, type, blvl, field) => {
   const fieldConfigByType = FixedFieldFactory
     .getFixedFieldByType(
@@ -238,24 +256,7 @@ export const fillEmptyFixedFieldValues = (marcType, type, blvl, field) => {
     };
   }
 
-  return fieldConfigByType.reduce((fixedField, fieldConfig) => {
-    if (fixedField?.[fieldConfig.name]) {
-      return fixedField;
-    }
-
-    if (fieldConfig.type === SUBFIELD_TYPES.BYTE) {
-      return { ...fixedField, [fieldConfig.name]: '\\' };
-    } else if (fieldConfig.type === SUBFIELD_TYPES.BYTES) {
-      return { ...fixedField, [fieldConfig.name]: new Array(fieldConfig.bytes).fill('\\') };
-    } else if (fieldConfig.type === SUBFIELD_TYPES.STRING) {
-      return { ...fixedField, [fieldConfig.name]: new Array(fieldConfig.length).fill('\\').join('') };
-    }
-
-    return fixedField;
-  }, {
-    ...field?.content,
-    ...hiddenValues,
-  });
+  return fillEmptyFieldValues({ fieldConfigByType, field, hiddenValues });
 };
 
 const getCreateBibMarcRecordDefaultFields = (instanceRecord) => {
@@ -1092,6 +1093,46 @@ export const autopopulateIndicators = (formValues) => {
   };
 };
 
+export const autopopulateMaterialCharsField = (formValues) => {
+  const { records } = formValues;
+
+  return {
+    ...formValues,
+    records: records.map(field => {
+      if (!isMaterialCharsRecord(field)) {
+        return field;
+      }
+
+      const type = field.content?.Type;
+
+      return {
+        ...field,
+        content: fillEmptyMaterialCharsFieldValues(type, field),
+      };
+    }),
+  };
+};
+
+export const autopopulatePhysDescriptionField = (formValues) => {
+  const { records } = formValues;
+
+  return {
+    ...formValues,
+    records: records.map(field => {
+      if (!isPhysDescriptionRecord(field)) {
+        return field;
+      }
+
+      const type = field.content?.Category;
+
+      return {
+        ...field,
+        content: fillEmptyPhysDescriptionFieldValues(type, field),
+      };
+    }),
+  };
+};
+
 export const autopopulateFixedField = (formValues, marcType) => {
   const { records } = formValues;
 
@@ -1393,3 +1434,28 @@ export const isReadOnly = (
 
   return rows.has(recordRow.tag) || isLastRecord(recordRow);
 };
+
+const addLeaderFieldAndIdToRecords = (marcRecordResponse) => ({
+  ...marcRecordResponse,
+  fields: undefined,
+  records: [
+    {
+      tag: LEADER_TAG,
+      content: marcRecordResponse.leader,
+      id: LEADER_TAG,
+    },
+    ...marcRecordResponse.fields.map(record => ({
+      ...record,
+      id: uuidv4(),
+    })),
+  ],
+});
+
+export const dehydrateMarcRecordResponse = (marcRecordResponse, marcType) => (
+  flow(
+    addLeaderFieldAndIdToRecords,
+    marcRecord => autopopulateFixedField(marcRecord, marcType),
+    autopopulatePhysDescriptionField,
+    autopopulateMaterialCharsField,
+  )(marcRecordResponse)
+);

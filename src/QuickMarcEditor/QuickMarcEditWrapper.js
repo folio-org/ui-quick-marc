@@ -29,6 +29,8 @@ import {
   are010Or1xxUpdated,
   removeDuplicateSystemGeneratedFields,
   autopopulateFixedField,
+  autopopulatePhysDescriptionField,
+  autopopulateMaterialCharsField,
 } from './utils';
 import { useAuthorityLinkingRules } from '../queries';
 
@@ -118,6 +120,8 @@ const QuickMarcEditWrapper = ({
       prepareForSubmit,
       autopopulateIndicators,
       marcRecord => autopopulateFixedField(marcRecord, marcType),
+      autopopulatePhysDescriptionField,
+      autopopulateMaterialCharsField,
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
       marcRecord => cleanBytesFields(marcRecord, marcType),
       combineSplitFields,

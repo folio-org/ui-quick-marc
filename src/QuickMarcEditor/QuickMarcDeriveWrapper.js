@@ -28,6 +28,8 @@ import {
   recordHasLinks,
   autopopulateFixedField,
   removeEnteredDate,
+  autopopulatePhysDescriptionField,
+  autopopulateMaterialCharsField,
 } from './utils';
 import { useAuthorityLinkingRules } from '../queries';
 
@@ -64,6 +66,8 @@ const QuickMarcDeriveWrapper = ({
       removeEnteredDate,
       autopopulateIndicators,
       marcRecord => autopopulateFixedField(marcRecord, marcType),
+      autopopulatePhysDescriptionField,
+      autopopulateMaterialCharsField,
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
       marcRecord => cleanBytesFields(marcRecord, marcType),
     )(formValues);

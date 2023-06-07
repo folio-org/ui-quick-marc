@@ -6,6 +6,7 @@ const TactilePhysDescriptionFieldConfig = [
   {
     name: 'Class of braille writing',
     type: SUBFIELD_TYPES.STRING,
+    length: 2,
   },
   {
     name: 'Level of contraction',
@@ -14,6 +15,7 @@ const TactilePhysDescriptionFieldConfig = [
   {
     name: 'Braille music format',
     type: SUBFIELD_TYPES.STRING,
+    length: 3,
   },
   {
     name: 'Special physical characteristics',
