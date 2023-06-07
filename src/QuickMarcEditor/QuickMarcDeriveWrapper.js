@@ -27,6 +27,7 @@ import {
   saveLinksToNewRecord,
   recordHasLinks,
   autopopulateFixedField,
+  removeEnteredDate,
   autopopulatePhysDescriptionField,
   autopopulateMaterialCharsField,
 } from './utils';
@@ -62,6 +63,7 @@ const QuickMarcDeriveWrapper = ({
     const formValuesForDerive = flow(
       removeDeletedRecords,
       removeFieldsForDerive,
+      removeEnteredDate,
       autopopulateIndicators,
       marcRecord => autopopulateFixedField(marcRecord, marcType),
       autopopulatePhysDescriptionField,
