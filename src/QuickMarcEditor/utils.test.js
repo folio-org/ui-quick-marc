@@ -79,8 +79,7 @@ describe('QuickMarcEditor utils', () => {
           },
         ],
       };
-      const marcType = 'bib';
-      const dehydratedMarcRecord = utils.dehydrateMarcRecordResponse(marcRecord, marcType);
+      const dehydratedMarcRecord = utils.dehydrateMarcRecordResponse(marcRecord, MARC_TYPES.BIB);
       const field006 = dehydratedMarcRecord.records[2];
       const field007 = dehydratedMarcRecord.records[3];
       const field008 = dehydratedMarcRecord.records[4];

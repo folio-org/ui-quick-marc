@@ -96,6 +96,18 @@
         "visible": true
       },
       {
+        "permissionName": "ui-quick-marc.quick-marc-authorities-editor.create",
+        "displayName": "quickMARC: Create a new MARC authority record",
+        "subPermissions": [
+          "ui-marc-authorities.authority-record.view",
+          "marc-records-editor.item.post",
+          "instance-authority-links.instances.collection.post",
+          "instance-authority-links.authorities.bulk.post",
+          "marc-records-editor.status.item.get"
+        ],
+        "visible": true
+      },
+      {
         "permissionName": "ui-quick-marc.quick-marc-authorities-editor.all",
         "displayName": "quickMARC: View, edit MARC authorities record",
         "subPermissions": [
