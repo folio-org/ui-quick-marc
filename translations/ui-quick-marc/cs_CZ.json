@@ -266,6 +266,6 @@
     "record.error.field.onlyOneSubfield": "<b>{fieldTag}</b> může mít pouze jedno <b>{subField}</b>.",
     "bib-record.create.title": "Vytvořit nový MARC bib záznam",
     "record.error.010.multiple": "Záznam nelze uložit s více než jedním polem 010",
-    "record.error.008.empty": "Record cannot be saved without 008 field",
-    "record.error.008.multiple": "Record cannot be saved with more than one 008 field"
+    "record.error.008.empty": "Záznam nelze uložit bez pole 008",
+    "record.error.008.multiple": "Záznam nelze uložit s více než jedním polem 008"
 }
