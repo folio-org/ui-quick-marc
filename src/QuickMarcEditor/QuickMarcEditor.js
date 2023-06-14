@@ -10,15 +10,23 @@ import {
   useLocation,
 } from 'react-router';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import {
+  FormattedMessage,
+  useIntl,
+} from 'react-intl';
 import find from 'lodash/find';
+import flow from 'lodash/flow';
 import { FormSpy } from 'react-final-form';
 
-import { IfPermission } from '@folio/stripes/core';
+import {
+  IfPermission,
+  useStripes,
+} from '@folio/stripes/core';
 import stripesFinalForm from '@folio/stripes/final-form';
 import {
   Pane,
   Paneset,
+  PaneMenu,
   Row,
   Col,
   ConfirmationModal,
@@ -33,6 +41,7 @@ import { useShowCallout } from '@folio/stripes-acq-components';
 import { QuickMarcRecordInfo } from './QuickMarcRecordInfo';
 import { QuickMarcEditorRows } from './QuickMarcEditorRows';
 import { OptimisticLockingBanner } from './OptimisticLockingBanner';
+import { useLinkSuggestions } from '../queries';
 import { QUICK_MARC_ACTIONS } from './constants';
 import {
   ERROR_TYPES,
@@ -52,6 +61,16 @@ import {
   is010$aUpdated,
   is010LinkedToBibRecord,
   updateRecordAtIndex,
+  hydrateMarcRecord,
+  autopopulateIndicators,
+  autopopulateSubfieldSection,
+  removeDeletedRecords,
+  removeDuplicateSystemGeneratedFields,
+  markLinkedRecords,
+  getAutoLinkingToasts,
+  isRecordForAutoLinking,
+  hydrateForAutoLinking,
+  removeNonAutoLinkingRecords,
 } from './utils';
 import { useAuthorityLinking } from '../hooks';
 
@@ -90,6 +109,8 @@ const QuickMarcEditor = ({
   linksCount,
   validate,
 }) => {
+  const stripes = useStripes();
+  const intl = useIntl();
   const history = useHistory();
   const location = useLocation();
   const showCallout = useShowCallout();
@@ -101,7 +122,30 @@ const QuickMarcEditor = ({
   const formRef = useRef(null);
   const confirmationChecks = useRef({ ...REQUIRED_CONFIRMATIONS });
 
-  const { unlinkAuthority } = useAuthorityLinking();
+  const {
+    unlinkAuthority,
+    autoLinkingEnabled,
+    autoLinkableBibFields,
+    autoLinkAuthority,
+  } = useAuthorityLinking();
+
+  const {
+    isLoading: isLoadingLinkSuggestions,
+    fetchLinkSuggestions,
+  } = useLinkSuggestions();
+
+  const showAutoLinkingButton = (
+    autoLinkingEnabled
+    && marcType === MARC_TYPES.BIB
+    && stripes.hasPerm('ui-quick-marc.quick-marc-authority-records.linkUnlink')
+  );
+
+  const hasAutoLinkableRecord = records.some(record => isRecordForAutoLinking(record, autoLinkableBibFields));
+
+  const isAutoLinkingButtonDisabled = (
+    !hasAutoLinkableRecord
+    || isLoadingLinkSuggestions
+  );
 
   const deletedRecords = useMemo(() => {
     return records
@@ -355,6 +399,35 @@ const QuickMarcEditor = ({
     }
   }, []);
 
+  const handleAutoLinking = async () => {
+    const payload = flow(
+      removeDeletedRecords,
+      removeDuplicateSystemGeneratedFields,
+      autopopulateIndicators,
+      marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
+      marcRecord => removeNonAutoLinkingRecords(marcRecord, autoLinkableBibFields),
+      hydrateMarcRecord,
+      hydrateForAutoLinking,
+    )(getState().values);
+
+    try {
+      const data = await fetchLinkSuggestions(payload);
+      const fields = autoLinkAuthority(records, data.fields);
+
+      mutators.markRecordsLinked({ fields });
+
+      const toasts = getAutoLinkingToasts(data.fields);
+
+      if (toasts.length) {
+        toasts.forEach(toast => {
+          showCallout(toast);
+        });
+      }
+    } catch (e) {
+      showCallout({ messageId: 'ui-quick-marc.records.error.load.linkSuggestions', type: 'error' });
+    }
+  };
+
   const shortcuts = useMemo(() => ([{
     name: 'save',
     shortcut: 'mod+s',
@@ -422,6 +495,19 @@ const QuickMarcEditor = ({
               paneTitle={getPaneTitle()}
               paneSub={<QuickMarcRecordInfo {...recordInfoProps} />}
               footer={paneFooter}
+              lastMenu={(
+                <PaneMenu>
+                  {showAutoLinkingButton && (
+                    <Button
+                      marginBottom0
+                      disabled={isAutoLinkingButtonDisabled}
+                      onClick={handleAutoLinking}
+                    >
+                      {intl.formatMessage({ id: 'ui-quick-marc.autoLinkingButton' })}
+                    </Button>
+                  )}
+                </PaneMenu>
+              )}
             >
               <OptimisticLockingBanner
                 httpError={httpError}
@@ -443,6 +529,7 @@ const QuickMarcEditor = ({
                     marcType={marcType}
                     instance={instance}
                     linksCount={linksCount}
+                    isLoadingLinkSuggestions={isLoadingLinkSuggestions}
                   />
                 </Col>
               </Row>
@@ -546,6 +633,11 @@ export default stripesFinalForm({
     },
     markRecordLinked: ([{ index, field }], state, tools) => {
       const records = markLinkedRecordByIndex(index, field, state);
+
+      tools.changeValue(state, 'records', () => records);
+    },
+    markRecordsLinked: ([{ fields }], state, tools) => {
+      const records = markLinkedRecords(fields);
 
       tools.changeValue(state, 'records', () => records);
     },

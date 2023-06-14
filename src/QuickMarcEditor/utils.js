@@ -607,10 +607,17 @@ export const checkDuplicate010Field = (marcRecords) => {
   return undefined;
 };
 
-export const checkCanBeLinked = (stripes, marcType, linkableBibFields, tag) => (
+export const isRecordForManualLinking = (stripes, marcType, linkableBibFields, tag) => (
   stripes.hasPerm('ui-quick-marc.quick-marc-authority-records.linkUnlink') &&
   marcType === MARC_TYPES.BIB &&
   linkableBibFields.includes(tag)
+);
+
+export const isRecordForAutoLinking = (field, autoLinkableBibFields) => (
+  !field._isDeleted
+  && !field._isLinked
+  && autoLinkableBibFields.includes(field.tag)
+  && getContentSubfieldValue(field.content).$0?.[0]
 );
 
 export const recordHasLinks = (fields) => fields.some(field => field.linkDetails?.linkingRuleId);
@@ -664,6 +671,51 @@ export const getControlledSubfields = (linkingRule) => {
 
     return subfieldTransformation.target;
   });
+};
+
+export const getAutoLinkingToasts = (fields) => {
+  const toasts = [];
+  const newLinkedFieldTags = new Set();
+  const notLinkedFieldTags = new Set();
+
+  fields.forEach(field => {
+    if (!field.linkDetails) {
+      notLinkedFieldTags.add(field.tag);
+    } else if (field.linkDetails.status === 'NEW') {
+      newLinkedFieldTags.add(field.tag);
+    } else if (field.linkDetails.status === 'ERROR') {
+      notLinkedFieldTags.add(field.tag);
+    }
+  });
+
+  const getValues = (fieldTagsSet) => {
+    const fieldTags = [...fieldTagsSet].sort((a, b) => a - b);
+
+    return {
+      count: fieldTags.length,
+      fieldTags: fieldTags.length === 1
+        ? fieldTags[0]
+        : fieldTags.slice(0, -1).join(', '),
+      lastFieldTag: fieldTags.at(-1),
+    };
+  };
+
+  if (newLinkedFieldTags.size) {
+    toasts.push({
+      messageId: 'ui-quick-marc.records.autoLink.linkedFields',
+      values: getValues(newLinkedFieldTags),
+    });
+  }
+
+  if (notLinkedFieldTags.size) {
+    toasts.push({
+      type: 'error',
+      messageId: 'ui-quick-marc.records.autoLink.notLinkedFields',
+      values: getValues(notLinkedFieldTags),
+    });
+  }
+
+  return toasts;
 };
 
 const validateSubfieldsThatCanBeControlled = (marcRecords, uncontrolledSubfields, linkingRules) => {
@@ -977,6 +1029,19 @@ export const markLinkedRecordByIndex = (index, field, state) => {
   };
 
   return records;
+};
+
+export const markLinkedRecords = (fields) => {
+  return fields.map(field => {
+    if (field.linkDetails && !field._isLinked) {
+      return {
+        ...field,
+        _isLinked: true,
+      };
+    }
+
+    return field;
+  });
 };
 
 export const markUnlinkedRecordByIndex = (index, state) => {
@@ -1459,3 +1524,28 @@ export const dehydrateMarcRecordResponse = (marcRecordResponse, marcType) => (
     autopopulateMaterialCharsField,
   )(marcRecordResponse)
 );
+
+export const findIndexFrom = (array, startIndex, callback) => {
+  for (let i = startIndex; i < array.length; i++) {
+    if (callback(array[i])) {
+      return i;
+    }
+  }
+
+  return -1;
+};
+
+export const removeNonAutoLinkingRecords = (marcRecord, autoLinkableBibFields) => ({
+  ...marcRecord,
+  records: [
+    marcRecord.records[0],
+    ...marcRecord.records.filter(record => isRecordForAutoLinking(record, autoLinkableBibFields)),
+  ],
+});
+
+export const hydrateForAutoLinking = (marcRecord) => ({
+  leader: marcRecord.leader,
+  fields: marcRecord.fields,
+  marcFormat: marcRecord.marcFormat,
+  _actionType: 'view',
+});

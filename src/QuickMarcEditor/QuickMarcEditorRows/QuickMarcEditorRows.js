@@ -19,6 +19,7 @@ import {
   Tooltip,
   IconButton,
   InfoPopover,
+  Loading,
 } from '@folio/stripes/components';
 
 import { ContentField } from './ContentField';
@@ -36,7 +37,8 @@ import {
   hasMoveException,
 } from './utils';
 import {
-  checkCanBeLinked,
+  isRecordForManualLinking,
+  isRecordForAutoLinking,
   isFixedFieldRow,
   isMaterialCharsRecord,
   isPhysDescriptionRecord,
@@ -75,6 +77,7 @@ const QuickMarcEditorRows = ({
   marcType,
   instance,
   linksCount,
+  isLoadingLinkSuggestions,
 }) => {
   const stripes = useStripes();
   const intl = useIntl();
@@ -89,6 +92,7 @@ const QuickMarcEditorRows = ({
     linkAuthority,
     unlinkAuthority,
     linkableBibFields,
+    autoLinkableBibFields,
   } = useAuthorityLinking();
 
   const isNewRow = useCallback((row) => {
@@ -271,7 +275,8 @@ const QuickMarcEditorRows = ({
             const isContentField = isContentRow(recordRow, marcType);
             const isMARCFieldProtections = marcType !== MARC_TYPES.HOLDINGS && action === QUICK_MARC_ACTIONS.EDIT;
             const isProtectedField = recordRow.isProtected;
-            const isLinkVisible = checkCanBeLinked(stripes, marcType, linkableBibFields, recordRow.tag);
+            const canBeLinkedManually = isRecordForManualLinking(stripes, marcType, linkableBibFields, recordRow.tag);
+            const canBeLinkedAuto = isRecordForAutoLinking(recordRow, autoLinkableBibFields);
 
             const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') && recordRow._isLinked;
 
@@ -462,25 +467,29 @@ const QuickMarcEditorRows = ({
 
                   {
                     isContentField && (
-                      recordRow._isLinked
-                        ? (
-                          <SplitField
-                            name={name}
-                            maxWidth={rowContentWidth.current}
-                          />
-                        )
+                      canBeLinkedAuto && isLoadingLinkSuggestions
+                        ? <Loading />
                         : (
-                          <Field
-                            dirty={false}
-                            aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
-                            name={`${name}.content`}
-                            parse={v => v}
-                            marginBottom0
-                            disabled={isDisabled}
-                            id={`content-field-${idx}`}
-                            component={ContentField}
-                            data-testid={`content-field-${idx}`}
-                          />
+                          recordRow._isLinked
+                            ? (
+                              <SplitField
+                                name={name}
+                                maxWidth={rowContentWidth.current}
+                              />
+                            )
+                            : (
+                              <Field
+                                dirty={false}
+                                aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
+                                name={`${name}.content`}
+                                parse={v => v}
+                                marginBottom0
+                                disabled={isDisabled}
+                                id={`content-field-${idx}`}
+                                component={ContentField}
+                                data-testid={`content-field-${idx}`}
+                              />
+                            )
                         )
                     )
                   }
@@ -495,7 +504,7 @@ const QuickMarcEditorRows = ({
                       />
                     </span>
                   )}
-                  {isLinkVisible && (
+                  {canBeLinkedManually && (
                     <LinkButton
                       handleLinkAuthority={(authority, marcSource) => handleLinkAuthority(authority, marcSource, idx)}
                       handleUnlinkAuthority={() => handleUnlinkAuthority(idx)}
@@ -540,6 +549,7 @@ const QuickMarcEditorRows = ({
 QuickMarcEditorRows.propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
   instance: PropTypes.object,
+  isLoadingLinkSuggestions: PropTypes.bool.isRequired,
   linksCount: PropTypes.number,
   type: PropTypes.string.isRequired,
   subtype: PropTypes.string.isRequired,

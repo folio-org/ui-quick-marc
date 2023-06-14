@@ -43,6 +43,7 @@ jest.mock('../../hooks', () => ({
     linkAuthority: jest.fn(),
     linkableBibFields: ['100', '240'],
     sourceFiles: [{ id: 'af045f2f-e851-4613-984c-4bc13430454a' }],
+    autoLinkableBibFields: ['100'],
   }),
 }));
 
@@ -168,6 +169,7 @@ const getComponent = (props) => (
             updateRecord: mockUpdateRecord,
           }}
           subtype="m"
+          isLoadingLinkSuggestions={false}
           {...props}
         />
       )}
@@ -370,6 +372,7 @@ describe('Given QuickMarcEditorRows', () => {
       useAuthorityLinking.mockReturnValue({
         linkAuthority: jest.fn().mockImplementation(() => { throw new Error('validation error'); }),
         linkableBibFields: ['100', '240'],
+        autoLinkableBibFields: [],
       });
 
       const { getByText } = renderQuickMarcEditorRows();

@@ -13,6 +13,8 @@ import {
   getContentSubfieldValue,
   groupSubfields,
   getControlledSubfields,
+  isRecordForAutoLinking,
+  findIndexFrom,
 } from '../../QuickMarcEditor/utils';
 
 const joinSubfields = (subfields) => Object.keys(subfields).reduce((content, key) => {
@@ -28,6 +30,10 @@ const useAuthorityLinking = () => {
   const { linkingRules } = useAuthorityLinkingRules();
 
   const linkableBibFields = useMemo(() => linkingRules.map(rule => rule.bibField), [linkingRules]);
+  const autoLinkableBibFields = useMemo(() => {
+    return linkingRules.filter(rule => rule.autoLinkingEnabled).map(rule => rule.bibField);
+  }, [linkingRules]);
+  const autoLinkingEnabled = linkingRules.some(rule => rule.autoLinkingEnabled);
 
   const findLinkingRule = useCallback((bibTag, authorityTag) => {
     return linkingRules.find(rule => rule.bibField === bibTag && rule.authorityField === authorityTag);
@@ -109,6 +115,39 @@ const useAuthorityLinking = () => {
     bibField.content = joinSubfields(bibSubfields);
   }, [copySubfieldsFromAuthority, sourceFiles]);
 
+  const autoLinkAuthority = useCallback((fields, suggestedFields) => {
+    let startIndex = 0;
+
+    const isSuggestionThatCanBeLinked = (suggestedField) => (
+      suggestedField.linkDetails
+      && suggestedField.linkDetails?.status !== 'ERROR'
+    );
+
+    suggestedFields
+      .filter(isSuggestionThatCanBeLinked)
+      .forEach(suggestedField => {
+        const fieldIndex = findIndexFrom(fields, startIndex, (field) => (
+          field.tag === suggestedField.tag
+          && isRecordForAutoLinking(field, autoLinkableBibFields)
+        ));
+
+        if (fieldIndex !== -1) {
+          startIndex = fieldIndex + 1;
+
+          const linkingRule = linkingRules.find(rule => rule.id === suggestedField.linkDetails?.linkingRuleId);
+          const controlledSubfields = getControlledSubfields(linkingRule);
+
+          fields[fieldIndex] = {
+            ...fields[fieldIndex],
+            ...suggestedField,
+            subfieldGroups: groupSubfields(suggestedField, controlledSubfields),
+          };
+        }
+      });
+
+    return fields;
+  }, [linkingRules, autoLinkableBibFields]);
+
   const linkAuthority = useCallback((authority, authoritySource, field) => {
     const linkedAuthorityField = getLinkableAuthorityField(authoritySource, field);
 
@@ -120,7 +159,7 @@ const useAuthorityLinking = () => {
 
     const linkingRule = findLinkingRule(field.tag, linkedAuthorityField.tag);
 
-    updateBibFieldWithLinkingData(field, linkedAuthorityField, authority, linkingRule);
+    updateBibFieldWithLinkingData(field, linkedAuthorityField, authority);
 
     const controlledSubfields = getControlledSubfields(linkingRule);
 
@@ -160,6 +199,9 @@ const useAuthorityLinking = () => {
     unlinkAuthority,
     linkableBibFields,
     sourceFiles,
+    autoLinkingEnabled,
+    autoLinkableBibFields,
+    autoLinkAuthority,
   };
 };
 

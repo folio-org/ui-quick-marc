@@ -286,5 +286,10 @@
   "update-linked-bib-fields.modal.label": "Are you sure?",
   "update-linked-bib-fields.modal.message-save": "<b>{count} {count, plural, one {bibliographic record} other {bibliographic records}}</b> {count, plural, one {is} other {are}} linked to this authority record and will be updated by clicking the <b>Save</b> button.",
   "update-linked-bib-fields.modal.save": "Save",
-  "update-linked-bib-fields.modal.keep-editing": "Keep editing"
+  "update-linked-bib-fields.modal.keep-editing": "Keep editing",
+
+  "records.autoLink.linkedFields": "Field <b>{fieldTags}</b>{count, plural, one {} =2 { and <b>{lastFieldTag}</b>} other {, and <b>{lastFieldTag}</b>}} has been <b>linked</b> to MARC authority record(s).",
+  "records.autoLink.notLinkedFields": "Field <b>{fieldTags}</b>{count, plural, one {} =2 { and <b>{lastFieldTag}</b>} other {, and <b>{lastFieldTag}</b>}} must be set manually by selecting the link icon.",
+  "records.error.load.linkSuggestions": "Something went wrong in the automatic linking.",
+  "autoLinkingButton": "Link headings"
 }
