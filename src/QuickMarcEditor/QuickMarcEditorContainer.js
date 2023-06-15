@@ -30,6 +30,7 @@ import {
   addInternalFieldProperties,
   splitFields,
   getCreateBibMarcRecordResponse,
+  getCreateAuthorityMarcRecordResponse,
 } from './utils';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { useAuthorityLinksCount } from '../queries';
@@ -45,6 +46,12 @@ const propTypes = {
   match: ReactRouterPropTypes.match.isRequired,
   resources: PropTypes.object.isRequired,
   wrapper: PropTypes.func.isRequired,
+};
+
+const createRecordDefaults = {
+  [MARC_TYPES.BIB]: getCreateBibMarcRecordResponse,
+  [MARC_TYPES.HOLDINGS]: getCreateHoldingsMarcRecordResponse,
+  [MARC_TYPES.AUTHORITY]: getCreateAuthorityMarcRecordResponse,
 };
 
 const QuickMarcEditorContainer = ({
@@ -94,11 +101,11 @@ const QuickMarcEditorContainer = ({
   const loadData = useCallback(async () => {
     setIsLoading(true);
 
-    const path = action === QUICK_MARC_ACTIONS.CREATE
+    const path = action === QUICK_MARC_ACTIONS.CREATE && marcType === MARC_TYPES.HOLDINGS
       ? EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]
       : EXTERNAL_INSTANCE_APIS[marcType];
 
-    const instancePromise = action === QUICK_MARC_ACTIONS.CREATE && marcType === MARC_TYPES.BIB
+    const instancePromise = action === QUICK_MARC_ACTIONS.CREATE && marcType !== MARC_TYPES.HOLDINGS
       ? Promise.resolve({})
       : mutator.quickMarcEditInstance.GET({ path: `${path}/${externalId}` });
 
@@ -129,10 +136,8 @@ const QuickMarcEditorContainer = ({
 
         let dehydratedMarcRecord;
 
-        if (action === QUICK_MARC_ACTIONS.CREATE && marcType === MARC_TYPES.BIB) {
-          dehydratedMarcRecord = getCreateBibMarcRecordResponse(instanceResponse);
-        } else if (action === QUICK_MARC_ACTIONS.CREATE) {
-          dehydratedMarcRecord = getCreateHoldingsMarcRecordResponse(instanceResponse);
+        if (action === QUICK_MARC_ACTIONS.CREATE) {
+          dehydratedMarcRecord = createRecordDefaults[marcType](instanceResponse);
         } else {
           dehydratedMarcRecord = dehydrateMarcRecordResponse(marcRecordResponse, marcType);
         }
