@@ -19,7 +19,6 @@ import {
   Tooltip,
   IconButton,
   InfoPopover,
-  Loading,
 } from '@folio/stripes/components';
 
 import { ContentField } from './ContentField';
@@ -467,29 +466,25 @@ const QuickMarcEditorRows = ({
 
                   {
                     isContentField && (
-                      canBeLinkedAuto && isLoadingLinkSuggestions
-                        ? <Loading />
+                      recordRow._isLinked
+                        ? (
+                          <SplitField
+                            name={name}
+                            maxWidth={rowContentWidth.current}
+                          />
+                        )
                         : (
-                          recordRow._isLinked
-                            ? (
-                              <SplitField
-                                name={name}
-                                maxWidth={rowContentWidth.current}
-                              />
-                            )
-                            : (
-                              <Field
-                                dirty={false}
-                                aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
-                                name={`${name}.content`}
-                                parse={v => v}
-                                marginBottom0
-                                disabled={isDisabled}
-                                id={`content-field-${idx}`}
-                                component={ContentField}
-                                data-testid={`content-field-${idx}`}
-                              />
-                            )
+                          <Field
+                            dirty={false}
+                            aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
+                            name={`${name}.content`}
+                            parse={v => v}
+                            marginBottom0
+                            disabled={isDisabled}
+                            id={`content-field-${idx}`}
+                            component={ContentField}
+                            data-testid={`content-field-${idx}`}
+                          />
                         )
                     )
                   }
@@ -509,6 +504,7 @@ const QuickMarcEditorRows = ({
                       handleLinkAuthority={(authority, marcSource) => handleLinkAuthority(authority, marcSource, idx)}
                       handleUnlinkAuthority={() => handleUnlinkAuthority(idx)}
                       isLinked={recordRow._isLinked}
+                      isLoading={canBeLinkedAuto && isLoadingLinkSuggestions}
                       tag={recordRow.tag}
                       content={recordRow.content}
                       fieldId={recordRow.id}

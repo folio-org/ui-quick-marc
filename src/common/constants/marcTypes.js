@@ -1,6 +1,5 @@
 export const MARC_TYPES = {
-  BIB: 'bib',
-  BIBLIOGRAPHIC: 'bibliographic',
+  BIB: 'bibliographic',
   HOLDINGS: 'holdings',
   AUTHORITY: 'authority',
 };

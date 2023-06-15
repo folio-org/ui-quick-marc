@@ -79,8 +79,7 @@ describe('QuickMarcEditor utils', () => {
           },
         ],
       };
-      const marcType = 'bib';
-      const dehydratedMarcRecord = utils.dehydrateMarcRecordResponse(marcRecord, marcType);
+      const dehydratedMarcRecord = utils.dehydrateMarcRecordResponse(marcRecord, MARC_TYPES.BIB);
       const field006 = dehydratedMarcRecord.records[2];
       const field007 = dehydratedMarcRecord.records[3];
       const field008 = dehydratedMarcRecord.records[4];
@@ -369,11 +368,11 @@ describe('QuickMarcEditor utils', () => {
     it('should return edit error message when forbidden bytes are edited', () => {
       expect(
         utils.validateLeader('04706cam a2200865Ii 4500', '04706cam a2200865Ii 4501').props.id,
-      ).toBe('ui-quick-marc.record.error.leader.forbiddenBytes.bib');
+      ).toBe('ui-quick-marc.record.error.leader.forbiddenBytes.bibliographic');
 
       expect(
         utils.validateLeader('14706cam a2200865Ii 4500', '04706cam a2200865Ii 4500').props.id,
-      ).toBe('ui-quick-marc.record.error.leader.forbiddenBytes.bib');
+      ).toBe('ui-quick-marc.record.error.leader.forbiddenBytes.bibliographic');
     });
 
     describe('when marcType is bib', () => {
@@ -2264,7 +2263,7 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.cleanBytesFields(record, 'bib')).toEqual(expectedRecord);
+      expect(utils.cleanBytesFields(record, MARC_TYPES.BIB)).toEqual(expectedRecord);
     });
   });
 

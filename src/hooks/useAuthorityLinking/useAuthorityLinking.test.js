@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import {
   QueryClient,
   QueryClientProvider,
@@ -213,7 +214,7 @@ describe('Given useAuthorityLinking', () => {
       const fields = [
         {
           'tag': '100',
-          'content': '$a Coates, Ta-Nehisi, $e author. $0 id.loc.gov/authorities/names/n2008001084',
+          'content': '$a Coates, Ta-Nehisi, $e author. $0 n2008001084',
           'indicators': ['1', '\\'],
           'isProtected': false,
           'id': '301323a7-258c-46d0-a88a-c3ec604bf37a',
@@ -234,7 +235,6 @@ describe('Given useAuthorityLinking', () => {
         {
           'tag': '100',
           'content': '$0 id.loc.gov/authorities/names/n2008001084 $a Coates, Ta-Nehisi $e author. $9 5d80ecfa-7370-460e-9e27-3883a7656fe1',
-          'indicators': ['1', '\\'],
           'linkDetails': {
             'authorityId': '5d80ecfa-7370-460e-9e27-3883a7656fe1',
             'authorityNaturalId': 'n2008001084',
@@ -244,7 +244,6 @@ describe('Given useAuthorityLinking', () => {
         }, {
           'tag': '600',
           'content': '$a Brown, Benjamin, $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $d 1966- $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
-          'indicators': ['0', '0'],
           'linkDetails': {
             'authorityId': '46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
             'authorityNaturalId': 'nr2005025774',
@@ -258,6 +257,7 @@ describe('Given useAuthorityLinking', () => {
         {
           'tag': '100',
           'content': '$0 id.loc.gov/authorities/names/n2008001084 $a Coates, Ta-Nehisi $e author. $9 5d80ecfa-7370-460e-9e27-3883a7656fe1',
+          'prevContent': '$a Coates, Ta-Nehisi, $e author. $0 n2008001084',
           'indicators': ['1', '\\'],
           'isProtected': false,
           'id': '301323a7-258c-46d0-a88a-c3ec604bf37a',
@@ -279,6 +279,7 @@ describe('Given useAuthorityLinking', () => {
         }, {
           'tag': '600',
           'content': '$a Brown, Benjamin, $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $d 1966- $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+          'prevContent': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774',
           'indicators': ['0', '0'],
           'isProtected': false,
           'id': 'bc44d91c-6915-4609-9fd1-bbe470f4740b',
@@ -317,7 +318,7 @@ describe('Given useAuthorityLinking', () => {
           '_isLinked': false,
         }, {
           'tag': '600',
-          'content': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774',
+          'content': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc. $0 nr2005025774',
           'indicators': ['0', '0'],
           'isProtected': false,
           'id': 'bc44d91c-6915-4609-9fd1-bbe470f4740b',
@@ -329,7 +330,6 @@ describe('Given useAuthorityLinking', () => {
       const suggestedFields = [{
         'tag': '600',
         'content': '$a Brown, Benjamin, $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $d 1966- $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
-        'indicators': ['0', '0'],
         'linkDetails': {
           'authorityId': '46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
           'authorityNaturalId': 'nr2005025774',
@@ -350,6 +350,7 @@ describe('Given useAuthorityLinking', () => {
         }, {
           'tag': '600',
           'content': '$a Brown, Benjamin, $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $d 1966- $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+          'prevContent': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc. $0 nr2005025774',
           'indicators': ['0', '0'],
           'isProtected': false,
           'id': 'bc44d91c-6915-4609-9fd1-bbe470f4740b',
@@ -388,7 +389,7 @@ describe('Given useAuthorityLinking', () => {
           '_isLinked': false,
         }, {
           'tag': '600',
-          'content': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774',
+          'content': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc. $0 nr2005025774',
           'indicators': ['0', '0'],
           'isProtected': false,
           'id': 'bc44d91c-6915-4609-9fd1-bbe470f4740b',
@@ -401,7 +402,6 @@ describe('Given useAuthorityLinking', () => {
         {
           'tag': '600',
           'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664 $9 1803fee8-dfd8-42b8-a292-681af0cadb77',
-          'indicators': ['0', '7'],
           'linkDetails': {
             'authorityNaturalId': 'n93100664',
             'authorityId': '1803fee8-dfd8-42b8-a292-681af0cadb77',
@@ -411,7 +411,6 @@ describe('Given useAuthorityLinking', () => {
         }, {
           'tag': '600',
           'content': '$a Brown, Benjamin, $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $d 1966- $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
-          'indicators': ['0', '0'],
           'linkDetails': {
             'authorityId': '46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
             'authorityNaturalId': 'nr2005025774',
@@ -425,6 +424,7 @@ describe('Given useAuthorityLinking', () => {
         {
           'tag': '600',
           'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664 $9 1803fee8-dfd8-42b8-a292-681af0cadb77',
+          'prevContent': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664',
           'indicators': ['0', '7'],
           'isProtected': false,
           'id': '01f3e2b6-ccea-4fa8-9d20-0ef89bb5b39f',
@@ -446,6 +446,7 @@ describe('Given useAuthorityLinking', () => {
         }, {
           'tag': '600',
           'content': '$a Brown, Benjamin, $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $d 1966- $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+          'prevContent': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc. $0 nr2005025774',
           'indicators': ['0', '0'],
           'isProtected': false,
           'id': 'bc44d91c-6915-4609-9fd1-bbe470f4740b',
@@ -469,7 +470,162 @@ describe('Given useAuthorityLinking', () => {
     });
   });
 
-  describe('when calling autoLinkAuthority and there is a field with the ERROR status', () => {
+  describe('when calling autoLinkAuthority and returning an error for a field with the same tag', () => {
+    it('should link in the correct order', () => {
+      const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+
+      const fields = [
+        {
+          'tag': '600',
+          'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664',
+          'indicators': ['0', '7'],
+          'isProtected': false,
+          'id': '01f3e2b6-ccea-4fa8-9d20-0ef89bb5b39f',
+          '_isDeleted': false,
+          '_isLinked': false,
+        }, {
+          'tag': '600',
+          'content': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc. $0 nr2005025774',
+          'indicators': ['0', '0'],
+          'isProtected': false,
+          'id': 'bc44d91c-6915-4609-9fd1-bbe470f4740b',
+          '_isDeleted': false,
+          '_isLinked': false,
+        },
+      ];
+
+      const suggestedFields = [
+        {
+          'tag': '600',
+          'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664',
+          'linkDetails': {
+            'status': 'ERROR',
+          },
+        }, {
+          'tag': '600',
+          'content': '$a Brown, Benjamin, $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $d 1966- $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+          'linkDetails': {
+            'authorityId': '46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+            'authorityNaturalId': 'nr2005025774',
+            'linkingRuleId': 8,
+            'status': 'NEW',
+          },
+        },
+      ];
+
+      expect(result.current.autoLinkAuthority(fields, suggestedFields)).toEqual([
+        {
+          'tag': '600',
+          'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664',
+          'indicators': ['0', '7'],
+          'isProtected': false,
+          'id': '01f3e2b6-ccea-4fa8-9d20-0ef89bb5b39f',
+          '_isDeleted': false,
+          '_isLinked': false,
+        }, {
+          'tag': '600',
+          'content': '$a Brown, Benjamin, $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $d 1966- $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+          'prevContent': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc. $0 nr2005025774',
+          'indicators': ['0', '0'],
+          'isProtected': false,
+          'id': 'bc44d91c-6915-4609-9fd1-bbe470f4740b',
+          '_isDeleted': false,
+          '_isLinked': false,
+          'linkDetails': {
+            'authorityNaturalId': 'nr2005025774',
+            'authorityId': '46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+            'linkingRuleId': 8,
+            'status': 'NEW',
+          },
+          'subfieldGroups': {
+            'controlled': '$a Brown, Benjamin,  $d 1966-',
+            'uncontrolledAlpha': '$v Comic books, strips, etc.',
+            'zeroSubfield': '$0 id.loc.gov/authorities/names/nr2005025774',
+            'nineSubfield': '$9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+            'uncontrolledNumber': '',
+          },
+        },
+      ]);
+    });
+  });
+
+  describe('when calling autoLinkAuthority and there is no suggestion for a field with the same tag', () => {
+    it('should link in the correct order', () => {
+      const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+
+      const fields = [
+        {
+          'tag': '600',
+          'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664',
+          'indicators': ['0', '7'],
+          'isProtected': false,
+          'id': '01f3e2b6-ccea-4fa8-9d20-0ef89bb5b39f',
+          '_isDeleted': false,
+          '_isLinked': false,
+        }, {
+          'tag': '600',
+          'content': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc. $0 nr2005025774',
+          'indicators': ['0', '0'],
+          'isProtected': false,
+          'id': 'bc44d91c-6915-4609-9fd1-bbe470f4740b',
+          '_isDeleted': false,
+          '_isLinked': false,
+        },
+      ];
+
+      const suggestedFields = [
+        {
+          'tag': '600',
+          'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664',
+        }, {
+          'tag': '600',
+          'content': '$a Brown, Benjamin, $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $d 1966- $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+          'linkDetails': {
+            'authorityId': '46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+            'authorityNaturalId': 'nr2005025774',
+            'linkingRuleId': 8,
+            'status': 'NEW',
+          },
+        },
+      ];
+
+      expect(result.current.autoLinkAuthority(fields, suggestedFields)).toEqual([
+        {
+          'tag': '600',
+          'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664',
+          'indicators': ['0', '7'],
+          'isProtected': false,
+          'id': '01f3e2b6-ccea-4fa8-9d20-0ef89bb5b39f',
+          '_isDeleted': false,
+          '_isLinked': false,
+        }, {
+          'tag': '600',
+          'content': '$a Brown, Benjamin, $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $d 1966- $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+          'prevContent': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc. $0 nr2005025774',
+          'indicators': ['0', '0'],
+          'isProtected': false,
+          'id': 'bc44d91c-6915-4609-9fd1-bbe470f4740b',
+          '_isDeleted': false,
+          '_isLinked': false,
+          'linkDetails': {
+            'authorityNaturalId': 'nr2005025774',
+            'authorityId': '46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+            'linkingRuleId': 8,
+            'status': 'NEW',
+          },
+          'subfieldGroups': {
+            'controlled': '$a Brown, Benjamin,  $d 1966-',
+            'uncontrolledAlpha': '$v Comic books, strips, etc.',
+            'zeroSubfield': '$0 id.loc.gov/authorities/names/nr2005025774',
+            'nineSubfield': '$9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+            'uncontrolledNumber': '',
+          },
+        },
+      ]);
+    });
+  });
+
+  describe('when calling autoLinkAuthority and there is a field with ERROR status and there is no $9', () => {
     it('should be left as is', () => {
       const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
 
@@ -486,7 +642,6 @@ describe('Given useAuthorityLinking', () => {
       const suggestedFields = [{
         'tag': '600',
         'content': '$a Medycyna. $v Comic books, strips, etc. $0 vtls000869135',
-        'indicators': ['\\', '0'],
         'linkDetails': {
           'status': 'ERROR',
           'errorCause': '101',
@@ -502,6 +657,146 @@ describe('Given useAuthorityLinking', () => {
         '_isDeleted': false,
         '_isLinked': false,
       }]);
+    });
+  });
+
+  describe('when calling autoLinkAuthority and there is a field with ERROR status and there is $9', () => {
+    it('should get rid of the $9', () => {
+      const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+
+      const fields = [{
+        'tag': '600',
+        'content': '$a Medycyna. $v Comic books, strips, etc. $0 vtls000869135 $9 UUID',
+        'indicators': ['\\', '0'],
+        'isProtected': false,
+        'id': '103073ce-b2c8-4f92-ba2f-a65f733b3f02',
+        '_isDeleted': false,
+        '_isLinked': false,
+      }];
+
+      const suggestedFields = [{
+        'tag': '600',
+        'content': '$a Medycyna. $v Comic books, strips, etc. $0 vtls000869135 $9 UUID',
+        'linkDetails': {
+          'status': 'ERROR',
+          'errorCause': '101',
+        },
+      }];
+
+      expect(result.current.autoLinkAuthority(fields, suggestedFields)).toEqual([{
+        'tag': '600',
+        'content': '$a Medycyna. $v Comic books, strips, etc. $0 vtls000869135',
+        'indicators': ['\\', '0'],
+        'isProtected': false,
+        'id': '103073ce-b2c8-4f92-ba2f-a65f733b3f02',
+        '_isDeleted': false,
+        '_isLinked': false,
+      }]);
+    });
+  });
+
+  describe('when there is already a linked field', () => {
+    describe('and the user enters $9 into the split uncontrolledNumber or uncontrolledAlpha field and calls autoLinkAuthority', () => {
+      it('should get rid of the $9', () => {
+        const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+
+        const fields = [
+          {
+            'tag': '100',
+            'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 0c63add7-b3f3-4eae-874d-c659acb95174',
+            'indicators': ['1', '\\'],
+            'isProtected': false,
+            'id': 'cb867f32-c4ba-4714-91cb-6f828765b17a',
+            '_isDeleted': false,
+            '_isLinked': true,
+            'linkDetails': {
+              'authorityId': '0c63add7-b3f3-4eae-874d-c659acb95174',
+              'authorityNaturalId': 'n2008001084',
+              'linkingRuleId': 1,
+              'status': 'NEW',
+            },
+            'subfieldGroups': {
+              'controlled': '$a Coates, Ta-Nehisi',
+              'uncontrolledAlpha': '$e author. $9 test',
+              'zeroSubfield': '$0 id.loc.gov/authorities/names/n2008001084',
+              'nineSubfield': '$9 0c63add7-b3f3-4eae-874d-c659acb95174',
+              'uncontrolledNumber': '$9 test $2 test',
+            },
+            'prevContent': '$a Coates, Ta-Nehisi, $e author. $0 n2008001084',
+          },
+          {
+            'tag': '600',
+            'content': '$a Medycyna. $v Comic books, strips, etc. $0 vtls000869135',
+            'indicators': ['\\', '0'],
+            'isProtected': false,
+            'id': '103073ce-b2c8-4f92-ba2f-a65f733b3f02',
+            '_isDeleted': false,
+            '_isLinked': false,
+          },
+        ];
+
+        const suggestedFields = [
+          {
+            'tag': '600',
+            'content': '$a Brown, Benjamin, $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $d 1966- $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+            'linkDetails': {
+              'authorityId': '46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+              'authorityNaturalId': 'nr2005025774',
+              'linkingRuleId': 8,
+              'status': 'NEW',
+            },
+          },
+        ];
+
+        expect(result.current.autoLinkAuthority(fields, suggestedFields)).toEqual([
+          {
+            'tag': '100',
+            'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 0c63add7-b3f3-4eae-874d-c659acb95174',
+            'indicators': ['1', '\\'],
+            'isProtected': false,
+            'id': 'cb867f32-c4ba-4714-91cb-6f828765b17a',
+            '_isDeleted': false,
+            '_isLinked': true,
+            'linkDetails': {
+              'authorityId': '0c63add7-b3f3-4eae-874d-c659acb95174',
+              'authorityNaturalId': 'n2008001084',
+              'linkingRuleId': 1,
+              'status': 'NEW',
+            },
+            'subfieldGroups': {
+              'controlled': '$a Coates, Ta-Nehisi',
+              'uncontrolledAlpha': '$e author.',
+              'zeroSubfield': '$0 id.loc.gov/authorities/names/n2008001084',
+              'nineSubfield': '$9 0c63add7-b3f3-4eae-874d-c659acb95174',
+              'uncontrolledNumber': '$2 test',
+            },
+            'prevContent': '$a Coates, Ta-Nehisi, $e author. $0 n2008001084',
+          },
+          {
+            'tag': '600',
+            'content': '$a Brown, Benjamin, $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $d 1966- $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+            'prevContent': '$a Medycyna. $v Comic books, strips, etc. $0 vtls000869135',
+            'linkDetails': {
+              'authorityId': '46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+              'authorityNaturalId': 'nr2005025774',
+              'linkingRuleId': 8,
+              'status': 'NEW',
+            },
+            'subfieldGroups': {
+              'controlled': '$a Brown, Benjamin,  $d 1966-',
+              'nineSubfield': '$9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+              'uncontrolledAlpha': '$v Comic books, strips, etc.',
+              'uncontrolledNumber': '',
+              'zeroSubfield': '$0 id.loc.gov/authorities/names/nr2005025774',
+            },
+            'indicators': ['\\', '0'],
+            'isProtected': false,
+            'id': '103073ce-b2c8-4f92-ba2f-a65f733b3f02',
+            '_isDeleted': false,
+            '_isLinked': false,
+          },
+        ]);
+      });
     });
   });
 
@@ -522,7 +817,6 @@ describe('Given useAuthorityLinking', () => {
       const suggestedFields = [{
         'tag': '600',
         'content': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc. $0 nr2005025774',
-        'indicators': ['0', '0'],
       }];
 
       expect(result.current.autoLinkAuthority(fields, suggestedFields)).toEqual([{

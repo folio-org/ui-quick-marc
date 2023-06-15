@@ -28,6 +28,8 @@ import {
   BIB_FIXED_FIELD_DEFAULT_TYPE,
   BIB_FIXED_FIELD_DEFAULT_BLVL,
   ENTERED_KEY,
+  CREATE_AUTHORITY_RECORD_DEFAULT_LEADER_VALUE,
+  CREATE_AUTHORITY_RECORD_DEFAULT_FIELD_TAGS,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import { SUBFIELD_TYPES } from './QuickMarcEditorRows/BytesField';
@@ -173,34 +175,7 @@ export const saveLinksToNewRecord = async (mutator, externalId, marcRecord) => {
   });
 };
 
-const getCreateMarcRecordDefaultFields = (instanceRecord) => {
-  return CREATE_HOLDINGS_RECORD_DEFAULT_FIELD_TAGS.map(tag => {
-    const field = {
-      tag,
-      id: uuidv4(),
-    };
-
-    if (tag === '004') {
-      field.content = instanceRecord.hrid;
-    }
-
-    if (tag === '008') {
-      field.content = HOLDINGS_FIXED_FIELD_DEFAULT_VALUES;
-    }
-
-    if (tag === '852') {
-      field.indicators = ['\\', '\\'];
-    }
-
-    if (tag === '999') {
-      field.indicators = ['f', 'f'];
-    }
-
-    return field;
-  });
-};
-
-const fillEmptyFieldValues = ({ fieldConfigByType, field, hiddenValues }) => {
+const fillEmptyFieldValues = ({ fieldConfigByType, field, hiddenValues = {} }) => {
   return fieldConfigByType.reduce((acc, fieldConfig) => {
     if (acc[fieldConfig.name]) {
       return acc;
@@ -259,20 +234,8 @@ export const fillEmptyFixedFieldValues = (marcType, type, blvl, field) => {
   return fillEmptyFieldValues({ fieldConfigByType, field, hiddenValues });
 };
 
-const getCreateBibMarcRecordDefaultFields = (instanceRecord) => {
-  const contentMap = {
-    '001': instanceRecord.hrid,
-    '008': fillEmptyFixedFieldValues(MARC_TYPES.BIB, BIB_FIXED_FIELD_DEFAULT_TYPE, BIB_FIXED_FIELD_DEFAULT_BLVL),
-    '245': '$a ',
-    '999': '',
-  };
-
-  const indicatorMap = {
-    '245': ['\\', '\\'],
-    '999': ['f', 'f'],
-  };
-
-  return CREATE_BIB_RECORD_DEFAULT_FIELD_TAGS.map(tag => {
+const getCreateMarcRecordDefaultFields = (contentMap, indicatorMap, defaultTags) => {
+  return defaultTags.map(tag => {
     const field = {
       tag,
       id: uuidv4(),
@@ -293,6 +256,52 @@ const getCreateBibMarcRecordDefaultFields = (instanceRecord) => {
   });
 };
 
+const getCreateBibMarcRecordDefaultFields = (instanceRecord) => {
+  const contentMap = {
+    '001': instanceRecord.hrid,
+    '008': fillEmptyFixedFieldValues(MARC_TYPES.BIB, BIB_FIXED_FIELD_DEFAULT_TYPE, BIB_FIXED_FIELD_DEFAULT_BLVL),
+    '245': '$a ',
+    '999': '',
+  };
+
+  const indicatorMap = {
+    '245': ['\\', '\\'],
+    '999': ['f', 'f'],
+  };
+
+  return getCreateMarcRecordDefaultFields(contentMap, indicatorMap, CREATE_BIB_RECORD_DEFAULT_FIELD_TAGS);
+};
+
+const getCreateHoldingsMarcRecordDefaultFields = (instanceRecord) => {
+  const contentMap = {
+    '004': instanceRecord.hrid,
+    '008': HOLDINGS_FIXED_FIELD_DEFAULT_VALUES,
+  };
+
+  const indicatorMap = {
+    '852': ['\\', '\\'],
+    '999': ['f', 'f'],
+  };
+
+  return getCreateMarcRecordDefaultFields(contentMap, indicatorMap, CREATE_HOLDINGS_RECORD_DEFAULT_FIELD_TAGS);
+};
+
+const getCreateAuthorityMarcRecordDefaultFields = (instanceRecord) => {
+  const contentMap = {
+    '001': instanceRecord.hrid,
+    '008': fillEmptyFixedFieldValues(MARC_TYPES.AUTHORITY),
+    '100': '$a ',
+    '999': '',
+  };
+
+  const indicatorMap = {
+    '100': ['\\', '\\'],
+    '999': ['f', 'f'],
+  };
+
+  return getCreateMarcRecordDefaultFields(contentMap, indicatorMap, CREATE_AUTHORITY_RECORD_DEFAULT_FIELD_TAGS);
+};
+
 export const getCreateHoldingsMarcRecordResponse = (instanceResponse) => {
   const instanceId = instanceResponse.id;
 
@@ -306,7 +315,7 @@ export const getCreateHoldingsMarcRecordResponse = (instanceResponse) => {
         content: CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
         id: LEADER_TAG,
       },
-      ...getCreateMarcRecordDefaultFields(instanceResponse),
+      ...getCreateHoldingsMarcRecordDefaultFields(instanceResponse),
     ],
     parsedRecordDtoId: instanceId,
   };
@@ -326,6 +335,25 @@ export const getCreateBibMarcRecordResponse = (instanceResponse) => {
         id: LEADER_TAG,
       },
       ...getCreateBibMarcRecordDefaultFields(instanceResponse),
+    ],
+    parsedRecordDtoId: instanceId,
+  };
+};
+
+export const getCreateAuthorityMarcRecordResponse = (instanceResponse) => {
+  const instanceId = '00000000-0000-0000-0000-000000000000'; // For create we need to send any UUID
+
+  return {
+    externalId: instanceId,
+    leader: CREATE_AUTHORITY_RECORD_DEFAULT_LEADER_VALUE,
+    fields: undefined,
+    records: [
+      {
+        tag: LEADER_TAG,
+        content: CREATE_AUTHORITY_RECORD_DEFAULT_LEADER_VALUE,
+        id: LEADER_TAG,
+      },
+      ...getCreateAuthorityMarcRecordDefaultFields(instanceResponse),
     ],
     parsedRecordDtoId: instanceId,
   };
@@ -399,28 +427,15 @@ export const formatMarcRecordByQuickMarcAction = (marcRecord, action, marcType) 
   }
 
   if (action === QUICK_MARC_ACTIONS.CREATE) {
-    if (marcType === MARC_TYPES.BIB) {
-      return {
-        ...marcRecord,
-        relatedRecordVersion: 1,
-        marcFormat: MARC_TYPES.BIBLIOGRAPHIC.toUpperCase(),
-        updateInfo: {
-          recordState: RECORD_STATUS_NEW,
-        },
-      };
-    }
-
-    if (marcType === MARC_TYPES.HOLDINGS) {
-      return {
-        ...marcRecord,
-        relatedRecordVersion: 1,
-        marcFormat: MARC_TYPES.HOLDINGS.toUpperCase(),
-        suppressDiscovery: false,
-        updateInfo: {
-          recordState: RECORD_STATUS_NEW,
-        },
-      };
-    }
+    return {
+      ...marcRecord,
+      relatedRecordVersion: 1,
+      marcFormat: marcType.toUpperCase(),
+      suppressDiscovery: false,
+      updateInfo: {
+        recordState: RECORD_STATUS_NEW,
+      },
+    };
   }
 
   return marcRecord;
@@ -671,51 +686,6 @@ export const getControlledSubfields = (linkingRule) => {
 
     return subfieldTransformation.target;
   });
-};
-
-export const getAutoLinkingToasts = (fields) => {
-  const toasts = [];
-  const newLinkedFieldTags = new Set();
-  const notLinkedFieldTags = new Set();
-
-  fields.forEach(field => {
-    if (!field.linkDetails) {
-      notLinkedFieldTags.add(field.tag);
-    } else if (field.linkDetails.status === 'NEW') {
-      newLinkedFieldTags.add(field.tag);
-    } else if (field.linkDetails.status === 'ERROR') {
-      notLinkedFieldTags.add(field.tag);
-    }
-  });
-
-  const getValues = (fieldTagsSet) => {
-    const fieldTags = [...fieldTagsSet].sort((a, b) => a - b);
-
-    return {
-      count: fieldTags.length,
-      fieldTags: fieldTags.length === 1
-        ? fieldTags[0]
-        : fieldTags.slice(0, -1).join(', '),
-      lastFieldTag: fieldTags.at(-1),
-    };
-  };
-
-  if (newLinkedFieldTags.size) {
-    toasts.push({
-      messageId: 'ui-quick-marc.records.autoLink.linkedFields',
-      values: getValues(newLinkedFieldTags),
-    });
-  }
-
-  if (notLinkedFieldTags.size) {
-    toasts.push({
-      type: 'error',
-      messageId: 'ui-quick-marc.records.autoLink.notLinkedFields',
-      values: getValues(notLinkedFieldTags),
-    });
-  }
-
-  return toasts;
 };
 
 const validateSubfieldsThatCanBeControlled = (marcRecords, uncontrolledSubfields, linkingRules) => {
@@ -1345,7 +1315,7 @@ export const combineSplitFields = (formValues) => {
 export const getCorrespondingMarcTag = (records) => {
   const correspondingHeadingTypeTags = new Set(CORRESPONDING_HEADING_TYPE_TAGS);
 
-  return records.find(recordRow => correspondingHeadingTypeTags.has(recordRow.tag)).tag;
+  return records.find(recordRow => correspondingHeadingTypeTags.has(recordRow.tag))?.tag;
 };
 
 export const groupSubfields = (field, authorityControlledSubfields = []) => {
@@ -1524,28 +1494,3 @@ export const dehydrateMarcRecordResponse = (marcRecordResponse, marcType) => (
     autopopulateMaterialCharsField,
   )(marcRecordResponse)
 );
-
-export const findIndexFrom = (array, startIndex, callback) => {
-  for (let i = startIndex; i < array.length; i++) {
-    if (callback(array[i])) {
-      return i;
-    }
-  }
-
-  return -1;
-};
-
-export const removeNonAutoLinkingRecords = (marcRecord, autoLinkableBibFields) => ({
-  ...marcRecord,
-  records: [
-    marcRecord.records[0],
-    ...marcRecord.records.filter(record => isRecordForAutoLinking(record, autoLinkableBibFields)),
-  ],
-});
-
-export const hydrateForAutoLinking = (marcRecord) => ({
-  leader: marcRecord.leader,
-  fields: marcRecord.fields,
-  marcFormat: marcRecord.marcFormat,
-  _actionType: 'view',
-});

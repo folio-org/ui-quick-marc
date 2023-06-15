@@ -3,6 +3,7 @@ import {
   useMemo,
 } from 'react';
 import get from 'lodash/get';
+import omit from 'lodash/omit';
 
 import {
   useAuthoritySourceFiles,
@@ -14,7 +15,6 @@ import {
   groupSubfields,
   getControlledSubfields,
   isRecordForAutoLinking,
-  findIndexFrom,
 } from '../../QuickMarcEditor/utils';
 
 const joinSubfields = (subfields) => Object.keys(subfields).reduce((content, key) => {
@@ -116,36 +116,68 @@ const useAuthorityLinking = () => {
   }, [copySubfieldsFromAuthority, sourceFiles]);
 
   const autoLinkAuthority = useCallback((fields, suggestedFields) => {
-    let startIndex = 0;
+    let suggestedFieldIndex = 0;
 
-    const isSuggestionThatCanBeLinked = (suggestedField) => (
-      suggestedField.linkDetails
-      && suggestedField.linkDetails?.status !== 'ERROR'
-    );
+    return fields.map(field => {
+      if (field._isLinked && !field._isDeleted) {
+        const uncontrolledNumberSubfields = getContentSubfieldValue(field.subfieldGroups?.uncontrolledNumber);
+        const uncontrolledAlphaSubfields = getContentSubfieldValue(field.subfieldGroups?.uncontrolledAlpha);
 
-    suggestedFields
-      .filter(isSuggestionThatCanBeLinked)
-      .forEach(suggestedField => {
-        const fieldIndex = findIndexFrom(fields, startIndex, (field) => (
-          field.tag === suggestedField.tag
-          && isRecordForAutoLinking(field, autoLinkableBibFields)
-        ));
+        const uncontrolledNumber = uncontrolledNumberSubfields.$9?.[0]
+          ? joinSubfields(omit(uncontrolledNumberSubfields, '$9'))
+          : field.subfieldGroups.uncontrolledNumber;
 
-        if (fieldIndex !== -1) {
-          startIndex = fieldIndex + 1;
+        const uncontrolledAlpha = uncontrolledAlphaSubfields.$9?.[0]
+          ? joinSubfields(omit(uncontrolledAlphaSubfields, '$9'))
+          : field.subfieldGroups.uncontrolledAlpha;
 
+        return {
+          ...field,
+          subfieldGroups: {
+            ...field.subfieldGroups,
+            uncontrolledNumber,
+            uncontrolledAlpha,
+          },
+        };
+      }
+
+      if (isRecordForAutoLinking(field, autoLinkableBibFields)) {
+        const suggestedField = suggestedFields[suggestedFieldIndex];
+
+        suggestedFieldIndex += 1;
+
+        if (
+          suggestedField.linkDetails?.status === 'ERROR'
+          && getContentSubfieldValue(field.content).$9?.[0]
+        ) {
+          const subfields = getContentSubfieldValue(field.content);
+
+          delete subfields.$9;
+
+          return {
+            ...field,
+            content: joinSubfields(subfields),
+          };
+        }
+
+        if (
+          suggestedField.linkDetails
+          && suggestedField.linkDetails.status !== 'ERROR'
+        ) {
           const linkingRule = linkingRules.find(rule => rule.id === suggestedField.linkDetails?.linkingRuleId);
           const controlledSubfields = getControlledSubfields(linkingRule);
 
-          fields[fieldIndex] = {
-            ...fields[fieldIndex],
+          return {
+            ...field,
             ...suggestedField,
             subfieldGroups: groupSubfields(suggestedField, controlledSubfields),
+            prevContent: field.content,
           };
         }
-      });
+      }
 
-    return fields;
+      return field;
+    });
   }, [linkingRules, autoLinkableBibFields]);
 
   const linkAuthority = useCallback((authority, authoritySource, field) => {

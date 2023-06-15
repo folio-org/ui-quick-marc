@@ -72,6 +72,15 @@ const QuickMarc = ({
       },
     },
     {
+      path: `${basePath}/create-authority`,
+      permission: 'ui-quick-marc.quick-marc-authorities-editor.create',
+      props: {
+        action: QUICK_MARC_ACTIONS.CREATE,
+        wrapper: QuickMarcCreateWrapper,
+        marcType: MARC_TYPES.AUTHORITY,
+      },
+    },
+    {
       path: `${basePath}/edit-authority/:externalId`,
       // permission: 'ui-quick-marc.quick-marc-authorities-editor.all',
       props: {

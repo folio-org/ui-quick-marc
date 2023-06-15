@@ -67,7 +67,7 @@ describe('FixedFieldFactory', () => {
 
   it('should return null when there is no matched field', () => {
     expect(
-      FixedFieldFactory.getFixedField('records', 'bib', 'l'),
+      FixedFieldFactory.getFixedField('records', MARC_TYPES.BIB, 'l'),
     ).toBe(null);
   });
 });
