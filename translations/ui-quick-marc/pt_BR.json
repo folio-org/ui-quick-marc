@@ -267,5 +267,6 @@
     "bib-record.create.title": "Criar um novo registro MARC bibliográfico",
     "record.error.010.multiple": "O registro não pode ser salvo com mais de um campo 010",
     "record.error.008.empty": "O registro não pode ser salvo sem o campo 008",
-    "record.error.008.multiple": "O registro não pode ser salvo com mais de um campo 008"
+    "record.error.008.multiple": "O registro não pode ser salvo com mais de um campo 008",
+    "permission.quick-marc-authorities-editor.create": "quickMARC: Criar um novo registro de autoridade MARC"
 }
