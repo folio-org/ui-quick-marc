@@ -267,5 +267,6 @@
     "bib-record.create.title": "创建新的MARC书目记录",
     "record.error.010.multiple": "不能保存超过一个 010 字段的记录",
     "record.error.008.empty": "Record cannot be saved without 008 field",
-    "record.error.008.multiple": "Record cannot be saved with more than one 008 field"
+    "record.error.008.multiple": "Record cannot be saved with more than one 008 field",
+    "permission.quick-marc-authorities-editor.create": "quickMARC: Create a new MARC authority record"
 }
