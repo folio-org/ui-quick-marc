@@ -115,30 +115,65 @@ const useAuthorityLinking = () => {
     bibField.content = joinSubfields(bibSubfields);
   }, [copySubfieldsFromAuthority, sourceFiles]);
 
+  const updateLinkedField = useCallback((field) => {
+    const uncontrolledNumberSubfields = getContentSubfieldValue(field.subfieldGroups?.uncontrolledNumber);
+    const uncontrolledAlphaSubfields = getContentSubfieldValue(field.subfieldGroups?.uncontrolledAlpha);
+
+    const uncontrolledNumber = uncontrolledNumberSubfields.$9?.[0]
+      ? joinSubfields(omit(uncontrolledNumberSubfields, '$9'))
+      : field.subfieldGroups.uncontrolledNumber;
+
+    const uncontrolledAlpha = uncontrolledAlphaSubfields.$9?.[0]
+      ? joinSubfields(omit(uncontrolledAlphaSubfields, '$9'))
+      : field.subfieldGroups.uncontrolledAlpha;
+
+    return {
+      ...field,
+      subfieldGroups: {
+        ...field.subfieldGroups,
+        uncontrolledNumber,
+        uncontrolledAlpha,
+      },
+    };
+  }, []);
+
+  const updateAutoLinkableField = useCallback((field, suggestedField) => {
+    if (
+      suggestedField.linkDetails?.status === 'ERROR'
+      && getContentSubfieldValue(field.content).$9?.[0]
+    ) {
+      const subfields = getContentSubfieldValue(field.content);
+
+      return {
+        ...field,
+        content: joinSubfields(omit(subfields, '$9')),
+      };
+    }
+
+    if (
+      suggestedField.linkDetails
+      && suggestedField.linkDetails.status !== 'ERROR'
+    ) {
+      const linkingRule = linkingRules.find(rule => rule.id === suggestedField.linkDetails?.linkingRuleId);
+      const controlledSubfields = getControlledSubfields(linkingRule);
+
+      return {
+        ...field,
+        ...suggestedField,
+        subfieldGroups: groupSubfields(suggestedField, controlledSubfields),
+        prevContent: field.content,
+      };
+    }
+
+    return field;
+  }, [linkingRules]);
+
   const autoLinkAuthority = useCallback((fields, suggestedFields) => {
     let suggestedFieldIndex = 0;
 
     return fields.map(field => {
       if (field._isLinked && !field._isDeleted) {
-        const uncontrolledNumberSubfields = getContentSubfieldValue(field.subfieldGroups?.uncontrolledNumber);
-        const uncontrolledAlphaSubfields = getContentSubfieldValue(field.subfieldGroups?.uncontrolledAlpha);
-
-        const uncontrolledNumber = uncontrolledNumberSubfields.$9?.[0]
-          ? joinSubfields(omit(uncontrolledNumberSubfields, '$9'))
-          : field.subfieldGroups.uncontrolledNumber;
-
-        const uncontrolledAlpha = uncontrolledAlphaSubfields.$9?.[0]
-          ? joinSubfields(omit(uncontrolledAlphaSubfields, '$9'))
-          : field.subfieldGroups.uncontrolledAlpha;
-
-        return {
-          ...field,
-          subfieldGroups: {
-            ...field.subfieldGroups,
-            uncontrolledNumber,
-            uncontrolledAlpha,
-          },
-        };
+        return updateLinkedField(field);
       }
 
       if (isRecordForAutoLinking(field, autoLinkableBibFields)) {
@@ -146,39 +181,12 @@ const useAuthorityLinking = () => {
 
         suggestedFieldIndex += 1;
 
-        if (
-          suggestedField.linkDetails?.status === 'ERROR'
-          && getContentSubfieldValue(field.content).$9?.[0]
-        ) {
-          const subfields = getContentSubfieldValue(field.content);
-
-          delete subfields.$9;
-
-          return {
-            ...field,
-            content: joinSubfields(subfields),
-          };
-        }
-
-        if (
-          suggestedField.linkDetails
-          && suggestedField.linkDetails.status !== 'ERROR'
-        ) {
-          const linkingRule = linkingRules.find(rule => rule.id === suggestedField.linkDetails?.linkingRuleId);
-          const controlledSubfields = getControlledSubfields(linkingRule);
-
-          return {
-            ...field,
-            ...suggestedField,
-            subfieldGroups: groupSubfields(suggestedField, controlledSubfields),
-            prevContent: field.content,
-          };
-        }
+        return updateAutoLinkableField(field, suggestedField);
       }
 
       return field;
     });
-  }, [linkingRules, autoLinkableBibFields]);
+  }, [autoLinkableBibFields, updateAutoLinkableField, updateLinkedField]);
 
   const linkAuthority = useCallback((authority, authoritySource, field) => {
     const linkedAuthorityField = getLinkableAuthorityField(authoritySource, field);
