@@ -259,6 +259,48 @@ describe('QuickMarcEditor utils', () => {
     });
   });
 
+  describe('markLinkedRecords', () => {
+    describe('when field comprises linkDetails and _isLinked is false', () => {
+      it('should mark records as linked', () => {
+        const fields = [
+          {
+            tag: '100',
+            content: '$a fss $b asd',
+            linkDetails: {},
+            _isLinked: false,
+          },
+          {
+            tag: '600',
+            content: '$a fss $b asd',
+            _isLinked: false,
+          },
+        ];
+
+        const newRecords = utils.markLinkedRecords(fields);
+
+        expect(newRecords[0]._isLinked).toBeTruthy();
+        expect(newRecords[1]._isLinked).toBeFalsy();
+      });
+    });
+
+    describe('when field is linked', () => {
+      it('should not mark the record', () => {
+        const fields = [
+          {
+            tag: '100',
+            content: '$a fss $b asd',
+            linkDetails: {},
+            _isLinked: true,
+          },
+        ];
+
+        const newRecords = utils.markLinkedRecords(fields);
+
+        expect(newRecords[0] === fields[0]).toBeTruthy();
+      });
+    });
+  });
+
   describe('markUnlinkedRecordByIndex', () => {
     it('should mark record as unlinked', () => {
       const state = {
@@ -326,11 +368,11 @@ describe('QuickMarcEditor utils', () => {
     it('should return edit error message when forbidden bytes are edited', () => {
       expect(
         utils.validateLeader('04706cam a2200865Ii 4500', '04706cam a2200865Ii 4501').props.id,
-      ).toBe('ui-quick-marc.record.error.leader.forbiddenBytes.bib');
+      ).toBe('ui-quick-marc.record.error.leader.forbiddenBytes.bibliographic');
 
       expect(
         utils.validateLeader('14706cam a2200865Ii 4500', '04706cam a2200865Ii 4500').props.id,
-      ).toBe('ui-quick-marc.record.error.leader.forbiddenBytes.bib');
+      ).toBe('ui-quick-marc.record.error.leader.forbiddenBytes.bibliographic');
     });
 
     describe('when marcType is bib', () => {
@@ -2221,7 +2263,7 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.cleanBytesFields(record, 'bib')).toEqual(expectedRecord);
+      expect(utils.cleanBytesFields(record, MARC_TYPES.BIB)).toEqual(expectedRecord);
     });
   });
 
@@ -2465,6 +2507,92 @@ describe('QuickMarcEditor utils', () => {
 
     it('should be true for tag LDR on derive page', () => {
       expect(utils.isReadOnly({ tag: '005' }, QUICK_MARC_ACTIONS.DERIVE)).toBeTruthy();
+    });
+  });
+
+  describe('isRecordForAutoLinking', () => {
+    describe('when a record is enabled for auto-linking, has a $0 subfield and is not linked yet', () => {
+      it('should return true', () => {
+        const field = {
+          tag: '100',
+          content: '$a Coates, Ta-Nehisi, $0 naturalId',
+          _isLinked: false,
+          _isDeleted: false,
+        };
+        const autoLinkableBibFields = ['100'];
+
+        expect(utils.isRecordForAutoLinking(field, autoLinkableBibFields)).toBeTruthy();
+      });
+    });
+
+    describe('when $0 is empty', () => {
+      it('should return false', () => {
+        const field = {
+          tag: '100',
+          content: '$a Coates, Ta-Nehisi, $0 ',
+          _isLinked: false,
+          _isDeleted: false,
+        };
+        const autoLinkableBibFields = ['100'];
+
+        expect(utils.isRecordForAutoLinking(field, autoLinkableBibFields)).toBeFalsy();
+      });
+    });
+
+    describe('when $0 is absent', () => {
+      it('should return false', () => {
+        const field = {
+          tag: '100',
+          content: '$a Coates, Ta-Nehisi,',
+          _isLinked: false,
+          _isDeleted: false,
+        };
+        const autoLinkableBibFields = ['100'];
+
+        expect(utils.isRecordForAutoLinking(field, autoLinkableBibFields)).toBeFalsy();
+      });
+    });
+
+    describe('when field is not enabled for auto-linking', () => {
+      it('should return false', () => {
+        const field = {
+          tag: '650',
+          content: '$a Coates, Ta-Nehisi, $0 naturalId',
+          _isLinked: false,
+          _isDeleted: false,
+        };
+        const autoLinkableBibFields = ['100'];
+
+        expect(utils.isRecordForAutoLinking(field, autoLinkableBibFields)).toBeFalsy();
+      });
+    });
+
+    describe('when field is already linked', () => {
+      it('should return false', () => {
+        const field = {
+          tag: '100',
+          content: '$a Coates, Ta-Nehisi, $0 naturalId',
+          _isLinked: true,
+          _isDeleted: false,
+        };
+        const autoLinkableBibFields = ['100'];
+
+        expect(utils.isRecordForAutoLinking(field, autoLinkableBibFields)).toBeFalsy();
+      });
+    });
+
+    describe('when field is deleted', () => {
+      it('should return false', () => {
+        const field = {
+          tag: '100',
+          content: '$a Coates, Ta-Nehisi, $0 naturalId',
+          _isLinked: false,
+          _isDeleted: true,
+        };
+        const autoLinkableBibFields = ['100'];
+
+        expect(utils.isRecordForAutoLinking(field, autoLinkableBibFields)).toBeFalsy();
+      });
     });
   });
 });

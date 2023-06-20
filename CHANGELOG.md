@@ -35,6 +35,7 @@
 * [UIQM-500](https://issues.folio.org/browse/UIQM-500) Remove 008 Entered field when Deriving a record.
 * [UIQM-499](https://issues.folio.org/browse/UIQM-499) Auto-populate empty positions for fields 006, 007 and 008.
 * [UIQM-380](https://issues.folio.org/browse/UIQM-380) Create Orig Authority Record: Open new record in quickMARC UI.
+* [UIQM-326](https://issues.folio.org/browse/UIQM-326) Add auto-linking MARC bib fields.
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
 

@@ -28,6 +28,7 @@ jest.mock('react-router', () => ({
 jest.mock('../queries', () => ({
   ...jest.requireActual('../queries'),
   useAuthorityLinkingRules: jest.fn().mockReturnValue({ linkingRules: [] }),
+  useLinkSuggestions: jest.fn().mockReturnValue({ isLoading: false, fetchLinkSuggestions: jest.fn() }),
 }));
 
 jest.mock('@folio/stripes-acq-components', () => ({
@@ -166,7 +167,7 @@ describe('Given QuickMarcEditor', () => {
   it('should display instance title in pane title', () => {
     const { getByText } = renderQuickMarcEditor();
 
-    expect(getByText('ui-quick-marc.bib-record.edit.title')).toBeDefined();
+    expect(getByText('ui-quick-marc.bibliographic-record.edit.title')).toBeDefined();
   });
 
   describe('when action is CREATE and marc type is BIB', () => {
@@ -175,7 +176,7 @@ describe('Given QuickMarcEditor', () => {
         action: QUICK_MARC_ACTIONS.CREATE,
       });
 
-      expect(getByText('ui-quick-marc.bib-record.create.title')).toBeDefined();
+      expect(getByText('ui-quick-marc.bibliographic-record.create.title')).toBeDefined();
     });
   });
 

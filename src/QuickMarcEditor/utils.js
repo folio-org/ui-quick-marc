@@ -622,10 +622,17 @@ export const checkDuplicate010Field = (marcRecords) => {
   return undefined;
 };
 
-export const checkCanBeLinked = (stripes, marcType, linkableBibFields, tag) => (
+export const isRecordForManualLinking = (stripes, marcType, linkableBibFields, tag) => (
   stripes.hasPerm('ui-quick-marc.quick-marc-authority-records.linkUnlink') &&
   marcType === MARC_TYPES.BIB &&
   linkableBibFields.includes(tag)
+);
+
+export const isRecordForAutoLinking = (field, autoLinkableBibFields) => (
+  !field._isDeleted
+  && !field._isLinked
+  && autoLinkableBibFields.includes(field.tag)
+  && getContentSubfieldValue(field.content).$0?.[0]
 );
 
 export const recordHasLinks = (fields) => fields.some(field => field.linkDetails?.linkingRuleId);
@@ -992,6 +999,19 @@ export const markLinkedRecordByIndex = (index, field, state) => {
   };
 
   return records;
+};
+
+export const markLinkedRecords = (fields) => {
+  return fields.map(field => {
+    if (field.linkDetails && !field._isLinked) {
+      return {
+        ...field,
+        _isLinked: true,
+      };
+    }
+
+    return field;
+  });
 };
 
 export const markUnlinkedRecordByIndex = (index, state) => {
