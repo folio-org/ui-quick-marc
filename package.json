@@ -121,7 +121,8 @@
         "permissionName": "ui-quick-marc.quick-marc-authority-records.linkUnlink",
         "displayName": "quickMARC: Can Link/unlink authority records to bib records",
         "subPermissions": [
-          "instance-authority.linking-rules.collection.get"
+          "instance-authority.linking-rules.collection.get",
+          "marc-records-editor.links.suggestion.post"
         ],
         "visible": true
       }
