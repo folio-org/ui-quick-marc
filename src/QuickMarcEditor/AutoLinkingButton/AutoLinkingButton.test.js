@@ -167,6 +167,15 @@ describe('Given AutoLinkingButton', () => {
             '_isDeleted': false,
             '_isLinked': false,
           },
+          {
+            'tag': '700',
+            'content': '$a Martin, Laura $c (Comic book artist), $e colorist. $0 no2005093868 $0 n123456',
+            'indicators': ['1', '\\'],
+            'isProtected': false,
+            'id': '6402b2c5-c858-4ef0-ae68-c08884cc8d18',
+            '_isDeleted': false,
+            '_isLinked': false,
+          },
         ],
       };
 
@@ -186,6 +195,10 @@ describe('Given AutoLinkingButton', () => {
           {
             'tag': '700',
             'content': '$a Sprouse, Chris, $e artist. $0 test2',
+          },
+          {
+            'tag': '700',
+            'content': '$a Martin, Laura $c (Comic book artist), $e colorist. $0 no2005093868 $0 n123456',
           },
         ],
       };
@@ -221,6 +234,14 @@ describe('Given AutoLinkingButton', () => {
             'linkDetails': {
               'status': 'ERROR',
               'errorCause': '101',
+            },
+          },
+          {
+            'tag': '700',
+            'content': '$a Martin, Laura $c (Comic book artist), $e colorist. $0 no2005093868 $0 n123456',
+            'linkDetails': {
+              'status': 'ERROR',
+              'errorCause': '102',
             },
           },
         ],
@@ -259,6 +280,15 @@ describe('Given AutoLinkingButton', () => {
             'lastFieldTag': '700',
           },
         },
+        {
+          'type': 'error',
+          'messageId': 'ui-quick-marc.records.autoLink.notLinkedFields.multiple',
+          'values': {
+            'count': 1,
+            'fieldTags': '700',
+            'lastFieldTag': '700',
+          },
+        },
       ];
 
       mockFetchLinkSuggestions.mockResolvedValue(data);
@@ -271,9 +301,11 @@ describe('Given AutoLinkingButton', () => {
       await expect(mockFetchLinkSuggestions).toHaveBeenCalledWith(payload);
       expect(mockAutoLinkAuthority).toHaveBeenCalledWith(formValues.records, data.fields);
       expect(mockMarkRecordsLinked).toHaveBeenCalledWith({ fields });
-      expect(mockShowCallout).toHaveBeenCalledTimes(2);
+      expect(mockShowCallout).toHaveBeenCalledTimes(3);
+
       expect(mockShowCallout).toHaveBeenNthCalledWith(1, toasts[0]);
       expect(mockShowCallout).toHaveBeenNthCalledWith(2, toasts[1]);
+      expect(mockShowCallout).toHaveBeenNthCalledWith(3, toasts[2]);
     });
   });
 });
