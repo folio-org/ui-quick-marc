@@ -4,6 +4,7 @@ import {
 } from 'react';
 import get from 'lodash/get';
 import omit from 'lodash/omit';
+import pick from 'lodash/pick';
 
 import {
   useAuthoritySourceFiles,
@@ -157,10 +158,17 @@ const useAuthorityLinking = () => {
       const linkingRule = linkingRules.find(rule => rule.id === suggestedField.linkDetails?.linkingRuleId);
       const controlledSubfields = getControlledSubfields(linkingRule);
 
+      // take uncontrolled subfields from the current field, not from suggested one
+      const subfieldGroups = {
+        ...groupSubfields(suggestedField, controlledSubfields),
+        ...pick(groupSubfields(field, controlledSubfields), 'uncontrolledAlpha', 'uncontrolledNumber'),
+      };
+
       return {
         ...field,
         ...suggestedField,
-        subfieldGroups: groupSubfields(suggestedField, controlledSubfields),
+        content: Object.values(subfieldGroups).filter(Boolean).join(' '),
+        subfieldGroups,
         prevContent: field.content,
       };
     }
