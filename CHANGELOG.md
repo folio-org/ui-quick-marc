@@ -38,6 +38,7 @@
 * [UIQM-326](https://issues.folio.org/browse/UIQM-326) Add auto-linking MARC bib fields.
 * [UIQM-443](https://issues.folio.org/browse/UIQM-443) Auto-linking MARC bib. Handling multiple authority records matches.
 * [UIQM-436](https://issues.folio.org/browse/UIQM-436) Auto-linking MARC bib. Handling multiple subfield 0.
+* [UIQM-509](https://issues.folio.org/browse/UIQM-509) Autopopulate subfields when Creating MARC records.
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
 
