@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
-import { useStripes } from '@folio/stripes/core';
+import { IfPermission } from '@folio/stripes/core';
 import { Button } from '@folio/stripes/components';
 import { useShowCallout } from '@folio/stripes-acq-components';
 
@@ -25,7 +25,6 @@ const AutoLinkingButton = ({
   onFetchLinkSuggestions,
   onMarkRecordsLinked,
 }) => {
-  const stripes = useStripes();
   const intl = useIntl();
   const showCallout = useShowCallout();
 
@@ -125,23 +124,21 @@ const AutoLinkingButton = ({
     }
   };
 
-  if (
-    !autoLinkingEnabled
-    || marcType !== MARC_TYPES.BIB
-    || !stripes.hasPerm('ui-quick-marc.quick-marc-authority-records.linkUnlink')
-  ) {
+  if (!autoLinkingEnabled || marcType !== MARC_TYPES.BIB) {
     return null;
   }
 
   return (
-    <Button
-      marginBottom0
-      disabled={!hasAutoLinkableRecord || isLoadingLinkSuggestions}
-      onClick={handleAutoLinking}
-      data-testid="autoLinkingButton"
-    >
-      {intl.formatMessage({ id: 'ui-quick-marc.autoLinkingButton' })}
-    </Button>
+    <IfPermission perm="ui-quick-marc.quick-marc-authority-records.linkUnlink">
+      <Button
+        marginBottom0
+        disabled={!hasAutoLinkableRecord || isLoadingLinkSuggestions}
+        onClick={handleAutoLinking}
+        data-testid="autoLinkingButton"
+      >
+        {intl.formatMessage({ id: 'ui-quick-marc.autoLinkingButton' })}
+      </Button>
+    </IfPermission>
   );
 };
 

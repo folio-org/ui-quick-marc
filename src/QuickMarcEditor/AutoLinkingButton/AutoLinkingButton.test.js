@@ -4,7 +4,7 @@ import {
   render,
 } from '@testing-library/react';
 
-import { useStripes } from '@folio/stripes/core';
+import { IfPermission } from '@folio/stripes/core';
 import { runAxeTest } from '@folio/stripes-testing';
 
 import { AutoLinkingButton } from './AutoLinkingButton';
@@ -20,7 +20,7 @@ const mockShowCallout = jest.fn();
 
 jest.mock('@folio/stripes/core', () => ({
   ...jest.requireActual('@folio/stripes/core'),
-  useStripes: jest.fn(),
+  IfPermission: jest.fn(),
   useNamespace: jest.fn().mockReturnValue(['ui-quick-marc-test']),
 }));
 
@@ -34,11 +34,71 @@ jest.mock('../../hooks', () => ({
   useAuthorityLinking: jest.fn(),
 }));
 
+const formValues = {
+  externalHrid: 'in00000000001',
+  leader: '05274cam\\a2201021\\i\\4500',
+  marcFormat: MARC_TYPES.BIB,
+  records: [
+    {
+      'tag': 'LDR',
+      'content': '05274cam\\a2201021\\i\\4500',
+      'id': 'LDR',
+      '_isDeleted': false,
+      '_isLinked': false,
+    },
+    {
+      'tag': '100',
+      'content': '$a Coates, Ta-Nehisi, $e author. $0 n2008001084',
+      'indicators': ['1', '\\'],
+      'isProtected': false,
+      'id': '03b53478-16ba-49a3-bd4a-d6e1cf5e4104',
+      '_isDeleted': false,
+      '_isLinked': false,
+    },
+    {
+      'tag': '336',
+      'content': '$a still image $b sti $2 rdacontent',
+      'indicators': ['\\', '\\'],
+      'isProtected': false,
+      'id': '2580b8bd-0eef-462f-8388-0ec4e2ede186',
+      '_isDeleted': false,
+      '_isLinked': false,
+    },
+    {
+      'tag': '700',
+      'content': '$a Stelfreeze, Brian, $e artist. $0 no2005093867',
+      'indicators': ['1', '\\'],
+      'isProtected': false,
+      'id': '6402b2c5-c858-4ef0-ae68-c08884cc8d18',
+      '_isDeleted': false,
+      '_isLinked': false,
+    },
+    {
+      'tag': '700',
+      'content': '$a Sprouse, Chris, $e artist. $0 test2',
+      'indicators': ['1', '\\'],
+      'isProtected': false,
+      'id': '0c686fe6-e747-43a9-88e8-b106be9f171e',
+      '_isDeleted': false,
+      '_isLinked': false,
+    },
+    {
+      'tag': '700',
+      'content': '$a Martin, Laura $c (Comic book artist), $e colorist. $0 no2005093868 $0 n123456',
+      'indicators': ['1', '\\'],
+      'isProtected': false,
+      'id': '6402b2c5-c858-4ef0-ae68-c08884cc8d18',
+      '_isDeleted': false,
+      '_isLinked': false,
+    },
+  ],
+};
+
 const renderComponent = (props = {}) => render(
   <Harness>
     <AutoLinkingButton
       marcType={MARC_TYPES.BIB}
-      formValues={{ records: [] }}
+      formValues={formValues}
       isLoadingLinkSuggestions={false}
       onMarkRecordsLinked={mockMarkRecordsLinked}
       onFetchLinkSuggestions={mockFetchLinkSuggestions}
@@ -55,7 +115,7 @@ describe('Given AutoLinkingButton', () => {
       autoLinkableBibFields: ['100', '700'],
       autoLinkAuthority: mockAutoLinkAuthority,
     });
-    useStripes.mockReturnValue({ hasPerm: () => true });
+    IfPermission.mockImplementation(({ children }) => children);
   });
 
   it('should render with no axe errors', async () => {
@@ -92,7 +152,7 @@ describe('Given AutoLinkingButton', () => {
 
   describe('when there is no permission', () => {
     it('should not be displayed', () => {
-      useStripes.mockReturnValue({ hasPerm: () => false });
+      IfPermission.mockImplementation(() => null);
 
       const { queryByText } = renderComponent();
 
@@ -118,67 +178,23 @@ describe('Given AutoLinkingButton', () => {
   });
 
   describe('when user clicks on the button', () => {
-    it('should handle auto-linking', async () => {
-      const formValues = {
-        externalHrid: 'in00000000001',
-        leader: '05274cam\\a2201021\\i\\4500',
-        marcFormat: MARC_TYPES.BIB,
-        records: [
-          {
-            'tag': 'LDR',
-            'content': '05274cam\\a2201021\\i\\4500',
-            'id': 'LDR',
-            '_isDeleted': false,
-            '_isLinked': false,
-          },
-          {
-            'tag': '100',
-            'content': '$a Coates, Ta-Nehisi, $e author. $0 n2008001084',
-            'indicators': ['1', '\\'],
-            'isProtected': false,
-            'id': '03b53478-16ba-49a3-bd4a-d6e1cf5e4104',
-            '_isDeleted': false,
-            '_isLinked': false,
-          },
-          {
-            'tag': '336',
-            'content': '$a still image $b sti $2 rdacontent',
-            'indicators': ['\\', '\\'],
-            'isProtected': false,
-            'id': '2580b8bd-0eef-462f-8388-0ec4e2ede186',
-            '_isDeleted': false,
-            '_isLinked': false,
-          },
-          {
-            'tag': '700',
-            'content': '$a Stelfreeze, Brian, $e artist. $0 no2005093867',
-            'indicators': ['1', '\\'],
-            'isProtected': false,
-            'id': '6402b2c5-c858-4ef0-ae68-c08884cc8d18',
-            '_isDeleted': false,
-            '_isLinked': false,
-          },
-          {
-            'tag': '700',
-            'content': '$a Sprouse, Chris, $e artist. $0 test2',
-            'indicators': ['1', '\\'],
-            'isProtected': false,
-            'id': '0c686fe6-e747-43a9-88e8-b106be9f171e',
-            '_isDeleted': false,
-            '_isLinked': false,
-          },
-          {
-            'tag': '700',
-            'content': '$a Martin, Laura $c (Comic book artist), $e colorist. $0 no2005093868 $0 n123456',
-            'indicators': ['1', '\\'],
-            'isProtected': false,
-            'id': '6402b2c5-c858-4ef0-ae68-c08884cc8d18',
-            '_isDeleted': false,
-            '_isLinked': false,
-          },
-        ],
-      };
+    describe('when auto-linking fails', () => {
+      it('should show generic error message', async () => {
+        mockFetchLinkSuggestions.mockRejectedValue(null);
 
+        const { getByTestId } = renderComponent();
+
+        fireEvent.click(getByTestId('autoLinkingButton'));
+
+        await expect(mockFetchLinkSuggestions).toHaveBeenCalled();
+        expect(mockShowCallout).toHaveBeenCalledWith({
+          messageId: 'ui-quick-marc.records.error.autoLinking',
+          type: 'error',
+        });
+      });
+    });
+
+    it('should handle auto-linking', async () => {
       const payload = {
         leader: '05274cam\\a2201021\\i\\4500',
         marcFormat: MARC_TYPES.BIB,
