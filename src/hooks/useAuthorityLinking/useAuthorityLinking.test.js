@@ -30,6 +30,12 @@ jest.mock('../../queries', () => ({
       authorityField: '150',
       authoritySubfields: ['a', 'b', 'g'],
       autoLinkingEnabled: false,
+    }, {
+      id: 17,
+      bibField: '711',
+      authorityField: '111',
+      authoritySubfields: ['a', 'c', 'e', 'q', 'f', 'h', 'k', 'l', 'p', 's', 't', 'd', 'g', 'n'],
+      autoLinkingEnabled: true,
     }],
     isLoading: false,
   }),
@@ -256,7 +262,7 @@ describe('Given useAuthorityLinking', () => {
       expect(result.current.autoLinkAuthority(fields, suggestedFields)).toEqual([
         {
           'tag': '100',
-          'content': '$0 id.loc.gov/authorities/names/n2008001084 $a Coates, Ta-Nehisi $e author. $9 5d80ecfa-7370-460e-9e27-3883a7656fe1',
+          'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 5d80ecfa-7370-460e-9e27-3883a7656fe1',
           'prevContent': '$a Coates, Ta-Nehisi, $e author. $0 n2008001084',
           'indicators': ['1', '\\'],
           'isProtected': false,
@@ -278,7 +284,7 @@ describe('Given useAuthorityLinking', () => {
           },
         }, {
           'tag': '600',
-          'content': '$a Brown, Benjamin, $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $d 1966- $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+          'content': '$a Brown, Benjamin, $d 1966- $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
           'prevContent': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774',
           'indicators': ['0', '0'],
           'isProtected': false,
@@ -292,7 +298,7 @@ describe('Given useAuthorityLinking', () => {
             'status': 'NEW',
           },
           'subfieldGroups': {
-            'controlled': '$a Brown, Benjamin,  $d 1966-',
+            'controlled': '$a Brown, Benjamin, $d 1966-',
             'uncontrolledAlpha': '$v Comic books, strips, etc.',
             'zeroSubfield': '$0 id.loc.gov/authorities/names/nr2005025774',
             'nineSubfield': '$9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
@@ -349,7 +355,7 @@ describe('Given useAuthorityLinking', () => {
           '_isLinked': false,
         }, {
           'tag': '600',
-          'content': '$a Brown, Benjamin, $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $d 1966- $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+          'content': '$a Brown, Benjamin, $d 1966- $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
           'prevContent': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc. $0 nr2005025774',
           'indicators': ['0', '0'],
           'isProtected': false,
@@ -363,7 +369,7 @@ describe('Given useAuthorityLinking', () => {
             'status': 'NEW',
           },
           'subfieldGroups': {
-            'controlled': '$a Brown, Benjamin,  $d 1966-',
+            'controlled': '$a Brown, Benjamin, $d 1966-',
             'uncontrolledAlpha': '$v Comic books, strips, etc.',
             'zeroSubfield': '$0 id.loc.gov/authorities/names/nr2005025774',
             'nineSubfield': '$9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
@@ -445,7 +451,7 @@ describe('Given useAuthorityLinking', () => {
           },
         }, {
           'tag': '600',
-          'content': '$a Brown, Benjamin, $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $d 1966- $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+          'content': '$a Brown, Benjamin, $d 1966- $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
           'prevContent': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc. $0 nr2005025774',
           'indicators': ['0', '0'],
           'isProtected': false,
@@ -459,7 +465,7 @@ describe('Given useAuthorityLinking', () => {
             'status': 'NEW',
           },
           'subfieldGroups': {
-            'controlled': '$a Brown, Benjamin,  $d 1966-',
+            'controlled': '$a Brown, Benjamin, $d 1966-',
             'uncontrolledAlpha': '$v Comic books, strips, etc.',
             'zeroSubfield': '$0 id.loc.gov/authorities/names/nr2005025774',
             'nineSubfield': '$9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
@@ -524,7 +530,7 @@ describe('Given useAuthorityLinking', () => {
           '_isLinked': false,
         }, {
           'tag': '600',
-          'content': '$a Brown, Benjamin, $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $d 1966- $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+          'content': '$a Brown, Benjamin, $d 1966- $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
           'prevContent': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc. $0 nr2005025774',
           'indicators': ['0', '0'],
           'isProtected': false,
@@ -538,7 +544,7 @@ describe('Given useAuthorityLinking', () => {
             'status': 'NEW',
           },
           'subfieldGroups': {
-            'controlled': '$a Brown, Benjamin,  $d 1966-',
+            'controlled': '$a Brown, Benjamin, $d 1966-',
             'uncontrolledAlpha': '$v Comic books, strips, etc.',
             'zeroSubfield': '$0 id.loc.gov/authorities/names/nr2005025774',
             'nineSubfield': '$9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
@@ -600,7 +606,7 @@ describe('Given useAuthorityLinking', () => {
           '_isLinked': false,
         }, {
           'tag': '600',
-          'content': '$a Brown, Benjamin, $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $d 1966- $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+          'content': '$a Brown, Benjamin, $d 1966- $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
           'prevContent': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc. $0 nr2005025774',
           'indicators': ['0', '0'],
           'isProtected': false,
@@ -614,7 +620,7 @@ describe('Given useAuthorityLinking', () => {
             'status': 'NEW',
           },
           'subfieldGroups': {
-            'controlled': '$a Brown, Benjamin,  $d 1966-',
+            'controlled': '$a Brown, Benjamin, $d 1966-',
             'uncontrolledAlpha': '$v Comic books, strips, etc.',
             'zeroSubfield': '$0 id.loc.gov/authorities/names/nr2005025774',
             'nineSubfield': '$9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
@@ -774,7 +780,7 @@ describe('Given useAuthorityLinking', () => {
           },
           {
             'tag': '600',
-            'content': '$a Brown, Benjamin, $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $d 1966- $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+            'content': '$a Brown, Benjamin, $d 1966- $v Comic books, strips, etc. $0 id.loc.gov/authorities/names/nr2005025774 $9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
             'prevContent': '$a Medycyna. $v Comic books, strips, etc. $0 vtls000869135',
             'linkDetails': {
               'authorityId': '46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
@@ -783,7 +789,7 @@ describe('Given useAuthorityLinking', () => {
               'status': 'NEW',
             },
             'subfieldGroups': {
-              'controlled': '$a Brown, Benjamin,  $d 1966-',
+              'controlled': '$a Brown, Benjamin, $d 1966-',
               'nineSubfield': '$9 46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
               'uncontrolledAlpha': '$v Comic books, strips, etc.',
               'uncontrolledNumber': '',
@@ -828,6 +834,63 @@ describe('Given useAuthorityLinking', () => {
         '_isDeleted': false,
         '_isLinked': false,
       }]);
+    });
+  });
+
+  describe('when calling autoLinkAuthority', () => {
+    it('should take uncontrolled subfields from the current field, not from suggested one', () => {
+      const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+
+      const fields = [
+        {
+          'tag': '711',
+          'content': '$j something $0 n2008001084 $2 fast $f test',
+          'indicators': ['\\', '\\'],
+          'isProtected': false,
+          'id': '01f3e2b6-ccea-4fa8-9d20-0ef89bb5b39f',
+          '_isDeleted': false,
+          '_isLinked': false,
+        },
+      ];
+
+      const suggestedFields = [
+        {
+          'tag': '711',
+          'content': '$0 id.loc.gov/authorities/names/n2008001084 $a Roma Council $c Basilica $d 1962-1965 : $n (2nd : $9 5d80ecfa-7370-460e-9e27-3883a7656fe1 $j test',
+          'linkDetails': {
+            'authorityId': '46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+            'authorityNaturalId': 'n2008001084',
+            'linkingRuleId': 17,
+            'status': 'NEW',
+          },
+        },
+      ];
+
+      expect(result.current.autoLinkAuthority(fields, suggestedFields)).toEqual([
+        {
+          'tag': '711',
+          'content': '$a Roma Council $c Basilica $d 1962-1965 : $n (2nd : $j something $0 id.loc.gov/authorities/names/n2008001084 $9 5d80ecfa-7370-460e-9e27-3883a7656fe1 $2 fast',
+          'indicators': ['\\', '\\'],
+          'prevContent': '$j something $0 n2008001084 $2 fast $f test',
+          'isProtected': false,
+          'id': '01f3e2b6-ccea-4fa8-9d20-0ef89bb5b39f',
+          '_isDeleted': false,
+          '_isLinked': false,
+          'linkDetails': {
+            'authorityId': '46b1a960-9ca2-43c1-b2b7-a7eafbc6c9d2',
+            'authorityNaturalId': 'n2008001084',
+            'linkingRuleId': 17,
+            'status': 'NEW',
+          },
+          'subfieldGroups': {
+            'controlled': '$a Roma Council $c Basilica $d 1962-1965 : $n (2nd :',
+            'uncontrolledAlpha': '$j something',
+            'zeroSubfield': '$0 id.loc.gov/authorities/names/n2008001084',
+            'nineSubfield': '$9 5d80ecfa-7370-460e-9e27-3883a7656fe1',
+            'uncontrolledNumber': '$2 fast',
+          },
+        },
+      ]);
     });
   });
 

@@ -1327,7 +1327,7 @@ export const groupSubfields = (field, authorityControlledSubfields = []) => {
     const isZero = /\$0/.test(subfield[0]);
     const isNine = /\$9/.test(subfield[0]);
 
-    const fieldContent = subfield[1].reduce((content, value) => [content, `${subfield[0]} ${value}`].join(' '), '');
+    const fieldContent = subfield[1].reduce((content, value) => [content, `${subfield[0]} ${value}`].join(' ').trimStart(), '');
 
     const formattedSubfield = {
       content: fieldContent,
