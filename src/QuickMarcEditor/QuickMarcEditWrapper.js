@@ -9,7 +9,10 @@ import flow from 'lodash/flow';
 import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
-import { useAuthorityLinking } from '../hooks';
+import {
+  useAuthorityLinking,
+  useValidation,
+} from '../hooks';
 import { QUICK_MARC_ACTIONS } from './constants';
 import {
   EXTERNAL_INSTANCE_APIS,
@@ -33,7 +36,6 @@ import {
   autopopulateMaterialCharsField,
 } from './utils';
 import { useAuthorityLinkingRules } from '../queries';
-import useValidation from '../hooks/useValidation/useValidation';
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
@@ -65,8 +67,6 @@ const QuickMarcEditWrapper = ({
   const [httpError, setHttpError] = useState(null);
   const { linkableBibFields } = useAuthorityLinking();
   const { linkingRules } = useAuthorityLinkingRules();
-
-
 
   const { validate } = useValidation({
     initialValues,

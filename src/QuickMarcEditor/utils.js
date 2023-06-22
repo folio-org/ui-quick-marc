@@ -806,10 +806,10 @@ const validateMarcHoldingsRecord = (marcRecords, locations) => {
   return undefined;
 };
 
-const getIs$tRemoved = (content) => {
+export const getIsSubfieldRemoved = (content, subfield) => {
   const contentSubfieldValue = getContentSubfieldValue(content);
 
-  return !('$t' in contentSubfieldValue) || !contentSubfieldValue.$t[0];
+  return !(subfield in contentSubfieldValue) || !contentSubfieldValue[subfield][0];
 };
 
 const validateMarcAuthority1xxField = (initialRecords, formValuesToSave) => {
@@ -824,7 +824,7 @@ const validateMarcAuthority1xxField = (initialRecords, formValuesToSave) => {
   const hasInitially$t = !!getContentSubfieldValue(initialContent).$t?.[0];
   const has$tToSave = '$t' in getContentSubfieldValue(contentToSave);
   const is$tAdded = !hasInitially$t && has$tToSave;
-  const is$tRemoved = hasInitially$t && getIs$tRemoved(contentToSave);
+  const is$tRemoved = hasInitially$t && getIsSubfieldRemoved(contentToSave, '$t');
 
   if (is$tAdded) {
     return <FormattedMessage id="ui-quick-marc.record.error.1xx.add$t" values={{ tag: initialTag }} />;

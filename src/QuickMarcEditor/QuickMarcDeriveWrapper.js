@@ -10,7 +10,10 @@ import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
-import { useAuthorityLinking } from '../hooks';
+import {
+  useAuthorityLinking,
+  useValidation,
+} from '../hooks';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 import {
@@ -59,6 +62,14 @@ const QuickMarcDeriveWrapper = ({
   const { linkingRules } = useAuthorityLinkingRules();
   const [httpError, setHttpError] = useState(null);
 
+  const { validate } = useValidation({
+    initialValues,
+    marcType,
+    action: QUICK_MARC_ACTIONS.DERIVE,
+    linkableBibFields,
+    linkingRules,
+  });
+
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesForDerive = flow(
       removeDeletedRecords,
@@ -75,27 +86,11 @@ const QuickMarcDeriveWrapper = ({
     return formValuesForDerive;
   }, [marcType]);
 
-  const validate = useCallback((formValues) => {
+  const runValidation = useCallback((formValues) => {
     const formValuesForValidation = prepareForSubmit(formValues);
-    const controlFieldErrorMessage = checkControlFieldLength(formValuesForValidation);
 
-    if (controlFieldErrorMessage) {
-      return controlFieldErrorMessage;
-    }
-
-    const validationErrorMessage = validateMarcRecord({
-      marcRecord: formValuesForValidation,
-      initialValues,
-      linkableBibFields,
-      linkingRules,
-    });
-
-    if (validationErrorMessage) {
-      return validationErrorMessage;
-    }
-
-    return undefined;
-  }, [prepareForSubmit, initialValues, linkableBibFields, linkingRules]);
+    return validate(formValuesForValidation.records);
+  }, [validate, prepareForSubmit]);
 
   const redirectToRecord = (externalId) => {
     history.push({
@@ -162,7 +157,7 @@ const QuickMarcDeriveWrapper = ({
       marcType={marcType}
       httpError={httpError}
       confirmRemoveAuthorityLinking
-      validate={validate}
+      validate={runValidation}
     />
   );
 };

@@ -10,7 +10,10 @@ import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
-import { useAuthorityLinking } from '../hooks';
+import {
+  useAuthorityLinking,
+  useValidation,
+} from '../hooks';
 import { useAuthorityLinkingRules } from '../queries';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
@@ -59,6 +62,15 @@ const QuickMarcCreateWrapper = ({
   const { linkableBibFields } = useAuthorityLinking();
   const { linkingRules } = useAuthorityLinkingRules();
 
+  const { validate } = useValidation({
+    initialValues,
+    marcType,
+    action: QUICK_MARC_ACTIONS.CREATE,
+    locations,
+    linkableBibFields,
+    linkingRules,
+  });
+
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesForCreate = flow(
       removeDeletedRecords,
@@ -73,29 +85,11 @@ const QuickMarcCreateWrapper = ({
     return formValuesForCreate;
   }, [marcType]);
 
-  const validate = useCallback((formValues) => {
+  const runValidation = useCallback((formValues) => {
     const formValuesForValidation = prepareForSubmit(formValues);
-    const controlFieldErrorMessage = checkControlFieldLength(formValuesForValidation);
 
-    if (controlFieldErrorMessage) {
-      return controlFieldErrorMessage;
-    }
-
-    const validationErrorMessage = validateMarcRecord({
-      marcRecord: formValuesForValidation,
-      initialValues,
-      marcType,
-      locations,
-      linkableBibFields,
-      linkingRules,
-    });
-
-    if (validationErrorMessage) {
-      return validationErrorMessage;
-    }
-
-    return undefined;
-  }, [initialValues, locations, marcType, linkableBibFields, linkingRules, prepareForSubmit]);
+    return validate(formValuesForValidation.records);
+  }, [validate, prepareForSubmit]);
 
   const redirectToRecord = (externalId, instanceId) => {
     let path;
@@ -166,7 +160,7 @@ const QuickMarcCreateWrapper = ({
       action={action}
       marcType={marcType}
       httpError={httpError}
-      validate={validate}
+      validate={runValidation}
     />
   );
 };

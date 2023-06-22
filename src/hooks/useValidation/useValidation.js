@@ -10,10 +10,10 @@ const useValidation = (context) => {
         return _errorMessage;
       }
 
-      const result = rule.validator({ ...context, marcRecords }, rule);
+      const error = rule.validator({ ...context, marcRecords }, rule);
 
-      if (result) {
-        return result;
+      if (error) {
+        return error;
       }
 
       return null;
