@@ -55,15 +55,34 @@ describe('QuickMarcEditor utils', () => {
     it('should return dehydrated marc record', () => {
       const marcRecord = {
         id: faker.random.uuid(),
-        leader: faker.random.uuid(),
+        leader: '02164cam\\a2200469La\\4500',
         fields: [
           {
             tag: '001',
             content: '$a fss $b asd',
           },
+          {
+            tag: '006',
+            content: {
+              Type: 'c',
+            },
+          },
+          {
+            tag: '007',
+            content: {
+              Category: 'c',
+            },
+          },
+          {
+            tag: '008',
+            content: {},
+          },
         ],
       };
-      const dehydratedMarcRecord = utils.dehydrateMarcRecordResponse(marcRecord);
+      const dehydratedMarcRecord = utils.dehydrateMarcRecordResponse(marcRecord, MARC_TYPES.BIB);
+      const field006 = dehydratedMarcRecord.records[2];
+      const field007 = dehydratedMarcRecord.records[3];
+      const field008 = dehydratedMarcRecord.records[4];
 
       expect(dehydratedMarcRecord.fields).not.toBeDefined();
 
@@ -72,6 +91,54 @@ describe('QuickMarcEditor utils', () => {
       expect(dehydratedMarcRecord.records[0].content).toBe(marcRecord.leader);
 
       expect(dehydratedMarcRecord.records[1].id).toBe('uuid');
+
+      expect(field006.content).toMatchObject({
+        Type: 'c',
+        Comp: '\\\\',
+        FMus: '\\',
+        Part: '\\',
+        Audn: '\\',
+        Form: '\\',
+        AccM: ['\\', '\\', '\\', '\\', '\\', '\\'],
+        LTxt: ['\\', '\\'],
+        TrAr: '\\',
+      });
+
+      expect(field007.content).toMatchObject({
+        Category: 'c',
+        SMD: '\\',
+        Color: '\\',
+        Dimensions: '\\',
+        Sound: '\\',
+        'Image bit depth': '\\\\\\',
+        'File formats': '\\',
+        'Quality assurance target(s)': '\\',
+        'Antecedent/ Source': '\\',
+        'Level of compression': '\\',
+        'Reformatting quality': '\\',
+      });
+
+      expect(field008.content).toMatchObject({
+        Type: 'a',
+        BLvl: 'm',
+        Srce: '\\',
+        Audn: '\\',
+        Lang: '\\\\\\',
+        Form: '\\',
+        Conf: '\\',
+        Biog: '\\',
+        MRec: '\\',
+        Ctry: '\\\\\\',
+        Cont: ['\\', '\\', '\\', '\\'],
+        GPub: '\\',
+        LitF: '\\',
+        Indx: '\\',
+        Ills: ['\\', '\\', '\\', '\\'],
+        Fest: '\\',
+        DtSt: '\\',
+        Date1: '\\\\\\\\',
+        Date2: '\\\\\\\\',
+      });
     });
   });
 
@@ -192,6 +259,48 @@ describe('QuickMarcEditor utils', () => {
     });
   });
 
+  describe('markLinkedRecords', () => {
+    describe('when field comprises linkDetails and _isLinked is false', () => {
+      it('should mark records as linked', () => {
+        const fields = [
+          {
+            tag: '100',
+            content: '$a fss $b asd',
+            linkDetails: {},
+            _isLinked: false,
+          },
+          {
+            tag: '600',
+            content: '$a fss $b asd',
+            _isLinked: false,
+          },
+        ];
+
+        const newRecords = utils.markLinkedRecords(fields);
+
+        expect(newRecords[0]._isLinked).toBeTruthy();
+        expect(newRecords[1]._isLinked).toBeFalsy();
+      });
+    });
+
+    describe('when field is linked', () => {
+      it('should not mark the record', () => {
+        const fields = [
+          {
+            tag: '100',
+            content: '$a fss $b asd',
+            linkDetails: {},
+            _isLinked: true,
+          },
+        ];
+
+        const newRecords = utils.markLinkedRecords(fields);
+
+        expect(newRecords[0] === fields[0]).toBeTruthy();
+      });
+    });
+  });
+
   describe('markUnlinkedRecordByIndex', () => {
     it('should mark record as unlinked', () => {
       const state = {
@@ -259,11 +368,11 @@ describe('QuickMarcEditor utils', () => {
     it('should return edit error message when forbidden bytes are edited', () => {
       expect(
         utils.validateLeader('04706cam a2200865Ii 4500', '04706cam a2200865Ii 4501').props.id,
-      ).toBe('ui-quick-marc.record.error.leader.forbiddenBytes.bib');
+      ).toBe('ui-quick-marc.record.error.leader.forbiddenBytes.bibliographic');
 
       expect(
         utils.validateLeader('14706cam a2200865Ii 4500', '04706cam a2200865Ii 4500').props.id,
-      ).toBe('ui-quick-marc.record.error.leader.forbiddenBytes.bib');
+      ).toBe('ui-quick-marc.record.error.leader.forbiddenBytes.bibliographic');
     });
 
     describe('when marcType is bib', () => {
@@ -1501,7 +1610,44 @@ describe('QuickMarcEditor utils', () => {
         Date2: '\\\\\\\\',
         Type: type,
         BLvl: blvl,
-        Entered: '000000',
+      });
+    });
+
+    describe('when marc type is Authority', () => {
+      it('should add Authority specific hidden fields', () => {
+        const marcType = MARC_TYPES.AUTHORITY;
+        const type = '';
+        const blvl = '';
+        const field = {
+          content: {
+            Roman: 'n',
+          },
+        };
+
+        expect(utils.fillEmptyFixedFieldValues(marcType, type, blvl, field)).toMatchObject({
+          'Geo Subd': '\\',
+          'Kind rec': '\\',
+          'SH Sys': '\\',
+          Series: '\\',
+          'Numb Series': '\\',
+          'Main use': '\\',
+          'Subj use': '\\',
+          'Series use': '\\',
+          'Type Subd': '\\',
+          'Govt Ag': '\\',
+          RefEval: '\\',
+          RecUpd: '\\',
+          'Pers Name': '\\',
+          'Level Est': '\\',
+          'Mod Rec Est': '\\',
+          Source: '\\',
+          Roman: 'n',
+          Lang: '\\',
+          'Cat Rules': '\\',
+          Undef_18: '\\\\\\\\\\\\\\\\\\\\',
+          Undef_30: '\\',
+          Undef_34: '\\\\\\\\',
+        });
       });
     });
   });
@@ -1616,6 +1762,85 @@ describe('QuickMarcEditor utils', () => {
 
       expect(utils.formatMarcRecordByQuickMarcAction(record, QUICK_MARC_ACTIONS.CREATE, MARC_TYPES.HOLDINGS))
         .toEqual(expectedRecord);
+    });
+  });
+
+  describe('removeEnteredDate', () => {
+    it('should remove 008 "Entered" field', () => {
+      const formValues = {
+        fields: undefined,
+        externalId: 'c58ed340-5123-4c2c-8a99-add5db68c71f',
+        leader: '01897cas\\a2200493\\a\\4500',
+        parsedRecordDtoId: '73f23ed5-4981-4cb2-8cdf-1ec644bd8f34',
+        parsedRecordId: '3f75732f-53b9-44ed-b097-0cd14e5867b2',
+        records: [{
+          content: '01897cas\\a2200493\\a\\4500',
+          id: 'LDR',
+          tag: 'LDR',
+        }, {
+          content: {
+            Lang: 'eng',
+            Entered: '000000',
+          },
+          tag: '008',
+          indicators: [],
+        }, {
+          content: '$a v.1- (1992-)',
+          id: '061c0259-8fbb-42b4-b463-9f307295f2a2',
+          indicators: ['\\', '\\'],
+          tag: '841',
+        }, {
+          content: '',
+          id: '2247ab92-91c0-47f7-8a35-cdd8b54604c2',
+          indicators: [],
+          tag: '035',
+        }, {
+          content: '',
+          id: '6a6582ea-746e-4058-a35b-8130e4f6d277',
+          indicators: ['f', 'f'],
+          tag: '999',
+        }],
+        suppressDiscovery: false,
+        updateInfo: { recordState: 'NEW' },
+      };
+
+      const expectedFormValues = {
+        fields: undefined,
+        externalId: 'c58ed340-5123-4c2c-8a99-add5db68c71f',
+        leader: '01897cas\\a2200493\\a\\4500',
+        parsedRecordDtoId: '73f23ed5-4981-4cb2-8cdf-1ec644bd8f34',
+        parsedRecordId: '3f75732f-53b9-44ed-b097-0cd14e5867b2',
+        records: [{
+          content: '01897cas\\a2200493\\a\\4500',
+          id: 'LDR',
+          tag: 'LDR',
+        }, {
+          content: {
+            Lang: 'eng',
+          },
+          tag: '008',
+          indicators: [],
+        }, {
+          content: '$a v.1- (1992-)',
+          id: '061c0259-8fbb-42b4-b463-9f307295f2a2',
+          indicators: ['\\', '\\'],
+          tag: '841',
+        }, {
+          content: '',
+          id: '2247ab92-91c0-47f7-8a35-cdd8b54604c2',
+          indicators: [],
+          tag: '035',
+        }, {
+          content: '',
+          id: '6a6582ea-746e-4058-a35b-8130e4f6d277',
+          indicators: ['f', 'f'],
+          tag: '999',
+        }],
+        suppressDiscovery: false,
+        updateInfo: { recordState: 'NEW' },
+      };
+
+      expect(utils.removeEnteredDate(formValues)).toEqual(expectedFormValues);
     });
   });
 
@@ -2038,7 +2263,7 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.cleanBytesFields(record, 'bib')).toEqual(expectedRecord);
+      expect(utils.cleanBytesFields(record, MARC_TYPES.BIB)).toEqual(expectedRecord);
     });
   });
 
@@ -2282,6 +2507,92 @@ describe('QuickMarcEditor utils', () => {
 
     it('should be true for tag LDR on derive page', () => {
       expect(utils.isReadOnly({ tag: '005' }, QUICK_MARC_ACTIONS.DERIVE)).toBeTruthy();
+    });
+  });
+
+  describe('isRecordForAutoLinking', () => {
+    describe('when a record is enabled for auto-linking, has a $0 subfield and is not linked yet', () => {
+      it('should return true', () => {
+        const field = {
+          tag: '100',
+          content: '$a Coates, Ta-Nehisi, $0 naturalId',
+          _isLinked: false,
+          _isDeleted: false,
+        };
+        const autoLinkableBibFields = ['100'];
+
+        expect(utils.isRecordForAutoLinking(field, autoLinkableBibFields)).toBeTruthy();
+      });
+    });
+
+    describe('when $0 is empty', () => {
+      it('should return false', () => {
+        const field = {
+          tag: '100',
+          content: '$a Coates, Ta-Nehisi, $0 ',
+          _isLinked: false,
+          _isDeleted: false,
+        };
+        const autoLinkableBibFields = ['100'];
+
+        expect(utils.isRecordForAutoLinking(field, autoLinkableBibFields)).toBeFalsy();
+      });
+    });
+
+    describe('when $0 is absent', () => {
+      it('should return false', () => {
+        const field = {
+          tag: '100',
+          content: '$a Coates, Ta-Nehisi,',
+          _isLinked: false,
+          _isDeleted: false,
+        };
+        const autoLinkableBibFields = ['100'];
+
+        expect(utils.isRecordForAutoLinking(field, autoLinkableBibFields)).toBeFalsy();
+      });
+    });
+
+    describe('when field is not enabled for auto-linking', () => {
+      it('should return false', () => {
+        const field = {
+          tag: '650',
+          content: '$a Coates, Ta-Nehisi, $0 naturalId',
+          _isLinked: false,
+          _isDeleted: false,
+        };
+        const autoLinkableBibFields = ['100'];
+
+        expect(utils.isRecordForAutoLinking(field, autoLinkableBibFields)).toBeFalsy();
+      });
+    });
+
+    describe('when field is already linked', () => {
+      it('should return false', () => {
+        const field = {
+          tag: '100',
+          content: '$a Coates, Ta-Nehisi, $0 naturalId',
+          _isLinked: true,
+          _isDeleted: false,
+        };
+        const autoLinkableBibFields = ['100'];
+
+        expect(utils.isRecordForAutoLinking(field, autoLinkableBibFields)).toBeFalsy();
+      });
+    });
+
+    describe('when field is deleted', () => {
+      it('should return false', () => {
+        const field = {
+          tag: '100',
+          content: '$a Coates, Ta-Nehisi, $0 naturalId',
+          _isLinked: false,
+          _isDeleted: true,
+        };
+        const autoLinkableBibFields = ['100'];
+
+        expect(utils.isRecordForAutoLinking(field, autoLinkableBibFields)).toBeFalsy();
+      });
     });
   });
 });

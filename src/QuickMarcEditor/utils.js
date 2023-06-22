@@ -8,6 +8,7 @@ import isString from 'lodash/isString';
 import isNumber from 'lodash/isNumber';
 import toPairs from 'lodash/toPairs';
 import flatten from 'lodash/flatten';
+import flow from 'lodash/flow';
 
 import {
   LEADER_TAG,
@@ -26,7 +27,9 @@ import {
   CREATE_BIB_RECORD_DEFAULT_FIELD_TAGS,
   BIB_FIXED_FIELD_DEFAULT_TYPE,
   BIB_FIXED_FIELD_DEFAULT_BLVL,
-  DATE_ON_ENTERED_PLACEHOLDER,
+  ENTERED_KEY,
+  CREATE_AUTHORITY_RECORD_DEFAULT_LEADER_VALUE,
+  CREATE_AUTHORITY_RECORD_DEFAULT_FIELD_TAGS,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import { SUBFIELD_TYPES } from './QuickMarcEditorRows/BytesField';
@@ -172,47 +175,37 @@ export const saveLinksToNewRecord = async (mutator, externalId, marcRecord) => {
   });
 };
 
-export const dehydrateMarcRecordResponse = marcRecordResponse => ({
-  ...marcRecordResponse,
-  fields: undefined,
-  records: [
-    {
-      tag: LEADER_TAG,
-      content: marcRecordResponse.leader,
-      id: LEADER_TAG,
-    },
-    ...marcRecordResponse.fields.map(record => ({
-      ...record,
-      id: uuidv4(),
-    })),
-  ],
-});
-
-const getCreateMarcRecordDefaultFields = (instanceRecord) => {
-  return CREATE_HOLDINGS_RECORD_DEFAULT_FIELD_TAGS.map(tag => {
-    const field = {
-      tag,
-      id: uuidv4(),
-    };
-
-    if (tag === '004') {
-      field.content = instanceRecord.hrid;
+const fillEmptyFieldValues = ({ fieldConfigByType, field, hiddenValues = {} }) => {
+  return fieldConfigByType.reduce((acc, fieldConfig) => {
+    if (acc[fieldConfig.name]) {
+      return acc;
     }
 
-    if (tag === '008') {
-      field.content = HOLDINGS_FIXED_FIELD_DEFAULT_VALUES;
+    if (fieldConfig.type === SUBFIELD_TYPES.BYTE) {
+      return { ...acc, [fieldConfig.name]: '\\' };
+    } else if (fieldConfig.type === SUBFIELD_TYPES.BYTES) {
+      return { ...acc, [fieldConfig.name]: new Array(fieldConfig.bytes).fill('\\') };
+    } else if (fieldConfig.type === SUBFIELD_TYPES.STRING) {
+      return { ...acc, [fieldConfig.name]: new Array(fieldConfig.length).fill('\\').join('') };
     }
 
-    if (tag === '852') {
-      field.indicators = ['\\', '\\'];
-    }
-
-    if (tag === '999') {
-      field.indicators = ['f', 'f'];
-    }
-
-    return field;
+    return acc;
+  }, {
+    ...field?.content,
+    ...hiddenValues,
   });
+};
+
+export const fillEmptyMaterialCharsFieldValues = (type, field) => {
+  const fieldConfigByType = getMaterialCharsFieldConfig(type);
+
+  return fillEmptyFieldValues({ fieldConfigByType, field });
+};
+
+export const fillEmptyPhysDescriptionFieldValues = (type, field) => {
+  const fieldConfigByType = getPhysDescriptionFieldConfig(type);
+
+  return fillEmptyFieldValues({ fieldConfigByType, field });
 };
 
 export const fillEmptyFixedFieldValues = (marcType, type, blvl, field) => {
@@ -223,48 +216,26 @@ export const fillEmptyFixedFieldValues = (marcType, type, blvl, field) => {
       blvl,
     )?.configFields ?? [];
 
-  const hiddenValues = marcType === MARC_TYPES.BIB
-    ? {
+  let hiddenValues = {};
+
+  if (marcType === MARC_TYPES.BIB) {
+    hiddenValues = {
       Type: type,
       BLvl: blvl,
-      Entered: DATE_ON_ENTERED_PLACEHOLDER,
-    }
-    : {};
+    };
+  } else if (marcType === MARC_TYPES.AUTHORITY) {
+    hiddenValues = {
+      Undef_18: '\\\\\\\\\\\\\\\\\\\\',
+      Undef_30: '\\',
+      Undef_34: '\\\\\\\\',
+    };
+  }
 
-  return fieldConfigByType.reduce((fixedField, fieldConfig) => {
-    if (fixedField?.[fieldConfig.name]) {
-      return fixedField;
-    }
-
-    if (fieldConfig.type === SUBFIELD_TYPES.BYTE) {
-      return { ...fixedField, [fieldConfig.name]: '\\' };
-    } else if (fieldConfig.type === SUBFIELD_TYPES.BYTES) {
-      return { ...fixedField, [fieldConfig.name]: new Array(fieldConfig.bytes).fill('\\') };
-    } else if (fieldConfig.type === SUBFIELD_TYPES.STRING) {
-      return { ...fixedField, [fieldConfig.name]: new Array(fieldConfig.length).fill('\\').join('') };
-    }
-
-    return fixedField;
-  }, {
-    ...field?.content,
-    ...hiddenValues,
-  });
+  return fillEmptyFieldValues({ fieldConfigByType, field, hiddenValues });
 };
 
-const getCreateBibMarcRecordDefaultFields = (instanceRecord) => {
-  const contentMap = {
-    '001': instanceRecord.hrid,
-    '008': fillEmptyFixedFieldValues(MARC_TYPES.BIB, BIB_FIXED_FIELD_DEFAULT_TYPE, BIB_FIXED_FIELD_DEFAULT_BLVL),
-    '245': '$a ',
-    '999': '',
-  };
-
-  const indicatorMap = {
-    '245': ['\\', '\\'],
-    '999': ['f', 'f'],
-  };
-
-  return CREATE_BIB_RECORD_DEFAULT_FIELD_TAGS.map(tag => {
+const getCreateMarcRecordDefaultFields = (contentMap, indicatorMap, defaultTags) => {
+  return defaultTags.map(tag => {
     const field = {
       tag,
       id: uuidv4(),
@@ -285,6 +256,52 @@ const getCreateBibMarcRecordDefaultFields = (instanceRecord) => {
   });
 };
 
+const getCreateBibMarcRecordDefaultFields = (instanceRecord) => {
+  const contentMap = {
+    '001': instanceRecord.hrid,
+    '008': fillEmptyFixedFieldValues(MARC_TYPES.BIB, BIB_FIXED_FIELD_DEFAULT_TYPE, BIB_FIXED_FIELD_DEFAULT_BLVL),
+    '245': '$a ',
+    '999': '',
+  };
+
+  const indicatorMap = {
+    '245': ['\\', '\\'],
+    '999': ['f', 'f'],
+  };
+
+  return getCreateMarcRecordDefaultFields(contentMap, indicatorMap, CREATE_BIB_RECORD_DEFAULT_FIELD_TAGS);
+};
+
+const getCreateHoldingsMarcRecordDefaultFields = (instanceRecord) => {
+  const contentMap = {
+    '004': instanceRecord.hrid,
+    '008': HOLDINGS_FIXED_FIELD_DEFAULT_VALUES,
+  };
+
+  const indicatorMap = {
+    '852': ['\\', '\\'],
+    '999': ['f', 'f'],
+  };
+
+  return getCreateMarcRecordDefaultFields(contentMap, indicatorMap, CREATE_HOLDINGS_RECORD_DEFAULT_FIELD_TAGS);
+};
+
+const getCreateAuthorityMarcRecordDefaultFields = (instanceRecord) => {
+  const contentMap = {
+    '001': instanceRecord.hrid,
+    '008': fillEmptyFixedFieldValues(MARC_TYPES.AUTHORITY),
+    '100': '$a ',
+    '999': '',
+  };
+
+  const indicatorMap = {
+    '100': ['\\', '\\'],
+    '999': ['f', 'f'],
+  };
+
+  return getCreateMarcRecordDefaultFields(contentMap, indicatorMap, CREATE_AUTHORITY_RECORD_DEFAULT_FIELD_TAGS);
+};
+
 export const getCreateHoldingsMarcRecordResponse = (instanceResponse) => {
   const instanceId = instanceResponse.id;
 
@@ -298,7 +315,7 @@ export const getCreateHoldingsMarcRecordResponse = (instanceResponse) => {
         content: CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
         id: LEADER_TAG,
       },
-      ...getCreateMarcRecordDefaultFields(instanceResponse),
+      ...getCreateHoldingsMarcRecordDefaultFields(instanceResponse),
     ],
     parsedRecordDtoId: instanceId,
   };
@@ -318,6 +335,25 @@ export const getCreateBibMarcRecordResponse = (instanceResponse) => {
         id: LEADER_TAG,
       },
       ...getCreateBibMarcRecordDefaultFields(instanceResponse),
+    ],
+    parsedRecordDtoId: instanceId,
+  };
+};
+
+export const getCreateAuthorityMarcRecordResponse = (instanceResponse) => {
+  const instanceId = '00000000-0000-0000-0000-000000000000'; // For create we need to send any UUID
+
+  return {
+    externalId: instanceId,
+    leader: CREATE_AUTHORITY_RECORD_DEFAULT_LEADER_VALUE,
+    fields: undefined,
+    records: [
+      {
+        tag: LEADER_TAG,
+        content: CREATE_AUTHORITY_RECORD_DEFAULT_LEADER_VALUE,
+        id: LEADER_TAG,
+      },
+      ...getCreateAuthorityMarcRecordDefaultFields(instanceResponse),
     ],
     parsedRecordDtoId: instanceId,
   };
@@ -391,28 +427,15 @@ export const formatMarcRecordByQuickMarcAction = (marcRecord, action, marcType) 
   }
 
   if (action === QUICK_MARC_ACTIONS.CREATE) {
-    if (marcType === MARC_TYPES.BIB) {
-      return {
-        ...marcRecord,
-        relatedRecordVersion: 1,
-        marcFormat: MARC_TYPES.BIBLIOGRAPHIC.toUpperCase(),
-        updateInfo: {
-          recordState: RECORD_STATUS_NEW,
-        },
-      };
-    }
-
-    if (marcType === MARC_TYPES.HOLDINGS) {
-      return {
-        ...marcRecord,
-        relatedRecordVersion: 1,
-        marcFormat: MARC_TYPES.HOLDINGS.toUpperCase(),
-        suppressDiscovery: false,
-        updateInfo: {
-          recordState: RECORD_STATUS_NEW,
-        },
-      };
-    }
+    return {
+      ...marcRecord,
+      relatedRecordVersion: 1,
+      marcFormat: marcType.toUpperCase(),
+      suppressDiscovery: false,
+      updateInfo: {
+        recordState: RECORD_STATUS_NEW,
+      },
+    };
   }
 
   return marcRecord;
@@ -599,10 +622,17 @@ export const checkDuplicate010Field = (marcRecords) => {
   return undefined;
 };
 
-export const checkCanBeLinked = (stripes, marcType, linkableBibFields, tag) => (
+export const isRecordForManualLinking = (stripes, marcType, linkableBibFields, tag) => (
   stripes.hasPerm('ui-quick-marc.quick-marc-authority-records.linkUnlink') &&
   marcType === MARC_TYPES.BIB &&
   linkableBibFields.includes(tag)
+);
+
+export const isRecordForAutoLinking = (field, autoLinkableBibFields) => (
+  !field._isDeleted
+  && !field._isLinked
+  && autoLinkableBibFields.includes(field.tag)
+  && getContentSubfieldValue(field.content).$0?.[0]
 );
 
 export const recordHasLinks = (fields) => fields.some(field => field.linkDetails?.linkingRuleId);
@@ -971,6 +1001,19 @@ export const markLinkedRecordByIndex = (index, field, state) => {
   return records;
 };
 
+export const markLinkedRecords = (fields) => {
+  return fields.map(field => {
+    if (field.linkDetails && !field._isLinked) {
+      return {
+        ...field,
+        _isLinked: true,
+      };
+    }
+
+    return field;
+  });
+};
+
 export const markUnlinkedRecordByIndex = (index, state) => {
   const records = [...state.formState.values.records];
 
@@ -1016,6 +1059,20 @@ export const removeDeletedRecords = (formValues) => {
     ...formValues,
     records: records.filter(record => !record._isDeleted),
   };
+};
+
+export const removeEnteredDate = (formValues) => {
+  const { records } = formValues;
+
+  const fixedField = records.find(isFixedFieldRow);
+
+  if (!fixedField) {
+    return formValues;
+  }
+
+  delete fixedField.content[ENTERED_KEY];
+
+  return formValues;
 };
 
 export const removeFieldsForDerive = (formValues) => {
@@ -1068,6 +1125,46 @@ export const autopopulateIndicators = (formValues) => {
   return {
     ...formValues,
     records: recordsWithIndicators,
+  };
+};
+
+export const autopopulateMaterialCharsField = (formValues) => {
+  const { records } = formValues;
+
+  return {
+    ...formValues,
+    records: records.map(field => {
+      if (!isMaterialCharsRecord(field)) {
+        return field;
+      }
+
+      const type = field.content?.Type;
+
+      return {
+        ...field,
+        content: fillEmptyMaterialCharsFieldValues(type, field),
+      };
+    }),
+  };
+};
+
+export const autopopulatePhysDescriptionField = (formValues) => {
+  const { records } = formValues;
+
+  return {
+    ...formValues,
+    records: records.map(field => {
+      if (!isPhysDescriptionRecord(field)) {
+        return field;
+      }
+
+      const type = field.content?.Category;
+
+      return {
+        ...field,
+        content: fillEmptyPhysDescriptionFieldValues(type, field),
+      };
+    }),
   };
 };
 
@@ -1218,7 +1315,7 @@ export const combineSplitFields = (formValues) => {
 export const getCorrespondingMarcTag = (records) => {
   const correspondingHeadingTypeTags = new Set(CORRESPONDING_HEADING_TYPE_TAGS);
 
-  return records.find(recordRow => correspondingHeadingTypeTags.has(recordRow.tag)).tag;
+  return records.find(recordRow => correspondingHeadingTypeTags.has(recordRow.tag))?.tag;
 };
 
 export const groupSubfields = (field, authorityControlledSubfields = []) => {
@@ -1230,7 +1327,7 @@ export const groupSubfields = (field, authorityControlledSubfields = []) => {
     const isZero = /\$0/.test(subfield[0]);
     const isNine = /\$9/.test(subfield[0]);
 
-    const fieldContent = subfield[1].reduce((content, value) => [content, `${subfield[0]} ${value}`].join(' '), '');
+    const fieldContent = subfield[1].reduce((content, value) => [content, `${subfield[0]} ${value}`].join(' ').trimStart(), '');
 
     const formattedSubfield = {
       content: fieldContent,
@@ -1372,3 +1469,28 @@ export const isReadOnly = (
 
   return rows.has(recordRow.tag) || isLastRecord(recordRow);
 };
+
+const addLeaderFieldAndIdToRecords = (marcRecordResponse) => ({
+  ...marcRecordResponse,
+  fields: undefined,
+  records: [
+    {
+      tag: LEADER_TAG,
+      content: marcRecordResponse.leader,
+      id: LEADER_TAG,
+    },
+    ...marcRecordResponse.fields.map(record => ({
+      ...record,
+      id: uuidv4(),
+    })),
+  ],
+});
+
+export const dehydrateMarcRecordResponse = (marcRecordResponse, marcType) => (
+  flow(
+    addLeaderFieldAndIdToRecords,
+    marcRecord => autopopulateFixedField(marcRecord, marcType),
+    autopopulatePhysDescriptionField,
+    autopopulateMaterialCharsField,
+  )(marcRecordResponse)
+);

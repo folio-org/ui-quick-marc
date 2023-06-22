@@ -19,6 +19,7 @@ import stripesFinalForm from '@folio/stripes/final-form';
 import {
   Pane,
   Paneset,
+  PaneMenu,
   Row,
   Col,
   ConfirmationModal,
@@ -33,6 +34,7 @@ import { useShowCallout } from '@folio/stripes-acq-components';
 import { QuickMarcRecordInfo } from './QuickMarcRecordInfo';
 import { QuickMarcEditorRows } from './QuickMarcEditorRows';
 import { OptimisticLockingBanner } from './OptimisticLockingBanner';
+import { AutoLinkingButton } from './AutoLinkingButton';
 import { QUICK_MARC_ACTIONS } from './constants';
 import {
   ERROR_TYPES,
@@ -52,7 +54,9 @@ import {
   is010$aUpdated,
   is010LinkedToBibRecord,
   updateRecordAtIndex,
+  markLinkedRecords,
 } from './utils';
+import { useLinkSuggestions } from '../queries';
 import { useAuthorityLinking } from '../hooks';
 
 import css from './QuickMarcEditor.css';
@@ -90,6 +94,7 @@ const QuickMarcEditor = ({
   linksCount,
   validate,
 }) => {
+  const formValues = getState().values;
   const history = useHistory();
   const location = useLocation();
   const showCallout = useShowCallout();
@@ -100,6 +105,8 @@ const QuickMarcEditor = ({
   const continueAfterSave = useRef(false);
   const formRef = useRef(null);
   const confirmationChecks = useRef({ ...REQUIRED_CONFIRMATIONS });
+
+  const { isLoading: isLoadingLinkSuggestions, fetchLinkSuggestions } = useLinkSuggestions();
 
   const { unlinkAuthority } = useAuthorityLinking();
 
@@ -422,6 +429,17 @@ const QuickMarcEditor = ({
               paneTitle={getPaneTitle()}
               paneSub={<QuickMarcRecordInfo {...recordInfoProps} />}
               footer={paneFooter}
+              lastMenu={(
+                <PaneMenu>
+                  <AutoLinkingButton
+                    marcType={marcType}
+                    formValues={formValues}
+                    isLoadingLinkSuggestions={isLoadingLinkSuggestions}
+                    onFetchLinkSuggestions={fetchLinkSuggestions}
+                    onMarkRecordsLinked={mutators.markRecordsLinked}
+                  />
+                </PaneMenu>
+              )}
             >
               <OptimisticLockingBanner
                 httpError={httpError}
@@ -443,6 +461,7 @@ const QuickMarcEditor = ({
                     marcType={marcType}
                     instance={instance}
                     linksCount={linksCount}
+                    isLoadingLinkSuggestions={isLoadingLinkSuggestions}
                   />
                 </Col>
               </Row>
@@ -546,6 +565,11 @@ export default stripesFinalForm({
     },
     markRecordLinked: ([{ index, field }], state, tools) => {
       const records = markLinkedRecordByIndex(index, field, state);
+
+      tools.changeValue(state, 'records', () => records);
+    },
+    markRecordsLinked: ([{ fields }], state, tools) => {
+      const records = markLinkedRecords(fields);
 
       tools.changeValue(state, 'records', () => records);
     },

@@ -160,7 +160,7 @@
     "record.error.tag.nonDigits": "Etiqueta MARC inválida. Por favor, intente de nuevo.",
     "record.error.subfield": "Falta un valor de subcampo para una etiqueta MARC",
     "bib-record.edit.title": "Editar registro MARC - {title}",
-    "holdings-record.edit.title": "Editar existencias MARC - Ubicación: {location} - [{callNumber}]",
+    "holdings-record.edit.title": "Editar holdings MARC - Ubicación: {location} - [{callNumber}]",
     "record.fixedField.AcqStatus": "AcqStatus",
     "record.fixedField.AcqMethod": "AcqMethod",
     "record.fixedField.AcqEndDate": "AcqEndDate",
@@ -173,8 +173,8 @@
     "record.error.leader.forbiddenBytes.bib": "No se puede guardar el registro. Por favor, compruebe el Leader. Sólo las posiciones 5, 6, 7, 8, 17, 18 y/o 19 pueden ser editadas en el Leader.",
     "record.error.leader.forbiddenBytes.holdings": "No se puede guardar el registro. Por favor, compruebe el Leader. Sólo las posiciones 5, 6, 17, 18 pueden ser editadas en el Leader.",
     "record.error.leader.invalidPositionValue": "No se puede guardar el registro. Por favor, introduzca un {positions} válido. Los valores válidos se enumeran en {link}",
-    "permission.quick-marc-holdings-editor.all": "quickMARC: Ver y editar registros de existencias MARC",
-    "permission.quick-marc-holdings-editor.create": "quickMARC: Crear un nuevo registro de existencias MARC",
+    "permission.quick-marc-holdings-editor.all": "quickMARC: Ver y editar registros de Holdings MARC",
+    "permission.quick-marc-holdings-editor.create": "quickMARC: Crear un nuevo registro de Holdings MARC",
     "record.fixedField.Rept date": "Fecha del informe",
     "record.error.bib.leader.invalid005PositionValue": "No se puede guardar el registro. Valor no válido introducido para la posición 5.",
     "record.error.location.empty": "No se puede guardar el registro. Se requiere un 852.",
@@ -215,7 +215,7 @@
     "record.error.heading.empty": "El registro no puede guardarse sin el campo 1XX.",
     "record.error.heading.multiple": "No se puede guardar el registro. No puede tener varios 1XX",
     "record.fixedField.Gen ret": "Gen ret",
-    "permission.quick-marc-holdings-editor.view": "quickMARC: Ver el registro de existencias MARC",
+    "permission.quick-marc-holdings-editor.view": "quickMARC: Ver el registro de Holdings MARC",
     "permission.quick-marc-editor.view": "quickMARC: Ver registro bibliográfico MARC",
     "record.protectedField": "Este campo está protegido.",
     "record.error.leader.forbiddenBytes.authority": "No se puede guardar el registro. Por favor, compruebe el Leader. Sólo las posiciones 5, 17, 18 pueden ser editadas en el Leader.",
@@ -265,5 +265,8 @@
     "permission.quick-marc-editor.create": "Cargar registros bibliográficos MARC.",
     "record.error.field.onlyOneSubfield": "<b>{fieldTag}</b> sólo puede tener un <b>{subField}</b>.",
     "bib-record.create.title": "Crear un nuevo registro bibliográfico MARC",
-    "record.error.010.multiple": "No se puede guardar un registro con más de un campo 010"
+    "record.error.010.multiple": "No se puede guardar un registro con más de un campo 010",
+    "record.error.008.empty": "El registro no puede guardarse sin el campo 008",
+    "record.error.008.multiple": "No se puede guardar un registro con más de un campo 008",
+    "permission.quick-marc-authorities-editor.create": "quickMARC: Create a new MARC authority record"
 }

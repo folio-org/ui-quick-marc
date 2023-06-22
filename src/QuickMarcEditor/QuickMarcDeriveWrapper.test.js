@@ -13,6 +13,7 @@ import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcDeriveWrapper from './QuickMarcDeriveWrapper';
 import { QUICK_MARC_ACTIONS } from './constants';
+import { MARC_TYPES } from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
 
@@ -24,6 +25,7 @@ jest.mock('react-final-form', () => ({
 jest.mock('../queries', () => ({
   ...jest.requireActual('../queries'),
   useAuthorityLinkingRules: jest.fn().mockReturnValue({ linkingRules: [] }),
+  useLinkSuggestions: jest.fn().mockReturnValue({ isLoading: false, fetchLinkSuggestions: jest.fn() }),
 }));
 
 const mockFormValues = jest.fn(() => ({
@@ -218,7 +220,7 @@ const renderQuickMarcDeriveWrapper = ({
       mutator={mutator}
       action={QUICK_MARC_ACTIONS.DERIVE}
       initialValues={initialValues}
-      marcType="bib"
+      marcType={MARC_TYPES.BIB}
       history={history}
       location={location}
     />

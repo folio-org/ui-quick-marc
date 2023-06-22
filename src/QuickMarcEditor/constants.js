@@ -10,8 +10,6 @@ export const LEADER_EDITABLE_BYTES = {
 
 export const NON_BREAKING_SPACE = '\u00A0';
 
-export const DATE_ON_ENTERED_PLACEHOLDER = '000000';
-
 export const LEADER_VALUES_FOR_POSITION = {
   [MARC_TYPES.BIB]: {
     5: ['a', 'c', 'd', 'n', 'p'],
@@ -82,19 +80,25 @@ export const FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS = {
   ],
 };
 
+export const CREATE_BIB_RECORD_DEFAULT_LEADER_VALUE = '00000n\\\\\\a2200000uu\\4500';
+
 export const CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE = '00000nu\\\\\\2200000un\\4500';
 
-export const CREATE_BIB_RECORD_DEFAULT_LEADER_VALUE = '00000n\\\\\\a2200000uu\\4500';
+export const CREATE_AUTHORITY_RECORD_DEFAULT_LEADER_VALUE = '00000n\\\\\\a2200000o\\\\4500';
 
 export const CREATE_HOLDINGS_RECORD_DEFAULT_FIELD_TAGS = ['001', '004', '005', '008', '852', '999'];
 
 export const CREATE_BIB_RECORD_DEFAULT_FIELD_TAGS = ['001', '005', '008', '245', '999'];
+
+export const CREATE_AUTHORITY_RECORD_DEFAULT_FIELD_TAGS = ['001', '005', '008', '100', '999'];
 
 export const QM_RECORD_STATUS_TIMEOUT = 5000;
 
 export const QM_RECORD_STATUS_BAIL_TIME = 20000;
 
 export const ELVL_BYTE = 'ELvl';
+
+export const ENTERED_KEY = 'Entered';
 
 export const HOLDINGS_FIXED_FIELD_DEFAULT_VALUES = {
   AcqStatus: 0,

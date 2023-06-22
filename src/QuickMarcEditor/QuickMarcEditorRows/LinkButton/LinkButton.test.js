@@ -36,6 +36,7 @@ const renderComponent = (props = {}) => render(
       handleLinkAuthority={mockHandleLinkAuthority}
       handleUnlinkAuthority={mockHandleUnlinkAuthority}
       isLinked={false}
+      isLoading={false}
       fieldId="fakeId"
       tag="100"
       content=""
@@ -254,6 +255,14 @@ describe('Given LinkButton', () => {
       fireEvent.click(getByText('ui-quick-marc.record.unlink.confirm.confirm'));
 
       expect(mockHandleUnlinkAuthority).toHaveBeenCalled();
+    });
+  });
+
+  describe('when isLoading is true', () => {
+    it('should not be displayed', () => {
+      const { queryAllByTestId } = renderComponent({ isLoading: true });
+
+      expect(queryAllByTestId('link-authority-button-fakeId')[0]).toBeUndefined();
     });
   });
 });

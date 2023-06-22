@@ -14,6 +14,7 @@ const MicroformDescriptionFieldConfig = [
   {
     name: 'Reduction ratio range/Reduction ratio',
     type: SUBFIELD_TYPES.STRING,
+    length: 3,
   },
   {
     name: 'Color',

@@ -18,6 +18,7 @@ import {
   Tooltip,
   IconButton,
   ConfirmationModal,
+  Loading,
 } from '@folio/stripes/components';
 
 import { useMarcSource } from '../../../queries';
@@ -35,6 +36,7 @@ const propTypes = {
   ]),
   content: PropTypes.string,
   isLinked: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
   handleLinkAuthority: PropTypes.func.isRequired,
   handleUnlinkAuthority: PropTypes.func.isRequired,
   fieldId: PropTypes.string.isRequired,
@@ -45,6 +47,7 @@ const LinkButton = ({
   handleLinkAuthority,
   handleUnlinkAuthority,
   isLinked,
+  isLoading,
   tag,
   fieldId,
   calloutRef,
@@ -55,7 +58,7 @@ const LinkButton = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const callout = useCallout();
 
-  const { isLoading, refetch: refetchSource } = useMarcSource(fieldId, authority?.id, {
+  const { isLoading: isLoadingMarcSource, refetch: refetchSource } = useMarcSource(fieldId, authority?.id, {
     onSuccess: (authoritySource) => {
       const linkingSuccessful = handleLinkAuthority(authority, authoritySource);
 
@@ -170,6 +173,10 @@ const LinkButton = ({
   }, [content, tag]);
 
   const renderButton = () => {
+    if (isLoading) {
+      return <Loading />;
+    }
+
     if (isLinked) {
       return (
         <Tooltip
@@ -193,7 +200,7 @@ const LinkButton = ({
     return (
       <Pluggable
         type="find-authority"
-        isLinkingLoading={isLoading}
+        isLinkingLoading={isLoadingMarcSource}
         calloutRef={calloutRef}
         initialValues={initialValues}
         onLinkRecord={onLinkRecord}

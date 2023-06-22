@@ -27,6 +27,9 @@ import {
   saveLinksToNewRecord,
   recordHasLinks,
   autopopulateFixedField,
+  removeEnteredDate,
+  autopopulatePhysDescriptionField,
+  autopopulateMaterialCharsField,
 } from './utils';
 import { useAuthorityLinkingRules } from '../queries';
 
@@ -60,8 +63,11 @@ const QuickMarcDeriveWrapper = ({
     const formValuesForDerive = flow(
       removeDeletedRecords,
       removeFieldsForDerive,
+      removeEnteredDate,
       autopopulateIndicators,
       marcRecord => autopopulateFixedField(marcRecord, marcType),
+      autopopulatePhysDescriptionField,
+      autopopulateMaterialCharsField,
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
       marcRecord => cleanBytesFields(marcRecord, marcType),
     )(formValues);

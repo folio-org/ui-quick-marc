@@ -172,7 +172,7 @@
     "record.fixedField.Sep/comp": "分离/完整",
     "record.error.leader.forbiddenBytes.bib": "记录无法保存。请检查头标。头标中只能编辑位置5、6、7、8、17、18和/或19。",
     "record.error.leader.forbiddenBytes.holdings": "记录无法保存。请检查头标。在头标中只能编辑5、6、17、18位。",
-    "record.error.leader.invalidPositionValue": "Record cannot be saved. Please enter a valid {positions}. Valid values are listed at {link}",
+    "record.error.leader.invalidPositionValue": "无法保存记录。请输入有效的{positions} 。有效值列在{link}",
     "permission.quick-marc-holdings-editor.all": "quickMARC：查看、编辑MARC馆藏记录",
     "permission.quick-marc-holdings-editor.create": "quickMARC：创建新MARC馆藏记录",
     "record.fixedField.Rept date": "报告日期",
@@ -265,5 +265,8 @@
     "permission.quick-marc-editor.create": "quickMARC：创建新的MARC书目记录",
     "record.error.field.onlyOneSubfield": "<b> {fieldTag} </b>只能有一个<b> {subField} </b> 。",
     "bib-record.create.title": "创建新的MARC书目记录",
-    "record.error.010.multiple": "不能保存超过一个 010 字段的记录"
+    "record.error.010.multiple": "不能保存超过一个 010 字段的记录",
+    "record.error.008.empty": "Record cannot be saved without 008 field",
+    "record.error.008.multiple": "Record cannot be saved with more than one 008 field",
+    "permission.quick-marc-authorities-editor.create": "quickMARC: Create a new MARC authority record"
 }
