@@ -1,13 +1,14 @@
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
-import { useStripes } from '@folio/stripes/core';
+import { IfPermission } from '@folio/stripes/core';
 import { Button } from '@folio/stripes/components';
 import { useShowCallout } from '@folio/stripes-acq-components';
 
 import { useAuthorityLinking } from '../../hooks';
 import { isRecordForAutoLinking } from '../utils';
 import { MARC_TYPES } from '../../common/constants';
+import { AUTOLINKING_ERROR_CODES } from './constants';
 
 const propTypes = {
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
@@ -24,7 +25,6 @@ const AutoLinkingButton = ({
   onFetchLinkSuggestions,
   onMarkRecordsLinked,
 }) => {
-  const stripes = useStripes();
   const intl = useIntl();
   const showCallout = useShowCallout();
 
@@ -39,15 +39,22 @@ const AutoLinkingButton = ({
   const getAutoLinkingToasts = (fields) => {
     const toasts = [];
     const newLinkedFieldTags = new Set();
-    const notLinkedFieldTags = new Set();
+    const notLinkedFieldTags = {
+      [AUTOLINKING_ERROR_CODES.AUTHORITY_NOT_FOUND]: new Set(),
+      [AUTOLINKING_ERROR_CODES.MULTIPLE_AUTHORITIES_FOUND]: new Set(),
+    };
 
     fields.forEach(field => {
+      const { status, errorCause } = field.linkDetails;
+
       if (!field.linkDetails) {
-        notLinkedFieldTags.add(field.tag);
-      } else if (field.linkDetails.status === 'NEW') {
+        notLinkedFieldTags[AUTOLINKING_ERROR_CODES.AUTHORITY_NOT_FOUND].add(field.tag);
+      }
+
+      if (status === 'NEW') {
         newLinkedFieldTags.add(field.tag);
-      } else if (field.linkDetails.status === 'ERROR') {
-        notLinkedFieldTags.add(field.tag);
+      } else if (status === 'ERROR') {
+        notLinkedFieldTags[errorCause].add(field.tag);
       }
     });
 
@@ -70,11 +77,19 @@ const AutoLinkingButton = ({
       });
     }
 
-    if (notLinkedFieldTags.size) {
+    if (notLinkedFieldTags[AUTOLINKING_ERROR_CODES.AUTHORITY_NOT_FOUND].size) {
       toasts.push({
         type: 'error',
         messageId: 'ui-quick-marc.records.autoLink.notLinkedFields',
-        values: getValues(notLinkedFieldTags),
+        values: getValues(notLinkedFieldTags[AUTOLINKING_ERROR_CODES.AUTHORITY_NOT_FOUND]),
+      });
+    }
+
+    if (notLinkedFieldTags[AUTOLINKING_ERROR_CODES.MULTIPLE_AUTHORITIES_FOUND].size) {
+      toasts.push({
+        type: 'error',
+        messageId: 'ui-quick-marc.records.autoLink.notLinkedFields.multiple',
+        values: getValues(notLinkedFieldTags[AUTOLINKING_ERROR_CODES.MULTIPLE_AUTHORITIES_FOUND]),
       });
     }
 
@@ -103,33 +118,27 @@ const AutoLinkingButton = ({
 
       const toasts = getAutoLinkingToasts(data.fields);
 
-      if (toasts.length) {
-        toasts.forEach(toast => {
-          showCallout(toast);
-        });
-      }
+      toasts.forEach(toast => showCallout(toast));
     } catch (e) {
       showCallout({ messageId: 'ui-quick-marc.records.error.autoLinking', type: 'error' });
     }
   };
 
-  if (
-    !autoLinkingEnabled
-    || marcType !== MARC_TYPES.BIB
-    || !stripes.hasPerm('ui-quick-marc.quick-marc-authority-records.linkUnlink')
-  ) {
+  if (!autoLinkingEnabled || marcType !== MARC_TYPES.BIB) {
     return null;
   }
 
   return (
-    <Button
-      marginBottom0
-      disabled={!hasAutoLinkableRecord || isLoadingLinkSuggestions}
-      onClick={handleAutoLinking}
-      data-testid="autoLinkingButton"
-    >
-      {intl.formatMessage({ id: 'ui-quick-marc.autoLinkingButton' })}
-    </Button>
+    <IfPermission perm="ui-quick-marc.quick-marc-authority-records.linkUnlink">
+      <Button
+        marginBottom0
+        disabled={!hasAutoLinkableRecord || isLoadingLinkSuggestions}
+        onClick={handleAutoLinking}
+        data-testid="autoLinkingButton"
+      >
+        {intl.formatMessage({ id: 'ui-quick-marc.autoLinkingButton' })}
+      </Button>
+    </IfPermission>
   );
 };
 

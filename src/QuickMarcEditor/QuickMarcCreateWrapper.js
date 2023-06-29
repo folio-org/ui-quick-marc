@@ -32,6 +32,7 @@ import {
   autopopulateFixedField,
   autopopulatePhysDescriptionField,
   autopopulateMaterialCharsField,
+  autopopulateIndicators,
 } from './utils';
 
 const propTypes = {
@@ -75,6 +76,7 @@ const QuickMarcCreateWrapper = ({
     const formValuesForCreate = flow(
       removeDeletedRecords,
       removeFieldsForDerive,
+      autopopulateIndicators,
       marcRecord => autopopulateFixedField(marcRecord, marcType),
       autopopulatePhysDescriptionField,
       autopopulateMaterialCharsField,
