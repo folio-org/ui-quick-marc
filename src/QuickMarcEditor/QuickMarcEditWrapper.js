@@ -21,8 +21,6 @@ import {
 } from '../common/constants';
 import {
   hydrateMarcRecord,
-  validateMarcRecord,
-  checkControlFieldLength,
   autopopulateIndicators,
   autopopulateSubfieldSection,
   cleanBytesFields,

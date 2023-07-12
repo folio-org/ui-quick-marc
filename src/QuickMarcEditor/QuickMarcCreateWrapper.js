@@ -21,8 +21,6 @@ import {
   hydrateMarcRecord,
   removeFieldsForDerive,
   autopopulateSubfieldSection,
-  validateMarcRecord,
-  checkControlFieldLength,
   cleanBytesFields,
   parseHttpError,
   removeDeletedRecords,

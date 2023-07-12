@@ -21,8 +21,6 @@ import {
   removeFieldsForDerive,
   autopopulateIndicators,
   autopopulateSubfieldSection,
-  validateMarcRecord,
-  checkControlFieldLength,
   cleanBytesFields,
   parseHttpError,
   removeDeletedRecords,
