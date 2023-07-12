@@ -119,3 +119,8 @@ export const BIB_FIXED_FIELD_DEFAULT_TYPE = 'a';
 export const BIB_FIXED_FIELD_DEFAULT_BLVL = 'm';
 
 export const CORRESPONDING_HEADING_TYPE_TAGS = ['100', '110', '111', '151', '130', '150', '155'];
+
+export const AUTOLINKING_STATUSES = {
+  NEW: 'NEW',
+  ERROR: 'ERROR',
+};

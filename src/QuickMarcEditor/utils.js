@@ -1494,3 +1494,13 @@ export const dehydrateMarcRecordResponse = (marcRecordResponse, marcType) => (
     autopopulateMaterialCharsField,
   )(marcRecordResponse)
 );
+
+export const hydrateForLinkSuggestions = (marcRecord, fields) => ({
+  leader: marcRecord.leader,
+  fields: fields.map(record => ({
+    tag: record.tag,
+    content: record.content,
+  })),
+  marcFormat: marcRecord.marcFormat,
+  _actionType: 'view',
+});

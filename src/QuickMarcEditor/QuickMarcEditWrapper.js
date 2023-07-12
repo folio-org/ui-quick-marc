@@ -62,7 +62,7 @@ const QuickMarcEditWrapper = ({
   const showCallout = useShowCallout();
   const location = useLocation();
   const [httpError, setHttpError] = useState(null);
-  const { linkableBibFields } = useAuthorityLinking();
+  const { linkableBibFields, actualizeNewLinkedFields } = useAuthorityLinking();
   const { linkingRules } = useAuthorityLinkingRules();
 
   const prepareForSubmit = useCallback((formValues) => {
@@ -116,7 +116,7 @@ const QuickMarcEditWrapper = ({
       is1xxOr010Updated = are010Or1xxUpdated(initialValues.records, formValues.records);
     }
 
-    const formValuesToSave = flow(
+    const formValuesToProcess = flow(
       prepareForSubmit,
       autopopulateIndicators,
       marcRecord => autopopulateFixedField(marcRecord, marcType),
@@ -131,15 +131,25 @@ const QuickMarcEditWrapper = ({
     const path = EXTERNAL_INSTANCE_APIS[marcType];
 
     const fetchInstance = async () => {
-      const fetchedInstance = await mutator.quickMarcEditInstance.GET({ path: `${path}/${formValuesToSave.externalId}` });
+      const fetchedInstance = await mutator.quickMarcEditInstance.GET({ path: `${path}/${formValuesToProcess.externalId}` });
 
       return fetchedInstance;
     };
 
+    let formValuesToSave;
     let instanceResponse;
 
     try {
-      instanceResponse = await fetchInstance();
+      const [
+        formValuesWithActualizedNewLinkedFields,
+        instanceData,
+      ] = await Promise.all([
+        actualizeNewLinkedFields(formValuesToProcess),
+        fetchInstance(),
+      ]);
+
+      formValuesToSave = formValuesWithActualizedNewLinkedFields;
+      instanceResponse = instanceData;
     } catch (errorResponse) {
       const parsedError = await parseHttpError(errorResponse);
 
@@ -203,6 +213,7 @@ const QuickMarcEditWrapper = ({
     linksCount,
     location,
     prepareForSubmit,
+    actualizeNewLinkedFields,
   ]);
 
   return (
