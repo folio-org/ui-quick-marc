@@ -30,6 +30,8 @@ import {
   ENTERED_KEY,
   CREATE_AUTHORITY_RECORD_DEFAULT_LEADER_VALUE,
   CREATE_AUTHORITY_RECORD_DEFAULT_FIELD_TAGS,
+  UNCONTROLLED_ALPHA,
+  UNCONTROLLED_NUMBER,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import { SUBFIELD_TYPES } from './QuickMarcEditorRows/BytesField';
@@ -635,7 +637,9 @@ export const isRecordForAutoLinking = (field, autoLinkableBibFields) => (
   && getContentSubfieldValue(field.content).$0?.[0]
 );
 
-export const recordHasLinks = (fields) => fields.some(field => field.linkDetails?.linkingRuleId);
+export const isFieldLinked = (field) => Boolean(field.linkDetails?.linkingRuleId);
+
+export const recordHasLinks = (fields) => fields.some(isFieldLinked);
 
 export const validateSubfield = (marcRecords) => {
   const marcRecordsWithSubfields = marcRecords.filter(marcRecord => marcRecord.indicators);
@@ -755,7 +759,7 @@ const validateMarcBibRecord = (marcRecords, linkableBibFields, linkingRules) => 
     return duplicate010FieldError;
   }
 
-  const uncontrolledSubfields = ['uncontrolledAlpha', 'uncontrolledNumber'];
+  const uncontrolledSubfields = [UNCONTROLLED_ALPHA, UNCONTROLLED_NUMBER];
 
   const $9Error = validate$9InLinkable(marcRecords, linkableBibFields, uncontrolledSubfields);
 
@@ -1341,7 +1345,7 @@ export const groupSubfields = (field, authorityControlledSubfields = []) => {
     }
 
     if (!isControlled && !isNum) {
-      groups.uncontrolledAlpha = [groups.uncontrolledAlpha, formattedSubfield.content].join(' ').trim();
+      groups[UNCONTROLLED_ALPHA] = [groups[UNCONTROLLED_ALPHA], formattedSubfield.content].join(' ').trim();
 
       return groups;
     }
@@ -1359,7 +1363,7 @@ export const groupSubfields = (field, authorityControlledSubfields = []) => {
     }
 
     if (isNum) {
-      groups.uncontrolledNumber = [groups.uncontrolledNumber, formattedSubfield.content].join(' ').trim();
+      groups[UNCONTROLLED_NUMBER] = [groups[UNCONTROLLED_NUMBER], formattedSubfield.content].join(' ').trim();
 
       return groups;
     }
@@ -1367,10 +1371,10 @@ export const groupSubfields = (field, authorityControlledSubfields = []) => {
     return groups;
   }, {
     controlled: '',
-    uncontrolledAlpha: '',
+    [UNCONTROLLED_ALPHA]: '',
     zeroSubfield: '',
     nineSubfield: '',
-    uncontrolledNumber: '',
+    [UNCONTROLLED_NUMBER]: '',
   });
 };
 

@@ -10,6 +10,10 @@ import {
 } from '@folio/stripes/components';
 
 import { useSubfieldNavigation } from '../../../hooks';
+import {
+  UNCONTROLLED_ALPHA,
+  UNCONTROLLED_NUMBER,
+} from '../../constants';
 
 import css from './SplitField.css';
 
@@ -68,7 +72,7 @@ const SplitField = ({
           })}
           {renderSubfieldGroup({
             disabled: false,
-            name: `${name}.subfieldGroups.uncontrolledAlpha`,
+            name: `${name}.subfieldGroups.${UNCONTROLLED_ALPHA}`,
           })}
           {renderSubfieldGroup({
             disabled: true,
@@ -77,7 +81,7 @@ const SplitField = ({
           })}
           {renderSubfieldGroup({
             disabled: false,
-            name: `${name}.subfieldGroups.uncontrolledNumber`,
+            name: `${name}.subfieldGroups.${UNCONTROLLED_NUMBER}`,
           })}
         </>
       )}

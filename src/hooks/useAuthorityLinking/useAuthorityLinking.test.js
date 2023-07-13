@@ -1107,18 +1107,18 @@ describe('Given useAuthorityLinking', () => {
     });
   });
 
-  describe('when calling actualizeNewLinkedFields and there is no new linked field', () => {
+  describe('when calling actualizeLinks and there is no linked field', () => {
     it('should return the same form values', async () => {
       const formValues = { fields: [] };
       const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
-      const values = await result.current.actualizeNewLinkedFields(formValues);
+      const values = await result.current.actualizeLinks(formValues);
 
       expect(values).toEqual(formValues);
     });
   });
 
-  describe('when calling actualizeNewLinkedFields and there are new linked fields', () => {
-    it('should actualize in the correct order', async () => {
+  describe('when calling actualizeLinks and there are linked fields', () => {
+    it('should actualize all links in the correct order', async () => {
       const formValues = {
         externalHrid: 'in00000000001',
         externalId: '4c95c27d-51fc-4ae1-892d-11347377bdd4',
@@ -1173,7 +1173,7 @@ describe('Given useAuthorityLinking', () => {
               'authorityId': '68927bf9-e78f-48b9-a45a-947408caff6e',
               'authorityNaturalId': 'no2005093867',
               'linkingRuleId': 15,
-              'status': 'NEW',
+              'status': 'ACTUAL',
             },
           },
         ],
@@ -1244,7 +1244,7 @@ describe('Given useAuthorityLinking', () => {
               'authorityId': '68927bf9-e78f-48b9-a45a-947408caff6e',
               'authorityNaturalId': 'no2005093867',
               'linkingRuleId': 15,
-              'status': 'NEW',
+              'status': 'ACTUAL',
             },
           },
         ],
@@ -1257,7 +1257,7 @@ describe('Given useAuthorityLinking', () => {
 
       const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
 
-      const values = await result.current.actualizeNewLinkedFields(formValues);
+      const values = await result.current.actualizeLinks(formValues);
 
       expect(mockFetchLinkSuggestions).toHaveBeenCalledWith({
         body: linkSuggestionsRequestBody,
@@ -1317,7 +1317,7 @@ describe('Given useAuthorityLinking', () => {
               'authorityId': '68927bf9-e78f-48b9-a45a-947408caff6e',
               'authorityNaturalId': 'no2005093867',
               'linkingRuleId': 15,
-              'status': 'NEW',
+              'status': 'ACTUAL',
             },
           },
         ],
@@ -1325,7 +1325,7 @@ describe('Given useAuthorityLinking', () => {
     });
   });
 
-  describe('when calling actualizeNewLinkedFields and there are new linked fields', () => {
+  describe('when calling actualizeLinks and there are linked fields', () => {
     it('should unlink links for which there are no suggestions', async () => {
       const formValues = {
         externalHrid: 'in00000000001',
@@ -1391,7 +1391,7 @@ describe('Given useAuthorityLinking', () => {
 
       const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
 
-      const values = await result.current.actualizeNewLinkedFields(formValues);
+      const values = await result.current.actualizeLinks(formValues);
 
       expect(values).toEqual({
         externalHrid: 'in00000000001',
@@ -1421,7 +1421,7 @@ describe('Given useAuthorityLinking', () => {
     });
   });
 
-  describe('when calling actualizeNewLinkedFields and there are new linked fields', () => {
+  describe('when calling actualizeLinks and there are linked fields', () => {
     it('should take controlled subfields from the suggested field and uncontrolled ones from the current field', async () => {
       const formValues = {
         externalHrid: 'in00000000001',
@@ -1468,7 +1468,7 @@ describe('Given useAuthorityLinking', () => {
 
       const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
 
-      const values = await result.current.actualizeNewLinkedFields(formValues);
+      const values = await result.current.actualizeLinks(formValues);
 
       expect(values).toEqual({
         externalHrid: 'in00000000001',

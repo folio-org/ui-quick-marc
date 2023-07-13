@@ -57,7 +57,7 @@ const QuickMarcCreateWrapper = ({
 }) => {
   const showCallout = useShowCallout();
   const [httpError, setHttpError] = useState(null);
-  const { linkableBibFields } = useAuthorityLinking();
+  const { linkableBibFields, actualizeLinks } = useAuthorityLinking();
   const { linkingRules } = useAuthorityLinkingRules();
 
   const prepareForSubmit = useCallback((formValues) => {
@@ -115,11 +115,27 @@ const QuickMarcCreateWrapper = ({
   };
 
   const onSubmit = useCallback(async (formValues) => {
-    const formValuesForCreate = flow(
+    const formValuesToProcess = flow(
       prepareForSubmit,
       combineSplitFields,
       hydrateMarcRecord,
     )(formValues);
+
+    let formValuesForCreate;
+
+    try {
+      if (marcType === MARC_TYPES.BIB) {
+        formValuesForCreate = await actualizeLinks(formValuesToProcess);
+      } else {
+        formValuesForCreate = formValuesToProcess;
+      }
+    } catch (errorResponse) {
+      const parsedError = await parseHttpError(errorResponse);
+
+      setHttpError(parsedError);
+
+      return null;
+    }
 
     formValuesForCreate._actionType = 'create';
 
@@ -157,7 +173,7 @@ const QuickMarcCreateWrapper = ({
         setHttpError(parsedError);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onClose, showCallout, prepareForSubmit]);
+  }, [onClose, showCallout, prepareForSubmit, actualizeLinks]);
 
   return (
     <QuickMarcEditor

@@ -3,6 +3,7 @@ import {
   act,
   render,
   fireEvent,
+  screen,
 } from '@testing-library/react';
 import faker from 'faker';
 import noop from 'lodash/noop';
@@ -16,6 +17,7 @@ import { MARC_TYPES } from '../common/constants';
 import { QUICK_MARC_ACTIONS } from './constants';
 
 import Harness from '../../test/jest/helpers/harness';
+import { useAuthorityLinking } from '../hooks';
 
 jest.mock('react-final-form', () => ({
   ...jest.requireActual('react-final-form'),
@@ -27,15 +29,13 @@ jest.mock('../queries', () => ({
   useAuthorityLinkingRules: jest.fn().mockReturnValue({ linkingRules: [] }),
 }));
 
-const mockFormValues = jest.fn(() => ({
-  fields: undefined,
-  externalHrid: 'in00000000022',
-  externalId: '17064f9d-0362-468d-8317-5984b7efd1b5',
-  leader: '00000nu\\\\\\2200000un\\4500',
-  marcFormat: 'HOLDINGS',
-  parsedRecordDtoId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
-  parsedRecordId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
-  records: [
+jest.mock('../hooks', () => ({
+  ...jest.requireActual('../hooks'),
+  useAuthorityLinking: jest.fn(),
+}));
+
+const mockRecords = {
+  [MARC_TYPES.HOLDINGS]: [
     {
       tag: 'LDR',
       content: '00000nu\\\\\\2200000un\\4500',
@@ -70,27 +70,100 @@ const mockFormValues = jest.fn(() => ({
       id: '4a844042-5c7e-4e71-823e-599582a5d7ab',
     },
   ],
+  [MARC_TYPES.BIB]: [
+    {
+      'tag': 'LDR',
+      'content': '01178nam\\a2200277ic\\4500',
+      'id': 'LDR',
+    }, {
+      'tag': '001',
+      'content': 'in00000000003',
+      'id': '595a98e6-8e59-448d-b866-cd039b990423',
+    }, {
+      'tag': '008',
+      'content': {
+        'Type': 'a',
+        'BLvl': 'm',
+        'Desc': 'c',
+        'Entered': '211212',
+        'DtSt': '|',
+        'Date1': '2016',
+        'Date2': '||||',
+        'Ctry': '|||',
+        'Lang': 'mul',
+        'MRec': '|',
+        'Srce': '|',
+        'Ills': ['|', '|', '|', '|'],
+        'Audn': '|',
+        'Form': '\\',
+        'Cont': ['\\', '\\', '\\', '\\'],
+        'GPub': '\\',
+        'Conf': '\\',
+        'Fest': '|',
+        'Indx': '|',
+        'LitF': '|',
+        'Biog': '|',
+      },
+    }, {
+      'tag': '100',
+      'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001085 $9 a84dd631-dfa4-469f-b167-24e61bc22578',
+      'indicators': ['1', '\\'],
+      'linkDetails': {
+        'authorityId': 'a84dd631-dfa4-469f-b167-24e61bc22578',
+        'authorityNaturalId': 'n2008001085',
+        'linkingRuleId': 1,
+        'status': 'NEW',
+      },
+    }, {
+      'content': '$a Title',
+      'tag': '245',
+    },
+  ],
+};
+
+const mockLeaders = {
+  [MARC_TYPES.BIB]: '01178nam\\a2200277ic\\4500',
+  [MARC_TYPES.HOLDINGS]: '00000nu\\\\\\2200000un\\4500',
+};
+
+const mockFormValues = jest.fn((marcType) => ({
+  fields: undefined,
+  externalHrid: 'in00000000022',
+  externalId: '17064f9d-0362-468d-8317-5984b7efd1b5',
+  leader: mockLeaders[marcType],
+  marcFormat: marcType,
+  parsedRecordDtoId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
+  parsedRecordId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
+  records: mockRecords[marcType],
   relatedRecordVersion: 1,
   suppressDiscovery: false,
   updateInfo: { recordState: 'NEW' },
 }));
 
-jest.mock('@folio/stripes/final-form', () => () => (Component) => ({ onSubmit, ...props }) => {
-  const formValues = mockFormValues();
+jest.mock('@folio/stripes/final-form', () => () => (Component) => ({
+  onSubmit,
+  marcType,
+  ...props
+}) => {
+  const formValues = mockFormValues(marcType);
 
   return (
     <Component
       handleSubmit={() => onSubmit(formValues)}
       form={{
-        mutators: {},
+        mutators: {
+          markRecordsLinked: jest.fn(),
+        },
         reset: jest.fn(),
         getState: jest.fn().mockReturnValue({ values: formValues }),
       }}
+      marcType={marcType}
       {...props}
     />
   );
 });
 
+const mockActualizeLinks = jest.fn((formValuesToProcess) => Promise.resolve(formValuesToProcess));
 const mockShowCallout = jest.fn();
 
 jest.mock('@folio/stripes-acq-components', () => ({
@@ -137,6 +210,7 @@ const renderQuickMarcCreateWrapper = ({
   mutator,
   history,
   location,
+  marcType = MARC_TYPES.HOLDINGS,
 }) => (render(
   <Harness>
     <QuickMarcCreateWrapper
@@ -144,10 +218,10 @@ const renderQuickMarcCreateWrapper = ({
       instance={instance}
       mutator={mutator}
       action={QUICK_MARC_ACTIONS.CREATE}
+      marcType={marcType}
       initialValues={{ leader: 'assdfgs ds sdg' }}
       history={history}
       location={location}
-      marcType={MARC_TYPES.HOLDINGS}
       locations={locations}
     />
   </Harness>,
@@ -179,6 +253,16 @@ describe('Given QuickMarcCreateWrapper', () => {
     location = {
       search: '?filters=source.MARC',
     };
+
+    useAuthorityLinking.mockReturnValue({
+      linkableBibFields: [],
+      actualizeLinks: mockActualizeLinks,
+      autoLinkingEnabled: true,
+      autoLinkableBibFields: [],
+      autoLinkAuthority: jest.fn(),
+    });
+
+    jest.clearAllMocks();
   });
 
   it('should render with no axe errors', async () => {
@@ -263,6 +347,57 @@ describe('Given QuickMarcCreateWrapper', () => {
           }, 10);
         });
       }, 1000);
+    });
+
+    it('should actualize links', async () => {
+      await act(async () => {
+        renderQuickMarcCreateWrapper({
+          instance,
+          mutator,
+          history,
+          location,
+          marcType: MARC_TYPES.BIB,
+        });
+      });
+
+      await act(async () => { fireEvent.click(screen.getByText('stripes-acq-components.FormFooter.save')); });
+
+      const expectedFormValues = {
+        leader: mockLeaders[MARC_TYPES.BIB],
+        marcFormat: MARC_TYPES.BIB,
+        fields: expect.arrayContaining([
+          expect.objectContaining({
+            tag: '100',
+            content: '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001085 $9 a84dd631-dfa4-469f-b167-24e61bc22578',
+            linkDetails: {
+              authorityId: 'a84dd631-dfa4-469f-b167-24e61bc22578',
+              authorityNaturalId: 'n2008001085',
+              linkingRuleId: 1,
+              status: 'NEW',
+            },
+          }),
+        ]),
+      };
+
+      expect(mockActualizeLinks).toHaveBeenCalledWith(expect.objectContaining(expectedFormValues));
+    });
+
+    describe('when marc type is not a bibliographic', () => {
+      it('should not be called actualizeLinks', async () => {
+        await act(async () => {
+          renderQuickMarcCreateWrapper({
+            instance,
+            mutator,
+            history,
+            location,
+            marcType: MARC_TYPES.HOLDINGS,
+          });
+        });
+
+        await act(async () => { fireEvent.click(screen.getByText('stripes-acq-components.FormFooter.save')); });
+
+        expect(mockActualizeLinks).not.toHaveBeenCalled();
+      });
     });
   });
 });

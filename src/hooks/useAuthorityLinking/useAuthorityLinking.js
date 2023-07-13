@@ -18,8 +18,14 @@ import {
   getControlledSubfields,
   isRecordForAutoLinking,
   hydrateForLinkSuggestions,
+  recordHasLinks,
+  isFieldLinked,
 } from '../../QuickMarcEditor/utils';
-import { AUTOLINKING_STATUSES } from '../../QuickMarcEditor/constants';
+import {
+  AUTOLINKING_STATUSES,
+  UNCONTROLLED_ALPHA,
+  UNCONTROLLED_NUMBER,
+} from '../../QuickMarcEditor/constants';
 
 const joinSubfields = (subfields) => Object.keys(subfields).reduce((content, key) => {
   const subfield = subfields[key].join(` ${key} `);
@@ -127,28 +133,28 @@ const useAuthorityLinking = () => {
     // take controlled subfields from the suggested field and uncontrolled ones from the current field
     return {
       ...groupSubfields(suggestedField, controlledSubfields),
-      ...pick(groupSubfields(field, controlledSubfields), 'uncontrolledAlpha', 'uncontrolledNumber'),
+      ...pick(groupSubfields(field, controlledSubfields), UNCONTROLLED_ALPHA, UNCONTROLLED_NUMBER),
     };
   }, [linkingRules]);
 
   const updateLinkedField = useCallback((field) => {
-    const uncontrolledNumberSubfields = getContentSubfieldValue(field.subfieldGroups?.uncontrolledNumber);
-    const uncontrolledAlphaSubfields = getContentSubfieldValue(field.subfieldGroups?.uncontrolledAlpha);
+    const uncontrolledNumberSubfields = getContentSubfieldValue(field.subfieldGroups?.[UNCONTROLLED_NUMBER]);
+    const uncontrolledAlphaSubfields = getContentSubfieldValue(field.subfieldGroups?.[UNCONTROLLED_ALPHA]);
 
     const uncontrolledNumber = uncontrolledNumberSubfields.$9?.[0]
       ? joinSubfields(omit(uncontrolledNumberSubfields, '$9'))
-      : field.subfieldGroups.uncontrolledNumber;
+      : field.subfieldGroups[UNCONTROLLED_NUMBER];
 
     const uncontrolledAlpha = uncontrolledAlphaSubfields.$9?.[0]
       ? joinSubfields(omit(uncontrolledAlphaSubfields, '$9'))
-      : field.subfieldGroups.uncontrolledAlpha;
+      : field.subfieldGroups[UNCONTROLLED_ALPHA];
 
     return {
       ...field,
       subfieldGroups: {
         ...field.subfieldGroups,
-        uncontrolledNumber,
-        uncontrolledAlpha,
+        [UNCONTROLLED_NUMBER]: uncontrolledNumber,
+        [UNCONTROLLED_ALPHA]: uncontrolledAlpha,
       },
     };
   }, []);
@@ -225,7 +231,6 @@ const useAuthorityLinking = () => {
         authorityNaturalId: authority.naturalId,
         authorityId: authority.id,
         linkingRuleId: linkingRule.id,
-        status: AUTOLINKING_STATUSES.NEW,
       },
       subfieldGroups: groupSubfields(field, controlledSubfields),
     };
@@ -251,50 +256,41 @@ const useAuthorityLinking = () => {
     };
   }, []);
 
-  const actualizeNewLinkedFields = useCallback(async (formValues) => {
-    const isNewLinkedField = (field) => field.linkDetails?.status === AUTOLINKING_STATUSES.NEW;
-    const hasNewLinkedField = formValues.fields.some(isNewLinkedField);
-
-    if (!hasNewLinkedField) {
+  const actualizeLinks = useCallback(async (formValues) => {
+    if (!recordHasLinks(formValues.fields)) {
       return formValues;
     }
 
-    const newLinkedFields = formValues.fields.filter(isNewLinkedField);
-    const payload = hydrateForLinkSuggestions(formValues, newLinkedFields);
+    const linkedFields = formValues.fields.filter(isFieldLinked);
+    const payload = hydrateForLinkSuggestions(formValues, linkedFields);
     const { fields: suggestedFields } = await fetchLinkSuggestions({
       body: payload,
       isSearchByAuthorityId: true,
     });
 
-    let suggestedFieldIndex = 0;
-
-    const actualizedFields = formValues.fields.map(field => {
-      if (isNewLinkedField(field)) {
-        const suggestedField = suggestedFields[suggestedFieldIndex];
-
-        suggestedFieldIndex += 1;
-
-        if (suggestedField.linkDetails?.status === AUTOLINKING_STATUSES.ERROR) {
-          return unlinkAuthority(field);
-        }
-
-        if (suggestedField.linkDetails && suggestedField.linkDetails.status !== AUTOLINKING_STATUSES.ERROR) {
-          const subfieldGroups = getSubfieldGroups(field, suggestedField);
-
-          return {
-            ...field,
-            ...suggestedField,
-            content: Object.values(subfieldGroups).filter(Boolean).join(' '),
-          };
-        }
+    const actualizedLinks = formValues.fields.map(field => {
+      if (!isFieldLinked(field)) {
+        return field;
       }
 
-      return field;
+      const suggestedField = suggestedFields.shift();
+
+      if (suggestedField.linkDetails?.status === AUTOLINKING_STATUSES.ERROR) {
+        return unlinkAuthority(field);
+      }
+
+      const subfieldGroups = getSubfieldGroups(field, suggestedField);
+
+      return {
+        ...field,
+        ...suggestedField,
+        content: Object.values(subfieldGroups).filter(Boolean).join(' '),
+      };
     });
 
     return {
       ...formValues,
-      fields: actualizedFields,
+      fields: actualizedLinks,
     };
   }, [fetchLinkSuggestions, getSubfieldGroups, unlinkAuthority]);
 
@@ -306,7 +302,7 @@ const useAuthorityLinking = () => {
     autoLinkingEnabled,
     autoLinkableBibFields,
     autoLinkAuthority,
-    actualizeNewLinkedFields,
+    actualizeLinks,
   };
 };
 

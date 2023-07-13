@@ -3,6 +3,7 @@ import {
   act,
   render,
   fireEvent,
+  screen,
 } from '@testing-library/react';
 import faker from 'faker';
 import noop from 'lodash/noop';
@@ -16,6 +17,7 @@ import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
+import { useAuthorityLinking } from '../hooks';
 
 jest.mock('react-final-form', () => ({
   ...jest.requireActual('react-final-form'),
@@ -28,12 +30,18 @@ jest.mock('../queries', () => ({
   useLinkSuggestions: jest.fn().mockReturnValue({ isLoading: false, fetchLinkSuggestions: jest.fn() }),
 }));
 
+jest.mock('../hooks', () => ({
+  ...jest.requireActual('../hooks'),
+  useAuthorityLinking: jest.fn(),
+}));
+
 const mockFormValues = jest.fn(() => ({
   fields: undefined,
   externalId: '17064f9d-0362-468d-8317-5984b7efd1b5',
   leader: '02949cama2200517Kica0000',
   parsedRecordDtoId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
   parsedRecordId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
+  marcFormat: MARC_TYPES.BIB,
   records: [
     {
       tag: 'LDR',
@@ -85,6 +93,15 @@ const mockFormValues = jest.fn(() => ({
         linkingRuleId: 1,
       },
     }, {
+      tag: '100',
+      content: '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001085 $9 a84dd631-dfa4-469f-b167-24e61bc22578',
+      linkDetails: {
+        authorityId: 'a84dd631-dfa4-469f-b167-24e61bc22578',
+        authorityNaturalId: 'n2008001085',
+        linkingRuleId: 1,
+        status: 'NEW',
+      },
+    }, {
       content: '$a (derived2)/Ezekiel / $c Robert W. Jenson.',
       id: '5aa1a643-b9f2-47e8-bb68-6c6457b5c9c5',
       indicators: ['1', '0'],
@@ -116,7 +133,9 @@ jest.mock('@folio/stripes/final-form', () => () => (Component) => ({ onSubmit, .
     <Component
       handleSubmit={() => onSubmit(formValues)}
       form={{
-        mutators: {},
+        mutators: {
+          markRecordsLinked: jest.fn(),
+        },
         reset: jest.fn(),
         getState: jest.fn().mockReturnValue({ values: formValues }),
       }}
@@ -150,6 +169,7 @@ jest.mock('@folio/stripes/components', () => ({
   ) : null)),
 }));
 
+const mockActualizeLinks = jest.fn((formValuesToProcess) => Promise.resolve(formValuesToProcess));
 const mockShowCallout = jest.fn();
 
 jest.mock('@folio/stripes-acq-components', () => ({
@@ -254,6 +274,14 @@ describe('Given QuickMarcDeriveWrapper', () => {
     location = {
       search: '?filters=source.MARC',
     };
+
+    useAuthorityLinking.mockReturnValue({
+      linkableBibFields: [],
+      actualizeLinks: mockActualizeLinks,
+      autoLinkingEnabled: true,
+      autoLinkableBibFields: [],
+      autoLinkAuthority: jest.fn(),
+    });
   });
 
   it('should render with no axe errors', async () => {
@@ -344,6 +372,38 @@ describe('Given QuickMarcDeriveWrapper', () => {
           }, 10);
         });
       }, 1000);
+    });
+
+    it('should actualize links', async () => {
+      await act(async () => {
+        renderQuickMarcDeriveWrapper({
+          instance,
+          mutator,
+          history,
+          location,
+        });
+      });
+
+      await act(async () => { fireEvent.click(screen.getByText('stripes-acq-components.FormFooter.save')); });
+
+      const expectedFormValues = {
+        leader: '02949cama2200517Kiia0000',
+        marcFormat: MARC_TYPES.BIB,
+        fields: expect.arrayContaining([
+          expect.objectContaining({
+            tag: '100',
+            content: '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001085 $9 a84dd631-dfa4-469f-b167-24e61bc22578',
+            linkDetails: {
+              authorityId: 'a84dd631-dfa4-469f-b167-24e61bc22578',
+              authorityNaturalId: 'n2008001085',
+              linkingRuleId: 1,
+              status: 'NEW',
+            },
+          }),
+        ]),
+      };
+
+      expect(mockActualizeLinks).toHaveBeenCalledWith(expect.objectContaining(expectedFormValues));
     });
   });
 });

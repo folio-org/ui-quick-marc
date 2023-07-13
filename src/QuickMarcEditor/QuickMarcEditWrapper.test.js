@@ -6,7 +6,6 @@ import {
 } from '@testing-library/react';
 import faker from 'faker';
 import noop from 'lodash/noop';
-import flow from 'lodash/flow';
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 
@@ -16,18 +15,6 @@ import QuickMarcEditWrapper from './QuickMarcEditWrapper';
 import { useAuthorityLinking } from '../hooks';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
-import {
-  autopopulateFixedField,
-  autopopulateIndicators,
-  autopopulateMaterialCharsField,
-  autopopulatePhysDescriptionField,
-  autopopulateSubfieldSection,
-  cleanBytesFields,
-  combineSplitFields,
-  hydrateMarcRecord,
-  removeDeletedRecords,
-  removeDuplicateSystemGeneratedFields,
-} from './utils';
 
 import Harness from '../../test/jest/helpers/harness';
 
@@ -86,6 +73,15 @@ const mockRecords = {
         Indx: '|',
         LitF: '|',
         Biog: '|',
+      },
+    }, {
+      tag: '100',
+      content: '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001085 $9 a84dd631-dfa4-469f-b167-24e61bc22578',
+      linkDetails: {
+        authorityId: 'a84dd631-dfa4-469f-b167-24e61bc22578',
+        authorityNaturalId: 'n2008001085',
+        linkingRuleId: 1,
+        status: 'ACTUAL',
       },
     }, {
       content: '$a Title',
@@ -210,6 +206,7 @@ const mockLeaders = {
 const mockFormValues = jest.fn((marcType) => ({
   fields: undefined,
   externalId: '17064f9d-0362-468d-8317-5984b7efd1b5',
+  marcFormat: marcType,
   leader: mockLeaders[marcType],
   parsedRecordDtoId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
   parsedRecordId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
@@ -218,7 +215,7 @@ const mockFormValues = jest.fn((marcType) => ({
   updateInfo: { recordState: 'NEW' },
 }));
 
-const mockActualizeNewLinkedFields = jest.fn().mockResolvedValue(mockFormValues(MARC_TYPES.BIB));
+const mockActualizeLinks = jest.fn((formValuesToProcess) => Promise.resolve(formValuesToProcess));
 
 jest.mock('@folio/stripes/final-form', () => () => (Component) => ({
   onSubmit,
@@ -234,6 +231,13 @@ jest.mock('@folio/stripes/final-form', () => () => (Component) => ({
         mutators: {
           markRecordsLinked: jest.fn(),
           addRecord: jest.fn(),
+          deleteRecord: jest.fn(),
+          markRecordDeleted: jest.fn(),
+          markRecordLinked: jest.fn(),
+          markRecordUnlinked: jest.fn(),
+          moveRecord: jest.fn(),
+          restoreRecord: jest.fn(),
+          updateRecord: jest.fn(),
         },
         reset: jest.fn(),
         getState: jest.fn().mockReturnValue({ values: formValues }),
@@ -336,7 +340,7 @@ describe('Given QuickMarcEditWrapper', () => {
 
     useAuthorityLinking.mockReturnValue({
       linkableBibFields: [],
-      actualizeNewLinkedFields: mockActualizeNewLinkedFields,
+      actualizeLinks: mockActualizeLinks,
       autoLinkingEnabled: true,
       autoLinkableBibFields: [],
       autoLinkAuthority: jest.fn(),
@@ -467,7 +471,7 @@ describe('Given QuickMarcEditWrapper', () => {
         });
       });
 
-      it('should actualize new linked fields', async () => {
+      it('should actualize links', async () => {
         const { getByText } = renderQuickMarcEditWrapper({
           instance,
           mutator,
@@ -475,28 +479,38 @@ describe('Given QuickMarcEditWrapper', () => {
 
         await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
-        const formValues = mockFormValues(MARC_TYPES.BIB);
-
-        const prepareForSubmit = (values) => {
-          return flow(
-            removeDeletedRecords,
-            removeDuplicateSystemGeneratedFields,
-          )(values);
+        const expectedFormValues = {
+          leader: mockLeaders[MARC_TYPES.BIB],
+          marcFormat: MARC_TYPES.BIB,
+          fields: expect.arrayContaining([
+            expect.objectContaining({
+              tag: '100',
+              content: '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001085 $9 a84dd631-dfa4-469f-b167-24e61bc22578',
+              linkDetails: {
+                authorityId: 'a84dd631-dfa4-469f-b167-24e61bc22578',
+                authorityNaturalId: 'n2008001085',
+                linkingRuleId: 1,
+                status: 'ACTUAL',
+              },
+            }),
+          ]),
         };
 
-        const formValuesToProcess = flow(
-          prepareForSubmit,
-          autopopulateIndicators,
-          marcRecord => autopopulateFixedField(marcRecord, MARC_TYPES.BIB),
-          autopopulatePhysDescriptionField,
-          autopopulateMaterialCharsField,
-          marcRecord => autopopulateSubfieldSection(marcRecord, MARC_TYPES.BIB),
-          marcRecord => cleanBytesFields(marcRecord, MARC_TYPES.BIB),
-          combineSplitFields,
-          hydrateMarcRecord,
-        )(formValues);
+        expect(mockActualizeLinks).toHaveBeenCalledWith(expect.objectContaining(expectedFormValues));
+      });
 
-        expect(mockActualizeNewLinkedFields).toHaveBeenCalledWith(formValuesToProcess);
+      describe('when marc type is not a bibliographic', () => {
+        it('should not be called actualizeLinks', async () => {
+          const { getByText } = renderQuickMarcEditWrapper({
+            instance,
+            mutator,
+            marcType: MARC_TYPES.AUTHORITY,
+          });
+
+          await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
+
+          expect(mockActualizeLinks).not.toHaveBeenCalled();
+        });
       });
     });
   });

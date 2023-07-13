@@ -55,7 +55,7 @@ const QuickMarcDeriveWrapper = ({
   marcType,
 }) => {
   const showCallout = useShowCallout();
-  const { linkableBibFields } = useAuthorityLinking();
+  const { linkableBibFields, actualizeLinks } = useAuthorityLinking();
   const { linkingRules } = useAuthorityLinkingRules();
   const [httpError, setHttpError] = useState(null);
 
@@ -105,17 +105,30 @@ const QuickMarcDeriveWrapper = ({
   };
 
   const onSubmit = useCallback(async (formValues) => {
-    const formValuesForDerive = prepareForSubmit(formValues);
+    const formValuesToProcess = flow(
+      prepareForSubmit,
+      combineSplitFields,
+      hydrateMarcRecord,
+    )(formValues);
 
     showCallout({ messageId: 'ui-quick-marc.record.saveNew.onSave' });
 
-    const formValuesWithCombinedFields = combineSplitFields(formValuesForDerive);
-    const marcRecord = hydrateMarcRecord(formValuesWithCombinedFields);
+    let formValuesForDerive;
 
-    marcRecord.relatedRecordVersion = 1;
-    marcRecord._actionType = 'create';
+    try {
+      formValuesForDerive = await actualizeLinks(formValuesToProcess);
+    } catch (errorResponse) {
+      const parsedError = await parseHttpError(errorResponse);
 
-    return mutator.quickMarcEditMarcRecord.POST(marcRecord)
+      setHttpError(parsedError);
+
+      return null;
+    }
+
+    formValuesForDerive.relatedRecordVersion = 1;
+    formValuesForDerive._actionType = 'create';
+
+    return mutator.quickMarcEditMarcRecord.POST(formValuesForDerive)
       .then(async ({ qmRecordId }) => {
         history.push({
           pathname: '/inventory/view/id',
@@ -131,8 +144,8 @@ const QuickMarcDeriveWrapper = ({
 
           showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
 
-          if (recordHasLinks(marcRecord.fields)) {
-            saveLinksToNewRecord(mutator, externalId, marcRecord)
+          if (recordHasLinks(formValuesForDerive.fields)) {
+            saveLinksToNewRecord(mutator, externalId, formValuesForDerive)
               .finally(() => redirectToRecord(externalId));
           } else {
             redirectToRecord(externalId);
@@ -150,7 +163,7 @@ const QuickMarcDeriveWrapper = ({
         setHttpError(parsedError);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onClose, showCallout, prepareForSubmit]);
+  }, [onClose, showCallout, prepareForSubmit, actualizeLinks]);
 
   return (
     <QuickMarcEditor

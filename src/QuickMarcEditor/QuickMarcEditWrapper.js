@@ -62,7 +62,7 @@ const QuickMarcEditWrapper = ({
   const showCallout = useShowCallout();
   const location = useLocation();
   const [httpError, setHttpError] = useState(null);
-  const { linkableBibFields, actualizeNewLinkedFields } = useAuthorityLinking();
+  const { linkableBibFields, actualizeLinks } = useAuthorityLinking();
   const { linkingRules } = useAuthorityLinkingRules();
 
   const prepareForSubmit = useCallback((formValues) => {
@@ -140,15 +140,19 @@ const QuickMarcEditWrapper = ({
     let instanceResponse;
 
     try {
+      const actualizeLinksPromise = marcType === MARC_TYPES.BIB
+        ? actualizeLinks(formValuesToProcess)
+        : Promise.resolve(formValuesToProcess);
+
       const [
-        formValuesWithActualizedNewLinkedFields,
+        formValuesWithActualizedLinkedFields,
         instanceData,
       ] = await Promise.all([
-        actualizeNewLinkedFields(formValuesToProcess),
+        actualizeLinksPromise,
         fetchInstance(),
       ]);
 
-      formValuesToSave = formValuesWithActualizedNewLinkedFields;
+      formValuesToSave = formValuesWithActualizedLinkedFields;
       instanceResponse = instanceData;
     } catch (errorResponse) {
       const parsedError = await parseHttpError(errorResponse);
@@ -213,7 +217,7 @@ const QuickMarcEditWrapper = ({
     linksCount,
     location,
     prepareForSubmit,
-    actualizeNewLinkedFields,
+    actualizeLinks,
   ]);
 
   return (

@@ -124,3 +124,6 @@ export const AUTOLINKING_STATUSES = {
   NEW: 'NEW',
   ERROR: 'ERROR',
 };
+
+export const UNCONTROLLED_ALPHA = 'uncontrolledAlpha';
+export const UNCONTROLLED_NUMBER = 'uncontrolledNumber';
