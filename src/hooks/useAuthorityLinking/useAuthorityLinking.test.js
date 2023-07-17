@@ -6,39 +6,16 @@ import {
 import { renderHook } from '@testing-library/react-hooks';
 
 import useAuthorityLinking from './useAuthorityLinking';
-import { useAuthorityLinkingRules } from '../../queries';
+import {
+  useAuthorityLinkingRules,
+  useLinkSuggestions,
+} from '../../queries';
+import { MARC_TYPES } from '../../common/constants';
+
+const mockFetchLinkSuggestions = jest.fn();
 
 jest.mock('../../queries', () => ({
-  useAuthorityLinkingRules: jest.fn().mockReturnValue({
-    linkingRules: [{
-      id: 1,
-      bibField: '100',
-      authorityField: '100',
-      authoritySubfields: ['a', 'b', 't', 'd'],
-      subfieldModifications: [],
-      validation: {},
-      autoLinkingEnabled: true,
-    }, {
-      id: 8,
-      bibField: '600',
-      authorityField: '100',
-      authoritySubfields: ['a', 'b', 'c', 'd', 'g', 'j', 'q', 'f', 'h', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't'],
-      autoLinkingEnabled: true,
-    }, {
-      id: 12,
-      bibField: '650',
-      authorityField: '150',
-      authoritySubfields: ['a', 'b', 'g'],
-      autoLinkingEnabled: false,
-    }, {
-      id: 17,
-      bibField: '711',
-      authorityField: '111',
-      authoritySubfields: ['a', 'c', 'e', 'q', 'f', 'h', 'k', 'l', 'p', 's', 't', 'd', 'g', 'n'],
-      autoLinkingEnabled: true,
-    }],
-    isLoading: false,
-  }),
+  useAuthorityLinkingRules: jest.fn(),
   useAuthoritySourceFiles: jest.fn().mockReturnValue({
     sourceFiles: [{
       id: '1',
@@ -48,7 +25,45 @@ jest.mock('../../queries', () => ({
       baseUrl: 'some.other.url/',
     }],
   }),
+  useLinkSuggestions: jest.fn(),
 }));
+
+const linkingRules = {
+  linkingRules: [{
+    id: 1,
+    bibField: '100',
+    authorityField: '100',
+    authoritySubfields: ['a', 'b', 't', 'd'],
+    subfieldModifications: [],
+    validation: {},
+    autoLinkingEnabled: true,
+  }, {
+    id: 8,
+    bibField: '600',
+    authorityField: '100',
+    authoritySubfields: ['a', 'b', 'c', 'd', 'g', 'j', 'q', 'f', 'h', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't'],
+    autoLinkingEnabled: true,
+  }, {
+    id: 12,
+    bibField: '650',
+    authorityField: '150',
+    authoritySubfields: ['a', 'b', 'g'],
+    autoLinkingEnabled: false,
+  }, {
+    id: 15,
+    bibField: '700',
+    authorityField: '100',
+    authoritySubfields: ['a', 'b', 'c', 'd', 'j', 'q', 'f', 'h', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'g'],
+    autoLinkingEnabled: true,
+  }, {
+    id: 17,
+    bibField: '711',
+    authorityField: '111',
+    authoritySubfields: ['a', 'c', 'e', 'q', 'f', 'h', 'k', 'l', 'p', 's', 't', 'd', 'g', 'n'],
+    autoLinkingEnabled: true,
+  }],
+  isLoading: false,
+};
 
 const queryClient = new QueryClient();
 
@@ -66,6 +81,15 @@ const authoritySource = {
 };
 
 describe('Given useAuthorityLinking', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    useAuthorityLinkingRules.mockReturnValue(linkingRules);
+    useLinkSuggestions.mockReturnValue({
+      fetchLinkSuggestions: mockFetchLinkSuggestions,
+    });
+  });
+
   describe('when calling linkAuthority with not matched source file', () => {
     it('should return field as it is', () => {
       const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
@@ -1019,6 +1043,24 @@ describe('Given useAuthorityLinking', () => {
 
   describe('when authority record doesnt pass required subfields validation', () => {
     it('should throw validation error', () => {
+      useAuthorityLinkingRules.mockReturnValue({
+        linkingRules: [{
+          id: 1,
+          bibField: '100',
+          authorityField: '100',
+          authoritySubfields: ['a', 'b', 't'],
+          subfieldModifications: [{
+            source: 't',
+            target: 'c',
+          }],
+          validation: {
+            existence: [{
+              t: true,
+            }],
+          },
+        }],
+      });
+
       const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
       const field = {
         tag: '100',
@@ -1062,6 +1104,392 @@ describe('Given useAuthorityLinking', () => {
 
       expect(() => result.current.linkAuthority(authority, authoritySourceWithoutMatchingField, field))
         .toThrow('ui-quick-marc.record.link.validation.invalidHeading');
+    });
+  });
+
+  describe('when calling actualizeLinks and there is no linked field', () => {
+    it('should return the same form values', async () => {
+      const formValues = { fields: [] };
+      const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+      const values = await result.current.actualizeLinks(formValues);
+
+      expect(values).toEqual(formValues);
+    });
+  });
+
+  describe('when calling actualizeLinks and there are linked fields', () => {
+    it('should actualize all links in the correct order', async () => {
+      const formValues = {
+        externalHrid: 'in00000000001',
+        externalId: '4c95c27d-51fc-4ae1-892d-11347377bdd4',
+        leader: '05341cam\\a2201021\\i\\4500',
+        marcFormat: MARC_TYPES.BIB,
+        _actionType: 'view',
+        fields: [
+          {
+            tag: '001',
+            indicators: undefined,
+            linkDetails: undefined,
+            content: 'in00000000018',
+          },
+          {
+            'tag': '700',
+            'content': '$a Wang, Shifu, $d 1260-1316 $0 id.loc.gov/authorities/names/n81003794 $9 3929e600-5efb-4427-abf6-a963b01c9c37',
+            'indicators': ['\\', '\\'],
+            'linkDetails': {
+              'authorityId': '3929e600-5efb-4427-abf6-a963b01c9c37',
+              'authorityNaturalId': 'n81003794',
+              'linkingRuleId': 15,
+              'status': 'NEW',
+            },
+          },
+          {
+            'tag': '100',
+            'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 541539bf-7e1f-468e-a817-a551c6b63d7d',
+            'indicators': ['1', '\\'],
+            'linkDetails': {
+              'authorityId': '541539bf-7e1f-468e-a817-a551c6b63d7d',
+              'authorityNaturalId': 'n2008001084',
+              'linkingRuleId': 1,
+              'status': 'NEW',
+            },
+          },
+          {
+            'tag': '700',
+            'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664 $9 a2803a7b-d479-46cd-b744-1305d2a7a29b',
+            'indicators': ['\\', '\\'],
+            'linkDetails': {
+              'authorityId': 'a2803a7b-d479-46cd-b744-1305d2a7a29b',
+              'authorityNaturalId': 'n93100664',
+              'linkingRuleId': 15,
+              'status': 'NEW',
+            },
+          },
+          {
+            'tag': '700',
+            'content': '$a Zhang, Xuejing $0 id.loc.gov/authorities/names/no2005093867 $9 68927bf9-e78f-48b9-a45a-947408caff6e',
+            'indicators': ['\\', '\\'],
+            'linkDetails': {
+              'authorityId': '68927bf9-e78f-48b9-a45a-947408caff6e',
+              'authorityNaturalId': 'no2005093867',
+              'linkingRuleId': 15,
+              'status': 'ACTUAL',
+            },
+          },
+        ],
+      };
+
+      const linkSuggestionsRequestBody = {
+        'leader': '05341cam\\a2201021\\i\\4500',
+        'fields': [
+          {
+            'tag': '700',
+            'content': '$a Wang, Shifu, $d 1260-1316 $0 id.loc.gov/authorities/names/n81003794 $9 3929e600-5efb-4427-abf6-a963b01c9c37',
+          },
+          {
+            'tag': '100',
+            'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 541539bf-7e1f-468e-a817-a551c6b63d7d',
+          },
+          {
+            'tag': '700',
+            'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664 $9 a2803a7b-d479-46cd-b744-1305d2a7a29b',
+          },
+          {
+            'tag': '700',
+            'content': '$a Zhang, Xuejing $0 id.loc.gov/authorities/names/no2005093867 $9 68927bf9-e78f-48b9-a45a-947408caff6e',
+          },
+        ],
+        'marcFormat': MARC_TYPES.BIB,
+        '_actionType': 'view',
+      };
+
+      const linkSuggestionsResponse = {
+        '_actionType': 'view',
+        'leader': '05274cam\\a2201021\\i\\4500',
+        'fields': [
+          {
+            'tag': '700',
+            'content': '$a Wang, Shifu, test $d 1260-1316 $0 id.loc.gov/authorities/names/n12345678 $9 3929e600-5efb-4427-abf6-a963b01c9c37',
+            'linkDetails': {
+              'authorityId': '3929e600-5efb-4427-abf6-a963b01c9c37',
+              'authorityNaturalId': 'n12345678',
+              'linkingRuleId': 15,
+              'status': 'NEW',
+            },
+          },
+          {
+            'tag': '100',
+            'content': '$a Coates, Ta-Nehisi test $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 541539bf-7e1f-468e-a817-a551c6b63d7d',
+            'linkDetails': {
+              'authorityId': '541539bf-7e1f-468e-a817-a551c6b63d7d',
+              'authorityNaturalId': 'n2008001084',
+              'linkingRuleId': 1,
+              'status': 'NEW',
+            },
+          },
+          {
+            'tag': '700',
+            'content': '$a Yuan, Bing test $0 id.loc.gov/authorities/names/n93100664 $9 a2803a7b-d479-46cd-b744-1305d2a7a29b',
+            'linkDetails': {
+              'authorityId': 'a2803a7b-d479-46cd-b744-1305d2a7a29b',
+              'authorityNaturalId': 'n93100664',
+              'linkingRuleId': 15,
+              'status': 'NEW',
+            },
+          },
+          {
+            'tag': '700',
+            'content': '$a Zhang, Xuejing test $0 id.loc.gov/authorities/names/no2005093867 $9 68927bf9-e78f-48b9-a45a-947408caff6e',
+            'linkDetails': {
+              'authorityId': '68927bf9-e78f-48b9-a45a-947408caff6e',
+              'authorityNaturalId': 'no2005093867',
+              'linkingRuleId': 15,
+              'status': 'ACTUAL',
+            },
+          },
+        ],
+        'suppressDiscovery': false,
+      };
+
+      useLinkSuggestions.mockReturnValue({
+        fetchLinkSuggestions: mockFetchLinkSuggestions.mockResolvedValue(linkSuggestionsResponse),
+      });
+
+      const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+
+      const values = await result.current.actualizeLinks(formValues);
+
+      expect(mockFetchLinkSuggestions).toHaveBeenCalledWith({
+        body: linkSuggestionsRequestBody,
+        isSearchByAuthorityId: true,
+      });
+      expect(values).toEqual({
+        externalHrid: 'in00000000001',
+        externalId: '4c95c27d-51fc-4ae1-892d-11347377bdd4',
+        leader: '05341cam\\a2201021\\i\\4500',
+        marcFormat: MARC_TYPES.BIB,
+        _actionType: 'view',
+        fields: [
+          {
+            tag: '001',
+            indicators: undefined,
+            linkDetails: undefined,
+            content: 'in00000000018',
+          },
+          {
+            'tag': '700',
+            'content': '$a Wang, Shifu, test $d 1260-1316 $0 id.loc.gov/authorities/names/n12345678 $9 3929e600-5efb-4427-abf6-a963b01c9c37',
+            'indicators': ['\\', '\\'],
+            'linkDetails': {
+              'authorityId': '3929e600-5efb-4427-abf6-a963b01c9c37',
+              'authorityNaturalId': 'n12345678',
+              'linkingRuleId': 15,
+              'status': 'NEW',
+            },
+          },
+          {
+            'tag': '100',
+            'content': '$a Coates, Ta-Nehisi test $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 541539bf-7e1f-468e-a817-a551c6b63d7d',
+            'indicators': ['1', '\\'],
+            'linkDetails': {
+              'authorityId': '541539bf-7e1f-468e-a817-a551c6b63d7d',
+              'authorityNaturalId': 'n2008001084',
+              'linkingRuleId': 1,
+              'status': 'NEW',
+            },
+          },
+          {
+            'tag': '700',
+            'content': '$a Yuan, Bing test $0 id.loc.gov/authorities/names/n93100664 $9 a2803a7b-d479-46cd-b744-1305d2a7a29b',
+            'indicators': ['\\', '\\'],
+            'linkDetails': {
+              'authorityId': 'a2803a7b-d479-46cd-b744-1305d2a7a29b',
+              'authorityNaturalId': 'n93100664',
+              'linkingRuleId': 15,
+              'status': 'NEW',
+            },
+          },
+          {
+            'tag': '700',
+            'content': '$a Zhang, Xuejing test $0 id.loc.gov/authorities/names/no2005093867 $9 68927bf9-e78f-48b9-a45a-947408caff6e',
+            'indicators': ['\\', '\\'],
+            'linkDetails': {
+              'authorityId': '68927bf9-e78f-48b9-a45a-947408caff6e',
+              'authorityNaturalId': 'no2005093867',
+              'linkingRuleId': 15,
+              'status': 'ACTUAL',
+            },
+          },
+        ],
+      });
+    });
+  });
+
+  describe('when calling actualizeLinks and there are linked fields', () => {
+    it('should unlink links for which there are no suggestions', async () => {
+      const formValues = {
+        externalHrid: 'in00000000001',
+        externalId: '4c95c27d-51fc-4ae1-892d-11347377bdd4',
+        leader: '05341cam\\a2201021\\i\\4500',
+        marcFormat: MARC_TYPES.BIB,
+        _actionType: 'view',
+        fields: [
+          {
+            'tag': '100',
+            'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 541539bf-7e1f-468e-a817-a551c6b63d7d',
+            'indicators': ['1', '\\'],
+            'linkDetails': {
+              'authorityId': '541539bf-7e1f-468e-a817-a551c6b63d7d',
+              'authorityNaturalId': 'n2008001084',
+              'linkingRuleId': 1,
+              'status': 'NEW',
+            },
+          },
+          {
+            'tag': '700',
+            'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664 $9 a2803a7b-d479-46cd-b744-1305d2a7a29b',
+            'indicators': ['\\', '\\'],
+            'linkDetails': {
+              'authorityId': 'a2803a7b-d479-46cd-b744-1305d2a7a29b',
+              'authorityNaturalId': 'n93100664',
+              'linkingRuleId': 15,
+              'status': 'NEW',
+            },
+          },
+        ],
+      };
+
+      const linkSuggestionsResponse = {
+        '_actionType': 'view',
+        'leader': '05274cam\\a2201021\\i\\4500',
+        'fields': [
+          {
+            'tag': '100',
+            'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 541539bf-7e1f-468e-a817-a551c6b63d7d',
+            'linkDetails': {
+              'authorityId': '541539bf-7e1f-468e-a817-a551c6b63d7d',
+              'authorityNaturalId': 'n2008001084',
+              'linkingRuleId': 1,
+              'status': 'NEW',
+            },
+          },
+          {
+            'tag': '700',
+            'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664 $9 a2803a7b-d479-46cd-b744-1305d2a7a29b',
+            'linkDetails': {
+              'status': 'ERROR',
+              'errorCause': '101',
+            },
+          },
+        ],
+        'suppressDiscovery': false,
+      };
+
+      useLinkSuggestions.mockReturnValue({
+        fetchLinkSuggestions: mockFetchLinkSuggestions.mockResolvedValue(linkSuggestionsResponse),
+      });
+
+      const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+
+      const values = await result.current.actualizeLinks(formValues);
+
+      expect(values).toEqual({
+        externalHrid: 'in00000000001',
+        externalId: '4c95c27d-51fc-4ae1-892d-11347377bdd4',
+        leader: '05341cam\\a2201021\\i\\4500',
+        marcFormat: MARC_TYPES.BIB,
+        _actionType: 'view',
+        fields: [
+          {
+            'tag': '100',
+            'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 541539bf-7e1f-468e-a817-a551c6b63d7d',
+            'indicators': ['1', '\\'],
+            'linkDetails': {
+              'authorityId': '541539bf-7e1f-468e-a817-a551c6b63d7d',
+              'authorityNaturalId': 'n2008001084',
+              'linkingRuleId': 1,
+              'status': 'NEW',
+            },
+          },
+          {
+            'tag': '700',
+            'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664',
+            'indicators': ['\\', '\\'],
+          },
+        ],
+      });
+    });
+  });
+
+  describe('when calling actualizeLinks and there are linked fields', () => {
+    it('should take controlled subfields from the suggested field and uncontrolled ones from the current field', async () => {
+      const formValues = {
+        externalHrid: 'in00000000001',
+        externalId: '4c95c27d-51fc-4ae1-892d-11347377bdd4',
+        leader: '05341cam\\a2201021\\i\\4500',
+        marcFormat: MARC_TYPES.BIB,
+        _actionType: 'view',
+        fields: [
+          {
+            'tag': '700',
+            'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664 $9 a2803a7b-d479-46cd-b744-1305d2a7a29b $2 test1 $i test2',
+            'indicators': ['\\', '\\'],
+            'linkDetails': {
+              'authorityId': 'a2803a7b-d479-46cd-b744-1305d2a7a29b',
+              'authorityNaturalId': 'n93100664',
+              'linkingRuleId': 15,
+              'status': 'NEW',
+            },
+          },
+        ],
+      };
+
+      const linkSuggestionsResponse = {
+        '_actionType': 'view',
+        'leader': '05274cam\\a2201021\\i\\4500',
+        'fields': [
+          {
+            'tag': '700',
+            'content': '$a Yuan, Bing test $0 id.loc.gov/authorities/names/n93100664 $9 a2803a7b-d479-46cd-b744-1305d2a7a29b',
+            'linkDetails': {
+              'authorityId': 'a2803a7b-d479-46cd-b744-1305d2a7a29b',
+              'authorityNaturalId': 'n93100664',
+              'linkingRuleId': 15,
+              'status': 'NEW',
+            },
+          },
+        ],
+        'suppressDiscovery': false,
+      };
+
+      useLinkSuggestions.mockReturnValue({
+        fetchLinkSuggestions: mockFetchLinkSuggestions.mockResolvedValue(linkSuggestionsResponse),
+      });
+
+      const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+
+      const values = await result.current.actualizeLinks(formValues);
+
+      expect(values).toEqual({
+        externalHrid: 'in00000000001',
+        externalId: '4c95c27d-51fc-4ae1-892d-11347377bdd4',
+        leader: '05341cam\\a2201021\\i\\4500',
+        marcFormat: MARC_TYPES.BIB,
+        _actionType: 'view',
+        fields: [
+          {
+            'tag': '700',
+            'content': '$a Yuan, Bing test $i test2 $0 id.loc.gov/authorities/names/n93100664 $9 a2803a7b-d479-46cd-b744-1305d2a7a29b $2 test1',
+            'indicators': ['\\', '\\'],
+            'linkDetails': {
+              'authorityId': 'a2803a7b-d479-46cd-b744-1305d2a7a29b',
+              'authorityNaturalId': 'n93100664',
+              'linkingRuleId': 15,
+              'status': 'NEW',
+            },
+          },
+        ],
+      });
     });
   });
 });

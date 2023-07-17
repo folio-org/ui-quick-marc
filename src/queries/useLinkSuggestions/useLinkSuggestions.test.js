@@ -36,7 +36,7 @@ describe('Given useLinkSuggestions', () => {
     };
     const { result } = renderHook(() => useLinkSuggestions(), { wrapper });
 
-    await result.current.fetchLinkSuggestions(body);
+    await result.current.fetchLinkSuggestions({ body });
 
     expect(mockPost).toHaveBeenCalledWith('records-editor/links/suggestion', { json: body });
   });

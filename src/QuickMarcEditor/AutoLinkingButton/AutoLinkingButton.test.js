@@ -314,7 +314,7 @@ describe('Given AutoLinkingButton', () => {
 
       fireEvent.click(getByTestId('autoLinkingButton'));
 
-      await expect(mockFetchLinkSuggestions).toHaveBeenCalledWith(payload);
+      await expect(mockFetchLinkSuggestions).toHaveBeenCalledWith({ body: payload });
       expect(mockAutoLinkAuthority).toHaveBeenCalledWith(formValues.records, data.fields);
       expect(mockMarkRecordsLinked).toHaveBeenCalledWith({ fields });
       expect(mockShowCallout).toHaveBeenCalledTimes(3);

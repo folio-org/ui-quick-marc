@@ -6,7 +6,15 @@ const useLinkSuggestions = () => {
   const ky = useOkapiKy();
 
   const { mutateAsync, isLoading } = useMutation(
-    body => ky.post('records-editor/links/suggestion', { json: body }).json(),
+    ({ body, isSearchByAuthorityId }) => {
+      let api = 'records-editor/links/suggestion';
+
+      if (isSearchByAuthorityId) {
+        api += '?authoritySearchParameter=ID';
+      }
+
+      return ky.post(api, { json: body }).json();
+    },
   );
 
   return {

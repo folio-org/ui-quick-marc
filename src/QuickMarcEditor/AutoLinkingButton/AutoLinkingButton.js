@@ -6,9 +6,13 @@ import { Button } from '@folio/stripes/components';
 import { useShowCallout } from '@folio/stripes-acq-components';
 
 import { useAuthorityLinking } from '../../hooks';
-import { isRecordForAutoLinking } from '../utils';
+import {
+  hydrateForLinkSuggestions,
+  isRecordForAutoLinking,
+} from '../utils';
 import { MARC_TYPES } from '../../common/constants';
 import { AUTOLINKING_ERROR_CODES } from './constants';
+import { AUTOLINKING_STATUSES } from '../constants';
 
 const propTypes = {
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
@@ -51,9 +55,9 @@ const AutoLinkingButton = ({
         notLinkedFieldTags[AUTOLINKING_ERROR_CODES.AUTHORITY_NOT_FOUND].add(field.tag);
       }
 
-      if (status === 'NEW') {
+      if (status === AUTOLINKING_STATUSES.NEW) {
         newLinkedFieldTags.add(field.tag);
-      } else if (status === 'ERROR') {
+      } else if (status === AUTOLINKING_STATUSES.ERROR) {
         notLinkedFieldTags[errorCause].add(field.tag);
       }
     });
@@ -96,22 +100,11 @@ const AutoLinkingButton = ({
     return toasts;
   };
 
-  const hydrateForLinkSuggestions = (marcRecord) => ({
-    leader: marcRecord.leader,
-    fields: marcRecord.records
-      .filter(record => isRecordForAutoLinking(record, autoLinkableBibFields))
-      .map(record => ({
-        tag: record.tag,
-        content: record.content,
-      })),
-    marcFormat: marcRecord.marcFormat,
-    _actionType: 'view',
-  });
-
   const handleAutoLinking = async () => {
     try {
-      const payload = hydrateForLinkSuggestions(formValues);
-      const data = await onFetchLinkSuggestions(payload);
+      const fieldsToLink = formValues.records.filter(record => isRecordForAutoLinking(record, autoLinkableBibFields));
+      const payload = hydrateForLinkSuggestions(formValues, fieldsToLink);
+      const data = await onFetchLinkSuggestions({ body: payload });
       const fields = autoLinkAuthority(formValues.records, data.fields);
 
       onMarkRecordsLinked({ fields });

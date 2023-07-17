@@ -3,7 +3,6 @@ import {
   render,
   act,
   fireEvent,
-  waitFor,
 } from '@testing-library/react';
 import faker from 'faker';
 import noop from 'lodash/noop';
@@ -13,6 +12,7 @@ import arrayMutators from 'final-form-arrays';
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcEditWrapper from './QuickMarcEditWrapper';
+import { useAuthorityLinking } from '../hooks';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 
@@ -28,6 +28,11 @@ jest.mock('react-router', () => ({
 jest.mock('../queries', () => ({
   ...jest.requireActual('../queries'),
   useAuthorityLinkingRules: jest.fn().mockReturnValue({ linkingRules: [] }),
+}));
+
+jest.mock('../hooks', () => ({
+  ...jest.requireActual('../hooks'),
+  useAuthorityLinking: jest.fn(),
 }));
 
 const mockRecords = {
@@ -68,6 +73,15 @@ const mockRecords = {
         Indx: '|',
         LitF: '|',
         Biog: '|',
+      },
+    }, {
+      tag: '100',
+      content: '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001085 $9 a84dd631-dfa4-469f-b167-24e61bc22578',
+      linkDetails: {
+        authorityId: 'a84dd631-dfa4-469f-b167-24e61bc22578',
+        authorityNaturalId: 'n2008001085',
+        linkingRuleId: 1,
+        status: 'ACTUAL',
       },
     }, {
       content: '$a Title',
@@ -192,6 +206,7 @@ const mockLeaders = {
 const mockFormValues = jest.fn((marcType) => ({
   fields: undefined,
   externalId: '17064f9d-0362-468d-8317-5984b7efd1b5',
+  marcFormat: marcType,
   leader: mockLeaders[marcType],
   parsedRecordDtoId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
   parsedRecordId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
@@ -199,6 +214,8 @@ const mockFormValues = jest.fn((marcType) => ({
   suppressDiscovery: false,
   updateInfo: { recordState: 'NEW' },
 }));
+
+const mockActualizeLinks = jest.fn((formValuesToProcess) => Promise.resolve(formValuesToProcess));
 
 jest.mock('@folio/stripes/final-form', () => () => (Component) => ({
   onSubmit,
@@ -211,7 +228,17 @@ jest.mock('@folio/stripes/final-form', () => () => (Component) => ({
     <Component
       handleSubmit={() => onSubmit(formValues)}
       form={{
-        mutators: {},
+        mutators: {
+          markRecordsLinked: jest.fn(),
+          addRecord: jest.fn(),
+          deleteRecord: jest.fn(),
+          markRecordDeleted: jest.fn(),
+          markRecordLinked: jest.fn(),
+          markRecordUnlinked: jest.fn(),
+          moveRecord: jest.fn(),
+          restoreRecord: jest.fn(),
+          updateRecord: jest.fn(),
+        },
         reset: jest.fn(),
         getState: jest.fn().mockReturnValue({ values: formValues }),
       }}
@@ -311,6 +338,14 @@ describe('Given QuickMarcEditWrapper', () => {
       },
     };
 
+    useAuthorityLinking.mockReturnValue({
+      linkableBibFields: [],
+      actualizeLinks: mockActualizeLinks,
+      autoLinkingEnabled: true,
+      autoLinkableBibFields: [],
+      autoLinkAuthority: jest.fn(),
+    });
+
     jest.clearAllMocks();
   });
 
@@ -351,7 +386,7 @@ describe('Given QuickMarcEditWrapper', () => {
         expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
 
         expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
-        await waitFor(() => expect(mockOnClose).toHaveBeenCalled());
+        expect(mockOnClose).toHaveBeenCalled();
       });
 
       describe('when there is an error during POST request', () => {
@@ -370,11 +405,9 @@ describe('Given QuickMarcEditWrapper', () => {
 
           expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
 
-          waitFor(() => {
-            return expect(mockShowCallout).toHaveBeenCalledWith({
-              messageId: 'ui-quick-marc.record.save.error.generic',
-              type: 'error',
-            });
+          expect(mockShowCallout).toHaveBeenCalledWith({
+            messageId: 'ui-quick-marc.record.save.error.generic',
+            type: 'error',
           });
         });
       });
@@ -394,8 +427,7 @@ describe('Given QuickMarcEditWrapper', () => {
           await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
           expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
-
-          await waitFor(() => expect(getByText('stripes-components.optimisticLocking.saveError')).toBeDefined());
+          expect(getByText('stripes-components.optimisticLocking.saveError')).toBeDefined();
         });
       });
 
@@ -418,8 +450,7 @@ describe('Given QuickMarcEditWrapper', () => {
 
           expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
           expect(mutator.quickMarcEditMarcRecord.PUT).not.toHaveBeenCalled();
-
-          await waitFor(() => expect(getByText('stripes-components.optimisticLocking.saveError')).toBeDefined());
+          expect(getByText('stripes-components.optimisticLocking.saveError')).toBeDefined();
         });
       });
 
@@ -437,6 +468,48 @@ describe('Given QuickMarcEditWrapper', () => {
             messageId: 'ui-quick-marc.record.save.error.notFound',
             type: 'error',
           });
+        });
+      });
+
+      it('should actualize links', async () => {
+        const { getByText } = renderQuickMarcEditWrapper({
+          instance,
+          mutator,
+        });
+
+        await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
+
+        const expectedFormValues = {
+          leader: mockLeaders[MARC_TYPES.BIB],
+          marcFormat: MARC_TYPES.BIB,
+          fields: expect.arrayContaining([
+            expect.objectContaining({
+              tag: '100',
+              content: '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001085 $9 a84dd631-dfa4-469f-b167-24e61bc22578',
+              linkDetails: {
+                authorityId: 'a84dd631-dfa4-469f-b167-24e61bc22578',
+                authorityNaturalId: 'n2008001085',
+                linkingRuleId: 1,
+                status: 'ACTUAL',
+              },
+            }),
+          ]),
+        };
+
+        expect(mockActualizeLinks).toHaveBeenCalledWith(expect.objectContaining(expectedFormValues));
+      });
+
+      describe('when marc type is not a bibliographic', () => {
+        it('should not be called actualizeLinks', async () => {
+          const { getByText } = renderQuickMarcEditWrapper({
+            instance,
+            mutator,
+            marcType: MARC_TYPES.AUTHORITY,
+          });
+
+          await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
+
+          expect(mockActualizeLinks).not.toHaveBeenCalled();
         });
       });
     });
@@ -503,7 +576,7 @@ describe('Given QuickMarcEditWrapper', () => {
 
         expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' });
 
-        await waitFor(() => expect(mockOnClose).toHaveBeenCalled());
+        expect(mockOnClose).toHaveBeenCalled();
       });
 
       describe('when there is an error during POST request', () => {
@@ -523,10 +596,10 @@ describe('Given QuickMarcEditWrapper', () => {
 
           expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
 
-          await waitFor(() => expect(mockShowCallout).toHaveBeenCalledWith({
+          expect(mockShowCallout).toHaveBeenCalledWith({
             messageId: 'ui-quick-marc.record.save.error.generic',
             type: 'error',
-          }));
+          });
         });
       });
     });
