@@ -1262,6 +1262,7 @@ describe('Given useAuthorityLinking', () => {
       expect(mockFetchLinkSuggestions).toHaveBeenCalledWith({
         body: linkSuggestionsRequestBody,
         isSearchByAuthorityId: true,
+        ignoreAutoLinkingEnabled: true,
       });
       expect(values).toEqual({
         externalHrid: 'in00000000001',

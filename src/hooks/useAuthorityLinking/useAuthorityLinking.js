@@ -266,6 +266,7 @@ const useAuthorityLinking = () => {
     const { fields: suggestedFields } = await fetchLinkSuggestions({
       body: payload,
       isSearchByAuthorityId: true,
+      ignoreAutoLinkingEnabled: true,
     });
 
     const actualizedLinks = formValues.fields.map(field => {

@@ -6,11 +6,15 @@ const useLinkSuggestions = () => {
   const ky = useOkapiKy();
 
   const { mutateAsync, isLoading } = useMutation(
-    ({ body, isSearchByAuthorityId }) => {
+    ({ body, isSearchByAuthorityId, ignoreAutoLinkingEnabled }) => {
       let api = 'records-editor/links/suggestion';
 
       if (isSearchByAuthorityId) {
         api += '?authoritySearchParameter=ID';
+      }
+
+      if (ignoreAutoLinkingEnabled) {
+        api += `${api.includes('?') ? '&' : '?'}ignoreAutoLinkingEnabled=true`;
       }
 
       return ky.post(api, { json: body }).json();
