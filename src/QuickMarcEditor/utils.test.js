@@ -2595,4 +2595,55 @@ describe('QuickMarcEditor utils', () => {
       });
     });
   });
+
+  describe('hydrateForLinkSuggestions', () => {
+    it('should take "leader" value from the LDR field', () => {
+      const fields = [{
+        'tag': '100',
+        'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 4808f6ae-8379-41e9-a795-915ac4751668',
+        'indicators': ['1', '\\'],
+        'isProtected': false,
+        'id': '5481472d-a621-4571-9ef9-438a4c7044fd',
+        '_isDeleted': false,
+        '_isLinked': true,
+        'linkDetails': {
+          'authorityNaturalId': 'n2008001084',
+          'authorityId': '4808f6ae-8379-41e9-a795-915ac4751668',
+          'linkingRuleId': 1,
+          'status': 'ACTUAL',
+        },
+        'subfieldGroups': {
+          'controlled': '$a Coates, Ta-Nehisi',
+          'uncontrolledAlpha': '$e author.',
+          'zeroSubfield': '$0 id.loc.gov/authorities/names/n2008001084',
+          'nineSubfield': '$9 4808f6ae-8379-41e9-a795-915ac4751668',
+          'uncontrolledNumber': '',
+        },
+      }];
+
+      const marcRecord = {
+        marcFormat: MARC_TYPES.BIB,
+        _actionType: 'view',
+        records: [
+          {
+            tag: 'LDR',
+            content: 'leader content',
+          },
+          ...fields,
+        ],
+      };
+
+      expect(utils.hydrateForLinkSuggestions(marcRecord, fields)).toEqual({
+        leader: 'leader content',
+        marcFormat: MARC_TYPES.BIB,
+        _actionType: 'view',
+        fields: [
+          {
+            tag: '100',
+            content: '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 4808f6ae-8379-41e9-a795-915ac4751668',
+          },
+        ],
+      });
+    });
+  });
 });

@@ -105,14 +105,25 @@ const mockRecords = {
         'Biog': '|',
       },
     }, {
+      'id': '0b3938b5-3ed6-45a0-90f9-fcf24dfebc7c',
       'tag': '100',
-      'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001085 $9 a84dd631-dfa4-469f-b167-24e61bc22578',
-      'indicators': ['1', '\\'],
+      'content': '$a Ma, Wei $0 id.loc.gov/authorities/names/n84160718 $9 495884af-28d7-4d69-85e4-e84c5de693db',
+      'indicators': ['\\', '\\'],
+      '_isAdded': true,
+      '_isLinked': true,
+      'prevContent': '$a test',
       'linkDetails': {
-        'authorityId': 'a84dd631-dfa4-469f-b167-24e61bc22578',
-        'authorityNaturalId': 'n2008001085',
+        'authorityNaturalId': 'n84160718',
+        'authorityId': '495884af-28d7-4d69-85e4-e84c5de693db',
         'linkingRuleId': 1,
         'status': 'NEW',
+      },
+      'subfieldGroups': {
+        'controlled': '$a Ma, Wei',
+        'uncontrolledAlpha': '',
+        'zeroSubfield': '$0 id.loc.gov/authorities/names/n84160718',
+        'nineSubfield': '$9 495884af-28d7-4d69-85e4-e84c5de693db',
+        'uncontrolledNumber': '',
       },
     }, {
       'content': '$a Title',
@@ -363,15 +374,19 @@ describe('Given QuickMarcCreateWrapper', () => {
       await act(async () => { fireEvent.click(screen.getByText('stripes-acq-components.FormFooter.save')); });
 
       const expectedFormValues = {
-        leader: mockLeaders[MARC_TYPES.BIB],
         marcFormat: MARC_TYPES.BIB,
-        fields: expect.arrayContaining([
+        records: expect.arrayContaining([
+          expect.objectContaining({
+            tag: 'LDR',
+            content: mockRecords[MARC_TYPES.BIB][0].content,
+          }),
           expect.objectContaining({
             tag: '100',
-            content: '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001085 $9 a84dd631-dfa4-469f-b167-24e61bc22578',
+            content: '$a Ma, Wei $0 id.loc.gov/authorities/names/n84160718 $9 495884af-28d7-4d69-85e4-e84c5de693db',
+            prevContent: '$a test',
             linkDetails: {
-              authorityId: 'a84dd631-dfa4-469f-b167-24e61bc22578',
-              authorityNaturalId: 'n2008001085',
+              authorityId: '495884af-28d7-4d69-85e4-e84c5de693db',
+              authorityNaturalId: 'n84160718',
               linkingRuleId: 1,
               status: 'NEW',
             },

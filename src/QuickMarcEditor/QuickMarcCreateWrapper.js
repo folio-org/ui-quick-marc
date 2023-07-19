@@ -118,16 +118,15 @@ const QuickMarcCreateWrapper = ({
     const formValuesToProcess = flow(
       prepareForSubmit,
       combineSplitFields,
-      hydrateMarcRecord,
     )(formValues);
 
-    let formValuesForCreate;
+    let formValuesToHydrate;
 
     try {
       if (marcType === MARC_TYPES.BIB) {
-        formValuesForCreate = await actualizeLinks(formValuesToProcess);
+        formValuesToHydrate = await actualizeLinks(formValuesToProcess);
       } else {
-        formValuesForCreate = formValuesToProcess;
+        formValuesToHydrate = formValuesToProcess;
       }
     } catch (errorResponse) {
       const parsedError = await parseHttpError(errorResponse);
@@ -137,7 +136,9 @@ const QuickMarcCreateWrapper = ({
       return null;
     }
 
-    formValuesForCreate._actionType = 'create';
+    formValuesToHydrate._actionType = 'create';
+
+    const formValuesForCreate = hydrateMarcRecord(formValuesToHydrate);
 
     return mutator.quickMarcEditMarcRecord.POST(formValuesForCreate)
       .then(async ({ qmRecordId }) => {

@@ -1109,7 +1109,7 @@ describe('Given useAuthorityLinking', () => {
 
   describe('when calling actualizeLinks and there is no linked field', () => {
     it('should return the same form values', async () => {
-      const formValues = { fields: [] };
+      const formValues = { records: [] };
       const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
       const values = await result.current.actualizeLinks(formValues);
 
@@ -1122,15 +1122,13 @@ describe('Given useAuthorityLinking', () => {
       const formValues = {
         externalHrid: 'in00000000001',
         externalId: '4c95c27d-51fc-4ae1-892d-11347377bdd4',
-        leader: '05341cam\\a2201021\\i\\4500',
+        leader: 'test',
         marcFormat: MARC_TYPES.BIB,
         _actionType: 'view',
-        fields: [
+        records: [
           {
-            tag: '001',
-            indicators: undefined,
-            linkDetails: undefined,
-            content: 'in00000000018',
+            tag: 'LDR',
+            content: '05341cam\\a2201021\\i\\4500',
           },
           {
             'tag': '700',
@@ -1180,7 +1178,7 @@ describe('Given useAuthorityLinking', () => {
       };
 
       const linkSuggestionsRequestBody = {
-        'leader': '05341cam\\a2201021\\i\\4500',
+        'leader': formValues.records[0].content,
         'fields': [
           {
             'tag': '700',
@@ -1205,7 +1203,7 @@ describe('Given useAuthorityLinking', () => {
 
       const linkSuggestionsResponse = {
         '_actionType': 'view',
-        'leader': '05274cam\\a2201021\\i\\4500',
+        'leader': formValues.records[0].content,
         'fields': [
           {
             'tag': '700',
@@ -1267,15 +1265,13 @@ describe('Given useAuthorityLinking', () => {
       expect(values).toEqual({
         externalHrid: 'in00000000001',
         externalId: '4c95c27d-51fc-4ae1-892d-11347377bdd4',
-        leader: '05341cam\\a2201021\\i\\4500',
+        leader: 'test',
         marcFormat: MARC_TYPES.BIB,
         _actionType: 'view',
-        fields: [
+        records: [
           {
-            tag: '001',
-            indicators: undefined,
-            linkDetails: undefined,
-            content: 'in00000000018',
+            tag: 'LDR',
+            content: formValues.records[0].content,
           },
           {
             'tag': '700',
@@ -1334,7 +1330,7 @@ describe('Given useAuthorityLinking', () => {
         leader: '05341cam\\a2201021\\i\\4500',
         marcFormat: MARC_TYPES.BIB,
         _actionType: 'view',
-        fields: [
+        records: [
           {
             'tag': '100',
             'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 541539bf-7e1f-468e-a817-a551c6b63d7d',
@@ -1400,7 +1396,7 @@ describe('Given useAuthorityLinking', () => {
         leader: '05341cam\\a2201021\\i\\4500',
         marcFormat: MARC_TYPES.BIB,
         _actionType: 'view',
-        fields: [
+        records: [
           {
             'tag': '100',
             'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 541539bf-7e1f-468e-a817-a551c6b63d7d',
@@ -1430,7 +1426,7 @@ describe('Given useAuthorityLinking', () => {
         leader: '05341cam\\a2201021\\i\\4500',
         marcFormat: MARC_TYPES.BIB,
         _actionType: 'view',
-        fields: [
+        records: [
           {
             'tag': '700',
             'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664 $9 a2803a7b-d479-46cd-b744-1305d2a7a29b $2 test1 $i test2',
@@ -1477,7 +1473,7 @@ describe('Given useAuthorityLinking', () => {
         leader: '05341cam\\a2201021\\i\\4500',
         marcFormat: MARC_TYPES.BIB,
         _actionType: 'view',
-        fields: [
+        records: [
           {
             'tag': '700',
             'content': '$a Yuan, Bing test $i test2 $0 id.loc.gov/authorities/names/n93100664 $9 a2803a7b-d479-46cd-b744-1305d2a7a29b $2 test1',
