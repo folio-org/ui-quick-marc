@@ -7,17 +7,20 @@ const useLinkSuggestions = () => {
 
   const { mutateAsync, isLoading } = useMutation(
     ({ body, isSearchByAuthorityId, ignoreAutoLinkingEnabled }) => {
-      let api = 'records-editor/links/suggestion';
+      const searchParams = new URLSearchParams();
 
       if (isSearchByAuthorityId) {
-        api += '?authoritySearchParameter=ID';
+        searchParams.append('authoritySearchParameter', 'ID');
       }
 
       if (ignoreAutoLinkingEnabled) {
-        api += `${api.includes('?') ? '&' : '?'}ignoreAutoLinkingEnabled=true`;
+        searchParams.append('ignoreAutoLinkingEnabled', 'true');
       }
 
-      return ky.post(api, { json: body }).json();
+      return ky.post('records-editor/links/suggestion', {
+        searchParams: searchParams.toString(),
+        json: body,
+      }).json();
     },
   );
 

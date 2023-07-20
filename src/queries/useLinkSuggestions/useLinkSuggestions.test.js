@@ -39,7 +39,7 @@ describe('Given useLinkSuggestions', () => {
 
     await act(async () => { result.current.fetchLinkSuggestions({ body }); });
 
-    expect(mockPost).toHaveBeenCalledWith('records-editor/links/suggestion', { json: body });
+    expect(mockPost).toHaveBeenCalledWith('records-editor/links/suggestion', { json: body, searchParams: '' });
   });
 
   it('should fetch link suggestions with both authoritySearchParameter and ignoreAutoLinkingEnabled', async () => {
@@ -54,8 +54,11 @@ describe('Given useLinkSuggestions', () => {
     });
 
     expect(mockPost).toHaveBeenCalledWith(
-      'records-editor/links/suggestion?authoritySearchParameter=ID&ignoreAutoLinkingEnabled=true',
-      { json: body },
+      'records-editor/links/suggestion',
+      {
+        searchParams: 'authoritySearchParameter=ID&ignoreAutoLinkingEnabled=true',
+        json: body,
+      },
     );
   });
 
@@ -70,8 +73,11 @@ describe('Given useLinkSuggestions', () => {
     });
 
     expect(mockPost).toHaveBeenCalledWith(
-      'records-editor/links/suggestion?ignoreAutoLinkingEnabled=true',
-      { json: body },
+      'records-editor/links/suggestion',
+      {
+        searchParams: 'ignoreAutoLinkingEnabled=true',
+        json: body,
+      },
     );
   });
 });
