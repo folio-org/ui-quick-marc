@@ -108,15 +108,14 @@ const QuickMarcDeriveWrapper = ({
     const formValuesToProcess = flow(
       prepareForSubmit,
       combineSplitFields,
-      hydrateMarcRecord,
     )(formValues);
 
     showCallout({ messageId: 'ui-quick-marc.record.saveNew.onSave' });
 
-    let formValuesForDerive;
+    let formValuesToHydrate;
 
     try {
-      formValuesForDerive = await actualizeLinks(formValuesToProcess);
+      formValuesToHydrate = await actualizeLinks(formValuesToProcess);
     } catch (errorResponse) {
       const parsedError = await parseHttpError(errorResponse);
 
@@ -125,8 +124,10 @@ const QuickMarcDeriveWrapper = ({
       return null;
     }
 
-    formValuesForDerive.relatedRecordVersion = 1;
-    formValuesForDerive._actionType = 'create';
+    formValuesToHydrate.relatedRecordVersion = 1;
+    formValuesToHydrate._actionType = 'create';
+
+    const formValuesForDerive = hydrateMarcRecord(formValuesToHydrate);
 
     return mutator.quickMarcEditMarcRecord.POST(formValuesForDerive)
       .then(async ({ qmRecordId }) => {

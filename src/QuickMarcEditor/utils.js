@@ -1500,7 +1500,7 @@ export const dehydrateMarcRecordResponse = (marcRecordResponse, marcType) => (
 );
 
 export const hydrateForLinkSuggestions = (marcRecord, fields) => ({
-  leader: marcRecord.leader,
+  leader: marcRecord.records[0].content,
   fields: fields.map(record => ({
     tag: record.tag,
     content: record.content,

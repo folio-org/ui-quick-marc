@@ -257,18 +257,19 @@ const useAuthorityLinking = () => {
   }, []);
 
   const actualizeLinks = useCallback(async (formValues) => {
-    if (!recordHasLinks(formValues.fields)) {
+    if (!recordHasLinks(formValues.records)) {
       return formValues;
     }
 
-    const linkedFields = formValues.fields.filter(isFieldLinked);
+    const linkedFields = formValues.records.filter(isFieldLinked);
     const payload = hydrateForLinkSuggestions(formValues, linkedFields);
     const { fields: suggestedFields } = await fetchLinkSuggestions({
       body: payload,
       isSearchByAuthorityId: true,
+      ignoreAutoLinkingEnabled: true,
     });
 
-    const actualizedLinks = formValues.fields.map(field => {
+    const actualizedLinks = formValues.records.map(field => {
       if (!isFieldLinked(field)) {
         return field;
       }
@@ -290,7 +291,7 @@ const useAuthorityLinking = () => {
 
     return {
       ...formValues,
-      fields: actualizedLinks,
+      records: actualizedLinks,
     };
   }, [fetchLinkSuggestions, getSubfieldGroups, unlinkAuthority]);
 

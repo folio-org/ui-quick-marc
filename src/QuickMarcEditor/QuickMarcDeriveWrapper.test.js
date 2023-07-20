@@ -18,6 +18,7 @@ import { MARC_TYPES } from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
 import { useAuthorityLinking } from '../hooks';
+import { useAuthorityLinkingRules } from '../queries';
 
 jest.mock('react-final-form', () => ({
   ...jest.requireActual('react-final-form'),
@@ -93,13 +94,46 @@ const mockFormValues = jest.fn(() => ({
         linkingRuleId: 1,
       },
     }, {
-      tag: '100',
-      content: '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001085 $9 a84dd631-dfa4-469f-b167-24e61bc22578',
-      linkDetails: {
-        authorityId: 'a84dd631-dfa4-469f-b167-24e61bc22578',
-        authorityNaturalId: 'n2008001085',
-        linkingRuleId: 1,
-        status: 'NEW',
+      'tag': '100',
+      'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 4808f6ae-8379-41e9-a795-915ac4751668',
+      'indicators': ['1', '\\'],
+      'isProtected': false,
+      'id': '5481472d-a621-4571-9ef9-438a4c7044fd',
+      '_isDeleted': false,
+      '_isLinked': true,
+      'linkDetails': {
+        'authorityNaturalId': 'n2008001084',
+        'authorityId': '4808f6ae-8379-41e9-a795-915ac4751668',
+        'linkingRuleId': 1,
+        'status': 'ACTUAL',
+      },
+      'subfieldGroups': {
+        'controlled': '$a Coates, Ta-Nehisi',
+        'uncontrolledAlpha': '$e author.',
+        'zeroSubfield': '$0 id.loc.gov/authorities/names/n2008001084',
+        'nineSubfield': '$9 4808f6ae-8379-41e9-a795-915ac4751668',
+        'uncontrolledNumber': '',
+      },
+    }, {
+      'id': '0b3938b5-3ed6-45a0-90f9-fcf24dfebc7c',
+      'tag': '100',
+      'content': '$a Ma, Wei $0 id.loc.gov/authorities/names/n84160718 $9 495884af-28d7-4d69-85e4-e84c5de693db',
+      'indicators': ['\\', '\\'],
+      '_isAdded': true,
+      '_isLinked': true,
+      'prevContent': '$a test',
+      'linkDetails': {
+        'authorityNaturalId': 'n84160718',
+        'authorityId': '495884af-28d7-4d69-85e4-e84c5de693db',
+        'linkingRuleId': 1,
+        'status': 'NEW',
+      },
+      'subfieldGroups': {
+        'controlled': '$a Ma, Wei',
+        'uncontrolledAlpha': '',
+        'zeroSubfield': '$0 id.loc.gov/authorities/names/n84160718',
+        'nineSubfield': '$9 495884af-28d7-4d69-85e4-e84c5de693db',
+        'uncontrolledNumber': '',
       },
     }, {
       content: '$a (derived2)/Ezekiel / $c Robert W. Jenson.',
@@ -202,6 +236,19 @@ const getInstance = () => ({
   title: 'ui-quick-marc.record.edit.title',
 });
 
+const linkingRules = {
+  linkingRules: [{
+    id: 1,
+    bibField: '100',
+    authorityField: '100',
+    authoritySubfields: ['a', 'b', 't', 'd'],
+    subfieldModifications: [],
+    validation: {},
+    autoLinkingEnabled: true,
+  }],
+  isLoading: false,
+};
+
 const initialValues = {
   leader: '14706cam a2200865Ii 4500',
   records: [
@@ -282,6 +329,8 @@ describe('Given QuickMarcDeriveWrapper', () => {
       autoLinkableBibFields: [],
       autoLinkAuthority: jest.fn(),
     });
+
+    useAuthorityLinkingRules.mockReturnValue(linkingRules);
   });
 
   it('should render with no axe errors', async () => {
@@ -387,15 +436,29 @@ describe('Given QuickMarcDeriveWrapper', () => {
       await act(async () => { fireEvent.click(screen.getByText('stripes-acq-components.FormFooter.save')); });
 
       const expectedFormValues = {
-        leader: '02949cama2200517Kiia0000',
         marcFormat: MARC_TYPES.BIB,
-        fields: expect.arrayContaining([
+        records: expect.arrayContaining([
+          expect.objectContaining({
+            tag: 'LDR',
+            content: '02949cama2200517Kiia0000',
+          }),
           expect.objectContaining({
             tag: '100',
-            content: '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001085 $9 a84dd631-dfa4-469f-b167-24e61bc22578',
+            content: '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 4808f6ae-8379-41e9-a795-915ac4751668',
             linkDetails: {
-              authorityId: 'a84dd631-dfa4-469f-b167-24e61bc22578',
-              authorityNaturalId: 'n2008001085',
+              authorityId: '4808f6ae-8379-41e9-a795-915ac4751668',
+              authorityNaturalId: 'n2008001084',
+              linkingRuleId: 1,
+              status: 'ACTUAL',
+            },
+          }),
+          expect.objectContaining({
+            tag: '100',
+            content: '$a Ma, Wei $0 id.loc.gov/authorities/names/n84160718 $9 495884af-28d7-4d69-85e4-e84c5de693db',
+            prevContent: '$a test',
+            linkDetails: {
+              authorityNaturalId: 'n84160718',
+              authorityId: '495884af-28d7-4d69-85e4-e84c5de693db',
               linkingRuleId: 1,
               status: 'NEW',
             },

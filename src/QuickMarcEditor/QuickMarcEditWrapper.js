@@ -125,7 +125,6 @@ const QuickMarcEditWrapper = ({
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
       marcRecord => cleanBytesFields(marcRecord, marcType),
       combineSplitFields,
-      hydrateMarcRecord,
     )(formValues);
 
     const path = EXTERNAL_INSTANCE_APIS[marcType];
@@ -136,7 +135,7 @@ const QuickMarcEditWrapper = ({
       return fetchedInstance;
     };
 
-    let formValuesToSave;
+    let formValuesToHydrate;
     let instanceResponse;
 
     try {
@@ -152,7 +151,7 @@ const QuickMarcEditWrapper = ({
         fetchInstance(),
       ]);
 
-      formValuesToSave = formValuesWithActualizedLinkedFields;
+      formValuesToHydrate = formValuesWithActualizedLinkedFields;
       instanceResponse = instanceData;
     } catch (errorResponse) {
       const parsedError = await parseHttpError(errorResponse);
@@ -174,10 +173,12 @@ const QuickMarcEditWrapper = ({
       return null;
     }
 
-    formValuesToSave._actionType = 'edit';
-    formValuesToSave.relatedRecordVersion = marcType === MARC_TYPES.AUTHORITY
+    formValuesToHydrate._actionType = 'edit';
+    formValuesToHydrate.relatedRecordVersion = marcType === MARC_TYPES.AUTHORITY
       ? instance._version
       : new URLSearchParams(location.search).get('relatedRecordVersion');
+
+    const formValuesToSave = hydrateMarcRecord(formValuesToHydrate);
 
     return mutator.quickMarcEditMarcRecord.PUT(formValuesToSave)
       .then(async () => {

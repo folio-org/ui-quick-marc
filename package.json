@@ -40,6 +40,7 @@
         "subPermissions": [
           "ui-quick-marc.quick-marc-editor.view",
           "marc-records-editor.item.post",
+          "marc-records-editor.links.suggestion.post",
           "instance-authority-links.instances.collection.post",
           "marc-records-editor.status.item.get"
         ],
@@ -51,6 +52,7 @@
         "subPermissions": [
           "ui-quick-marc.quick-marc-editor.view",
           "marc-records-editor.item.put",
+          "marc-records-editor.links.suggestion.post",
           "instance-authority-links.instances.collection.put"
         ],
         "visible": true
@@ -91,6 +93,7 @@
           "ui-quick-marc.quick-marc-editor.view",
           "marc-records-editor.status.item.get",
           "marc-records-editor.item.post",
+          "marc-records-editor.links.suggestion.post",
           "instance-authority-links.instances.collection.put"
         ],
         "visible": true

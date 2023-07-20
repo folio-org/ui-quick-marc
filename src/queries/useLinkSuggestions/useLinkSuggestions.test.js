@@ -2,7 +2,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react-hooks';
 
 import '../../../test/jest/__mock__';
 
@@ -22,6 +22,11 @@ const mockPost = jest.fn().mockReturnValue({
   json: jest.fn().mockResolvedValue({ fields: [] }),
 });
 
+const body = {
+  _actionType: 'view',
+  fields: [],
+};
+
 describe('Given useLinkSuggestions', () => {
   beforeEach(() => {
     useOkapiKy.mockClear().mockReturnValue({
@@ -30,14 +35,49 @@ describe('Given useLinkSuggestions', () => {
   });
 
   it('should fetch link suggestions', async () => {
-    const body = {
-      _actionType: 'view',
-      fields: [],
-    };
     const { result } = renderHook(() => useLinkSuggestions(), { wrapper });
 
-    await result.current.fetchLinkSuggestions({ body });
+    await act(async () => { result.current.fetchLinkSuggestions({ body }); });
 
-    expect(mockPost).toHaveBeenCalledWith('records-editor/links/suggestion', { json: body });
+    expect(mockPost).toHaveBeenCalledWith('records-editor/links/suggestion', { json: body, searchParams: '' });
+  });
+
+  it('should fetch link suggestions with both authoritySearchParameter and ignoreAutoLinkingEnabled', async () => {
+    const { result } = renderHook(() => useLinkSuggestions(), { wrapper });
+
+    await act(async () => {
+      result.current.fetchLinkSuggestions({
+        body,
+        isSearchByAuthorityId: true,
+        ignoreAutoLinkingEnabled: true,
+      });
+    });
+
+    expect(mockPost).toHaveBeenCalledWith(
+      'records-editor/links/suggestion',
+      {
+        searchParams: 'authoritySearchParameter=ID&ignoreAutoLinkingEnabled=true',
+        json: body,
+      },
+    );
+  });
+
+  it('should fetch link suggestions with ignoreAutoLinkingEnabled only', async () => {
+    const { result } = renderHook(() => useLinkSuggestions(), { wrapper });
+
+    await act(async () => {
+      result.current.fetchLinkSuggestions({
+        body,
+        ignoreAutoLinkingEnabled: true,
+      });
+    });
+
+    expect(mockPost).toHaveBeenCalledWith(
+      'records-editor/links/suggestion',
+      {
+        searchParams: 'ignoreAutoLinkingEnabled=true',
+        json: body,
+      },
+    );
   });
 });
