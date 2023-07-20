@@ -1508,3 +1508,23 @@ export const hydrateForLinkSuggestions = (marcRecord, fields) => ({
   marcFormat: marcRecord.marcFormat,
   _actionType: 'view',
 });
+
+export const checkIfConsortium = (stripes) => {
+  return Boolean(stripes?.user?.user?.consortium?.id);
+};
+
+export const getCentralTenantId = (stripes) => {
+  return stripes.user.user.consortium?.centralTenantId;
+};
+
+export const checkIfUserInCentralTenant = (stripes) => {
+  if (!stripes.hasInterface('consortia')) {
+    return false;
+  }
+
+  return stripes.okapi.tenant === getCentralTenantId(stripes);
+};
+
+export const checkIfUserInMemberTenant = (stripes) => {
+  return checkIfConsortium(stripes) && !checkIfUserInCentralTenant(stripes);
+};

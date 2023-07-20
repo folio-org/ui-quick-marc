@@ -31,8 +31,13 @@ import {
   splitFields,
   getCreateBibMarcRecordResponse,
   getCreateAuthorityMarcRecordResponse,
+  checkIfUserInMemberTenant,
+  getCentralTenantId,
 } from './utils';
-import { QUICK_MARC_ACTIONS } from './constants';
+import {
+  OKAPI_TENANT_HEADER,
+  QUICK_MARC_ACTIONS,
+} from './constants';
 import { useAuthorityLinksCount } from '../queries';
 
 const propTypes = {
@@ -45,6 +50,7 @@ const propTypes = {
   mutator: PropTypes.object.isRequired,
   match: ReactRouterPropTypes.match.isRequired,
   resources: PropTypes.object.isRequired,
+  stripes: PropTypes.object.isRequired,
   wrapper: PropTypes.func.isRequired,
 };
 
@@ -65,6 +71,7 @@ const QuickMarcEditorContainer = ({
   marcType,
   externalRecordPath,
   resources,
+  stripes,
 }) => {
   const {
     externalId,
@@ -77,6 +84,8 @@ const QuickMarcEditorContainer = ({
   const [linksCount, setLinksCount] = useState(0);
 
   const searchParams = new URLSearchParams(location.search);
+  const isUserInMemberTenant = checkIfUserInMemberTenant(stripes);
+  const centralTenantId = getCentralTenantId(stripes);
 
   const showCallout = useShowCallout();
   const { fetchLinksCount } = useAuthorityLinksCount();
@@ -109,9 +118,18 @@ const QuickMarcEditorContainer = ({
       ? Promise.resolve({})
       : mutator.quickMarcEditInstance.GET({ path: `${path}/${externalId}` });
 
+    const deriveHeaders = action === QUICK_MARC_ACTIONS.DERIVE && isUserInMemberTenant && {
+      headers: {
+        [OKAPI_TENANT_HEADER]: centralTenantId,
+      },
+    };
+
     const marcRecordPromise = action === QUICK_MARC_ACTIONS.CREATE
       ? Promise.resolve({})
-      : mutator.quickMarcEditMarcRecord.GET({ params: { externalId } });
+      : mutator.quickMarcEditMarcRecord.GET({
+        params: { externalId },
+        ...deriveHeaders,
+      });
 
     const locationsPromise = mutator.locations.GET();
     const linkingRulesPromise = mutator.linkingRules.GET();
@@ -156,7 +174,7 @@ const QuickMarcEditorContainer = ({
         closeEditor();
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [externalId, history, marcType, fetchLinksCount]);
+  }, [externalId, history, marcType, fetchLinksCount, isUserInMemberTenant, centralTenantId]);
 
   useEffect(() => {
     loadData();

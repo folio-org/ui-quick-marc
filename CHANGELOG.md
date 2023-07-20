@@ -40,6 +40,7 @@
 * [UIQM-436](https://issues.folio.org/browse/UIQM-436) Auto-linking MARC bib. Handling multiple subfield 0.
 * [UIQM-509](https://issues.folio.org/browse/UIQM-509) Autopopulate subfields when Creating MARC records.
 * [UIQM-501](https://issues.folio.org/browse/UIQM-501) Actualize linked fields on save.
+* [UIQM-527](https://issues.folio.org/browse/UIQM-527) Derive MARC bib record in Member tenant.
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
 
