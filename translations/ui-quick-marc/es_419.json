@@ -273,5 +273,5 @@
     "records.autoLink.notLinkedFields": "El campo <b>{fieldTags}</b>{count, plural, one {} =2 { y <b>{lastFieldTag}</b>} other {, y <b>{lastFieldTag}</b>}} debe configurarse manualmente seleccionando el icono de enlace.",
     "autoLinkingButton": "Enlaces",
     "records.error.autoLinking": "No se han podido vincular los registros debido a un error del sistema. Vuelva a intentarlo o póngase en contacto con el servicio de asistencia.",
-    "records.autoLink.notLinkedFields.multiple": "Field <b>{fieldTags}</b>{count, plural, one {} =2 { and <b>{lastFieldTag}</b>} other {, and <b>{lastFieldTag}</b>}} must be set manually by selecting the link icon. There are multiple authority records that can be matched to this bibliographic field."
+    "records.autoLink.notLinkedFields.multiple": "El campo <b>{fieldTags}</b>{count, plural, one {} =2 { y <b>{lastFieldTag}</b>} other {, y <b>{lastFieldTag}</b>}} debe establecerse manualmente seleccionando el icono de enlace. Hay varios registros de autoridad que pueden coincidir con este campo bibliográfico."
 }
