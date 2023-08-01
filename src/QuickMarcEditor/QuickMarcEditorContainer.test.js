@@ -45,7 +45,7 @@ const mockHistory = createMemoryHistory();
 
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
-  withRouter: Component => props => <Component {...props} match={match} location={location} history={mockHistory} />,
+  withRouter: Component => props => <Component match={match} location={location} history={mockHistory} {...props} />,
 }));
 
 jest.mock('../queries', () => ({
@@ -268,6 +268,10 @@ describe('Given Quick Marc Editor Container', () => {
 
   describe('when a user is in a member tenant and derives a shared record', () => {
     it('should take the record data from the central tenant', async () => {
+      const newLocation = {
+        ...location,
+        search: '?shared=true',
+      };
       const newMutator = {
         ...mutator,
         quickMarcEditInstance: {
@@ -286,6 +290,7 @@ describe('Given Quick Marc Editor Container', () => {
           action: QUICK_MARC_ACTIONS.DERIVE,
           wrapper: QuickMarcDeriveWrapper,
           stripes,
+          location: newLocation,
         });
       });
 
@@ -296,7 +301,7 @@ describe('Given Quick Marc Editor Container', () => {
       ];
 
       requests.forEach(request => {
-        expect(request).toHaveBeenLastCalledWith(expect.objectContaining({
+        expect(request).toHaveBeenCalledWith(expect.objectContaining({
           headers: {
             [OKAPI_TENANT_HEADER]: 'consortium',
           },
@@ -307,6 +312,10 @@ describe('Given Quick Marc Editor Container', () => {
 
   describe('when a user is in a member tenant and derives a local record', () => {
     it('should take the record data from the member tenant', async () => {
+      const newLocation = {
+        ...location,
+        search: '?shared=false',
+      };
       const newMutator = {
         ...mutator,
         quickMarcEditInstance: {
@@ -325,6 +334,7 @@ describe('Given Quick Marc Editor Container', () => {
           action: QUICK_MARC_ACTIONS.DERIVE,
           wrapper: QuickMarcDeriveWrapper,
           stripes,
+          location: newLocation,
         });
       });
 
@@ -335,7 +345,7 @@ describe('Given Quick Marc Editor Container', () => {
       ];
 
       requests.forEach(request => {
-        expect(request).toHaveBeenLastCalledWith(expect.not.objectContaining({
+        expect(request).toHaveBeenCalledWith(expect.not.objectContaining({
           headers: {
             [OKAPI_TENANT_HEADER]: 'consortium',
           },

@@ -11,7 +11,6 @@ import ReactRouterPropTypes from 'react-router-prop-types';
 import {
   stripesConnect,
   checkIfUserInMemberTenant,
-  checkIfSharedRecord,
 } from '@folio/stripes/core';
 
 import { LoadingView } from '@folio/stripes/components';
@@ -87,6 +86,7 @@ const QuickMarcEditorContainer = ({
   const [linksCount, setLinksCount] = useState(0);
 
   const searchParams = new URLSearchParams(location.search);
+  const isSharedRecord = searchParams.get('shared') === 'true';
 
   const showCallout = useShowCallout();
   const { fetchLinksCount } = useAuthorityLinksCount();
@@ -119,15 +119,10 @@ const QuickMarcEditorContainer = ({
 
     const requestOptions = {};
 
-    if (isUserInMemberTenant && action === QUICK_MARC_ACTIONS.DERIVE) {
-      const instanceRecord = await mutator.quickMarcEditInstance.GET({ path: `${path}/${externalId}` });
-      const isSharedRecord = checkIfSharedRecord(stripes, instanceRecord.source);
-
-      if (isSharedRecord) {
-        requestOptions.headers = {
-          [OKAPI_TENANT_HEADER]: centralTenantId,
-        };
-      }
+    if (isUserInMemberTenant && action === QUICK_MARC_ACTIONS.DERIVE && isSharedRecord) {
+      requestOptions.headers = {
+        [OKAPI_TENANT_HEADER]: centralTenantId,
+      };
     }
 
     const instancePromise = action === QUICK_MARC_ACTIONS.CREATE && marcType !== MARC_TYPES.HOLDINGS
@@ -193,6 +188,7 @@ const QuickMarcEditorContainer = ({
     marcType,
     fetchLinksCount,
     stripes,
+    isSharedRecord,
   ]);
 
   useEffect(() => {
