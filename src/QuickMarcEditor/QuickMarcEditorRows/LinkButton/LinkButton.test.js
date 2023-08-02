@@ -3,7 +3,7 @@ import {
   act,
   fireEvent,
   render,
-} from '@testing-library/react';
+} from '@folio/jest-config-stripes/testing-library/react';
 
 import { Pluggable } from '@folio/stripes/core';
 import { runAxeTest } from '@folio/stripes-testing';

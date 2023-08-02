@@ -2,7 +2,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, act } from '@folio/jest-config-stripes/testing-library/react';
 
 import '../../../test/jest/__mock__';
 
@@ -30,9 +30,9 @@ describe('Given useAuthorityLinkingRules', () => {
   });
 
   it('should fetch linking rules', async () => {
-    const { result, waitFor } = renderHook(() => useAuthorityLinkingRules(), { wrapper });
+    const { result } = renderHook(() => useAuthorityLinkingRules(), { wrapper });
 
-    await waitFor(() => !result.current.isLoading);
+    await act(async () => !result.current.isLoading);
 
     expect(mockGet).toHaveBeenCalled();
   });

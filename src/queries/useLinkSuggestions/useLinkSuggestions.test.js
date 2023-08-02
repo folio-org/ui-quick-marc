@@ -2,7 +2,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@folio/jest-config-stripes/testing-library/react';
 
 import '../../../test/jest/__mock__';
 
