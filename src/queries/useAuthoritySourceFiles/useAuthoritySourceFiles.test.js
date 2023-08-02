@@ -2,7 +2,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, act } from '@folio/jest-config-stripes/testing-library/react';
 
 import '../../../test/jest/__mock__';
 
@@ -32,9 +32,9 @@ describe('Given useAuthoritySourceFiles', () => {
   });
 
   it('should fetch source files', async () => {
-    const { result, waitFor } = renderHook(() => useAuthoritySourceFiles(), { wrapper });
+    const { result } = renderHook(() => useAuthoritySourceFiles(), { wrapper });
 
-    await waitFor(() => !result.current.isLoading);
+    await act(async () => !result.current.isLoading);
 
     expect(mockGet).toHaveBeenCalled();
   });

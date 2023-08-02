@@ -3,7 +3,7 @@ import {
   render,
   act,
   fireEvent,
-} from '@testing-library/react';
+} from '@folio/jest-config-stripes/testing-library/react';
 import faker from 'faker';
 import noop from 'lodash/noop';
 import { Form } from 'react-final-form';

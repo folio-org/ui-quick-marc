@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render } from '@folio/jest-config-stripes/testing-library/react';
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 

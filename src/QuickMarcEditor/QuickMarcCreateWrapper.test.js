@@ -4,7 +4,7 @@ import {
   render,
   fireEvent,
   screen,
-} from '@testing-library/react';
+} from '@folio/jest-config-stripes/testing-library/react';
 import faker from 'faker';
 import noop from 'lodash/noop';
 
