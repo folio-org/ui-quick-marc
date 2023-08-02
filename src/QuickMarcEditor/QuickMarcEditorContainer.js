@@ -8,7 +8,11 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import ReactRouterPropTypes from 'react-router-prop-types';
 
-import { stripesConnect } from '@folio/stripes/core';
+import {
+  stripesConnect,
+  checkIfUserInMemberTenant,
+} from '@folio/stripes/core';
+
 import { LoadingView } from '@folio/stripes/components';
 import {
   baseManifest,
@@ -32,7 +36,10 @@ import {
   getCreateBibMarcRecordResponse,
   getCreateAuthorityMarcRecordResponse,
 } from './utils';
-import { QUICK_MARC_ACTIONS } from './constants';
+import {
+  OKAPI_TENANT_HEADER,
+  QUICK_MARC_ACTIONS,
+} from './constants';
 import { useAuthorityLinksCount } from '../queries';
 
 const propTypes = {
@@ -45,6 +52,7 @@ const propTypes = {
   mutator: PropTypes.object.isRequired,
   match: ReactRouterPropTypes.match.isRequired,
   resources: PropTypes.object.isRequired,
+  stripes: PropTypes.object.isRequired,
   wrapper: PropTypes.func.isRequired,
 };
 
@@ -65,6 +73,7 @@ const QuickMarcEditorContainer = ({
   marcType,
   externalRecordPath,
   resources,
+  stripes,
 }) => {
   const {
     externalId,
@@ -77,6 +86,7 @@ const QuickMarcEditorContainer = ({
   const [linksCount, setLinksCount] = useState(0);
 
   const searchParams = new URLSearchParams(location.search);
+  const isSharedRecord = searchParams.get('shared') === 'true';
 
   const showCallout = useShowCallout();
   const { fetchLinksCount } = useAuthorityLinksCount();
@@ -104,17 +114,33 @@ const QuickMarcEditorContainer = ({
     const path = action === QUICK_MARC_ACTIONS.CREATE && marcType === MARC_TYPES.HOLDINGS
       ? EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]
       : EXTERNAL_INSTANCE_APIS[marcType];
+    const isUserInMemberTenant = checkIfUserInMemberTenant(stripes);
+    const centralTenantId = stripes.user.user.consortium?.centralTenantId;
+
+    const requestOptions = {};
+
+    if (isUserInMemberTenant && action === QUICK_MARC_ACTIONS.DERIVE && isSharedRecord) {
+      requestOptions.headers = {
+        [OKAPI_TENANT_HEADER]: centralTenantId,
+      };
+    }
 
     const instancePromise = action === QUICK_MARC_ACTIONS.CREATE && marcType !== MARC_TYPES.HOLDINGS
       ? Promise.resolve({})
-      : mutator.quickMarcEditInstance.GET({ path: `${path}/${externalId}` });
+      : mutator.quickMarcEditInstance.GET({
+        path: `${path}/${externalId}`,
+        ...requestOptions,
+      });
 
     const marcRecordPromise = action === QUICK_MARC_ACTIONS.CREATE
       ? Promise.resolve({})
-      : mutator.quickMarcEditMarcRecord.GET({ params: { externalId } });
+      : mutator.quickMarcEditMarcRecord.GET({
+        params: { externalId },
+        ...requestOptions,
+      });
 
     const locationsPromise = mutator.locations.GET();
-    const linkingRulesPromise = mutator.linkingRules.GET();
+    const linkingRulesPromise = mutator.linkingRules.GET(requestOptions);
 
     const linksCountPromise = marcType === MARC_TYPES.AUTHORITY
       ? fetchLinksCount([externalId])
@@ -156,7 +182,14 @@ const QuickMarcEditorContainer = ({
         closeEditor();
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [externalId, history, marcType, fetchLinksCount]);
+  }, [
+    externalId,
+    history,
+    marcType,
+    fetchLinksCount,
+    stripes,
+    isSharedRecord,
+  ]);
 
   useEffect(() => {
     loadData();

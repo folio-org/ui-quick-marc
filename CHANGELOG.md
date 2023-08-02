@@ -41,6 +41,7 @@
 * [UIQM-509](https://issues.folio.org/browse/UIQM-509) Autopopulate subfields when Creating MARC records.
 * [UIQM-501](https://issues.folio.org/browse/UIQM-501) Actualize linked fields on save.
 * [UIQM-532](https://issues.folio.org/browse/UIQM-532) *BREAKING* Bump `react` to `v18`.
+* [UIQM-480](https://issues.folio.org/browse/UIQM-480) Derive new local MARC bib record from Shared Instance record.
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
 
