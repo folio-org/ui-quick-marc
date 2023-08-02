@@ -3,7 +3,7 @@ import {
   render,
   fireEvent,
   waitFor,
-} from '@testing-library/react';
+} from '@folio/jest-config-stripes/testing-library/react';
 import faker from 'faker';
 
 import { runAxeTest } from '@folio/stripes-testing';
