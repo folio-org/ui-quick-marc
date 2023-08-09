@@ -13,11 +13,11 @@ import '@folio/stripes-acq-components/test/jest/__mock__';
 import QuickMarcEditorContainer from './QuickMarcEditorContainer';
 import QuickMarcEditWrapper from './QuickMarcEditWrapper';
 import QuickMarcDeriveWrapper from './QuickMarcDeriveWrapper';
+import { QUICK_MARC_ACTIONS } from './constants';
 import {
+  MARC_TYPES,
   OKAPI_TENANT_HEADER,
-  QUICK_MARC_ACTIONS,
-} from './constants';
-import { MARC_TYPES } from '../common/constants';
+} from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
 import buildStripes from '../../test/jest/__mock__/stripesCore.mock';

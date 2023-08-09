@@ -6,6 +6,10 @@ import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 import flow from 'lodash/flow';
 
+import {
+  checkIfUserInMemberTenant,
+  useStripes,
+} from '@folio/stripes/core';
 import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
@@ -15,6 +19,7 @@ import {
   EXTERNAL_INSTANCE_APIS,
   MARC_TYPES,
   ERROR_TYPES,
+  OKAPI_TENANT_HEADER,
 } from '../common/constants';
 import {
   hydrateMarcRecord,
@@ -32,7 +37,10 @@ import {
   autopopulatePhysDescriptionField,
   autopopulateMaterialCharsField,
 } from './utils';
-import { useAuthorityLinkingRules } from '../queries';
+import {
+  useAuthorityLinkingRules,
+  useMarcRecordMutation,
+} from '../queries';
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
@@ -59,11 +67,16 @@ const QuickMarcEditWrapper = ({
   refreshPageData,
   externalRecordPath,
 }) => {
+  const stripes = useStripes();
   const showCallout = useShowCallout();
   const location = useLocation();
   const [httpError, setHttpError] = useState(null);
   const { linkableBibFields, actualizeLinks } = useAuthorityLinking();
   const { linkingRules } = useAuthorityLinkingRules();
+  const { updateMarcRecord } = useMarcRecordMutation();
+
+  const searchParams = new URLSearchParams(location.search);
+  const isSharedRecord = searchParams.get('shared') === 'true';
 
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesToSave = flow(
@@ -110,6 +123,22 @@ const QuickMarcEditWrapper = ({
   ]);
 
   const onSubmit = useCallback(async (formValues) => {
+    const centralTenantId = stripes.user.user.consortium?.centralTenantId;
+    const mustChangeTenant = (
+      isSharedRecord
+      && [MARC_TYPES.BIB].includes(marcType)
+      && checkIfUserInMemberTenant(stripes)
+    );
+    let tenantId;
+    const requestOptions = {};
+
+    if (mustChangeTenant) {
+      requestOptions.headers = {
+        [OKAPI_TENANT_HEADER]: centralTenantId,
+      };
+      tenantId = centralTenantId;
+    }
+
     let is1xxOr010Updated = false;
 
     if (marcType === MARC_TYPES.AUTHORITY && linksCount > 0) {
@@ -130,7 +159,10 @@ const QuickMarcEditWrapper = ({
     const path = EXTERNAL_INSTANCE_APIS[marcType];
 
     const fetchInstance = async () => {
-      const fetchedInstance = await mutator.quickMarcEditInstance.GET({ path: `${path}/${formValuesToProcess.externalId}` });
+      const fetchedInstance = await mutator.quickMarcEditInstance.GET({
+        path: `${path}/${formValuesToProcess.externalId}`,
+        ...requestOptions,
+      });
 
       return fetchedInstance;
     };
@@ -140,7 +172,7 @@ const QuickMarcEditWrapper = ({
 
     try {
       const actualizeLinksPromise = marcType === MARC_TYPES.BIB
-        ? actualizeLinks(formValuesToProcess)
+        ? actualizeLinks(formValuesToProcess, tenantId)
         : Promise.resolve(formValuesToProcess);
 
       const [
@@ -180,7 +212,10 @@ const QuickMarcEditWrapper = ({
 
     const formValuesToSave = hydrateMarcRecord(formValuesToHydrate);
 
-    return mutator.quickMarcEditMarcRecord.PUT(formValuesToSave)
+    return updateMarcRecord({
+      body: formValuesToSave,
+      tenantId,
+    })
       .then(async () => {
         if (is1xxOr010Updated) {
           const values = {
@@ -219,6 +254,9 @@ const QuickMarcEditWrapper = ({
     location,
     prepareForSubmit,
     actualizeLinks,
+    isSharedRecord,
+    stripes,
+    updateMarcRecord,
   ]);
 
   return (

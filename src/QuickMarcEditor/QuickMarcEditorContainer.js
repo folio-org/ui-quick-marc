@@ -25,6 +25,7 @@ import {
   MARC_RECORD_STATUS_API,
   MARC_TYPES,
   LINKING_RULES_API,
+  OKAPI_TENANT_HEADER,
 } from '../common/constants';
 
 import {
@@ -36,10 +37,7 @@ import {
   getCreateBibMarcRecordResponse,
   getCreateAuthorityMarcRecordResponse,
 } from './utils';
-import {
-  OKAPI_TENANT_HEADER,
-  QUICK_MARC_ACTIONS,
-} from './constants';
+import { QUICK_MARC_ACTIONS } from './constants';
 import { useAuthorityLinksCount } from '../queries';
 
 const propTypes = {
@@ -114,12 +112,16 @@ const QuickMarcEditorContainer = ({
     const path = action === QUICK_MARC_ACTIONS.CREATE && marcType === MARC_TYPES.HOLDINGS
       ? EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]
       : EXTERNAL_INSTANCE_APIS[marcType];
-    const isUserInMemberTenant = checkIfUserInMemberTenant(stripes);
     const centralTenantId = stripes.user.user.consortium?.centralTenantId;
 
     const requestOptions = {};
 
-    if (isUserInMemberTenant && action === QUICK_MARC_ACTIONS.DERIVE && isSharedRecord) {
+    if (
+      isSharedRecord
+      && [MARC_TYPES.BIB].includes(marcType)
+      && [QUICK_MARC_ACTIONS.DERIVE, QUICK_MARC_ACTIONS.EDIT].includes(action)
+      && checkIfUserInMemberTenant(stripes)
+    ) {
       requestOptions.headers = {
         [OKAPI_TENANT_HEADER]: centralTenantId,
       };

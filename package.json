@@ -17,6 +17,7 @@
     "okapiInterfaces": {
       "inventory": "13.0",
       "marc-records-editor": "5.0",
+      "permissions": "5.6",
       "instance-authority-links": "2.1"
     },
     "stripesDeps": [

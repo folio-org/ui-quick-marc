@@ -1,4 +1,5 @@
 import React from 'react';
+import { createMemoryHistory } from 'history';
 import {
   render,
   act,
@@ -8,27 +9,31 @@ import faker from 'faker';
 import noop from 'lodash/noop';
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
+import { useLocation } from 'react-router';
 
-import '@folio/stripes-acq-components/test/jest/__mock__';
-
+import stripesCore from '@folio/stripes/core';
 import QuickMarcEditWrapper from './QuickMarcEditWrapper';
 import { useAuthorityLinking } from '../hooks';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
-import { useAuthorityLinkingRules } from '../queries';
+import {
+  useAuthorityLinkingRules,
+  useMarcRecordMutation,
+} from '../queries';
+
+jest.spyOn(stripesCore, 'checkIfUserInMemberTenant');
 
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
-  useLocation: jest.fn().mockReturnValue(({
-    search: 'relatedRecordVersion=1',
-  })),
+  useLocation: jest.fn(),
 }));
 
 jest.mock('../queries', () => ({
   ...jest.requireActual('../queries'),
   useAuthorityLinkingRules: jest.fn().mockReturnValue({ linkingRules: [] }),
+  useMarcRecordMutation: jest.fn(),
 }));
 
 jest.mock('../hooks', () => ({
@@ -250,6 +255,7 @@ const mockFormValues = jest.fn((marcType) => ({
 }));
 
 const mockActualizeLinks = jest.fn((formValuesToProcess) => Promise.resolve(formValuesToProcess));
+const mockUpdateMarcRecord = jest.fn().mockResolvedValue();
 
 jest.mock('@folio/stripes/final-form', () => () => (Component) => ({
   onSubmit,
@@ -395,6 +401,15 @@ describe('Given QuickMarcEditWrapper', () => {
 
     useAuthorityLinkingRules.mockReturnValue(linkingRules);
 
+    useMarcRecordMutation.mockReturnValue({
+      updateMarcRecord: mockUpdateMarcRecord,
+      isLoading: false,
+    });
+
+    useLocation.mockReturnValue({
+      search: 'relatedRecordVersion=1',
+    });
+
     jest.clearAllMocks();
   });
 
@@ -412,7 +427,7 @@ describe('Given QuickMarcEditWrapper', () => {
         await act(async () => { fireEvent.click(getByText('ui-quick-marc.record.save.continue')); });
 
         expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
-        expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
+        expect(mockUpdateMarcRecord).toHaveBeenCalled();
 
         expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
         expect(mockOnClose).not.toHaveBeenCalled();
@@ -432,7 +447,7 @@ describe('Given QuickMarcEditWrapper', () => {
         await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
         expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
-        expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
+        expect(mockUpdateMarcRecord).toHaveBeenCalled();
 
         expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
         expect(mockOnClose).toHaveBeenCalled();
@@ -445,14 +460,11 @@ describe('Given QuickMarcEditWrapper', () => {
             mutator,
           });
 
-          // eslint-disable-next-line prefer-promise-reject-errors
-          mutator.quickMarcEditMarcRecord.PUT = jest.fn(() => Promise.reject({
-            json: () => Promise.resolve({}),
-          }));
+          mockUpdateMarcRecord.mockRejectedValueOnce({});
 
           await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
-          expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
+          expect(mockUpdateMarcRecord).toHaveBeenCalled();
 
           expect(mockShowCallout).toHaveBeenCalledWith({
             messageId: 'ui-quick-marc.record.save.error.generic',
@@ -468,14 +480,13 @@ describe('Given QuickMarcEditWrapper', () => {
             mutator,
           });
 
-          // eslint-disable-next-line prefer-promise-reject-errors
-          mutator.quickMarcEditMarcRecord.PUT = jest.fn(() => Promise.reject({
-            json: () => Promise.resolve({ message: 'optimistic locking' }),
-          }));
+          mockUpdateMarcRecord.mockRejectedValueOnce({
+            json: jest.fn().mockResolvedValue({ message: 'optimistic locking' }),
+          });
 
           await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
-          expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
+          expect(mockUpdateMarcRecord).toHaveBeenCalled();
           expect(getByText('stripes-components.optimisticLocking.saveError')).toBeDefined();
         });
       });
@@ -498,7 +509,7 @@ describe('Given QuickMarcEditWrapper', () => {
           await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
           expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
-          expect(mutator.quickMarcEditMarcRecord.PUT).not.toHaveBeenCalled();
+          expect(mockUpdateMarcRecord).not.toHaveBeenCalled();
           expect(getByText('stripes-components.optimisticLocking.saveError')).toBeDefined();
         });
       });
@@ -521,6 +532,8 @@ describe('Given QuickMarcEditWrapper', () => {
       });
 
       it('should actualize links', async () => {
+        const tenantId = undefined;
+
         const { getByText } = renderQuickMarcEditWrapper({
           instance,
           mutator,
@@ -559,7 +572,33 @@ describe('Given QuickMarcEditWrapper', () => {
           ]),
         };
 
-        expect(mockActualizeLinks).toHaveBeenCalledWith(expect.objectContaining(expectedFormValues));
+        expect(mockActualizeLinks).toHaveBeenCalledWith(expect.objectContaining(expectedFormValues), tenantId);
+      });
+
+      describe('when a member tenant edits a shared record', () => {
+        it('should actualize links for the central tenant', async () => {
+          useLocation.mockReturnValue({
+            search: 'shared=true',
+          });
+          const tenantId = 'consortia';
+          const history = createMemoryHistory({ initialEntries: ['/?shared=true'] });
+
+          stripesCore.checkIfUserInMemberTenant.mockReturnValue(true);
+
+          const { getByText } = renderQuickMarcEditWrapper({
+            history,
+            instance,
+            mutator,
+            marcType: MARC_TYPES.BIB,
+            stripes: {
+
+            },
+          });
+
+          await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
+
+          expect(mockActualizeLinks).toHaveBeenCalledWith(expect.anything(), tenantId);
+        });
       });
 
       describe('when marc type is not a bibliographic', () => {
@@ -614,7 +653,7 @@ describe('Given QuickMarcEditWrapper', () => {
         await act(async () => { fireEvent.click(getByText('ui-quick-marc.record.save.continue')); });
 
         expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
-        expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
+        expect(mockUpdateMarcRecord).toHaveBeenCalled();
 
         expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' });
         expect(mockOnClose).not.toHaveBeenCalled();
@@ -635,7 +674,7 @@ describe('Given QuickMarcEditWrapper', () => {
         await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
         expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
-        expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
+        expect(mockUpdateMarcRecord).toHaveBeenCalled();
 
         expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' });
 
@@ -650,14 +689,11 @@ describe('Given QuickMarcEditWrapper', () => {
             marcType: MARC_TYPES.AUTHORITY,
           });
 
-          // eslint-disable-next-line prefer-promise-reject-errors
-          mutator.quickMarcEditMarcRecord.PUT = jest.fn(() => Promise.reject({
-            json: () => Promise.resolve({}),
-          }));
+          mockUpdateMarcRecord.mockRejectedValueOnce({});
 
           await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
-          expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
+          expect(mockUpdateMarcRecord).toHaveBeenCalled();
 
           expect(mockShowCallout).toHaveBeenCalledWith({
             messageId: 'ui-quick-marc.record.save.error.generic',

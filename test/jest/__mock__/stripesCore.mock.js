@@ -33,6 +33,9 @@ const buildStripes = (otherProperties = {}) => ({
     user: {
       id: 'b1add99d-530b-5912-94f3-4091b4d87e2c',
       username: 'diku_admin',
+      consortium: {
+        centralTenantId: 'consortia',
+      },
     },
   },
   withOkapi: true,
@@ -87,6 +90,8 @@ jest.mock('@folio/stripes/core', () => {
     }),
   });
 
+  const useStripes = () => STRIPES;
+
   const useNamespace = () => ['@folio/marc-authorities', jest.fn()];
 
   // eslint-disable-next-line react/prop-types
@@ -101,7 +106,7 @@ jest.mock('@folio/stripes/core', () => {
   });
 
   // eslint-disable-next-line react/prop-types
-  const IfPermission = ({ children }) => <>{children}</>;
+  const IfPermission = jest.fn(({ children }) => <>{children}</>);
 
   const AppContextMenu = ({ children }) => <>{children()}</>;
 
@@ -111,6 +116,7 @@ jest.mock('@folio/stripes/core', () => {
     ...jest.requireActual('@folio/stripes/core'),
     stripesConnect,
     withStripes,
+    useStripes,
     IfPermission,
     AppContextMenu,
     useOkapiKy,

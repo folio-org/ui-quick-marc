@@ -2,6 +2,7 @@ import React from 'react';
 import {
   fireEvent,
   render,
+  act,
 } from '@folio/jest-config-stripes/testing-library/react';
 
 import { IfPermission } from '@folio/stripes/core';
@@ -17,12 +18,6 @@ const mockFetchLinkSuggestions = jest.fn();
 const mockAutoLinkAuthority = jest.fn();
 const mockMarkRecordsLinked = jest.fn();
 const mockShowCallout = jest.fn();
-
-jest.mock('@folio/stripes/core', () => ({
-  ...jest.requireActual('@folio/stripes/core'),
-  IfPermission: jest.fn(),
-  useNamespace: jest.fn().mockReturnValue(['ui-quick-marc-test']),
-}));
 
 jest.mock('@folio/stripes-acq-components', () => ({
   ...jest.requireActual('@folio/stripes-acq-components'),
@@ -184,9 +179,9 @@ describe('Given AutoLinkingButton', () => {
 
         const { getByTestId } = renderComponent();
 
-        fireEvent.click(getByTestId('autoLinkingButton'));
+        await act(async () => { fireEvent.click(getByTestId('autoLinkingButton')); });
 
-        await expect(mockFetchLinkSuggestions).toHaveBeenCalled();
+        expect(mockFetchLinkSuggestions).toHaveBeenCalled();
         expect(mockShowCallout).toHaveBeenCalledWith({
           messageId: 'ui-quick-marc.records.error.autoLinking',
           type: 'error',
@@ -312,9 +307,9 @@ describe('Given AutoLinkingButton', () => {
 
       const { getByTestId } = renderComponent({ formValues });
 
-      fireEvent.click(getByTestId('autoLinkingButton'));
+      await act(async () => { fireEvent.click(getByTestId('autoLinkingButton')); });
 
-      await expect(mockFetchLinkSuggestions).toHaveBeenCalledWith({ body: payload });
+      expect(mockFetchLinkSuggestions).toHaveBeenCalledWith({ body: payload });
       expect(mockAutoLinkAuthority).toHaveBeenCalledWith(formValues.records, data.fields);
       expect(mockMarkRecordsLinked).toHaveBeenCalledWith({ fields });
       expect(mockShowCallout).toHaveBeenCalledTimes(3);

@@ -256,7 +256,7 @@ const useAuthorityLinking = () => {
     };
   }, []);
 
-  const actualizeLinks = useCallback(async (formValues) => {
+  const actualizeLinks = useCallback(async (formValues, tenantId) => {
     if (!recordHasLinks(formValues.records)) {
       return formValues;
     }
@@ -267,6 +267,7 @@ const useAuthorityLinking = () => {
       body: payload,
       isSearchByAuthorityId: true,
       ignoreAutoLinkingEnabled: true,
+      tenantId,
     });
 
     const actualizedLinks = formValues.records.map(field => {
