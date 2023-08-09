@@ -10,6 +10,8 @@ import toPairs from 'lodash/toPairs';
 import flatten from 'lodash/flatten';
 import flow from 'lodash/flow';
 
+import { checkIfUserInCentralTenant } from '@folio/stripes/core';
+
 import {
   LEADER_TAG,
   FIELD_TAGS_TO_REMOVE,
@@ -1508,3 +1510,9 @@ export const hydrateForLinkSuggestions = (marcRecord, fields) => ({
   marcFormat: marcRecord.marcFormat,
   _actionType: 'view',
 });
+
+const CONSORTIUM_PREFIX = 'CONSORTIUM-';
+
+export const checkIfSharedInstance = (stripes, instance) => {
+  return instance.source?.includes(CONSORTIUM_PREFIX) || checkIfUserInCentralTenant(stripes);
+};

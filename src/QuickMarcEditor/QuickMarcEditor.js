@@ -14,7 +14,11 @@ import { FormattedMessage } from 'react-intl';
 import find from 'lodash/find';
 import { FormSpy } from 'react-final-form';
 
-import { IfPermission } from '@folio/stripes/core';
+import {
+  IfPermission,
+  checkIfUserInCentralTenant,
+  useStripes,
+} from '@folio/stripes/core';
 import stripesFinalForm from '@folio/stripes/final-form';
 import {
   Pane,
@@ -55,6 +59,7 @@ import {
   is010LinkedToBibRecord,
   updateRecordAtIndex,
   markLinkedRecords,
+  checkIfSharedInstance,
 } from './utils';
 import { useLinkSuggestions } from '../queries';
 import { useAuthorityLinking } from '../hooks';
@@ -94,6 +99,7 @@ const QuickMarcEditor = ({
   linksCount,
   validate,
 }) => {
+  const stripes = useStripes();
   const formValues = getState().values;
   const history = useHistory();
   const location = useLocation();
@@ -105,6 +111,7 @@ const QuickMarcEditor = ({
   const continueAfterSave = useRef(false);
   const formRef = useRef(null);
   const confirmationChecks = useRef({ ...REQUIRED_CONFIRMATIONS });
+  const isConsortiaEnv = stripes.hasInterface('consortia');
 
   const { isLoading: isLoadingLinkSuggestions, fetchLinkSuggestions } = useLinkSuggestions();
 
@@ -281,10 +288,14 @@ const QuickMarcEditor = ({
   }
 
   const getPaneTitle = () => {
-    let formattedMessageValues = {};
+    let formattedMessageValues = {
+      title: instance.title,
+      shared: isConsortiaEnv ? checkIfSharedInstance(stripes, instance) : null,
+    };
 
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
       formattedMessageValues = {
+        ...formattedMessageValues,
         location: find(locations, { id: instance?.effectiveLocationId })?.name,
         callNumber: instance?.callNumber,
       };
@@ -300,10 +311,13 @@ const QuickMarcEditor = ({
       const headingContent = currentHeading?.content || initialHeading?.content;
 
       formattedMessageValues = {
+        ...formattedMessageValues,
         title: getContentSubfieldValue(headingContent).$a?.[0],
       };
-    } else {
-      formattedMessageValues = instance;
+    } else if (marcType === MARC_TYPES.BIB && action !== QUICK_MARC_ACTIONS.EDIT) {
+      formattedMessageValues = {
+        shared: isConsortiaEnv ? checkIfUserInCentralTenant(stripes) : null,
+      };
     }
 
     return (
