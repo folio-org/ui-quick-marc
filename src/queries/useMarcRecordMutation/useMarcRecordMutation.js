@@ -2,25 +2,20 @@ import { useMutation } from 'react-query';
 
 import {
   useOkapiKy,
-  useStripes,
 } from '@folio/stripes/core';
 
 import {
   MARC_RECORD_API,
-  OKAPI_TENANT_HEADER,
 } from '../../common/constants';
+import { changeTenantHeader } from '../../QuickMarcEditor/utils';
 
 const useMarcRecordMutation = () => {
-  const stripes = useStripes();
   const ky = useOkapiKy();
 
   const { mutateAsync: updateMarcRecord, isLoading: isUpdating } = useMutation(({ body, tenantId }) => {
-    return ky.put(`${MARC_RECORD_API}/${body.parsedRecordId}`, {
-      headers: {
-        [OKAPI_TENANT_HEADER]: tenantId || stripes.okapi.tenant,
-      },
-      json: body,
-    });
+    const api = tenantId ? changeTenantHeader(ky, tenantId) : ky;
+
+    return api.put(`${MARC_RECORD_API}/${body.parsedRecordId}`, { json: body });
   });
 
   return {

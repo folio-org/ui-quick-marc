@@ -2,17 +2,16 @@ import { useMutation } from 'react-query';
 
 import {
   useOkapiKy,
-  useStripes,
 } from '@folio/stripes/core';
 
-import { OKAPI_TENANT_HEADER } from '../../common/constants';
+import { changeTenantHeader } from '../../QuickMarcEditor/utils';
 
-const useLinkSuggestions = () => {
-  const stripes = useStripes();
+const useLinkSuggestions = (tenantId) => {
   const ky = useOkapiKy();
+  const api = tenantId ? changeTenantHeader(ky, tenantId) : ky;
 
   const { mutateAsync, isLoading } = useMutation(
-    ({ body, isSearchByAuthorityId, ignoreAutoLinkingEnabled, tenantId }) => {
+    ({ body, isSearchByAuthorityId, ignoreAutoLinkingEnabled }) => {
       const searchParams = new URLSearchParams();
 
       if (isSearchByAuthorityId) {
@@ -23,12 +22,9 @@ const useLinkSuggestions = () => {
         searchParams.append('ignoreAutoLinkingEnabled', 'true');
       }
 
-      return ky.post('records-editor/links/suggestion', {
+      return api.post('records-editor/links/suggestion', {
         searchParams: searchParams.toString(),
         json: body,
-        headers: {
-          [OKAPI_TENANT_HEADER]: tenantId || stripes.okapi.tenant,
-        },
       }).json();
     },
   );

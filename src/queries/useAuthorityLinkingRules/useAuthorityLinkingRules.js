@@ -6,15 +6,18 @@ import {
 } from '@folio/stripes/core';
 
 import { LINKING_RULES_API } from '../../common/constants';
+import { changeTenantHeader } from '../../QuickMarcEditor/utils';
 
-const useAuthorityLinkingRules = () => {
+const useAuthorityLinkingRules = (tenantId) => {
   const ky = useOkapiKy();
   const [namespace] = useNamespace({ key: 'authority-linking-rules' });
+
+  const api = tenantId ? changeTenantHeader(ky, tenantId) : ky;
 
   const { isFetching, data } = useQuery(
     [namespace],
     async () => {
-      return ky.get(LINKING_RULES_API).json();
+      return api.get(LINKING_RULES_API).json();
     },
   );
 

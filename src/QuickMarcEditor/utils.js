@@ -10,6 +10,8 @@ import toPairs from 'lodash/toPairs';
 import flatten from 'lodash/flatten';
 import flow from 'lodash/flow';
 
+import { checkIfUserInMemberTenant } from '@folio/stripes/core';
+
 import {
   LEADER_TAG,
   FIELD_TAGS_TO_REMOVE,
@@ -42,6 +44,7 @@ import {
   MARC_TYPES,
   ERROR_TYPES,
   EXTERNAL_INSTANCE_APIS,
+  OKAPI_TENANT_HEADER,
 } from '../common/constants';
 
 /* eslint-disable max-lines */
@@ -1508,3 +1511,53 @@ export const hydrateForLinkSuggestions = (marcRecord, fields) => ({
   marcFormat: marcRecord.marcFormat,
   _actionType: 'view',
 });
+
+export const getHeaders = (tenant, token, locale, method = 'GET') => {
+  // This is taken from stripes-connect/OkapiResource.js
+  const headers = {
+    POST: {
+      Accept: 'application/json',
+    },
+    DELETE: {
+      Accept: 'text/plain',
+    },
+    GET: {
+      Accept: 'application/json',
+    },
+    PUT: {
+      Accept: 'text/plain',
+    },
+  };
+
+  return {
+    ...headers[method],
+    'Accept-Language': locale,
+    'Content-Type': 'application/json',
+    'X-Okapi-Tenant': tenant,
+    ...(token && { 'X-Okapi-Token': token }),
+  };
+};
+
+export const changeTenantHeader = (ky, tenantId) => {
+  return ky.extend({
+    hooks: {
+      beforeRequest: [
+        request => {
+          request.headers.set(OKAPI_TENANT_HEADER, tenantId);
+        },
+      ],
+    },
+  });
+};
+
+export const applyCentralTenantInHeaders = (location, stripes, marcType, cb = () => true) => {
+  const searchParams = new URLSearchParams(location.search);
+  const isSharedRecord = searchParams.get('shared') === 'true';
+
+  return (
+    isSharedRecord
+    && [MARC_TYPES.BIB].includes(marcType)
+    && cb()
+    && checkIfUserInMemberTenant(stripes)
+  );
+};

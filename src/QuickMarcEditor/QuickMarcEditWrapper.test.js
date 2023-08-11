@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMemoryHistory } from 'history';
 import {
   render,
   act,
@@ -11,19 +10,22 @@ import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import { useLocation } from 'react-router';
 
-import stripesCore from '@folio/stripes/core';
 import QuickMarcEditWrapper from './QuickMarcEditWrapper';
 import { useAuthorityLinking } from '../hooks';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
+import { applyCentralTenantInHeaders } from './utils';
 
 import Harness from '../../test/jest/helpers/harness';
 import {
-  useAuthorityLinkingRules,
   useMarcRecordMutation,
 } from '../queries';
 
-jest.spyOn(stripesCore, 'checkIfUserInMemberTenant');
+jest.mock('./utils', () => ({
+  ...jest.requireActual('./utils'),
+  applyCentralTenantInHeaders: jest.fn(),
+  changeTenantHeader: jest.fn(ky => ky),
+}));
 
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
@@ -32,7 +34,6 @@ jest.mock('react-router', () => ({
 
 jest.mock('../queries', () => ({
   ...jest.requireActual('../queries'),
-  useAuthorityLinkingRules: jest.fn().mockReturnValue({ linkingRules: [] }),
   useMarcRecordMutation: jest.fn(),
 }));
 
@@ -313,18 +314,15 @@ const getInstance = () => ({
   _version: 1,
 });
 
-const linkingRules = {
-  linkingRules: [{
-    id: 1,
-    bibField: '100',
-    authorityField: '100',
-    authoritySubfields: ['a', 'b', 't', 'd'],
-    subfieldModifications: [],
-    validation: {},
-    autoLinkingEnabled: true,
-  }],
-  isLoading: false,
-};
+const linkingRules = [{
+  id: 1,
+  bibField: '100',
+  authorityField: '100',
+  authoritySubfields: ['a', 'b', 't', 'd'],
+  subfieldModifications: [],
+  validation: {},
+  autoLinkingEnabled: true,
+}];
 
 const record = {
   id: faker.random.uuid(),
@@ -397,9 +395,8 @@ describe('Given QuickMarcEditWrapper', () => {
       autoLinkingEnabled: true,
       autoLinkableBibFields: [],
       autoLinkAuthority: jest.fn(),
+      linkingRules,
     });
-
-    useAuthorityLinkingRules.mockReturnValue(linkingRules);
 
     useMarcRecordMutation.mockReturnValue({
       updateMarcRecord: mockUpdateMarcRecord,
@@ -532,8 +529,6 @@ describe('Given QuickMarcEditWrapper', () => {
       });
 
       it('should actualize links', async () => {
-        const tenantId = undefined;
-
         const { getByText } = renderQuickMarcEditWrapper({
           instance,
           mutator,
@@ -572,32 +567,23 @@ describe('Given QuickMarcEditWrapper', () => {
           ]),
         };
 
-        expect(mockActualizeLinks).toHaveBeenCalledWith(expect.objectContaining(expectedFormValues), tenantId);
+        expect(mockActualizeLinks).toHaveBeenCalledWith(expect.objectContaining(expectedFormValues));
       });
 
       describe('when a member tenant edits a shared record', () => {
-        it('should actualize links for the central tenant', async () => {
-          useLocation.mockReturnValue({
-            search: 'shared=true',
-          });
-          const tenantId = 'consortia';
-          const history = createMemoryHistory({ initialEntries: ['/?shared=true'] });
+        it('should apply the central tenant id for all authority linking requests', async () => {
+          applyCentralTenantInHeaders.mockReturnValue(true);
 
-          stripesCore.checkIfUserInMemberTenant.mockReturnValue(true);
+          const centralTenantId = 'consortia';
 
           const { getByText } = renderQuickMarcEditWrapper({
-            history,
             instance,
             mutator,
-            marcType: MARC_TYPES.BIB,
-            stripes: {
-
-            },
           });
 
           await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
-          expect(mockActualizeLinks).toHaveBeenCalledWith(expect.anything(), tenantId);
+          expect(useAuthorityLinking).toHaveBeenCalledWith(centralTenantId);
         });
       });
 

@@ -35,10 +35,10 @@ const joinSubfields = (subfields) => Object.keys(subfields).reduce((content, key
 
 const formatSubfieldCode = (code) => { return code.startsWith('$') ? code : `$${code}`; };
 
-const useAuthorityLinking = () => {
-  const { sourceFiles } = useAuthoritySourceFiles();
-  const { linkingRules } = useAuthorityLinkingRules();
-  const { fetchLinkSuggestions } = useLinkSuggestions();
+const useAuthorityLinking = (tenantId) => {
+  const { sourceFiles } = useAuthoritySourceFiles(tenantId);
+  const { linkingRules } = useAuthorityLinkingRules(tenantId);
+  const { fetchLinkSuggestions } = useLinkSuggestions(tenantId);
 
   const linkableBibFields = useMemo(() => linkingRules.map(rule => rule.bibField), [linkingRules]);
   const autoLinkableBibFields = useMemo(() => {
@@ -256,7 +256,7 @@ const useAuthorityLinking = () => {
     };
   }, []);
 
-  const actualizeLinks = useCallback(async (formValues, tenantId) => {
+  const actualizeLinks = useCallback(async (formValues) => {
     if (!recordHasLinks(formValues.records)) {
       return formValues;
     }
@@ -267,7 +267,6 @@ const useAuthorityLinking = () => {
       body: payload,
       isSearchByAuthorityId: true,
       ignoreAutoLinkingEnabled: true,
-      tenantId,
     });
 
     const actualizedLinks = formValues.records.map(field => {
@@ -305,6 +304,7 @@ const useAuthorityLinking = () => {
     autoLinkableBibFields,
     autoLinkAuthority,
     actualizeLinks,
+    linkingRules,
   };
 };
 

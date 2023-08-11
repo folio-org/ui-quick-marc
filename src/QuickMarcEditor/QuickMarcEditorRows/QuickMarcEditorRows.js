@@ -8,7 +8,10 @@ import {
   useFormState,
 } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
-import { Link } from 'react-router-dom';
+import {
+  Link,
+  useLocation,
+} from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import isEqual from 'lodash/isEqual';
 import defer from 'lodash/defer';
@@ -45,6 +48,7 @@ import {
   hasDeleteException,
   isLocationRow,
   isContentRow,
+  applyCentralTenantInHeaders,
 } from '../utils';
 import { useAuthorityLinking } from '../../hooks';
 import {
@@ -79,6 +83,7 @@ const QuickMarcEditorRows = ({
   isLoadingLinkSuggestions,
 }) => {
   const stripes = useStripes();
+  const location = useLocation();
   const intl = useIntl();
   const { initialValues } = useFormState();
   const containerRef = useRef(null);
@@ -87,12 +92,16 @@ const QuickMarcEditorRows = ({
   const rowContentWidth = useRef(null); // for max-width of resizable textareas
   const childCalloutRef = useRef(null);
 
+  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType);
+  const centralTenantId = stripes.user.user?.consortium?.centralTenantId;
+  const centralTenantIdForLinking = isRequestToCentralTenantFromMember ? centralTenantId : '';
+
   const {
     linkAuthority,
     unlinkAuthority,
     linkableBibFields,
     autoLinkableBibFields,
-  } = useAuthorityLinking();
+  } = useAuthorityLinking(centralTenantIdForLinking);
 
   const isNewRow = useCallback((row) => {
     return !initialValues.records.find(record => record.id === row.id);

@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import flow from 'lodash/flow';
 
 import {
-  checkIfUserInMemberTenant,
   useStripes,
 } from '@folio/stripes/core';
 import { useShowCallout } from '@folio/stripes-acq-components';
@@ -19,7 +18,6 @@ import {
   EXTERNAL_INSTANCE_APIS,
   MARC_TYPES,
   ERROR_TYPES,
-  OKAPI_TENANT_HEADER,
 } from '../common/constants';
 import {
   hydrateMarcRecord,
@@ -36,9 +34,10 @@ import {
   autopopulateFixedField,
   autopopulatePhysDescriptionField,
   autopopulateMaterialCharsField,
+  getHeaders,
+  applyCentralTenantInHeaders,
 } from './utils';
 import {
-  useAuthorityLinkingRules,
   useMarcRecordMutation,
 } from '../queries';
 
@@ -71,12 +70,14 @@ const QuickMarcEditWrapper = ({
   const showCallout = useShowCallout();
   const location = useLocation();
   const [httpError, setHttpError] = useState(null);
-  const { linkableBibFields, actualizeLinks } = useAuthorityLinking();
-  const { linkingRules } = useAuthorityLinkingRules();
-  const { updateMarcRecord } = useMarcRecordMutation();
 
-  const searchParams = new URLSearchParams(location.search);
-  const isSharedRecord = searchParams.get('shared') === 'true';
+  const { token, locale } = stripes.okapi;
+  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType);
+  const centralTenantId = stripes.user.user.consortium?.centralTenantId;
+  const centralTenantIdForLinking = isRequestToCentralTenantFromMember ? centralTenantId : '';
+
+  const { linkableBibFields, actualizeLinks, linkingRules } = useAuthorityLinking(centralTenantIdForLinking);
+  const { updateMarcRecord } = useMarcRecordMutation();
 
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesToSave = flow(
@@ -123,22 +124,6 @@ const QuickMarcEditWrapper = ({
   ]);
 
   const onSubmit = useCallback(async (formValues) => {
-    const centralTenantId = stripes.user.user.consortium?.centralTenantId;
-    const mustChangeTenant = (
-      isSharedRecord
-      && [MARC_TYPES.BIB].includes(marcType)
-      && checkIfUserInMemberTenant(stripes)
-    );
-    let tenantId;
-    const requestOptions = {};
-
-    if (mustChangeTenant) {
-      requestOptions.headers = {
-        [OKAPI_TENANT_HEADER]: centralTenantId,
-      };
-      tenantId = centralTenantId;
-    }
-
     let is1xxOr010Updated = false;
 
     if (marcType === MARC_TYPES.AUTHORITY && linksCount > 0) {
@@ -161,7 +146,7 @@ const QuickMarcEditWrapper = ({
     const fetchInstance = async () => {
       const fetchedInstance = await mutator.quickMarcEditInstance.GET({
         path: `${path}/${formValuesToProcess.externalId}`,
-        ...requestOptions,
+        ...(isRequestToCentralTenantFromMember && { headers: getHeaders(centralTenantId, token, locale) }),
       });
 
       return fetchedInstance;
@@ -172,7 +157,7 @@ const QuickMarcEditWrapper = ({
 
     try {
       const actualizeLinksPromise = marcType === MARC_TYPES.BIB
-        ? actualizeLinks(formValuesToProcess, tenantId)
+        ? actualizeLinks(formValuesToProcess)
         : Promise.resolve(formValuesToProcess);
 
       const [
@@ -214,7 +199,7 @@ const QuickMarcEditWrapper = ({
 
     return updateMarcRecord({
       body: formValuesToSave,
-      tenantId,
+      tenantId: isRequestToCentralTenantFromMember ? centralTenantId : '',
     })
       .then(async () => {
         if (is1xxOr010Updated) {
@@ -254,9 +239,11 @@ const QuickMarcEditWrapper = ({
     location,
     prepareForSubmit,
     actualizeLinks,
-    isSharedRecord,
-    stripes,
+    centralTenantId,
+    token,
+    locale,
     updateMarcRecord,
+    isRequestToCentralTenantFromMember,
   ]);
 
   return (

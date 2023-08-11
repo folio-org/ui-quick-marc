@@ -14,7 +14,10 @@ import { FormattedMessage } from 'react-intl';
 import find from 'lodash/find';
 import { FormSpy } from 'react-final-form';
 
-import { IfPermission } from '@folio/stripes/core';
+import {
+  IfPermission,
+  useStripes,
+} from '@folio/stripes/core';
 import stripesFinalForm from '@folio/stripes/final-form';
 import {
   Pane,
@@ -55,6 +58,7 @@ import {
   is010LinkedToBibRecord,
   updateRecordAtIndex,
   markLinkedRecords,
+  applyCentralTenantInHeaders,
 } from './utils';
 import { useLinkSuggestions } from '../queries';
 import { useAuthorityLinking } from '../hooks';
@@ -95,6 +99,7 @@ const QuickMarcEditor = ({
   validate,
 }) => {
   const formValues = getState().values;
+  const stripes = useStripes();
   const history = useHistory();
   const location = useLocation();
   const showCallout = useShowCallout();
@@ -106,9 +111,12 @@ const QuickMarcEditor = ({
   const formRef = useRef(null);
   const confirmationChecks = useRef({ ...REQUIRED_CONFIRMATIONS });
 
-  const { isLoading: isLoadingLinkSuggestions, fetchLinkSuggestions } = useLinkSuggestions();
+  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType);
+  const centralTenantId = stripes.user.user.consortium?.centralTenantId;
+  const centralTenantIdForLinking = isRequestToCentralTenantFromMember ? centralTenantId : '';
 
-  const { unlinkAuthority } = useAuthorityLinking();
+  const { isLoading: isLoadingLinkSuggestions, fetchLinkSuggestions } = useLinkSuggestions(centralTenantIdForLinking);
+  const { unlinkAuthority } = useAuthorityLinking(centralTenantIdForLinking);
 
   const deletedRecords = useMemo(() => {
     return records

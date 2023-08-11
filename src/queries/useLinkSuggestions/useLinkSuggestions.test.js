@@ -7,7 +7,7 @@ import { renderHook, act } from '@folio/jest-config-stripes/testing-library/reac
 import { useOkapiKy } from '@folio/stripes/core';
 
 import useLinkSuggestions from './useLinkSuggestions';
-import { OKAPI_TENANT_HEADER } from '../../common/constants';
+import { changeTenantHeader } from '../../QuickMarcEditor/utils';
 
 const queryClient = new QueryClient();
 
@@ -21,16 +21,23 @@ const mockPost = jest.fn().mockReturnValue({
   json: jest.fn().mockResolvedValue({ fields: [] }),
 });
 
+jest.mock('../../QuickMarcEditor/utils', () => ({
+  ...jest.requireActual('../../QuickMarcEditor/utils'),
+  changeTenantHeader: jest.fn(ky => ky),
+}));
+
 const body = {
   _actionType: 'view',
   fields: [],
 };
 
+const ky = {
+  post: mockPost,
+};
+
 describe('Given useLinkSuggestions', () => {
   beforeEach(() => {
-    useOkapiKy.mockClear().mockReturnValue({
-      post: mockPost,
-    });
+    useOkapiKy.mockClear().mockReturnValue(ky);
   });
 
   it('should fetch link suggestions with the current tenant', async () => {
@@ -38,26 +45,22 @@ describe('Given useLinkSuggestions', () => {
 
     await act(async () => { result.current.fetchLinkSuggestions({ body }); });
 
+    expect(changeTenantHeader).not.toHaveBeenCalled();
     expect(mockPost).toHaveBeenCalledWith('records-editor/links/suggestion', {
-      headers: {
-        [OKAPI_TENANT_HEADER]: 'diku',
-      },
       json: body,
       searchParams: '',
     });
   });
 
   it('should fetch link suggestions with the pointed tenant', async () => {
-    const tenantId = 'consortia';
+    const centralTenantId = 'consortia';
 
-    const { result } = renderHook(() => useLinkSuggestions(), { wrapper });
+    const { result } = renderHook(() => useLinkSuggestions(centralTenantId), { wrapper });
 
-    await act(async () => { result.current.fetchLinkSuggestions({ body, tenantId }); });
+    await act(async () => { result.current.fetchLinkSuggestions({ body }); });
 
+    expect(changeTenantHeader).toHaveBeenCalledWith(ky, centralTenantId);
     expect(mockPost).toHaveBeenCalledWith('records-editor/links/suggestion', {
-      headers: {
-        [OKAPI_TENANT_HEADER]: tenantId,
-      },
       json: body,
       searchParams: '',
     });
@@ -77,9 +80,6 @@ describe('Given useLinkSuggestions', () => {
     expect(mockPost).toHaveBeenCalledWith(
       'records-editor/links/suggestion',
       {
-        headers: {
-          [OKAPI_TENANT_HEADER]: 'diku',
-        },
         searchParams: 'authoritySearchParameter=ID&ignoreAutoLinkingEnabled=true',
         json: body,
       },
@@ -99,9 +99,6 @@ describe('Given useLinkSuggestions', () => {
     expect(mockPost).toHaveBeenCalledWith(
       'records-editor/links/suggestion',
       {
-        headers: {
-          [OKAPI_TENANT_HEADER]: 'diku',
-        },
         searchParams: 'ignoreAutoLinkingEnabled=true',
         json: body,
       },

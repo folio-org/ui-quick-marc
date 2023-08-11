@@ -8,7 +8,6 @@ import {
 
 import {
   IfPermission,
-  checkIfUserInMemberTenant,
 } from '@folio/stripes/core';
 import {
   CommandList,
@@ -27,6 +26,7 @@ import {
   MARC_TYPES,
   keyboardCommands,
 } from './common/constants';
+import { applyCentralTenantInHeaders } from './QuickMarcEditor/utils';
 
 const INVALID_PERMISSION = 'invalid-permission';
 
@@ -37,22 +37,13 @@ const QuickMarc = ({
   stripes,
 }) => {
   const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const isShared = searchParams.get('shared') === 'true';
 
   const userId = stripes?.user?.user?.id;
   const centralTenantId = stripes.user.user?.consortium?.centralTenantId;
   const action = location.pathname.split('/')[3];
-
   const editMarcRecordPerm = 'ui-quick-marc.quick-marc-editor.all';
-
-  const considerCentralTenantPerm = (
-    isShared
-    && ['edit-bib'].includes(action)
-    && userId
-    && centralTenantId
-    && checkIfUserInMemberTenant(stripes)
-  );
+  const marcType = action === 'edit-bib' ? MARC_TYPES.BIB : '';
+  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType);
 
   const {
     userPermissions: centralTenantPermissions,
@@ -61,7 +52,7 @@ const QuickMarc = ({
     userId,
     tenantId: centralTenantId,
   }, {
-    enabled: considerCentralTenantPerm,
+    enabled: isRequestToCentralTenantFromMember,
   });
 
   const hasCentralTenantPerm = (perm) => {
@@ -71,7 +62,7 @@ const QuickMarc = ({
   const editorRoutesConfig = [
     {
       path: `${basePath}/edit-bib/:externalId`,
-      permission: considerCentralTenantPerm
+      permission: isRequestToCentralTenantFromMember
         ? hasCentralTenantPerm(editMarcRecordPerm) ? '' : INVALID_PERMISSION
         : editMarcRecordPerm,
       props: {
