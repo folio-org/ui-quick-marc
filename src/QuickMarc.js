@@ -2,69 +2,33 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   Switch,
-  Route,
-  useLocation,
 } from 'react-router-dom';
 
 import {
-  IfPermission,
-} from '@folio/stripes/core';
-import {
   CommandList,
-  LoadingPane,
 } from '@folio/stripes/components';
 
+import { MarcRoute } from './MarcRoute';
 import {
-  QuickMarcEditorContainer,
   QuickMarcDeriveWrapper,
   QuickMarcCreateWrapper,
   QuickMarcEditWrapper,
 } from './QuickMarcEditor';
-import { useUserTenantPermissions } from './queries';
 import { QUICK_MARC_ACTIONS } from './QuickMarcEditor/constants';
 import {
   MARC_TYPES,
   keyboardCommands,
 } from './common/constants';
-import { applyCentralTenantInHeaders } from './QuickMarcEditor/utils';
-
-const INVALID_PERMISSION = 'invalid-permission';
 
 const QuickMarc = ({
   basePath,
   externalRecordPath,
   onClose,
-  stripes,
 }) => {
-  const location = useLocation();
-
-  const userId = stripes?.user?.user?.id;
-  const centralTenantId = stripes.user.user?.consortium?.centralTenantId;
-  const action = location.pathname.split('/')[3];
-  const editMarcRecordPerm = 'ui-quick-marc.quick-marc-editor.all';
-  const marcType = action === 'edit-bib' ? MARC_TYPES.BIB : '';
-  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType);
-
-  const {
-    userPermissions: centralTenantPermissions,
-    isFetching: isCentralTenantPermissionsLoading,
-  } = useUserTenantPermissions({
-    userId,
-    tenantId: centralTenantId,
-  }, {
-    enabled: isRequestToCentralTenantFromMember,
-  });
-
-  const hasCentralTenantPerm = (perm) => {
-    return centralTenantPermissions.some(({ permissionName }) => permissionName === perm);
-  };
-
   const editorRoutesConfig = [
     {
       path: `${basePath}/edit-bib/:externalId`,
-      permission: isRequestToCentralTenantFromMember
-        ? hasCentralTenantPerm(editMarcRecordPerm) ? '' : INVALID_PERMISSION
-        : editMarcRecordPerm,
+      permission: 'ui-quick-marc.quick-marc-editor.all',
       props: {
         action: QUICK_MARC_ACTIONS.EDIT,
         wrapper: QuickMarcEditWrapper,
@@ -127,10 +91,6 @@ const QuickMarc = ({
     },
   ];
 
-  if (isCentralTenantPermissionsLoading) {
-    return <LoadingPane />;
-  }
-
   return (
     <div data-test-quick-marc>
       <CommandList
@@ -143,27 +103,13 @@ const QuickMarc = ({
               permission,
               props: routeProps = {},
             }) => (
-              <Route
-                path={path}
+              <MarcRoute
+                externalRecordPath={externalRecordPath}
                 key={path}
-                render={() => (permission
-                  ? (
-                    <IfPermission perm={permission}>
-                      <QuickMarcEditorContainer
-                        onClose={onClose}
-                        externalRecordPath={externalRecordPath}
-                        {...routeProps}
-                      />
-                    </IfPermission>
-                  )
-                  : (
-                    <QuickMarcEditorContainer
-                      onClose={onClose}
-                      externalRecordPath={externalRecordPath}
-                      {...routeProps}
-                    />
-                  )
-                )}
+                path={path}
+                permission={permission}
+                routeProps={routeProps}
+                onClose={onClose}
               />
             ))
           }
@@ -177,7 +123,6 @@ QuickMarc.propTypes = {
   basePath: PropTypes.string.isRequired,
   externalRecordPath: PropTypes.string,
   onClose: PropTypes.func.isRequired,
-  stripes: PropTypes.object.isRequired,
 };
 
 export default QuickMarc;
