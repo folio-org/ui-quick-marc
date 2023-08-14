@@ -1,16 +1,20 @@
+import { useLocation } from 'react-router-dom';
 import { useQuery } from 'react-query';
 
 import {
   useOkapiKy,
   useNamespace,
+  useStripes,
 } from '@folio/stripes/core';
-import { changeTenantHeader } from '../../QuickMarcEditor/utils';
+import { processTenantHeader } from '../../QuickMarcEditor/utils';
 
-const useAuthoritySourceFiles = (tenantId) => {
-  const ky = useOkapiKy();
+const useAuthoritySourceFiles = ({ tenantId, marcType } = {}) => {
+  const ky = useOkapiKy({ tenantId, marcType });
+  const stripes = useStripes();
+  const location = useLocation();
   const [namespace] = useNamespace({ key: 'authority-source-files' });
 
-  const api = tenantId ? changeTenantHeader(ky, tenantId) : ky;
+  const api = processTenantHeader({ ky, tenantId, marcType, stripes, location });
 
   const { isFetching, data } = useQuery(
     [namespace],

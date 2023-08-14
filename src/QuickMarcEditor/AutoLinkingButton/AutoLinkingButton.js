@@ -1,10 +1,8 @@
 import { useIntl } from 'react-intl';
-import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import {
   IfPermission,
-  useStripes,
 } from '@folio/stripes/core';
 import { Button } from '@folio/stripes/components';
 import { useShowCallout } from '@folio/stripes-acq-components';
@@ -12,7 +10,6 @@ import { useShowCallout } from '@folio/stripes-acq-components';
 import { useAuthorityLinking } from '../../hooks';
 import {
   hydrateForLinkSuggestions,
-  applyCentralTenantInHeaders,
   isRecordForAutoLinking,
 } from '../utils';
 import { MARC_TYPES } from '../../common/constants';
@@ -36,18 +33,12 @@ const AutoLinkingButton = ({
 }) => {
   const intl = useIntl();
   const showCallout = useShowCallout();
-  const stripes = useStripes();
-  const location = useLocation();
-
-  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType);
-  const centralTenantId = stripes.user.user.consortium?.centralTenantId;
-  const centralTenantIdForLinking = isRequestToCentralTenantFromMember ? centralTenantId : '';
 
   const {
     autoLinkingEnabled,
     autoLinkableBibFields,
     autoLinkAuthority,
-  } = useAuthorityLinking(centralTenantIdForLinking);
+  } = useAuthorityLinking({ marcType });
 
   const hasAutoLinkableRecord = formValues.records.some(field => isRecordForAutoLinking(field, autoLinkableBibFields));
 

@@ -7,7 +7,11 @@ import { renderHook, act } from '@folio/jest-config-stripes/testing-library/reac
 import { useOkapiKy } from '@folio/stripes/core';
 
 import useLinkSuggestions from './useLinkSuggestions';
-import { changeTenantHeader } from '../../QuickMarcEditor/utils';
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: jest.fn(),
+}));
 
 const queryClient = new QueryClient();
 
@@ -20,11 +24,6 @@ const wrapper = ({ children }) => (
 const mockPost = jest.fn().mockReturnValue({
   json: jest.fn().mockResolvedValue({ fields: [] }),
 });
-
-jest.mock('../../QuickMarcEditor/utils', () => ({
-  ...jest.requireActual('../../QuickMarcEditor/utils'),
-  changeTenantHeader: jest.fn(ky => ky),
-}));
 
 const body = {
   _actionType: 'view',
@@ -40,26 +39,11 @@ describe('Given useLinkSuggestions', () => {
     useOkapiKy.mockClear().mockReturnValue(ky);
   });
 
-  it('should fetch link suggestions with the current tenant', async () => {
+  it('should fetch link suggestions', async () => {
     const { result } = renderHook(() => useLinkSuggestions(), { wrapper });
 
     await act(async () => { result.current.fetchLinkSuggestions({ body }); });
 
-    expect(changeTenantHeader).not.toHaveBeenCalled();
-    expect(mockPost).toHaveBeenCalledWith('records-editor/links/suggestion', {
-      json: body,
-      searchParams: '',
-    });
-  });
-
-  it('should fetch link suggestions with the pointed tenant', async () => {
-    const centralTenantId = 'consortia';
-
-    const { result } = renderHook(() => useLinkSuggestions(centralTenantId), { wrapper });
-
-    await act(async () => { result.current.fetchLinkSuggestions({ body }); });
-
-    expect(changeTenantHeader).toHaveBeenCalledWith(ky, centralTenantId);
     expect(mockPost).toHaveBeenCalledWith('records-editor/links/suggestion', {
       json: body,
       searchParams: '',

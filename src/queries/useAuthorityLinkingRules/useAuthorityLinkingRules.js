@@ -1,18 +1,22 @@
 import { useQuery } from 'react-query';
+import { useLocation } from 'react-router-dom';
 
 import {
   useOkapiKy,
   useNamespace,
+  useStripes,
 } from '@folio/stripes/core';
 
 import { LINKING_RULES_API } from '../../common/constants';
-import { changeTenantHeader } from '../../QuickMarcEditor/utils';
+import { processTenantHeader } from '../../QuickMarcEditor/utils';
 
-const useAuthorityLinkingRules = (tenantId) => {
+const useAuthorityLinkingRules = ({ tenantId, marcType } = {}) => {
   const ky = useOkapiKy();
+  const stripes = useStripes();
+  const location = useLocation();
   const [namespace] = useNamespace({ key: 'authority-linking-rules' });
 
-  const api = tenantId ? changeTenantHeader(ky, tenantId) : ky;
+  const api = processTenantHeader({ ky, tenantId, marcType, stripes, location });
 
   const { isFetching, data } = useQuery(
     [namespace],

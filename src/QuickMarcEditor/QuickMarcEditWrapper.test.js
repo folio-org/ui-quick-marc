@@ -574,8 +574,6 @@ describe('Given QuickMarcEditWrapper', () => {
         it('should apply the central tenant id for all authority linking requests', async () => {
           applyCentralTenantInHeaders.mockReturnValue(true);
 
-          const centralTenantId = 'consortia';
-
           const { getByText } = renderQuickMarcEditWrapper({
             instance,
             mutator,
@@ -583,7 +581,8 @@ describe('Given QuickMarcEditWrapper', () => {
 
           await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
-          expect(useAuthorityLinking).toHaveBeenCalledWith(centralTenantId);
+          expect(useAuthorityLinking).toHaveBeenCalledWith({ marcType: MARC_TYPES.BIB });
+          expect(useMarcRecordMutation).toHaveBeenCalledWith({ marcType: MARC_TYPES.BIB });
         });
       });
 

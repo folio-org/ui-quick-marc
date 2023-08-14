@@ -92,7 +92,7 @@ const QuickMarcEditorContainer = ({
   ));
 
   const showCallout = useShowCallout();
-  const { fetchLinksCount } = useAuthorityLinksCount();
+  const { fetchLinksCount } = useAuthorityLinksCount({ marcType });
 
   const closeEditor = useCallback(() => {
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {

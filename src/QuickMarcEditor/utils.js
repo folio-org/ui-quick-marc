@@ -1570,3 +1570,17 @@ export const applyCentralTenantInHeaders = (location, stripes, marcType, cb = ()
     && checkIfUserInMemberTenant(stripes)
   );
 };
+
+export const processTenantHeader = ({ ky, tenantId, marcType, stripes, location }) => {
+  const centralTenantId = stripes.user.user.consortium?.centralTenantId;
+
+  if (tenantId) {
+    return changeTenantHeader(ky, tenantId);
+  }
+
+  if (marcType && applyCentralTenantInHeaders(location, stripes, marcType)) {
+    return changeTenantHeader(ky, centralTenantId);
+  }
+
+  return ky;
+};

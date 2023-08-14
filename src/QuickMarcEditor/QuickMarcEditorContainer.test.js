@@ -70,6 +70,10 @@ jest.mock('../queries', () => ({
       links: [{ totalLinks: 0 }],
     }),
   }),
+  useLinkSuggestions: jest.fn().mockReturnValue({
+    fetchLinkSuggestions: jest.fn(),
+    isLoading: false,
+  }),
 }));
 
 const getInstance = () => ({

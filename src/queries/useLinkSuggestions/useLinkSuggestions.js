@@ -1,14 +1,19 @@
 import { useMutation } from 'react-query';
+import { useLocation } from 'react-router-dom';
 
 import {
   useOkapiKy,
+  useStripes,
 } from '@folio/stripes/core';
 
-import { changeTenantHeader } from '../../QuickMarcEditor/utils';
+import { processTenantHeader } from '../../QuickMarcEditor/utils';
 
-const useLinkSuggestions = (tenantId) => {
+const useLinkSuggestions = ({ tenantId, marcType } = {}) => {
   const ky = useOkapiKy();
-  const api = tenantId ? changeTenantHeader(ky, tenantId) : ky;
+  const stripes = useStripes();
+  const location = useLocation();
+
+  const api = processTenantHeader({ ky, tenantId, marcType, stripes, location });
 
   const { mutateAsync, isLoading } = useMutation(
     ({ body, isSearchByAuthorityId, ignoreAutoLinkingEnabled }) => {

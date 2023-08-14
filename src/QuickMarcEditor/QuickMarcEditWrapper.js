@@ -74,10 +74,9 @@ const QuickMarcEditWrapper = ({
   const { token, locale } = stripes.okapi;
   const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType);
   const centralTenantId = stripes.user.user.consortium?.centralTenantId;
-  const centralTenantIdForLinking = isRequestToCentralTenantFromMember ? centralTenantId : '';
 
-  const { linkableBibFields, actualizeLinks, linkingRules } = useAuthorityLinking(centralTenantIdForLinking);
-  const { updateMarcRecord } = useMarcRecordMutation();
+  const { linkableBibFields, actualizeLinks, linkingRules } = useAuthorityLinking({ marcType });
+  const { updateMarcRecord } = useMarcRecordMutation({ marcType });
 
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesToSave = flow(
@@ -197,10 +196,7 @@ const QuickMarcEditWrapper = ({
 
     const formValuesToSave = hydrateMarcRecord(formValuesToHydrate);
 
-    return updateMarcRecord({
-      body: formValuesToSave,
-      tenantId: isRequestToCentralTenantFromMember ? centralTenantId : '',
-    })
+    return updateMarcRecord(formValuesToSave)
       .then(async () => {
         if (is1xxOr010Updated) {
           const values = {

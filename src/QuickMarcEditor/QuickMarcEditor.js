@@ -60,9 +60,7 @@ import {
   updateRecordAtIndex,
   markLinkedRecords,
   checkIfSharedInstance,
-  applyCentralTenantInHeaders,
 } from './utils';
-import { useLinkSuggestions } from '../queries';
 import { useAuthorityLinking } from '../hooks';
 
 import css from './QuickMarcEditor.css';
@@ -114,12 +112,11 @@ const QuickMarcEditor = ({
   const confirmationChecks = useRef({ ...REQUIRED_CONFIRMATIONS });
   const isConsortiaEnv = stripes.hasInterface('consortia');
 
-  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType);
-  const centralTenantId = stripes.user.user.consortium?.centralTenantId;
-  const centralTenantIdForLinking = isRequestToCentralTenantFromMember ? centralTenantId : '';
-
-  const { isLoading: isLoadingLinkSuggestions, fetchLinkSuggestions } = useLinkSuggestions(centralTenantIdForLinking);
-  const { unlinkAuthority } = useAuthorityLinking(centralTenantIdForLinking);
+  const {
+    unlinkAuthority,
+    fetchLinkSuggestions,
+    isLoadingLinkSuggestions,
+  } = useAuthorityLinking({ marcType });
 
   const deletedRecords = useMemo(() => {
     return records

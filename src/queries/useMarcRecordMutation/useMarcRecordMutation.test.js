@@ -8,7 +8,11 @@ import { useOkapiKy } from '@folio/stripes/core';
 
 import useMarcRecordMutation from './useMarcRecordMutation';
 import { MARC_RECORD_API } from '../../common/constants';
-import { changeTenantHeader } from '../../QuickMarcEditor/utils';
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: jest.fn(),
+}));
 
 const queryClient = new QueryClient();
 
@@ -19,11 +23,6 @@ const wrapper = ({ children }) => (
 );
 
 const mockPut = jest.fn();
-
-jest.mock('../../QuickMarcEditor/utils', () => ({
-  ...jest.requireActual('../../QuickMarcEditor/utils'),
-  changeTenantHeader: jest.fn(ky => ky),
-}));
 
 const body = {
   _actionType: 'edit',
@@ -38,26 +37,13 @@ const ky = {
 describe('Given useMarcRecordMutation', () => {
   beforeEach(() => {
     useOkapiKy.mockClear().mockReturnValue(ky);
-    changeTenantHeader.mockClear();
   });
 
-  it('should update record for a specific tenant', async () => {
-    const tenantId = 'consortia';
-
+  it('should update the record', async () => {
     const { result } = renderHook(() => useMarcRecordMutation(), { wrapper });
 
-    await act(async () => { result.current.updateMarcRecord({ body, tenantId }); });
+    await act(async () => { result.current.updateMarcRecord(body); });
 
-    expect(changeTenantHeader).toHaveBeenCalledWith(ky, tenantId);
-    expect(mockPut).toHaveBeenCalledWith(`${MARC_RECORD_API}/${body.parsedRecordId}`, { json: body });
-  });
-
-  it('should update the record with the current tenant in header', async () => {
-    const { result } = renderHook(() => useMarcRecordMutation(), { wrapper });
-
-    await act(async () => { result.current.updateMarcRecord({ body }); });
-
-    expect(changeTenantHeader).not.toHaveBeenCalled();
     expect(mockPut).toHaveBeenCalledWith(`${MARC_RECORD_API}/${body.parsedRecordId}`, { json: body });
   });
 });

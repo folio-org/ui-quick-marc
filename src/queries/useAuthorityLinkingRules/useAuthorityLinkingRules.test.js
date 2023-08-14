@@ -10,6 +10,11 @@ import { useOkapiKy } from '@folio/stripes/core';
 
 import useAuthorityLinkingRules from './useAuthorityLinkingRules';
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: jest.fn(),
+}));
+
 const queryClient = new QueryClient();
 
 const wrapper = ({ children }) => (
