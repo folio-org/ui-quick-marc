@@ -4,11 +4,14 @@ import {
 } from 'react-query';
 import { renderHook, act } from '@folio/jest-config-stripes/testing-library/react';
 
-import '../../../test/jest/__mock__';
-
 import { useOkapiKy } from '@folio/stripes/core';
 
 import useLinkSuggestions from './useLinkSuggestions';
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: jest.fn(),
+}));
 
 const queryClient = new QueryClient();
 
@@ -27,11 +30,13 @@ const body = {
   fields: [],
 };
 
+const ky = {
+  post: mockPost,
+};
+
 describe('Given useLinkSuggestions', () => {
   beforeEach(() => {
-    useOkapiKy.mockClear().mockReturnValue({
-      post: mockPost,
-    });
+    useOkapiKy.mockClear().mockReturnValue(ky);
   });
 
   it('should fetch link suggestions', async () => {
@@ -39,7 +44,10 @@ describe('Given useLinkSuggestions', () => {
 
     await act(async () => { result.current.fetchLinkSuggestions({ body }); });
 
-    expect(mockPost).toHaveBeenCalledWith('records-editor/links/suggestion', { json: body, searchParams: '' });
+    expect(mockPost).toHaveBeenCalledWith('records-editor/links/suggestion', {
+      json: body,
+      searchParams: '',
+    });
   });
 
   it('should fetch link suggestions with both authoritySearchParameter and ignoreAutoLinkingEnabled', async () => {

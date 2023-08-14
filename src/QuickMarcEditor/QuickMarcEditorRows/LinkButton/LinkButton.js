@@ -41,9 +41,11 @@ const propTypes = {
   handleUnlinkAuthority: PropTypes.func.isRequired,
   fieldId: PropTypes.string.isRequired,
   tag: PropTypes.string.isRequired,
+  marcType: PropTypes.string.isRequired,
 };
 
 const LinkButton = ({
+  marcType,
   handleLinkAuthority,
   handleUnlinkAuthority,
   isLinked,
@@ -58,7 +60,10 @@ const LinkButton = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const callout = useCallout();
 
-  const { isLoading: isLoadingMarcSource, refetch: refetchSource } = useMarcSource(fieldId, authority?.id, {
+  const { isLoading: isLoadingMarcSource, refetch: refetchSource } = useMarcSource({
+    fieldId,
+    recordId: authority?.id,
+    marcType,
     onSuccess: (authoritySource) => {
       const linkingSuccessful = handleLinkAuthority(authority, authoritySource);
 

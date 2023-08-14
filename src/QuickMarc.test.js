@@ -4,11 +4,17 @@ import React from 'react';
 import { render } from '@folio/jest-config-stripes/testing-library/react';
 import { createMemoryHistory } from 'history';
 
-import '@folio/stripes-acq-components/test/jest/__mock__';
-
 import QuickMarc from './QuickMarc';
 
 import Harness from '../test/jest/helpers/harness';
+
+jest.mock('./queries', () => ({
+  ...jest.requireActual('./queries'),
+  useUserTenantPermissions: jest.fn().mockReturnValue({
+    userPermissions: [],
+    isFetching: false,
+  }),
+}));
 
 jest.mock('./QuickMarcEditor', () => {
   return {

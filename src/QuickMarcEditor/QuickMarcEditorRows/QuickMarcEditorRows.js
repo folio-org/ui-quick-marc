@@ -92,7 +92,7 @@ const QuickMarcEditorRows = ({
     unlinkAuthority,
     linkableBibFields,
     autoLinkableBibFields,
-  } = useAuthorityLinking();
+  } = useAuthorityLinking({ marcType });
 
   const isNewRow = useCallback((row) => {
     return !initialValues.records.find(record => record.id === row.id);
@@ -501,6 +501,7 @@ const QuickMarcEditorRows = ({
                   )}
                   {canBeLinkedManually && (
                     <LinkButton
+                      marcType={marcType}
                       handleLinkAuthority={(authority, marcSource) => handleLinkAuthority(authority, marcSource, idx)}
                       handleUnlinkAuthority={() => handleUnlinkAuthority(idx)}
                       isLinked={recordRow._isLinked}

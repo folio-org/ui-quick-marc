@@ -1,9 +1,19 @@
 import { useMutation } from 'react-query';
+import { useLocation } from 'react-router-dom';
 
-import { useOkapiKy } from '@folio/stripes/core';
+import {
+  useOkapiKy,
+  useStripes,
+} from '@folio/stripes/core';
 
-const useLinkSuggestions = () => {
+import { processTenantHeader } from '../../QuickMarcEditor/utils';
+
+const useLinkSuggestions = ({ tenantId, marcType } = {}) => {
   const ky = useOkapiKy();
+  const stripes = useStripes();
+  const location = useLocation();
+
+  const api = processTenantHeader({ ky, tenantId, marcType, stripes, location });
 
   const { mutateAsync, isLoading } = useMutation(
     ({ body, isSearchByAuthorityId, ignoreAutoLinkingEnabled }) => {
@@ -17,7 +27,7 @@ const useLinkSuggestions = () => {
         searchParams.append('ignoreAutoLinkingEnabled', 'true');
       }
 
-      return ky.post('records-editor/links/suggestion', {
+      return api.post('records-editor/links/suggestion', {
         searchParams: searchParams.toString(),
         json: body,
       }).json();

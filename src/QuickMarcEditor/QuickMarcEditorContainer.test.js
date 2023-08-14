@@ -13,15 +13,16 @@ import '@folio/stripes-acq-components/test/jest/__mock__';
 import QuickMarcEditorContainer from './QuickMarcEditorContainer';
 import QuickMarcEditWrapper from './QuickMarcEditWrapper';
 import QuickMarcDeriveWrapper from './QuickMarcDeriveWrapper';
+import { QUICK_MARC_ACTIONS } from './constants';
 import {
+  MARC_TYPES,
   OKAPI_TENANT_HEADER,
-  QUICK_MARC_ACTIONS,
-} from './constants';
-import { MARC_TYPES } from '../common/constants';
+} from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
 import buildStripes from '../../test/jest/__mock__/stripesCore.mock';
 import { useAuthorityLinksCount } from '../queries';
+import { applyCentralTenantInHeaders } from './utils';
 
 const mockFetchLinksCount = jest.fn().mockResolvedValue();
 
@@ -43,6 +44,12 @@ const location = {
 
 const mockHistory = createMemoryHistory();
 
+jest.mock('./utils', () => ({
+  ...jest.requireActual('./utils'),
+  applyCentralTenantInHeaders: jest.fn(),
+  changeTenantHeader: jest.fn(ky => ky),
+}));
+
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
   withRouter: Component => props => <Component match={match} location={location} history={mockHistory} {...props} />,
@@ -62,6 +69,10 @@ jest.mock('../queries', () => ({
     fetchLinksCount: jest.fn().mockResolvedValue({
       links: [{ totalLinks: 0 }],
     }),
+  }),
+  useLinkSuggestions: jest.fn().mockReturnValue({
+    fetchLinkSuggestions: jest.fn(),
+    isLoading: false,
   }),
 }));
 
@@ -122,6 +133,8 @@ describe('Given Quick Marc Editor Container', () => {
         GET: jest.fn().mockResolvedValue([]),
       },
     };
+
+    applyCentralTenantInHeaders.mockReturnValue(false);
   });
 
   it('should fetch MARC record', async () => {
@@ -268,42 +281,36 @@ describe('Given Quick Marc Editor Container', () => {
 
   describe('when a user is in a member tenant and derives a shared record', () => {
     it('should take the record data from the central tenant', async () => {
-      const newLocation = {
-        ...location,
-        search: '?shared=true',
-      };
-      const newMutator = {
-        ...mutator,
-        quickMarcEditInstance: {
-          GET: jest.fn(() => Promise.resolve({ ...instance, source: 'CONSORTIUM-FOLIO' })),
-        },
-      };
+      applyCentralTenantInHeaders.mockReturnValue(true);
+
       const stripes = buildStripes({
-        okapi: { tenant: 'university' },
+        okapi: { tenant: 'university', locale: 'en' },
         user: { user: { consortium: { centralTenantId: 'consortium' } } },
       });
 
       await act(async () => {
         renderQuickMarcEditorContainer({
-          mutator: newMutator,
+          mutator,
           onClose: jest.fn(),
           action: QUICK_MARC_ACTIONS.DERIVE,
           wrapper: QuickMarcDeriveWrapper,
           stripes,
-          location: newLocation,
         });
       });
 
       const requests = [
-        newMutator.quickMarcEditInstance.GET,
-        newMutator.quickMarcEditMarcRecord.GET,
-        newMutator.linkingRules.GET,
+        mutator.quickMarcEditInstance.GET,
+        mutator.quickMarcEditMarcRecord.GET,
+        mutator.linkingRules.GET,
       ];
 
       requests.forEach(request => {
         expect(request).toHaveBeenCalledWith(expect.objectContaining({
           headers: {
-            [OKAPI_TENANT_HEADER]: 'consortium',
+            Accept: 'application/json',
+            'Accept-Language': 'en',
+            'Content-Type': 'application/json',
+            'X-Okapi-Tenant': 'consortium',
           },
         }));
       });

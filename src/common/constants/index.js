@@ -7,3 +7,4 @@ export * from './searchableIndexesValues';
 export * from './filters';
 export * from './defaultLookup';
 export * from './navigationSegments';
+export * from './headers';

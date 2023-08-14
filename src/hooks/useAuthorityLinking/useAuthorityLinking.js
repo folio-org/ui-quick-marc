@@ -35,10 +35,10 @@ const joinSubfields = (subfields) => Object.keys(subfields).reduce((content, key
 
 const formatSubfieldCode = (code) => { return code.startsWith('$') ? code : `$${code}`; };
 
-const useAuthorityLinking = () => {
-  const { sourceFiles } = useAuthoritySourceFiles();
-  const { linkingRules } = useAuthorityLinkingRules();
-  const { fetchLinkSuggestions } = useLinkSuggestions();
+const useAuthorityLinking = ({ tenantId, marcType } = {}) => {
+  const { sourceFiles } = useAuthoritySourceFiles({ tenantId, marcType });
+  const { linkingRules } = useAuthorityLinkingRules({ tenantId, marcType });
+  const { fetchLinkSuggestions, isLoading: isLoadingLinkSuggestions } = useLinkSuggestions({ tenantId, marcType });
 
   const linkableBibFields = useMemo(() => linkingRules.map(rule => rule.bibField), [linkingRules]);
   const autoLinkableBibFields = useMemo(() => {
@@ -304,6 +304,9 @@ const useAuthorityLinking = () => {
     autoLinkableBibFields,
     autoLinkAuthority,
     actualizeLinks,
+    linkingRules,
+    fetchLinkSuggestions,
+    isLoadingLinkSuggestions,
   };
 };
 

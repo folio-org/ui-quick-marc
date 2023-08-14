@@ -127,5 +127,3 @@ export const AUTOLINKING_STATUSES = {
 
 export const UNCONTROLLED_ALPHA = 'uncontrolledAlpha';
 export const UNCONTROLLED_NUMBER = 'uncontrolledNumber';
-
-export const OKAPI_TENANT_HEADER = 'X-Okapi-Tenant';

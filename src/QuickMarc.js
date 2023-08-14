@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   Switch,
-  Route,
 } from 'react-router-dom';
 
-import { IfPermission } from '@folio/stripes/core';
-import { CommandList } from '@folio/stripes/components';
-
 import {
-  QuickMarcEditorContainer,
+  CommandList,
+} from '@folio/stripes/components';
+
+import { MarcRoute } from './MarcRoute';
+import {
   QuickMarcDeriveWrapper,
   QuickMarcCreateWrapper,
   QuickMarcEditWrapper,
@@ -103,27 +103,13 @@ const QuickMarc = ({
               permission,
               props: routeProps = {},
             }) => (
-              <Route
-                path={path}
+              <MarcRoute
+                externalRecordPath={externalRecordPath}
                 key={path}
-                render={() => (permission
-                  ? (
-                    <IfPermission perm={permission}>
-                      <QuickMarcEditorContainer
-                        onClose={onClose}
-                        externalRecordPath={externalRecordPath}
-                        {...routeProps}
-                      />
-                    </IfPermission>
-                  )
-                  : (
-                    <QuickMarcEditorContainer
-                      onClose={onClose}
-                      externalRecordPath={externalRecordPath}
-                      {...routeProps}
-                    />
-                  )
-                )}
+                path={path}
+                permission={permission}
+                routeProps={routeProps}
+                onClose={onClose}
               />
             ))
           }
