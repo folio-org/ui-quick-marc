@@ -45,6 +45,7 @@
 * [UIQM-483](https://issues.folio.org/browse/UIQM-483) Add "Local" or "Shared" to flag MARC bib records.
 * [UIQM-484](https://issues.folio.org/browse/UIQM-484) Edit MARC bib record on Shared Instance.
 * [UIQM-542](https://issues.folio.org/browse/UIQM-542) Bump plugin-find-authority and stripes-acq-components.
+* [UIQM-535](https://issues.folio.org/browse/UIQM-535) Update Node.js to v18 in GitHub Actions.
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
 
