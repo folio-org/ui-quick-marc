@@ -343,21 +343,15 @@ describe('Given QuickMarcCreateWrapper', () => {
           json: () => Promise.resolve({}),
         }));
 
-        await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+        await act(async () => fireEvent.click(getByText('stripes-acq-components.FormFooter.save')));
 
         expect(mutator.quickMarcEditMarcRecord.POST).toHaveBeenCalled();
 
-        await new Promise(resolve => {
-          setTimeout(() => {
-            expect(mockShowCallout).toHaveBeenCalledWith({
-              messageId: 'ui-quick-marc.record.save.error.generic',
-              type: 'error',
-            });
-
-            resolve();
-          }, 10);
+        expect(mockShowCallout).toHaveBeenCalledWith({
+          messageId: 'ui-quick-marc.record.save.error.generic',
+          type: 'error',
         });
-      }, 1000);
+      });
     });
 
     it('should actualize links', async () => {
