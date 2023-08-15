@@ -1,7 +1,9 @@
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
-import { IfPermission } from '@folio/stripes/core';
+import {
+  IfPermission,
+} from '@folio/stripes/core';
 import { Button } from '@folio/stripes/components';
 import { useShowCallout } from '@folio/stripes-acq-components';
 
@@ -36,7 +38,7 @@ const AutoLinkingButton = ({
     autoLinkingEnabled,
     autoLinkableBibFields,
     autoLinkAuthority,
-  } = useAuthorityLinking();
+  } = useAuthorityLinking({ marcType });
 
   const hasAutoLinkableRecord = formValues.records.some(field => isRecordForAutoLinking(field, autoLinkableBibFields));
 

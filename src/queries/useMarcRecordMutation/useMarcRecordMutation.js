@@ -5,24 +5,26 @@ import {
   useOkapiKy,
   useStripes,
 } from '@folio/stripes/core';
-
+import {
+  MARC_RECORD_API,
+} from '../../common/constants';
 import { processTenantHeader } from '../../QuickMarcEditor/utils';
 
-const useAuthorityLinksCount = ({ tenantId, marcType } = {}) => {
+const useMarcRecordMutation = ({ tenantId, marcType } = {}) => {
   const ky = useOkapiKy();
   const stripes = useStripes();
   const location = useLocation();
 
   const api = processTenantHeader({ ky, tenantId, marcType, stripes, location });
 
-  const { mutateAsync, isLoading } = useMutation({
-    mutationFn: ids => api.post('links/authorities/bulk/count', { json: { ids } }).json(),
+  const { mutateAsync: updateMarcRecord, isLoading: isUpdating } = useMutation(body => {
+    return api.put(`${MARC_RECORD_API}/${body.parsedRecordId}`, { json: body });
   });
 
   return {
-    fetchLinksCount: mutateAsync,
-    isLoading,
+    updateMarcRecord,
+    isLoading: isUpdating,
   };
 };
 
-export default useAuthorityLinksCount;
+export default useMarcRecordMutation;

@@ -6,6 +6,9 @@ import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 import flow from 'lodash/flow';
 
+import {
+  useStripes,
+} from '@folio/stripes/core';
 import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
@@ -31,8 +34,12 @@ import {
   autopopulateFixedField,
   autopopulatePhysDescriptionField,
   autopopulateMaterialCharsField,
+  getHeaders,
+  applyCentralTenantInHeaders,
 } from './utils';
-import { useAuthorityLinkingRules } from '../queries';
+import {
+  useMarcRecordMutation,
+} from '../queries';
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
@@ -59,11 +66,17 @@ const QuickMarcEditWrapper = ({
   refreshPageData,
   externalRecordPath,
 }) => {
+  const stripes = useStripes();
   const showCallout = useShowCallout();
   const location = useLocation();
   const [httpError, setHttpError] = useState(null);
-  const { linkableBibFields, actualizeLinks } = useAuthorityLinking();
-  const { linkingRules } = useAuthorityLinkingRules();
+
+  const { token, locale } = stripes.okapi;
+  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType);
+  const centralTenantId = stripes.user.user.consortium?.centralTenantId;
+
+  const { linkableBibFields, actualizeLinks, linkingRules } = useAuthorityLinking({ marcType });
+  const { updateMarcRecord } = useMarcRecordMutation({ marcType });
 
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesToSave = flow(
@@ -130,7 +143,10 @@ const QuickMarcEditWrapper = ({
     const path = EXTERNAL_INSTANCE_APIS[marcType];
 
     const fetchInstance = async () => {
-      const fetchedInstance = await mutator.quickMarcEditInstance.GET({ path: `${path}/${formValuesToProcess.externalId}` });
+      const fetchedInstance = await mutator.quickMarcEditInstance.GET({
+        path: `${path}/${formValuesToProcess.externalId}`,
+        ...(isRequestToCentralTenantFromMember && { headers: getHeaders(centralTenantId, token, locale) }),
+      });
 
       return fetchedInstance;
     };
@@ -180,7 +196,7 @@ const QuickMarcEditWrapper = ({
 
     const formValuesToSave = hydrateMarcRecord(formValuesToHydrate);
 
-    return mutator.quickMarcEditMarcRecord.PUT(formValuesToSave)
+    return updateMarcRecord(formValuesToSave)
       .then(async () => {
         if (is1xxOr010Updated) {
           const values = {
@@ -219,6 +235,11 @@ const QuickMarcEditWrapper = ({
     location,
     prepareForSubmit,
     actualizeLinks,
+    centralTenantId,
+    token,
+    locale,
+    updateMarcRecord,
+    isRequestToCentralTenantFromMember,
   ]);
 
   return (

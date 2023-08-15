@@ -61,7 +61,6 @@ import {
   markLinkedRecords,
   checkIfSharedInstance,
 } from './utils';
-import { useLinkSuggestions } from '../queries';
 import { useAuthorityLinking } from '../hooks';
 
 import css from './QuickMarcEditor.css';
@@ -113,9 +112,11 @@ const QuickMarcEditor = ({
   const confirmationChecks = useRef({ ...REQUIRED_CONFIRMATIONS });
   const isConsortiaEnv = stripes.hasInterface('consortia');
 
-  const { isLoading: isLoadingLinkSuggestions, fetchLinkSuggestions } = useLinkSuggestions();
-
-  const { unlinkAuthority } = useAuthorityLinking();
+  const {
+    unlinkAuthority,
+    fetchLinkSuggestions,
+    isLoadingLinkSuggestions,
+  } = useAuthorityLinking({ marcType });
 
   const deletedRecords = useMemo(() => {
     return records

@@ -10,7 +10,10 @@ import toPairs from 'lodash/toPairs';
 import flatten from 'lodash/flatten';
 import flow from 'lodash/flow';
 
-import { checkIfUserInCentralTenant } from '@folio/stripes/core';
+import {
+  checkIfUserInCentralTenant,
+  checkIfUserInMemberTenant,
+} from '@folio/stripes/core';
 
 import {
   LEADER_TAG,
@@ -44,6 +47,7 @@ import {
   MARC_TYPES,
   ERROR_TYPES,
   EXTERNAL_INSTANCE_APIS,
+  OKAPI_TENANT_HEADER,
 } from '../common/constants';
 
 /* eslint-disable max-lines */
@@ -1515,4 +1519,68 @@ const CONSORTIUM_PREFIX = 'CONSORTIUM-';
 
 export const checkIfSharedInstance = (stripes, instance) => {
   return instance.source?.includes(CONSORTIUM_PREFIX) || checkIfUserInCentralTenant(stripes);
+};
+
+export const getHeaders = (tenant, token, locale, method = 'GET') => {
+  // This is taken from stripes-connect/OkapiResource.js
+  const headers = {
+    POST: {
+      Accept: 'application/json',
+    },
+    DELETE: {
+      Accept: 'text/plain',
+    },
+    GET: {
+      Accept: 'application/json',
+    },
+    PUT: {
+      Accept: 'text/plain',
+    },
+  };
+
+  return {
+    ...headers[method],
+    'Accept-Language': locale,
+    'Content-Type': 'application/json',
+    'X-Okapi-Tenant': tenant,
+    ...(token && { 'X-Okapi-Token': token }),
+  };
+};
+
+export const changeTenantHeader = (ky, tenantId) => {
+  return ky.extend({
+    hooks: {
+      beforeRequest: [
+        request => {
+          request.headers.set(OKAPI_TENANT_HEADER, tenantId);
+        },
+      ],
+    },
+  });
+};
+
+export const applyCentralTenantInHeaders = (location, stripes, marcType, cb = () => true) => {
+  const searchParams = new URLSearchParams(location.search);
+  const isSharedRecord = searchParams.get('shared') === 'true';
+
+  return (
+    isSharedRecord
+    && [MARC_TYPES.BIB].includes(marcType)
+    && cb()
+    && checkIfUserInMemberTenant(stripes)
+  );
+};
+
+export const processTenantHeader = ({ ky, tenantId, marcType, stripes, location }) => {
+  const centralTenantId = stripes.user.user.consortium?.centralTenantId;
+
+  if (tenantId) {
+    return changeTenantHeader(ky, tenantId);
+  }
+
+  if (marcType && applyCentralTenantInHeaders(location, stripes, marcType)) {
+    return changeTenantHeader(ky, centralTenantId);
+  }
+
+  return ky;
 };

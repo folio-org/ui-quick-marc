@@ -17,6 +17,7 @@
     "okapiInterfaces": {
       "inventory": "13.0",
       "marc-records-editor": "5.0",
+      "permissions": "5.6",
       "instance-authority-links": "2.1"
     },
     "stripesDeps": [
@@ -51,6 +52,7 @@
         "displayName": "quickMARC: View, edit MARC bibliographic record",
         "subPermissions": [
           "ui-quick-marc.quick-marc-editor.view",
+          "perms.users.get",
           "marc-records-editor.item.put",
           "marc-records-editor.links.suggestion.post",
           "instance-authority-links.instances.collection.put"
@@ -125,6 +127,7 @@
         "displayName": "quickMARC: Can Link/unlink authority records to bib records",
         "subPermissions": [
           "instance-authority.linking-rules.collection.get",
+          "inventory-storage.authority-source-files.collection.get",
           "marc-records-editor.links.suggestion.post"
         ],
         "visible": true
