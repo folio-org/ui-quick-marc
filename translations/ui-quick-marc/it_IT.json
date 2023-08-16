@@ -181,7 +181,7 @@
     "record.error.instanceHrid.multiple": "Record cannot be saved. Can only have one MARC 004.",
     "record.error.location.multiple": "Record cannot be saved. Can only have one MARC 852.",
     "permission.quick-marc-authorities-editor.all": "quickMARC: visualizzare, modificare i record di autorità MARC",
-    "authority-record.edit.title": "Edit MARC authority record - {title}",
+    "authority-record.edit.title": "Edit {shared, select, true {shared} false {local} other {}} MARC authority record - {title}",
     "record.headingType.100": "Personal name",
     "record.headingType.110": "Corporate name",
     "record.headingType.111": "Conference name",
