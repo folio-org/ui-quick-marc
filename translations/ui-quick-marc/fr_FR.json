@@ -181,7 +181,7 @@
     "record.error.instanceHrid.multiple": "La notice ne peut pas être sauvegardée. Il ne peut y avoir qu'un seul champ MARC 004.",
     "record.error.location.multiple": "La notice ne peut pas être sauvegardée. Il ne peut y avoir qu'un seul MARC 852.",
     "permission.quick-marc-authorities-editor.all": "quickMARC: View, edit MARC authorities record",
-    "authority-record.edit.title": "Edit MARC authority record - {title}",
+    "authority-record.edit.title": "Edit {shared, select, true {shared} false {local} other {}} MARC authority record - {title}",
     "record.headingType.100": "Personal name",
     "record.headingType.110": "Corporate name",
     "record.headingType.111": "Conference name",
