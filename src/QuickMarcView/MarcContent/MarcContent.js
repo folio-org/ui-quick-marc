@@ -6,10 +6,18 @@ import MarcField from '../MarcField';
 import { isControlField } from '../utils';
 import styles from './MarcContent.css';
 
+const propTypes = {
+  isPrint: PropTypes.bool,
+  marcTitle: PropTypes.node.isRequired,
+  marc: PropTypes.object.isRequired,
+  tenantId: PropTypes.string,
+};
+
 const MarcContent = ({
   marcTitle,
   marc,
   isPrint,
+  tenantId,
 }) => {
   const showLinkIcon = marc.recordType === 'MARC_BIB';
   const parsedContent = marc.parsedRecord.content;
@@ -43,6 +51,7 @@ const MarcContent = ({
               field={field}
               key={idx}
               showLinkIcon={showLinkIcon}
+              tenantId={tenantId}
             />
           ))}
         </tbody>
@@ -51,11 +60,7 @@ const MarcContent = ({
   );
 };
 
-MarcContent.propTypes = {
-  isPrint: PropTypes.bool,
-  marcTitle: PropTypes.node.isRequired,
-  marc: PropTypes.object.isRequired,
-};
+MarcContent.propTypes = propTypes;
 
 MarcContent.defaultProps = {
   isPrint: false,

@@ -24,6 +24,7 @@ const propTypes = {
   ]),
   onClose: PropTypes.func.isRequired,
   paneWidth: PropTypes.string,
+  tenantId: PropTypes.string,
 };
 
 const QuickMarcView = ({
@@ -36,6 +37,7 @@ const QuickMarcView = ({
   paneWidth,
   lastMenu,
   isPaneset,
+  tenantId,
 }) => {
   const renderContent = () => (
     <Pane
@@ -53,6 +55,7 @@ const QuickMarcView = ({
       <MarcContent
         marcTitle={marcTitle}
         marc={marc}
+        tenantId={tenantId}
       />
     </Pane>
   );

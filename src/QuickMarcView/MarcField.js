@@ -9,17 +9,26 @@ import PropTypes from 'prop-types';
 import { AppIcon } from '@folio/stripes/core';
 import { Tooltip } from '@folio/stripes/components';
 
-import { normalizeIndicator } from './utils';
-import styles from './MarcField.css';
 import { useAuthorityLinking } from '../hooks';
+import { normalizeIndicator } from './utils';
+
+import styles from './MarcField.css';
+
+const propTypes = {
+  field: PropTypes.object.isRequired,
+  isPrint: PropTypes.bool,
+  showLinkIcon: PropTypes.bool.isRequired,
+  tenantId: PropTypes.string,
+};
 
 const MarcField = ({
   field,
   showLinkIcon,
   isPrint,
+  tenantId,
 }) => {
   const intl = useIntl();
-  const { linkableBibFields } = useAuthorityLinking();
+  const { linkableBibFields } = useAuthorityLinking({ tenantId });
 
   const fieldTag = Object.keys(field)[0];
   const hasIndicators = typeof field[fieldTag] !== 'string';
@@ -104,11 +113,7 @@ const MarcField = ({
   );
 };
 
-MarcField.propTypes = {
-  field: PropTypes.object.isRequired,
-  isPrint: PropTypes.bool,
-  showLinkIcon: PropTypes.bool.isRequired,
-};
+MarcField.propTypes = propTypes;
 
 MarcField.defaultProps = {
   isPrint: false,
