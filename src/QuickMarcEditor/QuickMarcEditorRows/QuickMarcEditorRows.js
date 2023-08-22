@@ -8,10 +8,14 @@ import {
   useFormState,
 } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
-import { Link } from 'react-router-dom';
+import {
+  Link,
+  useLocation,
+} from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import isEqual from 'lodash/isEqual';
 import defer from 'lodash/defer';
+import noop from 'lodash/noop';
 
 import { useStripes } from '@folio/stripes/core';
 import {
@@ -45,6 +49,7 @@ import {
   hasDeleteException,
   isLocationRow,
   isContentRow,
+  applyCentralTenantInHeaders,
 } from '../utils';
 import { useAuthorityLinking } from '../../hooks';
 import {
@@ -77,7 +82,9 @@ const QuickMarcEditorRows = ({
   instance,
   linksCount,
   isLoadingLinkSuggestions,
+  onCheckCentralTenantPerm,
 }) => {
+  const location = useLocation();
   const stripes = useStripes();
   const intl = useIntl();
   const { initialValues } = useFormState();
@@ -93,6 +100,10 @@ const QuickMarcEditorRows = ({
     linkableBibFields,
     autoLinkableBibFields,
   } = useAuthorityLinking({ marcType });
+
+  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType, () => (
+    action === QUICK_MARC_ACTIONS.EDIT
+  ));
 
   const isNewRow = useCallback((row) => {
     return !initialValues.records.find(record => record.id === row.id);
@@ -274,7 +285,14 @@ const QuickMarcEditorRows = ({
             const isContentField = isContentRow(recordRow, marcType);
             const isMARCFieldProtections = marcType !== MARC_TYPES.HOLDINGS && action === QUICK_MARC_ACTIONS.EDIT;
             const isProtectedField = recordRow.isProtected;
-            const canBeLinkedManually = isRecordForManualLinking(stripes, marcType, linkableBibFields, recordRow.tag);
+            const canBeLinkedManually = isRecordForManualLinking(
+              stripes,
+              marcType,
+              linkableBibFields,
+              recordRow.tag,
+              isRequestToCentralTenantFromMember,
+              onCheckCentralTenantPerm,
+            );
             const canBeLinkedAuto = isRecordForAutoLinking(recordRow, autoLinkableBibFields);
 
             const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') && recordRow._isLinked;
@@ -501,7 +519,6 @@ const QuickMarcEditorRows = ({
                   )}
                   {canBeLinkedManually && (
                     <LinkButton
-                      marcType={marcType}
                       handleLinkAuthority={(authority, marcSource) => handleLinkAuthority(authority, marcSource, idx)}
                       handleUnlinkAuthority={() => handleUnlinkAuthority(idx)}
                       isLinked={recordRow._isLinked}
@@ -577,6 +594,11 @@ QuickMarcEditorRows.propTypes = {
     updateRecord: PropTypes.func.isRequired,
   }),
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
+  onCheckCentralTenantPerm: PropTypes.func,
+};
+
+QuickMarcEditorRows.defaultProps = {
+  onCheckCentralTenantPerm: noop,
 };
 
 export default QuickMarcEditorRows;

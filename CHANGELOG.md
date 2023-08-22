@@ -48,6 +48,7 @@
 * [UIQM-535](https://issues.folio.org/browse/UIQM-535) Update Node.js to v18 in GitHub Actions.
 * [UIQM-544](https://issues.folio.org/browse/UIQM-544) Add "Local" or "Shared" to flag MARC authorities.
 * [UIQM-545](https://issues.folio.org/browse/UIQM-545) Change tenant id to central when opening details of Shared Authority.
+* [UIQM-547](https://issues.folio.org/browse/UIQM-547) Link Shared/Local MARC bib record to Shared/Local Authority record.
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
 

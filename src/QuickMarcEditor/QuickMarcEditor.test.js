@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import React from 'react';
 import {
   render,
@@ -17,7 +18,7 @@ import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
-/* eslint-disable max-lines */
+
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
   useLocation: () => ({

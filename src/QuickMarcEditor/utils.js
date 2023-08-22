@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
@@ -11,7 +12,6 @@ import flatten from 'lodash/flatten';
 import flow from 'lodash/flow';
 
 import {
-  checkIfUserInCentralTenant,
   checkIfUserInMemberTenant,
 } from '@folio/stripes/core';
 
@@ -50,7 +50,6 @@ import {
   OKAPI_TENANT_HEADER,
 } from '../common/constants';
 
-/* eslint-disable max-lines */
 export const isLastRecord = recordRow => {
   return (
     recordRow.tag === '999'
@@ -630,11 +629,22 @@ export const checkDuplicate010Field = (marcRecords) => {
   return undefined;
 };
 
-export const isRecordForManualLinking = (stripes, marcType, linkableBibFields, tag) => (
-  stripes.hasPerm('ui-quick-marc.quick-marc-authority-records.linkUnlink') &&
-  marcType === MARC_TYPES.BIB &&
-  linkableBibFields.includes(tag)
-);
+export const isRecordForManualLinking = (
+  stripes,
+  marcType,
+  linkableBibFields,
+  tag,
+  isRequestToCentralTenantFromMember,
+  onCheckCentralTenantPerm,
+) => {
+  const permission = 'ui-quick-marc.quick-marc-authority-records.linkUnlink';
+
+  return (
+    marcType === MARC_TYPES.BIB
+    && (isRequestToCentralTenantFromMember ? onCheckCentralTenantPerm(permission) : stripes.hasPerm(permission))
+    && linkableBibFields.includes(tag)
+  );
+};
 
 export const isRecordForAutoLinking = (field, autoLinkableBibFields) => (
   !field._isDeleted
@@ -1514,12 +1524,6 @@ export const hydrateForLinkSuggestions = (marcRecord, fields) => ({
   marcFormat: marcRecord.marcFormat,
   _actionType: 'view',
 });
-
-const CONSORTIUM_PREFIX = 'CONSORTIUM-';
-
-export const checkIfSharedInstance = (stripes, instance) => {
-  return instance.source?.includes(CONSORTIUM_PREFIX) || checkIfUserInCentralTenant(stripes);
-};
 
 export const getHeaders = (tenant, token, locale, method = 'GET') => {
   // This is taken from stripes-connect/OkapiResource.js

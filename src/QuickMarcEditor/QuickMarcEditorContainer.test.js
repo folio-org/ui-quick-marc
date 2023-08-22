@@ -104,6 +104,7 @@ const renderQuickMarcEditorContainer = ({ history, ...props } = {}) => (render(
       onClose={mockOnClose}
       resources={resources}
       {...props}
+      onCheckCentralTenantPerm={() => false}
     />
   </Harness>,
 ));
