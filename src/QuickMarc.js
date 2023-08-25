@@ -4,9 +4,7 @@ import {
   Switch,
 } from 'react-router-dom';
 
-import {
-  CommandList,
-} from '@folio/stripes/components';
+import { CommandList } from '@folio/stripes/components';
 
 import { MarcRoute } from './MarcRoute';
 import {

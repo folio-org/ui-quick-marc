@@ -12,6 +12,7 @@ import {
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import find from 'lodash/find';
+import noop from 'lodash/noop';
 import { FormSpy } from 'react-final-form';
 
 import {
@@ -59,7 +60,6 @@ import {
   is010LinkedToBibRecord,
   updateRecordAtIndex,
   markLinkedRecords,
-  checkIfSharedInstance,
 } from './utils';
 import { useAuthorityLinking } from '../hooks';
 
@@ -97,6 +97,7 @@ const QuickMarcEditor = ({
   confirmRemoveAuthorityLinking,
   linksCount,
   validate,
+  onCheckCentralTenantPerm,
 }) => {
   const stripes = useStripes();
   const formValues = getState().values;
@@ -111,6 +112,8 @@ const QuickMarcEditor = ({
   const formRef = useRef(null);
   const confirmationChecks = useRef({ ...REQUIRED_CONFIRMATIONS });
   const isConsortiaEnv = stripes.hasInterface('consortia');
+  const searchParameters = new URLSearchParams(location.search);
+  const isShared = searchParameters.get('shared') === 'true';
 
   const {
     unlinkAuthority,
@@ -291,7 +294,7 @@ const QuickMarcEditor = ({
   const getPaneTitle = () => {
     let formattedMessageValues = {
       title: instance.title,
-      shared: isConsortiaEnv ? checkIfSharedInstance(stripes, instance) : null,
+      shared: isConsortiaEnv ? isShared : null,
     };
 
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
@@ -477,6 +480,7 @@ const QuickMarcEditor = ({
                     instance={instance}
                     linksCount={linksCount}
                     isLoadingLinkSuggestions={isLoadingLinkSuggestions}
+                    onCheckCentralTenantPerm={onCheckCentralTenantPerm}
                   />
                 </Col>
               </Row>
@@ -558,11 +562,13 @@ QuickMarcEditor.propTypes = {
   }),
   confirmRemoveAuthorityLinking: PropTypes.bool,
   validate: PropTypes.func.isRequired,
+  onCheckCentralTenantPerm: PropTypes.func,
 };
 
 QuickMarcEditor.defaultProps = {
   httpError: null,
   confirmRemoveAuthorityLinking: false,
+  onCheckCentralTenantPerm: noop,
 };
 
 export default stripesFinalForm({

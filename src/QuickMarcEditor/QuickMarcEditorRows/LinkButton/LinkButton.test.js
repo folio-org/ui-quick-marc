@@ -8,6 +8,7 @@ import {
 import { Pluggable } from '@folio/stripes/core';
 import { runAxeTest } from '@folio/stripes-testing';
 
+import { createMemoryHistory } from 'history';
 import { LinkButton } from './LinkButton';
 
 import Harness from '../../../../test/jest/helpers/harness';
@@ -23,6 +24,7 @@ jest.mock('@folio/stripes/core', () => ({
   useNamespace: jest.fn().mockReturnValue(['ui-quick-marc-test']),
   useOkapiKy: jest.fn(() => ({
     get: mockGetMarcSource,
+    extend: jest.fn(),
   })),
   Pluggable: jest.fn(({ renderCustomTrigger }) => renderCustomTrigger({ onClick: mockOnClick })),
 }));
@@ -31,7 +33,7 @@ const mockHandleLinkAuthority = jest.fn();
 const mockHandleUnlinkAuthority = jest.fn();
 
 const renderComponent = (props = {}) => render(
-  <Harness>
+  <Harness history={props.history}>
     <LinkButton
       handleLinkAuthority={mockHandleLinkAuthority}
       handleUnlinkAuthority={mockHandleUnlinkAuthority}
@@ -90,6 +92,19 @@ describe('Given LinkButton', () => {
       });
     });
 
+    describe('when bib record is shared', () => {
+      it('should pass central tenant id', async () => {
+        const centralTenantId = 'consortia';
+        const history = createMemoryHistory({
+          initialEntries: [{ search: '?shared=true' }],
+        });
+
+        renderComponent({ history });
+
+        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ tenantId: centralTenantId }), {});
+      });
+    });
+
     describe('when linking Authority to empty field', () => {
       it('should pass initial values to plugin', async () => {
         const { getAllByTestId } = renderComponent();
@@ -98,10 +113,41 @@ describe('Given LinkButton', () => {
           search: {
             dropdownValue: 'personalNameTitle',
             searchIndex: 'personalNameTitle',
+            filters: null,
           },
           browse: {
             dropdownValue: 'personalNameTitle',
             searchIndex: 'personalNameTitle',
+            filters: null,
+          },
+          segment: 'browse',
+        };
+
+        fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
+
+        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
+      });
+    });
+
+    describe('when linking Authority to empty field and record is shared', () => {
+      it('should pass initial values to plugin', async () => {
+        const history = createMemoryHistory({
+          initialEntries: [{ search: '?shared=true' }],
+        });
+        const { getAllByTestId } = renderComponent({
+          history,
+        });
+
+        const initialValues = {
+          search: {
+            dropdownValue: 'personalNameTitle',
+            searchIndex: 'personalNameTitle',
+            filters: { shared: ['true'] },
+          },
+          browse: {
+            dropdownValue: 'personalNameTitle',
+            searchIndex: 'personalNameTitle',
+            filters: { shared: ['true'] },
           },
           segment: 'browse',
         };
@@ -124,10 +170,12 @@ describe('Given LinkButton', () => {
             searchIndex: 'advancedSearch',
             searchInputValue: 'identifiers.value==n123456789',
             searchQuery: 'identifiers.value==n123456789',
+            filters: null,
           },
           browse: {
             dropdownValue: 'personalNameTitle',
             searchIndex: 'personalNameTitle',
+            filters: null,
           },
           segment: 'search',
         };
@@ -150,10 +198,45 @@ describe('Given LinkButton', () => {
             searchIndex: 'advancedSearch',
             searchInputValue: 'identifiers.value==n123456789 or identifiers.value==n987654321',
             searchQuery: 'identifiers.value==n123456789 or identifiers.value==n987654321',
+            filters: null,
           },
           browse: {
             dropdownValue: 'personalNameTitle',
             searchIndex: 'personalNameTitle',
+            filters: null,
+          },
+          segment: 'search',
+        };
+
+        fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
+
+        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
+      });
+    });
+
+    describe('when linking Authority to a field with $0 and record is shared', () => {
+      it('should pass initial values to plugin', async () => {
+        const history = createMemoryHistory({
+          initialEntries: [{ search: '?shared=true' }],
+        });
+
+        const { getAllByTestId } = renderComponent({
+          content: '$0 n123456789',
+          history,
+        });
+
+        const initialValues = {
+          search: {
+            dropdownValue: 'advancedSearch',
+            searchIndex: 'advancedSearch',
+            searchInputValue: 'identifiers.value==n123456789',
+            searchQuery: 'identifiers.value==n123456789',
+            filters: { shared: ['true'] },
+          },
+          browse: {
+            dropdownValue: 'personalNameTitle',
+            searchIndex: 'personalNameTitle',
+            filters: { shared: ['true'] },
           },
           segment: 'search',
         };
@@ -174,12 +257,47 @@ describe('Given LinkButton', () => {
           search: {
             dropdownValue: 'personalNameTitle',
             searchIndex: 'personalNameTitle',
+            filters: null,
           },
           browse: {
             dropdownValue: 'personalNameTitle',
             searchIndex: 'personalNameTitle',
             searchInputValue: 'value1 value2 value3',
             searchQuery: 'value1 value2 value3',
+            filters: null,
+          },
+          segment: 'browse',
+        };
+
+        fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
+
+        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
+      });
+    });
+
+    describe('when linking Authority to a field with $a, $d or $t and record is shared', () => {
+      it('should pass initial values to plugin', async () => {
+        const history = createMemoryHistory({
+          initialEntries: [{ search: '?shared=true' }],
+        });
+
+        const { getAllByTestId } = renderComponent({
+          content: '$a value1 $d value2 $t value3',
+          history,
+        });
+
+        const initialValues = {
+          search: {
+            dropdownValue: 'personalNameTitle',
+            searchIndex: 'personalNameTitle',
+            filters: { shared: ['true'] },
+          },
+          browse: {
+            dropdownValue: 'personalNameTitle',
+            searchIndex: 'personalNameTitle',
+            searchInputValue: 'value1 value2 value3',
+            searchQuery: 'value1 value2 value3',
+            filters: { shared: ['true'] },
           },
           segment: 'browse',
         };
@@ -202,10 +320,12 @@ describe('Given LinkButton', () => {
             searchIndex: 'advancedSearch',
             searchInputValue: 'keyword==value1 value2 value3 or identifiers.value==value4 or identifiers.value==value5',
             searchQuery: 'keyword==value1 value2 value3 or identifiers.value==value4 or identifiers.value==value5',
+            filters: null,
           },
           browse: {
             dropdownValue: 'personalNameTitle',
             searchIndex: 'personalNameTitle',
+            filters: null,
           },
           segment: 'search',
         };

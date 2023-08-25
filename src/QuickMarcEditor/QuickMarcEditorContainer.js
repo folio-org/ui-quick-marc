@@ -7,6 +7,7 @@ import React, {
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import ReactRouterPropTypes from 'react-router-prop-types';
+import noop from 'lodash/noop';
 
 import {
   stripesConnect,
@@ -52,6 +53,7 @@ const propTypes = {
   resources: PropTypes.object.isRequired,
   stripes: PropTypes.object.isRequired,
   wrapper: PropTypes.func.isRequired,
+  onCheckCentralTenantPerm: PropTypes.func,
 };
 
 const createRecordDefaults = {
@@ -72,6 +74,7 @@ const QuickMarcEditorContainer = ({
   externalRecordPath,
   resources,
   stripes,
+  onCheckCentralTenantPerm,
 }) => {
   const {
     externalId,
@@ -219,6 +222,7 @@ const QuickMarcEditorContainer = ({
       refreshPageData={loadData}
       externalRecordPath={externalRecordUrl}
       resources={resources}
+      onCheckCentralTenantPerm={onCheckCentralTenantPerm}
     />
   );
 };
@@ -262,5 +266,8 @@ QuickMarcEditorContainer.manifest = Object.freeze({
 });
 
 QuickMarcEditorContainer.propTypes = propTypes;
+QuickMarcEditorContainer.defaultProps = {
+  onCheckCentralTenantPerm: noop,
+};
 
 export default withRouter(stripesConnect(QuickMarcEditorContainer));

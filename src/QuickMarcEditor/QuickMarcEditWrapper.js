@@ -5,6 +5,7 @@ import React, {
 import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 import flow from 'lodash/flow';
+import noop from 'lodash/noop';
 
 import {
   useStripes,
@@ -51,6 +52,7 @@ const propTypes = {
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
+  onCheckCentralTenantPerm: PropTypes.func,
   locations: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
@@ -65,6 +67,7 @@ const QuickMarcEditWrapper = ({
   locations,
   refreshPageData,
   externalRecordPath,
+  onCheckCentralTenantPerm,
 }) => {
   const stripes = useStripes();
   const showCallout = useShowCallout();
@@ -256,10 +259,14 @@ const QuickMarcEditWrapper = ({
       externalRecordPath={externalRecordPath}
       linksCount={linksCount}
       validate={validate}
+      onCheckCentralTenantPerm={onCheckCentralTenantPerm}
     />
   );
 };
 
 QuickMarcEditWrapper.propTypes = propTypes;
+QuickMarcEditWrapper.defaultProps = {
+  onCheckCentralTenantPerm: noop,
+};
 
 export default QuickMarcEditWrapper;

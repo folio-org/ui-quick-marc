@@ -6,6 +6,7 @@ import {
   useIntl,
   FormattedMessage,
 } from 'react-intl';
+import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import flatten from 'lodash/flatten';
 import isNil from 'lodash/isNil';
@@ -13,6 +14,7 @@ import isNil from 'lodash/isNil';
 import {
   Pluggable,
   useCallout,
+  useStripes,
 } from '@folio/stripes/core';
 import {
   Tooltip,
@@ -41,11 +43,9 @@ const propTypes = {
   handleUnlinkAuthority: PropTypes.func.isRequired,
   fieldId: PropTypes.string.isRequired,
   tag: PropTypes.string.isRequired,
-  marcType: PropTypes.string.isRequired,
 };
 
 const LinkButton = ({
-  marcType,
   handleLinkAuthority,
   handleUnlinkAuthority,
   isLinked,
@@ -55,15 +55,19 @@ const LinkButton = ({
   calloutRef,
   content,
 }) => {
+  const stripes = useStripes();
   const intl = useIntl();
+  const location = useLocation();
   const [authority, setAuthority] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const callout = useCallout();
+  const centralTenantId = stripes.user.user?.consortium?.centralTenantId;
+  const isSharedBibRecord = new URLSearchParams(location.search).get('shared') === 'true';
 
   const { isLoading: isLoadingMarcSource, refetch: refetchSource } = useMarcSource({
     fieldId,
     recordId: authority?.id,
-    marcType,
+    tenantId: authority?.shared ? centralTenantId : authority?.tenantId,
     onSuccess: (authoritySource) => {
       const linkingSuccessful = handleLinkAuthority(authority, authoritySource);
 
@@ -109,6 +113,7 @@ const LinkButton = ({
     let initialSearchInputValue = '';
     let initialSegment = navigationSegments.search;
     let initialSearchQuery = '';
+    const initialFilters = isSharedBibRecord ? { shared: ['true'] } : null;
 
     const _initialValues = {
       [navigationSegments.search]: {},
@@ -137,10 +142,12 @@ const LinkButton = ({
         searchIndex: initialDropdownValue,
         searchInputValue: initialSearchInputValue,
         searchQuery: initialSearchQuery,
+        filters: initialFilters,
       };
       _initialValues[navigationSegments.browse] = {
         dropdownValue: dropdownValueByTag,
         searchIndex: dropdownValueByTag,
+        filters: initialFilters,
       };
     } else if (fieldContent.$a?.length || fieldContent.$d?.length || fieldContent.$t?.length) {
       initialSegment = navigationSegments.browse;
@@ -154,10 +161,12 @@ const LinkButton = ({
         searchIndex: initialDropdownValue,
         searchInputValue: initialSearchInputValue,
         searchQuery: initialSearchQuery,
+        filters: initialFilters,
       };
       _initialValues[navigationSegments.search] = {
         dropdownValue: dropdownValueByTag,
         searchIndex: dropdownValueByTag,
+        filters: initialFilters,
       };
     } else {
       initialSegment = navigationSegments.browse;
@@ -165,17 +174,19 @@ const LinkButton = ({
       _initialValues[navigationSegments.browse] = {
         dropdownValue: dropdownValueByTag,
         searchIndex: dropdownValueByTag,
+        filters: initialFilters,
       };
       _initialValues[navigationSegments.search] = {
         dropdownValue: dropdownValueByTag,
         searchIndex: dropdownValueByTag,
+        filters: initialFilters,
       };
     }
 
     _initialValues.segment = initialSegment;
 
     return _initialValues;
-  }, [content, tag]);
+  }, [content, tag, isSharedBibRecord]);
 
   const renderButton = () => {
     if (isLoading) {
@@ -206,6 +217,7 @@ const LinkButton = ({
       <Pluggable
         type="find-authority"
         isLinkingLoading={isLoadingMarcSource}
+        tenantId={isSharedBibRecord ? centralTenantId : undefined}
         calloutRef={calloutRef}
         initialValues={initialValues}
         onLinkRecord={onLinkRecord}

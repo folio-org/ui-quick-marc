@@ -257,6 +257,7 @@ const mockFormValues = jest.fn((marcType) => ({
 
 const mockActualizeLinks = jest.fn((formValuesToProcess) => Promise.resolve(formValuesToProcess));
 const mockUpdateMarcRecord = jest.fn().mockResolvedValue();
+const mockOnCheckCentralTenantPerm = jest.fn().mockReturnValue(false);
 
 jest.mock('@folio/stripes/final-form', () => () => (Component) => ({
   onSubmit,
@@ -359,6 +360,7 @@ const renderQuickMarcEditWrapper = ({
           locations={locations}
           externalRecordPath="/some-record"
           refreshPageData={jest.fn().mockResolvedValue()}
+          onCheckCentralTenantPerm={mockOnCheckCentralTenantPerm}
           {...renderProps}
           {...props}
         />

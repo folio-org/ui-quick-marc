@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import {
   Route,
   useLocation,
@@ -10,6 +11,7 @@ import { useStripes } from '@folio/stripes/core';
 import { QuickMarcEditorContainer } from '../QuickMarcEditor';
 import { applyCentralTenantInHeaders } from '../QuickMarcEditor/utils';
 import { useUserTenantPermissions } from '../queries';
+import { QUICK_MARC_ACTIONS } from '../QuickMarcEditor/constants';
 
 const MarcRoute = ({
   externalRecordPath,
@@ -21,10 +23,15 @@ const MarcRoute = ({
   const stripes = useStripes();
   const location = useLocation();
 
-  const { marcType } = routeProps;
+  const {
+    marcType,
+    action,
+  } = routeProps;
   const userId = stripes?.user?.user?.id;
   const centralTenantId = stripes.user.user?.consortium?.centralTenantId;
-  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType);
+  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType, () => (
+    action === QUICK_MARC_ACTIONS.EDIT
+  ));
 
   const {
     userPermissions: centralTenantPermissions,
@@ -36,16 +43,16 @@ const MarcRoute = ({
     enabled: isRequestToCentralTenantFromMember,
   });
 
-  const hasCentralTenantPerm = (perm) => {
+  const checkCentralTenantPerm = useCallback((perm) => {
     return centralTenantPermissions.some(({ permissionName }) => permissionName === perm);
-  };
+  }, [centralTenantPermissions]);
 
   if (isCentralTenantPermissionsLoading) {
     return <LoadingPane />;
   }
 
   const hasPermission = permission
-    ? isRequestToCentralTenantFromMember ? hasCentralTenantPerm(permission) : stripes.hasPerm(permission)
+    ? isRequestToCentralTenantFromMember ? checkCentralTenantPerm(permission) : stripes.hasPerm(permission)
     : true;
 
   if (!hasPermission) {
@@ -60,6 +67,7 @@ const MarcRoute = ({
         <QuickMarcEditorContainer
           onClose={onClose}
           externalRecordPath={externalRecordPath}
+          onCheckCentralTenantPerm={checkCentralTenantPerm}
           {...routeProps}
         />
       )}
