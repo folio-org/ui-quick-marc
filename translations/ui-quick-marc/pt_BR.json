@@ -181,7 +181,7 @@
     "record.error.instanceHrid.multiple": "O registro não pode ser salvo. Só pode haver um MARC 004.",
     "record.error.location.multiple": "O registro não pode ser salvo. Só pode ter um MARC 852.",
     "permission.quick-marc-authorities-editor.all": "quickMARC: Ver, editar registro de MARC Autoridade",
-    "authority-record.edit.title": "Editar registro de MARC Autoridade - {title}",
+    "authority-record.edit.title": "Editar {shared, select, true {compartilhado} false {local} other {}} registro de autoridade MARC - {title}",
     "record.headingType.100": "Nome pessoal",
     "record.headingType.110": "Entidade coletiva",
     "record.headingType.111": "Nome de evento",
