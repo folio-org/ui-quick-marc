@@ -2,6 +2,7 @@ import {
   useCallback,
   useMemo,
 } from 'react';
+import { useLocation } from 'react-router-dom';
 import get from 'lodash/get';
 import omit from 'lodash/omit';
 import pick from 'lodash/pick';
@@ -32,6 +33,7 @@ import {
   UNCONTROLLED_ALPHA,
   UNCONTROLLED_NUMBER,
 } from '../../QuickMarcEditor/constants';
+import { MARC_TYPES } from '../../common/constants';
 
 const joinSubfields = (subfields) => Object.keys(subfields).reduce((content, key) => {
   const subfield = subfields[key].join(` ${key} `);
@@ -43,9 +45,10 @@ const formatSubfieldCode = (code) => { return code.startsWith('$') ? code : `$${
 
 const useAuthorityLinking = ({ tenantId, marcType } = {}) => {
   const stripes = useStripes();
+  const { search } = useLocation();
   const { sourceFiles } = useAuthoritySourceFiles({ tenantId, marcType });
   const { linkingRules } = useAuthorityLinkingRules({ tenantId, marcType });
-  const { fetchLinkSuggestions, isLoading: isLoadingLinkSuggestions } = useLinkSuggestions();
+  const { fetchLinkSuggestions, isLoading: isLoadingLinkSuggestions } = useLinkSuggestions({ marcType });
 
   const centralTenantId = stripes.user.user.consortium?.centralTenantId;
   const isMemberTenant = checkIfUserInMemberTenant(stripes);
@@ -271,8 +274,11 @@ const useAuthorityLinking = ({ tenantId, marcType } = {}) => {
       return formValues;
     }
 
+    const searchParams = new URLSearchParams(search);
+    const isSharedRecord = searchParams.get('shared') === 'true';
     const linkedFields = formValues.records.filter(isFieldLinked);
     const payload = hydrateForLinkSuggestions(formValues, linkedFields);
+    const isRecordWithCentralAndMemberSuggestions = marcType === MARC_TYPES.BIB && isMemberTenant && !isSharedRecord;
 
     const requestArgs = {
       body: payload,
@@ -282,35 +288,28 @@ const useAuthorityLinking = ({ tenantId, marcType } = {}) => {
 
     const linkSuggestionsPromise = fetchLinkSuggestions(requestArgs);
 
-    const linkSuggestionsPromiseFromCentralTenant = isMemberTenant
+    const linkSuggestionsPromiseFromCentralTenant = isRecordWithCentralAndMemberSuggestions
       ? fetchLinkSuggestions({
         ...requestArgs,
         tenantId: centralTenantId,
       })
-      : Promise.resolve();
+      : Promise.resolve({ fields: [] });
 
     const [
-      linkSuggestions,
-      linkSuggestionsFromCentralTenant,
+      { fields: suggestedFields },
+      { fields: suggestedFieldsFromCentralTenant },
     ] = await Promise.all([
       linkSuggestionsPromise,
       linkSuggestionsPromiseFromCentralTenant,
     ]);
-
-    const suggestedFields = linkSuggestions.fields;
-    const suggestedFieldsFromCentralTenant = linkSuggestionsFromCentralTenant?.fields || [];
-
-    let suggestedFieldIndex = 0;
 
     const actualizedLinks = formValues.records.map(field => {
       if (!isFieldLinked(field)) {
         return field;
       }
 
-      const suggestedField = suggestedFields[suggestedFieldIndex];
-      const suggestedFieldFromCentralTenant = suggestedFieldsFromCentralTenant[suggestedFieldIndex];
-
-      suggestedFieldIndex += 1;
+      const suggestedField = suggestedFields.shift();
+      const suggestedFieldFromCentralTenant = suggestedFieldsFromCentralTenant.shift();
 
       const getActualizedField = (proposedField) => {
         const subfieldGroups = getSubfieldGroups(field, proposedField);
@@ -324,7 +323,7 @@ const useAuthorityLinking = ({ tenantId, marcType } = {}) => {
 
       if (suggestedField.linkDetails?.status === AUTOLINKING_STATUSES.ERROR) {
         const shouldTakeSuggestedFieldFromCentralTenant = (
-          isMemberTenant
+          isRecordWithCentralAndMemberSuggestions
           && suggestedField.linkDetails.errorCause === AUTOLINKING_ERROR_CODES.AUTHORITY_NOT_FOUND
           && suggestedFieldFromCentralTenant?.linkDetails.status !== AUTOLINKING_STATUSES.ERROR
           && suggestedField.tag === suggestedFieldFromCentralTenant?.tag
@@ -351,6 +350,8 @@ const useAuthorityLinking = ({ tenantId, marcType } = {}) => {
     unlinkAuthority,
     centralTenantId,
     isMemberTenant,
+    search,
+    marcType,
   ]);
 
   return {
