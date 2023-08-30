@@ -6,7 +6,6 @@ import {
   screen,
 } from '@folio/jest-config-stripes/testing-library/react';
 import faker from 'faker';
-import noop from 'lodash/noop';
 
 import { runAxeTest } from '@folio/stripes-testing';
 
@@ -205,6 +204,7 @@ jest.mock('@folio/stripes/components', () => ({
 
 const mockActualizeLinks = jest.fn((formValuesToProcess) => Promise.resolve(formValuesToProcess));
 const mockShowCallout = jest.fn();
+const mockOnClose = jest.fn();
 
 jest.mock('@folio/stripes-acq-components', () => ({
   ...jest.requireActual('@folio/stripes-acq-components'),
@@ -273,23 +273,14 @@ const initialValues = {
   ],
 };
 
-const renderQuickMarcDeriveWrapper = ({
-  instance,
-  onClose = noop,
-  mutator,
-  history,
-  location,
-}) => (render(
+const renderQuickMarcDeriveWrapper = (props) => (render(
   <Harness>
     <QuickMarcDeriveWrapper
-      onClose={onClose}
-      instance={instance}
-      mutator={mutator}
+      onClose={mockOnClose}
       action={QUICK_MARC_ACTIONS.DERIVE}
       initialValues={initialValues}
       marcType={MARC_TYPES.BIB}
-      history={history}
-      location={location}
+      {...props}
     />
   </Harness>,
 ));
@@ -297,10 +288,9 @@ const renderQuickMarcDeriveWrapper = ({
 describe('Given QuickMarcDeriveWrapper', () => {
   let mutator;
   let instance;
-  let history;
-  let location;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     instance = getInstance();
     mutator = {
       quickMarcEditInstance: {
@@ -314,12 +304,6 @@ describe('Given QuickMarcDeriveWrapper', () => {
       quickMarcRecordStatus: {
         GET: jest.fn(() => Promise.resolve({})),
       },
-    };
-    history = {
-      push: jest.fn(),
-    };
-    location = {
-      search: '?filters=source.MARC',
     };
 
     useAuthorityLinking.mockReturnValue({
@@ -337,9 +321,6 @@ describe('Given QuickMarcDeriveWrapper', () => {
     const { container } = renderQuickMarcDeriveWrapper({
       instance,
       mutator,
-      history,
-      onClose: jest.fn(),
-      location,
     });
 
     await runAxeTest({
@@ -348,20 +329,15 @@ describe('Given QuickMarcDeriveWrapper', () => {
   });
 
   describe('when click on cancel pane button', () => {
-    const onClose = jest.fn();
-
     it('should display pane footer', () => {
       const { getByRole } = renderQuickMarcDeriveWrapper({
         instance,
         mutator,
-        history,
-        onClose,
-        location,
       });
 
       fireEvent.click(getByRole('button', { name: 'stripes-acq-components.FormFooter.cancel' }));
 
-      expect(onClose).toHaveBeenCalled();
+      expect(mockOnClose).toHaveBeenCalled();
     });
   });
 
@@ -373,8 +349,6 @@ describe('Given QuickMarcDeriveWrapper', () => {
         getByText = renderQuickMarcDeriveWrapper({
           instance,
           mutator,
-          history,
-          location,
         }).getByText;
       });
 
@@ -382,10 +356,7 @@ describe('Given QuickMarcDeriveWrapper', () => {
 
       expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.onSave' });
 
-      expect(history.push).toHaveBeenCalledWith({
-        pathname: '/inventory/view/id',
-        search: location.search,
-      });
+      expect(mockOnClose).toHaveBeenCalledWith('id');
     });
 
     describe('when there is an error during POST request', () => {
@@ -396,8 +367,6 @@ describe('Given QuickMarcDeriveWrapper', () => {
           getByText = renderQuickMarcDeriveWrapper({
             instance,
             mutator,
-            history,
-            location,
           }).getByText;
         });
 
@@ -428,8 +397,6 @@ describe('Given QuickMarcDeriveWrapper', () => {
         renderQuickMarcDeriveWrapper({
           instance,
           mutator,
-          history,
-          location,
         });
       });
 
