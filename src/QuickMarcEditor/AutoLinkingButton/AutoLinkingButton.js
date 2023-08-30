@@ -13,8 +13,10 @@ import {
   isRecordForAutoLinking,
 } from '../utils';
 import { MARC_TYPES } from '../../common/constants';
-import { AUTOLINKING_ERROR_CODES } from './constants';
-import { AUTOLINKING_STATUSES } from '../constants';
+import {
+  AUTOLINKING_STATUSES,
+  AUTOLINKING_ERROR_CODES,
+} from '../constants';
 
 const propTypes = {
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,

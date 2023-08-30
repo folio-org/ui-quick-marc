@@ -1,22 +1,28 @@
 import { useMutation } from 'react-query';
-import { useLocation } from 'react-router-dom';
 
 import {
   useOkapiKy,
-  useStripes,
 } from '@folio/stripes/core';
 
-import { processTenantHeader } from '../../QuickMarcEditor/utils';
+import { OKAPI_TENANT_HEADER } from '../../common/constants';
 
-const useLinkSuggestions = ({ tenantId, marcType } = {}) => {
+const useLinkSuggestions = () => {
   const ky = useOkapiKy();
-  const stripes = useStripes();
-  const location = useLocation();
-
-  const api = processTenantHeader({ ky, tenantId, marcType, stripes, location });
 
   const { mutateAsync, isLoading } = useMutation(
-    ({ body, isSearchByAuthorityId, ignoreAutoLinkingEnabled }) => {
+    ({ body, isSearchByAuthorityId, ignoreAutoLinkingEnabled, tenantId }) => {
+      const api = tenantId
+        ? ky.extend({
+          hooks: {
+            beforeRequest: [
+              request => {
+                request.headers.set(OKAPI_TENANT_HEADER, tenantId);
+              },
+            ],
+          },
+        })
+        : ky;
+
       const searchParams = new URLSearchParams();
 
       if (isSearchByAuthorityId) {

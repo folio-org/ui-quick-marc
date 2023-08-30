@@ -125,5 +125,11 @@ export const AUTOLINKING_STATUSES = {
   ERROR: 'ERROR',
 };
 
+export const AUTOLINKING_ERROR_CODES = {
+  AUTHORITY_NOT_FOUND: '101',
+  MULTIPLE_AUTHORITIES_FOUND: '102',
+  AUTOLINKING_DISABLED: '103',
+};
+
 export const UNCONTROLLED_ALPHA = 'uncontrolledAlpha';
 export const UNCONTROLLED_NUMBER = 'uncontrolledNumber';

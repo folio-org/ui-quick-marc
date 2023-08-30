@@ -7,6 +7,11 @@ import omit from 'lodash/omit';
 import pick from 'lodash/pick';
 
 import {
+  checkIfUserInMemberTenant,
+  useStripes,
+} from '@folio/stripes/core';
+
+import {
   useAuthoritySourceFiles,
   useAuthorityLinkingRules,
   useLinkSuggestions,
@@ -23,6 +28,7 @@ import {
 } from '../../QuickMarcEditor/utils';
 import {
   AUTOLINKING_STATUSES,
+  AUTOLINKING_ERROR_CODES,
   UNCONTROLLED_ALPHA,
   UNCONTROLLED_NUMBER,
 } from '../../QuickMarcEditor/constants';
@@ -36,9 +42,13 @@ const joinSubfields = (subfields) => Object.keys(subfields).reduce((content, key
 const formatSubfieldCode = (code) => { return code.startsWith('$') ? code : `$${code}`; };
 
 const useAuthorityLinking = ({ tenantId, marcType } = {}) => {
+  const stripes = useStripes();
   const { sourceFiles } = useAuthoritySourceFiles({ tenantId, marcType });
   const { linkingRules } = useAuthorityLinkingRules({ tenantId, marcType });
-  const { fetchLinkSuggestions, isLoading: isLoadingLinkSuggestions } = useLinkSuggestions({ tenantId, marcType });
+  const { fetchLinkSuggestions, isLoading: isLoadingLinkSuggestions } = useLinkSuggestions();
+
+  const centralTenantId = stripes.user.user.consortium?.centralTenantId;
+  const isMemberTenant = checkIfUserInMemberTenant(stripes);
 
   const linkableBibFields = useMemo(() => linkingRules.map(rule => rule.bibField), [linkingRules]);
   const autoLinkableBibFields = useMemo(() => {
@@ -263,37 +273,85 @@ const useAuthorityLinking = ({ tenantId, marcType } = {}) => {
 
     const linkedFields = formValues.records.filter(isFieldLinked);
     const payload = hydrateForLinkSuggestions(formValues, linkedFields);
-    const { fields: suggestedFields } = await fetchLinkSuggestions({
+
+    const requestArgs = {
       body: payload,
       isSearchByAuthorityId: true,
       ignoreAutoLinkingEnabled: true,
-    });
+    };
+
+    const linkSuggestionsPromise = fetchLinkSuggestions(requestArgs);
+
+    const linkSuggestionsPromiseFromCentralTenant = isMemberTenant
+      ? fetchLinkSuggestions({
+        ...requestArgs,
+        tenantId: centralTenantId,
+      })
+      : Promise.resolve();
+
+    const [
+      linkSuggestions,
+      linkSuggestionsFromCentralTenant,
+    ] = await Promise.all([
+      linkSuggestionsPromise,
+      linkSuggestionsPromiseFromCentralTenant,
+    ]);
+
+    const suggestedFields = linkSuggestions.fields;
+    const suggestedFieldsFromCentralTenant = linkSuggestionsFromCentralTenant?.fields || [];
+
+    let suggestedFieldIndex = 0;
 
     const actualizedLinks = formValues.records.map(field => {
       if (!isFieldLinked(field)) {
         return field;
       }
 
-      const suggestedField = suggestedFields.shift();
+      const suggestedField = suggestedFields[suggestedFieldIndex];
+      const suggestedFieldFromCentralTenant = suggestedFieldsFromCentralTenant[suggestedFieldIndex];
+
+      suggestedFieldIndex += 1;
+
+      const getActualizedField = (proposedField) => {
+        const subfieldGroups = getSubfieldGroups(field, proposedField);
+
+        return {
+          ...field,
+          ...proposedField,
+          content: Object.values(subfieldGroups).filter(Boolean).join(' '),
+        };
+      };
 
       if (suggestedField.linkDetails?.status === AUTOLINKING_STATUSES.ERROR) {
+        const shouldTakeSuggestedFieldFromCentralTenant = (
+          isMemberTenant
+          && suggestedField.linkDetails.errorCause === AUTOLINKING_ERROR_CODES.AUTHORITY_NOT_FOUND
+          && suggestedFieldFromCentralTenant?.linkDetails.status !== AUTOLINKING_STATUSES.ERROR
+          && suggestedField.tag === suggestedFieldFromCentralTenant?.tag
+          && suggestedField.content === suggestedFieldFromCentralTenant?.content
+        );
+
+        if (shouldTakeSuggestedFieldFromCentralTenant) {
+          return getActualizedField(suggestedFieldFromCentralTenant);
+        }
+
         return unlinkAuthority(field);
       }
 
-      const subfieldGroups = getSubfieldGroups(field, suggestedField);
-
-      return {
-        ...field,
-        ...suggestedField,
-        content: Object.values(subfieldGroups).filter(Boolean).join(' '),
-      };
+      return getActualizedField(suggestedField);
     });
 
     return {
       ...formValues,
       records: actualizedLinks,
     };
-  }, [fetchLinkSuggestions, getSubfieldGroups, unlinkAuthority]);
+  }, [
+    fetchLinkSuggestions,
+    getSubfieldGroups,
+    unlinkAuthority,
+    centralTenantId,
+    isMemberTenant,
+  ]);
 
   return {
     linkAuthority,
