@@ -97,11 +97,11 @@ const QuickMarcEditorContainer = ({
   const showCallout = useShowCallout();
   const { fetchLinksCount } = useAuthorityLinksCount({ marcType });
 
-  const closeEditor = useCallback(() => {
+  const closeEditor = useCallback((id) => {
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
       onClose(`${instanceId}/${externalId}`);
     } else {
-      onClose(externalId);
+      onClose(id || externalId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [externalId, onClose]);
