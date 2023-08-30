@@ -105,6 +105,23 @@ describe('Given LinkButton', () => {
       });
     });
 
+    describe('when bib record is shared', () => {
+      it('should pass excludedFilters to plugin', () => {
+        const history = createMemoryHistory({
+          initialEntries: [{ search: '?shared=true' }],
+        });
+
+        renderComponent({ history });
+
+        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
+          excludedFilters: {
+            search: ['shared'],
+            browse: ['shared'],
+          },
+        }), {});
+      });
+    });
+
     describe('when linking Authority to empty field', () => {
       it('should pass initial values to plugin', async () => {
         const { getAllByTestId } = renderComponent();
