@@ -29,6 +29,7 @@ import {
   DEFAULT_LOOKUP_OPTIONS,
   searchableIndexesValues,
   navigationSegments,
+  FILTERS,
 } from '../../../common/constants';
 
 const propTypes = {
@@ -106,6 +107,16 @@ const LinkButton = ({
     return match || subfield;
   };
 
+  const excludedFilters = {
+    [navigationSegments.search]: [],
+    [navigationSegments.browse]: [],
+  };
+
+  if (isSharedBibRecord) {
+    excludedFilters[navigationSegments.search].push(FILTERS.SHARED);
+    excludedFilters[navigationSegments.browse].push(FILTERS.SHARED);
+  }
+
   const initialValues = useMemo(() => {
     const { dropdownValue: dropdownValueByTag } = DEFAULT_LOOKUP_OPTIONS[tag];
 
@@ -113,7 +124,7 @@ const LinkButton = ({
     let initialSearchInputValue = '';
     let initialSegment = navigationSegments.search;
     let initialSearchQuery = '';
-    const initialFilters = isSharedBibRecord ? { shared: ['true'] } : null;
+    const initialFilters = isSharedBibRecord ? { [FILTERS.SHARED]: ['true'] } : null;
 
     const _initialValues = {
       [navigationSegments.search]: {},
@@ -216,6 +227,7 @@ const LinkButton = ({
     return (
       <Pluggable
         type="find-authority"
+        excludedFilters={excludedFilters}
         isLinkingLoading={isLoadingMarcSource}
         tenantId={isSharedBibRecord ? centralTenantId : undefined}
         calloutRef={calloutRef}
