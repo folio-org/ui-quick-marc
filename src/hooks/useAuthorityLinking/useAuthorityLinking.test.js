@@ -1648,8 +1648,11 @@ describe('Given useAuthorityLinking', () => {
         };
 
         useLinkSuggestions.mockReturnValue({
+          fetchLinkSuggestions: mockFetchLinkSuggestions.mockResolvedValueOnce(linkSuggestionsResponse),
+        });
+
+        useLinkSuggestions.mockReturnValue({
           fetchLinkSuggestions: mockFetchLinkSuggestions
-            .mockResolvedValueOnce(linkSuggestionsResponse)
             .mockResolvedValueOnce(linkSuggestionsResponseFromCentralTenant),
         });
 
@@ -1657,10 +1660,12 @@ describe('Given useAuthorityLinking', () => {
 
         const values = await result.current.actualizeLinks(formValues);
 
-        expect(mockFetchLinkSuggestions).toHaveBeenNthCalledWith(1, expect.not.objectContaining({
-          tenantId: expect.anything(),
-        }));
-        expect(mockFetchLinkSuggestions).toHaveBeenNthCalledWith(2, expect.objectContaining({ tenantId: 'consortia' }));
+        expect(useLinkSuggestions).toHaveBeenNthCalledWith(1, { marcType: MARC_TYPES.BIB });
+        expect(useLinkSuggestions).toHaveBeenNthCalledWith(2, {
+          marcType: MARC_TYPES.BIB,
+          tenantId: 'consortia',
+        });
+        expect(mockFetchLinkSuggestions).toHaveBeenCalledTimes(2);
 
         expect(values).toEqual({
           externalHrid: 'in00000000001',
@@ -1809,8 +1814,11 @@ describe('Given useAuthorityLinking', () => {
           };
 
           useLinkSuggestions.mockReturnValue({
+            fetchLinkSuggestions: mockFetchLinkSuggestions.mockResolvedValueOnce(linkSuggestionsResponse),
+          });
+
+          useLinkSuggestions.mockReturnValue({
             fetchLinkSuggestions: mockFetchLinkSuggestions
-              .mockResolvedValueOnce(linkSuggestionsResponse)
               .mockResolvedValueOnce(linkSuggestionsResponseFromCentralTenant),
           });
 

@@ -8,14 +8,15 @@ import {
 
 import { processTenantHeader } from '../../QuickMarcEditor/utils';
 
-const useLinkSuggestions = ({ marcType } = {}) => {
+const useLinkSuggestions = ({ marcType, tenantId } = {}) => {
   const ky = useOkapiKy();
   const stripes = useStripes();
   const location = useLocation();
 
+  const api = processTenantHeader({ ky, tenantId, marcType, stripes, location });
+
   const { mutateAsync, isLoading } = useMutation(
-    ({ body, isSearchByAuthorityId, ignoreAutoLinkingEnabled, tenantId }) => {
-      const api = processTenantHeader({ ky, tenantId, marcType, stripes, location });
+    ({ body, isSearchByAuthorityId, ignoreAutoLinkingEnabled }) => {
       const searchParams = new URLSearchParams();
 
       if (isSearchByAuthorityId) {

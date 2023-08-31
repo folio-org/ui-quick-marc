@@ -48,9 +48,15 @@ const useAuthorityLinking = ({ tenantId, marcType } = {}) => {
   const { search } = useLocation();
   const { sourceFiles } = useAuthoritySourceFiles({ tenantId, marcType });
   const { linkingRules } = useAuthorityLinkingRules({ tenantId, marcType });
-  const { fetchLinkSuggestions, isLoading: isLoadingLinkSuggestions } = useLinkSuggestions({ marcType });
-
   const centralTenantId = stripes.user.user.consortium?.centralTenantId;
+  const {
+    fetchLinkSuggestions: fetchMemberLinkSuggestions,
+    isLoadingLinkSuggestions,
+  } = useLinkSuggestions({ marcType });
+  const {
+    fetchLinkSuggestions: fetchCentralLinkSuggestions,
+  } = useLinkSuggestions({ marcType, tenantId: centralTenantId });
+
   const isMemberTenant = checkIfUserInMemberTenant(stripes);
 
   const linkableBibFields = useMemo(() => linkingRules.map(rule => rule.bibField), [linkingRules]);
@@ -286,21 +292,17 @@ const useAuthorityLinking = ({ tenantId, marcType } = {}) => {
       ignoreAutoLinkingEnabled: true,
     };
 
-    const linkSuggestionsPromise = fetchLinkSuggestions(requestArgs);
-
-    const linkSuggestionsPromiseFromCentralTenant = isRecordWithCentralAndMemberSuggestions
-      ? fetchLinkSuggestions({
-        ...requestArgs,
-        tenantId: centralTenantId,
-      })
+    const memberLinkSuggestionsPromise = fetchMemberLinkSuggestions(requestArgs);
+    const centralLinkSuggestionsPromise = isRecordWithCentralAndMemberSuggestions
+      ? fetchCentralLinkSuggestions(requestArgs)
       : Promise.resolve({ fields: [] });
 
     const [
       { fields: suggestedFields },
       { fields: suggestedFieldsFromCentralTenant },
     ] = await Promise.all([
-      linkSuggestionsPromise,
-      linkSuggestionsPromiseFromCentralTenant,
+      memberLinkSuggestionsPromise,
+      centralLinkSuggestionsPromise,
     ]);
 
     const actualizedLinks = formValues.records.map(field => {
@@ -345,10 +347,10 @@ const useAuthorityLinking = ({ tenantId, marcType } = {}) => {
       records: actualizedLinks,
     };
   }, [
-    fetchLinkSuggestions,
+    fetchMemberLinkSuggestions,
+    fetchCentralLinkSuggestions,
     getSubfieldGroups,
     unlinkAuthority,
-    centralTenantId,
     isMemberTenant,
     search,
     marcType,
@@ -364,7 +366,7 @@ const useAuthorityLinking = ({ tenantId, marcType } = {}) => {
     autoLinkAuthority,
     actualizeLinks,
     linkingRules,
-    fetchLinkSuggestions,
+    fetchLinkSuggestions: fetchMemberLinkSuggestions,
     isLoadingLinkSuggestions,
   };
 };
