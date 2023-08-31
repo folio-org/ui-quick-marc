@@ -5,6 +5,7 @@ export const FILTERS = {
   REFERENCES: 'references',
   SUBJECT_HEADINGS: 'subjectHeadings',
   AUTHORITY_SOURCE: 'sourceFileId',
+  SHARED: 'shared',
 };
 
 export const REFERENCES_VALUES_MAP = {

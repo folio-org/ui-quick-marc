@@ -50,6 +50,7 @@
 * [UIQM-545](https://issues.folio.org/browse/UIQM-545) Change tenant id to central when opening details of Shared Authority.
 * [UIQM-547](https://issues.folio.org/browse/UIQM-547) Link Shared/Local MARC bib record to Shared/Local Authority record.
 * [UIQM-550](https://issues.folio.org/browse/UIQM-550) Use onClose prop when a derived record is saved to have one source of truth to remove unnecessary params.
+* [UIQM-552](https://issues.folio.org/browse/UIQM-552) Hide the Shared facet in the plugin for the shared bib record.
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
 
