@@ -112,6 +112,8 @@ jest.mock('@folio/stripes/core', () => {
 
   STRIPES.connect = stripesConnect;
 
+  const checkIfUserInMemberTenant = jest.fn().mockReturnValue(false);
+
   return {
     ...jest.requireActual('@folio/stripes/core'),
     stripesConnect,
@@ -122,6 +124,7 @@ jest.mock('@folio/stripes/core', () => {
     useOkapiKy,
     useNamespace,
     useCallout,
+    checkIfUserInMemberTenant,
   };
 }, { virtual: true });
 

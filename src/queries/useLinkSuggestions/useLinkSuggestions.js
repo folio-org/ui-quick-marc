@@ -8,7 +8,7 @@ import {
 
 import { processTenantHeader } from '../../QuickMarcEditor/utils';
 
-const useLinkSuggestions = ({ tenantId, marcType } = {}) => {
+const useLinkSuggestions = ({ marcType, tenantId } = {}) => {
   const ky = useOkapiKy();
   const stripes = useStripes();
   const location = useLocation();
