@@ -51,7 +51,7 @@ const useAuthorityLinking = ({ tenantId, marcType } = {}) => {
   const centralTenantId = stripes.user.user.consortium?.centralTenantId;
   const {
     fetchLinkSuggestions: fetchMemberLinkSuggestions,
-    isLoadingLinkSuggestions,
+    isLoading: isLoadingLinkSuggestions,
   } = useLinkSuggestions({ marcType });
   const {
     fetchLinkSuggestions: fetchCentralLinkSuggestions,

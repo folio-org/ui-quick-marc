@@ -88,6 +88,7 @@ jest.mock('@folio/stripes/core', () => {
     delete: jest.fn().mockReturnValue({
       json: jest.fn().mockResolvedValue({}),
     }),
+    extend: jest.fn(),
   });
 
   const useStripes = () => STRIPES;
