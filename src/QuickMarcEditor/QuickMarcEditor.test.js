@@ -154,6 +154,7 @@ const renderQuickMarcEditor = (props) => (render(
 
 describe('Given QuickMarcEditor', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     mockValidate.mockClear().mockReturnValue(undefined);
   });
 
@@ -186,6 +187,18 @@ describe('Given QuickMarcEditor', () => {
 
     expect(getByText('stripes-acq-components.FormFooter.cancel')).toBeDefined();
     expect(getByText('stripes-acq-components.FormFooter.save')).toBeDefined();
+  });
+
+  describe('when clicking Cancel pane button', () => {
+    it('should invoke the onClose callback without any args', () => {
+      const { getByText } = renderQuickMarcEditor();
+
+      const cancelPaneButton = getByText('stripes-acq-components.FormFooter.cancel');
+
+      fireEvent.click(cancelPaneButton);
+
+      expect(onCloseMock).toHaveBeenCalledWith();
+    });
   });
 
   it('should display QuickMarcEditorRows', () => {
