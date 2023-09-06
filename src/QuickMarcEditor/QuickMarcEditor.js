@@ -225,7 +225,7 @@ const QuickMarcEditor = ({
     const start = (
       <Button
         buttonStyle="default mega"
-        onClick={onClose}
+        onClick={() => onClose()}
         marginBottom0
       >
         <FormattedMessage id="stripes-acq-components.FormFooter.cancel" />
