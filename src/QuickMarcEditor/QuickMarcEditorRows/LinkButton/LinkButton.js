@@ -12,6 +12,8 @@ import flatten from 'lodash/flatten';
 import isNil from 'lodash/isNil';
 
 import {
+  checkIfUserInCentralTenant,
+  checkIfUserInMemberTenant,
   Pluggable,
   useCallout,
   useStripes,
@@ -31,8 +33,10 @@ import {
   navigationSegments,
   FILTERS,
 } from '../../../common/constants';
+import { QUICK_MARC_ACTIONS } from '../../constants';
 
 const propTypes = {
+  action: PropTypes.string.isRequired,
   calloutRef: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.func,
@@ -47,6 +51,7 @@ const propTypes = {
 };
 
 const LinkButton = ({
+  action,
   handleLinkAuthority,
   handleUnlinkAuthority,
   isLinked,
@@ -64,6 +69,27 @@ const LinkButton = ({
   const callout = useCallout();
   const centralTenantId = stripes.user.user?.consortium?.centralTenantId;
   const isSharedBibRecord = new URLSearchParams(location.search).get('shared') === 'true';
+
+  let showSharedFilter = false;
+  let showSharedRecordsOnly = false;
+  let pluginTenantId = '';
+
+  if (checkIfUserInCentralTenant(stripes)) {
+    if ([QUICK_MARC_ACTIONS.CREATE, QUICK_MARC_ACTIONS.EDIT, QUICK_MARC_ACTIONS.DERIVE].includes(action)) {
+      showSharedRecordsOnly = true;
+    }
+  } else if (checkIfUserInMemberTenant(stripes)) {
+    if (isSharedBibRecord) {
+      if (action === QUICK_MARC_ACTIONS.EDIT) {
+        showSharedRecordsOnly = true;
+        pluginTenantId = centralTenantId;
+      } else if (action === QUICK_MARC_ACTIONS.DERIVE) {
+        showSharedFilter = true;
+      }
+    } else if ([QUICK_MARC_ACTIONS.CREATE, QUICK_MARC_ACTIONS.EDIT, QUICK_MARC_ACTIONS.DERIVE].includes(action)) {
+      showSharedFilter = true;
+    }
+  }
 
   const { isLoading: isLoadingMarcSource, refetch: refetchSource } = useMarcSource({
     fieldId,
@@ -112,7 +138,7 @@ const LinkButton = ({
     [navigationSegments.browse]: [],
   };
 
-  if (isSharedBibRecord) {
+  if (!showSharedFilter) {
     excludedFilters[navigationSegments.search].push(FILTERS.SHARED);
     excludedFilters[navigationSegments.browse].push(FILTERS.SHARED);
   }
@@ -124,7 +150,9 @@ const LinkButton = ({
     let initialSearchInputValue = '';
     let initialSegment = navigationSegments.search;
     let initialSearchQuery = '';
-    const initialFilters = isSharedBibRecord ? { [FILTERS.SHARED]: ['true'] } : null;
+    const initialFilters = showSharedRecordsOnly
+      ? { [FILTERS.SHARED]: ['true'] }
+      : null;
 
     const _initialValues = {
       [navigationSegments.search]: {},
@@ -197,7 +225,7 @@ const LinkButton = ({
     _initialValues.segment = initialSegment;
 
     return _initialValues;
-  }, [content, tag, isSharedBibRecord]);
+  }, [content, tag, showSharedRecordsOnly]);
 
   const renderButton = () => {
     if (isLoading) {
@@ -229,7 +257,7 @@ const LinkButton = ({
         type="find-authority"
         excludedFilters={excludedFilters}
         isLinkingLoading={isLoadingMarcSource}
-        tenantId={isSharedBibRecord ? centralTenantId : undefined}
+        tenantId={pluginTenantId}
         calloutRef={calloutRef}
         initialValues={initialValues}
         onLinkRecord={onLinkRecord}
