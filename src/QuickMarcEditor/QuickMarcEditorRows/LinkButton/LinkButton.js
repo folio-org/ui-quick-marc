@@ -32,7 +32,6 @@ import {
   searchableIndexesValues,
   navigationSegments,
   FILTERS,
-  MARC_TYPES,
 } from '../../../common/constants';
 import { QUICK_MARC_ACTIONS } from '../../constants';
 
@@ -48,13 +47,11 @@ const propTypes = {
   handleLinkAuthority: PropTypes.func.isRequired,
   handleUnlinkAuthority: PropTypes.func.isRequired,
   fieldId: PropTypes.string.isRequired,
-  marcType: PropTypes.string.isRequired,
   tag: PropTypes.string.isRequired,
 };
 
 const LinkButton = ({
   action,
-  marcType,
   handleLinkAuthority,
   handleUnlinkAuthority,
   isLinked,
@@ -78,23 +75,19 @@ const LinkButton = ({
   let pluginTenantId = '';
 
   if (checkIfUserInCentralTenant(stripes)) {
-    if (marcType === MARC_TYPES.BIB) {
-      if ([QUICK_MARC_ACTIONS.CREATE, QUICK_MARC_ACTIONS.EDIT, QUICK_MARC_ACTIONS.DERIVE].includes(action)) {
-        showSharedRecordsOnly = true;
-      }
+    if ([QUICK_MARC_ACTIONS.CREATE, QUICK_MARC_ACTIONS.EDIT, QUICK_MARC_ACTIONS.DERIVE].includes(action)) {
+      showSharedRecordsOnly = true;
     }
   } else if (checkIfUserInMemberTenant(stripes)) {
-    if (marcType === MARC_TYPES.BIB) {
-      if (isSharedBibRecord) {
-        if (action === QUICK_MARC_ACTIONS.EDIT) {
-          showSharedRecordsOnly = true; //
-          pluginTenantId = centralTenantId;
-        } else if (action === QUICK_MARC_ACTIONS.DERIVE) {
-          showSharedFilter = true;
-        }
-      } else if ([QUICK_MARC_ACTIONS.CREATE, QUICK_MARC_ACTIONS.EDIT, QUICK_MARC_ACTIONS.DERIVE].includes(action)) {
+    if (isSharedBibRecord) {
+      if (action === QUICK_MARC_ACTIONS.EDIT) {
+        showSharedRecordsOnly = true;
+        pluginTenantId = centralTenantId;
+      } else if (action === QUICK_MARC_ACTIONS.DERIVE) {
         showSharedFilter = true;
       }
+    } else if ([QUICK_MARC_ACTIONS.CREATE, QUICK_MARC_ACTIONS.EDIT, QUICK_MARC_ACTIONS.DERIVE].includes(action)) {
+      showSharedFilter = true;
     }
   }
 

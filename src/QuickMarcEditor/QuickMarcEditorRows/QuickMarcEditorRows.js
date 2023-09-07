@@ -520,7 +520,6 @@ const QuickMarcEditorRows = ({
                   {canBeLinkedManually && (
                     <LinkButton
                       action={action}
-                      marcType={marcType}
                       handleLinkAuthority={(authority, marcSource) => handleLinkAuthority(authority, marcSource, idx)}
                       handleUnlinkAuthority={() => handleUnlinkAuthority(idx)}
                       isLinked={recordRow._isLinked}

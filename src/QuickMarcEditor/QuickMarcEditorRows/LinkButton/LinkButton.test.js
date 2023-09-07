@@ -5,29 +5,22 @@ import {
   render,
 } from '@folio/jest-config-stripes/testing-library/react';
 
-import { Pluggable } from '@folio/stripes/core';
+import {
+  checkIfUserInMemberTenant,
+  checkIfUserInCentralTenant,
+  Pluggable,
+  useOkapiKy,
+} from '@folio/stripes/core';
 import { runAxeTest } from '@folio/stripes-testing';
 
 import { createMemoryHistory } from 'history';
 import { LinkButton } from './LinkButton';
+import { QUICK_MARC_ACTIONS } from '../../constants';
 
 import Harness from '../../../../test/jest/helpers/harness';
 
 const mockOnClick = jest.fn();
 const mockGetMarcSource = jest.fn(() => ({ json: () => {} }));
-
-jest.mock('@folio/stripes/core', () => ({
-  ...jest.requireActual('@folio/stripes/core'),
-  useCallout: () => ({
-    sendCallout: jest.fn(),
-  }),
-  useNamespace: jest.fn().mockReturnValue(['ui-quick-marc-test']),
-  useOkapiKy: jest.fn(() => ({
-    get: mockGetMarcSource,
-    extend: jest.fn(),
-  })),
-  Pluggable: jest.fn(({ renderCustomTrigger }) => renderCustomTrigger({ onClick: mockOnClick })),
-}));
 
 const mockHandleLinkAuthority = jest.fn();
 const mockHandleUnlinkAuthority = jest.fn();
@@ -35,6 +28,7 @@ const mockHandleUnlinkAuthority = jest.fn();
 const renderComponent = (props = {}) => render(
   <Harness history={props.history}>
     <LinkButton
+      action={QUICK_MARC_ACTIONS.EDIT}
       handleLinkAuthority={mockHandleLinkAuthority}
       handleUnlinkAuthority={mockHandleUnlinkAuthority}
       isLinked={false}
@@ -50,6 +44,13 @@ const renderComponent = (props = {}) => render(
 describe('Given LinkButton', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useOkapiKy.mockReturnValue(({
+      get: mockGetMarcSource,
+      extend: jest.fn(),
+    }));
+    Pluggable.mockImplementation(({ renderCustomTrigger }) => renderCustomTrigger({ onClick: mockOnClick }));
+    checkIfUserInMemberTenant.mockReturnValue(false);
+    checkIfUserInCentralTenant.mockReturnValue(false);
   });
 
   it('should render with no axe errors', async () => {
@@ -92,36 +93,6 @@ describe('Given LinkButton', () => {
       });
     });
 
-    describe('when bib record is shared', () => {
-      it('should pass central tenant id', async () => {
-        const centralTenantId = 'consortia';
-        const history = createMemoryHistory({
-          initialEntries: [{ search: '?shared=true' }],
-        });
-
-        renderComponent({ history });
-
-        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ tenantId: centralTenantId }), {});
-      });
-    });
-
-    describe('when bib record is shared', () => {
-      it('should pass excludedFilters to plugin', () => {
-        const history = createMemoryHistory({
-          initialEntries: [{ search: '?shared=true' }],
-        });
-
-        renderComponent({ history });
-
-        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
-          excludedFilters: {
-            search: ['shared'],
-            browse: ['shared'],
-          },
-        }), {});
-      });
-    });
-
     describe('when linking Authority to empty field', () => {
       it('should pass initial values to plugin', async () => {
         const { getAllByTestId } = renderComponent();
@@ -136,35 +107,6 @@ describe('Given LinkButton', () => {
             dropdownValue: 'personalNameTitle',
             searchIndex: 'personalNameTitle',
             filters: null,
-          },
-          segment: 'browse',
-        };
-
-        fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
-
-        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
-      });
-    });
-
-    describe('when linking Authority to empty field and record is shared', () => {
-      it('should pass initial values to plugin', async () => {
-        const history = createMemoryHistory({
-          initialEntries: [{ search: '?shared=true' }],
-        });
-        const { getAllByTestId } = renderComponent({
-          history,
-        });
-
-        const initialValues = {
-          search: {
-            dropdownValue: 'personalNameTitle',
-            searchIndex: 'personalNameTitle',
-            filters: { shared: ['true'] },
-          },
-          browse: {
-            dropdownValue: 'personalNameTitle',
-            searchIndex: 'personalNameTitle',
-            filters: { shared: ['true'] },
           },
           segment: 'browse',
         };
@@ -231,39 +173,6 @@ describe('Given LinkButton', () => {
       });
     });
 
-    describe('when linking Authority to a field with $0 and record is shared', () => {
-      it('should pass initial values to plugin', async () => {
-        const history = createMemoryHistory({
-          initialEntries: [{ search: '?shared=true' }],
-        });
-
-        const { getAllByTestId } = renderComponent({
-          content: '$0 n123456789',
-          history,
-        });
-
-        const initialValues = {
-          search: {
-            dropdownValue: 'advancedSearch',
-            searchIndex: 'advancedSearch',
-            searchInputValue: 'identifiers.value==n123456789',
-            searchQuery: 'identifiers.value==n123456789',
-            filters: { shared: ['true'] },
-          },
-          browse: {
-            dropdownValue: 'personalNameTitle',
-            searchIndex: 'personalNameTitle',
-            filters: { shared: ['true'] },
-          },
-          segment: 'search',
-        };
-
-        fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
-
-        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
-      });
-    });
-
     describe('when linking Authority to a field with $a, $d or $t', () => {
       it('should pass initial values to plugin', async () => {
         const { getAllByTestId } = renderComponent({
@@ -282,39 +191,6 @@ describe('Given LinkButton', () => {
             searchInputValue: 'value1 value2 value3',
             searchQuery: 'value1 value2 value3',
             filters: null,
-          },
-          segment: 'browse',
-        };
-
-        fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
-
-        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
-      });
-    });
-
-    describe('when linking Authority to a field with $a, $d or $t and record is shared', () => {
-      it('should pass initial values to plugin', async () => {
-        const history = createMemoryHistory({
-          initialEntries: [{ search: '?shared=true' }],
-        });
-
-        const { getAllByTestId } = renderComponent({
-          content: '$a value1 $d value2 $t value3',
-          history,
-        });
-
-        const initialValues = {
-          search: {
-            dropdownValue: 'personalNameTitle',
-            searchIndex: 'personalNameTitle',
-            filters: { shared: ['true'] },
-          },
-          browse: {
-            dropdownValue: 'personalNameTitle',
-            searchIndex: 'personalNameTitle',
-            searchInputValue: 'value1 value2 value3',
-            searchQuery: 'value1 value2 value3',
-            filters: { shared: ['true'] },
           },
           segment: 'browse',
         };
@@ -401,5 +277,147 @@ describe('Given LinkButton', () => {
 
       expect(queryAllByTestId('link-authority-button-fakeId')[0]).toBeUndefined();
     });
+  });
+
+  describe('when member tenant edits a shared bib record', () => {
+    it('should pass correct props', () => {
+      checkIfUserInMemberTenant.mockReturnValue(true);
+
+      const history = createMemoryHistory({
+        initialEntries: [{ search: '?shared=true' }],
+      });
+
+      const centralTenantId = 'consortia';
+      const initialValues = expect.objectContaining({
+        browse: expect.objectContaining({
+          filters: {
+            shared: ['true'],
+          },
+        }),
+        search: expect.objectContaining({
+          filters: {
+            shared: ['true'],
+          },
+        }),
+      });
+      const excludedFilters = {
+        search: ['shared'],
+        browse: ['shared'],
+      };
+
+      renderComponent({ history });
+
+      expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
+        tenantId: centralTenantId,
+        initialValues,
+        excludedFilters,
+      }), {});
+    });
+  });
+
+  describe('when member tenant derives a shared bib record', () => {
+    it('should pass correct props', () => {
+      checkIfUserInMemberTenant.mockReturnValue(true);
+
+      const history = createMemoryHistory({
+        initialEntries: [{ search: '?shared=true' }],
+      });
+
+      const initialValues = expect.objectContaining({
+        browse: expect.objectContaining({
+          filters: null,
+        }),
+        search: expect.objectContaining({
+          filters: null,
+        }),
+      });
+      const excludedFilters = {
+        search: [],
+        browse: [],
+      };
+
+      renderComponent({
+        action: QUICK_MARC_ACTIONS.DERIVE,
+        history,
+      });
+
+      expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
+        tenantId: '',
+        initialValues,
+        excludedFilters,
+      }), {});
+    });
+  });
+
+  it.each`
+  action
+  ${QUICK_MARC_ACTIONS.CREATE}
+  ${QUICK_MARC_ACTIONS.EDIT}
+  ${QUICK_MARC_ACTIONS.DERIVE}
+  `('should pass correct props when member tenant $action a not shared bib record', ({ action }) => {
+    checkIfUserInMemberTenant.mockReturnValue(true);
+
+    const history = createMemoryHistory({
+      initialEntries: [{ search: '?shared=false' }],
+    });
+
+    const initialValues = expect.objectContaining({
+      browse: expect.objectContaining({
+        filters: null,
+      }),
+      search: expect.objectContaining({
+        filters: null,
+      }),
+    });
+    const excludedFilters = {
+      search: [],
+      browse: [],
+    };
+
+    renderComponent({
+      action,
+      history,
+    });
+
+    expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
+      tenantId: '',
+      initialValues,
+      excludedFilters,
+    }), {});
+  });
+
+  it.each`
+  action
+  ${QUICK_MARC_ACTIONS.CREATE}
+  ${QUICK_MARC_ACTIONS.EDIT}
+  ${QUICK_MARC_ACTIONS.DERIVE}
+  `('should pass correct props when central tenant $action a bib record', ({ action }) => {
+    checkIfUserInCentralTenant.mockReturnValue(true);
+
+    const initialValues = expect.objectContaining({
+      browse: expect.objectContaining({
+        filters: {
+          shared: ['true'],
+        },
+      }),
+      search: expect.objectContaining({
+        filters: {
+          shared: ['true'],
+        },
+      }),
+    });
+
+    const excludedFilters = {
+      search: ['shared'],
+      browse: ['shared'],
+    };
+
+    renderComponent({ action });
+
+    expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
+      tenantId: '',
+      initialValues,
+      excludedFilters,
+    }), {});
   });
 });
