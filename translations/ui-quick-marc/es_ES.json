@@ -213,7 +213,7 @@
     "record.error.heading.empty": "Record cannot be saved without 1XX field.",
     "record.error.heading.multiple": "Record cannot be saved. Cannot have multiple 1XXs",
     "record.fixedField.Gen ret": "Gen ret",
-    "permission.quick-marc-holdings-editor.view": "quickMARC: Ver el registro de fondos MARC",
+    "permission.quick-marc-holdings-editor.view": "quickMARC: Ver el existencias MARC",
     "permission.quick-marc-editor.view": "quickMARC: View MARC bibliographic record",
     "record.protectedField": "This field is protected.",
     "record.error.leader.forbiddenBytes.authority": "No se puede guardar el registro. Por favor, revise la cabecera. Solo las posiciones 5, 17, 18 pueden ser editadas en el campo de cabecera",
