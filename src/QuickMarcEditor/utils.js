@@ -1575,16 +1575,13 @@ export const applyCentralTenantInHeaders = (location, stripes, marcType, cb = ()
   );
 };
 
-export const processTenantHeader = ({ ky, tenantId, marcType, stripes, location }) => {
-  const centralTenantId = stripes.user.user.consortium?.centralTenantId;
+export const checkIfRecordWithCentralAndMemberSuggestions = ({ search, marcType, isMemberTenant, action }) => {
+  const searchParams = new URLSearchParams(search);
+  const isSharedRecord = searchParams.get('shared') === 'true';
 
-  if (tenantId) {
-    return changeTenantHeader(ky, tenantId);
-  }
-
-  if (marcType && applyCentralTenantInHeaders(location, stripes, marcType)) {
-    return changeTenantHeader(ky, centralTenantId);
-  }
-
-  return ky;
+  return (
+    marcType === MARC_TYPES.BIB
+    && isMemberTenant
+    && (!isSharedRecord || (isSharedRecord && action === QUICK_MARC_ACTIONS.DERIVE))
+  );
 };

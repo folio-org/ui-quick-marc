@@ -119,7 +119,7 @@ const QuickMarcEditor = ({
     unlinkAuthority,
     fetchLinkSuggestions,
     isLoadingLinkSuggestions,
-  } = useAuthorityLinking({ marcType });
+  } = useAuthorityLinking({ marcType, action });
 
   const deletedRecords = useMemo(() => {
     return records
@@ -450,6 +450,7 @@ const QuickMarcEditor = ({
               lastMenu={(
                 <PaneMenu>
                   <AutoLinkingButton
+                    action={action}
                     marcType={marcType}
                     formValues={formValues}
                     isLoadingLinkSuggestions={isLoadingLinkSuggestions}

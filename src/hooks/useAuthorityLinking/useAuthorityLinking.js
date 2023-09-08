@@ -26,14 +26,16 @@ import {
   hydrateForLinkSuggestions,
   recordHasLinks,
   isFieldLinked,
+  checkIfRecordWithCentralAndMemberSuggestions,
+  applyCentralTenantInHeaders,
 } from '../../QuickMarcEditor/utils';
 import {
   AUTOLINKING_STATUSES,
   AUTOLINKING_ERROR_CODES,
   UNCONTROLLED_ALPHA,
   UNCONTROLLED_NUMBER,
+  QUICK_MARC_ACTIONS,
 } from '../../QuickMarcEditor/constants';
-import { MARC_TYPES } from '../../common/constants';
 
 const joinSubfields = (subfields) => Object.keys(subfields).reduce((content, key) => {
   const subfield = subfields[key].join(` ${key} `);
@@ -43,21 +45,30 @@ const joinSubfields = (subfields) => Object.keys(subfields).reduce((content, key
 
 const formatSubfieldCode = (code) => { return code.startsWith('$') ? code : `$${code}`; };
 
-const useAuthorityLinking = ({ tenantId, marcType } = {}) => {
+const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
   const stripes = useStripes();
-  const { search } = useLocation();
-  const { sourceFiles } = useAuthoritySourceFiles({ tenantId, marcType });
-  const { linkingRules } = useAuthorityLinkingRules({ tenantId, marcType });
+  const location = useLocation();
+  const { search } = location;
+
   const centralTenantId = stripes.user.user.consortium?.centralTenantId;
+  const isMemberTenant = checkIfUserInMemberTenant(stripes);
+  const isCentralTenantInHeaders = applyCentralTenantInHeaders(location, stripes, marcType, () => (
+    action === QUICK_MARC_ACTIONS.EDIT
+  ));
+
+  // tenantId for linking functionality must be with the member tenant id when user derives shared record
+  const _tenantId = tenantId || (isCentralTenantInHeaders && centralTenantId) || '';
+
+  const { sourceFiles } = useAuthoritySourceFiles({ tenantId: _tenantId });
+  const { linkingRules } = useAuthorityLinkingRules({ tenantId: _tenantId });
+
   const {
     fetchLinkSuggestions: fetchMemberLinkSuggestions,
     isLoading: isLoadingLinkSuggestions,
-  } = useLinkSuggestions({ marcType });
+  } = useLinkSuggestions({ tenantId: _tenantId });
   const {
     fetchLinkSuggestions: fetchCentralLinkSuggestions,
-  } = useLinkSuggestions({ marcType, tenantId: centralTenantId });
-
-  const isMemberTenant = checkIfUserInMemberTenant(stripes);
+  } = useLinkSuggestions({ tenantId: centralTenantId });
 
   const linkableBibFields = useMemo(() => linkingRules.map(rule => rule.bibField), [linkingRules]);
   const autoLinkableBibFields = useMemo(() => {
@@ -280,11 +291,14 @@ const useAuthorityLinking = ({ tenantId, marcType } = {}) => {
       return formValues;
     }
 
-    const searchParams = new URLSearchParams(search);
-    const isSharedRecord = searchParams.get('shared') === 'true';
     const linkedFields = formValues.records.filter(isFieldLinked);
     const payload = hydrateForLinkSuggestions(formValues, linkedFields);
-    const isRecordWithCentralAndMemberSuggestions = marcType === MARC_TYPES.BIB && isMemberTenant && !isSharedRecord;
+    const isRecordWithCentralAndMemberSuggestions = checkIfRecordWithCentralAndMemberSuggestions({
+      search,
+      marcType,
+      isMemberTenant,
+      action,
+    });
 
     const requestArgs = {
       body: payload,
@@ -354,6 +368,7 @@ const useAuthorityLinking = ({ tenantId, marcType } = {}) => {
     isMemberTenant,
     search,
     marcType,
+    action,
   ]);
 
   return {

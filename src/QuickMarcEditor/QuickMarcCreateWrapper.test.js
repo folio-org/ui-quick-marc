@@ -24,11 +24,6 @@ jest.mock('react-final-form', () => ({
   FormSpy: jest.fn(() => (<span>FormSpy</span>)),
 }));
 
-jest.mock('../queries', () => ({
-  ...jest.requireActual('../queries'),
-  useAuthorityLinkingRules: jest.fn().mockReturnValue({ linkingRules: [] }),
-}));
-
 jest.mock('../hooks', () => ({
   ...jest.requireActual('../hooks'),
   useAuthorityLinking: jest.fn(),
@@ -271,6 +266,7 @@ describe('Given QuickMarcCreateWrapper', () => {
       autoLinkingEnabled: true,
       autoLinkableBibFields: [],
       autoLinkAuthority: jest.fn(),
+      linkingRules: [],
     });
 
     jest.clearAllMocks();

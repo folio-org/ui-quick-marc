@@ -99,7 +99,7 @@ const QuickMarcEditorRows = ({
     unlinkAuthority,
     linkableBibFields,
     autoLinkableBibFields,
-  } = useAuthorityLinking({ marcType });
+  } = useAuthorityLinking({ marcType, action });
 
   const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType, () => (
     action === QUICK_MARC_ACTIONS.EDIT
