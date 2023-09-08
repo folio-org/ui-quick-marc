@@ -13,6 +13,7 @@ import {
   useLinkSuggestions,
 } from '../../queries';
 import { MARC_TYPES } from '../../common/constants';
+import { QUICK_MARC_ACTIONS } from '../../QuickMarcEditor/constants';
 
 const mockFetchLinkSuggestions = jest.fn();
 
@@ -1660,11 +1661,233 @@ describe('Given useAuthorityLinking', () => {
 
         const values = await result.current.actualizeLinks(formValues);
 
-        expect(useLinkSuggestions).toHaveBeenNthCalledWith(1, { marcType: MARC_TYPES.BIB });
-        expect(useLinkSuggestions).toHaveBeenNthCalledWith(2, {
-          marcType: MARC_TYPES.BIB,
-          tenantId: 'consortia',
+        expect(useLinkSuggestions).toHaveBeenNthCalledWith(1, { tenantId: '' });
+        expect(useLinkSuggestions).toHaveBeenNthCalledWith(2, { tenantId: 'consortia' });
+        expect(mockFetchLinkSuggestions).toHaveBeenCalledTimes(2);
+
+        expect(values).toEqual({
+          externalHrid: 'in00000000001',
+          externalId: '4c95c27d-51fc-4ae1-892d-11347377bdd4',
+          leader: 'test',
+          marcFormat: MARC_TYPES.BIB,
+          _actionType: 'view',
+          records: [
+            {
+              'tag': '700',
+              'content': '$a Wang, Shifu, test $d 1260-1316 $0 id.loc.gov/authorities/names/n12345678 $9 3929e600-5efb-4427-abf6-a963b01c9c37',
+              'indicators': ['\\', '\\'],
+              'linkDetails': {
+                'authorityId': '3929e600-5efb-4427-abf6-a963b01c9c37',
+                'authorityNaturalId': 'n12345678',
+                'linkingRuleId': 15,
+                'status': 'ACTUAL',
+              },
+            },
+            {
+              'tag': '100',
+              'content': '$a Coates, Ta-Nehisi test $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 541539bf-7e1f-468e-a817-a551c6b63d7d',
+              'indicators': ['1', '\\'],
+              'linkDetails': {
+                'authorityId': '541539bf-7e1f-468e-a817-a551c6b63d7d',
+                'authorityNaturalId': 'n2008001084',
+                'linkingRuleId': 1,
+                'status': 'NEW',
+              },
+            },
+            {
+              'tag': '700',
+              'content': '$a Yuan, Bing test $0 id.loc.gov/authorities/names/n93100664 $9 a2803a7b-d479-46cd-b744-1305d2a7a29b',
+              'indicators': ['\\', '\\'],
+              'linkDetails': {
+                'authorityId': 'a2803a7b-d479-46cd-b744-1305d2a7a29b',
+                'authorityNaturalId': 'n93100664',
+                'linkingRuleId': 15,
+                'status': 'NEW',
+              },
+            },
+            {
+              'tag': '700',
+              'content': '$a Zhang, Xuejing test $0 id.loc.gov/authorities/names/no2005093867 $9 68927bf9-e78f-48b9-a45a-947408caff6e',
+              'indicators': ['\\', '\\'],
+              'linkDetails': {
+                'authorityId': '68927bf9-e78f-48b9-a45a-947408caff6e',
+                'authorityNaturalId': 'no2005093867',
+                'linkingRuleId': 15,
+                'status': 'ACTUAL',
+              },
+            },
+          ],
         });
+      });
+    });
+  });
+
+  describe('when a member tenant calls actualizeLinks and bib record is derived shared', () => {
+    describe('and some of the fields linked with shared authority records', () => {
+      it('should take suggested fields from central tenant for the fields linked with shared authority records', async () => {
+        checkIfUserInMemberTenant.mockReturnValue(true);
+        useLocation.mockReturnValue({ search: '?shared=true' });
+
+        const formValues = {
+          externalHrid: 'in00000000001',
+          externalId: '4c95c27d-51fc-4ae1-892d-11347377bdd4',
+          leader: 'test',
+          marcFormat: MARC_TYPES.BIB,
+          _actionType: 'view',
+          records: [
+            {
+              'tag': '700',
+              'content': '$a Wang, Shifu, $d 1260-1316 $0 id.loc.gov/authorities/names/n81003794 $9 3929e600-5efb-4427-abf6-a963b01c9c37',
+              'indicators': ['\\', '\\'],
+              'linkDetails': {
+                'authorityId': '3929e600-5efb-4427-abf6-a963b01c9c37',
+                'authorityNaturalId': 'n81003794',
+                'linkingRuleId': 15,
+                'status': 'ACTUAL',
+              },
+            },
+            {
+              'tag': '100',
+              'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 541539bf-7e1f-468e-a817-a551c6b63d7d',
+              'indicators': ['1', '\\'],
+              'linkDetails': {
+                'authorityId': '541539bf-7e1f-468e-a817-a551c6b63d7d',
+                'authorityNaturalId': 'n2008001084',
+                'linkingRuleId': 1,
+                'status': 'NEW',
+              },
+            },
+            {
+              'tag': '700',
+              'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664 $9 a2803a7b-d479-46cd-b744-1305d2a7a29b',
+              'indicators': ['\\', '\\'],
+              'linkDetails': {
+                'authorityId': 'a2803a7b-d479-46cd-b744-1305d2a7a29b',
+                'authorityNaturalId': 'n93100664',
+                'linkingRuleId': 15,
+                'status': 'NEW',
+              },
+            },
+            {
+              'tag': '700',
+              'content': '$a Zhang, Xuejing $0 id.loc.gov/authorities/names/no2005093867 $9 68927bf9-e78f-48b9-a45a-947408caff6e',
+              'indicators': ['\\', '\\'],
+              'linkDetails': {
+                'authorityId': '68927bf9-e78f-48b9-a45a-947408caff6e',
+                'authorityNaturalId': 'no2005093867',
+                'linkingRuleId': 15,
+                'status': 'ACTUAL',
+              },
+            },
+          ],
+        };
+
+        const linkSuggestionsResponse = {
+          '_actionType': 'view',
+          'leader': formValues.records[0].content,
+          'fields': [
+            {
+              'tag': '700',
+              'content': '$a Wang, Shifu, test $d 1260-1316 $0 id.loc.gov/authorities/names/n12345678 $9 3929e600-5efb-4427-abf6-a963b01c9c37',
+              'linkDetails': {
+                errorCause: '101',
+                status: 'ERROR',
+              },
+            },
+            {
+              'tag': '100',
+              'content': '$a Coates, Ta-Nehisi test $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 541539bf-7e1f-468e-a817-a551c6b63d7d',
+              'linkDetails': {
+                'authorityId': '541539bf-7e1f-468e-a817-a551c6b63d7d',
+                'authorityNaturalId': 'n2008001084',
+                'linkingRuleId': 1,
+                'status': 'NEW',
+              },
+            },
+            {
+              'tag': '700',
+              'content': '$a Yuan, Bing test $0 id.loc.gov/authorities/names/n93100664 $9 a2803a7b-d479-46cd-b744-1305d2a7a29b',
+              'linkDetails': {
+                errorCause: '101',
+                status: 'ERROR',
+              },
+            },
+            {
+              'tag': '700',
+              'content': '$a Zhang, Xuejing test $0 id.loc.gov/authorities/names/no2005093867 $9 68927bf9-e78f-48b9-a45a-947408caff6e',
+              'linkDetails': {
+                errorCause: '101',
+                status: 'ERROR',
+              },
+            },
+          ],
+          'suppressDiscovery': false,
+        };
+
+        const linkSuggestionsResponseFromCentralTenant = {
+          '_actionType': 'view',
+          'leader': formValues.records[0].content,
+          'fields': [
+            {
+              'tag': '700',
+              'content': '$a Wang, Shifu, test $d 1260-1316 $0 id.loc.gov/authorities/names/n12345678 $9 3929e600-5efb-4427-abf6-a963b01c9c37',
+              'linkDetails': {
+                'authorityId': '3929e600-5efb-4427-abf6-a963b01c9c37',
+                'authorityNaturalId': 'n12345678',
+                'linkingRuleId': 15,
+                'status': 'ACTUAL',
+              },
+            },
+            {
+              'tag': '100',
+              'content': '$a Coates, Ta-Nehisi test $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 541539bf-7e1f-468e-a817-a551c6b63d7d',
+              'linkDetails': {
+                errorCause: '101',
+                status: 'ERROR',
+              },
+            },
+            {
+              'tag': '700',
+              'content': '$a Yuan, Bing test $0 id.loc.gov/authorities/names/n93100664 $9 a2803a7b-d479-46cd-b744-1305d2a7a29b',
+              'linkDetails': {
+                'authorityId': 'a2803a7b-d479-46cd-b744-1305d2a7a29b',
+                'authorityNaturalId': 'n93100664',
+                'linkingRuleId': 15,
+                'status': 'NEW',
+              },
+            },
+            {
+              'tag': '700',
+              'content': '$a Zhang, Xuejing test $0 id.loc.gov/authorities/names/no2005093867 $9 68927bf9-e78f-48b9-a45a-947408caff6e',
+              'linkDetails': {
+                'authorityId': '68927bf9-e78f-48b9-a45a-947408caff6e',
+                'authorityNaturalId': 'no2005093867',
+                'linkingRuleId': 15,
+                'status': 'ACTUAL',
+              },
+            },
+          ],
+          'suppressDiscovery': false,
+        };
+
+        useLinkSuggestions.mockReturnValue({
+          fetchLinkSuggestions: mockFetchLinkSuggestions.mockResolvedValueOnce(linkSuggestionsResponse),
+        });
+
+        useLinkSuggestions.mockReturnValue({
+          fetchLinkSuggestions: mockFetchLinkSuggestions
+            .mockResolvedValueOnce(linkSuggestionsResponseFromCentralTenant),
+        });
+
+        const { result } = renderHook(() => useAuthorityLinking({
+          marcType: MARC_TYPES.BIB,
+          action: QUICK_MARC_ACTIONS.DERIVE,
+        }), { wrapper });
+
+        const values = await result.current.actualizeLinks(formValues);
+
+        expect(useLinkSuggestions).toHaveBeenNthCalledWith(1, { tenantId: '' });
+        expect(useLinkSuggestions).toHaveBeenNthCalledWith(2, { tenantId: 'consortia' });
         expect(mockFetchLinkSuggestions).toHaveBeenCalledTimes(2);
 
         expect(values).toEqual({

@@ -11,7 +11,6 @@ import { useShowCallout } from '@folio/stripes-acq-components';
 import QuickMarcEditor from './QuickMarcEditor';
 import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
 import { useAuthorityLinking } from '../hooks';
-import { useAuthorityLinkingRules } from '../queries';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 import {
@@ -57,8 +56,7 @@ const QuickMarcCreateWrapper = ({
 }) => {
   const showCallout = useShowCallout();
   const [httpError, setHttpError] = useState(null);
-  const { linkableBibFields, actualizeLinks } = useAuthorityLinking();
-  const { linkingRules } = useAuthorityLinkingRules();
+  const { linkableBibFields, actualizeLinks, linkingRules } = useAuthorityLinking({ marcType, action });
 
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesForCreate = flow(

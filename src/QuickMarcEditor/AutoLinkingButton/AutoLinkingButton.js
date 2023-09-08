@@ -19,6 +19,7 @@ import {
 } from '../constants';
 
 const propTypes = {
+  action: PropTypes.string.isRequired,
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   formValues: PropTypes.object.isRequired,
   isLoadingLinkSuggestions: PropTypes.bool.isRequired,
@@ -27,6 +28,7 @@ const propTypes = {
 };
 
 const AutoLinkingButton = ({
+  action,
   marcType,
   formValues,
   isLoadingLinkSuggestions,
@@ -40,7 +42,7 @@ const AutoLinkingButton = ({
     autoLinkingEnabled,
     autoLinkableBibFields,
     autoLinkAuthority,
-  } = useAuthorityLinking({ marcType });
+  } = useAuthorityLinking({ marcType, action });
 
   const hasAutoLinkableRecord = formValues.records.some(field => isRecordForAutoLinking(field, autoLinkableBibFields));
 

@@ -30,7 +30,7 @@ const MarcRoute = ({
   const userId = stripes?.user?.user?.id;
   const centralTenantId = stripes.user.user?.consortium?.centralTenantId;
   const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType, () => (
-    action === QUICK_MARC_ACTIONS.EDIT
+    [QUICK_MARC_ACTIONS.EDIT, QUICK_MARC_ACTIONS.DERIVE].includes(action)
   ));
 
   const {

@@ -583,8 +583,11 @@ describe('Given QuickMarcEditWrapper', () => {
 
           await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
-          expect(useAuthorityLinking).toHaveBeenCalledWith({ marcType: MARC_TYPES.BIB });
-          expect(useMarcRecordMutation).toHaveBeenCalledWith({ marcType: MARC_TYPES.BIB });
+          expect(useAuthorityLinking).toHaveBeenCalledWith({
+            marcType: MARC_TYPES.BIB,
+            action: QUICK_MARC_ACTIONS.EDIT,
+          });
+          expect(useMarcRecordMutation).toHaveBeenCalledWith({ tenantId: 'consortia' });
         });
       });
 

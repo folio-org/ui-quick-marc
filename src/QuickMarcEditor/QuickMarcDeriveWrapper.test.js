@@ -17,7 +17,6 @@ import { MARC_TYPES } from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
 import { useAuthorityLinking } from '../hooks';
-import { useAuthorityLinkingRules } from '../queries';
 
 jest.mock('react-final-form', () => ({
   ...jest.requireActual('react-final-form'),
@@ -26,7 +25,6 @@ jest.mock('react-final-form', () => ({
 
 jest.mock('../queries', () => ({
   ...jest.requireActual('../queries'),
-  useAuthorityLinkingRules: jest.fn().mockReturnValue({ linkingRules: [] }),
   useLinkSuggestions: jest.fn().mockReturnValue({ isLoading: false, fetchLinkSuggestions: jest.fn() }),
 }));
 
@@ -236,18 +234,15 @@ const getInstance = () => ({
   title: 'ui-quick-marc.record.edit.title',
 });
 
-const linkingRules = {
-  linkingRules: [{
-    id: 1,
-    bibField: '100',
-    authorityField: '100',
-    authoritySubfields: ['a', 'b', 't', 'd'],
-    subfieldModifications: [],
-    validation: {},
-    autoLinkingEnabled: true,
-  }],
-  isLoading: false,
-};
+const linkingRules = [{
+  id: 1,
+  bibField: '100',
+  authorityField: '100',
+  authoritySubfields: ['a', 'b', 't', 'd'],
+  subfieldModifications: [],
+  validation: {},
+  autoLinkingEnabled: true,
+}];
 
 const initialValues = {
   leader: '14706cam a2200865Ii 4500',
@@ -312,9 +307,8 @@ describe('Given QuickMarcDeriveWrapper', () => {
       autoLinkingEnabled: true,
       autoLinkableBibFields: [],
       autoLinkAuthority: jest.fn(),
+      linkingRules,
     });
-
-    useAuthorityLinkingRules.mockReturnValue(linkingRules);
   });
 
   it('should render with no axe errors', async () => {
