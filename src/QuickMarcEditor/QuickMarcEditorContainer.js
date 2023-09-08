@@ -90,9 +90,8 @@ const QuickMarcEditorContainer = ({
   const { token, locale } = stripes.okapi;
   const centralTenantId = stripes.user.user.consortium?.centralTenantId;
 
-  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType, () => (
-    [QUICK_MARC_ACTIONS.DERIVE, QUICK_MARC_ACTIONS.EDIT].includes(action)
-  ));
+  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType)
+    && action !== QUICK_MARC_ACTIONS.CREATE;
 
   const showCallout = useShowCallout();
   const { fetchLinksCount } = useAuthorityLinksCount({ marcType });
@@ -139,7 +138,7 @@ const QuickMarcEditorContainer = ({
         ...headers,
       });
 
-    const locationsPromise = mutator.locations.GET();
+    const locationsPromise = mutator.locations.GET(headers);
     const linkingRulesPromise = mutator.linkingRules.GET(headers);
 
     const linksCountPromise = marcType === MARC_TYPES.AUTHORITY

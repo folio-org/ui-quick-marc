@@ -1563,14 +1563,13 @@ export const changeTenantHeader = (ky, tenantId) => {
   });
 };
 
-export const applyCentralTenantInHeaders = (location, stripes, marcType, cb = () => true) => {
+export const applyCentralTenantInHeaders = (location, stripes, marcType) => {
   const searchParams = new URLSearchParams(location.search);
   const isSharedRecord = searchParams.get('shared') === 'true';
 
   return (
     isSharedRecord
-    && [MARC_TYPES.BIB].includes(marcType)
-    && cb()
+    && [MARC_TYPES.BIB, MARC_TYPES.AUTHORITY].includes(marcType)
     && checkIfUserInMemberTenant(stripes)
   );
 };
