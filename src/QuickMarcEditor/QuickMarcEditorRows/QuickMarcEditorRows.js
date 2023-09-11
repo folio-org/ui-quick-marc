@@ -101,9 +101,8 @@ const QuickMarcEditorRows = ({
     autoLinkableBibFields,
   } = useAuthorityLinking({ marcType, action });
 
-  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType, () => (
-    action === QUICK_MARC_ACTIONS.EDIT
-  ));
+  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType)
+    && action === QUICK_MARC_ACTIONS.EDIT;
 
   const isNewRow = useCallback((row) => {
     return !initialValues.records.find(record => record.id === row.id);
