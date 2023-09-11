@@ -30,7 +30,6 @@ import {
   autopopulatePhysDescriptionField,
   autopopulateMaterialCharsField,
 } from './utils';
-import { useAuthorityLinkingRules } from '../queries';
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
@@ -50,8 +49,7 @@ const QuickMarcDeriveWrapper = ({
   marcType,
 }) => {
   const showCallout = useShowCallout();
-  const { linkableBibFields, actualizeLinks } = useAuthorityLinking();
-  const { linkingRules } = useAuthorityLinkingRules();
+  const { linkableBibFields, actualizeLinks, linkingRules } = useAuthorityLinking({ marcType, action });
   const [httpError, setHttpError] = useState(null);
 
   const prepareForSubmit = useCallback((formValues) => {

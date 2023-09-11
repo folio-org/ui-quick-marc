@@ -94,7 +94,7 @@ const QuickMarcEditorContainer = ({
     && action !== QUICK_MARC_ACTIONS.CREATE;
 
   const showCallout = useShowCallout();
-  const { fetchLinksCount } = useAuthorityLinksCount({ marcType });
+  const { fetchLinksCount } = useAuthorityLinksCount();
 
   const closeEditor = useCallback((id) => {
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
@@ -139,6 +139,7 @@ const QuickMarcEditorContainer = ({
       });
 
     const locationsPromise = mutator.locations.GET(headers);
+    // must be with the central tenant id when user derives shared record
     const linkingRulesPromise = mutator.linkingRules.GET(headers);
 
     const linksCountPromise = marcType === MARC_TYPES.AUTHORITY

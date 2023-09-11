@@ -77,9 +77,10 @@ const QuickMarcEditWrapper = ({
   const { token, locale } = stripes.okapi;
   const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType);
   const centralTenantId = stripes.user.user.consortium?.centralTenantId;
+  const tenantId = isRequestToCentralTenantFromMember ? centralTenantId : '';
 
-  const { linkableBibFields, actualizeLinks, linkingRules } = useAuthorityLinking({ marcType });
-  const { updateMarcRecord } = useMarcRecordMutation({ marcType });
+  const { linkableBibFields, actualizeLinks, linkingRules } = useAuthorityLinking({ marcType, action });
+  const { updateMarcRecord } = useMarcRecordMutation({ tenantId });
 
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesToSave = flow(
