@@ -52,9 +52,8 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
 
   const centralTenantId = stripes.user.user.consortium?.centralTenantId;
   const isMemberTenant = checkIfUserInMemberTenant(stripes);
-  const isCentralTenantInHeaders = applyCentralTenantInHeaders(location, stripes, marcType, () => (
-    action === QUICK_MARC_ACTIONS.EDIT
-  ));
+  const isCentralTenantInHeaders = applyCentralTenantInHeaders(location, stripes, marcType)
+    && action === QUICK_MARC_ACTIONS.EDIT;
 
   // tenantId for linking functionality must be with the member tenant id when user derives shared record
   const _tenantId = tenantId || (isCentralTenantInHeaders && centralTenantId) || '';

@@ -40,7 +40,7 @@ const LocationField = ({
     }
 
     locationLookupUsed.current = false;
-  }, [permanentLocation]);
+  }, [permanentLocation, input]);
 
   return (
     <>
