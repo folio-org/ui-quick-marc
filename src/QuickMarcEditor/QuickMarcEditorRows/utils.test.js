@@ -1,6 +1,5 @@
 import {
   LEADER_TAG,
-  QUICK_MARC_ACTIONS,
 } from '../constants';
 import { MARC_TYPES } from '../../common/constants';
 
