@@ -29,9 +29,8 @@ const MarcRoute = ({
   } = routeProps;
   const userId = stripes?.user?.user?.id;
   const centralTenantId = stripes.user.user?.consortium?.centralTenantId;
-  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType, () => (
-    [QUICK_MARC_ACTIONS.EDIT, QUICK_MARC_ACTIONS.DERIVE].includes(action)
-  ));
+  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType)
+    && action !== QUICK_MARC_ACTIONS.CREATE;
 
   const {
     userPermissions: centralTenantPermissions,
