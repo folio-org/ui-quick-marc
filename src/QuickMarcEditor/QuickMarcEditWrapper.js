@@ -213,9 +213,7 @@ const QuickMarcEditWrapper = ({
           });
         } else {
           showCallout({
-            messageId: marcType === MARC_TYPES.AUTHORITY
-              ? 'ui-quick-marc.record.save.updated'
-              : 'ui-quick-marc.record.save.success.processing',
+            messageId: 'ui-quick-marc.record.save.success.processing',
           });
         }
 

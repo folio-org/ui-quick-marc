@@ -209,8 +209,7 @@
   "record.save.error.notFound": "This record has been deleted by another user. You can no longer edit this record, hit the cancel button to return to the previous page.",
   "record.save.error.generic": "Record not saved: Communication problem with server. Please try again.",
   "record.save.error.derive": "Instance cannot be updated. Deprecated instance version.",
-  "record.save.updated": "Record has been updated.",
-  "record.save.updatingLinkedBibRecords": "Record has been updated. <b>{count}</b> linked bibliographic record(s) updates have begun.",
+  "record.save.updatingLinkedBibRecords": "This record has successfully saved and is in process. <b>{count}</b> linked bibliographic record(s) updates have begun.",
   "record.save.continue": "Save & keep editing",
 
   "record.saveNew.onSave": "Creating record may take several seconds.",
