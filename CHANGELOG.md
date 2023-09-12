@@ -53,6 +53,7 @@
 * [UIQM-552](https://issues.folio.org/browse/UIQM-552) Hide the Shared facet in the plugin for the shared bib record.
 * [UIQM-554](https://issues.folio.org/browse/UIQM-554) Don't pass any arguments to the onClose callback when clicking the Cancel panel button.
 * [UIQM-556](https://issues.folio.org/browse/UIQM-556) Edit Shared MARC authority record, update Shared & Local Instances.
+* [UIQM-559](https://issues.folio.org/browse/UIQM-559) Make auto-linking for the consortium.
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
 
