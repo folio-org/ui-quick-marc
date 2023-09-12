@@ -645,7 +645,7 @@ describe('Given QuickMarcEditWrapper', () => {
         expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
         expect(mockUpdateMarcRecord).toHaveBeenCalled();
 
-        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' });
+        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
         expect(mockOnClose).not.toHaveBeenCalled();
       });
     });
@@ -666,7 +666,7 @@ describe('Given QuickMarcEditWrapper', () => {
         expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
         expect(mockUpdateMarcRecord).toHaveBeenCalled();
 
-        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' });
+        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
 
         expect(mockOnClose).toHaveBeenCalled();
       });
