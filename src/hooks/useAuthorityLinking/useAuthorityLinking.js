@@ -26,7 +26,6 @@ import {
   hydrateForLinkSuggestions,
   recordHasLinks,
   isFieldLinked,
-  checkIfRecordWithCentralAndMemberSuggestions,
   applyCentralTenantInHeaders,
 } from '../../QuickMarcEditor/utils';
 import {
@@ -36,6 +35,7 @@ import {
   UNCONTROLLED_NUMBER,
   QUICK_MARC_ACTIONS,
 } from '../../QuickMarcEditor/constants';
+import { MARC_TYPES } from '../../common/constants';
 
 const joinSubfields = (subfields) => Object.keys(subfields).reduce((content, key) => {
   const subfield = subfields[key].join(` ${key} `);
@@ -63,10 +63,11 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
 
   const {
     fetchLinkSuggestions: fetchMemberLinkSuggestions,
-    isLoading: isLoadingLinkSuggestions,
+    isLoading: isLoadingMemberLinkSuggestions,
   } = useLinkSuggestions({ tenantId: _tenantId });
   const {
     fetchLinkSuggestions: fetchCentralLinkSuggestions,
+    isLoading: isLoadingCentralLinkSuggestions,
   } = useLinkSuggestions({ tenantId: centralTenantId });
 
   const linkableBibFields = useMemo(() => linkingRules.map(rule => rule.bibField), [linkingRules]);
@@ -219,10 +220,70 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
     return field;
   }, [getSubfieldGroups]);
 
-  const autoLinkAuthority = useCallback((fields, suggestedFields) => {
+  const getSuggestedFields = useCallback(async (formValues, fieldsToHydrate, extraRequestArgs = {}) => {
+    const searchParams = new URLSearchParams(search);
+    const isSharedRecord = searchParams.get('shared') === 'true';
+    const payload = hydrateForLinkSuggestions(formValues, fieldsToHydrate);
+
+    const requestArgs = {
+      body: payload,
+      ...extraRequestArgs,
+    };
+
+    const isRecordWithCentralAndMemberSuggestions = (
+      marcType === MARC_TYPES.BIB
+      && isMemberTenant
+      && (!isSharedRecord || (isSharedRecord && action === QUICK_MARC_ACTIONS.DERIVE))
+    );
+
+    const memberLinkSuggestionsPromise = fetchMemberLinkSuggestions(requestArgs);
+    const centralLinkSuggestionsPromise = isRecordWithCentralAndMemberSuggestions
+      ? fetchCentralLinkSuggestions(requestArgs)
+      : Promise.resolve({ fields: [] });
+
+    const [
+      { fields: memberSuggestedFields },
+      { fields: suggestedFieldsFromCentralTenant },
+    ] = await Promise.all([
+      memberLinkSuggestionsPromise,
+      centralLinkSuggestionsPromise,
+    ]);
+
+    return memberSuggestedFields.map((suggestedField, index) => {
+      if (suggestedField.linkDetails?.status !== AUTOLINKING_STATUSES.ERROR) {
+        return suggestedField;
+      }
+
+      const suggestedFieldFromCentralTenant = suggestedFieldsFromCentralTenant[index];
+
+      const shouldTakeSuggestedFieldFromCentralTenant = (
+        isRecordWithCentralAndMemberSuggestions
+        && suggestedField.linkDetails.errorCause === AUTOLINKING_ERROR_CODES.AUTHORITY_NOT_FOUND
+        && suggestedFieldFromCentralTenant?.linkDetails.status !== AUTOLINKING_STATUSES.ERROR
+      );
+
+      if (shouldTakeSuggestedFieldFromCentralTenant) {
+        return suggestedFieldFromCentralTenant;
+      }
+
+      return suggestedField;
+    });
+  }, [
+    fetchMemberLinkSuggestions,
+    fetchCentralLinkSuggestions,
+    search,
+    marcType,
+    isMemberTenant,
+    action,
+  ]);
+
+  const autoLinkAuthority = useCallback(async (formValues) => {
+    const fieldsToLink = formValues.records.filter(record => isRecordForAutoLinking(record, autoLinkableBibFields));
+    const suggestedFields = await getSuggestedFields(formValues, fieldsToLink);
+
     let suggestedFieldIndex = 0;
 
-    return fields.map(field => {
+    const fields = formValues.records.map(field => {
       if (field._isLinked && !field._isDeleted) {
         return updateLinkedField(field);
       }
@@ -237,7 +298,12 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
 
       return field;
     });
-  }, [autoLinkableBibFields, updateAutoLinkableField, updateLinkedField]);
+
+    return {
+      fields,
+      suggestedFields,
+    };
+  }, [autoLinkableBibFields, updateAutoLinkableField, updateLinkedField, getSuggestedFields]);
 
   const linkAuthority = useCallback((authority, authoritySource, field) => {
     const linkedAuthorityField = getLinkableAuthorityField(authoritySource, field);
@@ -291,32 +357,13 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
     }
 
     const linkedFields = formValues.records.filter(isFieldLinked);
-    const payload = hydrateForLinkSuggestions(formValues, linkedFields);
-    const isRecordWithCentralAndMemberSuggestions = checkIfRecordWithCentralAndMemberSuggestions({
-      search,
-      marcType,
-      isMemberTenant,
-      action,
-    });
 
-    const requestArgs = {
-      body: payload,
+    const extraRequestArgs = {
       isSearchByAuthorityId: true,
       ignoreAutoLinkingEnabled: true,
     };
 
-    const memberLinkSuggestionsPromise = fetchMemberLinkSuggestions(requestArgs);
-    const centralLinkSuggestionsPromise = isRecordWithCentralAndMemberSuggestions
-      ? fetchCentralLinkSuggestions(requestArgs)
-      : Promise.resolve({ fields: [] });
-
-    const [
-      { fields: suggestedFields },
-      { fields: suggestedFieldsFromCentralTenant },
-    ] = await Promise.all([
-      memberLinkSuggestionsPromise,
-      centralLinkSuggestionsPromise,
-    ]);
+    const suggestedFields = await getSuggestedFields(formValues, linkedFields, extraRequestArgs);
 
     const actualizedLinks = formValues.records.map(field => {
       if (!isFieldLinked(field)) {
@@ -324,51 +371,25 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
       }
 
       const suggestedField = suggestedFields.shift();
-      const suggestedFieldFromCentralTenant = suggestedFieldsFromCentralTenant.shift();
-
-      const getActualizedField = (proposedField) => {
-        const subfieldGroups = getSubfieldGroups(field, proposedField);
-
-        return {
-          ...field,
-          ...proposedField,
-          content: Object.values(subfieldGroups).filter(Boolean).join(' '),
-        };
-      };
 
       if (suggestedField.linkDetails?.status === AUTOLINKING_STATUSES.ERROR) {
-        const shouldTakeSuggestedFieldFromCentralTenant = (
-          isRecordWithCentralAndMemberSuggestions
-          && suggestedField.linkDetails.errorCause === AUTOLINKING_ERROR_CODES.AUTHORITY_NOT_FOUND
-          && suggestedFieldFromCentralTenant?.linkDetails.status !== AUTOLINKING_STATUSES.ERROR
-          && suggestedField.tag === suggestedFieldFromCentralTenant?.tag
-          && suggestedField.content === suggestedFieldFromCentralTenant?.content
-        );
-
-        if (shouldTakeSuggestedFieldFromCentralTenant) {
-          return getActualizedField(suggestedFieldFromCentralTenant);
-        }
-
         return unlinkAuthority(field);
       }
 
-      return getActualizedField(suggestedField);
+      const subfieldGroups = getSubfieldGroups(field, suggestedField);
+
+      return {
+        ...field,
+        ...suggestedField,
+        content: Object.values(subfieldGroups).filter(Boolean).join(' '),
+      };
     });
 
     return {
       ...formValues,
       records: actualizedLinks,
     };
-  }, [
-    fetchMemberLinkSuggestions,
-    fetchCentralLinkSuggestions,
-    getSubfieldGroups,
-    unlinkAuthority,
-    isMemberTenant,
-    search,
-    marcType,
-    action,
-  ]);
+  }, [getSubfieldGroups, unlinkAuthority, getSuggestedFields]);
 
   return {
     linkAuthority,
@@ -380,8 +401,9 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
     autoLinkAuthority,
     actualizeLinks,
     linkingRules,
-    fetchLinkSuggestions: fetchMemberLinkSuggestions,
-    isLoadingLinkSuggestions,
+    fetchMemberLinkSuggestions,
+    fetchCentralLinkSuggestions,
+    isLoadingLinkSuggestions: isLoadingMemberLinkSuggestions || isLoadingCentralLinkSuggestions,
   };
 };
 

@@ -55,6 +55,7 @@
 * [UIQM-556](https://issues.folio.org/browse/UIQM-556) Edit Shared MARC authority record, update Shared & Local Instances.
 * [UIQM-558](https://issues.folio.org/browse/UIQM-558) *BREAKING* bump `react-intl` to `v6.4.4`.
 * [UIQM-530](https://issues.folio.org/browse/UIQM-530) Create/Edit/Derive MARC bib/holdings/authority - Allow a user to move 00X fields.
+* [UIQM-559](https://issues.folio.org/browse/UIQM-559) Make auto-linking for the consortium.
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
 

@@ -108,6 +108,7 @@ const QuickMarcEditor = ({
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const [isUnlinkRecordsModalOpen, setIsUnlinkRecordsModalOpen] = useState(false);
   const [isUpdate0101xxfieldsAuthRecModalOpen, setIsUpdate0101xxfieldsAuthRecModalOpen] = useState(false);
+  const [isLoadingLinkSuggestions, setIsLoadingLinkSuggestions] = useState(false);
   const continueAfterSave = useRef(false);
   const formRef = useRef(null);
   const confirmationChecks = useRef({ ...REQUIRED_CONFIRMATIONS });
@@ -115,11 +116,7 @@ const QuickMarcEditor = ({
   const searchParameters = new URLSearchParams(location.search);
   const isShared = searchParameters.get('shared') === 'true';
 
-  const {
-    unlinkAuthority,
-    fetchLinkSuggestions,
-    isLoadingLinkSuggestions,
-  } = useAuthorityLinking({ marcType, action });
+  const { unlinkAuthority } = useAuthorityLinking({ marcType, action });
 
   const deletedRecords = useMemo(() => {
     return records
@@ -454,8 +451,8 @@ const QuickMarcEditor = ({
                     marcType={marcType}
                     formValues={formValues}
                     isLoadingLinkSuggestions={isLoadingLinkSuggestions}
-                    onFetchLinkSuggestions={fetchLinkSuggestions}
                     onMarkRecordsLinked={mutators.markRecordsLinked}
+                    onSetIsLoadingLinkSuggestions={setIsLoadingLinkSuggestions}
                   />
                 </PaneMenu>
               )}

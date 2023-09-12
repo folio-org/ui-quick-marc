@@ -9,7 +9,6 @@ import { useShowCallout } from '@folio/stripes-acq-components';
 
 import { useAuthorityLinking } from '../../hooks';
 import {
-  hydrateForLinkSuggestions,
   isRecordForAutoLinking,
 } from '../utils';
 import { MARC_TYPES } from '../../common/constants';
@@ -23,8 +22,8 @@ const propTypes = {
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   formValues: PropTypes.object.isRequired,
   isLoadingLinkSuggestions: PropTypes.bool.isRequired,
-  onFetchLinkSuggestions: PropTypes.func.isRequired,
   onMarkRecordsLinked: PropTypes.func.isRequired,
+  onSetIsLoadingLinkSuggestions: PropTypes.func,
 };
 
 const AutoLinkingButton = ({
@@ -32,8 +31,8 @@ const AutoLinkingButton = ({
   marcType,
   formValues,
   isLoadingLinkSuggestions,
-  onFetchLinkSuggestions,
   onMarkRecordsLinked,
+  onSetIsLoadingLinkSuggestions,
 }) => {
   const intl = useIntl();
   const showCallout = useShowCallout();
@@ -107,19 +106,20 @@ const AutoLinkingButton = ({
   };
 
   const handleAutoLinking = async () => {
+    onSetIsLoadingLinkSuggestions(true);
+
     try {
-      const fieldsToLink = formValues.records.filter(record => isRecordForAutoLinking(record, autoLinkableBibFields));
-      const payload = hydrateForLinkSuggestions(formValues, fieldsToLink);
-      const data = await onFetchLinkSuggestions({ body: payload });
-      const fields = autoLinkAuthority(formValues.records, data.fields);
+      const { fields, suggestedFields } = await autoLinkAuthority(formValues);
 
       onMarkRecordsLinked({ fields });
 
-      const toasts = getAutoLinkingToasts(data.fields);
+      const toasts = getAutoLinkingToasts(suggestedFields);
 
       toasts.forEach(toast => showCallout(toast));
     } catch (e) {
       showCallout({ messageId: 'ui-quick-marc.records.error.autoLinking', type: 'error' });
+    } finally {
+      onSetIsLoadingLinkSuggestions(false);
     }
   };
 

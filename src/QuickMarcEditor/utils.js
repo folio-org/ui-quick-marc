@@ -1573,14 +1573,3 @@ export const applyCentralTenantInHeaders = (location, stripes, marcType) => {
     && checkIfUserInMemberTenant(stripes)
   );
 };
-
-export const checkIfRecordWithCentralAndMemberSuggestions = ({ search, marcType, isMemberTenant, action }) => {
-  const searchParams = new URLSearchParams(search);
-  const isSharedRecord = searchParams.get('shared') === 'true';
-
-  return (
-    marcType === MARC_TYPES.BIB
-    && isMemberTenant
-    && (!isSharedRecord || (isSharedRecord && action === QUICK_MARC_ACTIONS.DERIVE))
-  );
-};
