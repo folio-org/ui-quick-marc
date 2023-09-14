@@ -1,8 +1,3 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-} from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 import { useField } from 'react-final-form';
@@ -23,24 +18,17 @@ const LocationField = ({
 }) => {
   const intl = useIntl();
   const { input, ...inputRest } = useField(name);
-  const locationLookupUsed = useRef(false);
-  const [permanentLocation, setPermanentLocation] = useState(getLocationValue(input.value));
 
-  useEffect(() => {
+  const handleSelectLocation = (location) => {
+    const permanentLocation = `$b ${location.code}`;
     const locationSubfield = getLocationValue(input.value);
 
     const newInputValue = locationSubfield
       ? input.value.replace(locationSubfield, permanentLocation)
       : `${permanentLocation} ${input.value.trim()}`;
 
-    if (locationLookupUsed.current) {
-      input.onChange(newInputValue);
-    } else {
-      input.onChange(input.value);
-    }
-
-    locationLookupUsed.current = false;
-  }, [permanentLocation, input]);
+    input.onChange(newInputValue);
+  };
 
   return (
     <>
@@ -52,10 +40,7 @@ const LocationField = ({
       <LocationLookup
         label={intl.formatMessage({ id: 'ui-quick-marc.permanentLocationLookup' })}
         marginBottom0
-        onLocationSelected={location => {
-          locationLookupUsed.current = true;
-          setPermanentLocation(`$b ${location.code}`);
-        }}
+        onLocationSelected={handleSelectLocation}
       />
     </>
   );
