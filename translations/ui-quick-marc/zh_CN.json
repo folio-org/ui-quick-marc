@@ -207,7 +207,6 @@
     "record.fixedField.Level Est": "层级建立",
     "record.fixedField.Mod Rec Est": "修改记录建立",
     "record.fixedField.Source": "来源",
-    "record.save.updated": "记录已更新。",
     "record.error.location.invalid": "852$b包含无效的馆藏地代码。请再试一次。",
     "permanentLocationLookup": "永久位置查询",
     "record.error.heading.empty": "没有1XX字段不能保存记录。",
