@@ -1,5 +1,6 @@
 import {
   LEADER_TAG,
+  QUICK_MARC_ACTIONS,
 } from '../constants';
 import { MARC_TYPES } from '../../common/constants';
 
@@ -36,10 +37,11 @@ describe('QuickMarcEditorRows utils', () => {
   describe('hasMoveException', () => {
     it('should be true for exeptional row', () => {
       expect(utils.hasMoveException({ tag: LEADER_TAG })).toBeTruthy();
+      expect(utils.hasMoveException({ tag: '001' })).toBeTruthy();
     });
 
-    it('should be false for 0XX fields', () => {
-      expect(utils.hasMoveException({ tag: '001' }, { tag: '005' })).toBeFalsy();
+    it('should be true for 003 tag for derive action', () => {
+      expect(utils.hasMoveException({ tag: '003' }, { tag: '014' }, QUICK_MARC_ACTIONS.DERIVE)).toBeTruthy();
     });
 
     it('should be false for common rows', () => {
