@@ -18,14 +18,14 @@ export const hasAddException = (recordRow, marcType = MARC_TYPES.BIB) => {
   return ADD_EXCEPTION_ROWS[marcType].has(recordRow.tag);
 };
 
-const MOVE_EXCEPTION_ROWS = {
-  [QUICK_MARC_ACTIONS.CREATE]: new Set([LEADER_TAG]),
-  [QUICK_MARC_ACTIONS.EDIT]: new Set([LEADER_TAG]),
-  [QUICK_MARC_ACTIONS.DERIVE]: new Set([LEADER_TAG]),
-};
+const MOVE_EXCEPTION_ROWS = new Set([LEADER_TAG, '001', '005', '008']);
+
+const MOVE_EXCEPTION_ROWS_FOR_DERIVE = new Set([LEADER_TAG, '001', '003', '005', '008']);
 
 export const hasMoveException = (recordRow, sibling, action = QUICK_MARC_ACTIONS.EDIT) => {
-  const rows = MOVE_EXCEPTION_ROWS[action];
+  const rows = action === QUICK_MARC_ACTIONS.DERIVE
+    ? MOVE_EXCEPTION_ROWS_FOR_DERIVE
+    : MOVE_EXCEPTION_ROWS;
 
   return (
     !sibling
