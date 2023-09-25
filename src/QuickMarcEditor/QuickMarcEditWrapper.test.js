@@ -312,7 +312,7 @@ jest.mock('./constants', () => ({
 const getInstance = () => ({
   id: faker.random.uuid(),
   title: 'ui-quick-marc.record.edit.title',
-  _version: 1,
+  _version: 0,
 });
 
 const linkingRules = [{
@@ -494,13 +494,13 @@ describe('Given QuickMarcEditWrapper', () => {
         it('should show up a conflict detection banner and not make an update request', async () => {
           mutator.quickMarcEditInstance.GET = jest.fn(() => Promise.resolve({
             ...instance,
-            _version: '2',
+            _version: 1,
           }));
 
           const { getByText } = renderQuickMarcEditWrapper({
             instance: {
               ...instance,
-              _version: '1',
+              _version: 0,
             },
             mutator,
           });

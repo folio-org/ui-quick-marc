@@ -6,6 +6,7 @@ import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 import flow from 'lodash/flow';
 import noop from 'lodash/noop';
+import isNil from 'lodash/isNil';
 
 import {
   useStripes,
@@ -184,7 +185,7 @@ const QuickMarcEditWrapper = ({
     const prevVersion = instance._version;
     const lastVersion = instanceResponse._version;
 
-    if (prevVersion && lastVersion && prevVersion !== lastVersion) {
+    if (!isNil(prevVersion) && !isNil(lastVersion) && prevVersion !== lastVersion) {
       setHttpError({
         errorType: ERROR_TYPES.OPTIMISTIC_LOCKING,
         message: 'ui-quick-marc.record.save.error.derive',
