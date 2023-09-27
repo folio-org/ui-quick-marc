@@ -57,6 +57,7 @@
 * [UIQM-559](https://issues.folio.org/browse/UIQM-559) Make auto-linking for the consortium.
 * [UIQM-558](https://issues.folio.org/browse/UIQM-558) Allow a user to select a location code from the plugin.
 * [UIQM-562](https://issues.folio.org/browse/UIQM-562) Fix optimistic locking error doesn't appear when edit "MARC authority" record.
+* [UIQM-564](https://issues.folio.org/browse/UIQM-564) Hide permission `quickMARC: Create a new MARC authority record`.
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
 
