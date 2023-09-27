@@ -107,7 +107,7 @@
           "instance-authority-links.authorities.bulk.post",
           "marc-records-editor.status.item.get"
         ],
-        "visible": false
+        "visible": true
       },
       {
         "permissionName": "ui-quick-marc.quick-marc-authorities-editor.all",
