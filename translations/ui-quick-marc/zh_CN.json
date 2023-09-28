@@ -245,7 +245,7 @@
     "record.error.1xx.change": "无法更改<b>保存的 MARC 规范字段{tag} </b> ，因为它控制书目字段。要更改此 1XX，必须取消链接所有受控书目字段。",
     "record.error.1xx.add$t": "无法将<b> $t 添加到 $ {tag}字段</b> ，因为它控制无法控制此子字段的书目字段。要更改此 1XX 值，必须取消链接所有无法控制 $t 的受控书目字段。",
     "record.error.1xx.remove$t": "无法从 $ {tag}字段中删除<b> $t </b> ，因为它控制需要该子字段的书目字段。要更改此 1XX 值，必须取消链接所有需要控制 $t 的受控书目字段。",
-    "record.save.updatingLinkedBibRecords": "记录已更新。 <b> {count} </b>个链接的书目记录更新已经开始。",
+    "record.save.updatingLinkedBibRecords": "本记录已成功保存并正在处理中。 <b> {count} </b>个链接的书目记录更新已开始。",
     "update-linked-bib-fields.modal.label": "是否确定？",
     "update-linked-bib-fields.modal.keep-editing": "继续编辑",
     "print": "印本",
