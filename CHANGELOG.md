@@ -56,6 +56,7 @@
 * [UIQM-558](https://issues.folio.org/browse/UIQM-558) *BREAKING* bump `react-intl` to `v6.4.4`.
 * [UIQM-559](https://issues.folio.org/browse/UIQM-559) Make auto-linking for the consortium.
 * [UIQM-558](https://issues.folio.org/browse/UIQM-558) Allow a user to select a location code from the plugin.
+* [UIQM-431](https://issues.folio.org/browse/UIQM-431) Marc record fixed field 008 with proper order.
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
 

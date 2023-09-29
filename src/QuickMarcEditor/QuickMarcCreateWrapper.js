@@ -39,6 +39,7 @@ const propTypes = {
   location: ReactRouterPropTypes.location.isRequired,
   locations: PropTypes.object.isRequired,
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
+  marcSpec: PropTypes.object.isRequired,
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
 };
@@ -52,6 +53,7 @@ const QuickMarcCreateWrapper = ({
   history,
   location,
   marcType,
+  marcSpec,
   locations,
 }) => {
   const showCallout = useShowCallout();
@@ -67,11 +69,11 @@ const QuickMarcCreateWrapper = ({
       autopopulatePhysDescriptionField,
       autopopulateMaterialCharsField,
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
-      marcRecord => cleanBytesFields(marcRecord, marcType),
+      marcRecord => cleanBytesFields(marcRecord, marcSpec),
     )(formValues);
 
     return formValuesForCreate;
-  }, [marcType]);
+  }, [marcType, marcSpec]);
 
   const validate = useCallback((formValues) => {
     const formValuesForValidation = prepareForSubmit(formValues);
@@ -182,6 +184,7 @@ const QuickMarcCreateWrapper = ({
       onSubmit={onSubmit}
       action={action}
       marcType={marcType}
+      marcSpec={marcSpec}
       httpError={httpError}
       validate={validate}
     />

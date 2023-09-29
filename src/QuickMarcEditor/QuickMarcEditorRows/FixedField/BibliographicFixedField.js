@@ -5,7 +5,7 @@ import {
   BytesField,
 } from '../BytesField';
 
-const HoldingsFixedField = ({ name, config }) => {
+const BibliographicFixedField = ({ name, config }) => {
   return (
     <BytesField
       name={name}
@@ -14,11 +14,11 @@ const HoldingsFixedField = ({ name, config }) => {
   );
 };
 
-HoldingsFixedField.propTypes = {
+BibliographicFixedField.propTypes = {
   name: PropTypes.string.isRequired,
   config: PropTypes.object.isRequired,
 };
 
-HoldingsFixedField.displayName = 'HoldingsFixedField';
+BibliographicFixedField.displayName = 'BibliographicFixedField';
 
-export default HoldingsFixedField;
+export default BibliographicFixedField;

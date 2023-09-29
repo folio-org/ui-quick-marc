@@ -13,6 +13,10 @@ import { MARC_TYPES } from '../common/constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import * as utils from './utils';
 
+import marcSpecificationBib from '../../test/mocks/marcSpecificationBib';
+import marcSpecificationAuth from '../../test/mocks/marcSpecificationAuth';
+import marcSpecificationHold from '../../test/mocks/marcSpecificationHold';
+
 jest.mock('uuid', () => {
   return {
     v4: () => 'uuid',
@@ -79,7 +83,8 @@ describe('QuickMarcEditor utils', () => {
           },
         ],
       };
-      const dehydratedMarcRecord = utils.dehydrateMarcRecordResponse(marcRecord, MARC_TYPES.BIB);
+
+      const dehydratedMarcRecord = utils.dehydrateMarcRecordResponse(marcRecord, MARC_TYPES.BIB, marcSpecificationBib);
       const field006 = dehydratedMarcRecord.records[2];
       const field007 = dehydratedMarcRecord.records[3];
       const field008 = dehydratedMarcRecord.records[4];
@@ -1590,7 +1595,7 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.fillEmptyFixedFieldValues(marcType, type, blvl, field)).toMatchObject({
+      expect(utils.fillEmptyFixedFieldValues(marcType, marcSpecificationBib, type, blvl, field)).toMatchObject({
         Srce: '\\',
         Audn: '\\',
         Lang: 'eng',
@@ -1616,7 +1621,7 @@ describe('QuickMarcEditor utils', () => {
     describe('when marc type is Authority', () => {
       it('should add Authority specific hidden fields', () => {
         const marcType = MARC_TYPES.AUTHORITY;
-        const type = '';
+        const type = 'z';
         const blvl = '';
         const field = {
           content: {
@@ -1624,7 +1629,7 @@ describe('QuickMarcEditor utils', () => {
           },
         };
 
-        expect(utils.fillEmptyFixedFieldValues(marcType, type, blvl, field)).toMatchObject({
+        expect(utils.fillEmptyFixedFieldValues(marcType, marcSpecificationAuth, type, blvl, field)).toMatchObject({
           'Geo Subd': '\\',
           'Kind rec': '\\',
           'SH Sys': '\\',
@@ -1647,6 +1652,34 @@ describe('QuickMarcEditor utils', () => {
           Undef_18: '\\\\\\\\\\\\\\\\\\\\',
           Undef_30: '\\',
           Undef_34: '\\\\\\\\',
+        });
+      });
+    });
+
+    describe('when marc type is Holding', () => {
+      it('should add Holding specific hidden fields', () => {
+        const marcType = MARC_TYPES.HOLDINGS;
+        const type = 'u';
+        const blvl = '';
+        const field = {
+          content: {
+            Compl: 'a',
+          },
+        };
+
+        expect(utils.fillEmptyFixedFieldValues(marcType, marcSpecificationHold, type, blvl, field)).toMatchObject({
+          AcqStatus: '\\',
+          AcqMethod: '\\',
+          AcqEndDate: '\\\\\\\\',
+          'Gen ret': '\\',
+          'Spec ret': ['\\', '\\', '\\'],
+          Compl: 'a',
+          Copies: '\\\\\\',
+          Lend: '\\',
+          Repro: '\\',
+          Lang: '\\\\\\',
+          'Sep/comp': '\\',
+          'Rept date': '\\\\\\\\\\\\',
         });
       });
     });
@@ -2156,6 +2189,9 @@ describe('QuickMarcEditor utils', () => {
     it('should return cleaned records', () => {
       const record = {
         records: [{
+          tag: 'LDR',
+          content: '03685cgm\\a2200757\\i\\4500',
+        }, {
           tag: '001',
           content: 'some content',
         }, {
@@ -2211,6 +2247,9 @@ describe('QuickMarcEditor utils', () => {
       };
       const expectedRecord = {
         records: [{
+          tag: 'LDR',
+          content: '03685cgm\\a2200757\\i\\4500',
+        }, {
           tag: '001',
           content: 'some content',
         }, {
@@ -2263,7 +2302,7 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.cleanBytesFields(record, MARC_TYPES.BIB)).toEqual(expectedRecord);
+      expect(utils.cleanBytesFields(record, marcSpecificationBib)).toEqual(expectedRecord);
     });
   });
 

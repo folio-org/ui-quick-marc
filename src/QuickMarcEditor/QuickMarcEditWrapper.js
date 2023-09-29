@@ -50,6 +50,7 @@ const propTypes = {
   initialValues: PropTypes.object.isRequired,
   instance: PropTypes.object,
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
+  marcSpec: PropTypes.object.isRequired,
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
   onCheckCentralTenantPerm: PropTypes.func,
@@ -63,6 +64,7 @@ const QuickMarcEditWrapper = ({
   initialValues,
   mutator,
   marcType,
+  marcSpec,
   linksCount,
   locations,
   refreshPageData,
@@ -140,7 +142,7 @@ const QuickMarcEditWrapper = ({
       autopopulatePhysDescriptionField,
       autopopulateMaterialCharsField,
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
-      marcRecord => cleanBytesFields(marcRecord, marcType),
+      marcRecord => cleanBytesFields(marcRecord, marcSpec),
       combineSplitFields,
     )(formValues);
 
@@ -232,6 +234,7 @@ const QuickMarcEditWrapper = ({
     initialValues,
     instance,
     marcType,
+    marcSpec,
     mutator,
     linksCount,
     location,
@@ -253,6 +256,7 @@ const QuickMarcEditWrapper = ({
       onSubmit={onSubmit}
       action={action}
       marcType={marcType}
+      marcSpec={marcSpec}
       locations={locations}
       httpError={httpError}
       externalRecordPath={externalRecordPath}

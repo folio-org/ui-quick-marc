@@ -56,7 +56,7 @@ export const QuickMarcRecordInfo = ({
       className={styles.quickMarcRecordInfoWrapper}
       data-test-quick-marc-record-info
     >
-      {marcType === MARC_TYPES.AUTHORITY && (
+      {marcType === MARC_TYPES.AUTHORITY && correspondingMarcTag && (
         <>
           <FormattedMessage id={`ui-quick-marc.record.headingType.${correspondingMarcTag}`} />
           <span>&nbsp;&bull;&nbsp;</span>

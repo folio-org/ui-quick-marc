@@ -215,13 +215,13 @@ export const fillEmptyPhysDescriptionFieldValues = (type, field) => {
   return fillEmptyFieldValues({ fieldConfigByType, field });
 };
 
-export const fillEmptyFixedFieldValues = (marcType, type, blvl, field) => {
+export const fillEmptyFixedFieldValues = (marcType, marcSpec, type, blvl, field) => {
   const fieldConfigByType = FixedFieldFactory
-    .getFixedFieldByType(
-      marcType,
+    .getConfigFixedField(
+      marcSpec,
       type,
       blvl,
-    )?.configFields ?? [];
+    )?.fields ?? [];
 
   let hiddenValues = {};
 
@@ -1188,7 +1188,7 @@ export const autopopulatePhysDescriptionField = (formValues) => {
   };
 };
 
-export const autopopulateFixedField = (formValues, marcType) => {
+export const autopopulateFixedField = (formValues, marcType, marcSpec) => {
   const { records } = formValues;
 
   const leader = records.find(field => field.tag === LEADER_TAG);
@@ -1204,7 +1204,7 @@ export const autopopulateFixedField = (formValues, marcType) => {
 
       return {
         ...field,
-        content: fillEmptyFixedFieldValues(marcType, type, blvl, field),
+        content: fillEmptyFixedFieldValues(marcType, marcSpec, type, blvl, field),
       };
     }),
   };
@@ -1248,8 +1248,12 @@ export const autopopulateSubfieldSection = (formValues, marcType = MARC_TYPES.BI
   };
 };
 
-export const cleanBytesFields = (formValues, marcType) => {
+export const cleanBytesFields = (formValues, marcSpec) => {
   const { records } = formValues;
+
+  const leader = records.find(field => field.tag === LEADER_TAG);
+  const type = leader.content[6];
+  const blvl = leader.content[7];
 
   const cleanedRecords = records.map((field) => {
     if (isString(field.content)) {
@@ -1268,7 +1272,7 @@ export const cleanBytesFields = (formValues, marcType) => {
 
     if (isFixedFieldRow(field)) {
       fieldConfigByType = FixedFieldFactory
-        .getFixedFieldByType(marcType, field.content.Type, field.content.BLvl)?.configFields ?? [];
+        .getConfigFixedField(marcSpec, type, blvl)?.fields ?? [];
     }
 
     const content = Object.entries(field.content).reduce((acc, [key, value]) => {
@@ -1506,10 +1510,10 @@ const addLeaderFieldAndIdToRecords = (marcRecordResponse) => ({
   ],
 });
 
-export const dehydrateMarcRecordResponse = (marcRecordResponse, marcType) => (
+export const dehydrateMarcRecordResponse = (marcRecordResponse, marcType, marcSpec) => (
   flow(
     addLeaderFieldAndIdToRecords,
-    marcRecord => autopopulateFixedField(marcRecord, marcType),
+    marcRecord => autopopulateFixedField(marcRecord, marcType, marcSpec),
     autopopulatePhysDescriptionField,
     autopopulateMaterialCharsField,
   )(marcRecordResponse)

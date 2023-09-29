@@ -57,6 +57,10 @@ jest.mock('../../queries', () => ({
     sourceFiles: [],
     isLoading: false,
   }),
+  useMarcSpecifications: jest.fn().mockReturnValue({
+    fixedFieldRules: {},
+    isLoading: false,
+  }),
 }));
 
 const initValues = [
@@ -132,6 +136,7 @@ const initValues = [
 ];
 
 let values = [...initValues];
+const marcSpec = {};
 const addRecordMock = jest.fn().mockImplementation(({ index }) => {
   values.splice(index, 0, {
     id: 'new-1',
@@ -158,6 +163,7 @@ const getComponent = (props) => (
           type="a"
           action={QUICK_MARC_ACTIONS.EDIT}
           marcType={MARC_TYPES.BIB}
+          marcSpec={marcSpec}
           mutators={{
             addRecord: addRecordMock,
             deleteRecord: deleteRecordMock,
