@@ -91,7 +91,7 @@ const QuickMarcEditor = ({
     getState,
   },
   marcType,
-  marcSpec,
+  fixedFieldSpec,
   locations,
   httpError,
   externalRecordPath,
@@ -476,7 +476,7 @@ const QuickMarcEditor = ({
                     type={type}
                     subtype={subtype}
                     marcType={marcType}
-                    marcSpec={marcSpec}
+                    fixedFieldSpec={fixedFieldSpec}
                     instance={instance}
                     linksCount={linksCount}
                     isLoadingLinkSuggestions={isLoadingLinkSuggestions}
@@ -553,7 +553,7 @@ QuickMarcEditor.propTypes = {
     reset: PropTypes.func.isRequired,
   }),
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
-  marcSpec: PropTypes.object.isRequired,
+  fixedFieldSpec: PropTypes.object.isRequired,
   linksCount: PropTypes.number,
   locations: PropTypes.arrayOf(PropTypes.object).isRequired,
   httpError: PropTypes.shape({

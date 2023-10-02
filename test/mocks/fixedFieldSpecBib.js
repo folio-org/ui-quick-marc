@@ -1,4 +1,4 @@
-const marcSpecificationBib = {
+const fixedFieldSpecBib = {
   tag: '008',
   spec: {
     types: [
@@ -458,4 +458,4 @@ const marcSpecificationBib = {
   },
 };
 
-export default marcSpecificationBib;
+export default fixedFieldSpecBib;

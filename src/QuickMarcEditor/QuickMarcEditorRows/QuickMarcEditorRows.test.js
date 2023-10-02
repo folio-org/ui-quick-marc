@@ -57,10 +57,6 @@ jest.mock('../../queries', () => ({
     sourceFiles: [],
     isLoading: false,
   }),
-  useMarcSpecifications: jest.fn().mockReturnValue({
-    fixedFieldRules: {},
-    isLoading: false,
-  }),
 }));
 
 const initValues = [

@@ -79,7 +79,7 @@ const QuickMarcEditorRows = ({
     updateRecord,
   },
   marcType,
-  marcSpec,
+  fixedFieldSpec,
   instance,
   linksCount,
   isLoadingLinkSuggestions,
@@ -293,7 +293,7 @@ const QuickMarcEditorRows = ({
               isRequestToCentralTenantFromMember,
               onCheckCentralTenantPerm,
             );
-            const canBeLinkedAuto = isRecordForAutoLinking(recordRow, autoLinkableBibFields) || false;
+            const canBeLinkedAuto = isRecordForAutoLinking(recordRow, autoLinkableBibFields);
 
             const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') && recordRow._isLinked;
 
@@ -470,7 +470,7 @@ const QuickMarcEditorRows = ({
                   {
                     isFixedField && (
                       FixedFieldFactory.getFixedField(
-                        `${name}.content`, marcType, marcSpec, type, subtype,
+                        `${name}.content`, marcType, fixedFieldSpec, type, subtype,
                       )
                     )
                   }
@@ -595,7 +595,7 @@ QuickMarcEditorRows.propTypes = {
     updateRecord: PropTypes.func.isRequired,
   }),
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
-  marcSpec: PropTypes.object.isRequired,
+  fixedFieldSpec: PropTypes.object.isRequired,
   onCheckCentralTenantPerm: PropTypes.func,
 };
 

@@ -13,9 +13,9 @@ import { MARC_TYPES } from '../common/constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import * as utils from './utils';
 
-import marcSpecificationBib from '../../test/mocks/marcSpecificationBib';
-import marcSpecificationAuth from '../../test/mocks/marcSpecificationAuth';
-import marcSpecificationHold from '../../test/mocks/marcSpecificationHold';
+import fixedFieldSpecBib from '../../test/mocks/fixedFieldSpecBib';
+import fixedFieldSpecAuth from '../../test/mocks/fixedFieldSpecAuth';
+import fixedFieldSpecHold from '../../test/mocks/fixedFieldSpecHold';
 
 jest.mock('uuid', () => {
   return {
@@ -84,7 +84,7 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      const dehydratedMarcRecord = utils.dehydrateMarcRecordResponse(marcRecord, MARC_TYPES.BIB, marcSpecificationBib);
+      const dehydratedMarcRecord = utils.dehydrateMarcRecordResponse(marcRecord, MARC_TYPES.BIB, fixedFieldSpecBib);
       const field006 = dehydratedMarcRecord.records[2];
       const field007 = dehydratedMarcRecord.records[3];
       const field008 = dehydratedMarcRecord.records[4];
@@ -1595,7 +1595,7 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.fillEmptyFixedFieldValues(marcType, marcSpecificationBib, type, blvl, field)).toMatchObject({
+      expect(utils.fillEmptyFixedFieldValues(marcType, fixedFieldSpecBib, type, blvl, field)).toMatchObject({
         Srce: '\\',
         Audn: '\\',
         Lang: 'eng',
@@ -1629,7 +1629,7 @@ describe('QuickMarcEditor utils', () => {
           },
         };
 
-        expect(utils.fillEmptyFixedFieldValues(marcType, marcSpecificationAuth, type, blvl, field)).toMatchObject({
+        expect(utils.fillEmptyFixedFieldValues(marcType, fixedFieldSpecAuth, type, blvl, field)).toMatchObject({
           'Geo Subd': '\\',
           'Kind rec': '\\',
           'SH Sys': '\\',
@@ -1667,7 +1667,7 @@ describe('QuickMarcEditor utils', () => {
           },
         };
 
-        expect(utils.fillEmptyFixedFieldValues(marcType, marcSpecificationHold, type, blvl, field)).toMatchObject({
+        expect(utils.fillEmptyFixedFieldValues(marcType, fixedFieldSpecHold, type, blvl, field)).toMatchObject({
           AcqStatus: '\\',
           AcqMethod: '\\',
           AcqEndDate: '\\\\\\\\',
@@ -2302,7 +2302,7 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.cleanBytesFields(record, marcSpecificationBib)).toEqual(expectedRecord);
+      expect(utils.cleanBytesFields(record, fixedFieldSpecBib)).toEqual(expectedRecord);
     });
   });
 

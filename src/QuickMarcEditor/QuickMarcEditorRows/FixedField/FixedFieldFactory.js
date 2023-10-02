@@ -31,47 +31,41 @@ export const FixedFieldFactory = {
     return FixedField;
   },
 
-  getDocumentType(marcSpec, type, subtype) {
-    let idx = -1;
-
-    if (!marcSpec?.spec) {
+  getFixedFieldType(fixedFieldSpec, type, subtype) {
+    if (!fixedFieldSpec?.spec) {
       return undefined;
     }
 
-    const checkTypeSubType = (orElement) => {
-      const hasTypePos = orElement.positions['6'] || false;
-      const hasSubTypePos = orElement.positions['7'] || false;
-      const typeOK = hasTypePos && orElement.positions['6'].includes(type);
-      const subTypeOK = hasSubTypePos ? hasSubTypePos && orElement.positions['7'].includes(subtype) : true;
+    const checkTypeSubType = (fieldIdentifier) => {
+      const hasTypePos = fieldIdentifier.positions['6'] || false;
+      const hasSubTypePos = fieldIdentifier.positions['7'] || false;
+      const typeOK = hasTypePos && fieldIdentifier.positions['6'].includes(type);
+      const subTypeOK = hasSubTypePos ? hasSubTypePos && fieldIdentifier.positions['7'].includes(subtype) : true;
 
       return (typeOK && subTypeOK);
     };
 
-    marcSpec.spec.types.forEach((marcType, indexType) => {
-      marcType.identifiedBy.or.forEach(orElement => {
-        if (orElement.tag === LEADER_TAG) {
-          if (checkTypeSubType(orElement)) {
-            idx = indexType;
-          }
-        }
+    const fixedFieldType = fixedFieldSpec.spec.types.find((fixedFieldTypeFind) => {
+      return fixedFieldTypeFind.identifiedBy.or.some((fieldIdentifier) => {
+        return fieldIdentifier.tag === LEADER_TAG && checkTypeSubType(fieldIdentifier);
       });
     });
 
-    return idx !== -1 ? marcSpec.spec.types[idx] : undefined;
+    return fixedFieldType;
   },
 
-  getConfigFixedField(marcSpec, type, subtype = '') {
-    const documentType = this.getDocumentType(marcSpec, type, subtype);
+  getConfigFixedField(fixedFieldSpec, type, subtype = '') {
+    const fixedFieldType = this.getFixedFieldType(fixedFieldSpec, type, subtype);
     const config = {
       fields: [],
-      type: documentType?.code || undefined,
+      type: fixedFieldType?.code || undefined,
     };
 
-    if (!documentType) {
+    if (!fixedFieldType) {
       return config;
     }
 
-    config.fields = documentType.items.filter(x => !x.readOnly).map((item) => {
+    config.fields = fixedFieldType.items.filter(x => !x.readOnly).map((item) => {
       if (item.isArray) {
         return {
           name: item.code,
@@ -103,9 +97,9 @@ export const FixedFieldFactory = {
     return config;
   },
 
-  getFixedField(name, marcType, marcSpec, type, subtype) {
+  getFixedField(name, marcType, fixedFieldSpec, type, subtype) {
     const FixedField = this.getFixedFieldByType(marcType);
-    const configFixedField = this.getConfigFixedField(marcSpec, type, subtype);
+    const configFixedField = this.getConfigFixedField(fixedFieldSpec, type, subtype);
 
     return FixedField ? <FixedField name={name} config={configFixedField} /> : null;
   },

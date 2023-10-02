@@ -1,4 +1,4 @@
-const marcSpecificationHold = {
+const fixedFieldSpecHold = {
   tag: '008',
   spec: {
     types: [
@@ -138,4 +138,4 @@ const marcSpecificationHold = {
   },
 };
 
-export default marcSpecificationHold;
+export default fixedFieldSpecHold;

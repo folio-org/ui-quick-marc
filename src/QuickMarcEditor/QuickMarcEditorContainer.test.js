@@ -133,7 +133,7 @@ describe('Given Quick Marc Editor Container', () => {
       linkingRules: {
         GET: jest.fn().mockResolvedValue([]),
       },
-      marcSpec: {
+      fixedFieldSpec: {
         GET: jest.fn(() => Promise.resolve()),
       },
     };

@@ -1,4 +1,4 @@
-const marcSpecificationAuth = {
+const fixedFieldSpecAuth = {
   tag: '008',
   spec: {
     types: [
@@ -228,4 +228,4 @@ const marcSpecificationAuth = {
   },
 };
 
-export default marcSpecificationAuth;
+export default fixedFieldSpecAuth;
