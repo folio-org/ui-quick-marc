@@ -1,73 +1,88 @@
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import { FixedFieldFactory } from './FixedFieldFactory';
-
-import BookFixedField from './BookFixedField';
-import ComputerFileFixedField from './ComputerFileFixedField';
-import ContinuingResourceFixedField from './ContinuingResourceFixedField';
-import MapFixedField from './MapFixedField';
-import MixedMaterialFixedField from './MixedMaterialFixedField';
-import ScoreFixedField from './ScoreFixedField';
-import SoundRecordingFixedField from './SoundRecordingFixedField';
-import VisualMaterialFixedField from './VisualMaterialFixedField';
-import HoldingsFixedField from './HoldingsFixedField';
-import AuthorityFixedField from './AuthorityFixedField';
-import { MARC_TYPES } from '../../../common/constants';
+import fixedFieldSpecBib from '../../../../test/mocks/fixedFieldSpecBib';
+import fixedFieldSpecAuth from '../../../../test/mocks/fixedFieldSpecAuth';
+import fixedFieldSpecHold from '../../../../test/mocks/fixedFieldSpecHold';
 
 describe('FixedFieldFactory', () => {
-  it('should create correct fields', () => {
+  it('should create correct fixed field type', () => {
     expect(
-      FixedFieldFactory.getFixedField('records', MARC_TYPES.BIB, 'a', 'm').type.displayName,
-    ).toBe(BookFixedField.displayName);
+      FixedFieldFactory.getFixedField('records', fixedFieldSpecBib, 'a', 'm').props.config.type,
+    ).toBe('books');
 
     expect(
-      FixedFieldFactory.getFixedField('records', MARC_TYPES.BIB, 't').type.displayName,
-    ).toBe(BookFixedField.displayName);
+      FixedFieldFactory.getFixedField('records', fixedFieldSpecBib, 'a', 'a').props.config.type,
+    ).toBe('books');
 
     expect(
-      FixedFieldFactory.getFixedField('records', MARC_TYPES.HOLDINGS, 't').type.displayName,
-    ).toBe(HoldingsFixedField.displayName);
+      FixedFieldFactory.getFixedField('records', fixedFieldSpecBib, 'a', 'd').props.config.type,
+    ).toBe('books');
 
     expect(
-      FixedFieldFactory.getFixedField('records', MARC_TYPES.BIB, 'm').type.displayName,
-    ).toBe(ComputerFileFixedField.displayName);
+      FixedFieldFactory.getFixedField('records', fixedFieldSpecBib, 'a', 'x').props.config.type,
+    ).toBe(undefined);
 
     expect(
-      FixedFieldFactory.getFixedField('records', MARC_TYPES.BIB, 'a', 's').type.displayName,
-    ).toBe(ContinuingResourceFixedField.displayName);
+      FixedFieldFactory.getFixedField('records', fixedFieldSpecBib, 't').props.config.type,
+    ).toBe('books');
 
     expect(
-      FixedFieldFactory.getFixedField('records', MARC_TYPES.BIB, 's').type.displayName,
-    ).toBe(ContinuingResourceFixedField.displayName);
+      FixedFieldFactory.getFixedField('records', fixedFieldSpecBib, 'c').props.config.type,
+    ).toBe('scores');
 
     expect(
-      FixedFieldFactory.getFixedField('records', MARC_TYPES.BIB, 'f').type.displayName,
-    ).toBe(MapFixedField.displayName);
+      FixedFieldFactory.getFixedField('records', fixedFieldSpecBib, 'i').props.config.type,
+    ).toBe('sound_recordings');
 
     expect(
-      FixedFieldFactory.getFixedField('records', MARC_TYPES.BIB, 'p').type.displayName,
-    ).toBe(MixedMaterialFixedField.displayName);
+      FixedFieldFactory.getFixedField('records', fixedFieldSpecBib, 'a', 'b').props.config.type,
+    ).toBe('continuing_resources');
 
     expect(
-      FixedFieldFactory.getFixedField('records', MARC_TYPES.BIB, 'c').type.displayName,
-    ).toBe(ScoreFixedField.displayName);
+      FixedFieldFactory.getFixedField('records', fixedFieldSpecBib, 'a', 'i').props.config.type,
+    ).toBe('continuing_resources');
 
     expect(
-      FixedFieldFactory.getFixedField('records', MARC_TYPES.BIB, 'i').type.displayName,
-    ).toBe(SoundRecordingFixedField.displayName);
+      FixedFieldFactory.getFixedField('records', fixedFieldSpecBib, 'a', 's').props.config.type,
+    ).toBe('continuing_resources');
 
     expect(
-      FixedFieldFactory.getFixedField('records', MARC_TYPES.BIB, 'r').type.displayName,
-    ).toBe(VisualMaterialFixedField.displayName);
+      FixedFieldFactory.getFixedField('records', fixedFieldSpecBib, 's').props.config.type,
+    ).toBe('continuing_resources');
 
     expect(
-      FixedFieldFactory.getFixedField('records', MARC_TYPES.AUTHORITY).type.displayName,
-    ).toBe(AuthorityFixedField.displayName);
+      FixedFieldFactory.getFixedField('records', fixedFieldSpecBib, 'm').props.config.type,
+    ).toBe('computer_files');
+
+    expect(
+      FixedFieldFactory.getFixedField('records', fixedFieldSpecBib, 'g').props.config.type,
+    ).toBe('visual_materials');
+
+    expect(
+      FixedFieldFactory.getFixedField('records', fixedFieldSpecBib, 'e').props.config.type,
+    ).toBe('maps');
+
+    expect(
+      FixedFieldFactory.getFixedField('records', fixedFieldSpecBib, 'f').props.config.type,
+    ).toBe('maps');
+
+    expect(
+      FixedFieldFactory.getFixedField('records', fixedFieldSpecBib, 'p').props.config.type,
+    ).toBe('mixed_materials');
+
+    expect(
+      FixedFieldFactory.getFixedField('records', fixedFieldSpecAuth, 'z').props.config.type,
+    ).toBe('unknown');
+
+    expect(
+      FixedFieldFactory.getFixedField('records', fixedFieldSpecHold, 'u').props.config.type,
+    ).toBe('unknown');
   });
 
-  it('should return null when there is no matched field', () => {
+  it('should return undefined type when there is no matched field', () => {
     expect(
-      FixedFieldFactory.getFixedField('records', MARC_TYPES.BIB, 'l'),
-    ).toBe(null);
+      FixedFieldFactory.getFixedField('records', fixedFieldSpecBib, 'l').props.config.type,
+    ).toBe(undefined);
   });
 });

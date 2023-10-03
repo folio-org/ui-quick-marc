@@ -36,6 +36,7 @@ const propTypes = {
   initialValues: PropTypes.object.isRequired,
   instance: PropTypes.object,
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
+  fixedFieldSpec: PropTypes.object.isRequired,
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
 };
@@ -47,6 +48,7 @@ const QuickMarcDeriveWrapper = ({
   initialValues,
   mutator,
   marcType,
+  fixedFieldSpec,
 }) => {
   const showCallout = useShowCallout();
   const { linkableBibFields, actualizeLinks, linkingRules } = useAuthorityLinking({ marcType, action });
@@ -62,11 +64,11 @@ const QuickMarcDeriveWrapper = ({
       autopopulatePhysDescriptionField,
       autopopulateMaterialCharsField,
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
-      marcRecord => cleanBytesFields(marcRecord, marcType),
+      marcRecord => cleanBytesFields(marcRecord, fixedFieldSpec),
     )(formValues);
 
     return formValuesForDerive;
-  }, [marcType]);
+  }, [marcType, fixedFieldSpec]);
 
   const validate = useCallback((formValues) => {
     const formValuesForValidation = prepareForSubmit(formValues);
@@ -157,6 +159,7 @@ const QuickMarcDeriveWrapper = ({
       onSubmit={onSubmit}
       action={action}
       marcType={marcType}
+      fixedFieldSpec={fixedFieldSpec}
       httpError={httpError}
       confirmRemoveAuthorityLinking
       validate={validate}

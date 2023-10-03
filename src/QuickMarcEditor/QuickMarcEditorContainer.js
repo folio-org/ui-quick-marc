@@ -25,6 +25,7 @@ import {
   MARC_RECORD_STATUS_API,
   MARC_TYPES,
   LINKING_RULES_API,
+  MARC_SPEC_API,
 } from '../common/constants';
 
 import {
@@ -85,6 +86,7 @@ const QuickMarcEditorContainer = ({
   const [locations, setLocations] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [linksCount, setLinksCount] = useState(0);
+  const [fixedFieldSpec, setFixedFieldSpec] = useState();
 
   const searchParams = new URLSearchParams(location.search);
   const { token, locale } = stripes.okapi;
@@ -146,8 +148,27 @@ const QuickMarcEditorContainer = ({
       ? fetchLinksCount([externalId])
       : Promise.resolve();
 
-    await Promise.all([instancePromise, marcRecordPromise, locationsPromise, linksCountPromise, linkingRulesPromise])
-      .then(([instanceResponse, marcRecordResponse, locationsResponse, linksCountResponse, linkingRulesResponse]) => {
+    const fixedFieldSpecPromise = mutator.fixedFieldSpec.GET({
+      path: `${MARC_SPEC_API}/${marcType}/008`,
+      ...headers,
+    });
+
+    await Promise.all([
+      instancePromise,
+      marcRecordPromise,
+      locationsPromise,
+      linksCountPromise,
+      linkingRulesPromise,
+      fixedFieldSpecPromise,
+    ])
+      .then(([
+        instanceResponse,
+        marcRecordResponse,
+        locationsResponse,
+        linksCountResponse,
+        linkingRulesResponse,
+        fixedFieldSpecResponse,
+      ]) => {
         if (marcType === MARC_TYPES.AUTHORITY) {
           setLinksCount(linksCountResponse.links[0].totalLinks);
         }
@@ -165,7 +186,7 @@ const QuickMarcEditorContainer = ({
         if (action === QUICK_MARC_ACTIONS.CREATE) {
           dehydratedMarcRecord = createRecordDefaults[marcType](instanceResponse);
         } else {
-          dehydratedMarcRecord = dehydrateMarcRecordResponse(marcRecordResponse, marcType);
+          dehydratedMarcRecord = dehydrateMarcRecordResponse(marcRecordResponse, marcType, fixedFieldSpecResponse);
         }
 
         const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, action, marcType);
@@ -175,6 +196,7 @@ const QuickMarcEditorContainer = ({
         setInstance(instanceResponse);
         setMarcRecord(marcRecordWithSplitFields);
         setLocations(locationsResponse);
+        setFixedFieldSpec(fixedFieldSpecResponse);
         setIsLoading(false);
       })
       .catch(() => {
@@ -219,6 +241,7 @@ const QuickMarcEditorContainer = ({
       location={location}
       locations={locations}
       marcType={marcType}
+      fixedFieldSpec={fixedFieldSpec}
       refreshPageData={loadData}
       externalRecordPath={externalRecordUrl}
       resources={resources}
@@ -261,6 +284,13 @@ QuickMarcEditorContainer.manifest = Object.freeze({
     fetch: false,
     accumulate: true,
     path: LINKING_RULES_API,
+    throwErrors: false,
+  },
+  fixedFieldSpec: {
+    type: 'okapi',
+    fetch: false,
+    accumulate: true,
+    path: MARC_SPEC_API,
     throwErrors: false,
   },
 });

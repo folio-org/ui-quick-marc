@@ -79,6 +79,7 @@ const QuickMarcEditorRows = ({
     updateRecord,
   },
   marcType,
+  fixedFieldSpec,
   instance,
   linksCount,
   isLoadingLinkSuggestions,
@@ -469,7 +470,7 @@ const QuickMarcEditorRows = ({
                   {
                     isFixedField && (
                       FixedFieldFactory.getFixedField(
-                        `${name}.content`, marcType, type, subtype,
+                        `${name}.content`, fixedFieldSpec, type, subtype,
                       )
                     )
                   }
@@ -594,6 +595,7 @@ QuickMarcEditorRows.propTypes = {
     updateRecord: PropTypes.func.isRequired,
   }),
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
+  fixedFieldSpec: PropTypes.object.isRequired,
   onCheckCentralTenantPerm: PropTypes.func,
 };
 

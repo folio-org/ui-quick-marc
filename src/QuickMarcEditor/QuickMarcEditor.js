@@ -91,6 +91,7 @@ const QuickMarcEditor = ({
     getState,
   },
   marcType,
+  fixedFieldSpec,
   locations,
   httpError,
   externalRecordPath,
@@ -125,8 +126,8 @@ const QuickMarcEditor = ({
   }, [records]);
 
   const leader = records[0];
-  const type = leader?.content?.[6];
-  const subtype = leader?.content?.[7];
+  const type = leader?.content?.[6] || '';
+  const subtype = leader?.content?.[7] || '';
 
   const saveFormDisabled = action === QUICK_MARC_ACTIONS.EDIT
     ? pristine || submitting
@@ -475,6 +476,7 @@ const QuickMarcEditor = ({
                     type={type}
                     subtype={subtype}
                     marcType={marcType}
+                    fixedFieldSpec={fixedFieldSpec}
                     instance={instance}
                     linksCount={linksCount}
                     isLoadingLinkSuggestions={isLoadingLinkSuggestions}
@@ -551,6 +553,7 @@ QuickMarcEditor.propTypes = {
     reset: PropTypes.func.isRequired,
   }),
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
+  fixedFieldSpec: PropTypes.object.isRequired,
   linksCount: PropTypes.number,
   locations: PropTypes.arrayOf(PropTypes.object).isRequired,
   httpError: PropTypes.shape({
