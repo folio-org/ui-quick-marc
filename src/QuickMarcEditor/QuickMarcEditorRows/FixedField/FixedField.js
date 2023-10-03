@@ -5,7 +5,7 @@ import {
   BytesField,
 } from '../BytesField';
 
-const HoldingsFixedField = ({ name, config }) => {
+const FixedField = ({ name, config }) => {
   return (
     <BytesField
       name={name}
@@ -14,11 +14,9 @@ const HoldingsFixedField = ({ name, config }) => {
   );
 };
 
-HoldingsFixedField.propTypes = {
+FixedField.propTypes = {
   name: PropTypes.string.isRequired,
   config: PropTypes.object.isRequired,
 };
 
-HoldingsFixedField.displayName = 'HoldingsFixedField';
-
-export default HoldingsFixedField;
+export default FixedField;

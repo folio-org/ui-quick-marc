@@ -1,35 +1,13 @@
 import React from 'react';
 
-import { MARC_TYPES } from '../../../common/constants';
 import { LEADER_TAG } from '../../constants';
 import {
   SUBFIELD_TYPES,
 } from '../BytesField';
 
-import HoldingsFixedField from './HoldingsFixedField';
-import AuthorityFixedField from './AuthorityFixedField';
-import BibliographicFixedField from './BibliographicFixedField';
+import FixedField from './FixedField';
 
 export const FixedFieldFactory = {
-  getFixedFieldByType(marcType) {
-    let FixedField;
-
-    switch (marcType) {
-      case MARC_TYPES.HOLDINGS:
-        FixedField = HoldingsFixedField;
-        break;
-      case MARC_TYPES.AUTHORITY:
-        FixedField = AuthorityFixedField;
-        break;
-      case MARC_TYPES.BIB:
-        FixedField = BibliographicFixedField;
-        break;
-      default:
-        FixedField = null;
-    }
-
-    return FixedField;
-  },
 
   getFixedFieldType(fixedFieldSpec, type, subtype) {
     if (!fixedFieldSpec?.spec) {
@@ -97,10 +75,9 @@ export const FixedFieldFactory = {
     return config;
   },
 
-  getFixedField(name, marcType, fixedFieldSpec, type, subtype) {
-    const FixedField = this.getFixedFieldByType(marcType);
+  getFixedField(name, fixedFieldSpec, type, subtype) {
     const configFixedField = this.getConfigFixedField(fixedFieldSpec, type, subtype);
 
-    return FixedField ? <FixedField name={name} config={configFixedField} /> : null;
+    return <FixedField name={name} config={configFixedField} />;
   },
 };
