@@ -40,7 +40,8 @@
           "marc-records-editor.item.post",
           "marc-records-editor.links.suggestion.post",
           "instance-authority-links.instances.collection.post",
-          "marc-records-editor.status.item.get"
+          "marc-records-editor.status.item.get",
+          "marc-specifications.item.get"          
         ],
         "visible": true
       },
@@ -52,7 +53,8 @@
           "perms.users.get",
           "marc-records-editor.item.put",
           "marc-records-editor.links.suggestion.post",
-          "instance-authority-links.instances.collection.put"
+          "instance-authority-links.instances.collection.put",
+          "marc-specifications.item.get"
         ],
         "visible": true
       },
@@ -71,7 +73,8 @@
         "displayName": "quickMARC: View, edit MARC holdings record",
         "subPermissions": [
           "ui-quick-marc.quick-marc-holdings-editor.view",
-          "marc-records-editor.item.put"
+          "marc-records-editor.item.put",
+          "marc-specifications.item.get"          
         ],
         "visible": true
       },
@@ -81,7 +84,8 @@
         "subPermissions": [
           "ui-quick-marc.quick-marc-holdings-editor.view",
           "marc-records-editor.status.item.get",
-          "marc-records-editor.item.post"
+          "marc-records-editor.item.post",
+          "marc-specifications.item.get"          
         ],
         "visible": true
       },
@@ -93,7 +97,8 @@
           "marc-records-editor.status.item.get",
           "marc-records-editor.item.post",
           "marc-records-editor.links.suggestion.post",
-          "instance-authority-links.instances.collection.put"
+          "instance-authority-links.instances.collection.put",
+          "marc-specifications.item.get"
         ],
         "visible": true
       },
@@ -105,7 +110,8 @@
           "marc-records-editor.item.post",
           "instance-authority-links.instances.collection.post",
           "instance-authority-links.authorities.bulk.post",
-          "marc-records-editor.status.item.get"
+          "marc-records-editor.status.item.get",
+          "marc-specifications.item.get"
         ],
         "visible": false
       },
@@ -115,7 +121,8 @@
         "subPermissions": [
           "marc-records-editor.item.get",
           "marc-records-editor.item.put",
-          "inventory-storage.locations.collection.get"
+          "inventory-storage.locations.collection.get",
+          "marc-specifications.item.get"
         ],
         "visible": true
       },
