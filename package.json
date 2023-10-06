@@ -15,6 +15,7 @@
       "inventory": "13.0",
       "marc-records-editor": "5.0",
       "permissions": "5.6",
+      "marc-specifications": "1.0",
       "instance-authority-links": "2.1"
     },
     "stripesDeps": [
@@ -41,7 +42,7 @@
           "marc-records-editor.links.suggestion.post",
           "instance-authority-links.instances.collection.post",
           "marc-records-editor.status.item.get",
-          "marc-specifications.item.get"          
+          "marc-specifications.item.get"
         ],
         "visible": true
       },
@@ -74,7 +75,7 @@
         "subPermissions": [
           "ui-quick-marc.quick-marc-holdings-editor.view",
           "marc-records-editor.item.put",
-          "marc-specifications.item.get"          
+          "marc-specifications.item.get"
         ],
         "visible": true
       },
@@ -85,7 +86,7 @@
           "ui-quick-marc.quick-marc-holdings-editor.view",
           "marc-records-editor.status.item.get",
           "marc-records-editor.item.post",
-          "marc-specifications.item.get"          
+          "marc-specifications.item.get"
         ],
         "visible": true
       },

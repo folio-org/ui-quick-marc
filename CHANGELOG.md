@@ -117,6 +117,7 @@
 * [UIQM-385](https://issues.folio.org/browse/UIQM-385) Edit/Derive quickMARC | Allow user to drag text boxes to view all content
 * [UIQM-402](https://issues.folio.org/browse/UIQM-402) Add linkingRuleId to the request body for linked fields
 * [UIQM-351](https://issues.folio.org/browse/UIQM-351) MARC Authority | Print Source record
+* [UIQM-567](https://issues.folio.org/browse/UIQM-567) Add marc-specifications to interfaces.
 
 ## [5.2.0](https://github.com/folio-org/ui-quick-marc/tree/v5.2.0) (2022-10-26)
 
