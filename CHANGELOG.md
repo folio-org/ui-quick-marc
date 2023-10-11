@@ -59,6 +59,7 @@
 * [UIQM-562](https://issues.folio.org/browse/UIQM-562) Fix optimistic locking error doesn't appear when edit "MARC authority" record.
 * [UIQM-564](https://issues.folio.org/browse/UIQM-564) Hide permission `quickMARC: Create a new MARC authority record
 * [UIQM-431](https://issues.folio.org/browse/UIQM-431) Marc record fixed field 008 with proper order.
+* [UIQM-568](https://issues.folio.org/browse/UIQM-568) Remove second call to links-suggestion endpoint. Now only need to send one call to member tenant.
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
 
