@@ -7,10 +7,7 @@ import get from 'lodash/get';
 import omit from 'lodash/omit';
 import pick from 'lodash/pick';
 
-import {
-  checkIfUserInMemberTenant,
-  useStripes,
-} from '@folio/stripes/core';
+import { useStripes } from '@folio/stripes/core';
 
 import {
   useAuthoritySourceFiles,
@@ -30,12 +27,10 @@ import {
 } from '../../QuickMarcEditor/utils';
 import {
   AUTOLINKING_STATUSES,
-  AUTOLINKING_ERROR_CODES,
   UNCONTROLLED_ALPHA,
   UNCONTROLLED_NUMBER,
   QUICK_MARC_ACTIONS,
 } from '../../QuickMarcEditor/constants';
-import { MARC_TYPES } from '../../common/constants';
 
 const joinSubfields = (subfields) => Object.keys(subfields).reduce((content, key) => {
   const subfield = subfields[key].join(` ${key} `);
@@ -48,10 +43,8 @@ const formatSubfieldCode = (code) => { return code.startsWith('$') ? code : `$${
 const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
   const stripes = useStripes();
   const location = useLocation();
-  const { search } = location;
 
   const centralTenantId = stripes.user.user.consortium?.centralTenantId;
-  const isMemberTenant = checkIfUserInMemberTenant(stripes);
   const isCentralTenantInHeaders = applyCentralTenantInHeaders(location, stripes, marcType)
     && action === QUICK_MARC_ACTIONS.EDIT;
 
@@ -62,13 +55,9 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
   const { linkingRules } = useAuthorityLinkingRules({ tenantId: _tenantId });
 
   const {
-    fetchLinkSuggestions: fetchMemberLinkSuggestions,
-    isLoading: isLoadingMemberLinkSuggestions,
+    fetchLinkSuggestions,
+    isLoading: isLoadingLinkSuggestions,
   } = useLinkSuggestions({ tenantId: _tenantId });
-  const {
-    fetchLinkSuggestions: fetchCentralLinkSuggestions,
-    isLoading: isLoadingCentralLinkSuggestions,
-  } = useLinkSuggestions({ tenantId: centralTenantId });
 
   const linkableBibFields = useMemo(() => linkingRules.map(rule => rule.bibField), [linkingRules]);
   const autoLinkableBibFields = useMemo(() => {
@@ -221,8 +210,6 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
   }, [getSubfieldGroups]);
 
   const getSuggestedFields = useCallback(async (formValues, fieldsToHydrate, extraRequestArgs = {}) => {
-    const searchParams = new URLSearchParams(search);
-    const isSharedRecord = searchParams.get('shared') === 'true';
     const payload = hydrateForLinkSuggestions(formValues, fieldsToHydrate);
 
     const requestArgs = {
@@ -230,52 +217,10 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
       ...extraRequestArgs,
     };
 
-    const isRecordWithCentralAndMemberSuggestions = (
-      marcType === MARC_TYPES.BIB
-      && isMemberTenant
-      && (!isSharedRecord || (isSharedRecord && action === QUICK_MARC_ACTIONS.DERIVE))
-    );
+    const { fields: memberSuggestedFields } = await fetchLinkSuggestions(requestArgs);
 
-    const memberLinkSuggestionsPromise = fetchMemberLinkSuggestions(requestArgs);
-    const centralLinkSuggestionsPromise = isRecordWithCentralAndMemberSuggestions
-      ? fetchCentralLinkSuggestions(requestArgs)
-      : Promise.resolve({ fields: [] });
-
-    const [
-      { fields: memberSuggestedFields },
-      { fields: suggestedFieldsFromCentralTenant },
-    ] = await Promise.all([
-      memberLinkSuggestionsPromise,
-      centralLinkSuggestionsPromise,
-    ]);
-
-    return memberSuggestedFields.map((suggestedField, index) => {
-      if (suggestedField.linkDetails?.status !== AUTOLINKING_STATUSES.ERROR) {
-        return suggestedField;
-      }
-
-      const suggestedFieldFromCentralTenant = suggestedFieldsFromCentralTenant[index];
-
-      const shouldTakeSuggestedFieldFromCentralTenant = (
-        isRecordWithCentralAndMemberSuggestions
-        && suggestedField.linkDetails.errorCause === AUTOLINKING_ERROR_CODES.AUTHORITY_NOT_FOUND
-        && suggestedFieldFromCentralTenant?.linkDetails.status !== AUTOLINKING_STATUSES.ERROR
-      );
-
-      if (shouldTakeSuggestedFieldFromCentralTenant) {
-        return suggestedFieldFromCentralTenant;
-      }
-
-      return suggestedField;
-    });
-  }, [
-    fetchMemberLinkSuggestions,
-    fetchCentralLinkSuggestions,
-    search,
-    marcType,
-    isMemberTenant,
-    action,
-  ]);
+    return memberSuggestedFields;
+  }, [fetchLinkSuggestions]);
 
   const autoLinkAuthority = useCallback(async (formValues) => {
     const fieldsToLink = formValues.records.filter(record => isRecordForAutoLinking(record, autoLinkableBibFields));
@@ -401,9 +346,8 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
     autoLinkAuthority,
     actualizeLinks,
     linkingRules,
-    fetchMemberLinkSuggestions,
-    fetchCentralLinkSuggestions,
-    isLoadingLinkSuggestions: isLoadingMemberLinkSuggestions || isLoadingCentralLinkSuggestions,
+    fetchLinkSuggestions,
+    isLoadingLinkSuggestions,
   };
 };
 
