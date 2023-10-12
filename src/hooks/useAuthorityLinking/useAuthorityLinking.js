@@ -55,8 +55,8 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
   const { linkingRules } = useAuthorityLinkingRules({ tenantId: _tenantId });
 
   const {
-    fetchLinkSuggestions: fetchMemberLinkSuggestions,
-    isLoading: isLoadingMemberLinkSuggestions,
+    fetchLinkSuggestions,
+    isLoading: isLoadingLinkSuggestions,
   } = useLinkSuggestions({ tenantId: _tenantId });
 
   const linkableBibFields = useMemo(() => linkingRules.map(rule => rule.bibField), [linkingRules]);
@@ -217,16 +217,10 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
       ...extraRequestArgs,
     };
 
-    const { fields: memberSuggestedFields } = await fetchMemberLinkSuggestions(requestArgs);
+    const { fields: memberSuggestedFields } = await fetchLinkSuggestions(requestArgs);
 
-    return memberSuggestedFields.map((suggestedField) => {
-      if (suggestedField.linkDetails?.status !== AUTOLINKING_STATUSES.ERROR) {
-        return suggestedField;
-      }
-
-      return suggestedField;
-    });
-  }, [fetchMemberLinkSuggestions]);
+    return memberSuggestedFields;
+  }, [fetchLinkSuggestions]);
 
   const autoLinkAuthority = useCallback(async (formValues) => {
     const fieldsToLink = formValues.records.filter(record => isRecordForAutoLinking(record, autoLinkableBibFields));
@@ -352,8 +346,8 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
     autoLinkAuthority,
     actualizeLinks,
     linkingRules,
-    fetchMemberLinkSuggestions,
-    isLoadingLinkSuggestions: isLoadingMemberLinkSuggestions,
+    fetchLinkSuggestions,
+    isLoadingLinkSuggestions,
   };
 };
 
