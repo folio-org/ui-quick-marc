@@ -1,5 +1,9 @@
 # Change history for ui-quick-marc
 
+## [7.0.1](https://github.com/folio-org/ui-quick-marc/tree/v7.0.1) (2023-10-13)
+
+* Use correct version of `ui-plugin-find-authority`.
+
 ## [7.0.0](https://github.com/folio-org/ui-quick-marc/tree/v7.0.0) (2023-10-13)
 
 * [UIQM-250](https://issues.folio.org/browse/UIQM-250) Updated invalid Leader position values error messages to be more informative.
