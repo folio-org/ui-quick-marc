@@ -1,6 +1,6 @@
 {
   "name": "@folio/quick-marc",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "description": "Quick MARC editor",
   "main": "index.js",
   "repository": "",
@@ -192,6 +192,6 @@
     "react-router-dom": "^5.2.0"
   },
   "optionalDependencies": {
-    "@folio/plugin-find-authority": "^2.0.0"
+    "@folio/plugin-find-authority": "^3.0.0"
   }
 }
