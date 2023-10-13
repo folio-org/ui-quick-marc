@@ -1,5 +1,9 @@
 # Change history for ui-quick-marc
 
+## [7.1.0] (IN PROGRESS)
+
+* [UIQM-571](https://issues.folio.org/browse/UIQM-571) Added `marc-records-editor.item.put` to Derive Bib permission to fix issue with broken links after deriving a record.
+
 ## [7.0.1](https://github.com/folio-org/ui-quick-marc/tree/v7.0.1) (2023-10-13)
 
 * Use correct version of `ui-plugin-find-authority`.
