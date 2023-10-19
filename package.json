@@ -150,7 +150,6 @@
     "build-mod-descriptor": "stripes mod descriptor --full --strict | jq '.[]' > module-descriptor.json"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.17.0",
     "@folio/eslint-config-stripes": "^7.0.0",
     "@folio/jest-config-stripes": "^2.0.0",
     "@folio/stripes": "^9.0.0",
