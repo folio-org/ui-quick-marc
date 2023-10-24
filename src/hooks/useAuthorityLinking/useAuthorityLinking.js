@@ -8,10 +8,10 @@ import omit from 'lodash/omit';
 import pick from 'lodash/pick';
 
 import { useStripes } from '@folio/stripes/core';
+import { useAuthorityLinkingRules } from '@folio/stripes-marc-components';
 
 import {
   useAuthoritySourceFiles,
-  useAuthorityLinkingRules,
   useLinkSuggestions,
 } from '../../queries';
 

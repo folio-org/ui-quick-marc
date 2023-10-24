@@ -47,12 +47,16 @@ jest.mock('../../hooks', () => ({
   }),
 }));
 
-jest.mock('../../queries', () => ({
-  ...jest.requireActual('../../queries'),
+jest.mock('@folio/stripes-marc-components', () => ({
+  ...jest.requireActual('@folio/stripes-marc-components'),
   useAuthorityLinkingRules: jest.fn().mockReturnValue({
     linkingRules: [],
     isLoading: false,
   }),
+}));
+
+jest.mock('../../queries', () => ({
+  ...jest.requireActual('../../queries'),
   useAuthoritySourceFiles: jest.fn().mockResolvedValue({
     sourceFiles: [],
     isLoading: false,

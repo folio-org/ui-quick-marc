@@ -4,6 +4,7 @@
 
 * [UIQM-571](https://issues.folio.org/browse/UIQM-571) Added `marc-records-editor.item.put` to Derive and Create Bib permissions to fix issue with broken links after deriving or creating a record.
 * [UIQM-543](https://issues.folio.org/browse/UIQM-543) Remove eslint deps that are already listed in eslint-config-stripes.
+* [UIQM-580](https://issues.folio.org/browse/UIQM-580) Move QuickMarcView, PrintPopup and getHeaders to stripes-marc-components.
 
 ## [7.0.1](https://github.com/folio-org/ui-quick-marc/tree/v7.0.1) (2023-10-13)
 

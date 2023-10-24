@@ -55,12 +55,16 @@ jest.mock('react-router', () => ({
   withRouter: Component => props => <Component match={match} location={location} history={mockHistory} {...props} />,
 }));
 
-jest.mock('../queries', () => ({
-  ...jest.requireActual('../queries'),
+jest.mock('@folio/stripes-marc-components', () => ({
+  ...jest.requireActual('@folio/stripes-marc-components'),
   useAuthorityLinkingRules: jest.fn().mockReturnValue({
     linkingRules: [],
     isLoading: false,
   }),
+}));
+
+jest.mock('../queries', () => ({
+  ...jest.requireActual('../queries'),
   useAuthoritySourceFiles: jest.fn().mockReturnValue({
     sourceFiles: [],
     isLoading: false,

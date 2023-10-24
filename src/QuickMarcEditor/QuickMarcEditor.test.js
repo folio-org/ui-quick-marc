@@ -28,8 +28,12 @@ jest.mock('react-router', () => ({
 
 jest.mock('../queries', () => ({
   ...jest.requireActual('../queries'),
-  useAuthorityLinkingRules: jest.fn().mockReturnValue({ linkingRules: [] }),
   useLinkSuggestions: jest.fn().mockReturnValue({ isLoading: false, fetchLinkSuggestions: jest.fn() }),
+}));
+
+jest.mock('@folio/stripes-marc-components', () => ({
+  ...jest.requireActual('@folio/stripes-marc-components'),
+  useAuthorityLinkingRules: jest.fn().mockReturnValue({ linkingRules: [] }),
 }));
 
 jest.mock('@folio/stripes-acq-components', () => ({
