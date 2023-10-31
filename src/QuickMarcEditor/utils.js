@@ -155,7 +155,7 @@ export const saveLinksToNewRecord = async (mutator, externalId, marcRecord) => {
   // request derived MARC Bib record
   const marcPromise = mutator.quickMarcEditMarcRecord.GET({ params: { externalId } });
 
-  Promise.all([instancePromise, marcPromise]).then(([{ _version }, derivedRecord]) => {
+  return Promise.all([instancePromise, marcPromise]).then(([{ _version }, derivedRecord]) => {
     // copy linking data to new record
     derivedRecord.fields = derivedRecord.fields.map((field) => {
       // matching field from POST request
