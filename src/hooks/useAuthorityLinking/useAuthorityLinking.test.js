@@ -4,13 +4,11 @@ import {
   QueryClientProvider,
 } from 'react-query';
 import { renderHook } from '@folio/jest-config-stripes/testing-library/react';
+import { useAuthorityLinkingRules } from '@folio/stripes-marc-components';
 import { useLocation } from 'react-router-dom';
 
 import useAuthorityLinking from './useAuthorityLinking';
-import {
-  useAuthorityLinkingRules,
-  useLinkSuggestions,
-} from '../../queries';
+import { useLinkSuggestions } from '../../queries';
 import { MARC_TYPES } from '../../common/constants';
 import { linkingRules } from '../../../test/jest/fixtures/linkingRules';
 
@@ -21,8 +19,12 @@ jest.mock('react-router-dom', () => ({
   useLocation: jest.fn(),
 }));
 
-jest.mock('../../queries', () => ({
+jest.mock('@folio/stripes-marc-components', () => ({
+  ...jest.requireActual('@folio/stripes-marc-components'),
   useAuthorityLinkingRules: jest.fn(),
+}));
+
+jest.mock('../../queries', () => ({
   useAuthoritySourceFiles: jest.fn().mockReturnValue({
     sourceFiles: [{
       id: '1',

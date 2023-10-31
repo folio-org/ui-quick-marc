@@ -12,6 +12,7 @@ import {
   useStripes,
 } from '@folio/stripes/core';
 import { useShowCallout } from '@folio/stripes-acq-components';
+import { getHeaders } from '@folio/stripes-marc-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 import { useAuthorityLinking } from '../hooks';
@@ -36,7 +37,6 @@ import {
   autopopulateFixedField,
   autopopulatePhysDescriptionField,
   autopopulateMaterialCharsField,
-  getHeaders,
   applyCentralTenantInHeaders,
 } from './utils';
 import {

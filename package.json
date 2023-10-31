@@ -1,6 +1,6 @@
 {
   "name": "@folio/quick-marc",
-  "version": "7.0.2",
+  "version": "8.0.0",
   "description": "Quick MARC editor",
   "main": "index.js",
   "repository": "",
@@ -155,6 +155,7 @@
     "@folio/stripes": "^9.0.0",
     "@folio/stripes-cli": "^3.0.0",
     "@folio/stripes-core": "^10.0.0",
+    "@folio/stripes-marc-components": "^1.0.0",
     "@folio/stripes-testing": "^4.2.0",
     "@formatjs/cli": "^6.1.3",
     "core-js": "^3.6.1",
@@ -181,11 +182,11 @@
     "react-final-form-listeners": "^1.0.2",
     "react-query": "^3.39.2",
     "react-router-prop-types": "^1.0.4",
-    "react-to-print": "^2.14.11",
     "uuid": "^8.3.2"
   },
   "peerDependencies": {
     "@folio/stripes": "^9.0.0",
+    "@folio/stripes-marc-components": "^1.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-intl": "^6.4.4",

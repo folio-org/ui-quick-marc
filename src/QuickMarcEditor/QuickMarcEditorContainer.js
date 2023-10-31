@@ -18,6 +18,7 @@ import {
   baseManifest,
   useShowCallout,
 } from '@folio/stripes-acq-components';
+import { getHeaders } from '@folio/stripes-marc-components';
 
 import {
   EXTERNAL_INSTANCE_APIS,
@@ -36,7 +37,6 @@ import {
   splitFields,
   getCreateBibMarcRecordResponse,
   getCreateAuthorityMarcRecordResponse,
-  getHeaders,
   applyCentralTenantInHeaders,
 } from './utils';
 import { QUICK_MARC_ACTIONS } from './constants';
