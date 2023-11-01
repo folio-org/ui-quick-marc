@@ -90,12 +90,6 @@ export const getContentSubfieldValue = (content = '') => {
     }, {});
 };
 
-const is001LinkedToBibRecord = (initialRecords, naturalId) => {
-  const field001 = initialRecords.find(record => record.tag === '001');
-
-  return naturalId === field001?.content.replaceAll(' ', '');
-};
-
 export const is010LinkedToBibRecord = (initialRecords, naturalId) => {
   const initial010Field = initialRecords.find(record => record.tag === '010');
 
@@ -106,13 +100,6 @@ export const is010LinkedToBibRecord = (initialRecords, naturalId) => {
   const initial010$a = getContentSubfieldValue(initial010Field.content).$a?.[0];
 
   return naturalId === initial010$a?.replaceAll(' ', '');
-};
-
-export const is010$aCreated = (initial, updated) => {
-  const initial010 = initial.find(rec => rec.tag === '010');
-  const updated010 = updated.find(rec => rec.tag === '010');
-
-  return !initial010 && updated010 && !!getContentSubfieldValue(updated010.content).$a?.[0];
 };
 
 export const is010$aUpdated = (initial, updated) => {
@@ -857,7 +844,7 @@ const validateMarcAuthority1xxField = (initialRecords, formValuesToSave) => {
   return undefined;
 };
 
-const validateLinkedAuthority010Field = (field010, initialRecords, records, naturalId) => {
+const validateLinkedAuthority010Field = (field010, initialRecords, naturalId) => {
   if (is010LinkedToBibRecord(initialRecords, naturalId)) {
     if (!field010) {
       return <FormattedMessage id="ui-quick-marc.record.error.010.removed" />;
@@ -870,13 +857,6 @@ const validateLinkedAuthority010Field = (field010, initialRecords, records, natu
     }
 
     return undefined;
-  }
-
-  if (
-    is001LinkedToBibRecord(initialRecords, naturalId)
-      && (is010$aCreated(initialRecords, records) || is010$aUpdated(initialRecords, records))
-  ) {
-    return <FormattedMessage id="ui-quick-marc.record.error.010.edit$a" />;
   }
 
   return undefined;
@@ -900,7 +880,7 @@ const validateAuthority010Field = (initialRecords, records, naturalId, marcRecor
   }
 
   if (isLinked) {
-    return validateLinkedAuthority010Field(field010, initialRecords, records, naturalId);
+    return validateLinkedAuthority010Field(field010, initialRecords, naturalId);
   }
 
   return undefined;

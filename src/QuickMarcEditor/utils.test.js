@@ -1209,63 +1209,6 @@ describe('QuickMarcEditor utils', () => {
           }).props.id).toBe('ui-quick-marc.record.error.1xx.remove$t');
         });
 
-        it('should return an error if 010 $a edited and 001 is linked', () => {
-          const newInitialValues = {
-            ...initialValues,
-            records: [
-              ...initialValues.records,
-              {
-                content: 'n  83073672 ',
-                tag: '001',
-              },
-              {
-                tag: '010',
-                content: '$a 63943573',
-              },
-            ],
-          };
-
-          const record = cloneDeep(newInitialValues);
-
-          record.records[4].content += 'test';
-
-          expect(utils.validateMarcRecord({
-            marcRecord: record,
-            initialValues: newInitialValues,
-            marcType: MARC_TYPES.AUTHORITY,
-            linksCount,
-            naturalId: 'n83073672',
-          }).props.id).toBe('ui-quick-marc.record.error.010.edit$a');
-        });
-
-        it('should return an error if 010 $a created and 001 is linked', () => {
-          const newInitialValues = {
-            ...initialValues,
-            records: [
-              ...initialValues.records,
-              {
-                content: 'n  83073672 ',
-                tag: '001',
-              },
-            ],
-          };
-
-          const record = cloneDeep(newInitialValues);
-
-          record.records.push({
-            tag: '010',
-            content: '$a 63943573',
-          });
-
-          expect(utils.validateMarcRecord({
-            marcRecord: record,
-            initialValues: newInitialValues,
-            marcType: MARC_TYPES.AUTHORITY,
-            linksCount,
-            naturalId: 'n83073672',
-          }).props.id).toBe('ui-quick-marc.record.error.010.edit$a');
-        });
-
         it('should return an error if 010 $a removed and 010 is linked', () => {
           const newInitialValues = {
             ...initialValues,

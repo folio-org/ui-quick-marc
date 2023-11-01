@@ -3,10 +3,8 @@
 ## [8.0.0] (IN PROGRESS)
 
 * [UIQM-580](https://issues.folio.org/browse/UIQM-580) *BREAKING* Move QuickMarcView, PrintPopup and getHeaders to stripes-marc-components.
-
-## [7.1.0] (IN PROGRESS)
-
 * [UIQM-543](https://issues.folio.org/browse/UIQM-543) Remove eslint deps that are already listed in eslint-config-stripes.
+* [UIQM-573](https://issues.folio.org/browse/UIQM-573) Edit MARC authority | Allow user to Add/Edit 010 $a when linking is based on 001.
 
 ## [7.0.2](https://github.com/folio-org/ui-quick-marc/tree/v7.0.2) (2023-10-27)
 
