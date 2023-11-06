@@ -515,7 +515,7 @@ describe('Given QuickMarcEditWrapper', () => {
 
       describe('when record not found (already deleted)', () => {
         it('should reveal an error message', async () => {
-          mutator.quickMarcEditInstance.GET = jest.fn(() => Promise.reject(new Error('Not found')));
+          mutator.quickMarcEditInstance.GET = jest.fn().mockRejectedValue({ httpStatus: 404 });
 
           const { getByText } = renderQuickMarcEditWrapper({
             instance,

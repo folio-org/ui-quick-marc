@@ -6,6 +6,10 @@
 * [UIQM-543](https://issues.folio.org/browse/UIQM-543) Remove eslint deps that are already listed in eslint-config-stripes.
 * [UIQM-573](https://issues.folio.org/browse/UIQM-573) Edit MARC authority | Allow user to Add/Edit 010 $a when linking is based on 001.
 
+## [7.0.4](IN PROGRESS)
+
+* [UIQM-582](https://issues.folio.org/browse/UIQM-582) Show correct message if record not found.
+
 ## [7.0.3](https://github.com/folio-org/ui-quick-marc/tree/v7.0.3) (2023-11-03)
 
 * [UIQM-571](https://issues.folio.org/browse/UIQM-571) Added `marc-records-editor.item.put` to Derive and Create Bib permissions to fix issue with broken links after deriving or creating a record.
