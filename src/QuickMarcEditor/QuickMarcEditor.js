@@ -407,7 +407,7 @@ const QuickMarcEditor = ({
       return;
     } else if (httpError.code === 'ILLEGAL_FIXED_LENGTH_CONTROL_FIELD') {
       messageId = 'ui-quick-marc.record.save.error.illegalFixedLength';
-    } else if (httpError.message === 'Not found') {
+    } else if (httpError.httpStatus === 404) {
       messageId = 'ui-quick-marc.record.save.error.notFound';
     } else {
       messageId = 'ui-quick-marc.record.save.error.generic';
@@ -560,6 +560,7 @@ QuickMarcEditor.propTypes = {
     code: PropTypes.string,
     message: PropTypes.string,
     errorType: PropTypes.string,
+    httpStatus: PropTypes.number,
   }),
   confirmRemoveAuthorityLinking: PropTypes.bool,
   validate: PropTypes.func.isRequired,
