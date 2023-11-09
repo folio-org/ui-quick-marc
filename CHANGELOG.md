@@ -1,6 +1,6 @@
 # Change history for ui-quick-marc
 
-## [7.0.4](IN PROGRESS)
+## [7.0.4](https://github.com/folio-org/ui-quick-marc/tree/v7.0.4) (2023-11-09)
 
 * [UIQM-582](https://issues.folio.org/browse/UIQM-582) Show correct message if record not found.
 
