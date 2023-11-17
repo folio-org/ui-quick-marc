@@ -5,8 +5,14 @@ import React, {
 import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 import flow from 'lodash/flow';
+import noop from 'lodash/noop';
+import isNil from 'lodash/isNil';
 
+import {
+  useStripes,
+} from '@folio/stripes/core';
 import { useShowCallout } from '@folio/stripes-acq-components';
+import { getHeaders } from '@folio/stripes-marc-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 import {
@@ -32,8 +38,11 @@ import {
   autopopulateFixedField,
   autopopulatePhysDescriptionField,
   autopopulateMaterialCharsField,
+  applyCentralTenantInHeaders,
 } from './utils';
-import { useAuthorityLinkingRules } from '../queries';
+import {
+  useMarcRecordMutation,
+} from '../queries';
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
@@ -43,8 +52,10 @@ const propTypes = {
   initialValues: PropTypes.object.isRequired,
   instance: PropTypes.object,
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
+  fixedFieldSpec: PropTypes.object.isRequired,
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
+  onCheckCentralTenantPerm: PropTypes.func,
   locations: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
@@ -55,16 +66,25 @@ const QuickMarcEditWrapper = ({
   initialValues,
   mutator,
   marcType,
+  fixedFieldSpec,
   linksCount,
   locations,
   refreshPageData,
   externalRecordPath,
+  onCheckCentralTenantPerm,
 }) => {
+  const stripes = useStripes();
   const showCallout = useShowCallout();
   const location = useLocation();
   const [httpError, setHttpError] = useState(null);
-  const { linkableBibFields } = useAuthorityLinking();
-  const { linkingRules } = useAuthorityLinkingRules();
+
+  const { token, locale } = stripes.okapi;
+  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType);
+  const centralTenantId = stripes.user.user.consortium?.centralTenantId;
+  const tenantId = isRequestToCentralTenantFromMember ? centralTenantId : '';
+
+  const { linkableBibFields, actualizeLinks, linkingRules } = useAuthorityLinking({ marcType, action });
+  const { updateMarcRecord } = useMarcRecordMutation({ tenantId });
 
   const { validate } = useValidation({
     initialValues,
@@ -99,30 +119,46 @@ const QuickMarcEditWrapper = ({
       is1xxOr010Updated = are010Or1xxUpdated(initialValues.records, formValues.records);
     }
 
-    const formValuesToSave = flow(
+    const formValuesToProcess = flow(
       prepareForSubmit,
       autopopulateIndicators,
       marcRecord => autopopulateFixedField(marcRecord, marcType),
       autopopulatePhysDescriptionField,
       autopopulateMaterialCharsField,
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
-      marcRecord => cleanBytesFields(marcRecord, marcType),
+      marcRecord => cleanBytesFields(marcRecord, fixedFieldSpec),
       combineSplitFields,
-      hydrateMarcRecord,
     )(formValues);
 
     const path = EXTERNAL_INSTANCE_APIS[marcType];
 
     const fetchInstance = async () => {
-      const fetchedInstance = await mutator.quickMarcEditInstance.GET({ path: `${path}/${formValuesToSave.externalId}` });
+      const fetchedInstance = await mutator.quickMarcEditInstance.GET({
+        path: `${path}/${formValuesToProcess.externalId}`,
+        ...(isRequestToCentralTenantFromMember && { headers: getHeaders(centralTenantId, token, locale) }),
+      });
 
       return fetchedInstance;
     };
 
+    let formValuesToHydrate;
     let instanceResponse;
 
     try {
-      instanceResponse = await fetchInstance();
+      const actualizeLinksPromise = marcType === MARC_TYPES.BIB
+        ? actualizeLinks(formValuesToProcess)
+        : Promise.resolve(formValuesToProcess);
+
+      const [
+        formValuesWithActualizedLinkedFields,
+        instanceData,
+      ] = await Promise.all([
+        actualizeLinksPromise,
+        fetchInstance(),
+      ]);
+
+      formValuesToHydrate = formValuesWithActualizedLinkedFields;
+      instanceResponse = instanceData;
     } catch (errorResponse) {
       const parsedError = await parseHttpError(errorResponse);
 
@@ -134,7 +170,7 @@ const QuickMarcEditWrapper = ({
     const prevVersion = instance._version;
     const lastVersion = instanceResponse._version;
 
-    if (prevVersion && lastVersion && prevVersion !== lastVersion) {
+    if (!isNil(prevVersion) && !isNil(lastVersion) && prevVersion !== lastVersion) {
       setHttpError({
         errorType: ERROR_TYPES.OPTIMISTIC_LOCKING,
         message: 'ui-quick-marc.record.save.error.derive',
@@ -143,12 +179,14 @@ const QuickMarcEditWrapper = ({
       return null;
     }
 
-    formValuesToSave._actionType = 'edit';
-    formValuesToSave.relatedRecordVersion = marcType === MARC_TYPES.AUTHORITY
+    formValuesToHydrate._actionType = 'edit';
+    formValuesToHydrate.relatedRecordVersion = marcType === MARC_TYPES.AUTHORITY
       ? instance._version
       : new URLSearchParams(location.search).get('relatedRecordVersion');
 
-    return mutator.quickMarcEditMarcRecord.PUT(formValuesToSave)
+    const formValuesToSave = hydrateMarcRecord(formValuesToHydrate);
+
+    return updateMarcRecord(formValuesToSave)
       .then(async () => {
         if (is1xxOr010Updated) {
           const values = {
@@ -161,9 +199,7 @@ const QuickMarcEditWrapper = ({
           });
         } else {
           showCallout({
-            messageId: marcType === MARC_TYPES.AUTHORITY
-              ? 'ui-quick-marc.record.save.updated'
-              : 'ui-quick-marc.record.save.success.processing',
+            messageId: 'ui-quick-marc.record.save.success.processing',
           });
         }
 
@@ -182,10 +218,17 @@ const QuickMarcEditWrapper = ({
     initialValues,
     instance,
     marcType,
+    fixedFieldSpec,
     mutator,
     linksCount,
     location,
     prepareForSubmit,
+    actualizeLinks,
+    centralTenantId,
+    token,
+    locale,
+    updateMarcRecord,
+    isRequestToCentralTenantFromMember,
   ]);
 
   return (
@@ -197,15 +240,20 @@ const QuickMarcEditWrapper = ({
       onSubmit={onSubmit}
       action={action}
       marcType={marcType}
+      fixedFieldSpec={fixedFieldSpec}
       locations={locations}
       httpError={httpError}
       externalRecordPath={externalRecordPath}
       linksCount={linksCount}
       validate={runValidation}
+      onCheckCentralTenantPerm={onCheckCentralTenantPerm}
     />
   );
 };
 
 QuickMarcEditWrapper.propTypes = propTypes;
+QuickMarcEditWrapper.defaultProps = {
+  onCheckCentralTenantPerm: noop,
+};
 
 export default QuickMarcEditWrapper;

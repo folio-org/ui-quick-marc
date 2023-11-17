@@ -2,13 +2,17 @@ import {
   useCallback,
   useMemo,
 } from 'react';
+import { useLocation } from 'react-router-dom';
 import get from 'lodash/get';
 import omit from 'lodash/omit';
 import pick from 'lodash/pick';
 
+import { useStripes } from '@folio/stripes/core';
+import { useAuthorityLinkingRules } from '@folio/stripes-marc-components';
+
 import {
   useAuthoritySourceFiles,
-  useAuthorityLinkingRules,
+  useLinkSuggestions,
 } from '../../queries';
 
 import {
@@ -16,7 +20,17 @@ import {
   groupSubfields,
   getControlledSubfields,
   isRecordForAutoLinking,
+  hydrateForLinkSuggestions,
+  recordHasLinks,
+  isFieldLinked,
+  applyCentralTenantInHeaders,
 } from '../../QuickMarcEditor/utils';
+import {
+  AUTOLINKING_STATUSES,
+  UNCONTROLLED_ALPHA,
+  UNCONTROLLED_NUMBER,
+  QUICK_MARC_ACTIONS,
+} from '../../QuickMarcEditor/constants';
 
 const joinSubfields = (subfields) => Object.keys(subfields).reduce((content, key) => {
   const subfield = subfields[key].join(` ${key} `);
@@ -26,9 +40,24 @@ const joinSubfields = (subfields) => Object.keys(subfields).reduce((content, key
 
 const formatSubfieldCode = (code) => { return code.startsWith('$') ? code : `$${code}`; };
 
-const useAuthorityLinking = () => {
-  const { sourceFiles } = useAuthoritySourceFiles();
-  const { linkingRules } = useAuthorityLinkingRules();
+const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
+  const stripes = useStripes();
+  const location = useLocation();
+
+  const centralTenantId = stripes.user.user.consortium?.centralTenantId;
+  const isCentralTenantInHeaders = applyCentralTenantInHeaders(location, stripes, marcType)
+    && action === QUICK_MARC_ACTIONS.EDIT;
+
+  // tenantId for linking functionality must be with the member tenant id when user derives shared record
+  const _tenantId = tenantId || (isCentralTenantInHeaders && centralTenantId) || '';
+
+  const { sourceFiles } = useAuthoritySourceFiles({ tenantId: _tenantId });
+  const { linkingRules } = useAuthorityLinkingRules({ tenantId: _tenantId });
+
+  const {
+    fetchLinkSuggestions,
+    isLoading: isLoadingLinkSuggestions,
+  } = useLinkSuggestions({ tenantId: _tenantId });
 
   const linkableBibFields = useMemo(() => linkingRules.map(rule => rule.bibField), [linkingRules]);
   const autoLinkableBibFields = useMemo(() => {
@@ -116,31 +145,42 @@ const useAuthorityLinking = () => {
     bibField.content = joinSubfields(bibSubfields);
   }, [copySubfieldsFromAuthority, sourceFiles]);
 
+  const getSubfieldGroups = useCallback((field, suggestedField) => {
+    const linkingRule = linkingRules.find(rule => rule.id === suggestedField.linkDetails?.linkingRuleId);
+    const controlledSubfields = getControlledSubfields(linkingRule);
+
+    // take controlled subfields from the suggested field and uncontrolled ones from the current field
+    return {
+      ...groupSubfields(suggestedField, controlledSubfields),
+      ...pick(groupSubfields(field, controlledSubfields), UNCONTROLLED_ALPHA, UNCONTROLLED_NUMBER),
+    };
+  }, [linkingRules]);
+
   const updateLinkedField = useCallback((field) => {
-    const uncontrolledNumberSubfields = getContentSubfieldValue(field.subfieldGroups?.uncontrolledNumber);
-    const uncontrolledAlphaSubfields = getContentSubfieldValue(field.subfieldGroups?.uncontrolledAlpha);
+    const uncontrolledNumberSubfields = getContentSubfieldValue(field.subfieldGroups?.[UNCONTROLLED_NUMBER]);
+    const uncontrolledAlphaSubfields = getContentSubfieldValue(field.subfieldGroups?.[UNCONTROLLED_ALPHA]);
 
     const uncontrolledNumber = uncontrolledNumberSubfields.$9?.[0]
       ? joinSubfields(omit(uncontrolledNumberSubfields, '$9'))
-      : field.subfieldGroups.uncontrolledNumber;
+      : field.subfieldGroups[UNCONTROLLED_NUMBER];
 
     const uncontrolledAlpha = uncontrolledAlphaSubfields.$9?.[0]
       ? joinSubfields(omit(uncontrolledAlphaSubfields, '$9'))
-      : field.subfieldGroups.uncontrolledAlpha;
+      : field.subfieldGroups[UNCONTROLLED_ALPHA];
 
     return {
       ...field,
       subfieldGroups: {
         ...field.subfieldGroups,
-        uncontrolledNumber,
-        uncontrolledAlpha,
+        [UNCONTROLLED_NUMBER]: uncontrolledNumber,
+        [UNCONTROLLED_ALPHA]: uncontrolledAlpha,
       },
     };
   }, []);
 
   const updateAutoLinkableField = useCallback((field, suggestedField) => {
     if (
-      suggestedField.linkDetails?.status === 'ERROR'
+      suggestedField.linkDetails?.status === AUTOLINKING_STATUSES.ERROR
       && getContentSubfieldValue(field.content).$9?.[0]
     ) {
       const subfields = getContentSubfieldValue(field.content);
@@ -153,16 +193,9 @@ const useAuthorityLinking = () => {
 
     if (
       suggestedField.linkDetails
-      && suggestedField.linkDetails.status !== 'ERROR'
+      && suggestedField.linkDetails.status !== AUTOLINKING_STATUSES.ERROR
     ) {
-      const linkingRule = linkingRules.find(rule => rule.id === suggestedField.linkDetails?.linkingRuleId);
-      const controlledSubfields = getControlledSubfields(linkingRule);
-
-      // take uncontrolled subfields from the current field, not from suggested one
-      const subfieldGroups = {
-        ...groupSubfields(suggestedField, controlledSubfields),
-        ...pick(groupSubfields(field, controlledSubfields), 'uncontrolledAlpha', 'uncontrolledNumber'),
-      };
+      const subfieldGroups = getSubfieldGroups(field, suggestedField);
 
       return {
         ...field,
@@ -174,12 +207,28 @@ const useAuthorityLinking = () => {
     }
 
     return field;
-  }, [linkingRules]);
+  }, [getSubfieldGroups]);
 
-  const autoLinkAuthority = useCallback((fields, suggestedFields) => {
+  const getSuggestedFields = useCallback(async (formValues, fieldsToHydrate, extraRequestArgs = {}) => {
+    const payload = hydrateForLinkSuggestions(formValues, fieldsToHydrate);
+
+    const requestArgs = {
+      body: payload,
+      ...extraRequestArgs,
+    };
+
+    const { fields: memberSuggestedFields } = await fetchLinkSuggestions(requestArgs);
+
+    return memberSuggestedFields;
+  }, [fetchLinkSuggestions]);
+
+  const autoLinkAuthority = useCallback(async (formValues) => {
+    const fieldsToLink = formValues.records.filter(record => isRecordForAutoLinking(record, autoLinkableBibFields));
+    const suggestedFields = await getSuggestedFields(formValues, fieldsToLink);
+
     let suggestedFieldIndex = 0;
 
-    return fields.map(field => {
+    const fields = formValues.records.map(field => {
       if (field._isLinked && !field._isDeleted) {
         return updateLinkedField(field);
       }
@@ -194,7 +243,12 @@ const useAuthorityLinking = () => {
 
       return field;
     });
-  }, [autoLinkableBibFields, updateAutoLinkableField, updateLinkedField]);
+
+    return {
+      fields,
+      suggestedFields,
+    };
+  }, [autoLinkableBibFields, updateAutoLinkableField, updateLinkedField, getSuggestedFields]);
 
   const linkAuthority = useCallback((authority, authoritySource, field) => {
     const linkedAuthorityField = getLinkableAuthorityField(authoritySource, field);
@@ -242,6 +296,46 @@ const useAuthorityLinking = () => {
     };
   }, []);
 
+  const actualizeLinks = useCallback(async (formValues) => {
+    if (!recordHasLinks(formValues.records)) {
+      return formValues;
+    }
+
+    const linkedFields = formValues.records.filter(isFieldLinked);
+
+    const extraRequestArgs = {
+      isSearchByAuthorityId: true,
+      ignoreAutoLinkingEnabled: true,
+    };
+
+    const suggestedFields = await getSuggestedFields(formValues, linkedFields, extraRequestArgs);
+
+    const actualizedLinks = formValues.records.map(field => {
+      if (!isFieldLinked(field)) {
+        return field;
+      }
+
+      const suggestedField = suggestedFields.shift();
+
+      if (suggestedField.linkDetails?.status === AUTOLINKING_STATUSES.ERROR) {
+        return unlinkAuthority(field);
+      }
+
+      const subfieldGroups = getSubfieldGroups(field, suggestedField);
+
+      return {
+        ...field,
+        ...suggestedField,
+        content: Object.values(subfieldGroups).filter(Boolean).join(' '),
+      };
+    });
+
+    return {
+      ...formValues,
+      records: actualizedLinks,
+    };
+  }, [getSubfieldGroups, unlinkAuthority, getSuggestedFields]);
+
   return {
     linkAuthority,
     unlinkAuthority,
@@ -250,6 +344,10 @@ const useAuthorityLinking = () => {
     autoLinkingEnabled,
     autoLinkableBibFields,
     autoLinkAuthority,
+    actualizeLinks,
+    linkingRules,
+    fetchLinkSuggestions,
+    isLoadingLinkSuggestions,
   };
 };
 

@@ -2,7 +2,8 @@ import React from 'react';
 import {
   fireEvent,
   render,
-} from '@testing-library/react';
+  act,
+} from '@folio/jest-config-stripes/testing-library/react';
 
 import { IfPermission } from '@folio/stripes/core';
 import { runAxeTest } from '@folio/stripes-testing';
@@ -12,17 +13,12 @@ import { AutoLinkingButton } from './AutoLinkingButton';
 import Harness from '../../../test/jest/helpers/harness';
 import { useAuthorityLinking } from '../../hooks';
 import { MARC_TYPES } from '../../common/constants';
+import { QUICK_MARC_ACTIONS } from '../constants';
 
-const mockFetchLinkSuggestions = jest.fn();
-const mockAutoLinkAuthority = jest.fn();
+const mockSetLoadingLinkSuggestions = jest.fn();
+const mockAutoLinkAuthority = jest.fn().mockResolvedValue();
 const mockMarkRecordsLinked = jest.fn();
 const mockShowCallout = jest.fn();
-
-jest.mock('@folio/stripes/core', () => ({
-  ...jest.requireActual('@folio/stripes/core'),
-  IfPermission: jest.fn(),
-  useNamespace: jest.fn().mockReturnValue(['ui-quick-marc-test']),
-}));
 
 jest.mock('@folio/stripes-acq-components', () => ({
   ...jest.requireActual('@folio/stripes-acq-components'),
@@ -97,11 +93,12 @@ const formValues = {
 const renderComponent = (props = {}) => render(
   <Harness>
     <AutoLinkingButton
+      action={QUICK_MARC_ACTIONS.EDIT}
       marcType={MARC_TYPES.BIB}
       formValues={formValues}
       isLoadingLinkSuggestions={false}
       onMarkRecordsLinked={mockMarkRecordsLinked}
-      onFetchLinkSuggestions={mockFetchLinkSuggestions}
+      onSetIsLoadingLinkSuggestions={mockSetLoadingLinkSuggestions}
       {...props}
     />
   </Harness>,
@@ -116,6 +113,10 @@ describe('Given AutoLinkingButton', () => {
       autoLinkAuthority: mockAutoLinkAuthority,
     });
     IfPermission.mockImplementation(({ children }) => children);
+    mockAutoLinkAuthority.mockResolvedValue({
+      fields: [],
+      suggestedFields: [],
+    });
   });
 
   it('should render with no axe errors', async () => {
@@ -180,13 +181,13 @@ describe('Given AutoLinkingButton', () => {
   describe('when user clicks on the button', () => {
     describe('when auto-linking fails', () => {
       it('should show generic error message', async () => {
-        mockFetchLinkSuggestions.mockRejectedValue(null);
+        mockAutoLinkAuthority.mockRejectedValue(null);
 
         const { getByTestId } = renderComponent();
 
-        fireEvent.click(getByTestId('autoLinkingButton'));
+        await act(async () => { fireEvent.click(getByTestId('autoLinkingButton')); });
 
-        await expect(mockFetchLinkSuggestions).toHaveBeenCalled();
+        expect(mockAutoLinkAuthority).toHaveBeenCalled();
         expect(mockShowCallout).toHaveBeenCalledWith({
           messageId: 'ui-quick-marc.records.error.autoLinking',
           type: 'error',
@@ -195,70 +196,40 @@ describe('Given AutoLinkingButton', () => {
     });
 
     it('should handle auto-linking', async () => {
-      const payload = {
-        leader: '05274cam\\a2201021\\i\\4500',
-        marcFormat: MARC_TYPES.BIB,
-        _actionType: 'view',
-        fields: [
+      const _formValues = {
+        records: [
           {
             'tag': '100',
-            'content': '$a Coates, Ta-Nehisi, $e author. $0 n2008001084',
-          },
-          {
+            'content': '$a Coates, Ta-Nehisi $e author. $0 n2008001084',
+            'indicators': ['1', '\\'],
+            'isProtected': false,
+            'id': '301323a7-258c-46d0-a88a-c3ec604bf37a',
+            '_isDeleted': false,
+            '_isLinked': false,
+          }, {
             'tag': '700',
-            'content': '$a Stelfreeze, Brian, $e artist. $0 no2005093867',
-          },
-          {
-            'tag': '700',
-            'content': '$a Sprouse, Chris, $e artist. $0 test2',
-          },
-          {
-            'tag': '700',
-            'content': '$a Martin, Laura $c (Comic book artist), $e colorist. $0 no2005093868 $0 n123456',
-          },
-        ],
-      };
-
-      const data = {
-        leader: '05274cam\\a2201021\\i\\4500',
-        suppressDiscovery: false,
-        _actionType: 'view',
-        fields: [
-          {
-            'tag': '100',
-            'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 125ef84d-c372-4508-bf9b-08c7f2a0b02e',
-            'linkDetails': {
-              'authorityId': '125ef84d-c372-4508-bf9b-08c7f2a0b02e',
-              'authorityNaturalId': 'n2008001084',
-              'linkingRuleId': 1,
-              'status': 'NEW',
-            },
-          },
-          {
-            'tag': '700',
-            'content': '$a Zhang, Xuejing $e artist. $0 id.loc.gov/authorities/names/no2005093867 $9 4fb6282f-771f-469b-b182-691432e6a45a',
-            'linkDetails': {
-              'authorityId': '4fb6282f-771f-469b-b182-691432e6a45a',
-              'authorityNaturalId': 'no2005093867',
-              'linkingRuleId': 15,
-              'status': 'NEW',
-            },
-          },
-          {
+            'content': '$a Zhang, Xuejing $e artist. $0 id.loc.gov/authorities/names/no2005093867',
+            'indicators': ['0', '0'],
+            'isProtected': false,
+            'id': 'bc44d91c-6915-4609-9fd1-bbe470f4740b',
+            '_isDeleted': false,
+            '_isLinked': false,
+          }, {
             'tag': '700',
             'content': '$a Sprouse, Chris, $e artist. $0 test2',
-            'linkDetails': {
-              'status': 'ERROR',
-              'errorCause': '101',
-            },
-          },
-          {
+            'indicators': ['0', '0'],
+            'isProtected': false,
+            'id': 'kt44d91c-6915-4609-9fd1-bbe470f47434',
+            '_isDeleted': false,
+            '_isLinked': false,
+          }, {
             'tag': '700',
             'content': '$a Martin, Laura $c (Comic book artist), $e colorist. $0 no2005093868 $0 n123456',
-            'linkDetails': {
-              'status': 'ERROR',
-              'errorCause': '102',
-            },
+            'indicators': ['0', '0'],
+            'isProtected': false,
+            'id': 'nj44d91c-6915-4609-9fd1-bbe470f474pw',
+            '_isDeleted': false,
+            '_isLinked': false,
           },
         ],
       };
@@ -266,15 +237,95 @@ describe('Given AutoLinkingButton', () => {
       const fields = [
         {
           'tag': '100',
-          'content': '$a Coates, Ta-Nehisi, $e author. $0 n2008001084',
+          'content': '$a Coates, Ta-Nehisi $e author. $0 n2008001084',
+          'indicators': ['1', '\\'],
+          'isProtected': false,
+          'id': '301323a7-258c-46d0-a88a-c3ec604bf37a',
+          '_isDeleted': false,
+          '_isLinked': false,
+          'linkDetails': {
+            'authorityId': '125ef84d-c372-4508-bf9b-08c7f2a0b02e',
+            'authorityNaturalId': 'n2008001084',
+            'linkingRuleId': 1,
+            'status': 'NEW',
+          },
+        }, {
+          'tag': '700',
+          'content': '$a Zhang, Xuejing $e artist. $0 id.loc.gov/authorities/names/no2005093867',
+          'indicators': ['0', '0'],
+          'isProtected': false,
+          'id': 'bc44d91c-6915-4609-9fd1-bbe470f4740b',
+          '_isDeleted': false,
+          '_isLinked': false,
+          'linkDetails': {
+            'authorityId': '4fb6282f-771f-469b-b182-691432e6a45a',
+            'authorityNaturalId': 'no2005093867',
+            'linkingRuleId': 15,
+            'status': 'NEW',
+          },
+        }, {
+          'tag': '700',
+          'content': '$a Sprouse, Chris, $e artist. $0 test2',
+          'indicators': ['0', '0'],
+          'isProtected': false,
+          'id': 'kt44d91c-6915-4609-9fd1-bbe470f47434',
+          '_isDeleted': false,
+          '_isLinked': false,
+          'linkDetails': {
+            'status': 'ERROR',
+            'errorCause': '101',
+          },
+        }, {
+          'tag': '700',
+          'content': '$a Martin, Laura $c (Comic book artist), $e colorist. $0 no2005093868 $0 n123456',
+          'indicators': ['0', '0'],
+          'isProtected': false,
+          'id': 'nj44d91c-6915-4609-9fd1-bbe470f474pw',
+          '_isDeleted': false,
+          '_isLinked': false,
+          'linkDetails': {
+            'status': 'ERROR',
+            'errorCause': '102',
+          },
+        },
+      ];
+
+      const suggestedFields = [
+        {
+          'tag': '100',
+          'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 125ef84d-c372-4508-bf9b-08c7f2a0b02e',
+          'linkDetails': {
+            'authorityId': '125ef84d-c372-4508-bf9b-08c7f2a0b02e',
+            'authorityNaturalId': 'n2008001084',
+            'linkingRuleId': 1,
+            'status': 'NEW',
+          },
         },
         {
           'tag': '700',
-          'content': '$a Stelfreeze, Brian, $e artist. $0 no2005093867',
+          'content': '$a Zhang, Xuejing $e artist. $0 id.loc.gov/authorities/names/no2005093867 $9 4fb6282f-771f-469b-b182-691432e6a45a',
+          'linkDetails': {
+            'authorityId': '4fb6282f-771f-469b-b182-691432e6a45a',
+            'authorityNaturalId': 'no2005093867',
+            'linkingRuleId': 15,
+            'status': 'NEW',
+          },
         },
         {
           'tag': '700',
           'content': '$a Sprouse, Chris, $e artist. $0 test2',
+          'linkDetails': {
+            'status': 'ERROR',
+            'errorCause': '101',
+          },
+        },
+        {
+          'tag': '700',
+          'content': '$a Martin, Laura $c (Comic book artist), $e colorist. $0 no2005093868 $0 n123456',
+          'linkDetails': {
+            'status': 'ERROR',
+            'errorCause': '102',
+          },
         },
       ];
 
@@ -307,15 +358,17 @@ describe('Given AutoLinkingButton', () => {
         },
       ];
 
-      mockFetchLinkSuggestions.mockResolvedValue(data);
-      mockAutoLinkAuthority.mockReturnValue(fields);
+      mockAutoLinkAuthority.mockResolvedValue({ fields, suggestedFields });
 
-      const { getByTestId } = renderComponent({ formValues });
+      const { getByTestId } = renderComponent({ formValues: _formValues });
 
-      fireEvent.click(getByTestId('autoLinkingButton'));
+      await act(async () => {
+        fireEvent.click(getByTestId('autoLinkingButton'));
+        expect(mockSetLoadingLinkSuggestions).toHaveBeenNthCalledWith(1, true);
+      });
 
-      await expect(mockFetchLinkSuggestions).toHaveBeenCalledWith(payload);
-      expect(mockAutoLinkAuthority).toHaveBeenCalledWith(formValues.records, data.fields);
+      expect(mockSetLoadingLinkSuggestions).toHaveBeenNthCalledWith(2, false);
+      expect(mockAutoLinkAuthority).toHaveBeenCalledWith(_formValues);
       expect(mockMarkRecordsLinked).toHaveBeenCalledWith({ fields });
       expect(mockShowCallout).toHaveBeenCalledTimes(3);
 

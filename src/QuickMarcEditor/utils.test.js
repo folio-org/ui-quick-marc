@@ -13,6 +13,10 @@ import { MARC_TYPES } from '../common/constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import * as utils from './utils';
 
+import fixedFieldSpecBib from '../../test/mocks/fixedFieldSpecBib';
+import fixedFieldSpecAuth from '../../test/mocks/fixedFieldSpecAuth';
+import fixedFieldSpecHold from '../../test/mocks/fixedFieldSpecHold';
+
 jest.mock('uuid', () => {
   return {
     v4: () => 'uuid',
@@ -79,7 +83,8 @@ describe('QuickMarcEditor utils', () => {
           },
         ],
       };
-      const dehydratedMarcRecord = utils.dehydrateMarcRecordResponse(marcRecord, MARC_TYPES.BIB);
+
+      const dehydratedMarcRecord = utils.dehydrateMarcRecordResponse(marcRecord, MARC_TYPES.BIB, fixedFieldSpecBib);
       const field006 = dehydratedMarcRecord.records[2];
       const field007 = dehydratedMarcRecord.records[3];
       const field008 = dehydratedMarcRecord.records[4];
@@ -1204,63 +1209,6 @@ describe('QuickMarcEditor utils', () => {
           }).props.id).toBe('ui-quick-marc.record.error.1xx.remove$t');
         });
 
-        it('should return an error if 010 $a edited and 001 is linked', () => {
-          const newInitialValues = {
-            ...initialValues,
-            records: [
-              ...initialValues.records,
-              {
-                content: 'n  83073672 ',
-                tag: '001',
-              },
-              {
-                tag: '010',
-                content: '$a 63943573',
-              },
-            ],
-          };
-
-          const record = cloneDeep(newInitialValues);
-
-          record.records[4].content += 'test';
-
-          expect(utils.validateMarcRecord({
-            marcRecord: record,
-            initialValues: newInitialValues,
-            marcType: MARC_TYPES.AUTHORITY,
-            linksCount,
-            naturalId: 'n83073672',
-          }).props.id).toBe('ui-quick-marc.record.error.010.edit$a');
-        });
-
-        it('should return an error if 010 $a created and 001 is linked', () => {
-          const newInitialValues = {
-            ...initialValues,
-            records: [
-              ...initialValues.records,
-              {
-                content: 'n  83073672 ',
-                tag: '001',
-              },
-            ],
-          };
-
-          const record = cloneDeep(newInitialValues);
-
-          record.records.push({
-            tag: '010',
-            content: '$a 63943573',
-          });
-
-          expect(utils.validateMarcRecord({
-            marcRecord: record,
-            initialValues: newInitialValues,
-            marcType: MARC_TYPES.AUTHORITY,
-            linksCount,
-            naturalId: 'n83073672',
-          }).props.id).toBe('ui-quick-marc.record.error.010.edit$a');
-        });
-
         it('should return an error if 010 $a removed and 010 is linked', () => {
           const newInitialValues = {
             ...initialValues,
@@ -1590,7 +1538,7 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.fillEmptyFixedFieldValues(marcType, type, blvl, field)).toMatchObject({
+      expect(utils.fillEmptyFixedFieldValues(marcType, fixedFieldSpecBib, type, blvl, field)).toMatchObject({
         Srce: '\\',
         Audn: '\\',
         Lang: 'eng',
@@ -1616,7 +1564,7 @@ describe('QuickMarcEditor utils', () => {
     describe('when marc type is Authority', () => {
       it('should add Authority specific hidden fields', () => {
         const marcType = MARC_TYPES.AUTHORITY;
-        const type = '';
+        const type = 'z';
         const blvl = '';
         const field = {
           content: {
@@ -1624,7 +1572,7 @@ describe('QuickMarcEditor utils', () => {
           },
         };
 
-        expect(utils.fillEmptyFixedFieldValues(marcType, type, blvl, field)).toMatchObject({
+        expect(utils.fillEmptyFixedFieldValues(marcType, fixedFieldSpecAuth, type, blvl, field)).toMatchObject({
           'Geo Subd': '\\',
           'Kind rec': '\\',
           'SH Sys': '\\',
@@ -1647,6 +1595,34 @@ describe('QuickMarcEditor utils', () => {
           Undef_18: '\\\\\\\\\\\\\\\\\\\\',
           Undef_30: '\\',
           Undef_34: '\\\\\\\\',
+        });
+      });
+    });
+
+    describe('when marc type is Holding', () => {
+      it('should add Holding specific hidden fields', () => {
+        const marcType = MARC_TYPES.HOLDINGS;
+        const type = 'u';
+        const blvl = '';
+        const field = {
+          content: {
+            Compl: 'a',
+          },
+        };
+
+        expect(utils.fillEmptyFixedFieldValues(marcType, fixedFieldSpecHold, type, blvl, field)).toMatchObject({
+          AcqStatus: '\\',
+          AcqMethod: '\\',
+          AcqEndDate: '\\\\\\\\',
+          'Gen ret': '\\',
+          'Spec ret': ['\\', '\\', '\\'],
+          Compl: 'a',
+          Copies: '\\\\\\',
+          Lend: '\\',
+          Repro: '\\',
+          Lang: '\\\\\\',
+          'Sep/comp': '\\',
+          'Rept date': '\\\\\\\\\\\\',
         });
       });
     });
@@ -2156,6 +2132,9 @@ describe('QuickMarcEditor utils', () => {
     it('should return cleaned records', () => {
       const record = {
         records: [{
+          tag: 'LDR',
+          content: '03685cgm\\a2200757\\i\\4500',
+        }, {
           tag: '001',
           content: 'some content',
         }, {
@@ -2211,6 +2190,9 @@ describe('QuickMarcEditor utils', () => {
       };
       const expectedRecord = {
         records: [{
+          tag: 'LDR',
+          content: '03685cgm\\a2200757\\i\\4500',
+        }, {
           tag: '001',
           content: 'some content',
         }, {
@@ -2263,7 +2245,7 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.cleanBytesFields(record, MARC_TYPES.BIB)).toEqual(expectedRecord);
+      expect(utils.cleanBytesFields(record, fixedFieldSpecBib)).toEqual(expectedRecord);
     });
   });
 
@@ -2592,6 +2574,57 @@ describe('QuickMarcEditor utils', () => {
         const autoLinkableBibFields = ['100'];
 
         expect(utils.isRecordForAutoLinking(field, autoLinkableBibFields)).toBeFalsy();
+      });
+    });
+  });
+
+  describe('hydrateForLinkSuggestions', () => {
+    it('should take "leader" value from the LDR field', () => {
+      const fields = [{
+        'tag': '100',
+        'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 4808f6ae-8379-41e9-a795-915ac4751668',
+        'indicators': ['1', '\\'],
+        'isProtected': false,
+        'id': '5481472d-a621-4571-9ef9-438a4c7044fd',
+        '_isDeleted': false,
+        '_isLinked': true,
+        'linkDetails': {
+          'authorityNaturalId': 'n2008001084',
+          'authorityId': '4808f6ae-8379-41e9-a795-915ac4751668',
+          'linkingRuleId': 1,
+          'status': 'ACTUAL',
+        },
+        'subfieldGroups': {
+          'controlled': '$a Coates, Ta-Nehisi',
+          'uncontrolledAlpha': '$e author.',
+          'zeroSubfield': '$0 id.loc.gov/authorities/names/n2008001084',
+          'nineSubfield': '$9 4808f6ae-8379-41e9-a795-915ac4751668',
+          'uncontrolledNumber': '',
+        },
+      }];
+
+      const marcRecord = {
+        marcFormat: MARC_TYPES.BIB,
+        _actionType: 'view',
+        records: [
+          {
+            tag: 'LDR',
+            content: 'leader content',
+          },
+          ...fields,
+        ],
+      };
+
+      expect(utils.hydrateForLinkSuggestions(marcRecord, fields)).toEqual({
+        leader: 'leader content',
+        marcFormat: MARC_TYPES.BIB,
+        _actionType: 'view',
+        fields: [
+          {
+            tag: '100',
+            content: '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 4808f6ae-8379-41e9-a795-915ac4751668',
+          },
+        ],
       });
     });
   });

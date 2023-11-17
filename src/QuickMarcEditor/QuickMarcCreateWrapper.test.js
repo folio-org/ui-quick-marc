@@ -3,7 +3,8 @@ import {
   act,
   render,
   fireEvent,
-} from '@testing-library/react';
+  screen,
+} from '@folio/jest-config-stripes/testing-library/react';
 import faker from 'faker';
 import noop from 'lodash/noop';
 
@@ -16,26 +17,20 @@ import { MARC_TYPES } from '../common/constants';
 import { QUICK_MARC_ACTIONS } from './constants';
 
 import Harness from '../../test/jest/helpers/harness';
+import { useAuthorityLinking } from '../hooks';
 
 jest.mock('react-final-form', () => ({
   ...jest.requireActual('react-final-form'),
   FormSpy: jest.fn(() => (<span>FormSpy</span>)),
 }));
 
-jest.mock('../queries', () => ({
-  ...jest.requireActual('../queries'),
-  useAuthorityLinkingRules: jest.fn().mockReturnValue({ linkingRules: [] }),
+jest.mock('../hooks', () => ({
+  ...jest.requireActual('../hooks'),
+  useAuthorityLinking: jest.fn(),
 }));
 
-const mockFormValues = jest.fn(() => ({
-  fields: undefined,
-  externalHrid: 'in00000000022',
-  externalId: '17064f9d-0362-468d-8317-5984b7efd1b5',
-  leader: '00000nu\\\\\\2200000un\\4500',
-  marcFormat: 'HOLDINGS',
-  parsedRecordDtoId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
-  parsedRecordId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
-  records: [
+const mockRecords = {
+  [MARC_TYPES.HOLDINGS]: [
     {
       tag: 'LDR',
       content: '00000nu\\\\\\2200000un\\4500',
@@ -70,27 +65,111 @@ const mockFormValues = jest.fn(() => ({
       id: '4a844042-5c7e-4e71-823e-599582a5d7ab',
     },
   ],
+  [MARC_TYPES.BIB]: [
+    {
+      'tag': 'LDR',
+      'content': '01178nam\\a2200277ic\\4500',
+      'id': 'LDR',
+    }, {
+      'tag': '001',
+      'content': 'in00000000003',
+      'id': '595a98e6-8e59-448d-b866-cd039b990423',
+    }, {
+      'tag': '008',
+      'content': {
+        'Type': 'a',
+        'BLvl': 'm',
+        'Desc': 'c',
+        'Entered': '211212',
+        'DtSt': '|',
+        'Date1': '2016',
+        'Date2': '||||',
+        'Ctry': '|||',
+        'Lang': 'mul',
+        'MRec': '|',
+        'Srce': '|',
+        'Ills': ['|', '|', '|', '|'],
+        'Audn': '|',
+        'Form': '\\',
+        'Cont': ['\\', '\\', '\\', '\\'],
+        'GPub': '\\',
+        'Conf': '\\',
+        'Fest': '|',
+        'Indx': '|',
+        'LitF': '|',
+        'Biog': '|',
+      },
+    }, {
+      'id': '0b3938b5-3ed6-45a0-90f9-fcf24dfebc7c',
+      'tag': '100',
+      'content': '$a Ma, Wei $0 id.loc.gov/authorities/names/n84160718 $9 495884af-28d7-4d69-85e4-e84c5de693db',
+      'indicators': ['\\', '\\'],
+      '_isAdded': true,
+      '_isLinked': true,
+      'prevContent': '$a test',
+      'linkDetails': {
+        'authorityNaturalId': 'n84160718',
+        'authorityId': '495884af-28d7-4d69-85e4-e84c5de693db',
+        'linkingRuleId': 1,
+        'status': 'NEW',
+      },
+      'subfieldGroups': {
+        'controlled': '$a Ma, Wei',
+        'uncontrolledAlpha': '',
+        'zeroSubfield': '$0 id.loc.gov/authorities/names/n84160718',
+        'nineSubfield': '$9 495884af-28d7-4d69-85e4-e84c5de693db',
+        'uncontrolledNumber': '',
+      },
+    }, {
+      'content': '$a Title',
+      'tag': '245',
+    },
+  ],
+};
+
+const mockLeaders = {
+  [MARC_TYPES.BIB]: '01178nam\\a2200277ic\\4500',
+  [MARC_TYPES.HOLDINGS]: '00000nu\\\\\\2200000un\\4500',
+};
+
+const mockFormValues = jest.fn((marcType) => ({
+  fields: undefined,
+  externalHrid: 'in00000000022',
+  externalId: '17064f9d-0362-468d-8317-5984b7efd1b5',
+  leader: mockLeaders[marcType],
+  marcFormat: marcType,
+  parsedRecordDtoId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
+  parsedRecordId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
+  records: mockRecords[marcType],
   relatedRecordVersion: 1,
   suppressDiscovery: false,
   updateInfo: { recordState: 'NEW' },
 }));
 
-jest.mock('@folio/stripes/final-form', () => () => (Component) => ({ onSubmit, ...props }) => {
-  const formValues = mockFormValues();
+jest.mock('@folio/stripes/final-form', () => () => (Component) => ({
+  onSubmit,
+  marcType,
+  ...props
+}) => {
+  const formValues = mockFormValues(marcType);
 
   return (
     <Component
       handleSubmit={() => onSubmit(formValues)}
       form={{
-        mutators: {},
+        mutators: {
+          markRecordsLinked: jest.fn(),
+        },
         reset: jest.fn(),
         getState: jest.fn().mockReturnValue({ values: formValues }),
       }}
+      marcType={marcType}
       {...props}
     />
   );
 });
 
+const mockActualizeLinks = jest.fn((formValuesToProcess) => Promise.resolve(formValuesToProcess));
 const mockShowCallout = jest.fn();
 
 jest.mock('@folio/stripes-acq-components', () => ({
@@ -137,6 +216,7 @@ const renderQuickMarcCreateWrapper = ({
   mutator,
   history,
   location,
+  marcType = MARC_TYPES.HOLDINGS,
 }) => (render(
   <Harness>
     <QuickMarcCreateWrapper
@@ -144,10 +224,10 @@ const renderQuickMarcCreateWrapper = ({
       instance={instance}
       mutator={mutator}
       action={QUICK_MARC_ACTIONS.CREATE}
+      marcType={marcType}
       initialValues={{ leader: 'assdfgs ds sdg' }}
       history={history}
       location={location}
-      marcType={MARC_TYPES.HOLDINGS}
       locations={locations}
     />
   </Harness>,
@@ -179,6 +259,17 @@ describe('Given QuickMarcCreateWrapper', () => {
     location = {
       search: '?filters=source.MARC',
     };
+
+    useAuthorityLinking.mockReturnValue({
+      linkableBibFields: [],
+      actualizeLinks: mockActualizeLinks,
+      autoLinkingEnabled: true,
+      autoLinkableBibFields: [],
+      autoLinkAuthority: jest.fn(),
+      linkingRules: [],
+    });
+
+    jest.clearAllMocks();
   });
 
   it('should render with no axe errors', async () => {
@@ -248,21 +339,70 @@ describe('Given QuickMarcCreateWrapper', () => {
           json: () => Promise.resolve({}),
         }));
 
-        await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+        await act(async () => fireEvent.click(getByText('stripes-acq-components.FormFooter.save')));
 
         expect(mutator.quickMarcEditMarcRecord.POST).toHaveBeenCalled();
 
-        await new Promise(resolve => {
-          setTimeout(() => {
-            expect(mockShowCallout).toHaveBeenCalledWith({
-              messageId: 'ui-quick-marc.record.save.error.generic',
-              type: 'error',
-            });
-
-            resolve();
-          }, 10);
+        expect(mockShowCallout).toHaveBeenCalledWith({
+          messageId: 'ui-quick-marc.record.save.error.generic',
+          type: 'error',
         });
-      }, 1000);
+      });
+    });
+
+    it('should actualize links', async () => {
+      await act(async () => {
+        renderQuickMarcCreateWrapper({
+          instance,
+          mutator,
+          history,
+          location,
+          marcType: MARC_TYPES.BIB,
+        });
+      });
+
+      await act(async () => { fireEvent.click(screen.getByText('stripes-acq-components.FormFooter.save')); });
+
+      const expectedFormValues = {
+        marcFormat: MARC_TYPES.BIB,
+        records: expect.arrayContaining([
+          expect.objectContaining({
+            tag: 'LDR',
+            content: mockRecords[MARC_TYPES.BIB][0].content,
+          }),
+          expect.objectContaining({
+            tag: '100',
+            content: '$a Ma, Wei $0 id.loc.gov/authorities/names/n84160718 $9 495884af-28d7-4d69-85e4-e84c5de693db',
+            prevContent: '$a test',
+            linkDetails: {
+              authorityId: '495884af-28d7-4d69-85e4-e84c5de693db',
+              authorityNaturalId: 'n84160718',
+              linkingRuleId: 1,
+              status: 'NEW',
+            },
+          }),
+        ]),
+      };
+
+      expect(mockActualizeLinks).toHaveBeenCalledWith(expect.objectContaining(expectedFormValues));
+    });
+
+    describe('when marc type is not a bibliographic', () => {
+      it('should not be called actualizeLinks', async () => {
+        await act(async () => {
+          renderQuickMarcCreateWrapper({
+            instance,
+            mutator,
+            history,
+            location,
+            marcType: MARC_TYPES.HOLDINGS,
+          });
+        });
+
+        await act(async () => { fireEvent.click(screen.getByText('stripes-acq-components.FormFooter.save')); });
+
+        expect(mockActualizeLinks).not.toHaveBeenCalled();
+      });
     });
   });
 });

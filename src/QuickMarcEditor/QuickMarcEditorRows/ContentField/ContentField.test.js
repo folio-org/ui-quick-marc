@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, cleanup, act } from '@testing-library/react';
+import { render, cleanup, act } from '@folio/jest-config-stripes/testing-library/react';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
@@ -52,11 +52,9 @@ describe('Given Content Field', () => {
   });
 
   it('should calculate resize styles after input value change', async () => {
-    await act(async () => {
-      const { rerender } = render(getComponent('$a dg'));
+    const { rerender } = render(getComponent('$a dg'));
 
-      await rerender(getComponent('$a dg sdas $ asf'));
-    });
+    rerender(getComponent('$a dg sdas $ asf'));
 
     expect(getResizeStylesSpy).toHaveBeenCalled();
     expect(getResizeStylesSpy.mock.calls.length).toBe(2);

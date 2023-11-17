@@ -5,18 +5,24 @@ import {
   act,
   fireEvent,
   screen,
-} from '@testing-library/react';
+} from '@folio/jest-config-stripes/testing-library/react';
 import faker from 'faker';
 
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcEditorContainer from './QuickMarcEditorContainer';
 import QuickMarcEditWrapper from './QuickMarcEditWrapper';
+import QuickMarcDeriveWrapper from './QuickMarcDeriveWrapper';
 import { QUICK_MARC_ACTIONS } from './constants';
-import { MARC_TYPES } from '../common/constants';
+import {
+  MARC_TYPES,
+  OKAPI_TENANT_HEADER,
+} from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
+import buildStripes from '../../test/jest/__mock__/stripesCore.mock';
 import { useAuthorityLinksCount } from '../queries';
+import { applyCentralTenantInHeaders } from './utils';
 
 const mockFetchLinksCount = jest.fn().mockResolvedValue();
 
@@ -38,17 +44,27 @@ const location = {
 
 const mockHistory = createMemoryHistory();
 
-jest.mock('react-router', () => ({
-  ...jest.requireActual('react-router'),
-  withRouter: Component => props => <Component {...props} match={match} location={location} history={mockHistory} />,
+jest.mock('./utils', () => ({
+  ...jest.requireActual('./utils'),
+  applyCentralTenantInHeaders: jest.fn(),
+  changeTenantHeader: jest.fn(ky => ky),
 }));
 
-jest.mock('../queries', () => ({
-  ...jest.requireActual('../queries'),
+jest.mock('react-router', () => ({
+  ...jest.requireActual('react-router'),
+  withRouter: Component => props => <Component match={match} location={location} history={mockHistory} {...props} />,
+}));
+
+jest.mock('@folio/stripes-marc-components', () => ({
+  ...jest.requireActual('@folio/stripes-marc-components'),
   useAuthorityLinkingRules: jest.fn().mockReturnValue({
     linkingRules: [],
     isLoading: false,
   }),
+}));
+
+jest.mock('../queries', () => ({
+  ...jest.requireActual('../queries'),
   useAuthoritySourceFiles: jest.fn().mockReturnValue({
     sourceFiles: [],
     isLoading: false,
@@ -57,6 +73,10 @@ jest.mock('../queries', () => ({
     fetchLinksCount: jest.fn().mockResolvedValue({
       links: [{ totalLinks: 0 }],
     }),
+  }),
+  useLinkSuggestions: jest.fn().mockReturnValue({
+    fetchLinkSuggestions: jest.fn(),
+    isLoading: false,
   }),
 }));
 
@@ -78,23 +98,17 @@ const locations = [];
 
 const externalRecordPath = '/external/record/path';
 
-const renderQuickMarcEditorContainer = ({
-  onClose,
-  mutator,
-  action,
-  wrapper,
-  marcType = MARC_TYPES.BIB,
-  history = createMemoryHistory(),
-}) => (render(
+const mockOnClose = jest.fn();
+
+const renderQuickMarcEditorContainer = ({ history, ...props } = {}) => (render(
   <Harness history={history}>
     <QuickMarcEditorContainer
-      onClose={onClose}
-      mutator={mutator}
-      wrapper={wrapper}
-      action={action}
-      marcType={marcType}
+      marcType={MARC_TYPES.BIB}
       externalRecordPath={externalRecordPath}
+      onClose={mockOnClose}
       resources={resources}
+      {...props}
+      onCheckCentralTenantPerm={() => false}
     />
   </Harness>,
 ));
@@ -123,7 +137,12 @@ describe('Given Quick Marc Editor Container', () => {
       linkingRules: {
         GET: jest.fn().mockResolvedValue([]),
       },
+      fixedFieldSpec: {
+        GET: jest.fn(() => Promise.resolve()),
+      },
     };
+
+    applyCentralTenantInHeaders.mockReturnValue(false);
   });
 
   it('should fetch MARC record', async () => {
@@ -265,6 +284,88 @@ describe('Given Quick Marc Editor Container', () => {
       }));
 
       expect(onClose).toHaveBeenCalled();
+    });
+  });
+
+  describe('when a user is in a member tenant and derives a shared record', () => {
+    it('should take the record data from the central tenant', async () => {
+      applyCentralTenantInHeaders.mockReturnValue(true);
+
+      const stripes = buildStripes({
+        okapi: { tenant: 'university', locale: 'en' },
+        user: { user: { consortium: { centralTenantId: 'consortium' } } },
+      });
+
+      await act(async () => {
+        renderQuickMarcEditorContainer({
+          mutator,
+          onClose: jest.fn(),
+          action: QUICK_MARC_ACTIONS.DERIVE,
+          wrapper: QuickMarcDeriveWrapper,
+          stripes,
+        });
+      });
+
+      const requests = [
+        mutator.quickMarcEditInstance.GET,
+        mutator.quickMarcEditMarcRecord.GET,
+        mutator.linkingRules.GET,
+      ];
+
+      requests.forEach(request => {
+        expect(request).toHaveBeenCalledWith(expect.objectContaining({
+          headers: {
+            Accept: 'application/json',
+            'Accept-Language': 'en',
+            'Content-Type': 'application/json',
+            'X-Okapi-Tenant': 'consortium',
+          },
+        }));
+      });
+    });
+  });
+
+  describe('when a user is in a member tenant and derives a local record', () => {
+    it('should take the record data from the member tenant', async () => {
+      const newLocation = {
+        ...location,
+        search: '?shared=false',
+      };
+      const newMutator = {
+        ...mutator,
+        quickMarcEditInstance: {
+          GET: jest.fn(() => Promise.resolve({ ...instance, source: 'FOLIO' })),
+        },
+      };
+      const stripes = buildStripes({
+        okapi: { tenant: 'university' },
+        user: { user: { consortium: { centralTenantId: 'consortium' } } },
+      });
+
+      await act(async () => {
+        renderQuickMarcEditorContainer({
+          mutator: newMutator,
+          onClose: jest.fn(),
+          action: QUICK_MARC_ACTIONS.DERIVE,
+          wrapper: QuickMarcDeriveWrapper,
+          stripes,
+          location: newLocation,
+        });
+      });
+
+      const requests = [
+        newMutator.quickMarcEditInstance.GET,
+        newMutator.quickMarcEditMarcRecord.GET,
+        newMutator.linkingRules.GET,
+      ];
+
+      requests.forEach(request => {
+        expect(request).toHaveBeenCalledWith(expect.not.objectContaining({
+          headers: {
+            [OKAPI_TENANT_HEADER]: 'consortium',
+          },
+        }));
+      });
     });
   });
 });

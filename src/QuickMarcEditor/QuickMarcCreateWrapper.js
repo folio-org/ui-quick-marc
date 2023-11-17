@@ -14,7 +14,6 @@ import {
   useAuthorityLinking,
   useValidation,
 } from '../hooks';
-import { useAuthorityLinkingRules } from '../queries';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 import {
@@ -41,6 +40,7 @@ const propTypes = {
   location: ReactRouterPropTypes.location.isRequired,
   locations: PropTypes.object.isRequired,
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
+  fixedFieldSpec: PropTypes.object.isRequired,
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
 };
@@ -54,12 +54,12 @@ const QuickMarcCreateWrapper = ({
   history,
   location,
   marcType,
+  fixedFieldSpec,
   locations,
 }) => {
   const showCallout = useShowCallout();
   const [httpError, setHttpError] = useState(null);
-  const { linkableBibFields } = useAuthorityLinking();
-  const { linkingRules } = useAuthorityLinkingRules();
+  const { linkableBibFields, actualizeLinks, linkingRules } = useAuthorityLinking({ marcType, action });
 
   const { validate } = useValidation({
     initialValues,
@@ -79,11 +79,11 @@ const QuickMarcCreateWrapper = ({
       autopopulatePhysDescriptionField,
       autopopulateMaterialCharsField,
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
-      marcRecord => cleanBytesFields(marcRecord, marcType),
+      marcRecord => cleanBytesFields(marcRecord, fixedFieldSpec),
     )(formValues);
 
     return formValuesForCreate;
-  }, [marcType]);
+  }, [marcType, fixedFieldSpec]);
 
   const runValidation = useCallback((formValues) => {
     const formValuesForValidation = prepareForSubmit(formValues);
@@ -107,13 +107,30 @@ const QuickMarcCreateWrapper = ({
   };
 
   const onSubmit = useCallback(async (formValues) => {
-    const formValuesForCreate = flow(
+    const formValuesToProcess = flow(
       prepareForSubmit,
       combineSplitFields,
-      hydrateMarcRecord,
     )(formValues);
 
-    formValuesForCreate._actionType = 'create';
+    let formValuesToHydrate;
+
+    try {
+      if (marcType === MARC_TYPES.BIB) {
+        formValuesToHydrate = await actualizeLinks(formValuesToProcess);
+      } else {
+        formValuesToHydrate = formValuesToProcess;
+      }
+    } catch (errorResponse) {
+      const parsedError = await parseHttpError(errorResponse);
+
+      setHttpError(parsedError);
+
+      return null;
+    }
+
+    formValuesToHydrate._actionType = 'create';
+
+    const formValuesForCreate = hydrateMarcRecord(formValuesToHydrate);
 
     return mutator.quickMarcEditMarcRecord.POST(formValuesForCreate)
       .then(async ({ qmRecordId }) => {
@@ -149,7 +166,7 @@ const QuickMarcCreateWrapper = ({
         setHttpError(parsedError);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onClose, showCallout, prepareForSubmit]);
+  }, [onClose, showCallout, prepareForSubmit, actualizeLinks]);
 
   return (
     <QuickMarcEditor
@@ -159,6 +176,7 @@ const QuickMarcCreateWrapper = ({
       onSubmit={onSubmit}
       action={action}
       marcType={marcType}
+      fixedFieldSpec={fixedFieldSpec}
       httpError={httpError}
       validate={runValidation}
     />

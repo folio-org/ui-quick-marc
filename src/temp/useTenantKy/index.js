@@ -1,0 +1,1 @@
+export { useTenantKy } from './useTenantKy';

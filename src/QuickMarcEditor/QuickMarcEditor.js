@@ -12,9 +12,14 @@ import {
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import find from 'lodash/find';
+import noop from 'lodash/noop';
 import { FormSpy } from 'react-final-form';
 
-import { IfPermission } from '@folio/stripes/core';
+import {
+  IfPermission,
+  checkIfUserInCentralTenant,
+  useStripes,
+} from '@folio/stripes/core';
 import stripesFinalForm from '@folio/stripes/final-form';
 import {
   Pane,
@@ -56,7 +61,6 @@ import {
   updateRecordAtIndex,
   markLinkedRecords,
 } from './utils';
-import { useLinkSuggestions } from '../queries';
 import { useAuthorityLinking } from '../hooks';
 
 import css from './QuickMarcEditor.css';
@@ -87,13 +91,16 @@ const QuickMarcEditor = ({
     getState,
   },
   marcType,
+  fixedFieldSpec,
   locations,
   httpError,
   externalRecordPath,
   confirmRemoveAuthorityLinking,
   linksCount,
   validate,
+  onCheckCentralTenantPerm,
 }) => {
+  const stripes = useStripes();
   const formValues = getState().values;
   const history = useHistory();
   const location = useLocation();
@@ -102,13 +109,15 @@ const QuickMarcEditor = ({
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const [isUnlinkRecordsModalOpen, setIsUnlinkRecordsModalOpen] = useState(false);
   const [isUpdate0101xxfieldsAuthRecModalOpen, setIsUpdate0101xxfieldsAuthRecModalOpen] = useState(false);
+  const [isLoadingLinkSuggestions, setIsLoadingLinkSuggestions] = useState(false);
   const continueAfterSave = useRef(false);
   const formRef = useRef(null);
   const confirmationChecks = useRef({ ...REQUIRED_CONFIRMATIONS });
+  const isConsortiaEnv = stripes.hasInterface('consortia');
+  const searchParameters = new URLSearchParams(location.search);
+  const isShared = searchParameters.get('shared') === 'true';
 
-  const { isLoading: isLoadingLinkSuggestions, fetchLinkSuggestions } = useLinkSuggestions();
-
-  const { unlinkAuthority } = useAuthorityLinking();
+  const { unlinkAuthority } = useAuthorityLinking({ marcType, action });
 
   const deletedRecords = useMemo(() => {
     return records
@@ -117,8 +126,8 @@ const QuickMarcEditor = ({
   }, [records]);
 
   const leader = records[0];
-  const type = leader?.content?.[6];
-  const subtype = leader?.content?.[7];
+  const type = leader?.content?.[6] || '';
+  const subtype = leader?.content?.[7] || '';
 
   const saveFormDisabled = action === QUICK_MARC_ACTIONS.EDIT
     ? pristine || submitting
@@ -214,7 +223,7 @@ const QuickMarcEditor = ({
     const start = (
       <Button
         buttonStyle="default mega"
-        onClick={onClose}
+        onClick={() => onClose()}
         marginBottom0
       >
         <FormattedMessage id="stripes-acq-components.FormFooter.cancel" />
@@ -281,10 +290,14 @@ const QuickMarcEditor = ({
   }
 
   const getPaneTitle = () => {
-    let formattedMessageValues = {};
+    let formattedMessageValues = {
+      title: instance.title,
+      shared: isConsortiaEnv ? isShared : null,
+    };
 
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
       formattedMessageValues = {
+        ...formattedMessageValues,
         location: find(locations, { id: instance?.effectiveLocationId })?.name,
         callNumber: instance?.callNumber,
       };
@@ -300,10 +313,13 @@ const QuickMarcEditor = ({
       const headingContent = currentHeading?.content || initialHeading?.content;
 
       formattedMessageValues = {
+        ...formattedMessageValues,
         title: getContentSubfieldValue(headingContent).$a?.[0],
       };
-    } else {
-      formattedMessageValues = instance;
+    } else if (marcType === MARC_TYPES.BIB && action !== QUICK_MARC_ACTIONS.EDIT) {
+      formattedMessageValues = {
+        shared: isConsortiaEnv ? checkIfUserInCentralTenant(stripes) : null,
+      };
     }
 
     return (
@@ -391,7 +407,7 @@ const QuickMarcEditor = ({
       return;
     } else if (httpError.code === 'ILLEGAL_FIXED_LENGTH_CONTROL_FIELD') {
       messageId = 'ui-quick-marc.record.save.error.illegalFixedLength';
-    } else if (httpError.message === 'Not found') {
+    } else if (httpError.httpStatus === 404) {
       messageId = 'ui-quick-marc.record.save.error.notFound';
     } else {
       messageId = 'ui-quick-marc.record.save.error.generic';
@@ -432,11 +448,12 @@ const QuickMarcEditor = ({
               lastMenu={(
                 <PaneMenu>
                   <AutoLinkingButton
+                    action={action}
                     marcType={marcType}
                     formValues={formValues}
                     isLoadingLinkSuggestions={isLoadingLinkSuggestions}
-                    onFetchLinkSuggestions={fetchLinkSuggestions}
                     onMarkRecordsLinked={mutators.markRecordsLinked}
+                    onSetIsLoadingLinkSuggestions={setIsLoadingLinkSuggestions}
                   />
                 </PaneMenu>
               )}
@@ -459,9 +476,11 @@ const QuickMarcEditor = ({
                     type={type}
                     subtype={subtype}
                     marcType={marcType}
+                    fixedFieldSpec={fixedFieldSpec}
                     instance={instance}
                     linksCount={linksCount}
                     isLoadingLinkSuggestions={isLoadingLinkSuggestions}
+                    onCheckCentralTenantPerm={onCheckCentralTenantPerm}
                   />
                 </Col>
               </Row>
@@ -534,20 +553,24 @@ QuickMarcEditor.propTypes = {
     reset: PropTypes.func.isRequired,
   }),
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
+  fixedFieldSpec: PropTypes.object.isRequired,
   linksCount: PropTypes.number,
   locations: PropTypes.arrayOf(PropTypes.object).isRequired,
   httpError: PropTypes.shape({
     code: PropTypes.string,
     message: PropTypes.string,
     errorType: PropTypes.string,
+    httpStatus: PropTypes.number,
   }),
   confirmRemoveAuthorityLinking: PropTypes.bool,
   validate: PropTypes.func.isRequired,
+  onCheckCentralTenantPerm: PropTypes.func,
 };
 
 QuickMarcEditor.defaultProps = {
   httpError: null,
   confirmRemoveAuthorityLinking: false,
+  onCheckCentralTenantPerm: noop,
 };
 
 export default stripesFinalForm({

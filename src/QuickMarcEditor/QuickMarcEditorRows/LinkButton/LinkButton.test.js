@@ -3,36 +3,32 @@ import {
   act,
   fireEvent,
   render,
-} from '@testing-library/react';
+} from '@folio/jest-config-stripes/testing-library/react';
 
-import { Pluggable } from '@folio/stripes/core';
+import {
+  checkIfUserInMemberTenant,
+  checkIfUserInCentralTenant,
+  Pluggable,
+  useOkapiKy,
+} from '@folio/stripes/core';
 import { runAxeTest } from '@folio/stripes-testing';
 
+import { createMemoryHistory } from 'history';
 import { LinkButton } from './LinkButton';
+import { QUICK_MARC_ACTIONS } from '../../constants';
 
 import Harness from '../../../../test/jest/helpers/harness';
 
 const mockOnClick = jest.fn();
 const mockGetMarcSource = jest.fn(() => ({ json: () => {} }));
 
-jest.mock('@folio/stripes/core', () => ({
-  ...jest.requireActual('@folio/stripes/core'),
-  useCallout: () => ({
-    sendCallout: jest.fn(),
-  }),
-  useNamespace: jest.fn().mockReturnValue(['ui-quick-marc-test']),
-  useOkapiKy: jest.fn(() => ({
-    get: mockGetMarcSource,
-  })),
-  Pluggable: jest.fn(({ renderCustomTrigger }) => renderCustomTrigger({ onClick: mockOnClick })),
-}));
-
 const mockHandleLinkAuthority = jest.fn();
 const mockHandleUnlinkAuthority = jest.fn();
 
 const renderComponent = (props = {}) => render(
-  <Harness>
+  <Harness history={props.history}>
     <LinkButton
+      action={QUICK_MARC_ACTIONS.EDIT}
       handleLinkAuthority={mockHandleLinkAuthority}
       handleUnlinkAuthority={mockHandleUnlinkAuthority}
       isLinked={false}
@@ -48,6 +44,13 @@ const renderComponent = (props = {}) => render(
 describe('Given LinkButton', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useOkapiKy.mockReturnValue(({
+      get: mockGetMarcSource,
+      extend: jest.fn(),
+    }));
+    Pluggable.mockImplementation(({ renderCustomTrigger }) => renderCustomTrigger({ onClick: mockOnClick }));
+    checkIfUserInMemberTenant.mockReturnValue(false);
+    checkIfUserInCentralTenant.mockReturnValue(false);
   });
 
   it('should render with no axe errors', async () => {
@@ -98,10 +101,12 @@ describe('Given LinkButton', () => {
           search: {
             dropdownValue: 'personalNameTitle',
             searchIndex: 'personalNameTitle',
+            filters: null,
           },
           browse: {
             dropdownValue: 'personalNameTitle',
             searchIndex: 'personalNameTitle',
+            filters: null,
           },
           segment: 'browse',
         };
@@ -124,10 +129,12 @@ describe('Given LinkButton', () => {
             searchIndex: 'advancedSearch',
             searchInputValue: 'identifiers.value==n123456789',
             searchQuery: 'identifiers.value==n123456789',
+            filters: null,
           },
           browse: {
             dropdownValue: 'personalNameTitle',
             searchIndex: 'personalNameTitle',
+            filters: null,
           },
           segment: 'search',
         };
@@ -150,10 +157,12 @@ describe('Given LinkButton', () => {
             searchIndex: 'advancedSearch',
             searchInputValue: 'identifiers.value==n123456789 or identifiers.value==n987654321',
             searchQuery: 'identifiers.value==n123456789 or identifiers.value==n987654321',
+            filters: null,
           },
           browse: {
             dropdownValue: 'personalNameTitle',
             searchIndex: 'personalNameTitle',
+            filters: null,
           },
           segment: 'search',
         };
@@ -174,12 +183,14 @@ describe('Given LinkButton', () => {
           search: {
             dropdownValue: 'personalNameTitle',
             searchIndex: 'personalNameTitle',
+            filters: null,
           },
           browse: {
             dropdownValue: 'personalNameTitle',
             searchIndex: 'personalNameTitle',
             searchInputValue: 'value1 value2 value3',
             searchQuery: 'value1 value2 value3',
+            filters: null,
           },
           segment: 'browse',
         };
@@ -202,10 +213,12 @@ describe('Given LinkButton', () => {
             searchIndex: 'advancedSearch',
             searchInputValue: 'keyword==value1 value2 value3 or identifiers.value==value4 or identifiers.value==value5',
             searchQuery: 'keyword==value1 value2 value3 or identifiers.value==value4 or identifiers.value==value5',
+            filters: null,
           },
           browse: {
             dropdownValue: 'personalNameTitle',
             searchIndex: 'personalNameTitle',
+            filters: null,
           },
           segment: 'search',
         };
@@ -264,5 +277,147 @@ describe('Given LinkButton', () => {
 
       expect(queryAllByTestId('link-authority-button-fakeId')[0]).toBeUndefined();
     });
+  });
+
+  describe('when member tenant edits a shared bib record', () => {
+    it('should pass correct props', () => {
+      checkIfUserInMemberTenant.mockReturnValue(true);
+
+      const history = createMemoryHistory({
+        initialEntries: [{ search: '?shared=true' }],
+      });
+
+      const centralTenantId = 'consortia';
+      const initialValues = expect.objectContaining({
+        browse: expect.objectContaining({
+          filters: {
+            shared: ['true'],
+          },
+        }),
+        search: expect.objectContaining({
+          filters: {
+            shared: ['true'],
+          },
+        }),
+      });
+      const excludedFilters = {
+        search: ['shared'],
+        browse: ['shared'],
+      };
+
+      renderComponent({ history });
+
+      expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
+        tenantId: centralTenantId,
+        initialValues,
+        excludedFilters,
+      }), {});
+    });
+  });
+
+  describe('when member tenant derives a shared bib record', () => {
+    it('should pass correct props', () => {
+      checkIfUserInMemberTenant.mockReturnValue(true);
+
+      const history = createMemoryHistory({
+        initialEntries: [{ search: '?shared=true' }],
+      });
+
+      const initialValues = expect.objectContaining({
+        browse: expect.objectContaining({
+          filters: null,
+        }),
+        search: expect.objectContaining({
+          filters: null,
+        }),
+      });
+      const excludedFilters = {
+        search: [],
+        browse: [],
+      };
+
+      renderComponent({
+        action: QUICK_MARC_ACTIONS.DERIVE,
+        history,
+      });
+
+      expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
+        tenantId: '',
+        initialValues,
+        excludedFilters,
+      }), {});
+    });
+  });
+
+  it.each`
+  action
+  ${QUICK_MARC_ACTIONS.CREATE}
+  ${QUICK_MARC_ACTIONS.EDIT}
+  ${QUICK_MARC_ACTIONS.DERIVE}
+  `('should pass correct props when member tenant $action a not shared bib record', ({ action }) => {
+    checkIfUserInMemberTenant.mockReturnValue(true);
+
+    const history = createMemoryHistory({
+      initialEntries: [{ search: '?shared=false' }],
+    });
+
+    const initialValues = expect.objectContaining({
+      browse: expect.objectContaining({
+        filters: null,
+      }),
+      search: expect.objectContaining({
+        filters: null,
+      }),
+    });
+    const excludedFilters = {
+      search: [],
+      browse: [],
+    };
+
+    renderComponent({
+      action,
+      history,
+    });
+
+    expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
+      tenantId: '',
+      initialValues,
+      excludedFilters,
+    }), {});
+  });
+
+  it.each`
+  action
+  ${QUICK_MARC_ACTIONS.CREATE}
+  ${QUICK_MARC_ACTIONS.EDIT}
+  ${QUICK_MARC_ACTIONS.DERIVE}
+  `('should pass correct props when central tenant $action a bib record', ({ action }) => {
+    checkIfUserInCentralTenant.mockReturnValue(true);
+
+    const initialValues = expect.objectContaining({
+      browse: expect.objectContaining({
+        filters: {
+          shared: ['true'],
+        },
+      }),
+      search: expect.objectContaining({
+        filters: {
+          shared: ['true'],
+        },
+      }),
+    });
+
+    const excludedFilters = {
+      search: ['shared'],
+      browse: ['shared'],
+    };
+
+    renderComponent({ action });
+
+    expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
+      tenantId: '',
+      initialValues,
+      excludedFilters,
+    }), {});
   });
 });

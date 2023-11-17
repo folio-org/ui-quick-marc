@@ -33,6 +33,9 @@ const buildStripes = (otherProperties = {}) => ({
     user: {
       id: 'b1add99d-530b-5912-94f3-4091b4d87e2c',
       username: 'diku_admin',
+      consortium: {
+        centralTenantId: 'consortia',
+      },
     },
   },
   withOkapi: true,
@@ -85,7 +88,10 @@ jest.mock('@folio/stripes/core', () => {
     delete: jest.fn().mockReturnValue({
       json: jest.fn().mockResolvedValue({}),
     }),
+    extend: jest.fn(),
   });
+
+  const useStripes = () => STRIPES;
 
   const useNamespace = () => ['@folio/marc-authorities', jest.fn()];
 
@@ -101,21 +107,30 @@ jest.mock('@folio/stripes/core', () => {
   });
 
   // eslint-disable-next-line react/prop-types
-  const IfPermission = ({ children }) => <>{children}</>;
+  const IfPermission = jest.fn(({ children }) => <>{children}</>);
 
   const AppContextMenu = ({ children }) => <>{children()}</>;
 
   STRIPES.connect = stripesConnect;
 
+  const checkIfUserInMemberTenant = jest.fn().mockReturnValue(false);
+  const checkIfUserInCentralTenant = jest.fn().mockReturnValue(false);
+
+  const Pluggable = jest.fn(props => <>{props.children}</>);
+
   return {
     ...jest.requireActual('@folio/stripes/core'),
     stripesConnect,
     withStripes,
+    useStripes,
     IfPermission,
     AppContextMenu,
     useOkapiKy,
     useNamespace,
     useCallout,
+    checkIfUserInCentralTenant,
+    checkIfUserInMemberTenant,
+    Pluggable,
   };
 }, { virtual: true });
 

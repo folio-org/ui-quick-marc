@@ -1,9 +1,10 @@
+/* eslint-disable max-lines */
 import React from 'react';
 import {
   render,
   fireEvent,
   waitFor,
-} from '@testing-library/react';
+} from '@folio/jest-config-stripes/testing-library/react';
 import faker from 'faker';
 
 import { runAxeTest } from '@folio/stripes-testing';
@@ -17,7 +18,7 @@ import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
-/* eslint-disable max-lines */
+
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
   useLocation: () => ({
@@ -27,8 +28,12 @@ jest.mock('react-router', () => ({
 
 jest.mock('../queries', () => ({
   ...jest.requireActual('../queries'),
-  useAuthorityLinkingRules: jest.fn().mockReturnValue({ linkingRules: [] }),
   useLinkSuggestions: jest.fn().mockReturnValue({ isLoading: false, fetchLinkSuggestions: jest.fn() }),
+}));
+
+jest.mock('@folio/stripes-marc-components', () => ({
+  ...jest.requireActual('@folio/stripes-marc-components'),
+  useAuthorityLinkingRules: jest.fn().mockReturnValue({ linkingRules: [] }),
 }));
 
 jest.mock('@folio/stripes-acq-components', () => ({
@@ -153,6 +158,7 @@ const renderQuickMarcEditor = (props) => (render(
 
 describe('Given QuickMarcEditor', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     mockValidate.mockClear().mockReturnValue(undefined);
   });
 
@@ -185,6 +191,18 @@ describe('Given QuickMarcEditor', () => {
 
     expect(getByText('stripes-acq-components.FormFooter.cancel')).toBeDefined();
     expect(getByText('stripes-acq-components.FormFooter.save')).toBeDefined();
+  });
+
+  describe('when clicking Cancel pane button', () => {
+    it('should invoke the onClose callback without any args', () => {
+      const { getByText } = renderQuickMarcEditor();
+
+      const cancelPaneButton = getByText('stripes-acq-components.FormFooter.cancel');
+
+      fireEvent.click(cancelPaneButton);
+
+      expect(onCloseMock).toHaveBeenCalledWith();
+    });
   });
 
   it('should display QuickMarcEditorRows', () => {

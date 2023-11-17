@@ -6,13 +6,17 @@ import {
   useIntl,
   FormattedMessage,
 } from 'react-intl';
+import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import flatten from 'lodash/flatten';
 import isNil from 'lodash/isNil';
 
 import {
+  checkIfUserInCentralTenant,
+  checkIfUserInMemberTenant,
   Pluggable,
   useCallout,
+  useStripes,
 } from '@folio/stripes/core';
 import {
   Tooltip,
@@ -27,9 +31,12 @@ import {
   DEFAULT_LOOKUP_OPTIONS,
   searchableIndexesValues,
   navigationSegments,
+  FILTERS,
 } from '../../../common/constants';
+import { QUICK_MARC_ACTIONS } from '../../constants';
 
 const propTypes = {
+  action: PropTypes.string.isRequired,
   calloutRef: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.func,
@@ -44,6 +51,7 @@ const propTypes = {
 };
 
 const LinkButton = ({
+  action,
   handleLinkAuthority,
   handleUnlinkAuthority,
   isLinked,
@@ -53,12 +61,40 @@ const LinkButton = ({
   calloutRef,
   content,
 }) => {
+  const stripes = useStripes();
   const intl = useIntl();
+  const location = useLocation();
   const [authority, setAuthority] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const callout = useCallout();
+  const centralTenantId = stripes.user.user?.consortium?.centralTenantId;
+  const isSharedBibRecord = new URLSearchParams(location.search).get('shared') === 'true';
 
-  const { isLoading: isLoadingMarcSource, refetch: refetchSource } = useMarcSource(fieldId, authority?.id, {
+  let showSharedFilter = false;
+  let showSharedRecordsOnly = false;
+  let pluginTenantId = '';
+
+  if (checkIfUserInCentralTenant(stripes)) {
+    if ([QUICK_MARC_ACTIONS.CREATE, QUICK_MARC_ACTIONS.EDIT, QUICK_MARC_ACTIONS.DERIVE].includes(action)) {
+      showSharedRecordsOnly = true;
+    }
+  } else if (checkIfUserInMemberTenant(stripes)) {
+    if (isSharedBibRecord) {
+      if (action === QUICK_MARC_ACTIONS.EDIT) {
+        showSharedRecordsOnly = true;
+        pluginTenantId = centralTenantId;
+      } else if (action === QUICK_MARC_ACTIONS.DERIVE) {
+        showSharedFilter = true;
+      }
+    } else if ([QUICK_MARC_ACTIONS.CREATE, QUICK_MARC_ACTIONS.EDIT, QUICK_MARC_ACTIONS.DERIVE].includes(action)) {
+      showSharedFilter = true;
+    }
+  }
+
+  const { isLoading: isLoadingMarcSource, refetch: refetchSource } = useMarcSource({
+    fieldId,
+    recordId: authority?.id,
+    tenantId: authority?.shared ? centralTenantId : authority?.tenantId,
     onSuccess: (authoritySource) => {
       const linkingSuccessful = handleLinkAuthority(authority, authoritySource);
 
@@ -97,6 +133,16 @@ const LinkButton = ({
     return match || subfield;
   };
 
+  const excludedFilters = {
+    [navigationSegments.search]: [],
+    [navigationSegments.browse]: [],
+  };
+
+  if (!showSharedFilter) {
+    excludedFilters[navigationSegments.search].push(FILTERS.SHARED);
+    excludedFilters[navigationSegments.browse].push(FILTERS.SHARED);
+  }
+
   const initialValues = useMemo(() => {
     const { dropdownValue: dropdownValueByTag } = DEFAULT_LOOKUP_OPTIONS[tag];
 
@@ -104,6 +150,9 @@ const LinkButton = ({
     let initialSearchInputValue = '';
     let initialSegment = navigationSegments.search;
     let initialSearchQuery = '';
+    const initialFilters = showSharedRecordsOnly
+      ? { [FILTERS.SHARED]: ['true'] }
+      : null;
 
     const _initialValues = {
       [navigationSegments.search]: {},
@@ -132,10 +181,12 @@ const LinkButton = ({
         searchIndex: initialDropdownValue,
         searchInputValue: initialSearchInputValue,
         searchQuery: initialSearchQuery,
+        filters: initialFilters,
       };
       _initialValues[navigationSegments.browse] = {
         dropdownValue: dropdownValueByTag,
         searchIndex: dropdownValueByTag,
+        filters: initialFilters,
       };
     } else if (fieldContent.$a?.length || fieldContent.$d?.length || fieldContent.$t?.length) {
       initialSegment = navigationSegments.browse;
@@ -149,10 +200,12 @@ const LinkButton = ({
         searchIndex: initialDropdownValue,
         searchInputValue: initialSearchInputValue,
         searchQuery: initialSearchQuery,
+        filters: initialFilters,
       };
       _initialValues[navigationSegments.search] = {
         dropdownValue: dropdownValueByTag,
         searchIndex: dropdownValueByTag,
+        filters: initialFilters,
       };
     } else {
       initialSegment = navigationSegments.browse;
@@ -160,17 +213,19 @@ const LinkButton = ({
       _initialValues[navigationSegments.browse] = {
         dropdownValue: dropdownValueByTag,
         searchIndex: dropdownValueByTag,
+        filters: initialFilters,
       };
       _initialValues[navigationSegments.search] = {
         dropdownValue: dropdownValueByTag,
         searchIndex: dropdownValueByTag,
+        filters: initialFilters,
       };
     }
 
     _initialValues.segment = initialSegment;
 
     return _initialValues;
-  }, [content, tag]);
+  }, [content, tag, showSharedRecordsOnly]);
 
   const renderButton = () => {
     if (isLoading) {
@@ -200,7 +255,9 @@ const LinkButton = ({
     return (
       <Pluggable
         type="find-authority"
+        excludedFilters={excludedFilters}
         isLinkingLoading={isLoadingMarcSource}
+        tenantId={pluginTenantId}
         calloutRef={calloutRef}
         initialValues={initialValues}
         onLinkRecord={onLinkRecord}

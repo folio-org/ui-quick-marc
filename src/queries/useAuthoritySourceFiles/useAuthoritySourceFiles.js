@@ -1,12 +1,13 @@
 import { useQuery } from 'react-query';
 
 import {
-  useOkapiKy,
   useNamespace,
 } from '@folio/stripes/core';
 
-const useAuthoritySourceFiles = () => {
-  const ky = useOkapiKy();
+import { useTenantKy } from '../../temp';
+
+const useAuthoritySourceFiles = ({ tenantId } = {}) => {
+  const ky = useTenantKy({ tenantId });
   const [namespace] = useNamespace({ key: 'authority-source-files' });
 
   const { isFetching, data } = useQuery(

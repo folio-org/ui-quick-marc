@@ -1,29 +1,38 @@
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
-import { IfPermission } from '@folio/stripes/core';
+import {
+  IfPermission,
+} from '@folio/stripes/core';
 import { Button } from '@folio/stripes/components';
 import { useShowCallout } from '@folio/stripes-acq-components';
 
 import { useAuthorityLinking } from '../../hooks';
-import { isRecordForAutoLinking } from '../utils';
+import {
+  isRecordForAutoLinking,
+} from '../utils';
 import { MARC_TYPES } from '../../common/constants';
-import { AUTOLINKING_ERROR_CODES } from './constants';
+import {
+  AUTOLINKING_STATUSES,
+  AUTOLINKING_ERROR_CODES,
+} from '../constants';
 
 const propTypes = {
+  action: PropTypes.string.isRequired,
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   formValues: PropTypes.object.isRequired,
   isLoadingLinkSuggestions: PropTypes.bool.isRequired,
-  onFetchLinkSuggestions: PropTypes.func.isRequired,
   onMarkRecordsLinked: PropTypes.func.isRequired,
+  onSetIsLoadingLinkSuggestions: PropTypes.func,
 };
 
 const AutoLinkingButton = ({
+  action,
   marcType,
   formValues,
   isLoadingLinkSuggestions,
-  onFetchLinkSuggestions,
   onMarkRecordsLinked,
+  onSetIsLoadingLinkSuggestions,
 }) => {
   const intl = useIntl();
   const showCallout = useShowCallout();
@@ -32,7 +41,7 @@ const AutoLinkingButton = ({
     autoLinkingEnabled,
     autoLinkableBibFields,
     autoLinkAuthority,
-  } = useAuthorityLinking();
+  } = useAuthorityLinking({ marcType, action });
 
   const hasAutoLinkableRecord = formValues.records.some(field => isRecordForAutoLinking(field, autoLinkableBibFields));
 
@@ -51,9 +60,9 @@ const AutoLinkingButton = ({
         notLinkedFieldTags[AUTOLINKING_ERROR_CODES.AUTHORITY_NOT_FOUND].add(field.tag);
       }
 
-      if (status === 'NEW') {
+      if (status === AUTOLINKING_STATUSES.NEW) {
         newLinkedFieldTags.add(field.tag);
-      } else if (status === 'ERROR') {
+      } else if (status === AUTOLINKING_STATUSES.ERROR) {
         notLinkedFieldTags[errorCause].add(field.tag);
       }
     });
@@ -96,31 +105,21 @@ const AutoLinkingButton = ({
     return toasts;
   };
 
-  const hydrateForLinkSuggestions = (marcRecord) => ({
-    leader: marcRecord.leader,
-    fields: marcRecord.records
-      .filter(record => isRecordForAutoLinking(record, autoLinkableBibFields))
-      .map(record => ({
-        tag: record.tag,
-        content: record.content,
-      })),
-    marcFormat: marcRecord.marcFormat,
-    _actionType: 'view',
-  });
-
   const handleAutoLinking = async () => {
+    onSetIsLoadingLinkSuggestions(true);
+
     try {
-      const payload = hydrateForLinkSuggestions(formValues);
-      const data = await onFetchLinkSuggestions(payload);
-      const fields = autoLinkAuthority(formValues.records, data.fields);
+      const { fields, suggestedFields } = await autoLinkAuthority(formValues);
 
       onMarkRecordsLinked({ fields });
 
-      const toasts = getAutoLinkingToasts(data.fields);
+      const toasts = getAutoLinkingToasts(suggestedFields);
 
       toasts.forEach(toast => showCallout(toast));
     } catch (e) {
       showCallout({ messageId: 'ui-quick-marc.records.error.autoLinking', type: 'error' });
+    } finally {
+      onSetIsLoadingLinkSuggestions(false);
     }
   };
 

@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
@@ -9,6 +10,10 @@ import isNumber from 'lodash/isNumber';
 import toPairs from 'lodash/toPairs';
 import flatten from 'lodash/flatten';
 import flow from 'lodash/flow';
+
+import {
+  checkIfUserInMemberTenant,
+} from '@folio/stripes/core';
 
 import {
   LEADER_TAG,
@@ -30,6 +35,8 @@ import {
   ENTERED_KEY,
   CREATE_AUTHORITY_RECORD_DEFAULT_LEADER_VALUE,
   CREATE_AUTHORITY_RECORD_DEFAULT_FIELD_TAGS,
+  UNCONTROLLED_ALPHA,
+  UNCONTROLLED_NUMBER,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import { SUBFIELD_TYPES } from './QuickMarcEditorRows/BytesField';
@@ -40,9 +47,9 @@ import {
   MARC_TYPES,
   ERROR_TYPES,
   EXTERNAL_INSTANCE_APIS,
+  OKAPI_TENANT_HEADER,
 } from '../common/constants';
 
-/* eslint-disable max-lines */
 export const isLastRecord = recordRow => {
   return (
     recordRow.tag === '999'
@@ -83,12 +90,6 @@ export const getContentSubfieldValue = (content = '') => {
     }, {});
 };
 
-const is001LinkedToBibRecord = (initialRecords, naturalId) => {
-  const field001 = initialRecords.find(record => record.tag === '001');
-
-  return naturalId === field001?.content.replaceAll(' ', '');
-};
-
 export const is010LinkedToBibRecord = (initialRecords, naturalId) => {
   const initial010Field = initialRecords.find(record => record.tag === '010');
 
@@ -99,13 +100,6 @@ export const is010LinkedToBibRecord = (initialRecords, naturalId) => {
   const initial010$a = getContentSubfieldValue(initial010Field.content).$a?.[0];
 
   return naturalId === initial010$a?.replaceAll(' ', '');
-};
-
-export const is010$aCreated = (initial, updated) => {
-  const initial010 = initial.find(rec => rec.tag === '010');
-  const updated010 = updated.find(rec => rec.tag === '010');
-
-  return !initial010 && updated010 && !!getContentSubfieldValue(updated010.content).$a?.[0];
 };
 
 export const is010$aUpdated = (initial, updated) => {
@@ -125,7 +119,7 @@ export const parseHttpError = async (httpError) => {
     if (contentType === 'text/plain') {
       jsonError.message = await httpError.text();
     } else {
-      jsonError = await httpError.json();
+      jsonError = await httpError.json?.() || httpError;
     }
 
     jsonError.errorType = ERROR_TYPES.OTHER;
@@ -148,7 +142,7 @@ export const saveLinksToNewRecord = async (mutator, externalId, marcRecord) => {
   // request derived MARC Bib record
   const marcPromise = mutator.quickMarcEditMarcRecord.GET({ params: { externalId } });
 
-  Promise.all([instancePromise, marcPromise]).then(([{ _version }, derivedRecord]) => {
+  return Promise.all([instancePromise, marcPromise]).then(([{ _version }, derivedRecord]) => {
     // copy linking data to new record
     derivedRecord.fields = derivedRecord.fields.map((field) => {
       // matching field from POST request
@@ -208,13 +202,13 @@ export const fillEmptyPhysDescriptionFieldValues = (type, field) => {
   return fillEmptyFieldValues({ fieldConfigByType, field });
 };
 
-export const fillEmptyFixedFieldValues = (marcType, type, blvl, field) => {
+export const fillEmptyFixedFieldValues = (marcType, marcSpec, type, blvl, field) => {
   const fieldConfigByType = FixedFieldFactory
-    .getFixedFieldByType(
-      marcType,
+    .getConfigFixedField(
+      marcSpec,
       type,
       blvl,
-    )?.configFields ?? [];
+    )?.fields ?? [];
 
   let hiddenValues = {};
 
@@ -502,11 +496,43 @@ export const checkIsInitialRecord = (field) => {
   return !field._isAdded;
 };
 
-export const isRecordForManualLinking = (stripes, marcType, linkableBibFields, tag) => (
-  stripes.hasPerm('ui-quick-marc.quick-marc-authority-records.linkUnlink') &&
-  marcType === MARC_TYPES.BIB &&
-  linkableBibFields.includes(tag)
-);
+export const checkControlFieldLength = (formValues) => {
+  const marcRecords = formValues.records || [];
+  const controlFieldRecords = marcRecords.filter(({ tag }) => tag === '001');
+
+  if (controlFieldRecords.length > 1) {
+    return <FormattedMessage id="ui-quick-marc.record.error.controlField.multiple" />;
+  }
+
+  return undefined;
+};
+
+export const checkDuplicate010Field = (marcRecords) => {
+  const marc010Records = marcRecords.filter(({ tag }) => tag === '010');
+
+  if (marc010Records.length > 1) {
+    return <FormattedMessage id="ui-quick-marc.record.error.010.multiple" />;
+  }
+
+  return undefined;
+};
+
+export const isRecordForManualLinking = (
+  stripes,
+  marcType,
+  linkableBibFields,
+  tag,
+  isRequestToCentralTenantFromMember,
+  onCheckCentralTenantPerm,
+) => {
+  const permission = 'ui-quick-marc.quick-marc-authority-records.linkUnlink';
+
+  return (
+    marcType === MARC_TYPES.BIB
+    && (isRequestToCentralTenantFromMember ? onCheckCentralTenantPerm(permission) : stripes.hasPerm(permission))
+    && linkableBibFields.includes(tag)
+  );
+};
 
 export const isRecordForAutoLinking = (field, autoLinkableBibFields) => (
   !field._isDeleted
@@ -515,7 +541,9 @@ export const isRecordForAutoLinking = (field, autoLinkableBibFields) => (
   && getContentSubfieldValue(field.content).$0?.[0]
 );
 
-export const recordHasLinks = (fields) => fields.some(field => field.linkDetails?.linkingRuleId);
+export const isFieldLinked = (field) => Boolean(field.linkDetails?.linkingRuleId);
+
+export const recordHasLinks = (fields) => fields.some(isFieldLinked);
 
 export const getControlledSubfields = (linkingRule) => {
   // include transformed subfields into list of controlled subfields
@@ -539,6 +567,282 @@ export const getIsSubfieldRemoved = (content, subfield) => {
   const contentSubfieldValue = getContentSubfieldValue(content);
 
   return !(subfield in contentSubfieldValue) || !contentSubfieldValue[subfield][0];
+};
+
+const validateSubfieldsThatCanBeControlled = (marcRecords, uncontrolledSubfields, linkingRules) => {
+  const linkedFields = marcRecords.filter(field => field.subfieldGroups);
+
+  const linkedFieldsWithEnteredSubfieldsThatCanBeControlled = linkedFields.filter(linkedField => {
+    return uncontrolledSubfields.some(subfield => {
+      if (linkedField.subfieldGroups[subfield]) {
+        const contentSubfieldValue = getContentSubfieldValue(linkedField.subfieldGroups[subfield]);
+        const linkingRule = linkingRules.find(rule => rule.id === linkedField.linkDetails?.linkingRuleId);
+        const controlledSubfields = getControlledSubfields(linkingRule);
+
+        return controlledSubfields.some(authSubfield => {
+          return `$${authSubfield}` in contentSubfieldValue;
+        });
+      }
+
+      return false;
+    });
+  });
+
+  const fieldTags = linkedFieldsWithEnteredSubfieldsThatCanBeControlled.map(field => field.tag);
+  const uniqueTags = [...new Set(fieldTags)];
+
+  if (uniqueTags.length === 1) {
+    return (
+      <FormattedMessage
+        id="ui-quick-marc.record.error.fieldCantBeSaved"
+        values={{
+          count: 1,
+          fieldTags: `MARC ${uniqueTags[0]}`,
+        }}
+      />
+    );
+  }
+
+  if (uniqueTags.length > 1) {
+    return (
+      <FormattedMessage
+        id="ui-quick-marc.record.error.fieldsCantBeSaved"
+        values={{
+          count: uniqueTags.length,
+          fieldTags: uniqueTags.slice(0, -1).map(tag => `MARC ${tag}`).join(', '),
+          lastFieldTag: `MARC ${uniqueTags[uniqueTags.length - 1]}`,
+        }}
+      />
+    );
+  }
+
+  return null;
+};
+
+const validateMarcBibRecord = (marcRecords, linkableBibFields, linkingRules) => {
+  const titleRecords = marcRecords.filter(({ tag }) => tag === '245');
+
+  if (titleRecords.length === 0) {
+    return <FormattedMessage id="ui-quick-marc.record.error.title.empty" />;
+  }
+
+  if (titleRecords.length > 1) {
+    return <FormattedMessage id="ui-quick-marc.record.error.title.multiple" />;
+  }
+
+  const duplicate010FieldError = checkDuplicate010Field(marcRecords);
+
+  if (duplicate010FieldError) {
+    return duplicate010FieldError;
+  }
+
+  const uncontrolledSubfields = [UNCONTROLLED_ALPHA, UNCONTROLLED_NUMBER];
+
+  const $9Error = validate$9InLinkable(marcRecords, linkableBibFields, uncontrolledSubfields);
+
+  if ($9Error) {
+    return $9Error;
+  }
+
+  const subfieldsThatCanBeControlledError = validateSubfieldsThatCanBeControlled(
+    marcRecords,
+    uncontrolledSubfields,
+    linkingRules,
+  );
+
+  if (subfieldsThatCanBeControlledError) {
+    return subfieldsThatCanBeControlledError;
+  }
+
+  return undefined;
+};
+
+const validateMarcHoldingsRecord = (marcRecords, locations) => {
+  const instanceHridRecords = marcRecords.filter(({ tag }) => tag === '004');
+
+  if (instanceHridRecords.length > 1) {
+    return <FormattedMessage id="ui-quick-marc.record.error.instanceHrid.multiple" />;
+  }
+
+  const locationRecords = marcRecords.filter(({ tag }) => tag === '852');
+
+  if (!locationRecords.length) {
+    return <FormattedMessage id="ui-quick-marc.record.error.location.empty" />;
+  }
+
+  if (locationRecords.length > 1) {
+    return <FormattedMessage id="ui-quick-marc.record.error.location.multiple" />;
+  }
+
+  if (locationRecords.length) {
+    if (getContentSubfieldValue(locationRecords[0].content).$b?.length > 1) {
+      return <FormattedMessage id="ui-quick-marc.record.error.field.onlyOneSubfield" values={{ fieldTag: '852', subField: '$b' }} />;
+    }
+  }
+
+  if (!validateLocationSubfield(marcRecords.find(({ tag }) => tag === '852'), locations)) {
+    return <FormattedMessage id="ui-quick-marc.record.error.location.invalid" />;
+  }
+
+  return undefined;
+};
+
+const getIs$tRemoved = (content) => {
+  const contentSubfieldValue = getContentSubfieldValue(content);
+
+  return !('$t' in contentSubfieldValue) || !contentSubfieldValue.$t[0];
+};
+
+const validateMarcAuthority1xxField = (initialRecords, formValuesToSave) => {
+  const is1xx = field => field.tag.startsWith('1');
+  const { tag: initialTag, content: initialContent } = initialRecords.find(is1xx);
+  const { tag: tagToSave, content: contentToSave } = formValuesToSave.find(is1xx);
+
+  if (initialTag !== tagToSave) {
+    return <FormattedMessage id="ui-quick-marc.record.error.1xx.change" values={{ tag: initialTag }} />;
+  }
+
+  const hasInitially$t = !!getContentSubfieldValue(initialContent).$t?.[0];
+  const has$tToSave = '$t' in getContentSubfieldValue(contentToSave);
+  const is$tAdded = !hasInitially$t && has$tToSave;
+  const is$tRemoved = hasInitially$t && getIs$tRemoved(contentToSave);
+
+  if (is$tAdded) {
+    return <FormattedMessage id="ui-quick-marc.record.error.1xx.add$t" values={{ tag: initialTag }} />;
+  }
+
+  if (is$tRemoved) {
+    return <FormattedMessage id="ui-quick-marc.record.error.1xx.remove$t" values={{ tag: initialTag }} />;
+  }
+
+  return undefined;
+};
+
+const validateLinkedAuthority010Field = (field010, initialRecords, naturalId) => {
+  if (is010LinkedToBibRecord(initialRecords, naturalId)) {
+    if (!field010) {
+      return <FormattedMessage id="ui-quick-marc.record.error.010.removed" />;
+    }
+
+    const is010$aRemoved = !getContentSubfieldValue(field010.content).$a?.[0];
+
+    if (is010$aRemoved) {
+      return <FormattedMessage id="ui-quick-marc.record.error.010.$aRemoved" />;
+    }
+
+    return undefined;
+  }
+
+  return undefined;
+};
+
+const validateAuthority010Field = (initialRecords, records, naturalId, marcRecords, isLinked) => {
+  const duplicate010FieldError = checkDuplicate010Field(marcRecords);
+
+  if (duplicate010FieldError) {
+    return duplicate010FieldError;
+  }
+
+  const field010 = records.find(field => field.tag === '010');
+
+  if (field010) {
+    const subfieldCount = getContentSubfieldValue(field010.content).$a?.length ?? 0;
+
+    if (subfieldCount > 1) {
+      return <FormattedMessage id="ui-quick-marc.record.error.010.$aOnlyOne" />;
+    }
+  }
+
+  if (isLinked) {
+    return validateLinkedAuthority010Field(field010, initialRecords, naturalId);
+  }
+
+  return undefined;
+};
+
+const validateMarcAuthorityRecord = (marcRecords, linksCount, initialRecords, naturalId) => {
+  const correspondingHeadingTypeTags = new Set(CORRESPONDING_HEADING_TYPE_TAGS);
+
+  const headingRecords = marcRecords.filter(recordRow => correspondingHeadingTypeTags.has(recordRow.tag));
+
+  if (!headingRecords.length) {
+    return <FormattedMessage id="ui-quick-marc.record.error.heading.empty" />;
+  }
+
+  if (headingRecords.length > 1) {
+    return <FormattedMessage id="ui-quick-marc.record.error.heading.multiple" />;
+  }
+
+  if (linksCount) {
+    const errorIn1xxField = validateMarcAuthority1xxField(initialRecords, marcRecords);
+
+    if (errorIn1xxField) {
+      return errorIn1xxField;
+    }
+  }
+
+  const errorIn010Field = validateAuthority010Field(initialRecords, marcRecords, naturalId, marcRecords, linksCount);
+
+  if (errorIn010Field) {
+    return errorIn010Field;
+  }
+
+  return undefined;
+};
+
+export const validateMarcRecord = ({
+  marcRecord,
+  initialValues,
+  marcType = MARC_TYPES.BIB,
+  locations = [],
+  linksCount,
+  naturalId,
+  linkableBibFields = [],
+  linkingRules = [],
+}) => {
+  const marcRecords = marcRecord.records || [];
+  const initialMarcRecords = initialValues.records;
+  const recordLeader = marcRecords[0];
+
+  const leaderError = validateLeader(marcRecord?.leader, recordLeader?.content, marcType);
+
+  if (leaderError) {
+    return leaderError;
+  }
+
+  const fixedFieldError = validateFixedField(marcRecords);
+
+  if (fixedFieldError) {
+    return fixedFieldError;
+  }
+
+  let validationResult;
+
+  if (marcType === MARC_TYPES.BIB) {
+    validationResult = validateMarcBibRecord(marcRecords, linkableBibFields, linkingRules);
+  } else if (marcType === MARC_TYPES.HOLDINGS) {
+    validationResult = validateMarcHoldingsRecord(marcRecords, locations);
+  } else if (marcType === MARC_TYPES.AUTHORITY) {
+    validationResult = validateMarcAuthorityRecord(marcRecords, linksCount, initialMarcRecords, naturalId);
+  }
+
+  if (validationResult) {
+    return validationResult;
+  }
+
+  const tagError = validateRecordTag(marcRecords);
+
+  if (tagError) {
+    return tagError;
+  }
+
+  const subfieldError = validateSubfield(marcRecords);
+
+  if (subfieldError) {
+    return subfieldError;
+  }
+
+  return undefined;
 };
 
 export const deleteRecordByIndex = (index, state) => {
@@ -738,7 +1042,7 @@ export const autopopulatePhysDescriptionField = (formValues) => {
   };
 };
 
-export const autopopulateFixedField = (formValues, marcType) => {
+export const autopopulateFixedField = (formValues, marcType, marcSpec) => {
   const { records } = formValues;
 
   const leader = records.find(field => field.tag === LEADER_TAG);
@@ -754,7 +1058,7 @@ export const autopopulateFixedField = (formValues, marcType) => {
 
       return {
         ...field,
-        content: fillEmptyFixedFieldValues(marcType, type, blvl, field),
+        content: fillEmptyFixedFieldValues(marcType, marcSpec, type, blvl, field),
       };
     }),
   };
@@ -798,8 +1102,12 @@ export const autopopulateSubfieldSection = (formValues, marcType = MARC_TYPES.BI
   };
 };
 
-export const cleanBytesFields = (formValues, marcType) => {
+export const cleanBytesFields = (formValues, marcSpec) => {
   const { records } = formValues;
+
+  const leader = records.find(field => field.tag === LEADER_TAG);
+  const type = leader.content[6];
+  const blvl = leader.content[7];
 
   const cleanedRecords = records.map((field) => {
     if (isString(field.content)) {
@@ -818,7 +1126,7 @@ export const cleanBytesFields = (formValues, marcType) => {
 
     if (isFixedFieldRow(field)) {
       fieldConfigByType = FixedFieldFactory
-        .getFixedFieldByType(marcType, field.content.Type, field.content.BLvl)?.configFields ?? [];
+        .getConfigFixedField(marcSpec, type, blvl)?.fields ?? [];
     }
 
     const content = Object.entries(field.content).reduce((acc, [key, value]) => {
@@ -911,7 +1219,7 @@ export const groupSubfields = (field, authorityControlledSubfields = []) => {
     }
 
     if (!isControlled && !isNum) {
-      groups.uncontrolledAlpha = [groups.uncontrolledAlpha, formattedSubfield.content].join(' ').trim();
+      groups[UNCONTROLLED_ALPHA] = [groups[UNCONTROLLED_ALPHA], formattedSubfield.content].join(' ').trim();
 
       return groups;
     }
@@ -929,7 +1237,7 @@ export const groupSubfields = (field, authorityControlledSubfields = []) => {
     }
 
     if (isNum) {
-      groups.uncontrolledNumber = [groups.uncontrolledNumber, formattedSubfield.content].join(' ').trim();
+      groups[UNCONTROLLED_NUMBER] = [groups[UNCONTROLLED_NUMBER], formattedSubfield.content].join(' ').trim();
 
       return groups;
     }
@@ -937,10 +1245,10 @@ export const groupSubfields = (field, authorityControlledSubfields = []) => {
     return groups;
   }, {
     controlled: '',
-    uncontrolledAlpha: '',
+    [UNCONTROLLED_ALPHA]: '',
     zeroSubfield: '',
     nineSubfield: '',
-    uncontrolledNumber: '',
+    [UNCONTROLLED_NUMBER]: '',
   });
 };
 
@@ -1056,11 +1364,44 @@ const addLeaderFieldAndIdToRecords = (marcRecordResponse) => ({
   ],
 });
 
-export const dehydrateMarcRecordResponse = (marcRecordResponse, marcType) => (
+export const dehydrateMarcRecordResponse = (marcRecordResponse, marcType, marcSpec) => (
   flow(
     addLeaderFieldAndIdToRecords,
-    marcRecord => autopopulateFixedField(marcRecord, marcType),
+    marcRecord => autopopulateFixedField(marcRecord, marcType, marcSpec),
     autopopulatePhysDescriptionField,
     autopopulateMaterialCharsField,
   )(marcRecordResponse)
 );
+
+export const hydrateForLinkSuggestions = (marcRecord, fields) => ({
+  leader: marcRecord.records[0].content,
+  fields: fields.map(record => ({
+    tag: record.tag,
+    content: record.content,
+  })),
+  marcFormat: marcRecord.marcFormat,
+  _actionType: 'view',
+});
+
+export const changeTenantHeader = (ky, tenantId) => {
+  return ky.extend({
+    hooks: {
+      beforeRequest: [
+        request => {
+          request.headers.set(OKAPI_TENANT_HEADER, tenantId);
+        },
+      ],
+    },
+  });
+};
+
+export const applyCentralTenantInHeaders = (location, stripes, marcType) => {
+  const searchParams = new URLSearchParams(location.search);
+  const isSharedRecord = searchParams.get('shared') === 'true';
+
+  return (
+    isSharedRecord
+    && [MARC_TYPES.BIB, MARC_TYPES.AUTHORITY].includes(marcType)
+    && checkIfUserInMemberTenant(stripes)
+  );
+};

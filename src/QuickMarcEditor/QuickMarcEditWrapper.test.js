@@ -3,31 +3,43 @@ import {
   render,
   act,
   fireEvent,
-  waitFor,
-} from '@testing-library/react';
+} from '@folio/jest-config-stripes/testing-library/react';
 import faker from 'faker';
 import noop from 'lodash/noop';
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
-
-import '@folio/stripes-acq-components/test/jest/__mock__';
+import { useLocation } from 'react-router';
 
 import QuickMarcEditWrapper from './QuickMarcEditWrapper';
+import { useAuthorityLinking } from '../hooks';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
+import { applyCentralTenantInHeaders } from './utils';
 
 import Harness from '../../test/jest/helpers/harness';
+import {
+  useMarcRecordMutation,
+} from '../queries';
+
+jest.mock('./utils', () => ({
+  ...jest.requireActual('./utils'),
+  applyCentralTenantInHeaders: jest.fn(),
+  changeTenantHeader: jest.fn(ky => ky),
+}));
 
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
-  useLocation: jest.fn().mockReturnValue(({
-    search: 'relatedRecordVersion=1',
-  })),
+  useLocation: jest.fn(),
 }));
 
 jest.mock('../queries', () => ({
   ...jest.requireActual('../queries'),
-  useAuthorityLinkingRules: jest.fn().mockReturnValue({ linkingRules: [] }),
+  useMarcRecordMutation: jest.fn(),
+}));
+
+jest.mock('../hooks', () => ({
+  ...jest.requireActual('../hooks'),
+  useAuthorityLinking: jest.fn(),
 }));
 
 const mockRecords = {
@@ -68,6 +80,48 @@ const mockRecords = {
         Indx: '|',
         LitF: '|',
         Biog: '|',
+      },
+    }, {
+      'tag': '100',
+      'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 4808f6ae-8379-41e9-a795-915ac4751668',
+      'indicators': ['1', '\\'],
+      'isProtected': false,
+      'id': '5481472d-a621-4571-9ef9-438a4c7044fd',
+      '_isDeleted': false,
+      '_isLinked': true,
+      'linkDetails': {
+        'authorityNaturalId': 'n2008001084',
+        'authorityId': '4808f6ae-8379-41e9-a795-915ac4751668',
+        'linkingRuleId': 1,
+        'status': 'ACTUAL',
+      },
+      'subfieldGroups': {
+        'controlled': '$a Coates, Ta-Nehisi',
+        'uncontrolledAlpha': '$e author.',
+        'zeroSubfield': '$0 id.loc.gov/authorities/names/n2008001084',
+        'nineSubfield': '$9 4808f6ae-8379-41e9-a795-915ac4751668',
+        'uncontrolledNumber': '',
+      },
+    }, {
+      'id': '0b3938b5-3ed6-45a0-90f9-fcf24dfebc7c',
+      'tag': '100',
+      'content': '$a Ma, Wei $0 id.loc.gov/authorities/names/n84160718 $9 495884af-28d7-4d69-85e4-e84c5de693db',
+      'indicators': ['\\', '\\'],
+      '_isAdded': true,
+      '_isLinked': true,
+      'prevContent': '$a test',
+      'linkDetails': {
+        'authorityNaturalId': 'n84160718',
+        'authorityId': '495884af-28d7-4d69-85e4-e84c5de693db',
+        'linkingRuleId': 1,
+        'status': 'NEW',
+      },
+      'subfieldGroups': {
+        'controlled': '$a Ma, Wei',
+        'uncontrolledAlpha': '',
+        'zeroSubfield': '$0 id.loc.gov/authorities/names/n84160718',
+        'nineSubfield': '$9 495884af-28d7-4d69-85e4-e84c5de693db',
+        'uncontrolledNumber': '',
       },
     }, {
       content: '$a Title',
@@ -192,6 +246,7 @@ const mockLeaders = {
 const mockFormValues = jest.fn((marcType) => ({
   fields: undefined,
   externalId: '17064f9d-0362-468d-8317-5984b7efd1b5',
+  marcFormat: marcType,
   leader: mockLeaders[marcType],
   parsedRecordDtoId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
   parsedRecordId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
@@ -199,6 +254,10 @@ const mockFormValues = jest.fn((marcType) => ({
   suppressDiscovery: false,
   updateInfo: { recordState: 'NEW' },
 }));
+
+const mockActualizeLinks = jest.fn((formValuesToProcess) => Promise.resolve(formValuesToProcess));
+const mockUpdateMarcRecord = jest.fn().mockResolvedValue();
+const mockOnCheckCentralTenantPerm = jest.fn().mockReturnValue(false);
 
 jest.mock('@folio/stripes/final-form', () => () => (Component) => ({
   onSubmit,
@@ -211,7 +270,17 @@ jest.mock('@folio/stripes/final-form', () => () => (Component) => ({
     <Component
       handleSubmit={() => onSubmit(formValues)}
       form={{
-        mutators: {},
+        mutators: {
+          markRecordsLinked: jest.fn(),
+          addRecord: jest.fn(),
+          deleteRecord: jest.fn(),
+          markRecordDeleted: jest.fn(),
+          markRecordLinked: jest.fn(),
+          markRecordUnlinked: jest.fn(),
+          moveRecord: jest.fn(),
+          restoreRecord: jest.fn(),
+          updateRecord: jest.fn(),
+        },
         reset: jest.fn(),
         getState: jest.fn().mockReturnValue({ values: formValues }),
       }}
@@ -243,8 +312,18 @@ jest.mock('./constants', () => ({
 const getInstance = () => ({
   id: faker.random.uuid(),
   title: 'ui-quick-marc.record.edit.title',
-  _version: 1,
+  _version: 0,
 });
+
+const linkingRules = [{
+  id: 1,
+  bibField: '100',
+  authorityField: '100',
+  authoritySubfields: ['a', 'b', 't', 'd'],
+  subfieldModifications: [],
+  validation: {},
+  autoLinkingEnabled: true,
+}];
 
 const record = {
   id: faker.random.uuid(),
@@ -281,6 +360,7 @@ const renderQuickMarcEditWrapper = ({
           locations={locations}
           externalRecordPath="/some-record"
           refreshPageData={jest.fn().mockResolvedValue()}
+          onCheckCentralTenantPerm={mockOnCheckCentralTenantPerm}
           {...renderProps}
           {...props}
         />
@@ -311,6 +391,24 @@ describe('Given QuickMarcEditWrapper', () => {
       },
     };
 
+    useAuthorityLinking.mockReturnValue({
+      linkableBibFields: [],
+      actualizeLinks: mockActualizeLinks,
+      autoLinkingEnabled: true,
+      autoLinkableBibFields: [],
+      autoLinkAuthority: jest.fn(),
+      linkingRules,
+    });
+
+    useMarcRecordMutation.mockReturnValue({
+      updateMarcRecord: mockUpdateMarcRecord,
+      isLoading: false,
+    });
+
+    useLocation.mockReturnValue({
+      search: 'relatedRecordVersion=1',
+    });
+
     jest.clearAllMocks();
   });
 
@@ -328,7 +426,7 @@ describe('Given QuickMarcEditWrapper', () => {
         await act(async () => { fireEvent.click(getByText('ui-quick-marc.record.save.continue')); });
 
         expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
-        expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
+        expect(mockUpdateMarcRecord).toHaveBeenCalled();
 
         expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
         expect(mockOnClose).not.toHaveBeenCalled();
@@ -348,10 +446,10 @@ describe('Given QuickMarcEditWrapper', () => {
         await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
         expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
-        expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
+        expect(mockUpdateMarcRecord).toHaveBeenCalled();
 
         expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
-        await waitFor(() => expect(mockOnClose).toHaveBeenCalled());
+        expect(mockOnClose).toHaveBeenCalled();
       });
 
       describe('when there is an error during POST request', () => {
@@ -361,20 +459,15 @@ describe('Given QuickMarcEditWrapper', () => {
             mutator,
           });
 
-          // eslint-disable-next-line prefer-promise-reject-errors
-          mutator.quickMarcEditMarcRecord.PUT = jest.fn(() => Promise.reject({
-            json: () => Promise.resolve({}),
-          }));
+          mockUpdateMarcRecord.mockRejectedValueOnce({});
 
           await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
-          expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
+          expect(mockUpdateMarcRecord).toHaveBeenCalled();
 
-          waitFor(() => {
-            return expect(mockShowCallout).toHaveBeenCalledWith({
-              messageId: 'ui-quick-marc.record.save.error.generic',
-              type: 'error',
-            });
+          expect(mockShowCallout).toHaveBeenCalledWith({
+            messageId: 'ui-quick-marc.record.save.error.generic',
+            type: 'error',
           });
         });
       });
@@ -386,16 +479,14 @@ describe('Given QuickMarcEditWrapper', () => {
             mutator,
           });
 
-          // eslint-disable-next-line prefer-promise-reject-errors
-          mutator.quickMarcEditMarcRecord.PUT = jest.fn(() => Promise.reject({
-            json: () => Promise.resolve({ message: 'optimistic locking' }),
-          }));
+          mockUpdateMarcRecord.mockRejectedValueOnce({
+            json: jest.fn().mockResolvedValue({ message: 'optimistic locking' }),
+          });
 
           await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
-          expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
-
-          await waitFor(() => expect(getByText('stripes-components.optimisticLocking.saveError')).toBeDefined());
+          expect(mockUpdateMarcRecord).toHaveBeenCalled();
+          expect(getByText('stripes-components.optimisticLocking.saveError')).toBeDefined();
         });
       });
 
@@ -403,13 +494,13 @@ describe('Given QuickMarcEditWrapper', () => {
         it('should show up a conflict detection banner and not make an update request', async () => {
           mutator.quickMarcEditInstance.GET = jest.fn(() => Promise.resolve({
             ...instance,
-            _version: '2',
+            _version: 1,
           }));
 
           const { getByText } = renderQuickMarcEditWrapper({
             instance: {
               ...instance,
-              _version: '1',
+              _version: 0,
             },
             mutator,
           });
@@ -417,15 +508,14 @@ describe('Given QuickMarcEditWrapper', () => {
           await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
           expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
-          expect(mutator.quickMarcEditMarcRecord.PUT).not.toHaveBeenCalled();
-
-          await waitFor(() => expect(getByText('stripes-components.optimisticLocking.saveError')).toBeDefined());
+          expect(mockUpdateMarcRecord).not.toHaveBeenCalled();
+          expect(getByText('stripes-components.optimisticLocking.saveError')).toBeDefined();
         });
       });
 
       describe('when record not found (already deleted)', () => {
         it('should reveal an error message', async () => {
-          mutator.quickMarcEditInstance.GET = jest.fn(() => Promise.reject(new Error('Not found')));
+          mutator.quickMarcEditInstance.GET = jest.fn().mockRejectedValue({ httpStatus: 404 });
 
           const { getByText } = renderQuickMarcEditWrapper({
             instance,
@@ -437,6 +527,81 @@ describe('Given QuickMarcEditWrapper', () => {
             messageId: 'ui-quick-marc.record.save.error.notFound',
             type: 'error',
           });
+        });
+      });
+
+      it('should actualize links', async () => {
+        const { getByText } = renderQuickMarcEditWrapper({
+          instance,
+          mutator,
+        });
+
+        await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
+
+        const expectedFormValues = {
+          marcFormat: MARC_TYPES.BIB,
+          records: expect.arrayContaining([
+            expect.objectContaining({
+              tag: 'LDR',
+              content: mockRecords[MARC_TYPES.BIB][0].content,
+            }),
+            expect.objectContaining({
+              tag: '100',
+              content: '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 4808f6ae-8379-41e9-a795-915ac4751668',
+              linkDetails: {
+                authorityId: '4808f6ae-8379-41e9-a795-915ac4751668',
+                authorityNaturalId: 'n2008001084',
+                linkingRuleId: 1,
+                status: 'ACTUAL',
+              },
+            }),
+            expect.objectContaining({
+              tag: '100',
+              content: '$a Ma, Wei $0 id.loc.gov/authorities/names/n84160718 $9 495884af-28d7-4d69-85e4-e84c5de693db',
+              prevContent: '$a test',
+              linkDetails: {
+                authorityNaturalId: 'n84160718',
+                authorityId: '495884af-28d7-4d69-85e4-e84c5de693db',
+                linkingRuleId: 1,
+                status: 'NEW',
+              },
+            }),
+          ]),
+        };
+
+        expect(mockActualizeLinks).toHaveBeenCalledWith(expect.objectContaining(expectedFormValues));
+      });
+
+      describe('when a member tenant edits a shared record', () => {
+        it('should apply the central tenant id for all authority linking requests', async () => {
+          applyCentralTenantInHeaders.mockReturnValue(true);
+
+          const { getByText } = renderQuickMarcEditWrapper({
+            instance,
+            mutator,
+          });
+
+          await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
+
+          expect(useAuthorityLinking).toHaveBeenCalledWith({
+            marcType: MARC_TYPES.BIB,
+            action: QUICK_MARC_ACTIONS.EDIT,
+          });
+          expect(useMarcRecordMutation).toHaveBeenCalledWith({ tenantId: 'consortia' });
+        });
+      });
+
+      describe('when marc type is not a bibliographic', () => {
+        it('should not be called actualizeLinks', async () => {
+          const { getByText } = renderQuickMarcEditWrapper({
+            instance,
+            mutator,
+            marcType: MARC_TYPES.AUTHORITY,
+          });
+
+          await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
+
+          expect(mockActualizeLinks).not.toHaveBeenCalled();
         });
       });
     });
@@ -478,9 +643,9 @@ describe('Given QuickMarcEditWrapper', () => {
         await act(async () => { fireEvent.click(getByText('ui-quick-marc.record.save.continue')); });
 
         expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
-        expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
+        expect(mockUpdateMarcRecord).toHaveBeenCalled();
 
-        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' });
+        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
         expect(mockOnClose).not.toHaveBeenCalled();
       });
     });
@@ -499,11 +664,11 @@ describe('Given QuickMarcEditWrapper', () => {
         await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
         expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
-        expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
+        expect(mockUpdateMarcRecord).toHaveBeenCalled();
 
-        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.updated' });
+        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
 
-        await waitFor(() => expect(mockOnClose).toHaveBeenCalled());
+        expect(mockOnClose).toHaveBeenCalled();
       });
 
       describe('when there is an error during POST request', () => {
@@ -514,19 +679,16 @@ describe('Given QuickMarcEditWrapper', () => {
             marcType: MARC_TYPES.AUTHORITY,
           });
 
-          // eslint-disable-next-line prefer-promise-reject-errors
-          mutator.quickMarcEditMarcRecord.PUT = jest.fn(() => Promise.reject({
-            json: () => Promise.resolve({}),
-          }));
+          mockUpdateMarcRecord.mockRejectedValueOnce({});
 
           await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
-          expect(mutator.quickMarcEditMarcRecord.PUT).toHaveBeenCalled();
+          expect(mockUpdateMarcRecord).toHaveBeenCalled();
 
-          await waitFor(() => expect(mockShowCallout).toHaveBeenCalledWith({
+          expect(mockShowCallout).toHaveBeenCalledWith({
             messageId: 'ui-quick-marc.record.save.error.generic',
             type: 'error',
-          }));
+          });
         });
       });
     });

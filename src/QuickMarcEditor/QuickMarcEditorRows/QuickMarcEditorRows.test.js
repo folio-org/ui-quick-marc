@@ -2,7 +2,7 @@ import React from 'react';
 import {
   render,
   fireEvent,
-} from '@testing-library/react';
+} from '@folio/jest-config-stripes/testing-library/react';
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import defer from 'lodash/defer';
@@ -47,12 +47,16 @@ jest.mock('../../hooks', () => ({
   }),
 }));
 
-jest.mock('../../queries', () => ({
-  ...jest.requireActual('../../queries'),
+jest.mock('@folio/stripes-marc-components', () => ({
+  ...jest.requireActual('@folio/stripes-marc-components'),
   useAuthorityLinkingRules: jest.fn().mockReturnValue({
     linkingRules: [],
     isLoading: false,
   }),
+}));
+
+jest.mock('../../queries', () => ({
+  ...jest.requireActual('../../queries'),
   useAuthoritySourceFiles: jest.fn().mockResolvedValue({
     sourceFiles: [],
     isLoading: false,
@@ -132,6 +136,7 @@ const initValues = [
 ];
 
 let values = [...initValues];
+const marcSpec = {};
 const addRecordMock = jest.fn().mockImplementation(({ index }) => {
   values.splice(index, 0, {
     id: 'new-1',
@@ -158,6 +163,7 @@ const getComponent = (props) => (
           type="a"
           action={QUICK_MARC_ACTIONS.EDIT}
           marcType={MARC_TYPES.BIB}
+          marcSpec={marcSpec}
           mutators={{
             addRecord: addRecordMock,
             deleteRecord: deleteRecordMock,

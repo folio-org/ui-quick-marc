@@ -7,13 +7,18 @@ import React, {
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import ReactRouterPropTypes from 'react-router-prop-types';
+import noop from 'lodash/noop';
 
-import { stripesConnect } from '@folio/stripes/core';
+import {
+  stripesConnect,
+} from '@folio/stripes/core';
+
 import { LoadingView } from '@folio/stripes/components';
 import {
   baseManifest,
   useShowCallout,
 } from '@folio/stripes-acq-components';
+import { getHeaders } from '@folio/stripes-marc-components';
 
 import {
   EXTERNAL_INSTANCE_APIS,
@@ -21,6 +26,7 @@ import {
   MARC_RECORD_STATUS_API,
   MARC_TYPES,
   LINKING_RULES_API,
+  MARC_SPEC_API,
 } from '../common/constants';
 
 import {
@@ -31,6 +37,7 @@ import {
   splitFields,
   getCreateBibMarcRecordResponse,
   getCreateAuthorityMarcRecordResponse,
+  applyCentralTenantInHeaders,
 } from './utils';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { useAuthorityLinksCount } from '../queries';
@@ -45,7 +52,9 @@ const propTypes = {
   mutator: PropTypes.object.isRequired,
   match: ReactRouterPropTypes.match.isRequired,
   resources: PropTypes.object.isRequired,
+  stripes: PropTypes.object.isRequired,
   wrapper: PropTypes.func.isRequired,
+  onCheckCentralTenantPerm: PropTypes.func,
 };
 
 const createRecordDefaults = {
@@ -65,6 +74,8 @@ const QuickMarcEditorContainer = ({
   marcType,
   externalRecordPath,
   resources,
+  stripes,
+  onCheckCentralTenantPerm,
 }) => {
   const {
     externalId,
@@ -75,17 +86,23 @@ const QuickMarcEditorContainer = ({
   const [locations, setLocations] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [linksCount, setLinksCount] = useState(0);
+  const [fixedFieldSpec, setFixedFieldSpec] = useState();
 
   const searchParams = new URLSearchParams(location.search);
+  const { token, locale } = stripes.okapi;
+  const centralTenantId = stripes.user.user.consortium?.centralTenantId;
+
+  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType)
+    && action !== QUICK_MARC_ACTIONS.CREATE;
 
   const showCallout = useShowCallout();
   const { fetchLinksCount } = useAuthorityLinksCount();
 
-  const closeEditor = useCallback(() => {
+  const closeEditor = useCallback((id) => {
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
       onClose(`${instanceId}/${externalId}`);
     } else {
-      onClose(externalId);
+      onClose(id || externalId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [externalId, onClose]);
@@ -105,23 +122,53 @@ const QuickMarcEditorContainer = ({
       ? EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]
       : EXTERNAL_INSTANCE_APIS[marcType];
 
+    const headers = isRequestToCentralTenantFromMember
+      ? { headers: getHeaders(centralTenantId, token, locale) }
+      : {};
+
     const instancePromise = action === QUICK_MARC_ACTIONS.CREATE && marcType !== MARC_TYPES.HOLDINGS
       ? Promise.resolve({})
-      : mutator.quickMarcEditInstance.GET({ path: `${path}/${externalId}` });
+      : mutator.quickMarcEditInstance.GET({
+        path: `${path}/${externalId}`,
+        ...headers,
+      });
 
     const marcRecordPromise = action === QUICK_MARC_ACTIONS.CREATE
       ? Promise.resolve({})
-      : mutator.quickMarcEditMarcRecord.GET({ params: { externalId } });
+      : mutator.quickMarcEditMarcRecord.GET({
+        params: { externalId },
+        ...headers,
+      });
 
-    const locationsPromise = mutator.locations.GET();
-    const linkingRulesPromise = mutator.linkingRules.GET();
+    const locationsPromise = mutator.locations.GET(headers);
+    // must be with the central tenant id when user derives shared record
+    const linkingRulesPromise = mutator.linkingRules.GET(headers);
 
     const linksCountPromise = marcType === MARC_TYPES.AUTHORITY
       ? fetchLinksCount([externalId])
       : Promise.resolve();
 
-    await Promise.all([instancePromise, marcRecordPromise, locationsPromise, linksCountPromise, linkingRulesPromise])
-      .then(([instanceResponse, marcRecordResponse, locationsResponse, linksCountResponse, linkingRulesResponse]) => {
+    const fixedFieldSpecPromise = mutator.fixedFieldSpec.GET({
+      path: `${MARC_SPEC_API}/${marcType}/008`,
+      ...headers,
+    });
+
+    await Promise.all([
+      instancePromise,
+      marcRecordPromise,
+      locationsPromise,
+      linksCountPromise,
+      linkingRulesPromise,
+      fixedFieldSpecPromise,
+    ])
+      .then(([
+        instanceResponse,
+        marcRecordResponse,
+        locationsResponse,
+        linksCountResponse,
+        linkingRulesResponse,
+        fixedFieldSpecResponse,
+      ]) => {
         if (marcType === MARC_TYPES.AUTHORITY) {
           setLinksCount(linksCountResponse.links[0].totalLinks);
         }
@@ -139,7 +186,7 @@ const QuickMarcEditorContainer = ({
         if (action === QUICK_MARC_ACTIONS.CREATE) {
           dehydratedMarcRecord = createRecordDefaults[marcType](instanceResponse);
         } else {
-          dehydratedMarcRecord = dehydrateMarcRecordResponse(marcRecordResponse, marcType);
+          dehydratedMarcRecord = dehydrateMarcRecordResponse(marcRecordResponse, marcType, fixedFieldSpecResponse);
         }
 
         const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, action, marcType);
@@ -149,6 +196,7 @@ const QuickMarcEditorContainer = ({
         setInstance(instanceResponse);
         setMarcRecord(marcRecordWithSplitFields);
         setLocations(locationsResponse);
+        setFixedFieldSpec(fixedFieldSpecResponse);
         setIsLoading(false);
       })
       .catch(() => {
@@ -156,7 +204,16 @@ const QuickMarcEditorContainer = ({
         closeEditor();
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [externalId, history, marcType, fetchLinksCount]);
+  }, [
+    externalId,
+    history,
+    marcType,
+    fetchLinksCount,
+    centralTenantId,
+    token,
+    locale,
+    isRequestToCentralTenantFromMember,
+  ]);
 
   useEffect(() => {
     loadData();
@@ -184,9 +241,11 @@ const QuickMarcEditorContainer = ({
       location={location}
       locations={locations}
       marcType={marcType}
+      fixedFieldSpec={fixedFieldSpec}
       refreshPageData={loadData}
       externalRecordPath={externalRecordUrl}
       resources={resources}
+      onCheckCentralTenantPerm={onCheckCentralTenantPerm}
     />
   );
 };
@@ -227,8 +286,18 @@ QuickMarcEditorContainer.manifest = Object.freeze({
     path: LINKING_RULES_API,
     throwErrors: false,
   },
+  fixedFieldSpec: {
+    type: 'okapi',
+    fetch: false,
+    accumulate: true,
+    path: MARC_SPEC_API,
+    throwErrors: false,
+  },
 });
 
 QuickMarcEditorContainer.propTypes = propTypes;
+QuickMarcEditorContainer.defaultProps = {
+  onCheckCentralTenantPerm: noop,
+};
 
 export default withRouter(stripesConnect(QuickMarcEditorContainer));

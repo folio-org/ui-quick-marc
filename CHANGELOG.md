@@ -1,26 +1,48 @@
 # Change history for ui-quick-marc
 
-## [7.0.0](IN PROGRESS)
+## [8.0.0] (IN PROGRESS)
+
+* [UIQM-580](https://issues.folio.org/browse/UIQM-580) *BREAKING* Move QuickMarcView, PrintPopup and getHeaders to stripes-marc-components.
+* [UIQM-543](https://issues.folio.org/browse/UIQM-543) Remove eslint deps that are already listed in eslint-config-stripes.
+* [UIQM-573](https://issues.folio.org/browse/UIQM-573) Edit MARC authority | Allow user to Add/Edit 010 $a when linking is based on 001.
+
+## [7.0.4](https://github.com/folio-org/ui-quick-marc/tree/v7.0.4) (2023-11-09)
+
+* [UIQM-582](https://issues.folio.org/browse/UIQM-582) Show correct message if record not found.
+
+## [7.0.3](https://github.com/folio-org/ui-quick-marc/tree/v7.0.3) (2023-11-03)
+
+* [UIQM-571](https://issues.folio.org/browse/UIQM-571) Added `marc-records-editor.item.put` to Derive and Create Bib permissions to fix issue with broken links after deriving or creating a record.
+
+## [7.0.2](https://github.com/folio-org/ui-quick-marc/tree/v7.0.2) (2023-10-27)
+
+* [UIQM-571](https://issues.folio.org/browse/UIQM-571) Added `marc-records-editor.item.put` to Derive and Create Bib permissions to fix issue with broken links after deriving or creating a record.
+
+## [7.0.1](https://github.com/folio-org/ui-quick-marc/tree/v7.0.1) (2023-10-13)
+
+* Use correct version of `ui-plugin-find-authority`.
+
+## [7.0.0](https://github.com/folio-org/ui-quick-marc/tree/v7.0.0) (2023-10-13)
 
 * [UIQM-250](https://issues.folio.org/browse/UIQM-250) Updated invalid Leader position values error messages to be more informative.
 * [UIQM-410](https://issues.folio.org/browse/UIQM-410) Add support for values 'b' and 'c' in Bib Leader/19
-* [UIQM-355](https://issues.folio.org/browse/UIQM-355) Added a new permission "quickMARC: Create a new MARC bibliographic record" 
+* [UIQM-355](https://issues.folio.org/browse/UIQM-355) Added a new permission "quickMARC: Create a new MARC bibliographic record"
 * [UIQM-420](https://issues.folio.org/browse/UIQM-420) Remove initial values for Find Authority plugin References filter.
 * [UIQM-428](https://issues.folio.org/browse/UIQM-428) Show an error message in modal after linking.
 * [UIQM-424](https://issues.folio.org/browse/UIQM-424) Disable pressing `Enter` for linked fields.
 * [UIQM-361](https://issues.folio.org/browse/UIQM-361) Create Orig Bib Record: Open new record in quickMARC UI.
 * [UIQM-432](https://issues.folio.org/browse/UIQM-432) Avoid private paths in stripes-core imports.
-* [UIQM-421](https://issues.folio.org/browse/UIQM-421) Add correct validation to save derived records. 
+* [UIQM-421](https://issues.folio.org/browse/UIQM-421) Add correct validation to save derived records.
 * [UIQM-445](https://issues.folio.org/browse/UIQM-445) Fix missing permission to view MARC Authority icon in MARC bib source view
 * [UIQM-447](https://issues.folio.org/browse/UIQM-447) Upgrade instance-authority-links interface to 2.0
 * [UIQM-382](https://issues.folio.org/browse/UIQM-382) quickMARC Bib Validation: Make 010 a non-repeatable field in create, edit, and derive bib records
 * [UIQM-429](https://issues.folio.org/browse/UIQM-429) Prevent many location in Marc holdings record.
-* [UIQM-449](https://issues.folio.org/browse/UIQM-449) Link Authority: Pre-populate search/browse box with bib subfield values 
+* [UIQM-449](https://issues.folio.org/browse/UIQM-449) Link Authority: Pre-populate search/browse box with bib subfield values
 * [UIQM-415](https://issues.folio.org/browse/UIQM-415) Create original bib record in quickMARC UI
 * [UIQM-412](https://issues.folio.org/browse/UIQM-412) Fix translation format: MARC field number isn't highlighted in bold
 * [UIQM-423](https://issues.folio.org/browse/UIQM-423) Fix display person who last edited quickMARC record
 * [UIQM-457](https://issues.folio.org/browse/UIQM-457) Always replace bib $0 with Authority's baseURL + naturalId.
-* [UIQM-450](https://issues.folio.org/browse/UIQM-450) Take the authority control subfields from the linking rules. 
+* [UIQM-450](https://issues.folio.org/browse/UIQM-450) Take the authority control subfields from the linking rules.
 * [UIQM-448](https://issues.folio.org/browse/UIQM-448) Fix validation of 001 fields when creating/deriving/editing all record types.
 * [UIQM-463](https://issues.folio.org/browse/UIQM-463) Upgrade to new interfaces.
 * [UIQM-470](https://issues.folio.org/browse/UIQM-470) Add permission for editing MARC Holdings records.
@@ -39,6 +61,27 @@
 * [UIQM-443](https://issues.folio.org/browse/UIQM-443) Auto-linking MARC bib. Handling multiple authority records matches.
 * [UIQM-436](https://issues.folio.org/browse/UIQM-436) Auto-linking MARC bib. Handling multiple subfield 0.
 * [UIQM-509](https://issues.folio.org/browse/UIQM-509) Autopopulate subfields when Creating MARC records.
+* [UIQM-501](https://issues.folio.org/browse/UIQM-501) Actualize linked fields on save.
+* [UIQM-532](https://issues.folio.org/browse/UIQM-532) *BREAKING* Bump `react` to `v18`.
+* [UIQM-480](https://issues.folio.org/browse/UIQM-480) Derive new local MARC bib record from Shared Instance record.
+* [UIQM-483](https://issues.folio.org/browse/UIQM-483) Add "Local" or "Shared" to flag MARC bib records.
+* [UIQM-484](https://issues.folio.org/browse/UIQM-484) Edit MARC bib record on Shared Instance.
+* [UIQM-542](https://issues.folio.org/browse/UIQM-542) Bump plugin-find-authority and stripes-acq-components.
+* [UIQM-535](https://issues.folio.org/browse/UIQM-535) Update Node.js to v18 in GitHub Actions.
+* [UIQM-544](https://issues.folio.org/browse/UIQM-544) Add "Local" or "Shared" to flag MARC authorities.
+* [UIQM-545](https://issues.folio.org/browse/UIQM-545) Change tenant id to central when opening details of Shared Authority.
+* [UIQM-547](https://issues.folio.org/browse/UIQM-547) Link Shared/Local MARC bib record to Shared/Local Authority record.
+* [UIQM-550](https://issues.folio.org/browse/UIQM-550) Use onClose prop when a derived record is saved to have one source of truth to remove unnecessary params.
+* [UIQM-552](https://issues.folio.org/browse/UIQM-552) Hide the Shared facet in the plugin for the shared bib record.
+* [UIQM-554](https://issues.folio.org/browse/UIQM-554) Don't pass any arguments to the onClose callback when clicking the Cancel panel button.
+* [UIQM-556](https://issues.folio.org/browse/UIQM-556) Edit Shared MARC authority record, update Shared & Local Instances.
+* [UIQM-558](https://issues.folio.org/browse/UIQM-558) *BREAKING* bump `react-intl` to `v6.4.4`.
+* [UIQM-559](https://issues.folio.org/browse/UIQM-559) Make auto-linking for the consortium.
+* [UIQM-558](https://issues.folio.org/browse/UIQM-558) Allow a user to select a location code from the plugin.
+* [UIQM-562](https://issues.folio.org/browse/UIQM-562) Fix optimistic locking error doesn't appear when edit "MARC authority" record.
+* [UIQM-564](https://issues.folio.org/browse/UIQM-564) Hide permission `quickMARC: Create a new MARC authority record
+* [UIQM-431](https://issues.folio.org/browse/UIQM-431) Marc record fixed field 008 with proper order.
+* [UIQM-568](https://issues.folio.org/browse/UIQM-568) Remove second call to links-suggestion endpoint. Now only need to send one call to member tenant.
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
 
@@ -71,7 +114,7 @@
 * [UIQM-297](https://issues.folio.org/browse/UIQM-297) FE | View Source | If a bib field is authorized then display authorized indicator
 * [UIQM-332](https://issues.folio.org/browse/UIQM-332) Default search/browse option and Authority source file selections based on MARC bib field to be linked
 * [UIQM-322](https://issues.folio.org/browse/UIQM-322) Edit MARC authority app | User edits the 1XX value and has linked bib fields
-* [UIQM-331](https://issues.folio.org/browse/UIQM-331) Edit MARC authority: Handling updates 1XX or 010 $a value 
+* [UIQM-331](https://issues.folio.org/browse/UIQM-331) Edit MARC authority: Handling updates 1XX or 010 $a value
 * [UIQM-339](https://issues.folio.org/browse/UIQM-339) Uncontrolled subfield moved to read only box when linked "MARC Authority" has the same subfield indicator
 * [UIQM-335](https://issues.folio.org/browse/UIQM-335) MARC Bibliographic | Print Source record
 * [UIQM-330](https://issues.folio.org/browse/UIQM-330) FE - Edit MARC Authority record | MARC field 010 is not repeatable
@@ -94,9 +137,10 @@
 * [UIQM-394](https://issues.folio.org/browse/UIQM-394) No delete icon for "010" field with valid value in "MARC authority" record not controlling any "MARC bib" record
 * [UIQM-375](https://issues.folio.org/browse/UIQM-375) Do not add "http://" to "base url" when user links "MARC Bib's" field with "MARC Authority"
 * [UIQM-386](https://issues.folio.org/browse/UIQM-386) Edit MARC authority | Add/Edit 010 $a when linking is based on 001.
-* [UIQM-385](https://issues.folio.org/browse/UIQM-385) Edit/Derive quickMARC | Allow user to drag text boxes to view all content 
+* [UIQM-385](https://issues.folio.org/browse/UIQM-385) Edit/Derive quickMARC | Allow user to drag text boxes to view all content
 * [UIQM-402](https://issues.folio.org/browse/UIQM-402) Add linkingRuleId to the request body for linked fields
-* [UIQM-351](https://issues.folio.org/browse/UIQM-351) MARC Authority | Print Source record 
+* [UIQM-351](https://issues.folio.org/browse/UIQM-351) MARC Authority | Print Source record
+* [UIQM-567](https://issues.folio.org/browse/UIQM-567) Add marc-specifications to interfaces.
 
 ## [5.2.0](https://github.com/folio-org/ui-quick-marc/tree/v5.2.0) (2022-10-26)
 
@@ -136,7 +180,7 @@
 ## [5.1.1](https://github.com/folio-org/ui-quick-marc/tree/v5.1.1) (2022-08-05)
 
 * [UIQM-263](https://issues.folio.org/browse/UIQM-263) Cannot access a MARC bib because creator has been deleted. Handling a 404 error.
-* [UIQM-260](https://issues.folio.org/browse/UIQM-260) Fix Add MARC holdings:  852 field > cannot enter text 
+* [UIQM-260](https://issues.folio.org/browse/UIQM-260) Fix Add MARC holdings:  852 field > cannot enter text
 * [UIQM-267](https://issues.folio.org/browse/UIQM-267) MARC Holdings - Leader position 18 accept a space and \ as a valid value
 * [UIQM-262](https://issues.folio.org/browse/UIQM-262) FE: Derive/Edit MARC bibliographic record: Improve Leader position 08 error message
 * [UIQM-265](https://issues.folio.org/browse/UIQM-265) Add/Edit MARC Holdings - Adding a new field above MARC 852 results in 852$b value populating the newly added field

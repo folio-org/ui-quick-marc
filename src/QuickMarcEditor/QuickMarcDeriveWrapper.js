@@ -3,7 +3,6 @@ import React, {
   useState,
 } from 'react';
 import PropTypes from 'prop-types';
-import ReactRouterPropTypes from 'react-router-prop-types';
 import flow from 'lodash/flow';
 
 import { useShowCallout } from '@folio/stripes-acq-components';
@@ -32,15 +31,13 @@ import {
   autopopulatePhysDescriptionField,
   autopopulateMaterialCharsField,
 } from './utils';
-import { useAuthorityLinkingRules } from '../queries';
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
-  history: ReactRouterPropTypes.history.isRequired,
   initialValues: PropTypes.object.isRequired,
   instance: PropTypes.object,
-  location: ReactRouterPropTypes.location.isRequired,
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
+  fixedFieldSpec: PropTypes.object.isRequired,
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
 };
@@ -51,13 +48,11 @@ const QuickMarcDeriveWrapper = ({
   onClose,
   initialValues,
   mutator,
-  history,
-  location,
   marcType,
+  fixedFieldSpec,
 }) => {
   const showCallout = useShowCallout();
-  const { linkableBibFields } = useAuthorityLinking();
-  const { linkingRules } = useAuthorityLinkingRules();
+  const { linkableBibFields, actualizeLinks, linkingRules } = useAuthorityLinking({ marcType, action });
   const [httpError, setHttpError] = useState(null);
 
   const { validate } = useValidation({
@@ -78,11 +73,11 @@ const QuickMarcDeriveWrapper = ({
       autopopulatePhysDescriptionField,
       autopopulateMaterialCharsField,
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
-      marcRecord => cleanBytesFields(marcRecord, marcType),
+      marcRecord => cleanBytesFields(marcRecord, fixedFieldSpec),
     )(formValues);
 
     return formValuesForDerive;
-  }, [marcType]);
+  }, [marcType, fixedFieldSpec]);
 
   const runValidation = useCallback((formValues) => {
     const formValuesForValidation = prepareForSubmit(formValues);
@@ -90,30 +85,34 @@ const QuickMarcDeriveWrapper = ({
     return validate(formValuesForValidation.records);
   }, [validate, prepareForSubmit]);
 
-  const redirectToRecord = (externalId) => {
-    history.push({
-      pathname: `/inventory/view/${externalId}`,
-      search: location.search,
-    });
-  };
-
   const onSubmit = useCallback(async (formValues) => {
-    const formValuesForDerive = prepareForSubmit(formValues);
+    const formValuesToProcess = flow(
+      prepareForSubmit,
+      combineSplitFields,
+    )(formValues);
 
     showCallout({ messageId: 'ui-quick-marc.record.saveNew.onSave' });
 
-    const formValuesWithCombinedFields = combineSplitFields(formValuesForDerive);
-    const marcRecord = hydrateMarcRecord(formValuesWithCombinedFields);
+    let formValuesToHydrate;
 
-    marcRecord.relatedRecordVersion = 1;
-    marcRecord._actionType = 'create';
+    try {
+      formValuesToHydrate = await actualizeLinks(formValuesToProcess);
+    } catch (errorResponse) {
+      const parsedError = await parseHttpError(errorResponse);
 
-    return mutator.quickMarcEditMarcRecord.POST(marcRecord)
+      setHttpError(parsedError);
+
+      return null;
+    }
+
+    formValuesToHydrate.relatedRecordVersion = 1;
+    formValuesToHydrate._actionType = 'create';
+
+    const formValuesForDerive = hydrateMarcRecord(formValuesToHydrate);
+
+    return mutator.quickMarcEditMarcRecord.POST(formValuesForDerive)
       .then(async ({ qmRecordId }) => {
-        history.push({
-          pathname: '/inventory/view/id',
-          search: location.search,
-        });
+        onClose('id'); // https://issues.folio.org/browse/UIQM-82
 
         try {
           const { externalId } = await getQuickMarcRecordStatus({
@@ -124,11 +123,11 @@ const QuickMarcDeriveWrapper = ({
 
           showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
 
-          if (recordHasLinks(marcRecord.fields)) {
-            saveLinksToNewRecord(mutator, externalId, marcRecord)
-              .finally(() => redirectToRecord(externalId));
+          if (recordHasLinks(formValuesForDerive.fields)) {
+            saveLinksToNewRecord(mutator, externalId, formValuesForDerive)
+              .finally(() => onClose(externalId));
           } else {
-            redirectToRecord(externalId);
+            onClose(externalId);
           }
         } catch (e) {
           showCallout({
@@ -143,7 +142,7 @@ const QuickMarcDeriveWrapper = ({
         setHttpError(parsedError);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onClose, showCallout, prepareForSubmit]);
+  }, [onClose, showCallout, prepareForSubmit, actualizeLinks]);
 
   return (
     <QuickMarcEditor
@@ -153,6 +152,7 @@ const QuickMarcDeriveWrapper = ({
       onSubmit={onSubmit}
       action={action}
       marcType={marcType}
+      fixedFieldSpec={fixedFieldSpec}
       httpError={httpError}
       confirmRemoveAuthorityLinking
       validate={runValidation}

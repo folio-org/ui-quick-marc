@@ -1,9 +1,8 @@
 import { useMutation } from 'react-query';
+import { useTenantKy } from '../../temp';
 
-import { useOkapiKy } from '@folio/stripes/core';
-
-const useAuthorityLinksCount = () => {
-  const ky = useOkapiKy();
+const useAuthorityLinksCount = ({ tenantId } = {}) => {
+  const ky = useTenantKy({ tenantId });
 
   const { mutateAsync, isLoading } = useMutation({
     mutationFn: ids => ky.post('links/authorities/bulk/count', { json: { ids } }).json(),
