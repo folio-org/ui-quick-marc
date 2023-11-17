@@ -61,7 +61,7 @@ export const validateSubfieldValueExists = (context, rule) => {
 
   return undefined;
 };
-export const validateExistance = (context, rule) => {
+export const validateExistence = (context, rule) => {
   const { marcRecords } = context;
 
   if (rule.ignore && rule.ignore(context)) {

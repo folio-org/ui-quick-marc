@@ -9,7 +9,7 @@ import {
   validateLocation,
   validateCorrectLength,
   validateEditableBytes,
-  validateExistance,
+  validateExistence,
   validateLeaderPositions,
   validateNonRepeatable,
   validateNonRepeatableSubfield,
@@ -23,7 +23,7 @@ import {
 import { is010LinkedToBibRecord } from '../../QuickMarcEditor/utils';
 
 const RULES = {
-  EXISTS: validateExistance,
+  EXISTS: validateExistence,
   NON_REPEATABLE: validateNonRepeatable,
   NON_REPEATABLE_SUBFIELD: validateNonRepeatableSubfield,
   $9IN_LINKABLE: validate$9InLinkable,
