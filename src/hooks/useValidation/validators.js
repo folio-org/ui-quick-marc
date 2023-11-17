@@ -10,6 +10,7 @@ import {
   LEADER_TAG,
   LEADER_VALUES_FOR_POSITION,
   LEADER_DOCUMENTATION_LINKS,
+  UNCONTROLLED_SUBFIELDS,
 } from '../../QuickMarcEditor/constants';
 
 const uncontrolledSubfieldGroups = ['uncontrolledAlpha', 'uncontrolledNumber'];
@@ -231,12 +232,14 @@ export const validateLocation = ({ marcRecords, locations }, rule) => {
   if (!locations.find(location => location.code === locationValue)) {
     return rule.message();
   }
+
+  return undefined;
 };
 export const validateSubfieldIsControlled = ({ marcRecords, linkingRules }, rule) => {
   const linkedFields = marcRecords.filter(field => field.subfieldGroups);
 
   const linkedFieldsWithEnteredSubfieldsThatCanBeControlled = linkedFields.filter(linkedField => {
-    return uncontrolledSubfieldGroups.some(subfield => {
+    return UNCONTROLLED_SUBFIELDS.some(subfield => {
       if (linkedField.subfieldGroups[subfield]) {
         const contentSubfieldValue = getContentSubfieldValue(linkedField.subfieldGroups[subfield]);
         const linkingRule = linkingRules

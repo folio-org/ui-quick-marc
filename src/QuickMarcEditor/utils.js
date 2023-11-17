@@ -1,7 +1,6 @@
 /* eslint-disable max-lines */
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import omit from 'lodash/omit';
 import compact from 'lodash/compact';
@@ -20,14 +19,11 @@ import {
   FIELD_TAGS_TO_REMOVE,
   FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS,
   QUICK_MARC_ACTIONS,
-  LEADER_EDITABLE_BYTES,
   CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
   CREATE_BIB_RECORD_DEFAULT_LEADER_VALUE,
   CREATE_HOLDINGS_RECORD_DEFAULT_FIELD_TAGS,
   HOLDINGS_FIXED_FIELD_DEFAULT_VALUES,
   CORRESPONDING_HEADING_TYPE_TAGS,
-  LEADER_VALUES_FOR_POSITION,
-  LEADER_DOCUMENTATION_LINKS,
   ELVL_BYTE,
   CREATE_BIB_RECORD_DEFAULT_FIELD_TAGS,
   BIB_FIXED_FIELD_DEFAULT_TYPE,
@@ -474,18 +470,6 @@ export const addNewRecord = (index, state) => {
   return records;
 };
 
-const getInvalidLeaderPositions = (leader, marcType) => {
-  const failedPositions = Object.keys(LEADER_VALUES_FOR_POSITION[marcType]).map(position => {
-    if (!LEADER_VALUES_FOR_POSITION[marcType][position].includes(leader[position])) {
-      return position;
-    }
-
-    return null;
-  }).filter(result => !!result);
-
-  return failedPositions;
-};
-
 export const getLocationValue = (value) => {
   const matches = value?.match(/\$b\s+([^$\s]+\/?)+/) || [];
 
@@ -567,282 +551,6 @@ export const getIsSubfieldRemoved = (content, subfield) => {
   const contentSubfieldValue = getContentSubfieldValue(content);
 
   return !(subfield in contentSubfieldValue) || !contentSubfieldValue[subfield][0];
-};
-
-const validateSubfieldsThatCanBeControlled = (marcRecords, uncontrolledSubfields, linkingRules) => {
-  const linkedFields = marcRecords.filter(field => field.subfieldGroups);
-
-  const linkedFieldsWithEnteredSubfieldsThatCanBeControlled = linkedFields.filter(linkedField => {
-    return uncontrolledSubfields.some(subfield => {
-      if (linkedField.subfieldGroups[subfield]) {
-        const contentSubfieldValue = getContentSubfieldValue(linkedField.subfieldGroups[subfield]);
-        const linkingRule = linkingRules.find(rule => rule.id === linkedField.linkDetails?.linkingRuleId);
-        const controlledSubfields = getControlledSubfields(linkingRule);
-
-        return controlledSubfields.some(authSubfield => {
-          return `$${authSubfield}` in contentSubfieldValue;
-        });
-      }
-
-      return false;
-    });
-  });
-
-  const fieldTags = linkedFieldsWithEnteredSubfieldsThatCanBeControlled.map(field => field.tag);
-  const uniqueTags = [...new Set(fieldTags)];
-
-  if (uniqueTags.length === 1) {
-    return (
-      <FormattedMessage
-        id="ui-quick-marc.record.error.fieldCantBeSaved"
-        values={{
-          count: 1,
-          fieldTags: `MARC ${uniqueTags[0]}`,
-        }}
-      />
-    );
-  }
-
-  if (uniqueTags.length > 1) {
-    return (
-      <FormattedMessage
-        id="ui-quick-marc.record.error.fieldsCantBeSaved"
-        values={{
-          count: uniqueTags.length,
-          fieldTags: uniqueTags.slice(0, -1).map(tag => `MARC ${tag}`).join(', '),
-          lastFieldTag: `MARC ${uniqueTags[uniqueTags.length - 1]}`,
-        }}
-      />
-    );
-  }
-
-  return null;
-};
-
-const validateMarcBibRecord = (marcRecords, linkableBibFields, linkingRules) => {
-  const titleRecords = marcRecords.filter(({ tag }) => tag === '245');
-
-  if (titleRecords.length === 0) {
-    return <FormattedMessage id="ui-quick-marc.record.error.title.empty" />;
-  }
-
-  if (titleRecords.length > 1) {
-    return <FormattedMessage id="ui-quick-marc.record.error.title.multiple" />;
-  }
-
-  const duplicate010FieldError = checkDuplicate010Field(marcRecords);
-
-  if (duplicate010FieldError) {
-    return duplicate010FieldError;
-  }
-
-  const uncontrolledSubfields = [UNCONTROLLED_ALPHA, UNCONTROLLED_NUMBER];
-
-  const $9Error = validate$9InLinkable(marcRecords, linkableBibFields, uncontrolledSubfields);
-
-  if ($9Error) {
-    return $9Error;
-  }
-
-  const subfieldsThatCanBeControlledError = validateSubfieldsThatCanBeControlled(
-    marcRecords,
-    uncontrolledSubfields,
-    linkingRules,
-  );
-
-  if (subfieldsThatCanBeControlledError) {
-    return subfieldsThatCanBeControlledError;
-  }
-
-  return undefined;
-};
-
-const validateMarcHoldingsRecord = (marcRecords, locations) => {
-  const instanceHridRecords = marcRecords.filter(({ tag }) => tag === '004');
-
-  if (instanceHridRecords.length > 1) {
-    return <FormattedMessage id="ui-quick-marc.record.error.instanceHrid.multiple" />;
-  }
-
-  const locationRecords = marcRecords.filter(({ tag }) => tag === '852');
-
-  if (!locationRecords.length) {
-    return <FormattedMessage id="ui-quick-marc.record.error.location.empty" />;
-  }
-
-  if (locationRecords.length > 1) {
-    return <FormattedMessage id="ui-quick-marc.record.error.location.multiple" />;
-  }
-
-  if (locationRecords.length) {
-    if (getContentSubfieldValue(locationRecords[0].content).$b?.length > 1) {
-      return <FormattedMessage id="ui-quick-marc.record.error.field.onlyOneSubfield" values={{ fieldTag: '852', subField: '$b' }} />;
-    }
-  }
-
-  if (!validateLocationSubfield(marcRecords.find(({ tag }) => tag === '852'), locations)) {
-    return <FormattedMessage id="ui-quick-marc.record.error.location.invalid" />;
-  }
-
-  return undefined;
-};
-
-const getIs$tRemoved = (content) => {
-  const contentSubfieldValue = getContentSubfieldValue(content);
-
-  return !('$t' in contentSubfieldValue) || !contentSubfieldValue.$t[0];
-};
-
-const validateMarcAuthority1xxField = (initialRecords, formValuesToSave) => {
-  const is1xx = field => field.tag.startsWith('1');
-  const { tag: initialTag, content: initialContent } = initialRecords.find(is1xx);
-  const { tag: tagToSave, content: contentToSave } = formValuesToSave.find(is1xx);
-
-  if (initialTag !== tagToSave) {
-    return <FormattedMessage id="ui-quick-marc.record.error.1xx.change" values={{ tag: initialTag }} />;
-  }
-
-  const hasInitially$t = !!getContentSubfieldValue(initialContent).$t?.[0];
-  const has$tToSave = '$t' in getContentSubfieldValue(contentToSave);
-  const is$tAdded = !hasInitially$t && has$tToSave;
-  const is$tRemoved = hasInitially$t && getIs$tRemoved(contentToSave);
-
-  if (is$tAdded) {
-    return <FormattedMessage id="ui-quick-marc.record.error.1xx.add$t" values={{ tag: initialTag }} />;
-  }
-
-  if (is$tRemoved) {
-    return <FormattedMessage id="ui-quick-marc.record.error.1xx.remove$t" values={{ tag: initialTag }} />;
-  }
-
-  return undefined;
-};
-
-const validateLinkedAuthority010Field = (field010, initialRecords, naturalId) => {
-  if (is010LinkedToBibRecord(initialRecords, naturalId)) {
-    if (!field010) {
-      return <FormattedMessage id="ui-quick-marc.record.error.010.removed" />;
-    }
-
-    const is010$aRemoved = !getContentSubfieldValue(field010.content).$a?.[0];
-
-    if (is010$aRemoved) {
-      return <FormattedMessage id="ui-quick-marc.record.error.010.$aRemoved" />;
-    }
-
-    return undefined;
-  }
-
-  return undefined;
-};
-
-const validateAuthority010Field = (initialRecords, records, naturalId, marcRecords, isLinked) => {
-  const duplicate010FieldError = checkDuplicate010Field(marcRecords);
-
-  if (duplicate010FieldError) {
-    return duplicate010FieldError;
-  }
-
-  const field010 = records.find(field => field.tag === '010');
-
-  if (field010) {
-    const subfieldCount = getContentSubfieldValue(field010.content).$a?.length ?? 0;
-
-    if (subfieldCount > 1) {
-      return <FormattedMessage id="ui-quick-marc.record.error.010.$aOnlyOne" />;
-    }
-  }
-
-  if (isLinked) {
-    return validateLinkedAuthority010Field(field010, initialRecords, naturalId);
-  }
-
-  return undefined;
-};
-
-const validateMarcAuthorityRecord = (marcRecords, linksCount, initialRecords, naturalId) => {
-  const correspondingHeadingTypeTags = new Set(CORRESPONDING_HEADING_TYPE_TAGS);
-
-  const headingRecords = marcRecords.filter(recordRow => correspondingHeadingTypeTags.has(recordRow.tag));
-
-  if (!headingRecords.length) {
-    return <FormattedMessage id="ui-quick-marc.record.error.heading.empty" />;
-  }
-
-  if (headingRecords.length > 1) {
-    return <FormattedMessage id="ui-quick-marc.record.error.heading.multiple" />;
-  }
-
-  if (linksCount) {
-    const errorIn1xxField = validateMarcAuthority1xxField(initialRecords, marcRecords);
-
-    if (errorIn1xxField) {
-      return errorIn1xxField;
-    }
-  }
-
-  const errorIn010Field = validateAuthority010Field(initialRecords, marcRecords, naturalId, marcRecords, linksCount);
-
-  if (errorIn010Field) {
-    return errorIn010Field;
-  }
-
-  return undefined;
-};
-
-export const validateMarcRecord = ({
-  marcRecord,
-  initialValues,
-  marcType = MARC_TYPES.BIB,
-  locations = [],
-  linksCount,
-  naturalId,
-  linkableBibFields = [],
-  linkingRules = [],
-}) => {
-  const marcRecords = marcRecord.records || [];
-  const initialMarcRecords = initialValues.records;
-  const recordLeader = marcRecords[0];
-
-  const leaderError = validateLeader(marcRecord?.leader, recordLeader?.content, marcType);
-
-  if (leaderError) {
-    return leaderError;
-  }
-
-  const fixedFieldError = validateFixedField(marcRecords);
-
-  if (fixedFieldError) {
-    return fixedFieldError;
-  }
-
-  let validationResult;
-
-  if (marcType === MARC_TYPES.BIB) {
-    validationResult = validateMarcBibRecord(marcRecords, linkableBibFields, linkingRules);
-  } else if (marcType === MARC_TYPES.HOLDINGS) {
-    validationResult = validateMarcHoldingsRecord(marcRecords, locations);
-  } else if (marcType === MARC_TYPES.AUTHORITY) {
-    validationResult = validateMarcAuthorityRecord(marcRecords, linksCount, initialMarcRecords, naturalId);
-  }
-
-  if (validationResult) {
-    return validationResult;
-  }
-
-  const tagError = validateRecordTag(marcRecords);
-
-  if (tagError) {
-    return tagError;
-  }
-
-  const subfieldError = validateSubfield(marcRecords);
-
-  if (subfieldError) {
-    return subfieldError;
-  }
-
-  return undefined;
 };
 
 export const deleteRecordByIndex = (index, state) => {

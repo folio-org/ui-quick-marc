@@ -73,6 +73,11 @@ const COMMON_VALIDATORS = [
     ),
   },
   {
+    tag: '001',
+    validator: RULES.NON_REPEATABLE,
+    message: () => <FormattedMessage id="ui-quick-marc.record.error.controlField.multiple" />,
+  },
+  {
     validator: RULES.TAG_LENGTH,
     message: () => <FormattedMessage id="ui-quick-marc.record.error.tag.length" />,
   },
@@ -97,11 +102,6 @@ const COMMON_VALIDATORS = [
 
 const BASE_BIB_VALIDATORS = [
   ...COMMON_VALIDATORS,
-  {
-    tag: '001',
-    validator: RULES.NON_REPEATABLE,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.controlField.multiple" />,
-  },
   {
     tag: '010',
     validator: RULES.NON_REPEATABLE,
@@ -194,13 +194,6 @@ const BASE_AUTHORITY_VALIDATORS = [
     ignore: ({ initialValues, naturalId }) => !is010LinkedToBibRecord(initialValues.records, naturalId),
     validator: RULES.SUBFIELD_VALUE_EXISTS,
     message: () => <FormattedMessage id="ui-quick-marc.record.error.010.$aRemoved" />,
-  },
-  {
-    tag: '010',
-    subfield: '$a',
-    ignore: ({ initialValues, naturalId }) => !is010LinkedToBibRecord(initialValues.records, naturalId),
-    validator: RULES.SUBFIELD_CHANGED,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.010.edit$a" />,
   },
   {
     tag: '010',
