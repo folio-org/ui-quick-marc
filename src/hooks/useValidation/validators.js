@@ -240,18 +240,18 @@ export const validateSubfieldIsControlled = ({ marcRecords, linkingRules }, rule
 
   const linkedFieldsWithEnteredSubfieldsThatCanBeControlled = linkedFields.filter(linkedField => {
     return UNCONTROLLED_SUBFIELDS.some(subfield => {
-      if (linkedField.subfieldGroups[subfield]) {
-        const contentSubfieldValue = getContentSubfieldValue(linkedField.subfieldGroups[subfield]);
-        const linkingRule = linkingRules
-          .find(_linkingRule => _linkingRule.id === linkedField.linkDetails?.linkingRuleId);
-        const controlledSubfields = getControlledSubfields(linkingRule);
-
-        return controlledSubfields.some(authSubfield => {
-          return `$${authSubfield}` in contentSubfieldValue;
-        });
+      if (!linkedField.subfieldGroups[subfield]) {
+        return false;
       }
 
-      return false;
+      const contentSubfieldValue = getContentSubfieldValue(linkedField.subfieldGroups[subfield]);
+      const linkingRule = linkingRules
+        .find(_linkingRule => _linkingRule.id === linkedField.linkDetails?.linkingRuleId);
+      const controlledSubfields = getControlledSubfields(linkingRule);
+
+      return controlledSubfields.some(authSubfield => {
+        return `$${authSubfield}` in contentSubfieldValue;
+      });
     });
   });
 

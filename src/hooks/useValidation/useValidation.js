@@ -16,7 +16,7 @@ const useValidation = (context) => {
         return error;
       }
 
-      return null;
+      return undefined;
     }, null);
 
     return errorMessage;
@@ -25,4 +25,4 @@ const useValidation = (context) => {
   return { validate };
 };
 
-export default useValidation;
+export { useValidation };

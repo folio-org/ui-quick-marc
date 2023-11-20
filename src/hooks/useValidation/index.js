@@ -1,1 +1,1 @@
-export { default as useValidation } from './useValidation';
+export * from './useValidation';
