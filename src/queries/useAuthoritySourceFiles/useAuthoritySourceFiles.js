@@ -11,7 +11,7 @@ const useAuthoritySourceFiles = ({ tenantId } = {}) => {
   const [namespace] = useNamespace({ key: 'authority-source-files' });
 
   const { isFetching, data } = useQuery(
-    [namespace],
+    [namespace, tenantId],
     async () => {
       return ky.get('authority-source-files?limit=100').json();
     },

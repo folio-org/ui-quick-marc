@@ -34,6 +34,7 @@ import { LocationField } from './LocationField';
 import { DeletedRowPlaceholder } from './DeletedRowPlaceholder';
 import { LinkButton } from './LinkButton';
 import { SplitField } from './SplitField';
+import { ControlNumberField } from './ControlNumberField';
 import {
   hasIndicatorException,
   hasAddException,
@@ -50,6 +51,7 @@ import {
   isLocationRow,
   isContentRow,
   applyCentralTenantInHeaders,
+  isControlNumberRow,
 } from '../utils';
 import { useAuthorityLinking } from '../../hooks';
 import {
@@ -282,6 +284,7 @@ const QuickMarcEditorRows = ({
             const isPhysDescriptionField = isPhysDescriptionRecord(recordRow);
             const isFixedField = isFixedFieldRow(recordRow);
             const isLocationField = isLocationRow(recordRow, marcType);
+            const isControlNumberField = isControlNumberRow(recordRow);
             const isContentField = isContentRow(recordRow, marcType);
             const isMARCFieldProtections = marcType !== MARC_TYPES.HOLDINGS && action === QUICK_MARC_ACTIONS.EDIT;
             const isProtectedField = recordRow.isProtected;
@@ -449,6 +452,17 @@ const QuickMarcEditorRows = ({
                   className={styles.quickMarcEditorRowContent}
                   ref={isLeader ? setRowContentWidthOnce : null}
                 >
+                  {
+                    isControlNumberField && (
+                      <ControlNumberField
+                        id={`control-number-field-${idx}`}
+                        name={`${name}.content`}
+                        marcType={marcType}
+                        action={action}
+                      />
+                    )
+                  }
+
                   {
                     isMaterialCharsField && (
                       <MaterialCharsField
