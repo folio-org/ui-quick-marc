@@ -5,12 +5,7 @@ import arrayMutators from 'final-form-arrays';
 import { ControlNumberField } from './ControlNumberField';
 import { MARC_TYPES } from '../../../common/constants';
 import { QUICK_MARC_ACTIONS } from '../../constants';
-
-jest.mock('../../SourceFileLookup', () => ({
-  SourceFileLookup: ({ onSourceFileSelect }) => (
-    <button type="button" onClick={() => onSourceFileSelect({ target: { value: 'test-source-file-id' } })}>Select file</button>
-  ),
-}));
+import Harness from '../../../../test/jest/helpers/harness';
 
 const getControlNumberField = (props = {}, initialValues) => (
   <Form
@@ -32,7 +27,7 @@ const getControlNumberField = (props = {}, initialValues) => (
   />
 );
 
-const renderControlNumberField = (props = {}) => render(getControlNumberField(props));
+const renderControlNumberField = (props = {}) => render(getControlNumberField(props), { wrapper: Harness });
 
 describe('Given ControlNumberField', () => {
   it('should render content field', () => {
@@ -51,17 +46,25 @@ describe('Given ControlNumberField', () => {
         marcType: MARC_TYPES.BIB,
       });
 
-      expect(queryByText('ui-quick-marc.sourceFileLookup')).not.toBeDefined();
+      expect(queryByText('ui-quick-marc.sourceFileLookup')).toBeNull();
     });
   });
 
   describe('when action is not CREATE', () => {
+    beforeAll(() => {
+      jest.mock('../../SourceFileLookup', () => ({
+        SourceFileLookup: ({ onSourceFileSelect }) => (
+          <button type="button" onClick={() => onSourceFileSelect({ target: { value: 'test-source-file-id' } })}>Select file</button>
+        ),
+      }));
+    });
+
     it('should not render source file lookup', () => {
       const { queryByText } = renderControlNumberField({
         action: QUICK_MARC_ACTIONS.EDIT,
       });
 
-      expect(queryByText('ui-quick-marc.sourceFileLookup')).not.toBeDefined();
+      expect(queryByText('ui-quick-marc.sourceFileLookup')).toBeNull();
     });
   });
 });

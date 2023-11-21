@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
+import { Field } from 'react-final-form';
+import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { useField } from 'react-final-form';
 
 import { SourceFileLookup } from '../../SourceFileLookup';
 import { ContentField } from '../ContentField';
@@ -20,7 +21,7 @@ const ControlNumberField = ({
   marcType,
   action,
 }) => {
-  const { input, ...inputRest } = useField(name);
+  const intl = useIntl();
 
   const handleSourceFileSelection = useCallback(() => {
     // TODO: handle generation of HRID + source file prefix here (UIQM-576)
@@ -30,11 +31,14 @@ const ControlNumberField = ({
 
   return (
     <>
-      <ContentField
-        id={id}
-        input={input}
+      <Field
+        component={ContentField}
+        aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
+        name={name}
         disabled
-        {...inputRest}
+        data-testid={id}
+        id={id}
+        parse={v => v}
       />
       {canSelectSourceFile && (
         <SourceFileLookup

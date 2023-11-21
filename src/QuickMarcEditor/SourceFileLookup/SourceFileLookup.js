@@ -49,7 +49,6 @@ const SourceFileLookup = ({
   return (
     <>
       <Button
-        key="searchButton"
         buttonStyle="link"
         marginBottom0
         onClick={openModal}
