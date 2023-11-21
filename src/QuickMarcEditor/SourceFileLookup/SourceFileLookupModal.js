@@ -26,7 +26,7 @@ const propTypes = {
   onCancel: PropTypes.func.isRequired,
 };
 
-const AuthorityFileLookupModal = ({
+const SourceFileLookupModal = ({
   open,
   sourceFileOptions,
   onConfirm,
@@ -48,16 +48,14 @@ const AuthorityFileLookupModal = ({
     setSelectedSourceFile(e.target.value);
   }, [setSelectedSourceFile]);
 
-  const label = intl.formatMessage({ id: 'ui-quick-marc.authorityFileLookup' });
-
   const renderForm = useCallback(() => {
     return (
       <>
         <Row>
           <Col xs={12}>
             <Select
-              label={intl.formatMessage({ id: 'ui-quick-marc.authorityFileLookup.fieldLabel' })}
-              placeholder={intl.formatMessage({ id: 'ui-quick-marc.authorityFileLookup.placeholder' })}
+              label={intl.formatMessage({ id: 'ui-quick-marc.sourceFileLookupModal.fieldLabel' })}
+              placeholder={intl.formatMessage({ id: 'ui-quick-marc.sourceFileLookupModal.placeholder' })}
               onChange={onSourceFileChange}
               value={selectedSourceFile}
               dataOptions={sourceFileOptions}
@@ -97,7 +95,7 @@ const AuthorityFileLookupModal = ({
     <Modal
       open={open}
       size="small"
-      label={label}
+      label={intl.formatMessage({ id: 'ui-quick-marc.sourceFileLookupModal' })}
       onClose={onCancel}
     >
       {renderForm()}
@@ -105,6 +103,6 @@ const AuthorityFileLookupModal = ({
   );
 };
 
-AuthorityFileLookupModal.propTypes = propTypes;
+SourceFileLookupModal.propTypes = propTypes;
 
-export { AuthorityFileLookupModal };
+export { SourceFileLookupModal };

@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useField } from 'react-final-form';
 
-import { AuthorityFileLookup } from '../../AuthorityFileLookup';
+import { SourceFileLookup } from '../../SourceFileLookup';
 import { ContentField } from '../ContentField';
 import { MARC_TYPES } from '../../../common/constants';
 import { QUICK_MARC_ACTIONS } from '../../constants';
@@ -22,8 +22,8 @@ const ControlNumberField = ({
 }) => {
   const { input, ...inputRest } = useField(name);
 
-  const handleAuthorityFileSelection = useCallback(() => {
-
+  const handleSourceFileSelection = useCallback(() => {
+    // TODO: handle generation of HRID + source file prefix here (UIQM-576)
   }, []);
 
   const canSelectSourceFile = marcType === MARC_TYPES.AUTHORITY && action === QUICK_MARC_ACTIONS.CREATE;
@@ -37,8 +37,8 @@ const ControlNumberField = ({
         {...inputRest}
       />
       {canSelectSourceFile && (
-        <AuthorityFileLookup
-          onAuthorityFileSelect={handleAuthorityFileSelection}
+        <SourceFileLookup
+          onSourceFileSelect={handleSourceFileSelection}
         />
       )}
     </>

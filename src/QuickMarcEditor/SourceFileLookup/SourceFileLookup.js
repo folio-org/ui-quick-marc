@@ -8,15 +8,16 @@ import PropTypes from 'prop-types';
 
 import { useStripes } from '@folio/stripes/core';
 import { Button } from '@folio/stripes/components';
+
 import { useAuthoritySourceFiles } from '../../queries';
-import { AuthorityFileLookupModal } from './AuthorityFileLookupModal';
+import { SourceFileLookupModal } from './SourceFileLookupModal';
 
 const propTypes = {
-  onAuthorityFileSelect: PropTypes.func.isRequired,
+  onSourceFileSelect: PropTypes.func.isRequired,
 };
 
-const AuthorityFileLookup = ({
-  onAuthorityFileSelect,
+const SourceFileLookup = ({
+  onSourceFileSelect,
 }) => {
   const stripes = useStripes();
   const intl = useIntl();
@@ -35,18 +36,18 @@ const AuthorityFileLookup = ({
   const onConfirmModal = useCallback((sourceFileId) => {
     const selectedSourceFile = sourceFiles.find(sourceFile => sourceFile.id === sourceFileId);
 
-    onAuthorityFileSelect(selectedSourceFile);
+    onSourceFileSelect(selectedSourceFile);
     closeModal();
-  }, [onAuthorityFileSelect, closeModal, sourceFiles]);
+  }, [onSourceFileSelect, closeModal, sourceFiles]);
 
-  const label = intl.formatMessage({ id: 'ui-quick-marc.authorityFileLookup' });
+  const label = intl.formatMessage({ id: 'ui-quick-marc.sourceFileLookup' });
   const sourceFileOptions = useMemo(() => sourceFiles.map(sourceFile => ({
     label: sourceFile.name,
     value: sourceFile.id,
   })), [sourceFiles]);
 
   return (
-    <div>
+    <>
       <Button
         key="searchButton"
         buttonStyle="link"
@@ -55,16 +56,16 @@ const AuthorityFileLookup = ({
       >
         {label}
       </Button>
-      <AuthorityFileLookupModal
+      <SourceFileLookupModal
         open={isModalOpen}
         sourceFileOptions={sourceFileOptions}
         onConfirm={onConfirmModal}
         onCancel={onCancelModal}
       />
-    </div>
+    </>
   );
 };
 
-AuthorityFileLookup.propTypes = propTypes;
+SourceFileLookup.propTypes = propTypes;
 
-export { AuthorityFileLookup };
+export { SourceFileLookup };
