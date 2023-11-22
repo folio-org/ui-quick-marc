@@ -116,7 +116,7 @@
           "marc-records-editor.status.item.get",
           "marc-specifications.item.get"
         ],
-        "visible": false
+        "visible": true
       },
       {
         "permissionName": "ui-quick-marc.quick-marc-authorities-editor.all",

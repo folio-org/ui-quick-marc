@@ -59,6 +59,7 @@ export const isLastRecord = recordRow => {
   );
 };
 
+export const isControlNumberRow = recordRow => recordRow.tag === '001';
 export const isFixedFieldRow = recordRow => recordRow.tag === '008';
 export const isMaterialCharsRecord = recordRow => recordRow.tag === '006';
 export const isPhysDescriptionRecord = recordRow => recordRow.tag === '007';
@@ -67,7 +68,8 @@ export const isContentRow = (recordRow, marcType) => {
   return !(isLocationRow(recordRow, marcType)
     || isFixedFieldRow(recordRow)
     || isMaterialCharsRecord(recordRow)
-    || isPhysDescriptionRecord(recordRow));
+    || isPhysDescriptionRecord(recordRow)
+    || isControlNumberRow(recordRow));
 };
 
 export const getContentSubfieldValue = (content = '') => {
