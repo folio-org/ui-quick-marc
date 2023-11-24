@@ -394,5 +394,9 @@
     "record.fixedField.tip.Film inspection date": "Film inspection date",
     "record.fixedField.tip.Deterioration stage": "Deterioration stage",
     "record.fixedField.tip.Kind of color stock or print": "Kind of color stock or print",
-    "record.fixedField.tip.Refined categories of color": "Refined categories of color"
+    "record.fixedField.tip.Refined categories of color": "Refined categories of color",
+    "sourceFileLookup": "Authority file look-up",
+    "sourceFileLookupModal": "Select authority file",
+    "sourceFileLookupModal.fieldLabel": "Authority file name",
+    "sourceFileLookupModal.placeholder": "Seleccione el archivo de autoridad"
 }

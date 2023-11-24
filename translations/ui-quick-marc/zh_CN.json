@@ -394,5 +394,9 @@
     "record.fixedField.tip.Film inspection date": "胶片检验日期",
     "record.fixedField.tip.Deterioration stage": "劣化阶段",
     "record.fixedField.tip.Kind of color stock or print": "彩色纸或印刷品种类",
-    "record.fixedField.tip.Refined categories of color": "细化颜色类别"
+    "record.fixedField.tip.Refined categories of color": "细化颜色类别",
+    "sourceFileLookup": "Authority file look-up",
+    "sourceFileLookupModal": "Select authority file",
+    "sourceFileLookupModal.fieldLabel": "Authority file name",
+    "sourceFileLookupModal.placeholder": "Select authority file"
 }
