@@ -394,5 +394,9 @@
     "record.fixedField.tip.Film inspection date": "Data da inspeção do filme",
     "record.fixedField.tip.Deterioration stage": "Estágio de deterioração",
     "record.fixedField.tip.Kind of color stock or print": "Tipo de estoque de cores ou impressão",
-    "record.fixedField.tip.Refined categories of color": "Categorias refinadas de cores"
+    "record.fixedField.tip.Refined categories of color": "Categorias refinadas de cores",
+    "sourceFileLookup": "Consulta de arquivo de autoridade",
+    "sourceFileLookupModal": "Selecione o arquivo de autoridade",
+    "sourceFileLookupModal.fieldLabel": "Nome do arquivo de autoridade",
+    "sourceFileLookupModal.placeholder": "Selecione o arquivo de autoridade"
 }
