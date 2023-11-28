@@ -6,6 +6,7 @@
 * [UIQM-543](https://issues.folio.org/browse/UIQM-543) Remove eslint deps that are already listed in eslint-config-stripes.
 * [UIQM-573](https://issues.folio.org/browse/UIQM-573) Edit MARC authority | Allow user to Add/Edit 010 $a when linking is based on 001.
 * [UIQM-574](https://issues.folio.org/browse/UIQM-574) Added authority source file selection button and modal to Authority Create view.
+* [UIQM-591](https://issues.folio.org/browse/UIQM-591) Show permission `quickMARC: Create a new MARC authority record`. Don't load locations when MARC type is not Holdings.
 
 ## [7.0.4](https://github.com/folio-org/ui-quick-marc/tree/v7.0.4) (2023-11-09)
 

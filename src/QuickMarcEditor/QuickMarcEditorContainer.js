@@ -140,7 +140,10 @@ const QuickMarcEditorContainer = ({
         ...headers,
       });
 
-    const locationsPromise = mutator.locations.GET(headers);
+    const locationsPromise = marcType === MARC_TYPES.HOLDINGS
+      ? mutator.locations.GET(headers)
+      : Promise.resolve();
+
     // must be with the central tenant id when user derives shared record
     const linkingRulesPromise = mutator.linkingRules.GET(headers);
 
