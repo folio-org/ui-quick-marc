@@ -125,7 +125,8 @@
           "marc-records-editor.item.get",
           "marc-records-editor.item.put",
           "inventory-storage.locations.collection.get",
-          "marc-specifications.item.get"
+          "marc-specifications.item.get",
+          "search.authorities.collection.get"
         ],
         "visible": true
       },
