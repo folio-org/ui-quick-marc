@@ -160,10 +160,6 @@ describe('Given Quick Marc Editor Container', () => {
 
   describe('when the marc type is authority', () => {
     it('should make a request to get the number of links', async () => {
-      useAuthorityLinksCount.mockClear().mockReturnValue({
-        fetchLinksCount: mockFetchLinksCount,
-      });
-
       await act(async () => {
         await renderQuickMarcEditorContainer({
           mutator,
@@ -174,7 +170,7 @@ describe('Given Quick Marc Editor Container', () => {
         });
       });
 
-      expect(mockFetchLinksCount).toHaveBeenCalledWith([match.params.externalId]);
+      expect(useAuthorityLinksCount).toHaveBeenCalledWith({ id: match.params.externalId });
     });
   });
 

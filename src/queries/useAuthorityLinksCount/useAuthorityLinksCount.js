@@ -17,6 +17,7 @@ const useAuthorityLinksCount = ({ id, tenantId } = {}) => {
     () => ky.get('search/authorities', { searchParams }).json(),
     {
       keepPreviousData: true,
+      enabled: Boolean(id),
     },
   );
 
