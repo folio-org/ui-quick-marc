@@ -24,8 +24,6 @@ import buildStripes from '../../test/jest/__mock__/stripesCore.mock';
 import { useAuthorityLinksCount } from '../queries';
 import { applyCentralTenantInHeaders } from './utils';
 
-const mockFetchLinksCount = jest.fn().mockResolvedValue();
-
 const match = {
   path: '/marc-authorities/quick-marc/edit-authority/:externalId',
   url: '/marc-authorities/quick-marc/edit-authority/external-id',

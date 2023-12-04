@@ -1,11 +1,12 @@
 import { useQuery } from 'react-query';
 
-import { useNamespace } from '@folio/stripes/core';
+import {
+  useNamespace,
+  useOkapiKy,
+} from '@folio/stripes/core';
 
-import { useTenantKy } from '../../temp';
-
-const useAuthorityLinksCount = ({ id, tenantId } = {}) => {
-  const ky = useTenantKy({ tenantId });
+const useAuthorityLinksCount = ({ id } = {}) => {
+  const ky = useOkapiKy();
   const [namespace] = useNamespace();
 
   const searchParams = {
