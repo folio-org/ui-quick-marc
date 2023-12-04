@@ -18,6 +18,7 @@
   "bibliographic-record.edit.title": "Edit {shared, select, true {shared} false {local} other {}} MARC record - {title}",
   "bibliographic-record.derive.title": "Derive a new {shared, select, true {shared} false {local} other {}} MARC bib record",
   "authority-record.edit.title": "Edit {shared, select, true {shared} false {local} other {}} MARC authority record - {title}",
+  "authority-record.create.title": "Create a new {shared, select, true {shared} false {local} other {}} MARC Authority record",
   "holdings-record.edit.title": "Edit MARC holdings - Location: {location} - [{callNumber}]",
 
   "record.status": "Status:",
