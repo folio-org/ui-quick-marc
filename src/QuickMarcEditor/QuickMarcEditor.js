@@ -129,13 +129,7 @@ const QuickMarcEditor = ({
   const type = leader?.content?.[6] || '';
   const subtype = leader?.content?.[7] || '';
 
-  const saveFormDisabled = useMemo(() => {
-    if (submitting) {
-      return true;
-    }
-
-    return pristine;
-  }, [submitting, pristine]);
+  const saveFormDisabled = submitting ? true : pristine;
 
   const redirectToVersion = useCallback((updatedVersion) => {
     const searchParams = new URLSearchParams(location.search);
