@@ -16,6 +16,7 @@
       "marc-records-editor": "5.0",
       "permissions": "5.6",
       "marc-specifications": "1.0",
+      "authority-source-files": "2.0",
       "instance-authority-links": "2.1"
     },
     "stripesDeps": [
