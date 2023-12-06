@@ -579,14 +579,24 @@ export const validateLocationSubfield = (field, locations) => {
   return !!locations.find(location => location.code === locationValue);
 };
 
+const checkIsEmptyContent = (field) => {
+  if (typeof field.content === 'string') {
+    return compact(field.content.split(' ')).every(content => /^\$[a-z0-9]?$/.test(content));
+  }
+
+  return false;
+};
+
 export const validateRecordTag = marcRecords => {
-  if (marcRecords.some(({ tag }) => !tag || tag.length !== 3)) {
+  const nonEmptyRecords = marcRecords.filter(field => !checkIsEmptyContent(field));
+
+  if (nonEmptyRecords.some(({ tag }) => !tag || tag.length !== 3)) {
     return <FormattedMessage id="ui-quick-marc.record.error.tag.length" />;
   }
 
   const marcRecordsWithoutLDR = marcRecords.filter(record => record.tag !== LEADER_TAG);
 
-  if (marcRecordsWithoutLDR.some(({ tag }) => !tag.match(/\d{3}/))) {
+  if (marcRecordsWithoutLDR.some(({ tag }) => !tag.match(/^\d{0,3}$/))) {
     return <FormattedMessage id="ui-quick-marc.record.error.tag.nonDigits" />;
   }
 
@@ -1098,14 +1108,6 @@ export const removeFieldsForDerive = (formValues) => {
     ...omit(formValues, 'updateInfo'),
     records: filteredRecords,
   };
-};
-
-const checkIsEmptyContent = (field) => {
-  if (typeof field.content === 'string') {
-    return compact(field.content.split(' ')).every(content => /^\$[a-z0-9]?$/.test(content));
-  }
-
-  return false;
 };
 
 export const autopopulateIndicators = (formValues) => {
