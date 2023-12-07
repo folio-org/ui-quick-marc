@@ -85,7 +85,6 @@ const QuickMarcEditorContainer = ({
   const [marcRecord, setMarcRecord] = useState();
   const [locations, setLocations] = useState();
   const [isLoading, setIsLoading] = useState(true);
-  const [linksCount, setLinksCount] = useState(0);
   const [fixedFieldSpec, setFixedFieldSpec] = useState();
 
   const searchParams = new URLSearchParams(location.search);
@@ -96,7 +95,7 @@ const QuickMarcEditorContainer = ({
     && action !== QUICK_MARC_ACTIONS.CREATE;
 
   const showCallout = useShowCallout();
-  const { fetchLinksCount } = useAuthorityLinksCount();
+  const { linksCount } = useAuthorityLinksCount({ id: marcType === MARC_TYPES.AUTHORITY && externalId });
 
   const closeEditor = useCallback((id) => {
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
@@ -144,10 +143,6 @@ const QuickMarcEditorContainer = ({
     // must be with the central tenant id when user derives shared record
     const linkingRulesPromise = mutator.linkingRules.GET(headers);
 
-    const linksCountPromise = marcType === MARC_TYPES.AUTHORITY
-      ? fetchLinksCount([externalId])
-      : Promise.resolve();
-
     const fixedFieldSpecPromise = mutator.fixedFieldSpec.GET({
       path: `${MARC_SPEC_API}/${marcType}/008`,
       ...headers,
@@ -157,7 +152,6 @@ const QuickMarcEditorContainer = ({
       instancePromise,
       marcRecordPromise,
       locationsPromise,
-      linksCountPromise,
       linkingRulesPromise,
       fixedFieldSpecPromise,
     ])
@@ -165,14 +159,9 @@ const QuickMarcEditorContainer = ({
         instanceResponse,
         marcRecordResponse,
         locationsResponse,
-        linksCountResponse,
         linkingRulesResponse,
         fixedFieldSpecResponse,
       ]) => {
-        if (marcType === MARC_TYPES.AUTHORITY) {
-          setLinksCount(linksCountResponse.links[0].totalLinks);
-        }
-
         if (action !== QUICK_MARC_ACTIONS.CREATE) {
           searchParams.set('relatedRecordVersion', instanceResponse._version);
 
@@ -208,7 +197,6 @@ const QuickMarcEditorContainer = ({
     externalId,
     history,
     marcType,
-    fetchLinksCount,
     centralTenantId,
     token,
     locale,
