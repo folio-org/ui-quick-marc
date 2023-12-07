@@ -311,7 +311,7 @@ const QuickMarcEditor = ({
       const headingContent = currentHeading?.content || initialHeading?.content;
 
       formattedMessageValues = {
-        ...formattedMessageValues,
+        shared: isConsortiaEnv ? checkIfUserInCentralTenant(stripes) : null,
         title: getContentSubfieldValue(headingContent).$a?.[0],
       };
     } else if (marcType === MARC_TYPES.BIB && action !== QUICK_MARC_ACTIONS.EDIT) {
