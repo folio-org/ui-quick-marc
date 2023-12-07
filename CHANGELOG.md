@@ -9,8 +9,10 @@
 * [UIQM-591](https://issues.folio.org/browse/UIQM-591) Show permission `quickMARC: Create a new MARC authority record`. Don't load locations when MARC type is not Holdings.
 * [UIQM-594](https://issues.folio.org/browse/UIQM-594) *BREAKING* Add authority-source-files interface.
 * [UIQM-522](https://issues.folio.org/browse/UIQM-522) Create/Derive a new MARC bib record & Create a MARC holdings | Default state of Save & close button should be disabled.
+* [UIQM-534](https://issues.folio.org/browse/UIQM-534) Remove fields that have no MARC tag and no subfield value.  
+* [UIQM-588](https://issues.folio.org/browse/UIQM-588) *BREAKING* Use Authority search to get Authority linked records count.
 * [UIQM-381](https://issues.folio.org/browse/UIQM-381) Create Orig Authority Record: Populate new record with default Leader values.
-
+* 
 ## [7.0.4](https://github.com/folio-org/ui-quick-marc/tree/v7.0.4) (2023-11-09)
 
 * [UIQM-582](https://issues.folio.org/browse/UIQM-582) Show correct message if record not found.

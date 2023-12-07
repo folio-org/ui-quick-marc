@@ -4,16 +4,11 @@ import {
 } from 'react-query';
 import { renderHook } from '@folio/jest-config-stripes/testing-library/react';
 
-import '../../../test/jest/__mock__';
-
 import { useOkapiKy } from '@folio/stripes/core';
 
 import useAuthorityLinksCount from './useAuthorityLinksCount';
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useLocation: jest.fn(),
-}));
+import '../../../test/jest/__mock__';
 
 const queryClient = new QueryClient();
 
@@ -23,22 +18,30 @@ const wrapper = ({ children }) => (
   </QueryClientProvider>
 );
 
-const mockPost = jest.fn().mockReturnValue({
-  json: jest.fn().mockResolvedValue({ links: [] }),
+const mockGet = jest.fn().mockReturnValue({
+  json: jest.fn().mockResolvedValue({ authorities: [{ numberOfTitles: 2 }] }),
 });
 
 describe('Given useAuthorityLinksCount', () => {
   beforeEach(() => {
     useOkapiKy.mockClear().mockReturnValue({
-      post: mockPost,
+      get: mockGet,
     });
   });
 
-  it('should fetch links count', async () => {
-    const { result } = renderHook(() => useAuthorityLinksCount(), { wrapper });
+  it('should fetch authorities', async () => {
+    renderHook(() => useAuthorityLinksCount({ id: 'fakeId' }), { wrapper });
 
-    await result.current.fetchLinksCount(['fakeId']);
+    expect(mockGet).toHaveBeenCalledWith('search/authorities', {
+      searchParams: {
+        query: '(id==fakeId and authRefType==("Authorized"))',
+      },
+    });
+  });
 
-    expect(mockPost).toHaveBeenCalledWith('links/authorities/bulk/count', { json: { ids: ['fakeId'] } });
+  it('should return links count', async () => {
+    const { result } = renderHook(() => useAuthorityLinksCount({ id: 'fakeId' }), { wrapper });
+
+    expect(result.current.linksCount).toEqual(2);
   });
 });
