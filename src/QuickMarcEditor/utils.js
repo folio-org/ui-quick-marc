@@ -37,6 +37,7 @@ import {
   CREATE_AUTHORITY_RECORD_DEFAULT_FIELD_TAGS,
   UNCONTROLLED_ALPHA,
   UNCONTROLLED_NUMBER,
+  TAG_LENGTH,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import { SUBFIELD_TYPES } from './QuickMarcEditorRows/BytesField';
@@ -590,13 +591,15 @@ const checkIsEmptyContent = (field) => {
 export const validateRecordTag = marcRecords => {
   const nonEmptyRecords = marcRecords.filter(field => !checkIsEmptyContent(field));
 
-  if (nonEmptyRecords.some(({ tag }) => !tag || tag.length !== 3)) {
+  if (nonEmptyRecords.some(({ tag }) => !tag || tag.length !== TAG_LENGTH)) {
     return <FormattedMessage id="ui-quick-marc.record.error.tag.length" />;
   }
 
   const marcRecordsWithoutLDR = marcRecords.filter(record => record.tag !== LEADER_TAG);
 
-  if (marcRecordsWithoutLDR.some(({ tag }) => !tag.match(/^\d{0,3}$/))) {
+  const tagDigitsRegex = new RegExp(`^\\d{0,${TAG_LENGTH}}$`);
+
+  if (marcRecordsWithoutLDR.some(({ tag }) => !tag.match(tagDigitsRegex))) {
     return <FormattedMessage id="ui-quick-marc.record.error.tag.nonDigits" />;
   }
 
