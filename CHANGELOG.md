@@ -7,6 +7,8 @@
 * [UIQM-573](https://issues.folio.org/browse/UIQM-573) Edit MARC authority | Allow user to Add/Edit 010 $a when linking is based on 001.
 * [UIQM-574](https://issues.folio.org/browse/UIQM-574) Added authority source file selection button and modal to Authority Create view.
 * [UIQM-591](https://issues.folio.org/browse/UIQM-591) Show permission `quickMARC: Create a new MARC authority record`. Don't load locations when MARC type is not Holdings.
+* [UIQM-594](https://issues.folio.org/browse/UIQM-594) *BREAKING* Add authority-source-files interface.
+* [UIQM-522](https://issues.folio.org/browse/UIQM-522) Create/Derive a new MARC bib record & Create a MARC holdings | Default state of Save & close button should be disabled.
 * [UIQM-381](https://issues.folio.org/browse/UIQM-381) Create Orig Authority Record: Populate new record with default Leader values.
 
 ## [7.0.4](https://github.com/folio-org/ui-quick-marc/tree/v7.0.4) (2023-11-09)
@@ -85,6 +87,7 @@
 * [UIQM-564](https://issues.folio.org/browse/UIQM-564) Hide permission `quickMARC: Create a new MARC authority record
 * [UIQM-431](https://issues.folio.org/browse/UIQM-431) Marc record fixed field 008 with proper order.
 * [UIQM-568](https://issues.folio.org/browse/UIQM-568) Remove second call to links-suggestion endpoint. Now only need to send one call to member tenant.
+* [UIQM-590](https://issues.folio.org/browse/UIQM-590) Renaming labels and hints / Data 1-2 instead Start-End Date
 
 ## [6.0.2](https://github.com/folio-org/ui-quick-marc/tree/v6.0.2) (2023-03-30)
 
