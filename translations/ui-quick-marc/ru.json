@@ -17,8 +17,8 @@
     "record.fixedField.FMus": "FMus",
     "record.fixedField.LTxt": "LTxt",
     "record.fixedField.DtSt": "DtSt",
-    "record.fixedField.Date1": "Start date",
-    "record.fixedField.Date2": "End date",
+    "record.fixedField.Date1": "Date 1",
+    "record.fixedField.Date2": "Date 2",
     "record.fixedField.Ills": "Ills",
     "record.fixedField.Cont": "Cont",
     "record.fixedField.Conf": "Conf",
@@ -275,8 +275,8 @@
     "records.autoLink.notLinkedFields.multiple": "Field <b>{fieldTags}</b>{count, plural, one {} =2 { and <b>{lastFieldTag}</b>} other {, and <b>{lastFieldTag}</b>}} must be set manually by selecting the link icon. There are multiple authority records that can be matched to this bibliographic field.",
     "record.fixedField.tip.Date entered on file": "Date entered on file",
     "record.fixedField.tip.Type of date/Publication status": "Type of date/Publication status",
-    "record.fixedField.tip.Start date": "Start date",
-    "record.fixedField.tip.End date": "End date",
+    "record.fixedField.tip.Start date": "Date 1",
+    "record.fixedField.tip.End date": "Date 2",
     "record.fixedField.tip.Place of publication, production, or execution": "Place of publication, production, or execution",
     "record.fixedField.tip.Illustrations": "Illustrations",
     "record.fixedField.tip.Target audience": "Target audience",
@@ -398,5 +398,6 @@
     "sourceFileLookup": "Authority file look-up",
     "sourceFileLookupModal": "Select authority file",
     "sourceFileLookupModal.fieldLabel": "Authority file name",
-    "sourceFileLookupModal.placeholder": "Select authority file"
+    "sourceFileLookupModal.placeholder": "Select authority file",
+    "authority-record.create.title": "Create a new {shared, select, true {shared} false {local} other {}} MARC Authority record"
 }

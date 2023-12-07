@@ -398,5 +398,6 @@
     "sourceFileLookup": "Consulta de arquivo de autoridade",
     "sourceFileLookupModal": "Selecione o arquivo de autoridade",
     "sourceFileLookupModal.fieldLabel": "Nome do arquivo de autoridade",
-    "sourceFileLookupModal.placeholder": "Selecione o arquivo de autoridade"
+    "sourceFileLookupModal.placeholder": "Selecione o arquivo de autoridade",
+    "authority-record.create.title": "Create a new {shared, select, true {shared} false {local} other {}} MARC Authority record"
 }
