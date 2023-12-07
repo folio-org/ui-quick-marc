@@ -1302,10 +1302,25 @@ describe('QuickMarcEditor utils', () => {
       expect(utils.validateRecordTag(records)).not.toBeDefined();
     });
 
+    it('should not return error message when tag is valid (invalid length) and field content is empty', () => {
+      const records = [
+        {
+          tag: '10',
+          content: '$a ',
+        },
+        {
+          tag: '245',
+        },
+      ];
+
+      expect(utils.validateRecordTag(records)).not.toBeDefined();
+    });
+
     it('should return error message when tag is not valid (invalid length)', () => {
       const records = [
         {
           tag: '10',
+          content: '$a test',
         },
         {
           tag: '245',
