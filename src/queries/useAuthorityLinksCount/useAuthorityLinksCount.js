@@ -1,15 +1,29 @@
-import { useMutation } from 'react-query';
-import { useTenantKy } from '../../temp';
+import { useQuery } from 'react-query';
 
-const useAuthorityLinksCount = ({ tenantId } = {}) => {
-  const ky = useTenantKy({ tenantId });
+import {
+  useNamespace,
+  useOkapiKy,
+} from '@folio/stripes/core';
 
-  const { mutateAsync, isLoading } = useMutation({
-    mutationFn: ids => ky.post('links/authorities/bulk/count', { json: { ids } }).json(),
-  });
+const useAuthorityLinksCount = ({ id } = {}) => {
+  const ky = useOkapiKy();
+  const [namespace] = useNamespace();
+
+  const searchParams = {
+    query: `(id==${id} and authRefType==("Authorized"))`, // only Authorized records have links counts, so we need to get them
+  };
+
+  const { data = {}, isLoading } = useQuery(
+    [namespace, 'authority', id],
+    () => ky.get('search/authorities', { searchParams }).json(),
+    {
+      keepPreviousData: true,
+      enabled: Boolean(id),
+    },
+  );
 
   return {
-    fetchLinksCount: mutateAsync,
+    linksCount: data.authorities?.[0]?.numberOfTitles || 0,
     isLoading,
   };
 };

@@ -15,6 +15,7 @@
       "inventory": "13.0",
       "marc-records-editor": "5.0",
       "permissions": "5.6",
+      "search": "1.2",
       "marc-specifications": "1.0",
       "authority-source-files": "2.0",
       "instance-authority-links": "2.1"
@@ -126,7 +127,8 @@
           "marc-records-editor.item.get",
           "marc-records-editor.item.put",
           "inventory-storage.locations.collection.get",
-          "marc-specifications.item.get"
+          "marc-specifications.item.get",
+          "search.authorities.collection.get"
         ],
         "visible": true
       },

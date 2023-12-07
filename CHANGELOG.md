@@ -10,6 +10,7 @@
 * [UIQM-594](https://issues.folio.org/browse/UIQM-594) *BREAKING* Add authority-source-files interface.
 * [UIQM-522](https://issues.folio.org/browse/UIQM-522) Create/Derive a new MARC bib record & Create a MARC holdings | Default state of Save & close button should be disabled.
 * [UIQM-534](https://issues.folio.org/browse/UIQM-534) Remove fields that have no MARC tag and no subfield value.  
+* [UIQM-588](https://issues.folio.org/browse/UIQM-588) *BREAKING* Use Authority search to get Authority linked records count.
 
 ## [7.0.4](https://github.com/folio-org/ui-quick-marc/tree/v7.0.4) (2023-11-09)
 
