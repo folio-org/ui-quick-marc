@@ -1467,13 +1467,32 @@ describe('QuickMarcEditor utils', () => {
       expect(utils.validateSubfield(records)).not.toBeDefined();
     });
 
+    it('should not return error message when tag is present and content is empty', () => {
+      const records = [
+        {
+          tag: '100',
+          content: '',
+          id: 'id1',
+        },
+        {
+          indicators: ['\\', '7'],
+          content: 'test',
+          id: 'id2',
+        },
+      ];
+
+      expect(utils.validateSubfield(records)).not.toBeDefined();
+    });
+
     it('should return error message when content is empty', () => {
       const records = [
         {
+          tag: '100',
           indicators: ['\\', '\\'],
           id: 'id1',
         },
         {
+          tag: '100',
           indicators: [undefined, undefined],
           id: 'id2',
         },
