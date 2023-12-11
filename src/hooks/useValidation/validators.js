@@ -190,11 +190,12 @@ export const validateTagChanged = (context, rule) => {
     return undefined;
   }
 
-  const { tag: initialTag } = initialValues.records.find(field => field.tag.match(rule.tag));
-  const { tag: tagToSave } = marcRecords.find(field => field.tag.match(rule.tag));
+  const recordWithChangedTag = initialValues.records
+    .filter(field => field.tag.match(rule.tag))
+    .find(field => marcRecords.find(_field => _field.id === field.id && _field.tag !== field.tag));
 
-  if (initialTag !== tagToSave) {
-    return rule.message(initialTag);
+  if (recordWithChangedTag) {
+    return rule.message(recordWithChangedTag.tag);
   }
 
   return undefined;
@@ -256,6 +257,11 @@ export const validateSubfieldIsControlled = ({ marcRecords, linkingRules }, rule
       const contentSubfieldValue = getContentSubfieldValue(linkedField.subfieldGroups[subfield]);
       const linkingRule = linkingRules
         .find(_linkingRule => _linkingRule.id === linkedField.linkDetails?.linkingRuleId);
+
+      if (!linkingRule) {
+        return false;
+      }
+
       const controlledSubfields = getControlledSubfields(linkingRule);
 
       return controlledSubfields.some(authSubfield => {

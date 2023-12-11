@@ -127,7 +127,7 @@ const BASE_BIB_VALIDATORS = [
       if (uniqueTags.length === 1) {
         return (
           <FormattedMessage
-            id="ui-quick-marc.record.error.fieldCantBeSaved"
+            id="ui-quick-marc.record.error.fieldIsControlled"
             values={{
               count: 1,
               fieldTags: `MARC ${uniqueTags[0]}`,
@@ -138,7 +138,7 @@ const BASE_BIB_VALIDATORS = [
 
       return (
         <FormattedMessage
-          id="ui-quick-marc.record.error.fieldsCantBeSaved"
+          id="ui-quick-marc.record.error.fieldsAreControlled"
           values={{
             count: uniqueTags.length,
             fieldTags: uniqueTags.slice(0, -1).map(tag => `MARC ${tag}`).join(', '),

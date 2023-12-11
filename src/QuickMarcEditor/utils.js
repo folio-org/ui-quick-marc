@@ -541,7 +541,7 @@ export const recordHasLinks = (fields) => fields.some(isFieldLinked);
 
 export const getControlledSubfields = (linkingRule) => {
   // include transformed subfields into list of controlled subfields
-  return linkingRule.authoritySubfields.map(subfield => {
+  return linkingRule?.authoritySubfields?.map(subfield => {
     if (!linkingRule.subfieldModifications) {
       return subfield;
     }
