@@ -659,8 +659,11 @@ export const isFieldLinked = (field) => Boolean(field.linkDetails?.linkingRuleId
 export const recordHasLinks = (fields) => fields.some(isFieldLinked);
 
 export const validateSubfield = (marcRecords) => {
-  const marcRecordsWithSubfields = marcRecords.filter(marcRecord => marcRecord.indicators);
-  const isEmptySubfield = marcRecordsWithSubfields.some(marcRecord => {
+  const recordsToValidate = marcRecords
+    .filter(marcRecord => Boolean(marcRecord.tag))
+    .filter(marcRecord => marcRecord.indicators);
+
+  const isEmptySubfield = recordsToValidate.some(marcRecord => {
     return !marcRecord.content && checkIsInitialRecord(marcRecord);
   });
 
