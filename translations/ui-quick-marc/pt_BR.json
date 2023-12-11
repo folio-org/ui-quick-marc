@@ -17,8 +17,8 @@
     "record.fixedField.FMus": "FMus",
     "record.fixedField.LTxt": "LTxt",
     "record.fixedField.DtSt": "DtSt",
-    "record.fixedField.Date1": "Data de início",
-    "record.fixedField.Date2": "Data de término",
+    "record.fixedField.Date1": "Data 1",
+    "record.fixedField.Date2": "Data 2",
     "record.fixedField.Ills": "Ills",
     "record.fixedField.Cont": "Cont",
     "record.fixedField.Conf": "Conf",
@@ -275,8 +275,8 @@
     "records.autoLink.notLinkedFields.multiple": "Campo <b> {fieldTags} </b> {count, plural, one {} =2 { e <b> {lastFieldTag} </b> } other { , e <b> {lastFieldTag} </b> }} deve ser definido manualmente selecionando o ícone de link. Existem vários registros de autoridade que podem corresponder a este campo bibliográfico.",
     "record.fixedField.tip.Date entered on file": "Data inserida no arquivo",
     "record.fixedField.tip.Type of date/Publication status": "Tipo de data/status de publicação",
-    "record.fixedField.tip.Start date": "Data de início",
-    "record.fixedField.tip.End date": "Data final",
+    "record.fixedField.tip.Start date": "Data 1",
+    "record.fixedField.tip.End date": "Data 2",
     "record.fixedField.tip.Place of publication, production, or execution": "Local de publicação, produção ou execução",
     "record.fixedField.tip.Illustrations": "Ilustrações",
     "record.fixedField.tip.Target audience": "Público-alvo",
@@ -399,5 +399,5 @@
     "sourceFileLookupModal": "Selecione o arquivo de autoridade",
     "sourceFileLookupModal.fieldLabel": "Nome do arquivo de autoridade",
     "sourceFileLookupModal.placeholder": "Selecione o arquivo de autoridade",
-    "authority-record.create.title": "Create a new {shared, select, true {shared} false {local} other {}} MARC Authority record"
+    "authority-record.create.title": "Criar um novo registro de autoridade MARC {shared, select, true {compartilhado} false {local} other {}}"
 }
