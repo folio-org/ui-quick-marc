@@ -1,6 +1,6 @@
 # Change history for ui-quick-marc
 
-## [7.0.5] (IN PROGRESS)
+## [7.0.5](https://github.com/folio-org/ui-quick-marc/tree/v7.0.5) (2023-12-11)
 
 * [UIQM-588](https://issues.folio.org/browse/UIQM-588) Use Authority search to get Authority linked records count.
 
