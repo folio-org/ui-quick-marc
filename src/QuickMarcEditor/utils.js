@@ -38,6 +38,7 @@ import {
   UNCONTROLLED_ALPHA,
   UNCONTROLLED_NUMBER,
   TAG_LENGTH,
+  AUTHORITY_FIXED_FIELD_DEFAULT_TYPE,
 } from './constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
 import { SUBFIELD_TYPES } from './QuickMarcEditorRows/BytesField';
@@ -253,10 +254,10 @@ const getCreateMarcRecordDefaultFields = (contentMap, indicatorMap, defaultTags)
   });
 };
 
-const getCreateBibMarcRecordDefaultFields = (instanceRecord) => {
+const getCreateBibMarcRecordDefaultFields = (instanceRecord, fixedFieldSpec) => {
   const contentMap = {
     '001': instanceRecord.hrid,
-    '008': fillEmptyFixedFieldValues(MARC_TYPES.BIB, BIB_FIXED_FIELD_DEFAULT_TYPE, BIB_FIXED_FIELD_DEFAULT_BLVL),
+    '008': fillEmptyFixedFieldValues(MARC_TYPES.BIB, fixedFieldSpec, BIB_FIXED_FIELD_DEFAULT_TYPE, BIB_FIXED_FIELD_DEFAULT_BLVL),
     '245': '$a ',
     '999': '',
   };
@@ -283,16 +284,14 @@ const getCreateHoldingsMarcRecordDefaultFields = (instanceRecord) => {
   return getCreateMarcRecordDefaultFields(contentMap, indicatorMap, CREATE_HOLDINGS_RECORD_DEFAULT_FIELD_TAGS);
 };
 
-const getCreateAuthorityMarcRecordDefaultFields = (instanceRecord) => {
+const getCreateAuthorityMarcRecordDefaultFields = (instanceRecord, fixedFieldSpec) => {
   const contentMap = {
     '001': instanceRecord.hrid,
-    '008': fillEmptyFixedFieldValues(MARC_TYPES.AUTHORITY),
-    '100': '$a ',
+    '008': fillEmptyFixedFieldValues(MARC_TYPES.AUTHORITY, fixedFieldSpec, AUTHORITY_FIXED_FIELD_DEFAULT_TYPE),
     '999': '',
   };
 
   const indicatorMap = {
-    '100': ['\\', '\\'],
     '999': ['f', 'f'],
   };
 
@@ -318,7 +317,7 @@ export const getCreateHoldingsMarcRecordResponse = (instanceResponse) => {
   };
 };
 
-export const getCreateBibMarcRecordResponse = (instanceResponse) => {
+export const getCreateBibMarcRecordResponse = (instanceResponse, fixedFieldSpec) => {
   const instanceId = '00000000-0000-0000-0000-000000000000'; // For create we need to send any UUID
 
   return {
@@ -331,13 +330,13 @@ export const getCreateBibMarcRecordResponse = (instanceResponse) => {
         content: CREATE_BIB_RECORD_DEFAULT_LEADER_VALUE,
         id: LEADER_TAG,
       },
-      ...getCreateBibMarcRecordDefaultFields(instanceResponse),
+      ...getCreateBibMarcRecordDefaultFields(instanceResponse, fixedFieldSpec),
     ],
     parsedRecordDtoId: instanceId,
   };
 };
 
-export const getCreateAuthorityMarcRecordResponse = (instanceResponse) => {
+export const getCreateAuthorityMarcRecordResponse = (instanceResponse, fixedFieldSpec) => {
   const instanceId = '00000000-0000-0000-0000-000000000000'; // For create we need to send any UUID
 
   return {
@@ -350,7 +349,7 @@ export const getCreateAuthorityMarcRecordResponse = (instanceResponse) => {
         content: CREATE_AUTHORITY_RECORD_DEFAULT_LEADER_VALUE,
         id: LEADER_TAG,
       },
-      ...getCreateAuthorityMarcRecordDefaultFields(instanceResponse),
+      ...getCreateAuthorityMarcRecordDefaultFields(instanceResponse, fixedFieldSpec),
     ],
     parsedRecordDtoId: instanceId,
   };
@@ -1178,7 +1177,7 @@ export const autopopulatePhysDescriptionField = (formValues) => {
   };
 };
 
-export const autopopulateFixedField = (formValues, marcType, marcSpec) => {
+export const autopopulateFixedField = (formValues, marcType, fixedFieldSpec) => {
   const { records } = formValues;
 
   const leader = records.find(field => field.tag === LEADER_TAG);
@@ -1194,7 +1193,7 @@ export const autopopulateFixedField = (formValues, marcType, marcSpec) => {
 
       return {
         ...field,
-        content: fillEmptyFixedFieldValues(marcType, marcSpec, type, blvl, field),
+        content: fillEmptyFixedFieldValues(marcType, fixedFieldSpec, type, blvl, field),
       };
     }),
   };
@@ -1500,10 +1499,10 @@ const addLeaderFieldAndIdToRecords = (marcRecordResponse) => ({
   ],
 });
 
-export const dehydrateMarcRecordResponse = (marcRecordResponse, marcType, marcSpec) => (
+export const dehydrateMarcRecordResponse = (marcRecordResponse, marcType, fixedFieldSpec) => (
   flow(
     addLeaderFieldAndIdToRecords,
-    marcRecord => autopopulateFixedField(marcRecord, marcType, marcSpec),
+    marcRecord => autopopulateFixedField(marcRecord, marcType, fixedFieldSpec),
     autopopulatePhysDescriptionField,
     autopopulateMaterialCharsField,
   )(marcRecordResponse)
