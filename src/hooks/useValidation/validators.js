@@ -4,6 +4,7 @@ import {
   getControlledSubfields,
   getIsSubfieldRemoved,
   getLocationValue,
+  checkIsEmptyContent,
 } from '../../QuickMarcEditor/utils';
 import {
   LEADER_EDITABLE_BYTES,
@@ -11,12 +12,15 @@ import {
   LEADER_VALUES_FOR_POSITION,
   LEADER_DOCUMENTATION_LINKS,
   UNCONTROLLED_SUBFIELDS,
+  TAG_LENGTH,
 } from '../../QuickMarcEditor/constants';
 
 const uncontrolledSubfieldGroups = ['uncontrolledAlpha', 'uncontrolledNumber'];
 
 export const validateTagLength = ({ marcRecords }, rule) => {
-  if (marcRecords.some(({ tag }) => !tag || tag.length !== 3)) {
+  const nonEmptyRecords = marcRecords.filter(field => !checkIsEmptyContent(field));
+
+  if (nonEmptyRecords.some(({ tag }) => !tag || tag.length !== TAG_LENGTH)) {
     return rule.message();
   }
 
@@ -25,15 +29,20 @@ export const validateTagLength = ({ marcRecords }, rule) => {
 export const validateTagCharacters = ({ marcRecords }, rule) => {
   const marcRecordsWithoutLDR = marcRecords.filter(record => record.tag !== LEADER_TAG);
 
-  if (marcRecordsWithoutLDR.some(({ tag }) => !tag.match(/\d{3}/))) {
+  const tagDigitsRegex = new RegExp(`^\\d{0,${TAG_LENGTH}}$`);
+
+  if (marcRecordsWithoutLDR.some(({ tag }) => !tag.match(tagDigitsRegex))) {
     return rule.message();
   }
 
   return undefined;
 };
 export const validateEmptySubfields = ({ marcRecords }, rule) => {
-  const marcRecordsWithSubfields = marcRecords.filter(marcRecord => marcRecord.indicators);
-  const isEmptySubfield = marcRecordsWithSubfields.some(marcRecord => {
+  const recordsToValidate = marcRecords
+    .filter(marcRecord => Boolean(marcRecord.tag))
+    .filter(marcRecord => marcRecord.indicators);
+
+  const isEmptySubfield = recordsToValidate.some(marcRecord => {
     return !marcRecord.content && checkIsInitialRecord(marcRecord);
   });
 

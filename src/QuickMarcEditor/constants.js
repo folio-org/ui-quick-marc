@@ -2,6 +2,8 @@ import { MARC_TYPES } from '../common/constants';
 
 export const LEADER_TAG = 'LDR';
 
+export const TAG_LENGTH = 3;
+
 export const LEADER_EDITABLE_BYTES = {
   [MARC_TYPES.BIB]: [5, 6, 7, 8, 17, 18, 19],
   [MARC_TYPES.HOLDINGS]: [5, 6, 17, 18],
@@ -84,13 +86,13 @@ export const CREATE_BIB_RECORD_DEFAULT_LEADER_VALUE = '00000n\\\\\\a2200000uu\\4
 
 export const CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE = '00000nu\\\\\\2200000un\\4500';
 
-export const CREATE_AUTHORITY_RECORD_DEFAULT_LEADER_VALUE = '00000n\\\\\\a2200000o\\\\4500';
+export const CREATE_AUTHORITY_RECORD_DEFAULT_LEADER_VALUE = '00000nz\\\\a2200000o\\\\4500';
 
 export const CREATE_HOLDINGS_RECORD_DEFAULT_FIELD_TAGS = ['001', '004', '005', '008', '852', '999'];
 
 export const CREATE_BIB_RECORD_DEFAULT_FIELD_TAGS = ['001', '005', '008', '245', '999'];
 
-export const CREATE_AUTHORITY_RECORD_DEFAULT_FIELD_TAGS = ['001', '005', '008', '100', '999'];
+export const CREATE_AUTHORITY_RECORD_DEFAULT_FIELD_TAGS = ['001', '005', '008', '999'];
 
 export const QM_RECORD_STATUS_TIMEOUT = 5000;
 
@@ -117,6 +119,8 @@ export const HOLDINGS_FIXED_FIELD_DEFAULT_VALUES = {
 
 export const BIB_FIXED_FIELD_DEFAULT_TYPE = 'a';
 export const BIB_FIXED_FIELD_DEFAULT_BLVL = 'm';
+
+export const AUTHORITY_FIXED_FIELD_DEFAULT_TYPE = 'z';
 
 export const CORRESPONDING_HEADING_TYPE_TAGS = ['100', '110', '111', '151', '130', '150', '155'];
 

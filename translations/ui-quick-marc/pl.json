@@ -206,7 +206,7 @@
     "record.fixedField.Pers Name": "Pers Name",
     "record.fixedField.Level Est": "Level Est",
     "record.fixedField.Mod Rec Est": "Mod Rec Est",
-    "record.fixedField.Source": "Source",
+    "record.fixedField.Source": "Źródło",
     "record.error.location.invalid": "852 $b contains an invalid Location code. Please try again.",
     "permanentLocationLookup": "Wyszukiwanie stałej lokalizacji",
     "record.error.heading.empty": "Record cannot be saved without 1XX field.",
@@ -394,5 +394,10 @@
     "record.fixedField.tip.Film inspection date": "Film inspection date",
     "record.fixedField.tip.Deterioration stage": "Deterioration stage",
     "record.fixedField.tip.Kind of color stock or print": "Kind of color stock or print",
-    "record.fixedField.tip.Refined categories of color": "Refined categories of color"
+    "record.fixedField.tip.Refined categories of color": "Refined categories of color",
+    "sourceFileLookup": "Authority file look-up",
+    "sourceFileLookupModal": "Select authority file",
+    "sourceFileLookupModal.fieldLabel": "Authority file name",
+    "sourceFileLookupModal.placeholder": "Select authority file",
+    "authority-record.create.title": "Create a new {shared, select, true {shared} false {local} other {}} MARC Authority record"
 }

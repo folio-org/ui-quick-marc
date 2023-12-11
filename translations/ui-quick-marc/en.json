@@ -18,6 +18,7 @@
   "bibliographic-record.edit.title": "Edit {shared, select, true {shared} false {local} other {}} MARC record - {title}",
   "bibliographic-record.derive.title": "Derive a new {shared, select, true {shared} false {local} other {}} MARC bib record",
   "authority-record.edit.title": "Edit {shared, select, true {shared} false {local} other {}} MARC authority record - {title}",
+  "authority-record.create.title": "Create a new {shared, select, true {shared} false {local} other {}} MARC authority record",
   "holdings-record.edit.title": "Edit MARC holdings - Location: {location} - [{callNumber}]",
 
   "record.status": "Status:",
@@ -53,8 +54,8 @@
   "record.fixedField.FMus": "FMus",
   "record.fixedField.LTxt": "LTxt",
   "record.fixedField.DtSt": "DtSt",
-  "record.fixedField.Date1": "Start date",
-  "record.fixedField.Date2": "End date",
+  "record.fixedField.Date1": "Date 1",
+  "record.fixedField.Date2": "Date 2",
   "record.fixedField.Ills": "Ills",
   "record.fixedField.Cont": "Cont",
   "record.fixedField.Conf": "Conf",
@@ -164,8 +165,8 @@
 
   "record.fixedField.tip.Date entered on file": "Date entered on file",
   "record.fixedField.tip.Type of date/Publication status": "Type of date/Publication status",
-  "record.fixedField.tip.Start date": "Start date",
-  "record.fixedField.tip.End date": "End date",
+  "record.fixedField.tip.Start date": "Date 1",
+  "record.fixedField.tip.End date": "Date 2",
   "record.fixedField.tip.Place of publication, production, or execution": "Place of publication, production, or execution",
   "record.fixedField.tip.Illustrations": "Illustrations",
   "record.fixedField.tip.Target audience": "Target audience",
@@ -399,6 +400,10 @@
   "record.quickMarcEditorLabel": "Quick MARC editor",
 
   "permanentLocationLookup": "Permanent location look-up",
+  "sourceFileLookup": "Authority file look-up",
+  "sourceFileLookupModal": "Select authority file",
+  "sourceFileLookupModal.fieldLabel": "Authority file name",
+  "sourceFileLookupModal.placeholder": "Select authority file",
   "noPlugin": "No plugin is installed",
   "print": "Print",
 

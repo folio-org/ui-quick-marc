@@ -17,8 +17,8 @@
     "record.fixedField.FMus": "FMus",
     "record.fixedField.LTxt": "LTxt",
     "record.fixedField.DtSt": "DtSt",
-    "record.fixedField.Date1": "Datum zahájení",
-    "record.fixedField.Date2": "Datum ukončení",
+    "record.fixedField.Date1": "Datum 1",
+    "record.fixedField.Date2": "Datum 2",
     "record.fixedField.Ills": "MVS",
     "record.fixedField.Cont": "Cont",
     "record.fixedField.Conf": "Conf",
@@ -275,8 +275,8 @@
     "records.autoLink.notLinkedFields.multiple": "Pole <b>{fieldTags}</b>{count, plural, one {} =2 { a <b>{lastFieldTag}</b>} other {, a <b>{lastFieldTag}</b>}} musí být nastaveno ručně pomocí výběru ikony odkazu. Pro toto bibliografické pole existuje několik autoritativních záznamů, které lze přiřadit.",
     "record.fixedField.tip.Date entered on file": "Datum zapsáno do souboru",
     "record.fixedField.tip.Type of date/Publication status": "Typ data/stav publikace",
-    "record.fixedField.tip.Start date": "Datum zahájení",
-    "record.fixedField.tip.End date": "Datum ukončení",
+    "record.fixedField.tip.Start date": "Datum 1",
+    "record.fixedField.tip.End date": "Datum 2",
     "record.fixedField.tip.Place of publication, production, or execution": "Místo publikace, produkce nebo provedení",
     "record.fixedField.tip.Illustrations": "Ilustrace",
     "record.fixedField.tip.Target audience": "Cílová skupina",
@@ -394,5 +394,10 @@
     "record.fixedField.tip.Film inspection date": "Datum kontroly filmu",
     "record.fixedField.tip.Deterioration stage": "Fáze zhoršování",
     "record.fixedField.tip.Kind of color stock or print": "Druh barevného materiálu nebo tisku",
-    "record.fixedField.tip.Refined categories of color": "Upřesněné kategorie barev"
+    "record.fixedField.tip.Refined categories of color": "Upřesněné kategorie barev",
+    "sourceFileLookup": "Vyhledat soubory autorit",
+    "sourceFileLookupModal": "Vybrat soubor autority",
+    "sourceFileLookupModal.fieldLabel": "Název souboru autority",
+    "sourceFileLookupModal.placeholder": "Vybrat soubor autority",
+    "authority-record.create.title": "Create a new {shared, select, true {shared} false {local} other {}} MARC Authority record"
 }

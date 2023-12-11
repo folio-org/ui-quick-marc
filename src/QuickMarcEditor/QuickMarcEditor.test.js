@@ -1,15 +1,14 @@
 /* eslint-disable max-lines */
 import React from 'react';
+import faker from 'faker';
+
 import {
   render,
   fireEvent,
   waitFor,
 } from '@folio/jest-config-stripes/testing-library/react';
-import faker from 'faker';
-
 import { runAxeTest } from '@folio/stripes-testing';
 import { useShowCallout } from '@folio/stripes-acq-components';
-
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcEditor from './QuickMarcEditor';
@@ -183,6 +182,14 @@ describe('Given QuickMarcEditor', () => {
       });
 
       expect(getByText('ui-quick-marc.bibliographic-record.create.title')).toBeDefined();
+    });
+
+    it('should have Save & Close button disabled by default', () => {
+      const { getByRole } = renderQuickMarcEditor({
+        action: QUICK_MARC_ACTIONS.CREATE,
+      });
+
+      expect(getByRole('button', { name: 'stripes-acq-components.FormFooter.save' })).toBeDisabled();
     });
   });
 

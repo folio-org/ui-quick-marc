@@ -75,7 +75,7 @@ const QuickMarcCreateWrapper = ({
       removeDeletedRecords,
       removeFieldsForDerive,
       autopopulateIndicators,
-      marcRecord => autopopulateFixedField(marcRecord, marcType),
+      marcRecord => autopopulateFixedField(marcRecord, marcType, fixedFieldSpec),
       autopopulatePhysDescriptionField,
       autopopulateMaterialCharsField,
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),

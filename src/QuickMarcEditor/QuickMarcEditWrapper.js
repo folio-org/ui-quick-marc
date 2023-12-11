@@ -122,7 +122,7 @@ const QuickMarcEditWrapper = ({
     const formValuesToProcess = flow(
       prepareForSubmit,
       autopopulateIndicators,
-      marcRecord => autopopulateFixedField(marcRecord, marcType),
+      marcRecord => autopopulateFixedField(marcRecord, marcType, fixedFieldSpec),
       autopopulatePhysDescriptionField,
       autopopulateMaterialCharsField,
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),

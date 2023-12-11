@@ -1302,10 +1302,25 @@ describe('QuickMarcEditor utils', () => {
       expect(utils.validateRecordTag(records)).not.toBeDefined();
     });
 
+    it('should not return error message when tag is valid (invalid length) and field content is empty', () => {
+      const records = [
+        {
+          tag: '10',
+          content: '$a ',
+        },
+        {
+          tag: '245',
+        },
+      ];
+
+      expect(utils.validateRecordTag(records)).not.toBeDefined();
+    });
+
     it('should return error message when tag is not valid (invalid length)', () => {
       const records = [
         {
           tag: '10',
+          content: '$a test',
         },
         {
           tag: '245',
@@ -1452,13 +1467,32 @@ describe('QuickMarcEditor utils', () => {
       expect(utils.validateSubfield(records)).not.toBeDefined();
     });
 
+    it('should not return error message when tag is present and content is empty', () => {
+      const records = [
+        {
+          tag: '100',
+          content: '',
+          id: 'id1',
+        },
+        {
+          indicators: ['\\', '7'],
+          content: 'test',
+          id: 'id2',
+        },
+      ];
+
+      expect(utils.validateSubfield(records)).not.toBeDefined();
+    });
+
     it('should return error message when content is empty', () => {
       const records = [
         {
+          tag: '100',
           indicators: ['\\', '\\'],
           id: 'id1',
         },
         {
+          tag: '100',
           indicators: [undefined, undefined],
           id: 'id2',
         },
@@ -2338,23 +2372,7 @@ describe('QuickMarcEditor utils', () => {
     });
   });
 
-  describe('validateLocationSubfield', () => {
-    it('should return true for valid location subfield', () => {
-      expect(utils.validateLocationSubfield({ content: '$b VA/LI/D ' }, locations)).toBe(true);
-    });
-
-    it('should return true for valid location subfield even more space between', () => {
-      expect(utils.validateLocationSubfield({ content: '$b    VA/LI/D ' }, locations)).toBe(true);
-    });
-
-    it('should return false for locations that do not exist', () => {
-      expect(utils.validateLocationSubfield({ content: '$b NOT/VA/LI/D ' }, locations)).toBe(false);
-    });
-
-    it('should return false for locations that Field no content', () => {
-      expect(utils.validateLocationSubfield({}, locations)).toBe(false);
-    });
-  });
+  
 
   describe('getLocationValue', () => {
     describe('when has matches', () => {

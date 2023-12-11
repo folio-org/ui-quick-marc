@@ -129,9 +129,7 @@ const QuickMarcEditor = ({
   const type = leader?.content?.[6] || '';
   const subtype = leader?.content?.[7] || '';
 
-  const saveFormDisabled = action === QUICK_MARC_ACTIONS.EDIT
-    ? pristine || submitting
-    : submitting;
+  const saveFormDisabled = submitting ? true : pristine;
 
   const redirectToVersion = useCallback((updatedVersion) => {
     const searchParams = new URLSearchParams(location.search);
@@ -313,7 +311,7 @@ const QuickMarcEditor = ({
       const headingContent = currentHeading?.content || initialHeading?.content;
 
       formattedMessageValues = {
-        ...formattedMessageValues,
+        shared: isConsortiaEnv ? checkIfUserInCentralTenant(stripes) : null,
         title: getContentSubfieldValue(headingContent).$a?.[0],
       };
     } else if (marcType === MARC_TYPES.BIB && action !== QUICK_MARC_ACTIONS.EDIT) {

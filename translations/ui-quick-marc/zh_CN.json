@@ -394,5 +394,10 @@
     "record.fixedField.tip.Film inspection date": "胶片检验日期",
     "record.fixedField.tip.Deterioration stage": "劣化阶段",
     "record.fixedField.tip.Kind of color stock or print": "彩色纸或印刷品种类",
-    "record.fixedField.tip.Refined categories of color": "细化颜色类别"
+    "record.fixedField.tip.Refined categories of color": "细化颜色类别",
+    "sourceFileLookup": "规范档查找",
+    "sourceFileLookupModal": "选择规范档",
+    "sourceFileLookupModal.fieldLabel": "规范档名称",
+    "sourceFileLookupModal.placeholder": "选择规范档",
+    "authority-record.create.title": "Create a new {shared, select, true {shared} false {local} other {}} MARC Authority record"
 }
