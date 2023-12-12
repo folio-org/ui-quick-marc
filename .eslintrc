@@ -14,12 +14,13 @@
       "no-unused-expressions": 0,
       "react/prop-types": "off",
       "func-names": "off",
-      "filenames/match-exported": "off"
+      "filenames/match-exported": "off",
+      "max-lines": "off"
     }
   }, {
     "files": ["test/jest/**/*"],
     "rules": {
-      "react/prop-types": "off",
+      "react/prop-types": "off"
     }
   }]
 }

@@ -622,7 +622,7 @@ describe('Given QuickMarcEditWrapper', () => {
   describe('when is authority marc type', () => {
     describe('and record is linked to a bib record', () => {
       describe('and changing 1XX field', () => {
-        it.only('should display confirmation modal', async () => {
+        it('should display confirmation modal', async () => {
           const {
             getByTestId,
             getByText,

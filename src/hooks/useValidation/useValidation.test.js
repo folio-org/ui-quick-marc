@@ -37,7 +37,7 @@ const linkingRules = [
 ];
 
 describe('useValidation', () => {
-  describe.only('when validating common rules', () => {
+  describe('when validating common rules', () => {
     const initialValues = {
       leader: '04706cam a2200865Ii 4500',
       records: [
@@ -278,7 +278,7 @@ describe('useValidation', () => {
     });
   });
 
-  describe.only('when validating Bib record', () => {
+  describe('when validating Bib record', () => {
     const initialValues = {
       leader: '04706cam a2200865Ii 4500',
       records: [
@@ -497,7 +497,7 @@ describe('useValidation', () => {
     });
   });
 
-  describe.only('when validating Holdings record', () => {
+  describe('when validating Holdings record', () => {
     const initialValues = {
       leader: '04706cxm a2200865mi 4500',
       records: [
@@ -686,307 +686,379 @@ describe('useValidation', () => {
   });
 
   describe('when record is MARC Authority record', () => {
-    it('should not return error message when record is valid', () => {
-      const initialValues = { records: [] };
-      const record = {
-        leader: '04706cxm a2200865ni 4500',
-        records: [
-          {
-            content: '04706cxm a2200865ni 4500',
-            tag: 'LDR',
-          },
-          {
-            content: {},
-            tag: '008',
-          },
-          {
-            tag: '110',
-            content: '$a Record title',
-          },
-        ],
-      };
+    const initialValues = {
+      leader: '04706cxm a2200865ni 4500',
+      records: [
+        {
+          id: 1,
+          content: '04706cxm a2200865ni 4500',
+          tag: 'LDR',
+        },
+        {
+          id: 2,
+          content: {},
+          tag: '008',
+        },
+        {
+          id: 3,
+          tag: '110',
+          content: '$a Record title',
+        },
+      ],
+    };
 
-      expect(utils.validateMarcRecord({
-        marcRecord: record,
-        initialValues,
-        marcType: MARC_TYPES.AUTHORITY,
-      })).not.toBeDefined();
-    });
+    const marcContext = {
+      initialValues,
+      marcType: MARC_TYPES.AUTHORITY,
+      action: QUICK_MARC_ACTIONS.EDIT,
+      linksCount: 1,
+      naturalId: 'n123456',
+    };
 
-    it('should return error message when record is without 1XX row', () => {
-      const initialValues = { records: [] };
-      const record = {
-        leader: '04706cxm a2200865ni 4500',
-        records: [
-          {
-            content: '04706cxm a2200865ni 4500',
-            tag: 'LDR',
-          },
-          {
-            content: {},
-            tag: '008',
-          },
-        ],
-      };
+    describe('when record is valid', () => {
+      it('should not return error message', () => {
+        const { result } = renderHook(() => useValidation(marcContext));
 
-      expect(utils.validateMarcRecord({
-        marcRecord: record,
-        initialValues,
-        marcType: MARC_TYPES.AUTHORITY,
-      }).props.id).toBe('ui-quick-marc.record.error.heading.empty');
-    });
+        const record = {
+          ...initialValues,
+        };
 
-    it('should return error message when record has several 1XX rows', () => {
-      const initialValues = { records: [] };
-      const record = {
-        leader: '04706cxm a2200865ni 4500',
-        records: [
-          {
-            content: '04706cxm a2200865ni 4500',
-            tag: 'LDR',
-          },
-          {
-            content: {},
-            tag: '008',
-          },
-          {
-            tag: '100',
-            content: '$a',
-          },
-          {
-            tag: '110',
-            content: '$a',
-          },
-        ],
-      };
-
-      expect(utils.validateMarcRecord({
-        marcRecord: record,
-        initialValues,
-        marcType: MARC_TYPES.AUTHORITY,
-      }).props.id).toBe('ui-quick-marc.record.error.heading.multiple');
-    });
-
-    it('should return error message when record has 010 field with several $a subfields', () => {
-      const initialValues = { records: [] };
-      const record = {
-        leader: '04706cxm a2200865ni 4500',
-        records: [
-          {
-            content: '04706cxm a2200865ni 4500',
-            tag: 'LDR',
-          },
-          {
-            content: {},
-            tag: '008',
-          },
-          {
-            tag: '100',
-            content: '$a',
-          },
-          {
-            tag: '010',
-            content: '$a Record $a title',
-          },
-        ],
-      };
-
-      expect(utils.validateMarcRecord({
-        marcRecord: record,
-        initialValues,
-        marcType: MARC_TYPES.AUTHORITY,
-      }).props.id).toBe('ui-quick-marc.record.error.010.$aOnlyOne');
-    });
-
-    it('should return error message when record has multiple 010 fields', () => {
-      const initialValues = { records: [] };
-      const record = {
-        leader: '04706cxm a2200865ni 4500',
-        records: [
-          {
-            content: '04706cxm a2200865ni 4500',
-            tag: 'LDR',
-          },
-          {
-            content: {},
-            tag: '008',
-          },
-          {
-            tag: '100',
-            content: '$a',
-          },
-          {
-            tag: '010',
-            content: '$a Record',
-          },
-          {
-            tag: '010',
-            content: '$a Record 2',
-          },
-        ],
-      };
-
-      expect(utils.validateMarcRecord({
-        marcRecord: record,
-        initialValues,
-        marcType: MARC_TYPES.AUTHORITY,
-      }).props.id).toBe('ui-quick-marc.record.error.010.multiple');
-    });
-
-    describe('when authority linked to bib record', () => {
-      const linksCount = 1;
-      const initialValues = {
-        leader: '04706cxm a2200865ni 4500',
-        records: [
-          {
-            content: '04706cxm a2200865ni 4500',
-            tag: 'LDR',
-          },
-          {
-            tag: '110',
-            content: '$a Record title',
-          },
-          {
-            content: {},
-            tag: '008',
-          },
-        ],
-      };
-
-      it('should return an error if 1xx tag is changed', () => {
-        const record = cloneDeep(initialValues);
-
-        record.records[1].tag = '100';
-
-        expect(utils.validateMarcRecord({
-          marcRecord: record,
-          initialValues,
-          marcType: MARC_TYPES.AUTHORITY,
-          linksCount,
-        }).props.id).toBe('ui-quick-marc.record.error.1xx.change');
+        expect(result.current.validate(record.records)).not.toBeDefined();
       });
+    });
 
-      it('should return an error if $t is added to 1xx field', () => {
-        const record = cloneDeep(initialValues);
+    describe('when record is without 1XX row', () => {
+      it('should return an error message', () => {
+        const { result } = renderHook(() => useValidation(marcContext));
 
-        record.records[1].content += ' $t';
-
-        expect(utils.validateMarcRecord({
-          marcRecord: record,
-          initialValues,
-          marcType: MARC_TYPES.AUTHORITY,
-          linksCount,
-        }).props.id).toBe('ui-quick-marc.record.error.1xx.add$t');
-      });
-
-      it('should return an error if $t is removed from 1xx field', () => {
-        const newInitialValues = cloneDeep(initialValues);
-
-        newInitialValues.records[1].content += ' $t some text';
-
-        const record = cloneDeep(initialValues);
-
-        record.records[1].content.replace('$t', '');
-
-        expect(utils.validateMarcRecord({
-          marcRecord: record,
-          initialValues: newInitialValues,
-          marcType: MARC_TYPES.AUTHORITY,
-          linksCount: 1,
-        }).props.id).toBe('ui-quick-marc.record.error.1xx.remove$t');
-      });
-
-      it('should return an error if $t value is removed from 1xx field', () => {
-        const newInitialValues = cloneDeep(initialValues);
-
-        newInitialValues.records[1].content += ' $t some text';
-
-        const record = cloneDeep(initialValues);
-
-        record.records[1].content.replace('some text', '');
-
-        expect(utils.validateMarcRecord({
-          marcRecord: record,
-          initialValues: newInitialValues,
-          marcType: MARC_TYPES.AUTHORITY,
-          linksCount,
-        }).props.id).toBe('ui-quick-marc.record.error.1xx.remove$t');
-      });
-
-      it('should return an error if 010 $a removed and 010 is linked', () => {
-        const newInitialValues = {
+        const record = {
           ...initialValues,
           records: [
-            ...initialValues.records,
             {
-              content: '7394284',
-              tag: '001',
+              id: 1,
+              content: '04706cxm a2200865ni 4500',
+              tag: 'LDR',
             },
             {
-              tag: '010',
-              content: '$a n 83073672 $k naf',
+              id: 2,
+              content: {},
+              tag: '008',
             },
           ],
         };
+
+        expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.heading.empty');
+      });
+    });
+
+    describe('when record has multiple 1XX rows', () => {
+      it('should return an error message', () => {
+        const { result } = renderHook(() => useValidation(marcContext));
+
+        const record = {
+          ...initialValues,
+          records: [
+            {
+              id: 'LDR',
+              content: '04706cxm a2200865ni 4500',
+              tag: 'LDR',
+            },
+            {
+              id: 1,
+              content: {},
+              tag: '008',
+            },
+            {
+              id: 2,
+              content: '$a test',
+              tag: '010',
+            },
+            {
+              id: 3,
+              tag: '100',
+            },
+            {
+              id: 4,
+              tag: '155',
+            },
+          ],
+        };
+
+        expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.heading.multiple');
+      });
+    });
+
+    describe('when 010 field has several $a subfields', () => {
+      it('should return an error', () => {
+        const { result } = renderHook(() => useValidation(marcContext));
 
         const record = {
           ...initialValues,
           records: [
             ...initialValues.records,
             {
-              content: '7394284',
-              tag: '001',
-            },
-            {
+              id: 4,
               tag: '010',
-              content: '$a  $k naf',
+              content: '$a val1 $a val2',
             },
           ],
         };
 
-        expect(utils.validateMarcRecord({
-          marcRecord: record,
-          initialValues: newInitialValues,
-          marcType: MARC_TYPES.AUTHORITY,
-          linksCount,
-          naturalId: 'n83073672',
-        }).props.id).toBe('ui-quick-marc.record.error.010.$aRemoved');
+        expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.010.$aOnlyOne');
       });
+    });
 
-      it('should return an error if 010 field is deleted and 010 is linked', () => {
-        const newInitialValues = {
-          ...initialValues,
-          records: [
-            ...initialValues.records,
-            {
-              content: '7394284',
-              tag: '001',
-            },
-            {
-              tag: '010',
-              content: '$a n 83073672',
-            },
-          ],
-        };
+    describe('when record has multiple 010 fields', () => {
+      it('should return an error', () => {
+        const { result } = renderHook(() => useValidation(marcContext));
 
         const record = {
           ...initialValues,
           records: [
             ...initialValues.records,
             {
-              content: '7394284',
-              tag: '001',
+              id: 4,
+              tag: '010',
+              content: '$a test',
+            },
+            {
+              id: 5,
+              tag: '010',
             },
           ],
         };
 
-        expect(utils.validateMarcRecord({
-          marcRecord: record,
-          initialValues: newInitialValues,
-          marcType: MARC_TYPES.AUTHORITY,
-          linksCount,
-          naturalId: 'n83073672',
-        }).props.id).toBe('ui-quick-marc.record.error.010.removed');
+        expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.010.multiple');
+      });
+    });
+
+    describe('when authority is linked to bib record', () => {
+      describe('when 1XX tag is changed', () => {
+        it('should return an error', () => {
+          const { result } = renderHook(() => useValidation(marcContext));
+
+          const record = {
+            leader: '04706cxm a2200865ni 4500',
+            records: [
+              {
+                id: 1,
+                content: '04706cxm a2200865ni 4500',
+                tag: 'LDR',
+              },
+              {
+                id: 2,
+                content: {},
+                tag: '008',
+              },
+              {
+                id: 3,
+                tag: '150',
+                content: '$a Record title',
+              },
+            ],
+          };
+
+          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.1xx.change');
+        });
+      });
+
+      describe('when $t was added to 1XX field', () => {
+        it('should return an error', () => {
+          const { result } = renderHook(() => useValidation(marcContext));
+
+          const record = {
+            leader: '04706cxm a2200865ni 4500',
+            records: [
+              {
+                id: 1,
+                content: '04706cxm a2200865ni 4500',
+                tag: 'LDR',
+              },
+              {
+                id: 2,
+                content: {},
+                tag: '008',
+              },
+              {
+                id: 3,
+                tag: '110',
+                content: '$a Record title $t test',
+              },
+            ],
+          };
+
+          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.1xx.add$t');
+        });
+      });
+
+      describe('when $t was removed from 1XX field', () => {
+        it('should return an error', () => {
+          const _initialValues = {
+            leader: '04706cxm a2200865ni 4500',
+            records: [
+              {
+                id: 1,
+                content: '04706cxm a2200865ni 4500',
+                tag: 'LDR',
+              },
+              {
+                id: 2,
+                content: {},
+                tag: '008',
+              },
+              {
+                id: 3,
+                tag: '110',
+                content: '$a Record title $t test',
+              },
+            ],
+          };
+
+          const { result } = renderHook(() => useValidation({
+            ...marcContext,
+            initialValues: _initialValues,
+          }));
+
+          const record = {
+            leader: '04706cxm a2200865ni 4500',
+            records: [
+              {
+                id: 1,
+                content: '04706cxm a2200865ni 4500',
+                tag: 'LDR',
+              },
+              {
+                id: 2,
+                content: {},
+                tag: '008',
+              },
+              {
+                id: 3,
+                tag: '110',
+                content: '$a Record title',
+              },
+            ],
+          };
+
+          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.1xx.remove$t');
+        });
+      });
+
+      describe('when 010 $a was removed', () => {
+        it('should return an error message', () => {
+          const _initialValues = {
+            leader: '04706cxm a2200865ni 4500',
+            records: [
+              {
+                id: 1,
+                content: '04706cxm a2200865ni 4500',
+                tag: 'LDR',
+              },
+              {
+                id: 2,
+                content: {},
+                tag: '008',
+              },
+              {
+                id: 3,
+                tag: '110',
+                content: '$a Record title',
+              },
+              {
+                id: 4,
+                tag: '010',
+                content: '$a n123456',
+              },
+            ],
+          };
+          const { result } = renderHook(() => useValidation({
+            ...marcContext,
+            initialValues: _initialValues,
+          }));
+
+          const record = {
+            ...initialValues,
+            records: [
+              {
+                id: 'LDR',
+                content: '04706cxm a2200865ni 4500',
+                tag: 'LDR',
+              },
+              {
+                id: 1,
+                content: {},
+                tag: '008',
+              },
+              {
+                id: 2,
+                content: '$a',
+                tag: '010',
+              },
+              {
+                id: 3,
+                tag: '110',
+              },
+            ],
+          };
+
+          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.010.$aRemoved');
+        });
+      });
+
+      describe('when 010 was removed', () => {
+        it('should return an error message', () => {
+          const _initialValues = {
+            leader: '04706cxm a2200865ni 4500',
+            records: [
+              {
+                id: 1,
+                content: '04706cxm a2200865ni 4500',
+                tag: 'LDR',
+              },
+              {
+                id: 2,
+                content: {},
+                tag: '008',
+              },
+              {
+                id: 3,
+                tag: '110',
+                content: '$a Record title',
+              },
+              {
+                id: 4,
+                tag: '010',
+                content: '$a n123456',
+              },
+            ],
+          };
+          const { result } = renderHook(() => useValidation({
+            ...marcContext,
+            initialValues: _initialValues,
+          }));
+
+          const record = {
+            ...initialValues,
+            records: [
+              {
+                id: 'LDR',
+                content: '04706cxm a2200865ni 4500',
+                tag: 'LDR',
+              },
+              {
+                id: 1,
+                content: {},
+                tag: '008',
+              },
+              {
+                id: 3,
+                tag: '110',
+              },
+            ],
+          };
+
+          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.010.removed');
+        });
       });
     });
   });
