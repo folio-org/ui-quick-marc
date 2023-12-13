@@ -1,8 +1,7 @@
-import { useCallback } from 'react';
 import { validators } from './rules';
 
 const useValidation = (context) => {
-  const validate = useCallback((marcRecords) => {
+  const validate = (marcRecords) => {
     const validationRules = validators[context.marcType][context.action];
 
     const errorMessage = validationRules.reduce((_errorMessage, rule) => {
@@ -20,7 +19,7 @@ const useValidation = (context) => {
     }, null);
 
     return errorMessage;
-  }, [context]);
+  };
 
   return { validate };
 };

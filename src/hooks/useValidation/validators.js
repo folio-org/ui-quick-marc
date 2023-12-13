@@ -55,7 +55,7 @@ export const validateEmptySubfields = ({ marcRecords }, rule) => {
 export const validateSubfieldValueExists = (context, rule) => {
   const { marcRecords } = context;
 
-  if (rule.ignore && rule.ignore(context)) {
+  if (rule.ignore?.(context)) {
     return undefined;
   }
 
@@ -73,7 +73,7 @@ export const validateSubfieldValueExists = (context, rule) => {
 export const validateExistence = (context, rule) => {
   const { marcRecords } = context;
 
-  if (rule.ignore && rule.ignore(context)) {
+  if (rule.ignore?.(context)) {
     return undefined;
   }
 
@@ -186,7 +186,7 @@ export const validate$9InLinkable = ({ marcRecords, linkableBibFields }, rule) =
 export const validateTagChanged = (context, rule) => {
   const { marcRecords, initialValues } = context;
 
-  if (rule.ignore && rule.ignore(context)) {
+  if (rule.ignore?.(context)) {
     return undefined;
   }
 
@@ -201,7 +201,7 @@ export const validateTagChanged = (context, rule) => {
   return undefined;
 };
 export const validateSubfieldChanged = (context, rule) => {
-  if (rule.ignore && rule.ignore(context)) {
+  if (rule.ignore?.(context)) {
     return undefined;
   }
 
