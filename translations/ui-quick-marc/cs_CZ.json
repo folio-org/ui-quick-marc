@@ -388,7 +388,7 @@
     "record.fixedField.tip.Data type": "Datový typ",
     "record.fixedField.tip.Base of emulsion": "Základ emulze",
     "record.fixedField.tip.Secondary support material": "Sekundární podpůrný materiál",
-    "record.fixedField.tip.Primary support material": "Primární podpůrný materiál",
+    "record.fixedField.tip.Primary support material": "Hlavní podpůrný materiál",
     "record.fixedField.tip.Motion picture presentation format": "Formát prezentace filmu",
     "record.fixedField.tip.Production elements": "Výrobní prvky",
     "record.fixedField.tip.Film inspection date": "Datum kontroly filmu",
@@ -399,5 +399,5 @@
     "sourceFileLookupModal": "Vybrat soubor autority",
     "sourceFileLookupModal.fieldLabel": "Název souboru autority",
     "sourceFileLookupModal.placeholder": "Vybrat soubor autority",
-    "authority-record.create.title": "Create a new {shared, select, true {shared} false {local} other {}} MARC Authority record"
+    "authority-record.create.title": "Vytvořit nový {shared, select, true {sdílený} false {místní} other {}} MARC záznam autority"
 }
