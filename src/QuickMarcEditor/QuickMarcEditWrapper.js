@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useMemo,
   useState,
 } from 'react';
 import { useLocation } from 'react-router';
@@ -86,7 +87,7 @@ const QuickMarcEditWrapper = ({
   const { linkableBibFields, actualizeLinks, linkingRules } = useAuthorityLinking({ marcType, action });
   const { updateMarcRecord } = useMarcRecordMutation({ tenantId });
 
-  const { validate } = useValidation({
+  const validationContext = useMemo(() => ({
     initialValues,
     marcType,
     action: QUICK_MARC_ACTIONS.EDIT,
@@ -95,7 +96,8 @@ const QuickMarcEditWrapper = ({
     naturalId: instance.naturalId,
     linkableBibFields,
     linkingRules,
-  });
+  }), [initialValues, marcType, locations, linkableBibFields, linkingRules, linksCount, instance.naturalId]);
+  const { validate } = useValidation(validationContext);
 
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesToSave = flow(

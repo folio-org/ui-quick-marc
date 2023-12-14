@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useMemo,
   useState,
 } from 'react';
 import PropTypes from 'prop-types';
@@ -61,14 +62,15 @@ const QuickMarcCreateWrapper = ({
   const [httpError, setHttpError] = useState(null);
   const { linkableBibFields, actualizeLinks, linkingRules } = useAuthorityLinking({ marcType, action });
 
-  const { validate } = useValidation({
+  const validationContext = useMemo(() => ({
     initialValues,
     marcType,
     action: QUICK_MARC_ACTIONS.CREATE,
     locations,
     linkableBibFields,
     linkingRules,
-  });
+  }), [initialValues, marcType, locations, linkableBibFields, linkingRules]);
+  const { validate } = useValidation(validationContext);
 
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesForCreate = flow(
