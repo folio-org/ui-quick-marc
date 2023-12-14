@@ -15,8 +15,6 @@ import {
   TAG_LENGTH,
 } from '../../QuickMarcEditor/constants';
 
-const uncontrolledSubfieldGroups = ['uncontrolledAlpha', 'uncontrolledNumber'];
-
 export const validateTagLength = ({ marcRecords }, rule) => {
   const nonEmptyRecords = marcRecords.filter(field => !checkIsEmptyContent(field));
 
@@ -172,7 +170,7 @@ export const validate$9InLinkable = ({ marcRecords, linkableBibFields }, rule) =
       return '$9' in getContentSubfieldValue(field.content);
     }
 
-    return uncontrolledSubfieldGroups.some(subfield => {
+    return UNCONTROLLED_SUBFIELDS.some(subfield => {
       return field.subfieldGroups[subfield] && '$9' in getContentSubfieldValue(field.subfieldGroups[subfield]);
     });
   });

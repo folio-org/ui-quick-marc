@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 import faker from 'faker';
-import cloneDeep from 'lodash/cloneDeep';
 
 import { v4 as uuid } from 'uuid';
 import {
@@ -23,38 +22,7 @@ jest.mock('uuid', () => {
   };
 });
 
-const linkingRules = [
-  {
-    'id': 1,
-    'bibField': '100',
-    'authorityField': '100',
-    'authoritySubfields': ['a', 'b', 'c', 'd', 'j', 'q'],
-    'validation': { 'existence': [{ 't': false }] },
-    'autoLinkingEnabled': true,
-  },
-  {
-    'id': 8,
-    'bibField': '600',
-    'authorityField': '100',
-    'authoritySubfields': ['a', 'b', 'c', 'd', 'g', 'j', 'q', 'f', 'h', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't'],
-    'autoLinkingEnabled': false,
-  },
-  {
-    'id': 12,
-    'bibField': '650',
-    'authorityField': '150',
-    'authoritySubfields': ['a', 'b', 'g'],
-    'autoLinkingEnabled': false,
-  },
-];
-
 describe('QuickMarcEditor utils', () => {
-  const locations = [{
-    code: 'VA/LI/D',
-  }, {
-    code: 'LO/CA/TI/ON',
-  }];
-
   describe('dehydrateMarcRecordResponse', () => {
     it('should return dehydrated marc record', () => {
       const marcRecord = {
@@ -1311,8 +1279,6 @@ describe('QuickMarcEditor utils', () => {
       expect(utils.getContentSubfieldValue(undefined)).toEqual({});
     });
   });
-
-  
 
   describe('getLocationValue', () => {
     describe('when has matches', () => {
