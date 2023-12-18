@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useMemo,
   useState,
 } from 'react';
 import PropTypes from 'prop-types';
@@ -9,7 +10,10 @@ import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
-import { useAuthorityLinking } from '../hooks';
+import {
+  useAuthorityLinking,
+  useValidation,
+} from '../hooks';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 import {
@@ -17,8 +21,6 @@ import {
   removeFieldsForDerive,
   autopopulateIndicators,
   autopopulateSubfieldSection,
-  validateMarcRecord,
-  checkControlFieldLength,
   cleanBytesFields,
   parseHttpError,
   removeDeletedRecords,
@@ -54,6 +56,15 @@ const QuickMarcDeriveWrapper = ({
   const { linkableBibFields, actualizeLinks, linkingRules } = useAuthorityLinking({ marcType, action });
   const [httpError, setHttpError] = useState(null);
 
+  const validationContext = useMemo(() => ({
+    initialValues,
+    marcType,
+    action: QUICK_MARC_ACTIONS.DERIVE,
+    linkableBibFields,
+    linkingRules,
+  }), [initialValues, marcType, linkableBibFields, linkingRules]);
+  const { validate } = useValidation(validationContext);
+
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesForDerive = flow(
       removeDeletedRecords,
@@ -70,27 +81,11 @@ const QuickMarcDeriveWrapper = ({
     return formValuesForDerive;
   }, [marcType, fixedFieldSpec]);
 
-  const validate = useCallback((formValues) => {
+  const runValidation = useCallback((formValues) => {
     const formValuesForValidation = prepareForSubmit(formValues);
-    const controlFieldErrorMessage = checkControlFieldLength(formValuesForValidation);
 
-    if (controlFieldErrorMessage) {
-      return controlFieldErrorMessage;
-    }
-
-    const validationErrorMessage = validateMarcRecord({
-      marcRecord: formValuesForValidation,
-      initialValues,
-      linkableBibFields,
-      linkingRules,
-    });
-
-    if (validationErrorMessage) {
-      return validationErrorMessage;
-    }
-
-    return undefined;
-  }, [prepareForSubmit, initialValues, linkableBibFields, linkingRules]);
+    return validate(formValuesForValidation.records);
+  }, [validate, prepareForSubmit]);
 
   const onSubmit = useCallback(async (formValues) => {
     const formValuesToProcess = flow(
@@ -162,7 +157,7 @@ const QuickMarcDeriveWrapper = ({
       fixedFieldSpec={fixedFieldSpec}
       httpError={httpError}
       confirmRemoveAuthorityLinking
-      validate={validate}
+      validate={runValidation}
     />
   );
 };

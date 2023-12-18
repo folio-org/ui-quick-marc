@@ -154,15 +154,18 @@ const mockRecords = {
       id: 'LDR',
     },
     {
+      id: 1,
       tag: '001',
       content: '971255',
       isProtected: true,
     },
     {
+      id: 2,
       tag: '005',
       content: '20120323070509.0',
     },
     {
+      id: 3,
       tag: '008',
       content: {
         'Date Ent': '860211',
@@ -191,46 +194,55 @@ const mockRecords = {
       },
     },
     {
+      id: 4,
       tag: '010',
       content: '$a sh 85026421 ',
       indicators: ['\\', '\\'],
     },
     {
+      id: 5,
       tag: '035',
       content: '$a (DLC)sh 85026421',
       indicators: ['\\', '\\'],
     },
     {
+      id: 6,
       tag: '035',
       content: '$a (DLC)25463',
       indicators: ['\\', '\\'],
     },
     {
+      id: 7,
       tag: '040',
       content: '$a DLC $c DLC $d DLC $d ViU',
       indicators: ['\\', '\\'],
     },
     {
+      id: 8,
       tag: '150',
       content: '$a Civil war',
       indicators: ['\\', '\\'],
     },
     {
+      id: 9,
       tag: '360',
       content: '$i individual civil wars, e.g. $a United States--History--Civil War, 1861-1865',
       indicators: ['\\', '\\'],
     },
     {
+      id: 10,
       tag: '450',
       content: '$a Civil wars',
       indicators: ['\\', '\\'],
     },
     {
+      id: 11,
       tag: '550',
       content: '$w g $a Revolutions',
       indicators: ['\\', '\\'],
     },
     {
+      id: 12,
       tag: '999',
       content: '$s 2c85c168-a821-434a-981a-7e95df2fbd84 $i 06d6033f-dd91-400d-b0db-58817d05654f',
       indicators: ['f', 'f'],

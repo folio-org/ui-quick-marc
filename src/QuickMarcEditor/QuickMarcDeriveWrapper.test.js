@@ -36,14 +36,14 @@ jest.mock('../hooks', () => ({
 const mockFormValues = jest.fn(() => ({
   fields: undefined,
   externalId: '17064f9d-0362-468d-8317-5984b7efd1b5',
-  leader: '02949cama2200517Kica0000',
+  leader: '14706cam a2200865Ii 4500',
   parsedRecordDtoId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
   parsedRecordId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
   marcFormat: MARC_TYPES.BIB,
   records: [
     {
       tag: 'LDR',
-      content: '02949cama2200517Kiia0000',
+      content: '14706cam a2200865Ii 4500',
       id: 'LDR',
     }, {
       tag: '001',
@@ -249,7 +249,7 @@ const initialValues = {
   records: [
     {
       tag: 'LDR',
-      content: 'assdfgs ds sdg',
+      content: '14706cam a2200865Ii 4500',
       id: 'LDR',
     },
     {
@@ -401,7 +401,7 @@ describe('Given QuickMarcDeriveWrapper', () => {
         records: expect.arrayContaining([
           expect.objectContaining({
             tag: 'LDR',
-            content: '02949cama2200517Kiia0000',
+            content: '14706cam a2200865Ii 4500',
           }),
           expect.objectContaining({
             tag: '100',

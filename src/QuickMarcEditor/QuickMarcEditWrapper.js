@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useMemo,
   useState,
 } from 'react';
 import { useLocation } from 'react-router';
@@ -15,7 +16,10 @@ import { useShowCallout } from '@folio/stripes-acq-components';
 import { getHeaders } from '@folio/stripes-marc-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
-import { useAuthorityLinking } from '../hooks';
+import {
+  useAuthorityLinking,
+  useValidation,
+} from '../hooks';
 import { QUICK_MARC_ACTIONS } from './constants';
 import {
   EXTERNAL_INSTANCE_APIS,
@@ -24,8 +28,6 @@ import {
 } from '../common/constants';
 import {
   hydrateMarcRecord,
-  validateMarcRecord,
-  checkControlFieldLength,
   autopopulateIndicators,
   autopopulateSubfieldSection,
   cleanBytesFields,
@@ -85,6 +87,18 @@ const QuickMarcEditWrapper = ({
   const { linkableBibFields, actualizeLinks, linkingRules } = useAuthorityLinking({ marcType, action });
   const { updateMarcRecord } = useMarcRecordMutation({ tenantId });
 
+  const validationContext = useMemo(() => ({
+    initialValues,
+    marcType,
+    action: QUICK_MARC_ACTIONS.EDIT,
+    locations,
+    linksCount,
+    naturalId: instance.naturalId,
+    linkableBibFields,
+    linkingRules,
+  }), [initialValues, marcType, locations, linkableBibFields, linkingRules, linksCount, instance.naturalId]);
+  const { validate } = useValidation(validationContext);
+
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesToSave = flow(
       removeDeletedRecords,
@@ -94,40 +108,11 @@ const QuickMarcEditWrapper = ({
     return formValuesToSave;
   }, []);
 
-  const validate = useCallback((formValues) => {
+  const runValidation = useCallback((formValues) => {
     const formValuesForValidation = prepareForSubmit(formValues);
-    const controlFieldErrorMessage = checkControlFieldLength(formValuesForValidation);
 
-    if (controlFieldErrorMessage) {
-      return controlFieldErrorMessage;
-    }
-
-    const validationErrorMessage = validateMarcRecord({
-      marcRecord: formValuesForValidation,
-      initialValues,
-      marcType,
-      locations,
-      linksCount,
-      naturalId: instance.naturalId,
-      linkableBibFields,
-      linkingRules,
-    });
-
-    if (validationErrorMessage) {
-      return validationErrorMessage;
-    }
-
-    return undefined;
-  }, [
-    initialValues,
-    linksCount,
-    locations,
-    marcType,
-    prepareForSubmit,
-    instance.naturalId,
-    linkableBibFields,
-    linkingRules,
-  ]);
+    return validate(formValuesForValidation.records);
+  }, [validate, prepareForSubmit]);
 
   const onSubmit = useCallback(async (formValues) => {
     let is1xxOr010Updated = false;
@@ -262,7 +247,7 @@ const QuickMarcEditWrapper = ({
       httpError={httpError}
       externalRecordPath={externalRecordPath}
       linksCount={linksCount}
-      validate={validate}
+      validate={runValidation}
       onCheckCentralTenantPerm={onCheckCentralTenantPerm}
     />
   );

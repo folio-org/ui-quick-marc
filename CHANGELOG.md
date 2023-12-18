@@ -11,6 +11,7 @@
 * [UIQM-522](https://issues.folio.org/browse/UIQM-522) Create/Derive a new MARC bib record & Create a MARC holdings | Default state of Save & close button should be disabled.
 * [UIQM-534](https://issues.folio.org/browse/UIQM-534) Remove fields that have no MARC tag and no subfield value.  
 * [UIQM-381](https://issues.folio.org/browse/UIQM-381) Create Orig Authority Record: Populate new record with default Leader values.
+* [UIQM-526](https://issues.folio.org/browse/UIQM-526) Refactor validation functionality.
 
 ## [7.0.5](https://github.com/folio-org/ui-quick-marc/tree/v7.0.5) (2023-12-11)
 

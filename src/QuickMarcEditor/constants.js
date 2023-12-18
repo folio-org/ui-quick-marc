@@ -137,3 +137,4 @@ export const AUTOLINKING_ERROR_CODES = {
 
 export const UNCONTROLLED_ALPHA = 'uncontrolledAlpha';
 export const UNCONTROLLED_NUMBER = 'uncontrolledNumber';
+export const UNCONTROLLED_SUBFIELDS = [UNCONTROLLED_ALPHA, UNCONTROLLED_NUMBER];

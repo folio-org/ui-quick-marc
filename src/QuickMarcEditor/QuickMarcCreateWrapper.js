@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useMemo,
   useState,
 } from 'react';
 import PropTypes from 'prop-types';
@@ -10,15 +11,16 @@ import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
-import { useAuthorityLinking } from '../hooks';
+import {
+  useAuthorityLinking,
+  useValidation,
+} from '../hooks';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 import {
   hydrateMarcRecord,
   removeFieldsForDerive,
   autopopulateSubfieldSection,
-  validateMarcRecord,
-  checkControlFieldLength,
   cleanBytesFields,
   parseHttpError,
   removeDeletedRecords,
@@ -60,6 +62,16 @@ const QuickMarcCreateWrapper = ({
   const [httpError, setHttpError] = useState(null);
   const { linkableBibFields, actualizeLinks, linkingRules } = useAuthorityLinking({ marcType, action });
 
+  const validationContext = useMemo(() => ({
+    initialValues,
+    marcType,
+    action: QUICK_MARC_ACTIONS.CREATE,
+    locations,
+    linkableBibFields,
+    linkingRules,
+  }), [initialValues, marcType, locations, linkableBibFields, linkingRules]);
+  const { validate } = useValidation(validationContext);
+
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesForCreate = flow(
       removeDeletedRecords,
@@ -75,29 +87,11 @@ const QuickMarcCreateWrapper = ({
     return formValuesForCreate;
   }, [marcType, fixedFieldSpec]);
 
-  const validate = useCallback((formValues) => {
+  const runValidation = useCallback((formValues) => {
     const formValuesForValidation = prepareForSubmit(formValues);
-    const controlFieldErrorMessage = checkControlFieldLength(formValuesForValidation);
 
-    if (controlFieldErrorMessage) {
-      return controlFieldErrorMessage;
-    }
-
-    const validationErrorMessage = validateMarcRecord({
-      marcRecord: formValuesForValidation,
-      initialValues,
-      marcType,
-      locations,
-      linkableBibFields,
-      linkingRules,
-    });
-
-    if (validationErrorMessage) {
-      return validationErrorMessage;
-    }
-
-    return undefined;
-  }, [initialValues, locations, marcType, linkableBibFields, linkingRules, prepareForSubmit]);
+    return validate(formValuesForValidation.records);
+  }, [validate, prepareForSubmit]);
 
   const redirectToRecord = (externalId, instanceId) => {
     let path;
@@ -186,7 +180,7 @@ const QuickMarcCreateWrapper = ({
       marcType={marcType}
       fixedFieldSpec={fixedFieldSpec}
       httpError={httpError}
-      validate={validate}
+      validate={runValidation}
     />
   );
 };
