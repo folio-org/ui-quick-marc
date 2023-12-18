@@ -23,6 +23,7 @@ import {
   IconButton,
   ConfirmationModal,
   Loading,
+  ADVANCED_SEARCH_MATCH_OPTIONS,
 } from '@folio/stripes/components';
 
 import { useMarcSource } from '../../../queries';
@@ -34,6 +35,10 @@ import {
   FILTERS,
 } from '../../../common/constants';
 import { QUICK_MARC_ACTIONS } from '../../constants';
+
+const {
+  EXACT_PHRASE,
+} = ADVANCED_SEARCH_MATCH_OPTIONS;
 
 const propTypes = {
   action: PropTypes.string.isRequired,
@@ -165,11 +170,11 @@ const LinkButton = ({
     if (fieldContent.$0?.length) {
       const keywordValue = [fieldContent.$a, fieldContent.$d, fieldContent.$t].flat().filter(Boolean).join(' ');
       const keywordQuery = keywordValue
-        ? `${searchableIndexesValues.KEYWORD}==${keywordValue}`
+        ? `${searchableIndexesValues.KEYWORD} ${EXACT_PHRASE} ${keywordValue}`
         : '';
       const identifierQuery = fieldContent.$0
         .map(selectIdentifierFromSubfield)
-        .map(identifier => `${searchableIndexesValues.IDENTIFIER}==${identifier}`)
+        .map(identifier => `${searchableIndexesValues.IDENTIFIER} ${EXACT_PHRASE} ${identifier}`)
         .join(' or ');
 
       initialDropdownValue = searchableIndexesValues.ADVANCED_SEARCH;
