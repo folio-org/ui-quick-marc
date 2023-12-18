@@ -252,8 +252,6 @@
     "record.error.$9": "$9 no es un subcampo válido.",
     "update-linked-bib-fields.modal.message-save": "<b>{count} {count, plural, one {registro bibliográfico} other {registros bibliográficos}}</b> {count, plural, one {es} other {están}} vinculados a este registro de autoridad y se actualizarán al hacer clic en el botón <b>Guardar</b>.",
     "update-linked-bib-fields.modal.save": "Guardar",
-    "record.error.fieldCantBeSaved": "<b>{fieldTags}</b> tiene uno o varios subcampos que no pueden guardarse porque el campo está controlado por un registro de autoridad.",
-    "record.error.fieldsCantBeSaved": "<b>{fieldTags}{count, plural, one {} =2 { y {lastFieldTag}} other {, y {lastFieldTag}}}</b> tiene un(os) subcampo(s) que no se pueden guardar porque los campos están controlados por registros de autoridad.",
     "record.error.010.edit$a": "No se puede añadir o editar 010 $a para un registro de autoridad vinculado a un registro bibliográfico. Para realizar este cambio, debe desvincular este registro de autoridad de los registros bibliográficos.",
     "record.error.010.removed": "No se puede eliminar 010. Es obligatorio.",
     "record.error.010.$aRemoved": "No se puede eliminar 010 $a para este registro.",
@@ -399,5 +397,7 @@
     "sourceFileLookupModal": "Select authority file",
     "sourceFileLookupModal.fieldLabel": "Authority file name",
     "sourceFileLookupModal.placeholder": "Seleccione el archivo de autoridad",
-    "authority-record.create.title": "Create a new {shared, select, true {shared} false {local} other {}} MARC authority record"
+    "authority-record.create.title": "Create a new {shared, select, true {shared} false {local} other {}} MARC authority record",
+    "record.error.fieldIsControlled": "<b>{fieldTags}</b> has a subfield(s) that cannot be saved because the field is controlled by an authority record.",
+    "record.error.fieldsAreControlled": "<b>{fieldTags}{count, plural, one {} =2 { and {lastFieldTag}} other {, and {lastFieldTag}}}</b> has a subfield(s) that cannot be saved because the fields are controlled by authority records."
 }

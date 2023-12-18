@@ -252,8 +252,6 @@
     "record.error.$9": "$9 je neplatné podpole pro propojitelná bibliografická pole.",
     "update-linked-bib-fields.modal.message-save": "<b>{count} {count, plural, one {bibliografický záznam} other {bibliografické záznamy}} </b>{count, plural, one {je} other {jsou}} propojen s tímto záznamem autority a bude aktualizován kliknutím na <b>Uložit</b> .",
     "update-linked-bib-fields.modal.save": "Uložit",
-    "record.error.fieldCantBeSaved": "<b>{fieldTags}</b> má podpole, které nelze uložit, protože pole je řízeno autoritním záznamem.",
-    "record.error.fieldsCantBeSaved": "<b>{fieldTags}{count, plural, one {} =2 { a {lastFieldTag}} other {, a {lastFieldTag}}}</b> má podpole, která nelze uložit, protože pole jsou řízena podle autoritních záznamů.",
     "record.error.010.edit$a": "Nelze přidat nebo upravit 010 $a pro autoritní záznam propojený s bibliografickým záznamem. Chcete-li provést tuto změnu, musíte odpojit tento autoritní záznam od bibliografických záznamů.",
     "record.error.010.removed": "Nelze smazat 010. Je vyžadováno.",
     "record.error.010.$aRemoved": "Nelze odebrat 010 $a pro tento záznam.",
@@ -399,5 +397,7 @@
     "sourceFileLookupModal": "Vybrat soubor autority",
     "sourceFileLookupModal.fieldLabel": "Název souboru autority",
     "sourceFileLookupModal.placeholder": "Vybrat soubor autority",
-    "authority-record.create.title": "Vytvořit nový {shared, select, true {sdílený} false {místní} other {}} MARC záznam autority"
+    "authority-record.create.title": "Vytvořit nový {shared, select, true {sdílený} false {místní} other {}} MARC záznam autority",
+    "record.error.fieldIsControlled": "<b>{fieldTags}</b> má podpole, které nelze uložit, protože pole je řízeno autoritním záznamem.",
+    "record.error.fieldsAreControlled": "<b>{fieldTags}{count, plural, one {} =2 { a {lastFieldTag}} other {, a {lastFieldTag}}}</b> má podpole, která nelze uložit, protože pole jsou řízena podle autoritních záznamů."
 }
