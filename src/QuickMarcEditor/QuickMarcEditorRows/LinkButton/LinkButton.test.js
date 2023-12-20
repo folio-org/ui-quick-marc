@@ -11,6 +11,7 @@ import {
   Pluggable,
   useOkapiKy,
 } from '@folio/stripes/core';
+import { ADVANCED_SEARCH_MATCH_OPTIONS } from '@folio/stripes/components';
 import { runAxeTest } from '@folio/stripes-testing';
 
 import { createMemoryHistory } from 'history';
@@ -18,6 +19,10 @@ import { LinkButton } from './LinkButton';
 import { QUICK_MARC_ACTIONS } from '../../constants';
 
 import Harness from '../../../../test/jest/helpers/harness';
+
+const {
+  EXACT_PHRASE,
+} = ADVANCED_SEARCH_MATCH_OPTIONS;
 
 const mockOnClick = jest.fn();
 const mockGetMarcSource = jest.fn(() => ({ json: () => {} }));
@@ -127,8 +132,8 @@ describe('Given LinkButton', () => {
           search: {
             dropdownValue: 'advancedSearch',
             searchIndex: 'advancedSearch',
-            searchInputValue: 'identifiers.value==n123456789',
-            searchQuery: 'identifiers.value==n123456789',
+            searchInputValue: `identifiers.value ${EXACT_PHRASE} n123456789`,
+            searchQuery: `identifiers.value ${EXACT_PHRASE} n123456789`,
             filters: null,
           },
           browse: {
@@ -155,8 +160,8 @@ describe('Given LinkButton', () => {
           search: {
             dropdownValue: 'advancedSearch',
             searchIndex: 'advancedSearch',
-            searchInputValue: 'identifiers.value==n123456789 or identifiers.value==n987654321',
-            searchQuery: 'identifiers.value==n123456789 or identifiers.value==n987654321',
+            searchInputValue: `identifiers.value ${EXACT_PHRASE} n123456789 or identifiers.value ${EXACT_PHRASE} n987654321`,
+            searchQuery: `identifiers.value ${EXACT_PHRASE} n123456789 or identifiers.value ${EXACT_PHRASE} n987654321`,
             filters: null,
           },
           browse: {
@@ -211,8 +216,8 @@ describe('Given LinkButton', () => {
           search: {
             dropdownValue: 'advancedSearch',
             searchIndex: 'advancedSearch',
-            searchInputValue: 'keyword==value1 value2 value3 or identifiers.value==value4 or identifiers.value==value5',
-            searchQuery: 'keyword==value1 value2 value3 or identifiers.value==value4 or identifiers.value==value5',
+            searchInputValue: `keyword ${EXACT_PHRASE} value1 value2 value3 or identifiers.value ${EXACT_PHRASE} value4 or identifiers.value ${EXACT_PHRASE} value5`,
+            searchQuery: `keyword ${EXACT_PHRASE} value1 value2 value3 or identifiers.value ${EXACT_PHRASE} value4 or identifiers.value ${EXACT_PHRASE} value5`,
             filters: null,
           },
           browse: {
