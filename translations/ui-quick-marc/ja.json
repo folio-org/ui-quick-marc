@@ -252,8 +252,6 @@
     "record.error.$9": "$9 is an invalid subfield for linkable bibliographic fields.",
     "update-linked-bib-fields.modal.message-save": "<b> {count} {count, plural, one {書誌レコード} other {書誌レコード}} </b> {count, plural, one { is } other { are }}この典拠レコードにリンクされており、によって更新されます<b>保存</b>ボタンをクリックします。",
     "update-linked-bib-fields.modal.save": "Save",
-    "record.error.fieldCantBeSaved": "<b>{fieldTags}</b> has a subfield(s) that cannot be saved because the field is controlled by an authority record.",
-    "record.error.fieldsCantBeSaved": "<b>{fieldTags}{count, plural, one {} =2 { and {lastFieldTag}} other {, and {lastFieldTag}}}</b> has a subfield(s) that cannot be saved because the fields are controlled by authority records.",
     "record.error.010.edit$a": "Cannot add or edit 010 $a for an authority record linked to a bibliographic record. To make this change, you must unlink this authority record from bibliographic records.",
     "record.error.010.removed": "Cannot delete 010. It is required.",
     "record.error.010.$aRemoved": "このレコードの 010 $a は削除できません。",
@@ -399,5 +397,7 @@
     "sourceFileLookupModal": "Select authority file",
     "sourceFileLookupModal.fieldLabel": "Authority file name",
     "sourceFileLookupModal.placeholder": "Select authority file",
-    "authority-record.create.title": "Create a new {shared, select, true {shared} false {local} other {}} MARC authority record"
+    "authority-record.create.title": "Create a new {shared, select, true {shared} false {local} other {}} MARC authority record",
+    "record.error.fieldIsControlled": "<b>{fieldTags}</b> has a subfield(s) that cannot be saved because the field is controlled by an authority record.",
+    "record.error.fieldsAreControlled": "<b>{fieldTags}{count, plural, one {} =2 { and {lastFieldTag}} other {, and {lastFieldTag}}}</b> has a subfield(s) that cannot be saved because the fields are controlled by authority records."
 }
