@@ -1,7 +1,10 @@
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 
-import { QUICK_MARC_ACTIONS } from '../../QuickMarcEditor/constants';
+import {
+  CORRESPONDING_HEADING_TYPE_TAGS,
+  QUICK_MARC_ACTIONS,
+} from '../../QuickMarcEditor/constants';
 import { MARC_TYPES } from '../../common/constants';
 import {
   validate$9InLinkable,
@@ -207,23 +210,23 @@ const BASE_AUTHORITY_VALIDATORS = [
     message: () => <FormattedMessage id="ui-quick-marc.record.error.010.$aOnlyOne" />,
   },
   {
-    tag: /1\d\d/,
+    tag: new RegExp(`${CORRESPONDING_HEADING_TYPE_TAGS.join('|')}`),
     validator: RULES.EXISTS,
     message: () => <FormattedMessage id="ui-quick-marc.record.error.heading.empty" />,
   },
   {
-    tag: /1\d\d/,
+    tag: new RegExp(/1\d\d/),
     validator: RULES.NON_REPEATABLE,
     message: () => <FormattedMessage id="ui-quick-marc.record.error.heading.multiple" />,
   },
   {
-    tag: /1\d\d/,
+    tag: new RegExp(`${CORRESPONDING_HEADING_TYPE_TAGS.join('|')}`),
     validator: RULES.TAG_CHANGED,
     ignore: ({ linksCount }) => !linksCount,
     message: (initialTag) => <FormattedMessage id="ui-quick-marc.record.error.1xx.change" values={{ tag: initialTag }} />,
   },
   {
-    tag: /1\d\d/,
+    tag: new RegExp(`${CORRESPONDING_HEADING_TYPE_TAGS.join('|')}`),
     subfield: '$t',
     ignore: ({ linksCount }) => !linksCount,
     validator: RULES.SUBFIELD_CHANGED,

@@ -751,7 +751,36 @@ describe('useValidation', () => {
       });
     });
 
-    describe('when record has multiple 1XX rows', () => {
+    describe('when record does not have a valid 1XX row', () => {
+      it('should return an error message', () => {
+        const { result } = renderHook(() => useValidation(marcContext));
+
+        const record = {
+          ...initialValues,
+          records: [
+            {
+              id: 1,
+              content: '04706cxm a2200865ni 4500',
+              tag: 'LDR',
+            },
+            {
+              id: 2,
+              content: {},
+              tag: '008',
+            },
+            {
+              id: 3,
+              content: '',
+              tag: '101',
+            },
+          ],
+        };
+
+        expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.heading.empty');
+      });
+    });
+
+    describe('when record has multiple valid 1XX rows', () => {
       it('should return an error message', () => {
         const { result } = renderHook(() => useValidation(marcContext));
 
@@ -780,6 +809,44 @@ describe('useValidation', () => {
             {
               id: 4,
               tag: '155',
+            },
+          ],
+        };
+
+        expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.heading.multiple');
+      });
+    });
+
+    describe('when record has multiple not valid 1XX rows', () => {
+      it('should return an error message', () => {
+        const { result } = renderHook(() => useValidation(marcContext));
+
+        const record = {
+          ...initialValues,
+          records: [
+            {
+              id: 'LDR',
+              content: '04706cxm a2200865ni 4500',
+              tag: 'LDR',
+            },
+            {
+              id: 1,
+              content: {},
+              tag: '008',
+            },
+            {
+              id: 2,
+              content: '$a test',
+              tag: '010',
+            },
+            {
+              id: 3,
+              tag: '110',
+              content: '$a test',
+            },
+            {
+              id: 4,
+              tag: '101',
             },
           ],
         };
