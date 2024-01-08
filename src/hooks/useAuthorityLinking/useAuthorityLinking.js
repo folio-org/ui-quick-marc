@@ -72,20 +72,26 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
   const copySubfieldsFromAuthority = useCallback((bibSubfields, authField, bibTag) => {
     const linkingRule = findLinkingRule(bibTag, authField.tag);
     const authSubfields = getContentSubfieldValue(authField.content);
+    const subfieldsFromAuthority = {};
 
     linkingRule.authoritySubfields.forEach(subfieldCode => {
       const subfieldModification = linkingRule.subfieldModifications?.find(mod => mod.source === subfieldCode);
 
       if (subfieldModification) {
-        bibSubfields[formatSubfieldCode(subfieldModification.target)] = authSubfields[formatSubfieldCode(subfieldCode)];
+        subfieldsFromAuthority[formatSubfieldCode(subfieldModification.target)] =
+          authSubfields[formatSubfieldCode(subfieldCode)];
       } else if (authSubfields[formatSubfieldCode(subfieldCode)]?.[0]) {
-        bibSubfields[formatSubfieldCode(subfieldCode)] = authSubfields[formatSubfieldCode(subfieldCode)];
+        subfieldsFromAuthority[formatSubfieldCode(subfieldCode)] = authSubfields[formatSubfieldCode(subfieldCode)];
       } else {
         delete bibSubfields[formatSubfieldCode(subfieldCode)];
       }
     });
 
-    return bibSubfields;
+    // take authority subfields first and then bib subfields
+    return {
+      ...subfieldsFromAuthority,
+      ...omit(bibSubfields, Object.keys(subfieldsFromAuthority)),
+    };
   }, [findLinkingRule]);
 
   const getLinkableAuthorityField = useCallback((authoritySource, bibField) => {
@@ -138,11 +144,11 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
 
     bibSubfields.$0 = [newZeroSubfield];
 
-    copySubfieldsFromAuthority(bibSubfields, linkedAuthorityField, bibField.tag);
+    const updatedBibSubfields = copySubfieldsFromAuthority(bibSubfields, linkedAuthorityField, bibField.tag);
 
-    bibSubfields.$9 = [authorityRecord.id];
+    updatedBibSubfields.$9 = [authorityRecord.id];
     bibField.prevContent = bibField.content;
-    bibField.content = joinSubfields(bibSubfields);
+    bibField.content = joinSubfields(updatedBibSubfields);
   }, [copySubfieldsFromAuthority, sourceFiles]);
 
   const getSubfieldGroups = useCallback((field, suggestedField) => {
