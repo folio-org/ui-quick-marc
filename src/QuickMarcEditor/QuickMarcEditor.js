@@ -300,15 +300,11 @@ const QuickMarcEditor = ({
         callNumber: instance?.callNumber,
       };
     } else if ((marcType === MARC_TYPES.AUTHORITY) && records.length) {
-      const currentHeading = records.find((recordRow) => {
-        return recordRow.tag === recordInfoProps.correspondingMarcTag;
-      });
-
       const initialHeading = initialValues.records.find((recordRow) => {
         return recordRow.tag === recordInfoProps.correspondingMarcTag;
       });
 
-      const headingContent = currentHeading?.content || initialHeading?.content;
+      const headingContent = initialHeading?.content;
 
       formattedMessageValues = {
         shared: isConsortiaEnv ? checkIfUserInCentralTenant(stripes) : null,
