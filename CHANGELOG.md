@@ -13,6 +13,7 @@
 * [UIQM-381](https://issues.folio.org/browse/UIQM-381) Create Orig Authority Record: Populate new record with default Leader values.
 * [UIQM-526](https://issues.folio.org/browse/UIQM-526) Refactor validation functionality.
 * [UIQM-597](https://issues.folio.org/browse/UIQM-597) Build initial values for the find-authority plugin using EXACT_PHRASE when there is '$0' value.
+* [UIQM-595](https://issues.folio.org/browse/UIQM-595) During linking, take the authority subfields first and then the bib subfields.
 
 ## [7.0.5](https://github.com/folio-org/ui-quick-marc/tree/v7.0.5) (2023-12-11)
 

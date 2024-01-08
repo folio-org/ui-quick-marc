@@ -126,7 +126,7 @@ describe('Given useAuthorityLinking', () => {
         };
 
         expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
-          content: '$a authority value $b fakeB $0 some.url/n0001 $t field for modification $9 authority-id',
+          content: '$a authority value $b fakeB $t field for modification $0 some.url/n0001 $9 authority-id',
           linkDetails: {
             authorityId: 'authority-id',
             authorityNaturalId: 'n0001',
@@ -151,7 +151,7 @@ describe('Given useAuthorityLinking', () => {
         };
 
         expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
-          content: '$a authority value $b fakeB $0 some.url/n0001 $9 authority-id $t field for modification',
+          content: '$a authority value $b fakeB $t field for modification $0 some.url/n0001 $9 authority-id',
           linkDetails: {
             authorityId: 'authority-id',
             authorityNaturalId: 'n0001',
@@ -176,7 +176,7 @@ describe('Given useAuthorityLinking', () => {
         };
 
         expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
-          content: '$a authority value $b fakeB $0 some.url/n0001 $9 authority-id $t field for modification',
+          content: '$a authority value $b fakeB $t field for modification $0 some.url/n0001 $9 authority-id',
           linkDetails: {
             authorityId: 'authority-id',
             authorityNaturalId: 'n0001',
@@ -201,7 +201,7 @@ describe('Given useAuthorityLinking', () => {
         };
 
         expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
-          content: '$a authority value $b fakeB $e author $e illustrator $0 some.url/n0001 $t field for modification $9 authority-id',
+          content: '$a authority value $b fakeB $t field for modification $e author $e illustrator $0 some.url/n0001 $9 authority-id',
           linkDetails: {
             authorityId: 'authority-id',
             authorityNaturalId: 'n0001',
@@ -244,13 +244,42 @@ describe('Given useAuthorityLinking', () => {
         };
 
         expect(result.current.linkAuthority(authority, authoritySource, field)).toMatchObject({
-          content: '$a authority value $b fakeB $e author $e illustrator $0 some.url/n0001 $c field for modification $9 authority-id',
+          content: '$a authority value $b fakeB $c field for modification $e author $e illustrator $0 some.url/n0001 $9 authority-id',
           linkDetails: {
             authorityId: 'authority-id',
             authorityNaturalId: 'n0001',
             linkingRuleId: 1,
           },
         });
+      });
+    });
+
+    it('should return authority subfields first and then bib subfields', () => {
+      const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+
+      const authority = {
+        id: 'authority-id',
+        sourceFileId: '1',
+        naturalId: 'n0001',
+      };
+      const field = {
+        tag: '600',
+        content: '$c (Fictitious character) $a Black Panther $2 fast $0 (OCoLC)fst02000849',
+      };
+      const _authoritySource = {
+        fields: [{
+          tag: '100',
+          content: '$a Black Panther $c (Fictitious character)',
+        }],
+      };
+
+      expect(result.current.linkAuthority(authority, _authoritySource, field)).toMatchObject({
+        content: '$a Black Panther $c (Fictitious character) $2 fast $0 some.url/n0001 $9 authority-id',
+        linkDetails: {
+          authorityId: 'authority-id',
+          authorityNaturalId: 'n0001',
+          linkingRuleId: 8,
+        },
       });
     });
 
