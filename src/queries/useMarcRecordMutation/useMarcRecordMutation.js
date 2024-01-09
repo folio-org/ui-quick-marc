@@ -9,6 +9,10 @@ const useMarcRecordMutation = ({ tenantId } = {}) => {
 
   const { mutateAsync: updateMarcRecord, isLoading: isUpdating } = useMutation(body => {
     return ky.put(`${MARC_RECORD_API}/${body.parsedRecordId}`, { json: body });
+  }, {
+    onError: (error) => {
+      throw error.response;
+    },
   });
 
   return {

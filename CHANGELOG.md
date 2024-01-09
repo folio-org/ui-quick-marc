@@ -15,6 +15,7 @@
 * [UIQM-597](https://issues.folio.org/browse/UIQM-597) Build initial values for the find-authority plugin using EXACT_PHRASE when there is '$0' value.
 * [UIQM-595](https://issues.folio.org/browse/UIQM-595) During linking, take the authority subfields first and then the bib subfields.
 * [UIQM-555](https://issues.folio.org/browse/UIQM-555) Not change the pane header of the authority record while editing the 1xx field.
+* [UIQM-596](https://issues.folio.org/browse/UIQM-596) Fix http error handling when Editing/Creating/Deriving MARC records.
 
 ## [7.0.5](https://github.com/folio-org/ui-quick-marc/tree/v7.0.5) (2023-12-11)
 
