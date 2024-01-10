@@ -46,4 +46,19 @@ describe('Given useMarcRecordMutation', () => {
 
     expect(mockPut).toHaveBeenCalledWith(`${MARC_RECORD_API}/${body.parsedRecordId}`, { json: body });
   });
+
+  describe('when there is an error', () => {
+    it('should throw a http response', async () => {
+      const response = { json: jest.fn() };
+
+      ky.put.mockRejectedValueOnce({
+        code: 409,
+        response,
+      });
+
+      const { result } = renderHook(() => useMarcRecordMutation(), { wrapper });
+
+      expect(() => result.current.updateMarcRecord(body)).rejects.toEqual(response);
+    });
+  });
 });
