@@ -459,6 +459,7 @@ const QuickMarcEditorRows = ({
                         name={`${name}.content`}
                         marcType={marcType}
                         action={action}
+                        recordRows={records.value}
                       />
                     )
                   }
