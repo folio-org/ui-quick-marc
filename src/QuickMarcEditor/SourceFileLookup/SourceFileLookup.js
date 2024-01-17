@@ -13,10 +13,12 @@ import { useAuthoritySourceFiles } from '../../queries';
 import { SourceFileLookupModal } from './SourceFileLookupModal';
 
 const propTypes = {
+  disabled: PropTypes.bool.isRequired,
   onSourceFileSelect: PropTypes.func.isRequired,
 };
 
 const SourceFileLookup = ({
+  disabled,
   onSourceFileSelect,
 }) => {
   const stripes = useStripes();
@@ -50,6 +52,7 @@ const SourceFileLookup = ({
     <>
       <Button
         buttonStyle="link"
+        disabled={disabled}
         marginBottom0
         onClick={openModal}
       >

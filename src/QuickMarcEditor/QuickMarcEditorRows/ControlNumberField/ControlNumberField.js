@@ -10,7 +10,10 @@ import {
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
-import { Loading } from '@folio/stripes/components';
+import {
+  Layout,
+  Loading,
+} from '@folio/stripes/components';
 
 import { SourceFileLookup } from '../../SourceFileLookup';
 import { ContentField } from '../ContentField';
@@ -88,13 +91,13 @@ const ControlNumberField = ({
         parse={v => v}
       />
       {canSelectSourceFile && (
-        isLoadingHrid
-          ? <Loading data-testid="hridLoading" />
-          : (
-            <SourceFileLookup
-              onSourceFileSelect={handleSourceFileSelection}
-            />
-          )
+        <Layout className="display-flex">
+          <SourceFileLookup
+            disabled={isLoadingHrid}
+            onSourceFileSelect={handleSourceFileSelection}
+          />
+          {isLoadingHrid && <Loading data-testid="hridLoading" />}
+        </Layout>
       )}
     </>
   );

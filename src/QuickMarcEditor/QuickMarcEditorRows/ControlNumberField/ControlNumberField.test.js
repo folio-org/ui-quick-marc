@@ -167,7 +167,7 @@ describe('Given ControlNumberField', () => {
     });
 
     describe('and FOLIO source file is selected and the next HRID is loading', () => {
-      it('should display loading instead of the source file lookup', async () => {
+      it('should display loading next to the source file lookup', async () => {
         useAuthorityFileNextHrid.mockReturnValue({
           isLoading: true,
         });
@@ -177,7 +177,7 @@ describe('Given ControlNumberField', () => {
           marcType: MARC_TYPES.AUTHORITY,
         });
 
-        expect(queryByText('SourceFileLookup')).toBeNull();
+        expect(queryByText('SourceFileLookup')).toBeVisible();
         expect(getByTestId('hridLoading')).toBeVisible();
       });
     });
