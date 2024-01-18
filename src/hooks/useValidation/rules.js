@@ -22,11 +22,13 @@ import {
   validateTagLength,
   validateEmptySubfields,
   validateSubfieldChanged,
+  validateContentExistence,
 } from './validators';
 import { is010LinkedToBibRecord } from '../../QuickMarcEditor/utils';
 
 const RULES = {
   EXISTS: validateExistence,
+  CONTENT_EXISTS: validateContentExistence,
   NON_REPEATABLE: validateNonRepeatable,
   NON_REPEATABLE_SUBFIELD: validateNonRepeatableSubfield,
   $9IN_LINKABLE: validate$9InLinkable,
@@ -244,6 +246,14 @@ const BASE_AUTHORITY_VALIDATORS = [
   },
 ];
 
+const CREATE_AUTHORITY_VALIDATORS = [
+  {
+    tag: '001',
+    validator: RULES.CONTENT_EXISTS,
+    message: () => <FormattedMessage id="ui-quick-marc.record.error.controlField.content.empty" />,
+  },
+];
+
 export const validators = {
   [MARC_TYPES.BIB]: {
     [QUICK_MARC_ACTIONS.EDIT]: BASE_BIB_VALIDATORS,
@@ -256,5 +266,6 @@ export const validators = {
   },
   [MARC_TYPES.AUTHORITY]: {
     [QUICK_MARC_ACTIONS.EDIT]: BASE_AUTHORITY_VALIDATORS,
+    [QUICK_MARC_ACTIONS.CREATE]: CREATE_AUTHORITY_VALIDATORS,
   },
 };
