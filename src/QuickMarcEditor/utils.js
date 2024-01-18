@@ -666,6 +666,13 @@ export const removeEnteredDate = (formValues) => {
   return formValues;
 };
 
+export const removeRowsWithoutContent = (formValues) => {
+  return {
+    ...formValues,
+    records: formValues.records.filter(recordRow => recordRow.content),
+  };
+};
+
 export const removeFieldsForDerive = (formValues) => {
   const { records } = formValues;
 

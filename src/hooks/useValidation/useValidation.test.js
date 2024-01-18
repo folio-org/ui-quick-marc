@@ -727,6 +727,45 @@ describe('useValidation', () => {
       });
     });
 
+    describe('when action is CREATE', () => {
+      describe('and 001 row content is empty', () => {
+        it('should return an error message', () => {
+          const { result } = renderHook(() => useValidation({
+            ...marcContext,
+            action: QUICK_MARC_ACTIONS.CREATE,
+          }));
+
+          const record = {
+            ...initialValues,
+            records: [
+              {
+                id: '1',
+                content: '04706cxm a2200865ni 4500',
+                tag: 'LDR',
+              },
+              {
+                id: '2',
+                content: {},
+                tag: '008',
+              },
+              {
+                id: '3',
+                content: '',
+                tag: '100',
+              },
+              {
+                id: '4',
+                content: '',
+                tag: '010',
+              },
+            ],
+          };
+
+          expect(result.current.validate(record.records).props.id).toBe('ui-quick-marc.record.error.controlField.content.empty');
+        });
+      });
+    });
+
     describe('when record is without 1XX row', () => {
       it('should return an error message', () => {
         const { result } = renderHook(() => useValidation(marcContext));

@@ -4,3 +4,4 @@ export * from './useAuthorityLinksCount';
 export * from './useLinkSuggestions';
 export * from './useUserTenantPermissions';
 export * from './useMarcRecordMutation';
+export * from './useAuthorityFileNextHrid';
