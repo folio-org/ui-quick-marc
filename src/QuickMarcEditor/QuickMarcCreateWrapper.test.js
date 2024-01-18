@@ -213,6 +213,7 @@ const locations = [{
 const renderQuickMarcCreateWrapper = ({
   instance,
   onClose = noop,
+  onSave = noop,
   mutator,
   history,
   location,
@@ -221,6 +222,7 @@ const renderQuickMarcCreateWrapper = ({
   <Harness>
     <QuickMarcCreateWrapper
       onClose={onClose}
+      onSave={onSave}
       instance={instance}
       mutator={mutator}
       action={QUICK_MARC_ACTIONS.CREATE}

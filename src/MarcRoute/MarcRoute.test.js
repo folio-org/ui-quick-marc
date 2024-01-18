@@ -31,6 +31,7 @@ const renderMarcRoute = ({ history, ...props } = {}) => (render(
       permission="ui-quick-marc.quick-marc-editor.all"
       routeProps={routeProps}
       onClose={() => {}}
+      onSave={() => {}}
       {...props}
     />
   </Harness>,

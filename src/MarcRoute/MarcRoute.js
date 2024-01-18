@@ -19,6 +19,7 @@ const MarcRoute = ({
   permission,
   routeProps,
   onClose,
+  onSave,
 }) => {
   const stripes = useStripes();
   const location = useLocation();
@@ -65,6 +66,7 @@ const MarcRoute = ({
       render={() => (
         <QuickMarcEditorContainer
           onClose={onClose}
+          onSave={onSave}
           externalRecordPath={externalRecordPath}
           onCheckCentralTenantPerm={checkCentralTenantPerm}
           {...routeProps}
@@ -80,6 +82,7 @@ MarcRoute.propTypes = {
   permission: PropTypes.string,
   routeProps: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
 };
 
 export default MarcRoute;

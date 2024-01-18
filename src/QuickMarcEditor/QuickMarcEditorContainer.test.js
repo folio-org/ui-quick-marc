@@ -97,6 +97,7 @@ const locations = [];
 const externalRecordPath = '/external/record/path';
 
 const mockOnClose = jest.fn();
+const mockOnSave = jest.fn();
 
 const renderQuickMarcEditorContainer = ({ history, ...props } = {}) => (render(
   <Harness history={history}>
@@ -104,6 +105,7 @@ const renderQuickMarcEditorContainer = ({ history, ...props } = {}) => (render(
       marcType={MARC_TYPES.BIB}
       externalRecordPath={externalRecordPath}
       onClose={mockOnClose}
+      onSave={mockOnSave}
       resources={resources}
       {...props}
       onCheckCentralTenantPerm={() => false}

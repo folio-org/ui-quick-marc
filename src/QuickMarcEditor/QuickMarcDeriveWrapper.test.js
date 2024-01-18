@@ -203,6 +203,7 @@ jest.mock('@folio/stripes/components', () => ({
 const mockActualizeLinks = jest.fn((formValuesToProcess) => Promise.resolve(formValuesToProcess));
 const mockShowCallout = jest.fn();
 const mockOnClose = jest.fn();
+const mockOnSave = jest.fn();
 
 jest.mock('@folio/stripes-acq-components', () => ({
   ...jest.requireActual('@folio/stripes-acq-components'),
@@ -272,6 +273,7 @@ const renderQuickMarcDeriveWrapper = (props) => (render(
   <Harness>
     <QuickMarcDeriveWrapper
       onClose={mockOnClose}
+      onSave={mockOnSave}
       action={QUICK_MARC_ACTIONS.DERIVE}
       initialValues={initialValues}
       marcType={MARC_TYPES.BIB}
