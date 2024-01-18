@@ -18,7 +18,6 @@ import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 import {
   hydrateMarcRecord,
-  removeFieldsForDerive,
   autopopulateSubfieldSection,
   cleanBytesFields,
   parseHttpError,
@@ -30,6 +29,7 @@ import {
   autopopulatePhysDescriptionField,
   autopopulateMaterialCharsField,
   autopopulateIndicators,
+  removeRowsWithoutContent,
 } from './utils';
 
 const propTypes = {
@@ -72,7 +72,7 @@ const QuickMarcCreateWrapper = ({
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesForCreate = flow(
       removeDeletedRecords,
-      removeFieldsForDerive,
+      removeRowsWithoutContent,
       autopopulateIndicators,
       marcRecord => autopopulateFixedField(marcRecord, marcType, fixedFieldSpec),
       autopopulatePhysDescriptionField,

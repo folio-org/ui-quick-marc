@@ -68,6 +68,15 @@ export const validateSubfieldValueExists = (context, rule) => {
 
   return undefined;
 };
+export const validateContentExistence = (context, rule) => {
+  const { marcRecords } = context;
+
+  if (!marcRecords.find(record => record.tag.match(rule.tag))?.content) {
+    return rule.message();
+  }
+
+  return undefined;
+};
 export const validateExistence = (context, rule) => {
   const { marcRecords } = context;
 

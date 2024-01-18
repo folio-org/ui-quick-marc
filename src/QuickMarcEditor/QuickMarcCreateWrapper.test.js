@@ -4,6 +4,7 @@ import {
   render,
   fireEvent,
   screen,
+  waitFor,
 } from '@folio/jest-config-stripes/testing-library/react';
 import faker from 'faker';
 import noop from 'lodash/noop';
@@ -18,6 +19,12 @@ import { QUICK_MARC_ACTIONS } from './constants';
 
 import Harness from '../../test/jest/helpers/harness';
 import { useAuthorityLinking } from '../hooks';
+
+jest.mock('./getQuickMarcRecordStatus', () => {
+  return jest.fn().mockResolvedValue({
+    externalId: 'externalId-1',
+  });
+});
 
 jest.mock('react-final-form', () => ({
   ...jest.requireActual('react-final-form'),
@@ -125,21 +132,69 @@ const mockRecords = {
       'tag': '245',
     },
   ],
+  [MARC_TYPES.AUTHORITY]: [
+    {
+      'tag': 'LDR',
+      'content': '00000nz\\\\a2200000o\\\\4500',
+      'id': 'LDR',
+    },
+    {
+      'tag': '001',
+      'content': 'value1',
+    },
+    {
+      'tag': '008',
+      'content': {
+        'Undef_18': '\\\\\\\\\\\\\\\\\\\\',
+        'Undef_30': '\\',
+        'Undef_34': '\\\\\\\\',
+        'Geo Subd': '\\',
+        'Roman': '\\',
+        'Lang': '\\',
+        'Kind rec': '\\',
+        'Cat Rules': '\\',
+        'SH Sys': '\\',
+        'Series': '\\',
+        'Numb Series': '\\',
+        'Main use': '\\',
+        'Subj use': '\\',
+        'Series use': '\\',
+        'Type Subd': '\\',
+        'Govt Ag': '\\',
+        'RefEval': '\\',
+        'RecUpd': '\\',
+        'Pers Name': '\\',
+        'Level Est': '\\',
+        'Mod Rec Est': '\\',
+        'Source': '\\',
+      },
+    },
+    {
+      'tag': '010',
+      'content': '$a value1',
+      'indicators': ['\\', '\\'],
+    },
+    {
+      'tag': '100',
+      'content': '$a value2',
+      'indicators': ['\\', '\\'],
+    },
+  ],
 };
 
 const mockLeaders = {
   [MARC_TYPES.BIB]: '01178nam\\a2200277ic\\4500',
   [MARC_TYPES.HOLDINGS]: '00000nu\\\\\\2200000un\\4500',
+  [MARC_TYPES.AUTHORITY]: '00000nz\\\\a2200000o\\\\4500',
 };
 
 const mockFormValues = jest.fn((marcType) => ({
   fields: undefined,
   externalHrid: 'in00000000022',
-  externalId: '17064f9d-0362-468d-8317-5984b7efd1b5',
+  externalId: '00000000-0000-0000-0000-000000000000',
   leader: mockLeaders[marcType],
-  marcFormat: marcType,
-  parsedRecordDtoId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
-  parsedRecordId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
+  marcFormat: marcType.toUpperCase(),
+  parsedRecordDtoId: '00000000-0000-0000-0000-000000000000',
   records: mockRecords[marcType],
   relatedRecordVersion: 1,
   suppressDiscovery: false,
@@ -250,6 +305,7 @@ describe('Given QuickMarcCreateWrapper', () => {
       quickMarcEditMarcRecord: {
         GET: jest.fn(() => Promise.resolve(record)),
         POST: jest.fn(() => Promise.resolve({})),
+        PUT: jest.fn().mockResolvedValue({}),
       },
       quickMarcRecordStatus: {
         GET: jest.fn(() => Promise.resolve({})),
@@ -323,6 +379,91 @@ describe('Given QuickMarcCreateWrapper', () => {
       expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
     }, 100);
 
+    it('should create authority record with correct payload and redirect when finished', async () => {
+      const payload = {
+        externalId: '00000000-0000-0000-0000-000000000000',
+        externalHrid: 'in00000000022',
+        leader: '00000nz\\\\a2200000o\\\\4500',
+        marcFormat: MARC_TYPES.AUTHORITY.toUpperCase(),
+        parsedRecordDtoId: '00000000-0000-0000-0000-000000000000',
+        records: undefined,
+        relatedRecordVersion: 1,
+        suppressDiscovery: false,
+        updateInfo: { recordState: 'NEW' },
+        _actionType: 'create',
+        fields: [
+          {
+            tag: '001',
+            content: 'value1',
+            indicators: undefined,
+            linkDetails: undefined,
+          },
+          {
+            tag: '008',
+            content: {
+              'Undef_18': '\\\\\\\\\\\\\\\\\\\\',
+              'Undef_30': '\\',
+              'Undef_34': '\\\\\\\\',
+              'Geo Subd': '\\',
+              'Roman': '\\',
+              'Lang': '\\',
+              'Kind rec': '\\',
+              'Cat Rules': '\\',
+              'SH Sys': '\\',
+              'Series': '\\',
+              'Numb Series': '\\',
+              'Main use': '\\',
+              'Subj use': '\\',
+              'Series use': '\\',
+              'Type Subd': '\\',
+              'Govt Ag': '\\',
+              'RefEval': '\\',
+              'RecUpd': '\\',
+              'Pers Name': '\\',
+              'Level Est': '\\',
+              'Mod Rec Est': '\\',
+              'Source': '\\',
+            },
+            indicators: undefined,
+            linkDetails: undefined,
+          },
+          {
+            tag: '010',
+            content: '$a value1',
+            indicators: ['\\', '\\'],
+            linkDetails: undefined,
+          },
+          {
+            tag: '100',
+            content: '$a value2',
+            indicators: ['\\', '\\'],
+            linkDetails: undefined,
+          },
+        ],
+      };
+
+      const { getByText } = renderQuickMarcCreateWrapper({
+        instance,
+        mutator,
+        history,
+        location: { search: '' },
+        marcType: MARC_TYPES.AUTHORITY,
+      });
+
+      fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+
+      await waitFor(() => {
+        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
+        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.success' });
+        expect(mutator.quickMarcEditMarcRecord.POST).toHaveBeenCalledWith(payload);
+
+        expect(history.push).toHaveBeenCalledWith({
+          pathname: '/marc-authorities/authorities/externalId-1',
+          search: '',
+        });
+      });
+    });
+
     describe('when there is an error during POST request', () => {
       it('should show an error message', async () => {
         let getByText;
@@ -366,7 +507,7 @@ describe('Given QuickMarcCreateWrapper', () => {
       await act(async () => { fireEvent.click(screen.getByText('stripes-acq-components.FormFooter.save')); });
 
       const expectedFormValues = {
-        marcFormat: MARC_TYPES.BIB,
+        marcFormat: MARC_TYPES.BIB.toUpperCase(),
         records: expect.arrayContaining([
           expect.objectContaining({
             tag: 'LDR',
