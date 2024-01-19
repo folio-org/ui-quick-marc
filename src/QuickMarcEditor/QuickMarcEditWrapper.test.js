@@ -364,6 +364,7 @@ const renderQuickMarcEditWrapper = ({
       render={(renderProps) => (
         <QuickMarcEditWrapper
           onClose={noop}
+          onSave={noop}
           mutator={mutator}
           action={QUICK_MARC_ACTIONS.EDIT}
           marcType={marcType}
@@ -428,11 +429,13 @@ describe('Given QuickMarcEditWrapper', () => {
     describe('when click on "Save & keep editing" button', () => {
       it('should show on save message and stay on the edit page', async () => {
         const mockOnClose = jest.fn();
+        const mockOnSave = jest.fn();
 
         const { getByText } = renderQuickMarcEditWrapper({
           instance,
           mutator,
           onClose: mockOnClose,
+          onSave: mockOnSave,
         });
 
         await act(async () => { fireEvent.click(getByText('ui-quick-marc.record.save.continue')); });
@@ -442,17 +445,18 @@ describe('Given QuickMarcEditWrapper', () => {
 
         expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
         expect(mockOnClose).not.toHaveBeenCalled();
+        expect(mockOnSave).not.toHaveBeenCalled();
       });
     });
 
     describe('when click on save button', () => {
       it('should show on save message and redirect on load page', async () => {
-        const mockOnClose = jest.fn();
+        const mockOnSave = jest.fn();
 
         const { getByText } = renderQuickMarcEditWrapper({
           instance,
           mutator,
-          onClose: mockOnClose,
+          onSave: mockOnSave,
         });
 
         await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
@@ -461,7 +465,7 @@ describe('Given QuickMarcEditWrapper', () => {
         expect(mockUpdateMarcRecord).toHaveBeenCalled();
 
         expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
-        expect(mockOnClose).toHaveBeenCalled();
+        expect(mockOnSave).toHaveBeenCalled();
       });
 
       describe('when there is an error during POST request', () => {
@@ -644,12 +648,14 @@ describe('Given QuickMarcEditWrapper', () => {
     describe('when click on "Save & keep editing" button', () => {
       it('should show on save message and stay on the edit page', async () => {
         const mockOnClose = jest.fn();
+        const mockOnSave = jest.fn();
 
         const { getByText } = renderQuickMarcEditWrapper({
           instance,
           mutator,
           marcType: MARC_TYPES.AUTHORITY,
           onClose: mockOnClose,
+          onSave: mockOnSave,
         });
 
         await act(async () => { fireEvent.click(getByText('ui-quick-marc.record.save.continue')); });
@@ -659,18 +665,19 @@ describe('Given QuickMarcEditWrapper', () => {
 
         expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
         expect(mockOnClose).not.toHaveBeenCalled();
+        expect(mockOnSave).not.toHaveBeenCalled();
       });
     });
 
     describe('when click on save button', () => {
       it('should show on save message and redirect on load page', async () => {
-        const mockOnClose = jest.fn();
+        const mockOnSave = jest.fn();
 
         const { getByText } = renderQuickMarcEditWrapper({
           instance,
           mutator,
           marcType: MARC_TYPES.AUTHORITY,
-          onClose: mockOnClose,
+          onSave: mockOnSave,
         });
 
         await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
@@ -680,7 +687,7 @@ describe('Given QuickMarcEditWrapper', () => {
 
         expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
 
-        expect(mockOnClose).toHaveBeenCalled();
+        expect(mockOnSave).toHaveBeenCalled();
       });
 
       describe('when there is an error during POST request', () => {

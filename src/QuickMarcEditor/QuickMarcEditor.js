@@ -81,6 +81,7 @@ const QuickMarcEditor = ({
   action,
   instance,
   onClose,
+  onSave,
   handleSubmit,
   submitting,
   pristine,
@@ -154,8 +155,8 @@ const QuickMarcEditor = ({
       return;
     }
 
-    onClose();
-  }, [redirectToVersion, onClose]);
+    onSave();
+  }, [redirectToVersion, onSave]);
 
   const closeModals = () => {
     setIsDeleteModalOpened(false);
@@ -385,7 +386,8 @@ const QuickMarcEditor = ({
   }, {
     name: 'cancel',
     shortcut: 'esc',
-    handler: () => {
+    handler: (e) => {
+      e.preventDefault();
       onClose();
     },
   }]), [saveFormDisabled, confirmSubmit, onClose]);
@@ -537,6 +539,7 @@ QuickMarcEditor.propTypes = {
   externalRecordPath: PropTypes.string,
   instance: PropTypes.object,
   onClose: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   submitting: PropTypes.bool,
   pristine: PropTypes.bool,

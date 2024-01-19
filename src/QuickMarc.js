@@ -22,6 +22,7 @@ const QuickMarc = ({
   basePath,
   externalRecordPath,
   onClose,
+  onSave,
 }) => {
   const editorRoutesConfig = [
     {
@@ -108,6 +109,7 @@ const QuickMarc = ({
                 permission={permission}
                 routeProps={routeProps}
                 onClose={onClose}
+                onSave={onSave}
               />
             ))
           }
@@ -121,6 +123,7 @@ QuickMarc.propTypes = {
   basePath: PropTypes.string.isRequired,
   externalRecordPath: PropTypes.string,
   onClose: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
 };
 
 export default QuickMarc;

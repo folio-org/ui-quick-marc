@@ -45,6 +45,7 @@ import { useAuthorityLinksCount } from '../queries';
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
   onClose: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
   externalRecordPath: PropTypes.string.isRequired,
   history: ReactRouterPropTypes.history.isRequired,
   location: ReactRouterPropTypes.location.isRequired,
@@ -68,6 +69,7 @@ const QuickMarcEditorContainer = ({
   mutator,
   match,
   onClose,
+  onSave,
   wrapper: Wrapper,
   history,
   location,
@@ -97,14 +99,21 @@ const QuickMarcEditorContainer = ({
   const showCallout = useShowCallout();
   const { linksCount } = useAuthorityLinksCount({ id: marcType === MARC_TYPES.AUTHORITY && externalId });
 
-  const closeEditor = useCallback((id) => {
+  const getCloseEditorParams = useCallback((id) => {
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
-      onClose(`${instanceId}/${externalId}`);
-    } else {
-      onClose(id || externalId);
+      return `${instanceId}/${externalId}`;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [externalId, onClose]);
+
+    return id || externalId;
+  }, [action, externalId, instanceId, marcType]);
+
+  const handleClose = useCallback((id) => {
+    onClose(getCloseEditorParams(id));
+  }, [getCloseEditorParams, onClose]);
+
+  const handleSave = useCallback((id) => {
+    onSave(getCloseEditorParams(id));
+  }, [getCloseEditorParams, onSave]);
 
   const externalRecordUrl = useMemo(() => {
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
@@ -193,7 +202,7 @@ const QuickMarcEditorContainer = ({
       })
       .catch(() => {
         showCallout({ messageId: 'ui-quick-marc.record.load.error', type: 'error' });
-        closeEditor();
+        handleClose();
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -214,7 +223,7 @@ const QuickMarcEditorContainer = ({
     return (
       <LoadingView
         dismissible
-        onClose={closeEditor}
+        onClose={handleClose}
         defaultWidth="100%"
       />
     );
@@ -223,7 +232,8 @@ const QuickMarcEditorContainer = ({
   return (
     <Wrapper
       instance={instance}
-      onClose={closeEditor}
+      onClose={handleClose}
+      onSave={handleSave}
       initialValues={marcRecord}
       action={action}
       mutator={mutator}

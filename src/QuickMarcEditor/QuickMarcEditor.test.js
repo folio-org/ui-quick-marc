@@ -75,6 +75,7 @@ jest.mock('./QuickMarcRecordInfo', () => {
 });
 
 const onCloseMock = jest.fn();
+const onSaveMock = jest.fn();
 const onSubmitMock = jest.fn(() => Promise.resolve({ version: 1 }));
 const mockShowCallout = jest.fn();
 const mockValidate = jest.fn();
@@ -139,6 +140,7 @@ const renderQuickMarcEditor = (props) => (render(
       action={QUICK_MARC_ACTIONS.EDIT}
       instance={instance}
       onClose={onCloseMock}
+      onSave={onSaveMock}
       onSubmit={onSubmitMock}
       mutators={{
         addRecord: jest.fn(),

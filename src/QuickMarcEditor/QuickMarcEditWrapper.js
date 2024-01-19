@@ -56,6 +56,7 @@ const propTypes = {
   fixedFieldSpec: PropTypes.object.isRequired,
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
   onCheckCentralTenantPerm: PropTypes.func,
   locations: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
@@ -64,6 +65,7 @@ const QuickMarcEditWrapper = ({
   action,
   instance,
   onClose,
+  onSave,
   initialValues,
   mutator,
   marcType,
@@ -238,6 +240,7 @@ const QuickMarcEditWrapper = ({
       mutator={mutator}
       instance={instance}
       onClose={onClose}
+      onSave={onSave}
       initialValues={initialValues}
       onSubmit={onSubmit}
       action={action}

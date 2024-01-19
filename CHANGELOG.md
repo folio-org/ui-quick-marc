@@ -17,6 +17,7 @@
 * [UIQM-555](https://issues.folio.org/browse/UIQM-555) Not change the pane header of the authority record while editing the 1xx field.
 * [UIQM-596](https://issues.folio.org/browse/UIQM-596) Fix http error handling when Editing/Creating/Deriving MARC records.
 * [UIQM-576](https://issues.folio.org/browse/UIQM-576) Generate 001 per selected authority file configuration.
+* [UIQM-598](https://issues.folio.org/browse/UIQM-598) *BREAKING* Added onSave prop to handle saving records separately.
 
 ## [7.0.5](https://github.com/folio-org/ui-quick-marc/tree/v7.0.5) (2023-12-11)
 

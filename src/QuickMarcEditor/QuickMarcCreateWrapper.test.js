@@ -268,21 +268,19 @@ const locations = [{
 const renderQuickMarcCreateWrapper = ({
   instance,
   onClose = noop,
+  onSave = noop,
   mutator,
-  history,
-  location,
   marcType = MARC_TYPES.HOLDINGS,
 }) => (render(
   <Harness>
     <QuickMarcCreateWrapper
       onClose={onClose}
+      onSave={onSave}
       instance={instance}
       mutator={mutator}
       action={QUICK_MARC_ACTIONS.CREATE}
       marcType={marcType}
       initialValues={mockFormValues(marcType)}
-      history={history}
-      location={location}
       locations={locations}
     />
   </Harness>,
@@ -332,8 +330,6 @@ describe('Given QuickMarcCreateWrapper', () => {
     const { container } = renderQuickMarcCreateWrapper({
       instance,
       mutator,
-      history,
-      location,
     });
 
     await runAxeTest({
@@ -348,9 +344,7 @@ describe('Given QuickMarcCreateWrapper', () => {
       const { getByText } = renderQuickMarcCreateWrapper({
         instance,
         mutator,
-        history,
         onClose,
-        location,
       });
 
       fireEvent.click(getByText('stripes-acq-components.FormFooter.cancel'));
@@ -367,8 +361,6 @@ describe('Given QuickMarcCreateWrapper', () => {
         getByText = renderQuickMarcCreateWrapper({
           instance,
           mutator,
-          history,
-          location,
         }).getByText;
       });
 
@@ -377,7 +369,9 @@ describe('Given QuickMarcCreateWrapper', () => {
       expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
     }, 100);
 
-    it('should create authority record with correct payload and redirect when finished', async () => {
+    it('should create authority record with correct payload and call onSave', async () => {
+      const mockOnSave = jest.fn();
+
       const payload = {
         externalId: '00000000-0000-0000-0000-000000000000',
         externalHrid: 'in00000000022',
@@ -443,9 +437,8 @@ describe('Given QuickMarcCreateWrapper', () => {
       const { getByText } = renderQuickMarcCreateWrapper({
         instance,
         mutator,
-        history,
-        location: { search: '' },
         marcType: MARC_TYPES.AUTHORITY,
+        onSave: mockOnSave,
       });
 
       fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
@@ -455,10 +448,7 @@ describe('Given QuickMarcCreateWrapper', () => {
         expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.success' });
         expect(mutator.quickMarcEditMarcRecord.POST).toHaveBeenCalledWith(payload);
 
-        expect(history.push).toHaveBeenCalledWith({
-          pathname: '/marc-authorities/authorities/externalId-1',
-          search: '',
-        });
+        expect(mockOnSave).toHaveBeenCalled();
       });
     });
 
@@ -470,8 +460,6 @@ describe('Given QuickMarcCreateWrapper', () => {
           getByText = renderQuickMarcCreateWrapper({
             instance,
             mutator,
-            history,
-            location,
           }).getByText;
         });
 
@@ -496,8 +484,6 @@ describe('Given QuickMarcCreateWrapper', () => {
         renderQuickMarcCreateWrapper({
           instance,
           mutator,
-          history,
-          location,
           marcType: MARC_TYPES.BIB,
         });
       });
@@ -534,8 +520,6 @@ describe('Given QuickMarcCreateWrapper', () => {
           renderQuickMarcCreateWrapper({
             instance,
             mutator,
-            history,
-            location,
             marcType: MARC_TYPES.HOLDINGS,
           });
         });

@@ -22,15 +22,16 @@ jest.mock('./QuickMarcEditor', () => {
   };
 });
 
-const renderQuickMarc = ({
-  basePath,
-  onClose,
-  history,
-}) => (render(
-  <Harness history={history}>
+const mockOnSave = jest.fn();
+const mockOnClose = jest.fn();
+
+const renderQuickMarc = (props = {}) => (render(
+  <Harness history={props.history}>
     <QuickMarc
-      onClose={onClose}
-      basePath={basePath}
+      onClose={mockOnClose}
+      onSave={mockOnSave}
+      basePath="/some-path"
+      {...props}
     />
   </Harness>,
 ));
@@ -48,11 +49,7 @@ describe('Given Quick Marc', () => {
     });
 
     it('should display correct route', () => {
-      const { getByText } = renderQuickMarc({
-        onClose: jest.fn(),
-        basePath: '/some-path',
-        history,
-      });
+      const { getByText } = renderQuickMarc({ history });
 
       expect(getByText('QuickMarcEditorContainer derive')).toBeDefined();
     });
@@ -64,11 +61,7 @@ describe('Given Quick Marc', () => {
     });
 
     it('should display correct route', () => {
-      const { getByText } = renderQuickMarc({
-        onClose: jest.fn(),
-        basePath: '/some-path',
-        history,
-      });
+      const { getByText } = renderQuickMarc({ history });
 
       expect(getByText('QuickMarcEditorContainer edit')).toBeDefined();
     });
@@ -80,11 +73,7 @@ describe('Given Quick Marc', () => {
     });
 
     it('should display correct route', () => {
-      const { getByText } = renderQuickMarc({
-        onClose: jest.fn(),
-        basePath: '/some-path',
-        history,
-      });
+      const { getByText } = renderQuickMarc({ history });
 
       expect(getByText('QuickMarcEditorContainer create')).toBeDefined();
     });

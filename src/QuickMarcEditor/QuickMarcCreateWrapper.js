@@ -4,7 +4,6 @@ import React, {
   useState,
 } from 'react';
 import PropTypes from 'prop-types';
-import ReactRouterPropTypes from 'react-router-prop-types';
 import flow from 'lodash/flow';
 
 import { useShowCallout } from '@folio/stripes-acq-components';
@@ -35,25 +34,23 @@ import {
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
-  history: ReactRouterPropTypes.history.isRequired,
   initialValues: PropTypes.object.isRequired,
   instance: PropTypes.object,
-  location: ReactRouterPropTypes.location.isRequired,
   locations: PropTypes.object.isRequired,
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   fixedFieldSpec: PropTypes.object.isRequired,
   mutator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
 };
 
 const QuickMarcCreateWrapper = ({
   action,
   instance,
   onClose,
+  onSave,
   initialValues,
   mutator,
-  history,
-  location,
   marcType,
   fixedFieldSpec,
   locations,
@@ -93,22 +90,13 @@ const QuickMarcCreateWrapper = ({
     return validate(formValuesForValidation.records);
   }, [validate, prepareForSubmit]);
 
-  const redirectToRecord = (externalId, instanceId) => {
-    let path;
-
+  const redirectToRecord = useCallback((externalId, instanceId) => {
     if (marcType === MARC_TYPES.HOLDINGS) {
-      path = `/inventory/view/${instanceId}/${externalId}`;
-    } else if (marcType === MARC_TYPES.BIB) {
-      path = `/inventory/view/${externalId}`;
-    } else if (marcType === MARC_TYPES.AUTHORITY) {
-      path = `/marc-authorities/authorities/${externalId}`;
+      onSave(`${instanceId}/${externalId}`);
+    } else {
+      onSave(externalId);
     }
-
-    history.push({
-      pathname: path,
-      search: location.search,
-    });
-  };
+  }, [onSave, marcType]);
 
   const onSubmit = useCallback(async (formValues) => {
     const formValuesToProcess = flow(
