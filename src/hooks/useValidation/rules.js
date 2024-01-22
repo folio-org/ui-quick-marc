@@ -22,9 +22,13 @@ import {
   validateTagLength,
   validateEmptySubfields,
   validateSubfieldChanged,
+  validateSubfieldValueMatch,
   validateContentExistence,
 } from './validators';
-import { is010LinkedToBibRecord } from '../../QuickMarcEditor/utils';
+import {
+  is010LinkedToBibRecord,
+  isFolioSourceFileNotSelected,
+} from '../../QuickMarcEditor/utils';
 
 const RULES = {
   EXISTS: validateExistence,
@@ -42,6 +46,7 @@ const RULES = {
   TAG_CHARACTERS: validateTagCharacters,
   EMPTY_SUBFIELDS: validateEmptySubfields,
   SUBFIELD_VALUE_EXISTS: validateSubfieldValueExists,
+  SUBFIELD_VALUE_MATCH: validateSubfieldValueMatch,
   SUBFIELD_CHANGED: validateSubfieldChanged,
 };
 
@@ -189,12 +194,6 @@ const BASE_AUTHORITY_VALIDATORS = [
   ...COMMON_VALIDATORS,
   {
     tag: '010',
-    validator: RULES.EXISTS,
-    ignore: ({ initialValues, naturalId }) => !is010LinkedToBibRecord(initialValues.records, naturalId),
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.010.removed" />,
-  },
-  {
-    tag: '010',
     subfield: '$a',
     ignore: ({ initialValues, naturalId }) => !is010LinkedToBibRecord(initialValues.records, naturalId),
     validator: RULES.SUBFIELD_VALUE_EXISTS,
@@ -247,6 +246,34 @@ const BASE_AUTHORITY_VALIDATORS = [
 ];
 
 const CREATE_AUTHORITY_VALIDATORS = [
+  {
+    tag: '010',
+    validator: RULES.EXISTS,
+    ignore: isFolioSourceFileNotSelected,
+    message: () => <FormattedMessage id="ui-quick-marc.record.error.010.absent" />,
+  },
+  {
+    tag: '010',
+    subfield: '$a',
+    ignore: isFolioSourceFileNotSelected,
+    pattern: () => /^[a-zA-Z]/,
+    validator: RULES.SUBFIELD_VALUE_MATCH,
+    message: () => <FormattedMessage id="ui-quick-marc.record.error.010.prefix.absent" />,
+  },
+  {
+    tag: '010',
+    subfield: '$a',
+    ignore: isFolioSourceFileNotSelected,
+    pattern: ({ marcRecords, sourceFiles }) => {
+      const record001 = marcRecords.find(record => record.tag === '001');
+      const selectedSourceFileId = record001?._sourceFile.id;
+      const codes = sourceFiles.find(sourceFile => sourceFile.id === selectedSourceFileId)?.codes || [];
+
+      return new RegExp(`^(${codes.join('|')})`);
+    },
+    validator: RULES.SUBFIELD_VALUE_MATCH,
+    message: () => <FormattedMessage id="ui-quick-marc.record.error.010.prefix.invalid" />,
+  },
   {
     tag: '001',
     validator: RULES.CONTENT_EXISTS,

@@ -713,6 +713,18 @@ describe('useValidation', () => {
       action: QUICK_MARC_ACTIONS.EDIT,
       linksCount: 1,
       naturalId: 'n123456',
+      sourceFiles: [
+        {
+          id: '1',
+          source: 'local',
+          codes: ['k'],
+        },
+        {
+          id: '2',
+          source: 'folio',
+          codes: ['n', 'fe'],
+        },
+      ],
     };
 
     describe('when record is valid', () => {
@@ -750,12 +762,12 @@ describe('useValidation', () => {
               },
               {
                 id: '3',
-                content: '',
+                content: '$a test',
                 tag: '100',
               },
               {
                 id: '4',
-                content: '',
+                content: '$a n1',
                 tag: '010',
               },
             ],
@@ -938,6 +950,335 @@ describe('useValidation', () => {
       });
     });
 
+    describe('when action is CREATE', () => {
+      describe('and 010 row is absent and selected source file in 001 is local', () => {
+        it('should not return an error message', () => {
+          const { result } = renderHook(() => useValidation({
+            ...marcContext,
+            action: QUICK_MARC_ACTIONS.CREATE,
+          }));
+
+          const record = {
+            ...initialValues,
+            records: [
+              {
+                id: '1',
+                content: '04706cxm a2200865ni 4500',
+                tag: 'LDR',
+              },
+              {
+                id: '2',
+                content: 'pre1',
+                tag: '001',
+                _sourceFile: {
+                  id: '1',
+                  source: 'local',
+                },
+              },
+              {
+                id: '2',
+                content: {},
+                tag: '008',
+              },
+              {
+                id: '3',
+                content: '$a test',
+                tag: '100',
+              },
+            ],
+          };
+
+          expect(result.current.validate(record.records)).toBeUndefined();
+        });
+      });
+
+      describe('and 010 row is absent and selected source file in 001 is folio', () => {
+        it('should return an error message', () => {
+          const { result } = renderHook(() => useValidation({
+            ...marcContext,
+            action: QUICK_MARC_ACTIONS.CREATE,
+          }));
+
+          const record = {
+            ...initialValues,
+            records: [
+              {
+                id: '1',
+                content: '04706cxm a2200865ni 4500',
+                tag: 'LDR',
+              },
+              {
+                id: '2',
+                content: 'pre1',
+                tag: '001',
+                _sourceFile: {
+                  id: '1',
+                  source: 'folio',
+                },
+              },
+              {
+                id: '2',
+                content: {},
+                tag: '008',
+              },
+              {
+                id: '3',
+                content: '$a test',
+                tag: '100',
+              },
+            ],
+          };
+
+          expect(result.current.validate(record.records).props.id).toBe('ui-quick-marc.record.error.010.absent');
+        });
+      });
+
+      describe('and 010 prefix is empty and selected source file in 001 is local', () => {
+        it('should not return an error message', () => {
+          const { result } = renderHook(() => useValidation({
+            ...marcContext,
+            action: QUICK_MARC_ACTIONS.CREATE,
+          }));
+
+          const emptyPrefix = '';
+          const valueOf010$a = `${emptyPrefix}123`;
+
+          const record = {
+            ...initialValues,
+            records: [
+              {
+                id: '1',
+                content: '04706cxm a2200865ni 4500',
+                tag: 'LDR',
+              },
+              {
+                id: '2',
+                content: valueOf010$a,
+                tag: '001',
+                _sourceFile: {
+                  id: '1',
+                  source: 'local',
+                },
+              },
+              {
+                id: '2',
+                content: {},
+                tag: '008',
+              },
+              {
+                id: '3',
+                content: '$a test',
+                tag: '100',
+              },
+              {
+                id: '4',
+                content: `$a ${valueOf010$a}`,
+                tag: '010',
+              },
+            ],
+          };
+
+          expect(result.current.validate(record.records)).toBeUndefined();
+        });
+      });
+
+      describe('and 010 prefix is empty and selected source file in 001 is folio', () => {
+        it('should return an error message', () => {
+          const { result } = renderHook(() => useValidation({
+            ...marcContext,
+            action: QUICK_MARC_ACTIONS.CREATE,
+          }));
+
+          const emptyPrefix = '';
+          const valueOf010$a = `${emptyPrefix}123`;
+
+          const record = {
+            ...initialValues,
+            records: [
+              {
+                id: '1',
+                content: '04706cxm a2200865ni 4500',
+                tag: 'LDR',
+              },
+              {
+                id: '2',
+                content: valueOf010$a,
+                tag: '001',
+                _sourceFile: {
+                  id: '1',
+                  source: 'folio',
+                },
+              },
+              {
+                id: '2',
+                content: {},
+                tag: '008',
+              },
+              {
+                id: '3',
+                content: '$a test',
+                tag: '100',
+              },
+              {
+                id: '4',
+                content: `$a ${valueOf010$a}`,
+                tag: '010',
+              },
+            ],
+          };
+
+          expect(result.current.validate(record.records).props.id).toBe('ui-quick-marc.record.error.010.prefix.absent');
+        });
+      });
+
+      describe('and 010 prefix is invalid and selected source file in 001 is local', () => {
+        it('should not return an error message', () => {
+          const { result } = renderHook(() => useValidation({
+            ...marcContext,
+            action: QUICK_MARC_ACTIONS.CREATE,
+          }));
+
+          const prefix = 'invalidPrefix';
+          const valueOf010$a = `${prefix}123`;
+
+          const record = {
+            ...initialValues,
+            records: [
+              {
+                id: '1',
+                content: '04706cxm a2200865ni 4500',
+                tag: 'LDR',
+              },
+              {
+                id: '2',
+                content: valueOf010$a,
+                tag: '001',
+                _sourceFile: {
+                  id: '1',
+                  source: 'local',
+                },
+              },
+              {
+                id: '2',
+                content: {},
+                tag: '008',
+              },
+              {
+                id: '3',
+                content: '$a test',
+                tag: '100',
+              },
+              {
+                id: '4',
+                content: `$a ${valueOf010$a}`,
+                tag: '010',
+              },
+            ],
+          };
+
+          expect(result.current.validate(record.records)).toBeUndefined();
+        });
+      });
+
+      describe('and 010 prefix is valid and selected source file in 001 is folio', () => {
+        it('should not return an error message', () => {
+          const { result } = renderHook(() => useValidation({
+            ...marcContext,
+            action: QUICK_MARC_ACTIONS.CREATE,
+          }));
+
+          const validPrefix = marcContext.sourceFiles[1].codes[0];
+          const valueOf010$a = `${validPrefix}123`;
+
+          const record = {
+            ...initialValues,
+            records: [
+              {
+                id: '1',
+                content: '04706cxm a2200865ni 4500',
+                tag: 'LDR',
+              },
+              {
+                id: '2',
+                content: valueOf010$a,
+                tag: '001',
+                _sourceFile: {
+                  id: '2',
+                  source: 'folio',
+                },
+              },
+              {
+                id: '2',
+                content: {},
+                tag: '008',
+              },
+              {
+                id: '3',
+                content: '$a test',
+                tag: '100',
+              },
+              {
+                id: '4',
+                content: `$a ${valueOf010$a}`,
+                tag: '010',
+              },
+            ],
+          };
+
+          expect(result.current.validate(record.records)).toBeUndefined();
+        });
+      });
+
+      describe('and 010 prefix is invalid and selected source file in 001 is folio', () => {
+        it('should return an error message', () => {
+          const { result } = renderHook(() => useValidation({
+            ...marcContext,
+            action: QUICK_MARC_ACTIONS.CREATE,
+          }));
+
+          const prefix = 'invalidPrefix';
+          const valueOf010$a = `${prefix}123`;
+
+          const record = {
+            ...initialValues,
+            records: [
+              {
+                id: '1',
+                content: '04706cxm a2200865ni 4500',
+                tag: 'LDR',
+              },
+              {
+                id: '2',
+                content: valueOf010$a,
+                tag: '001',
+                _sourceFile: {
+                  id: '2',
+                  source: 'folio',
+                },
+              },
+              {
+                id: '2',
+                content: {},
+                tag: '008',
+              },
+              {
+                id: '3',
+                content: '$a test',
+                tag: '100',
+              },
+              {
+                id: '4',
+                content: `$a ${valueOf010$a}`,
+                tag: '010',
+              },
+            ],
+          };
+
+          expect(result.current.validate(record.records).props.id).toBe('ui-quick-marc.record.error.010.prefix.invalid');
+        });
+      });
+    });
+
     describe('when authority is linked to bib record', () => {
       describe('when 1XX tag is changed', () => {
         it('should return an error', () => {
@@ -1112,7 +1453,7 @@ describe('useValidation', () => {
       });
 
       describe('when 010 was removed', () => {
-        it('should return an error message', () => {
+        it('should not return an error message', () => {
           const _initialValues = {
             leader: '04706cxm a2200865ni 4500',
             records: [
@@ -1163,7 +1504,7 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.010.removed');
+          expect(result.current.validate(record.records)).toBeUndefined();
         });
       });
     });

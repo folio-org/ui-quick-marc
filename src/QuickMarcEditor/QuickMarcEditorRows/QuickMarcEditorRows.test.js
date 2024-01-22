@@ -173,6 +173,7 @@ const getComponent = (props) => (
             markRecordUnlinked: jest.fn(),
             restoreRecord: jest.fn(),
             updateRecord: mockUpdateRecord,
+            changeControlNumberRecord: jest.fn(),
           }}
           subtype="m"
           isLoadingLinkSuggestions={false}

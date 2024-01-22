@@ -18,6 +18,13 @@ jest.mock('../../SourceFileLookup', () => ({
 
 const hrid = 'n1';
 const mockGetAuthorityFileNextHrid = jest.fn().mockResolvedValue({ hrid });
+const mockOnChangeControlNumberRecord = jest.fn();
+const record001 = {
+  tag: '001',
+};
+const recordRows = [
+  record001,
+];
 
 jest.mock('@folio/stripes/components', () => ({
   ...jest.requireActual('@folio/stripes/components'),
@@ -38,7 +45,7 @@ const getControlNumberField = (props = {}, formProps = {}) => (
     mutators={{ ...arrayMutators }}
     initialValues={{
       controlNumber: 'n 50000331',
-      records: [],
+      records: recordRows,
     }}
     {...formProps}
     render={({ values }) => (
@@ -48,6 +55,7 @@ const getControlNumberField = (props = {}, formProps = {}) => (
         marcType={MARC_TYPES.AUTHORITY}
         action={QUICK_MARC_ACTIONS.CREATE}
         recordRows={values.records}
+        onChangeControlNumberRecord={mockOnChangeControlNumberRecord}
         {...props}
       />
     )}
@@ -102,7 +110,7 @@ describe('Given ControlNumberField', () => {
   describe('when action is CREATE an authority record', () => {
     describe('and a local source file is selected', () => {
       it('should have row content equal to the next HRID', async () => {
-        const { getByText, getByRole } = renderControlNumberField({
+        const { getByText } = renderControlNumberField({
           action: QUICK_MARC_ACTIONS.CREATE,
           marcType: MARC_TYPES.AUTHORITY,
         });
@@ -117,7 +125,14 @@ describe('Given ControlNumberField', () => {
         await act(async () => SourceFileLookup.mock.calls[0][0].onSourceFileSelect(sourceFile));
 
         expect(mockGetAuthorityFileNextHrid).toHaveBeenCalledWith(sourceFile.id);
-        expect(getByRole('textbox', { name: 'ui-quick-marc.record.subfield' }).value).toBe(hrid);
+        expect(mockOnChangeControlNumberRecord).toHaveBeenCalledWith({
+          field: {
+            ...record001,
+            content: hrid,
+          },
+          index: recordRows.findIndex(record => record.tag === '001'),
+          sourceFile,
+        });
       });
     });
 
@@ -131,6 +146,7 @@ describe('Given ControlNumberField', () => {
         const formProps = {
           initialValues: {
             records: [
+              record001,
               {
                 id: 'fd2341be-b34f-4f4b-ad69-872ea4b62142',
                 tag: '010',
@@ -140,19 +156,31 @@ describe('Given ControlNumberField', () => {
           },
         };
 
-        const { getByRole, rerender } = renderControlNumberField(props, formProps);
+        const { rerender } = renderControlNumberField(props, formProps);
 
         const sourceFile = {
+          id: 'source-file-id',
           source: 'folio',
         };
 
         await act(async () => SourceFileLookup.mock.calls[0][0].onSourceFileSelect(sourceFile));
 
-        expect(getByRole('textbox', { name: 'ui-quick-marc.record.subfield' }).value).toBe('some content');
+        expect(mockOnChangeControlNumberRecord).toHaveBeenNthCalledWith(1, {
+          field: {
+            ...record001,
+            content: 'some content',
+          },
+          index: formProps.initialValues.records.findIndex(record => record.tag === '001'),
+          sourceFile,
+        });
 
-        rerender(getControlNumberField(props, {
+        const newFormProps = {
           initialValues: {
             records: [
+              {
+                ...record001,
+                _sourceFile: sourceFile,
+              },
               {
                 id: 'fd2341be-b34f-4f4b-ad69-872ea4b62142',
                 tag: '010',
@@ -160,9 +188,19 @@ describe('Given ControlNumberField', () => {
               },
             ],
           },
-        }));
+        };
 
-        expect(getByRole('textbox', { name: 'ui-quick-marc.record.subfield' }).value).toBe('some content2');
+        rerender(getControlNumberField(props, newFormProps));
+
+        expect(mockOnChangeControlNumberRecord).toHaveBeenNthCalledWith(2, {
+          field: {
+            ...record001,
+            content: 'some content2',
+            _sourceFile: sourceFile,
+          },
+          index: newFormProps.initialValues.records.findIndex(record => record.tag === '001'),
+          sourceFile,
+        });
       });
     });
 

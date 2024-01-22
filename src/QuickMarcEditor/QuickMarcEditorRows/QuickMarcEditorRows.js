@@ -79,6 +79,7 @@ const QuickMarcEditorRows = ({
     moveRecord,
     restoreRecord,
     updateRecord,
+    changeControlNumberRecord,
   },
   marcType,
   fixedFieldSpec,
@@ -460,6 +461,7 @@ const QuickMarcEditorRows = ({
                         marcType={marcType}
                         action={action}
                         recordRows={records.value}
+                        onChangeControlNumberRecord={changeControlNumberRecord}
                       />
                     )
                   }
@@ -598,9 +600,11 @@ QuickMarcEditorRows.propTypes = {
     _isLinked: PropTypes.bool,
     _isAdded: PropTypes.bool,
     _fieldTypeSwapContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    _sourceFile: PropTypes.object,
   })),
   mutators: PropTypes.shape({
     addRecord: PropTypes.func.isRequired,
+    changeControlNumberRecord: PropTypes.func.isRequired,
     deleteRecord: PropTypes.func.isRequired,
     markRecordDeleted: PropTypes.func.isRequired,
     markRecordLinked: PropTypes.func.isRequired,

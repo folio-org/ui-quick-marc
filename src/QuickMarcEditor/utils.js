@@ -45,6 +45,7 @@ import {
   ERROR_TYPES,
   EXTERNAL_INSTANCE_APIS,
   OKAPI_TENANT_HEADER,
+  SOURCES,
 } from '../common/constants';
 
 export const isLastRecord = recordRow => {
@@ -643,6 +644,17 @@ export const updateRecordAtIndex = (index, field, state) => {
   return records;
 };
 
+export const changeControlNumberRecordAtIndex = (index, field, state, sourceFile) => {
+  const records = [...state.formState.values.records];
+
+  records[index] = {
+    ...field,
+    _sourceFile: sourceFile,
+  };
+
+  return records;
+};
+
 export const removeDeletedRecords = (formValues) => {
   const { records } = formValues;
 
@@ -1120,4 +1132,10 @@ export const applyCentralTenantInHeaders = (location, stripes, marcType) => {
     && [MARC_TYPES.BIB, MARC_TYPES.AUTHORITY].includes(marcType)
     && checkIfUserInMemberTenant(stripes)
   );
+};
+
+export const isFolioSourceFileNotSelected = ({ marcRecords }) => {
+  const record001 = marcRecords.find(record => record.tag === '001');
+
+  return record001 && record001._sourceFile.source !== SOURCES.FOLIO;
 };
