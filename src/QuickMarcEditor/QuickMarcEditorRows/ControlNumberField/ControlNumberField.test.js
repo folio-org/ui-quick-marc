@@ -18,7 +18,6 @@ jest.mock('../../SourceFileLookup', () => ({
 
 const hrid = 'n1';
 const mockGetAuthorityFileNextHrid = jest.fn().mockResolvedValue({ hrid });
-const mockOnChangeControlNumberRecord = jest.fn();
 const record001 = {
   tag: '001',
 };
@@ -55,7 +54,6 @@ const getControlNumberField = (props = {}, formProps = {}) => (
         marcType={MARC_TYPES.AUTHORITY}
         action={QUICK_MARC_ACTIONS.CREATE}
         recordRows={values.records}
-        onChangeControlNumberRecord={mockOnChangeControlNumberRecord}
         {...props}
       />
     )}
@@ -110,7 +108,7 @@ describe('Given ControlNumberField', () => {
   describe('when action is CREATE an authority record', () => {
     describe('and a local source file is selected', () => {
       it('should have row content equal to the next HRID', async () => {
-        const { getByText } = renderControlNumberField({
+        const { getByText, getByRole } = renderControlNumberField({
           action: QUICK_MARC_ACTIONS.CREATE,
           marcType: MARC_TYPES.AUTHORITY,
         });
@@ -125,14 +123,7 @@ describe('Given ControlNumberField', () => {
         await act(async () => SourceFileLookup.mock.calls[0][0].onSourceFileSelect(sourceFile));
 
         expect(mockGetAuthorityFileNextHrid).toHaveBeenCalledWith(sourceFile.id);
-        expect(mockOnChangeControlNumberRecord).toHaveBeenCalledWith({
-          field: {
-            ...record001,
-            content: hrid,
-          },
-          index: recordRows.findIndex(record => record.tag === '001'),
-          sourceFile,
-        });
+        expect(getByRole('textbox', { name: 'ui-quick-marc.record.subfield' }).value).toBe(hrid);
       });
     });
 
@@ -156,7 +147,7 @@ describe('Given ControlNumberField', () => {
           },
         };
 
-        const { rerender } = renderControlNumberField(props, formProps);
+        const { rerender, getByRole } = renderControlNumberField(props, formProps);
 
         const sourceFile = {
           id: 'source-file-id',
@@ -165,22 +156,11 @@ describe('Given ControlNumberField', () => {
 
         await act(async () => SourceFileLookup.mock.calls[0][0].onSourceFileSelect(sourceFile));
 
-        expect(mockOnChangeControlNumberRecord).toHaveBeenNthCalledWith(1, {
-          field: {
-            ...record001,
-            content: 'some content',
-          },
-          index: formProps.initialValues.records.findIndex(record => record.tag === '001'),
-          sourceFile,
-        });
+        expect(getByRole('textbox', { name: 'ui-quick-marc.record.subfield' }).value).toBe('some content');
 
         const newFormProps = {
           initialValues: {
             records: [
-              {
-                ...record001,
-                _sourceFile: sourceFile,
-              },
               {
                 id: 'fd2341be-b34f-4f4b-ad69-872ea4b62142',
                 tag: '010',
@@ -192,15 +172,7 @@ describe('Given ControlNumberField', () => {
 
         rerender(getControlNumberField(props, newFormProps));
 
-        expect(mockOnChangeControlNumberRecord).toHaveBeenNthCalledWith(2, {
-          field: {
-            ...record001,
-            content: 'some content2',
-            _sourceFile: sourceFile,
-          },
-          index: newFormProps.initialValues.records.findIndex(record => record.tag === '001'),
-          sourceFile,
-        });
+        expect(getByRole('textbox', { name: 'ui-quick-marc.record.subfield' }).value).toBe('some content2');
       });
     });
 

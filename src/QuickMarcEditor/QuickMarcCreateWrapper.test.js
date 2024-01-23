@@ -141,10 +141,6 @@ const mockRecords = {
     {
       'tag': '001',
       'content': 'value1',
-      _sourceFile: {
-        id: 'source-file-id',
-        source: 'local',
-      },
     },
     {
       'tag': '008',

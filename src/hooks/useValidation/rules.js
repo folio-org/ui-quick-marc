@@ -264,10 +264,8 @@ const CREATE_AUTHORITY_VALIDATORS = [
     tag: '010',
     subfield: '$a',
     ignore: isFolioSourceFileNotSelected,
-    pattern: ({ marcRecords, sourceFiles }) => {
-      const record001 = marcRecords.find(record => record.tag === '001');
-      const selectedSourceFileId = record001?._sourceFile.id;
-      const codes = sourceFiles.find(sourceFile => sourceFile.id === selectedSourceFileId)?.codes || [];
+    pattern: ({ sourceFiles, selectedSourceFile }) => {
+      const codes = sourceFiles.find(sourceFile => sourceFile.id === selectedSourceFile?.id)?.codes || [];
 
       return new RegExp(`^(${codes.join('|')})`);
     },

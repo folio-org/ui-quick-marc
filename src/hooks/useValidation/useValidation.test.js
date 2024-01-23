@@ -1,5 +1,6 @@
 import { renderHook } from '@folio/jest-config-stripes/testing-library/react';
 
+import Harness from '../../../test/jest/helpers/harness';
 import { useValidation } from './useValidation';
 import { QUICK_MARC_ACTIONS } from '../../QuickMarcEditor/constants';
 import { MARC_TYPES } from '../../common/constants';
@@ -35,6 +36,8 @@ const linkingRules = [
     'autoLinkingEnabled': false,
   },
 ];
+
+const getWrapper = (extraProps = {}) => props => <Harness {...props} {...extraProps} />;
 
 describe('useValidation', () => {
   describe('when validating common rules', () => {
@@ -707,6 +710,18 @@ describe('useValidation', () => {
       ],
     };
 
+    const localSourceFile = {
+      id: '1',
+      source: 'local',
+      codes: ['k'],
+    };
+
+    const folioSourceFile = {
+      id: '2',
+      source: 'folio',
+      codes: ['n', 'fe'],
+    };
+
     const marcContext = {
       initialValues,
       marcType: MARC_TYPES.AUTHORITY,
@@ -714,16 +729,8 @@ describe('useValidation', () => {
       linksCount: 1,
       naturalId: 'n123456',
       sourceFiles: [
-        {
-          id: '1',
-          source: 'local',
-          codes: ['k'],
-        },
-        {
-          id: '2',
-          source: 'folio',
-          codes: ['n', 'fe'],
-        },
+        localSourceFile,
+        folioSourceFile,
       ],
     };
 
@@ -736,45 +743,6 @@ describe('useValidation', () => {
         };
 
         expect(result.current.validate(record.records)).not.toBeDefined();
-      });
-    });
-
-    describe('when action is CREATE', () => {
-      describe('and 001 row content is empty', () => {
-        it('should return an error message', () => {
-          const { result } = renderHook(() => useValidation({
-            ...marcContext,
-            action: QUICK_MARC_ACTIONS.CREATE,
-          }));
-
-          const record = {
-            ...initialValues,
-            records: [
-              {
-                id: '1',
-                content: '04706cxm a2200865ni 4500',
-                tag: 'LDR',
-              },
-              {
-                id: '2',
-                content: {},
-                tag: '008',
-              },
-              {
-                id: '3',
-                content: '$a test',
-                tag: '100',
-              },
-              {
-                id: '4',
-                content: '$a n1',
-                tag: '010',
-              },
-            ],
-          };
-
-          expect(result.current.validate(record.records).props.id).toBe('ui-quick-marc.record.error.controlField.content.empty');
-        });
       });
     });
 
@@ -951,12 +919,57 @@ describe('useValidation', () => {
     });
 
     describe('when action is CREATE', () => {
-      describe('and 010 row is absent and selected source file in 001 is local', () => {
-        it('should not return an error message', () => {
+      describe('and 001 row content is empty', () => {
+        it('should return an error message', () => {
           const { result } = renderHook(() => useValidation({
             ...marcContext,
             action: QUICK_MARC_ACTIONS.CREATE,
-          }));
+          }), {
+            wrapper: getWrapper(),
+          });
+
+          const record = {
+            ...initialValues,
+            records: [
+              {
+                id: '1',
+                content: '04706cxm a2200865ni 4500',
+                tag: 'LDR',
+              },
+              {
+                id: '2',
+                content: {},
+                tag: '008',
+              },
+              {
+                id: '3',
+                content: '$a test',
+                tag: '100',
+              },
+              {
+                id: '4',
+                content: '$a n1',
+                tag: '010',
+              },
+            ],
+          };
+
+          expect(result.current.validate(record.records).props.id).toBe('ui-quick-marc.record.error.controlField.content.empty');
+        });
+      });
+
+      describe('and 010 row is absent and selected source file in 001 is local', () => {
+        it('should not return an error message', () => {
+          const quickMarcContext = {
+            selectedSourceFile: localSourceFile,
+          };
+
+          const { result } = renderHook(() => useValidation({
+            ...marcContext,
+            action: QUICK_MARC_ACTIONS.CREATE,
+          }), {
+            wrapper: getWrapper({ quickMarcContext }),
+          });
 
           const record = {
             ...initialValues,
@@ -970,10 +983,6 @@ describe('useValidation', () => {
                 id: '2',
                 content: 'pre1',
                 tag: '001',
-                _sourceFile: {
-                  id: '1',
-                  source: 'local',
-                },
               },
               {
                 id: '2',
@@ -994,10 +1003,16 @@ describe('useValidation', () => {
 
       describe('and 010 row is absent and selected source file in 001 is folio', () => {
         it('should return an error message', () => {
+          const quickMarcContext = {
+            selectedSourceFile: folioSourceFile,
+          };
+
           const { result } = renderHook(() => useValidation({
             ...marcContext,
             action: QUICK_MARC_ACTIONS.CREATE,
-          }));
+          }), {
+            wrapper: getWrapper({ quickMarcContext }),
+          });
 
           const record = {
             ...initialValues,
@@ -1011,10 +1026,6 @@ describe('useValidation', () => {
                 id: '2',
                 content: 'pre1',
                 tag: '001',
-                _sourceFile: {
-                  id: '1',
-                  source: 'folio',
-                },
               },
               {
                 id: '2',
@@ -1035,10 +1046,16 @@ describe('useValidation', () => {
 
       describe('and 010 prefix is empty and selected source file in 001 is local', () => {
         it('should not return an error message', () => {
+          const quickMarcContext = {
+            selectedSourceFile: localSourceFile,
+          };
+
           const { result } = renderHook(() => useValidation({
             ...marcContext,
             action: QUICK_MARC_ACTIONS.CREATE,
-          }));
+          }), {
+            wrapper: getWrapper({ quickMarcContext }),
+          });
 
           const emptyPrefix = '';
           const valueOf010$a = `${emptyPrefix}123`;
@@ -1055,10 +1072,6 @@ describe('useValidation', () => {
                 id: '2',
                 content: valueOf010$a,
                 tag: '001',
-                _sourceFile: {
-                  id: '1',
-                  source: 'local',
-                },
               },
               {
                 id: '2',
@@ -1084,10 +1097,16 @@ describe('useValidation', () => {
 
       describe('and 010 prefix is empty and selected source file in 001 is folio', () => {
         it('should return an error message', () => {
+          const quickMarcContext = {
+            selectedSourceFile: folioSourceFile,
+          };
+
           const { result } = renderHook(() => useValidation({
             ...marcContext,
             action: QUICK_MARC_ACTIONS.CREATE,
-          }));
+          }), {
+            wrapper: getWrapper({ quickMarcContext }),
+          });
 
           const emptyPrefix = '';
           const valueOf010$a = `${emptyPrefix}123`;
@@ -1104,10 +1123,6 @@ describe('useValidation', () => {
                 id: '2',
                 content: valueOf010$a,
                 tag: '001',
-                _sourceFile: {
-                  id: '1',
-                  source: 'folio',
-                },
               },
               {
                 id: '2',
@@ -1133,10 +1148,16 @@ describe('useValidation', () => {
 
       describe('and 010 prefix is invalid and selected source file in 001 is local', () => {
         it('should not return an error message', () => {
+          const quickMarcContext = {
+            selectedSourceFile: localSourceFile,
+          };
+
           const { result } = renderHook(() => useValidation({
             ...marcContext,
             action: QUICK_MARC_ACTIONS.CREATE,
-          }));
+          }), {
+            wrapper: getWrapper({ quickMarcContext }),
+          });
 
           const prefix = 'invalidPrefix';
           const valueOf010$a = `${prefix}123`;
@@ -1153,10 +1174,6 @@ describe('useValidation', () => {
                 id: '2',
                 content: valueOf010$a,
                 tag: '001',
-                _sourceFile: {
-                  id: '1',
-                  source: 'local',
-                },
               },
               {
                 id: '2',
@@ -1182,10 +1199,16 @@ describe('useValidation', () => {
 
       describe('and 010 prefix is valid and selected source file in 001 is folio', () => {
         it('should not return an error message', () => {
+          const quickMarcContext = {
+            selectedSourceFile: folioSourceFile,
+          };
+
           const { result } = renderHook(() => useValidation({
             ...marcContext,
             action: QUICK_MARC_ACTIONS.CREATE,
-          }));
+          }), {
+            wrapper: getWrapper({ quickMarcContext }),
+          });
 
           const validPrefix = marcContext.sourceFiles[1].codes[0];
           const valueOf010$a = `${validPrefix}123`;
@@ -1202,10 +1225,6 @@ describe('useValidation', () => {
                 id: '2',
                 content: valueOf010$a,
                 tag: '001',
-                _sourceFile: {
-                  id: '2',
-                  source: 'folio',
-                },
               },
               {
                 id: '2',
@@ -1231,10 +1250,16 @@ describe('useValidation', () => {
 
       describe('and 010 prefix is invalid and selected source file in 001 is folio', () => {
         it('should return an error message', () => {
+          const quickMarcContext = {
+            selectedSourceFile: folioSourceFile,
+          };
+
           const { result } = renderHook(() => useValidation({
             ...marcContext,
             action: QUICK_MARC_ACTIONS.CREATE,
-          }));
+          }), {
+            wrapper: getWrapper({ quickMarcContext }),
+          });
 
           const prefix = 'invalidPrefix';
           const valueOf010$a = `${prefix}123`;
@@ -1251,10 +1276,6 @@ describe('useValidation', () => {
                 id: '2',
                 content: valueOf010$a,
                 tag: '001',
-                _sourceFile: {
-                  id: '2',
-                  source: 'folio',
-                },
               },
               {
                 id: '2',

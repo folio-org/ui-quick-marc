@@ -1,7 +1,13 @@
-import { useCallback } from 'react';
+import {
+  useCallback,
+  useContext,
+} from 'react';
 import { validators } from './rules';
+import { QuickMarcContext } from '../../contexts';
 
 const useValidation = (context) => {
+  const quickMarcContext = useContext(QuickMarcContext);
+
   const validate = useCallback((marcRecords) => {
     const validationRules = validators[context.marcType][context.action];
 
@@ -10,7 +16,7 @@ const useValidation = (context) => {
         return _errorMessage;
       }
 
-      const error = rule.validator({ ...context, marcRecords }, rule);
+      const error = rule.validator({ ...context, ...quickMarcContext, marcRecords }, rule);
 
       if (error) {
         return error;
@@ -20,7 +26,7 @@ const useValidation = (context) => {
     }, null);
 
     return errorMessage;
-  }, [context]);
+  }, [context, quickMarcContext]);
 
   return { validate };
 };

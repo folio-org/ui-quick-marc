@@ -644,17 +644,6 @@ export const updateRecordAtIndex = (index, field, state) => {
   return records;
 };
 
-export const changeControlNumberRecordAtIndex = (index, field, state, sourceFile) => {
-  const records = [...state.formState.values.records];
-
-  records[index] = {
-    ...field,
-    _sourceFile: sourceFile,
-  };
-
-  return records;
-};
-
 export const removeDeletedRecords = (formValues) => {
   const { records } = formValues;
 
@@ -1134,8 +1123,6 @@ export const applyCentralTenantInHeaders = (location, stripes, marcType) => {
   );
 };
 
-export const isFolioSourceFileNotSelected = ({ marcRecords }) => {
-  const record001 = marcRecords.find(record => record.tag === '001');
-
-  return record001 && record001._sourceFile.source !== SOURCES.FOLIO;
+export const isFolioSourceFileNotSelected = ({ selectedSourceFile }) => {
+  return selectedSourceFile?.source !== SOURCES.FOLIO;
 };

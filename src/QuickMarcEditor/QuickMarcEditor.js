@@ -60,7 +60,6 @@ import {
   is010LinkedToBibRecord,
   updateRecordAtIndex,
   markLinkedRecords,
-  changeControlNumberRecordAtIndex,
 } from './utils';
 import { useAuthorityLinking } from '../hooks';
 
@@ -616,11 +615,6 @@ export default stripesFinalForm({
     },
     updateRecord: ([{ index, field }], state, tools) => {
       const records = updateRecordAtIndex(index, field, state);
-
-      tools.changeValue(state, 'records', () => records);
-    },
-    changeControlNumberRecord: ([{ index, field, sourceFile }], state, tools) => {
-      const records = changeControlNumberRecordAtIndex(index, field, state, sourceFile);
 
       tools.changeValue(state, 'records', () => records);
     },

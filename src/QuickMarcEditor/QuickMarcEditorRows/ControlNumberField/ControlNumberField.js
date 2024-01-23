@@ -1,9 +1,12 @@
 import {
   useCallback,
+  useContext,
   useEffect,
-  useState,
 } from 'react';
-import { Field } from 'react-final-form';
+import {
+  Field,
+  useField,
+} from 'react-final-form';
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
@@ -21,6 +24,7 @@ import {
 import { QUICK_MARC_ACTIONS } from '../../constants';
 import { getContentSubfieldValue } from '../../utils';
 import { useAuthorityFileNextHrid } from '../../../queries';
+import { QuickMarcContext } from '../../../contexts';
 
 const propTypes = {
   id: PropTypes.string.isRequired,
@@ -28,7 +32,6 @@ const propTypes = {
   marcType: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   recordRows: PropTypes.arrayOf(PropTypes.object).isRequired,
-  onChangeControlNumberRecord: PropTypes.func.isRequired,
 };
 
 const ControlNumberField = ({
@@ -37,30 +40,19 @@ const ControlNumberField = ({
   marcType,
   action,
   recordRows,
-  onChangeControlNumberRecord,
 }) => {
   const intl = useIntl();
+  const { input } = useField(name);
+  const {
+    selectedSourceFile,
+    onSetSelectedSourceFile,
+  } = useContext(QuickMarcContext);
   const { getAuthorityFileNextHrid, isLoading: isLoadingHrid } = useAuthorityFileNextHrid();
 
-  const [selectedSource, setSelectedSource] = useState('');
+  const handleChangeContent = input.onChange;
 
   const contentOf010Row = recordRows.find(row => row.tag === '010')?.content;
   const valueOf010$a = getContentSubfieldValue(contentOf010Row).$a?.[0];
-
-  const controlNumberIndex = recordRows.findIndex(row => row.tag === '001');
-
-  const handleChangeControlNumberRecord = useCallback((content, sourceFile) => {
-    const controlNumberRow = recordRows[controlNumberIndex];
-
-    onChangeControlNumberRecord({
-      index: controlNumberIndex,
-      field: {
-        ...controlNumberRow,
-        content,
-      },
-      sourceFile: sourceFile || controlNumberRow._sourceFile,
-    });
-  }, [onChangeControlNumberRecord, controlNumberIndex, recordRows]);
 
   const handleSourceFileSelection = useCallback(async (sourceFile) => {
     const {
@@ -78,18 +70,17 @@ const ControlNumberField = ({
       content = valueOf010$a;
     }
 
-    setSelectedSource(source);
-    handleChangeControlNumberRecord(content, sourceFile);
-  }, [valueOf010$a, getAuthorityFileNextHrid, handleChangeControlNumberRecord]);
+    onSetSelectedSourceFile(sourceFile);
+    handleChangeContent(content);
+  }, [valueOf010$a, handleChangeContent, getAuthorityFileNextHrid, onSetSelectedSourceFile]);
 
   const canSelectSourceFile = marcType === MARC_TYPES.AUTHORITY && action === QUICK_MARC_ACTIONS.CREATE;
 
   useEffect(() => {
-    if (selectedSource === SOURCES.FOLIO) {
-      handleChangeControlNumberRecord(valueOf010$a);
+    if (selectedSourceFile?.source === SOURCES.FOLIO) {
+      handleChangeContent(valueOf010$a);
     }
-    /* eslint-disable react-hooks/exhaustive-deps */
-  }, [valueOf010$a]);
+  }, [selectedSourceFile, valueOf010$a, handleChangeContent]);
 
   return (
     <>
