@@ -399,5 +399,6 @@
     "sourceFileLookupModal.placeholder": "Select authority file",
     "authority-record.create.title": "Create a new {shared, select, true {shared} false {local} other {}} MARC authority record",
     "record.error.fieldIsControlled": "<b> {fieldTags} </b>フィールドがオーソリティレコードによって制御されているため保存できないサブフィールドがあります。",
-    "record.error.fieldsAreControlled": "<b> {fieldTags}{count, plural, one {} =2 { and {lastFieldTag}} other { , and {lastFieldTag}}} </b>には、オーソリティレコードによってコントロールされているフィールドのため保存できません"
+    "record.error.fieldsAreControlled": "<b> {fieldTags}{count, plural, one {} =2 { and {lastFieldTag}} other { , and {lastFieldTag}}} </b>には、オーソリティレコードによってコントロールされているフィールドのため保存できません",
+    "record.error.controlField.content.empty": "Record cannot be saved. An authority file is required"
 }

@@ -399,5 +399,6 @@
     "sourceFileLookupModal.placeholder": "Vybrat soubor autority",
     "authority-record.create.title": "Vytvořit nový {shared, select, true {sdílený} false {místní} other {}} MARC záznam autority",
     "record.error.fieldIsControlled": "<b>{fieldTags}</b> má podpole, které nelze uložit, protože pole je řízeno autoritním záznamem.",
-    "record.error.fieldsAreControlled": "<b>{fieldTags}{count, plural, one {} =2 { a {lastFieldTag}} other {, a {lastFieldTag}}}</b> má podpole, která nelze uložit, protože pole jsou řízena podle autoritních záznamů."
+    "record.error.fieldsAreControlled": "<b>{fieldTags}{count, plural, one {} =2 { a {lastFieldTag}} other {, a {lastFieldTag}}}</b> má podpole, která nelze uložit, protože pole jsou řízena podle autoritních záznamů.",
+    "record.error.controlField.content.empty": "Záznam nelze uložit. Je vyžadován soubor autority"
 }
