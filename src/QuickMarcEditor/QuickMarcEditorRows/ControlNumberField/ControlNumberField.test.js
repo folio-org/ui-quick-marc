@@ -18,6 +18,12 @@ jest.mock('../../SourceFileLookup', () => ({
 
 const hrid = 'n1';
 const mockGetAuthorityFileNextHrid = jest.fn().mockResolvedValue({ hrid });
+const record001 = {
+  tag: '001',
+};
+const recordRows = [
+  record001,
+];
 
 jest.mock('@folio/stripes/components', () => ({
   ...jest.requireActual('@folio/stripes/components'),
@@ -38,7 +44,7 @@ const getControlNumberField = (props = {}, formProps = {}) => (
     mutators={{ ...arrayMutators }}
     initialValues={{
       controlNumber: 'n 50000331',
-      records: [],
+      records: recordRows,
     }}
     {...formProps}
     render={({ values }) => (
@@ -131,6 +137,7 @@ describe('Given ControlNumberField', () => {
         const formProps = {
           initialValues: {
             records: [
+              record001,
               {
                 id: 'fd2341be-b34f-4f4b-ad69-872ea4b62142',
                 tag: '010',
@@ -140,9 +147,10 @@ describe('Given ControlNumberField', () => {
           },
         };
 
-        const { getByRole, rerender } = renderControlNumberField(props, formProps);
+        const { rerender, getByRole } = renderControlNumberField(props, formProps);
 
         const sourceFile = {
+          id: 'source-file-id',
           source: 'folio',
         };
 
@@ -150,7 +158,7 @@ describe('Given ControlNumberField', () => {
 
         expect(getByRole('textbox', { name: 'ui-quick-marc.record.subfield' }).value).toBe('some content');
 
-        rerender(getControlNumberField(props, {
+        const newFormProps = {
           initialValues: {
             records: [
               {
@@ -160,7 +168,9 @@ describe('Given ControlNumberField', () => {
               },
             ],
           },
-        }));
+        };
+
+        rerender(getControlNumberField(props, newFormProps));
 
         expect(getByRole('textbox', { name: 'ui-quick-marc.record.subfield' }).value).toBe('some content2');
       });

@@ -1,7 +1,7 @@
 import {
   useCallback,
+  useContext,
   useEffect,
-  useState,
 } from 'react';
 import {
   Field,
@@ -24,6 +24,7 @@ import {
 import { QUICK_MARC_ACTIONS } from '../../constants';
 import { getContentSubfieldValue } from '../../utils';
 import { useAuthorityFileNextHrid } from '../../../queries';
+import { QuickMarcContext } from '../../../contexts';
 
 const propTypes = {
   id: PropTypes.string.isRequired,
@@ -42,13 +43,16 @@ const ControlNumberField = ({
 }) => {
   const intl = useIntl();
   const { input } = useField(name);
+  const {
+    selectedSourceFile,
+    onSetSelectedSourceFile,
+  } = useContext(QuickMarcContext);
   const { getAuthorityFileNextHrid, isLoading: isLoadingHrid } = useAuthorityFileNextHrid();
 
   const handleChangeContent = input.onChange;
+
   const contentOf010Row = recordRows.find(row => row.tag === '010')?.content;
   const valueOf010$a = getContentSubfieldValue(contentOf010Row).$a?.[0];
-
-  const [selectedSource, setSelectedSource] = useState('');
 
   const handleSourceFileSelection = useCallback(async (sourceFile) => {
     const {
@@ -56,28 +60,27 @@ const ControlNumberField = ({
       source,
     } = sourceFile;
 
-    let valueOf001Row;
+    let content;
 
     if (source === SOURCES.LOCAL) {
       const { hrid } = await getAuthorityFileNextHrid(sourceFileId);
 
-      valueOf001Row = hrid;
+      content = hrid;
     } else if (source === SOURCES.FOLIO) {
-      valueOf001Row = valueOf010$a;
+      content = valueOf010$a;
     }
 
-    setSelectedSource(source);
-
-    handleChangeContent(valueOf001Row);
-  }, [valueOf010$a, handleChangeContent, getAuthorityFileNextHrid]);
+    onSetSelectedSourceFile(sourceFile);
+    handleChangeContent(content);
+  }, [valueOf010$a, handleChangeContent, getAuthorityFileNextHrid, onSetSelectedSourceFile]);
 
   const canSelectSourceFile = marcType === MARC_TYPES.AUTHORITY && action === QUICK_MARC_ACTIONS.CREATE;
 
   useEffect(() => {
-    if (selectedSource === SOURCES.FOLIO) {
+    if (selectedSourceFile?.source === SOURCES.FOLIO) {
       handleChangeContent(valueOf010$a);
     }
-  }, [selectedSource, valueOf010$a, handleChangeContent]);
+  }, [selectedSourceFile, valueOf010$a, handleChangeContent]);
 
   return (
     <>

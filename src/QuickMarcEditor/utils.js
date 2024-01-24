@@ -45,6 +45,7 @@ import {
   ERROR_TYPES,
   EXTERNAL_INSTANCE_APIS,
   OKAPI_TENANT_HEADER,
+  SOURCES,
 } from '../common/constants';
 
 export const isLastRecord = recordRow => {
@@ -1120,4 +1121,8 @@ export const applyCentralTenantInHeaders = (location, stripes, marcType) => {
     && [MARC_TYPES.BIB, MARC_TYPES.AUTHORITY].includes(marcType)
     && checkIfUserInMemberTenant(stripes)
   );
+};
+
+export const isFolioSourceFileNotSelected = ({ selectedSourceFile }) => {
+  return selectedSourceFile?.source !== SOURCES.FOLIO;
 };

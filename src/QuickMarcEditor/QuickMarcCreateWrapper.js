@@ -57,7 +57,7 @@ const QuickMarcCreateWrapper = ({
 }) => {
   const showCallout = useShowCallout();
   const [httpError, setHttpError] = useState(null);
-  const { linkableBibFields, actualizeLinks, linkingRules } = useAuthorityLinking({ marcType, action });
+  const { linkableBibFields, actualizeLinks, linkingRules, sourceFiles } = useAuthorityLinking({ marcType, action });
 
   const validationContext = useMemo(() => ({
     initialValues,
@@ -66,7 +66,8 @@ const QuickMarcCreateWrapper = ({
     locations,
     linkableBibFields,
     linkingRules,
-  }), [initialValues, marcType, locations, linkableBibFields, linkingRules]);
+    sourceFiles,
+  }), [initialValues, marcType, locations, linkableBibFields, linkingRules, sourceFiles]);
   const { validate } = useValidation(validationContext);
 
   const prepareForSubmit = useCallback((formValues) => {

@@ -289,8 +289,6 @@ const renderQuickMarcCreateWrapper = ({
 describe('Given QuickMarcCreateWrapper', () => {
   let mutator;
   let instance;
-  let history;
-  let location;
 
   beforeEach(() => {
     instance = getInstance();
@@ -307,12 +305,6 @@ describe('Given QuickMarcCreateWrapper', () => {
         GET: jest.fn(() => Promise.resolve({})),
       },
     };
-    history = {
-      push: jest.fn(),
-    };
-    location = {
-      search: '?filters=source.MARC',
-    };
 
     useAuthorityLinking.mockReturnValue({
       linkableBibFields: [],
@@ -321,6 +313,7 @@ describe('Given QuickMarcCreateWrapper', () => {
       autoLinkableBibFields: [],
       autoLinkAuthority: jest.fn(),
       linkingRules: [],
+      sourceFiles: [],
     });
 
     jest.clearAllMocks();

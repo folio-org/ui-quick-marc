@@ -252,6 +252,22 @@ export const validateLocation = ({ marcRecords, locations }, rule) => {
 
   return undefined;
 };
+export const validateSubfieldValueMatch = (context, rule) => {
+  const { marcRecords } = context;
+
+  if (rule.ignore?.(context)) {
+    return undefined;
+  }
+
+  const marcRecord = marcRecords.find(record => record.tag.match(rule.tag));
+  const subfieldValue = getContentSubfieldValue(marcRecord?.content)[rule.subfield]?.[0];
+
+  if (!subfieldValue.match(rule.pattern(context))) {
+    return rule.message();
+  }
+
+  return undefined;
+};
 export const validateSubfieldIsControlled = ({ marcRecords, linkingRules }, rule) => {
   const linkedFields = marcRecords.filter(field => field.subfieldGroups);
 

@@ -41,6 +41,7 @@ import {
 } from './utils';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { useAuthorityLinksCount } from '../queries';
+import { QuickMarcProvider } from '../contexts';
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
@@ -230,24 +231,26 @@ const QuickMarcEditorContainer = ({
   }
 
   return (
-    <Wrapper
-      instance={instance}
-      onClose={handleClose}
-      onSave={handleSave}
-      initialValues={marcRecord}
-      action={action}
-      mutator={mutator}
-      history={history}
-      linksCount={linksCount}
-      location={location}
-      locations={locations}
-      marcType={marcType}
-      fixedFieldSpec={fixedFieldSpec}
-      refreshPageData={loadData}
-      externalRecordPath={externalRecordUrl}
-      resources={resources}
-      onCheckCentralTenantPerm={onCheckCentralTenantPerm}
-    />
+    <QuickMarcProvider>
+      <Wrapper
+        instance={instance}
+        onClose={handleClose}
+        onSave={handleSave}
+        initialValues={marcRecord}
+        action={action}
+        mutator={mutator}
+        history={history}
+        linksCount={linksCount}
+        location={location}
+        locations={locations}
+        marcType={marcType}
+        fixedFieldSpec={fixedFieldSpec}
+        refreshPageData={loadData}
+        externalRecordPath={externalRecordUrl}
+        resources={resources}
+        onCheckCentralTenantPerm={onCheckCentralTenantPerm}
+      />
+    </QuickMarcProvider>
   );
 };
 
