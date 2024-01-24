@@ -399,5 +399,6 @@
     "sourceFileLookupModal.placeholder": "Select authority file",
     "authority-record.create.title": "Create a new {shared, select, true {shared} false {local} other {}} MARC authority record",
     "record.error.fieldIsControlled": "<b>{fieldTags}</b> has a subfield(s) that cannot be saved because the field is controlled by an authority record.",
-    "record.error.fieldsAreControlled": "<b>{fieldTags}{count, plural, one {} =2 { and {lastFieldTag}} other {, and {lastFieldTag}}}</b> has a subfield(s) that cannot be saved because the fields are controlled by authority records."
+    "record.error.fieldsAreControlled": "<b>{fieldTags}{count, plural, one {} =2 { and {lastFieldTag}} other {, and {lastFieldTag}}}</b> has a subfield(s) that cannot be saved because the fields are controlled by authority records.",
+    "record.error.controlField.content.empty": "Record cannot be saved. An authority file is required"
 }

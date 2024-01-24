@@ -399,5 +399,6 @@
     "sourceFileLookupModal.placeholder": "Selecione o arquivo de autoridade",
     "authority-record.create.title": "Criar um novo registro de autoridade MARC {shared, select, true {shared} false {local} other {}}",
     "record.error.fieldIsControlled": "<b>{fieldTags}</b> tem subcampo(s) que não pode(m) ser salvo(s) porque o campo é controlado por um registro de autoridade.",
-    "record.error.fieldsAreControlled": "<b>{fieldTags}{count, plural, one {} =2 { and {lastFieldTag}} other {, and {lastFieldTag}}}</b> tem subcampo(s) que não pode(m) ser salvo(s) porque os campos são controlados por registros de autoridade."
+    "record.error.fieldsAreControlled": "<b>{fieldTags}{count, plural, one {} =2 { and {lastFieldTag}} other {, and {lastFieldTag}}}</b> tem subcampo(s) que não pode(m) ser salvo(s) porque os campos são controlados por registros de autoridade.",
+    "record.error.controlField.content.empty": "O registro não pode ser salvo. É necessário um arquivo de autoridade"
 }
