@@ -112,6 +112,7 @@
         "displayName": "quickMARC: Create a new MARC authority record",
         "subPermissions": [
           "ui-marc-authorities.authority-record.view",
+          "inventory-storage.authority-source-files.hrid.post",
           "marc-records-editor.item.post",
           "instance-authority-links.instances.collection.post",
           "instance-authority-links.authorities.bulk.post",
