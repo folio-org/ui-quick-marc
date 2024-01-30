@@ -31,6 +31,7 @@ describe('Given useAuthoritySourceFiles', () => {
   }));
 
   beforeEach(() => {
+    jest.clearAllMocks();
     useOkapiKy.mockClear().mockReturnValue({
       get: mockGet,
     });
@@ -42,5 +43,17 @@ describe('Given useAuthoritySourceFiles', () => {
     await act(async () => !result.current.isLoading);
 
     expect(mockGet).toHaveBeenCalled();
+  });
+
+  describe('when passing search parameters', () => {
+    it('should include them in the url', async () => {
+      const searchParams = { selectable: true };
+
+      const { result } = renderHook(() => useAuthoritySourceFiles({ searchParams }), { wrapper });
+
+      await act(async () => !result.current.isLoading);
+
+      expect(mockGet).toHaveBeenCalledWith('authority-source-files', { searchParams: { limit: 100, query: 'selectable=true' } });
+    });
   });
 });

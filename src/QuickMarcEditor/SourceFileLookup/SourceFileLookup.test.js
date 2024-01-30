@@ -59,6 +59,14 @@ describe('Given SourceFileLookup', () => {
     await waitFor(() => expect(getByText('SourceFileLookupModal')).toBeDefined());
   });
 
+  it('should only fetch selectable source files', () => {
+    const { getByRole } = renderSourceFileLookup();
+
+    fireEvent.click(getByRole('button', { name: 'ui-quick-marc.sourceFileLookup' }));
+
+    expect(useAuthoritySourceFiles).toHaveBeenCalledWith({ searchParams: { selectable: true } });
+  });
+
   describe('when confirming source file selection in modal', () => {
     it('should call onSourceFileSelect callback with correct source file', async () => {
       const {
