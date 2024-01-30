@@ -6,7 +6,6 @@ import {
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
-import { useStripes } from '@folio/stripes/core';
 import { Button } from '@folio/stripes/components';
 
 import { useAuthoritySourceFiles } from '../../queries';
@@ -21,12 +20,10 @@ const SourceFileLookup = ({
   disabled,
   onSourceFileSelect,
 }) => {
-  const stripes = useStripes();
   const intl = useIntl();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const tenantId = stripes.hasInterface('consortia') ? stripes.user.user?.consortium?.centralTenantId : null;
-  const { sourceFiles } = useAuthoritySourceFiles({ tenantId });
+  const { sourceFiles } = useAuthoritySourceFiles({ searchParams: { selectable: true } });
 
   const openModal = useCallback(() => setIsModalOpen(true), [setIsModalOpen]);
   const closeModal = useCallback(() => setIsModalOpen(false), [setIsModalOpen]);
