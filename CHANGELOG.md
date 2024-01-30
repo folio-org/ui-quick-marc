@@ -19,7 +19,7 @@
 * [UIQM-576](https://issues.folio.org/browse/UIQM-576) Generate 001 per selected authority file configuration.
 * [UIQM-598](https://issues.folio.org/browse/UIQM-598) *BREAKING* Added onSave prop to handle saving records separately.
 * [UIQM-577](https://issues.folio.org/browse/UIQM-577) Validate the 010 record when creating an authority record.
-* [UIQM-620](https://issues.folio.org/browse/UIQM-620) Fix missing validation when creating Authority records.
+* [UIQM-620](https://issues.folio.org/browse/UIQM-620) Validate the creation of authority records with base authority record validation rules.
 
 ## [7.0.5](https://github.com/folio-org/ui-quick-marc/tree/v7.0.5) (2023-12-11)
 
