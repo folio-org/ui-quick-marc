@@ -2,18 +2,24 @@ import { useQuery } from 'react-query';
 
 import {
   useNamespace,
+  useOkapiKy,
 } from '@folio/stripes/core';
 
-import { useTenantKy } from '../../temp';
-
-const useAuthoritySourceFiles = ({ tenantId } = {}) => {
-  const ky = useTenantKy({ tenantId });
+const useAuthoritySourceFiles = ({ searchParams, tenantId } = {}) => {
+  const ky = useOkapiKy({ tenant: tenantId });
   const [namespace] = useNamespace({ key: 'authority-source-files' });
 
+  const queryString = new URLSearchParams(searchParams).toString();
+
+  const _searchParams = {
+    limit: 100,
+    query: queryString,
+  };
+
   const { isFetching, data } = useQuery(
-    [namespace, tenantId],
+    [namespace, tenantId, queryString],
     async () => {
-      return ky.get('authority-source-files?limit=100').json();
+      return ky.get('authority-source-files', { searchParams: _searchParams }).json();
     },
   );
 

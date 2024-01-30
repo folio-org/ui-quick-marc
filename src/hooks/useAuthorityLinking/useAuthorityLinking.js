@@ -49,7 +49,7 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
     && action === QUICK_MARC_ACTIONS.EDIT;
 
   // tenantId for linking functionality must be with the member tenant id when user derives shared record
-  const _tenantId = tenantId || (isCentralTenantInHeaders && centralTenantId) || '';
+  const _tenantId = tenantId || (isCentralTenantInHeaders && centralTenantId) || null;
 
   const { sourceFiles } = useAuthoritySourceFiles({ tenantId: _tenantId });
   const { linkingRules } = useAuthorityLinkingRules({ tenantId: _tenantId });
