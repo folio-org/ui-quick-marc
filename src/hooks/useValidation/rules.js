@@ -246,6 +246,7 @@ const BASE_AUTHORITY_VALIDATORS = [
 ];
 
 const CREATE_AUTHORITY_VALIDATORS = [
+  ...BASE_AUTHORITY_VALIDATORS,
   {
     tag: '010',
     validator: RULES.EXISTS,
