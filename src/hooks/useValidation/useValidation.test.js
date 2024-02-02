@@ -1591,7 +1591,7 @@ describe('useValidation', () => {
             wrapper: getWrapper({ quickMarcContext }),
           });
 
-          const prefix = 'invalidPrefix';
+          const prefix = 'nn';
           const valueOf010$a = `${prefix}123`;
 
           const record = {
