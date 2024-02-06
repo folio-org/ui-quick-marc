@@ -5,6 +5,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import flow from 'lodash/flow';
+import noop from 'lodash/noop';
 
 import { useShowCallout } from '@folio/stripes-acq-components';
 
@@ -141,7 +142,8 @@ const QuickMarcCreateWrapper = ({
           showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
 
           if (marcType === MARC_TYPES.BIB && recordHasLinks(formValuesForCreate.fields)) {
-            await saveLinksToNewRecord(mutator, externalId, formValuesForCreate);
+            await saveLinksToNewRecord(mutator, externalId, formValuesForCreate)
+              .catch(noop);
           }
 
           await redirectToRecord(externalId, instanceId);
