@@ -14,12 +14,28 @@ import { runAxeTest } from '@folio/stripes-testing';
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcCreateWrapper from './QuickMarcCreateWrapper';
+import QuickMarcEditor from './QuickMarcEditor';
 import { MARC_TYPES } from '../common/constants';
 import { QUICK_MARC_ACTIONS } from './constants';
 
 import Harness from '../../test/jest/helpers/harness';
 import { useAuthorityLinking } from '../hooks';
+import { saveLinksToNewRecord } from './utils';
 
+const runWithDelayedPromise = (fn, delay) => () => {
+  return new Promise(resolve => setTimeout(() => resolve(fn()), delay));
+};
+
+jest.mock('./utils', () => ({
+  ...jest.requireActual('./utils'),
+  saveLinksToNewRecord: jest.fn(),
+}));
+
+jest.mock('./QuickMarcEditor', () => {
+  const RealQuickMarcEditor = jest.requireActual('./QuickMarcEditor').default;
+
+  return jest.fn(props => <RealQuickMarcEditor {...props} />);
+});
 jest.mock('./getQuickMarcRecordStatus', () => {
   return jest.fn().mockResolvedValue({
     externalId: 'externalId-1',
@@ -442,6 +458,73 @@ describe('Given QuickMarcCreateWrapper', () => {
         expect(mutator.quickMarcEditMarcRecord.POST).toHaveBeenCalledWith(payload);
 
         expect(mockOnSave).toHaveBeenCalled();
+      });
+    });
+
+    describe('when click on save button in an authority record', () => {
+      it('should wait for redirection in onSubmit function', async () => {
+        let isRedirectWaited = false;
+
+        const onSave = runWithDelayedPromise(() => {
+          isRedirectWaited = true;
+        });
+
+        renderQuickMarcCreateWrapper({
+          instance,
+          mutator,
+          marcType: MARC_TYPES.AUTHORITY,
+          onSave,
+        });
+
+        await QuickMarcEditor.mock.calls[0][0].onSubmit(mockFormValues(MARC_TYPES.AUTHORITY));
+
+        expect(isRedirectWaited).toBeTruthy();
+      });
+    });
+
+    describe('when click on save button in a holding record', () => {
+      it('should wait for redirection in onSubmit function', async () => {
+        let isRedirectWaited = false;
+
+        const onSave = runWithDelayedPromise(() => {
+          isRedirectWaited = true;
+        });
+
+        renderQuickMarcCreateWrapper({
+          instance,
+          mutator,
+          marcType: MARC_TYPES.HOLDINGS,
+          onSave,
+        });
+
+        await QuickMarcEditor.mock.calls[0][0].onSubmit(mockFormValues(MARC_TYPES.HOLDINGS));
+
+        expect(isRedirectWaited).toBeTruthy();
+      });
+    });
+
+    describe('when click on save button in a bib record', () => {
+      it('should wait for links saving and redirection in onSubmit function', async () => {
+        const calledFn = [];
+
+        saveLinksToNewRecord.mockImplementationOnce(runWithDelayedPromise(() => {
+          calledFn.push('saveLinksToNewRecord');
+        }, 20));
+
+        const onSave = runWithDelayedPromise(() => {
+          calledFn.push('onSave');
+        });
+
+        renderQuickMarcCreateWrapper({
+          instance,
+          mutator,
+          marcType: MARC_TYPES.BIB,
+          onSave,
+        });
+
+        await QuickMarcEditor.mock.calls[0][0].onSubmit(mockFormValues(MARC_TYPES.BIB));
+
+        expect(calledFn).toEqual(['saveLinksToNewRecord', 'onSave']);
       });
     });
 

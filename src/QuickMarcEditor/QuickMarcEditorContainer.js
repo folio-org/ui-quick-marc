@@ -112,8 +112,8 @@ const QuickMarcEditorContainer = ({
     onClose(getCloseEditorParams(id));
   }, [getCloseEditorParams, onClose]);
 
-  const handleSave = useCallback((id) => {
-    onSave(getCloseEditorParams(id));
+  const handleSave = useCallback(async (id) => {
+    await onSave(getCloseEditorParams(id));
   }, [getCloseEditorParams, onSave]);
 
   const externalRecordUrl = useMemo(() => {
