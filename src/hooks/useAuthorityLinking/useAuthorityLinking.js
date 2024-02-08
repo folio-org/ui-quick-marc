@@ -69,38 +69,9 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
     return linkingRules.find(rule => rule.bibField === bibTag && rule.authorityField === authorityTag);
   }, [linkingRules]);
 
-  const reorderModifiedSubfields = useCallback((subfieldsFromAuthority, authSubfields, linkingRule) => {
-    const copiedAuthSubfields = Object.keys(subfieldsFromAuthority);
-    const initialAuthSubfieldsOrder = Object.keys(authSubfields);
-
-    const orderedSubfields = linkingRule.subfieldModifications.reduce((acc, { target, source }) => {
-      const targetSubfield = formatSubfieldCode(target);
-      const sourceSubfield = formatSubfieldCode(source);
-
-      initialAuthSubfieldsOrder.forEach(subfield => {
-        if (subfield === sourceSubfield) {
-          if (copiedAuthSubfields.includes(targetSubfield) && !initialAuthSubfieldsOrder.includes(targetSubfield)) {
-            acc.push(targetSubfield);
-          }
-        } else if (copiedAuthSubfields.includes(subfield)) {
-          acc.push(subfield);
-        }
-      });
-
-      return acc;
-    }, []);
-
-    return orderedSubfields.reduce((acc, subfield) => {
-      acc[subfield] = subfieldsFromAuthority[subfield];
-
-      return acc;
-    }, {});
-  }, []);
-
   const copySubfieldsFromAuthority = useCallback((bibSubfields, authField, bibTag) => {
     const linkingRule = findLinkingRule(bibTag, authField.tag);
     const authSubfields = getContentSubfieldValue(authField.content);
-    // Order of authority subfields according to `linkingRule.authoritySubfields`.
     let subfieldsFromAuthority = {};
 
     linkingRule.authoritySubfields.forEach(subfieldCode => {
@@ -116,9 +87,11 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
       }
     });
 
-    if (linkingRule.subfieldModifications?.length) {
-      // change the order only for the subfields from `subfieldModifications` to the same order as in the authority record.
-      subfieldsFromAuthority = reorderModifiedSubfields(subfieldsFromAuthority, authSubfields, linkingRule);
+    if (bibTag === '240' && linkingRule.subfieldModifications?.find(mod => mod.source === 't')?.target === 'a') {
+      subfieldsFromAuthority = {
+        $a: subfieldsFromAuthority.$a,
+        ...omit(subfieldsFromAuthority, '$a'),
+      };
     }
 
     // take authority subfields first and then bib subfields
@@ -126,7 +99,7 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
       ...subfieldsFromAuthority,
       ...omit(bibSubfields, Object.keys(subfieldsFromAuthority)),
     };
-  }, [findLinkingRule, reorderModifiedSubfields]);
+  }, [findLinkingRule]);
 
   const getLinkableAuthorityField = useCallback((authoritySource, bibField) => {
     const linkableTags = linkingRules.filter(rule => rule.bibField === bibField.tag).map(rule => rule.authorityField);

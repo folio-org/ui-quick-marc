@@ -259,7 +259,7 @@ describe('Given useAuthorityLinking', () => {
             id: 1,
             bibField: '240',
             authorityField: '100',
-            authoritySubfields: ["f", "g", "h", "k", "l", "m", "n", "o", "p", "r", "s", "t"],
+            authoritySubfields: ['f', 'g', 'h', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't'],
             subfieldModifications: [{
               source: 't',
               target: 'a',
@@ -287,65 +287,12 @@ describe('Given useAuthorityLinking', () => {
         const _authoritySource = {
           fields: [{
             tag: '100',
-            content: "$a authority value, $d fakeD. $t field for modification $k fakeK",
+            content: '$a authority value, $d dd. $f ff $h hh $g gg $t field for modification $k kk',
           }],
         };
 
         expect(result.current.linkAuthority(authority, _authoritySource, field)).toMatchObject({
-          content: '$a field for modification $k fakeK $0 some.url/n0001 $9 authority-id',
-          linkDetails: {
-            authorityId: 'authority-id',
-            authorityNaturalId: 'n0001',
-            linkingRuleId: 1,
-          },
-        });
-      });
-    });
-
-    describe('when linking requires several subfield modifications', () => {
-      it('should return field with correctly formatted subfields', () => {
-        useAuthorityLinkingRules.mockReturnValue({
-          linkingRules: [{
-            id: 1,
-            bibField: '100',
-            authorityField: '100',
-            authoritySubfields: ['a', 'b', 't', 'w'],
-            subfieldModifications: [{
-              source: 't',
-              target: 'c',
-            }, {
-              source: 'w',
-              target: 'b',
-            }],
-            validation: {
-              existence: [{
-                t: true,
-              }],
-            },
-          }],
-        });
-
-        const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
-
-        const authority = {
-          id: 'authority-id',
-          sourceFileId: '1',
-          naturalId: 'n0001',
-        };
-        const field = {
-          tag: '100',
-          content: '$a some value $e author $e illustrator $b some other value',
-        };
-
-        const _authoritySource = {
-          fields: [{
-            tag: '100',
-            content: '$a authority value $b fakeB $t field for modification $w field for modification2',
-          }],
-        };
-
-        expect(result.current.linkAuthority(authority, _authoritySource, field)).toMatchObject({
-          content: '$a authority value $b field for modification2 $c field for modification $e author $e illustrator $0 some.url/n0001 $9 authority-id',
+          content: '$a field for modification $f ff $g gg $h hh $k kk $0 some.url/n0001 $9 authority-id',
           linkDetails: {
             authorityId: 'authority-id',
             authorityNaturalId: 'n0001',
