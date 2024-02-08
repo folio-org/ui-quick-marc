@@ -21,6 +21,7 @@
 * [UIQM-577](https://issues.folio.org/browse/UIQM-577) Validate the 010 record when creating an authority record.
 * [UIQM-606](https://issues.folio.org/browse/UIQM-606) Fetch only selectable source files for source file lookup modal.
 * [UIQM-620](https://issues.folio.org/browse/UIQM-620) Validate the creation of authority records with base authority record validation rules.
+* [UIQM-607](https://issues.folio.org/browse/UIQM-607) Wait for a redirect in the onSubmit function after creating a record.
 * [UIQM-619](https://issues.folio.org/browse/UIQM-619) During linking, change the order only for the subfields from `linkingRule.subfieldModifications` to the same order as in the authority record.
 
 ## [7.0.5](https://github.com/folio-org/ui-quick-marc/tree/v7.0.5) (2023-12-11)

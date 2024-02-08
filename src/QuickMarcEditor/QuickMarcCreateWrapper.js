@@ -5,6 +5,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import flow from 'lodash/flow';
+import noop from 'lodash/noop';
 
 import { useShowCallout } from '@folio/stripes-acq-components';
 
@@ -91,11 +92,11 @@ const QuickMarcCreateWrapper = ({
     return validate(formValuesForValidation.records);
   }, [validate, prepareForSubmit]);
 
-  const redirectToRecord = useCallback((externalId, instanceId) => {
+  const redirectToRecord = useCallback(async (externalId, instanceId) => {
     if (marcType === MARC_TYPES.HOLDINGS) {
-      onSave(`${instanceId}/${externalId}`);
+      await onSave(`${instanceId}/${externalId}`);
     } else {
-      onSave(externalId);
+      await onSave(externalId);
     }
   }, [onSave, marcType]);
 
@@ -141,11 +142,11 @@ const QuickMarcCreateWrapper = ({
           showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
 
           if (marcType === MARC_TYPES.BIB && recordHasLinks(formValuesForCreate.fields)) {
-            saveLinksToNewRecord(mutator, externalId, formValuesForCreate)
-              .finally(() => redirectToRecord(externalId, instanceId));
-          } else {
-            redirectToRecord(externalId, instanceId);
+            await saveLinksToNewRecord(mutator, externalId, formValuesForCreate)
+              .catch(noop);
           }
+
+          await redirectToRecord(externalId, instanceId);
         } catch (e) {
           showCallout({
             messageId: 'ui-quick-marc.record.saveNew.error',

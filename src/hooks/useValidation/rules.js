@@ -268,7 +268,7 @@ const CREATE_AUTHORITY_VALIDATORS = [
     pattern: ({ sourceFiles, selectedSourceFile }) => {
       const codes = sourceFiles.find(sourceFile => sourceFile.id === selectedSourceFile?.id)?.codes || [];
 
-      return new RegExp(`^(${codes.join('|')})`);
+      return new RegExp(`^(${codes.join('|')})([^a-zA-Z].*|$)`);
     },
     validator: RULES.SUBFIELD_VALUE_MATCH,
     message: () => <FormattedMessage id="ui-quick-marc.record.error.010.prefix.invalid" />,
