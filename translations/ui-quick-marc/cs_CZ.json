@@ -400,5 +400,8 @@
     "authority-record.create.title": "Vytvořit nový {shared, select, true {sdílený} false {místní} other {}} MARC záznam autority",
     "record.error.fieldIsControlled": "<b>{fieldTags}</b> má podpole, které nelze uložit, protože pole je řízeno autoritním záznamem.",
     "record.error.fieldsAreControlled": "<b>{fieldTags}{count, plural, one {} =2 { a {lastFieldTag}} other {, a {lastFieldTag}}}</b> má podpole, která nelze uložit, protože pole jsou řízena podle autoritních záznamů.",
-    "record.error.controlField.content.empty": "Záznam nelze uložit. Je vyžadován soubor autority"
+    "record.error.controlField.content.empty": "Záznam nelze uložit. Je vyžadován soubor autority",
+    "record.error.010.absent": "Záznam nelze uložit bez pole 010",
+    "record.error.010.prefix.absent": "Záznam nelze uložit bez prefixu v poli 010.",
+    "record.error.010.prefix.invalid": "Záznam nelze uložit. Prefix v poli 010 neodpovídá vybranému souboru autority."
 }

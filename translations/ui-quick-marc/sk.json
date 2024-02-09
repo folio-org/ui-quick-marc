@@ -400,5 +400,8 @@
     "authority-record.create.title": "Create a new {shared, select, true {shared} false {local} other {}} MARC authority record",
     "record.error.fieldIsControlled": "<b>{fieldTags}</b> has a subfield(s) that cannot be saved because the field is controlled by an authority record.",
     "record.error.fieldsAreControlled": "<b>{fieldTags}{count, plural, one {} =2 { and {lastFieldTag}} other {, and {lastFieldTag}}}</b> has a subfield(s) that cannot be saved because the fields are controlled by authority records.",
-    "record.error.controlField.content.empty": "Record cannot be saved. An authority file is required"
+    "record.error.controlField.content.empty": "Record cannot be saved. An authority file is required",
+    "record.error.010.absent": "Record cannot be saved without 010 field.",
+    "record.error.010.prefix.absent": "Record cannot be saved without a prefix in the 010 field.",
+    "record.error.010.prefix.invalid": "Record cannot be saved. Prefix in the 010 field does not match the selected authority file."
 }
