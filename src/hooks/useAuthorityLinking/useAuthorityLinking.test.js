@@ -252,6 +252,54 @@ describe('Given useAuthorityLinking', () => {
           },
         });
       });
+
+      it('should return correctly formatted subfields', () => {
+        useAuthorityLinkingRules.mockReturnValue({
+          linkingRules: [{
+            id: 1,
+            bibField: '240',
+            authorityField: '100',
+            authoritySubfields: ['f', 'g', 'h', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't'],
+            subfieldModifications: [{
+              source: 't',
+              target: 'a',
+            }],
+            validation: {
+              existence: [{
+                t: true,
+              }],
+            },
+          }],
+        });
+
+        const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+
+        const authority = {
+          id: 'authority-id',
+          sourceFileId: '1',
+          naturalId: 'n0001',
+        };
+        const field = {
+          tag: '240',
+          content: '$a Works. $k Selections',
+        };
+
+        const _authoritySource = {
+          fields: [{
+            tag: '100',
+            content: '$a authority value, $d dd. $f ff $h hh $g gg $t field for modification $k kk',
+          }],
+        };
+
+        expect(result.current.linkAuthority(authority, _authoritySource, field)).toMatchObject({
+          content: '$a field for modification $f ff $g gg $h hh $k kk $0 some.url/n0001 $9 authority-id',
+          linkDetails: {
+            authorityId: 'authority-id',
+            authorityNaturalId: 'n0001',
+            linkingRuleId: 1,
+          },
+        });
+      });
     });
 
     it('should return authority subfields first and then bib subfields', () => {

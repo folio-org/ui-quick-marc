@@ -4,7 +4,6 @@ export const linkingRules = {
     bibField: '100',
     authorityField: '100',
     authoritySubfields: ['a', 'b', 't', 'd'],
-    subfieldModifications: [],
     validation: {},
     autoLinkingEnabled: true,
   }, {
