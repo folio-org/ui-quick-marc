@@ -22,6 +22,7 @@
 * [UIQM-606](https://issues.folio.org/browse/UIQM-606) Fetch only selectable source files for source file lookup modal.
 * [UIQM-620](https://issues.folio.org/browse/UIQM-620) Validate the creation of authority records with base authority record validation rules.
 * [UIQM-607](https://issues.folio.org/browse/UIQM-607) Wait for a redirect in the onSubmit function after creating a record.
+* [UIQM-625](https://issues.folio.org/browse/UIQM-625) Use `null` instead of empty string as an empty tenantId value.
 
 ## [7.0.5](https://github.com/folio-org/ui-quick-marc/tree/v7.0.5) (2023-12-11)
 
