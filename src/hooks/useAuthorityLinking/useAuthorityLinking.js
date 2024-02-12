@@ -72,7 +72,7 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
   const copySubfieldsFromAuthority = useCallback((bibSubfields, authField, bibTag) => {
     const linkingRule = findLinkingRule(bibTag, authField.tag);
     const authSubfields = getContentSubfieldValue(authField.content);
-    const subfieldsFromAuthority = {};
+    let subfieldsFromAuthority = {};
 
     linkingRule.authoritySubfields.forEach(subfieldCode => {
       const subfieldModification = linkingRule.subfieldModifications?.find(mod => mod.source === subfieldCode);
@@ -86,6 +86,13 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
         delete bibSubfields[formatSubfieldCode(subfieldCode)];
       }
     });
+
+    if (bibTag === '240' && linkingRule.subfieldModifications?.find(mod => mod.source === 't')?.target === 'a') {
+      subfieldsFromAuthority = {
+        $a: subfieldsFromAuthority.$a,
+        ...omit(subfieldsFromAuthority, '$a'),
+      };
+    }
 
     // take authority subfields first and then bib subfields
     return {
