@@ -347,7 +347,7 @@ describe('Given LinkButton', () => {
       });
 
       expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
-        tenantId: '',
+        tenantId: null,
         initialValues,
         excludedFilters,
       }), {});
@@ -385,7 +385,7 @@ describe('Given LinkButton', () => {
     });
 
     expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
-      tenantId: '',
+      tenantId: null,
       initialValues,
       excludedFilters,
     }), {});
@@ -420,7 +420,7 @@ describe('Given LinkButton', () => {
     renderComponent({ action });
 
     expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
-      tenantId: '',
+      tenantId: null,
       initialValues,
       excludedFilters,
     }), {});

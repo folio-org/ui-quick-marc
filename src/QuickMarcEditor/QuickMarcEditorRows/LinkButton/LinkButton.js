@@ -77,7 +77,7 @@ const LinkButton = ({
 
   let showSharedFilter = false;
   let showSharedRecordsOnly = false;
-  let pluginTenantId = '';
+  let pluginTenantId = null;
 
   if (checkIfUserInCentralTenant(stripes)) {
     if ([QUICK_MARC_ACTIONS.CREATE, QUICK_MARC_ACTIONS.EDIT, QUICK_MARC_ACTIONS.DERIVE].includes(action)) {
