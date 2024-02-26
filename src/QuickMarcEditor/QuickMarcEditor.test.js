@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 import React from 'react';
 import faker from 'faker';
+import { useLocation } from 'react-router';
 
 import {
   render,
@@ -9,20 +10,23 @@ import {
 } from '@folio/jest-config-stripes/testing-library/react';
 import { runAxeTest } from '@folio/stripes-testing';
 import { useShowCallout } from '@folio/stripes-acq-components';
+import {
+  checkIfUserInCentralTenant,
+  useStripes,
+} from '@folio/stripes/core';
+import { Pane } from '@folio/stripes/components';
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcEditor from './QuickMarcEditor';
-
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
+import buildStripes from '../../test/jest/__mock__/stripesCore.mock';
 
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
-  useLocation: () => ({
-    search: 'authRefType=Authorized',
-  }),
+  useLocation: jest.fn(),
 }));
 
 jest.mock('../queries', () => ({
@@ -161,6 +165,11 @@ describe('Given QuickMarcEditor', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockValidate.mockClear().mockReturnValue(undefined);
+    useStripes.mockReturnValue(buildStripes());
+    useLocation.mockReturnValue({
+      search: 'authRefType=Authorized',
+    });
+    checkIfUserInCentralTenant.mockReturnValue(false);
   });
 
   it('should render with no axe errors', async () => {
@@ -171,21 +180,407 @@ describe('Given QuickMarcEditor', () => {
     });
   });
 
-  it('should display instance title in pane title', () => {
-    const { getByText } = renderQuickMarcEditor();
+  describe('Pane title', () => {
+    jest.spyOn(Pane, 'render');
 
-    expect(getByText('ui-quick-marc.bibliographic-record.edit.title')).toBeDefined();
+    describe('when env is consortia', () => {
+      beforeEach(() => {
+        useStripes.mockReturnValue(buildStripes({
+          hasInterface: () => true,
+        }));
+      });
+
+      describe('when a user is central tenant', () => {
+        beforeEach(() => {
+          checkIfUserInCentralTenant.mockReturnValue(true);
+        });
+
+        describe('when the record is bib', () => {
+          describe('when action is CREATE', () => {
+            it('should have "shared" in title', () => {
+              renderQuickMarcEditor({
+                marcType: MARC_TYPES.BIB,
+                action: QUICK_MARC_ACTIONS.CREATE,
+              });
+
+              expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
+                id: 'ui-quick-marc.bibliographic-record.create.title',
+                values: { shared: true },
+              });
+            });
+          });
+
+          describe('when action is EDIT', () => {
+            it('should have "shared" in title', () => {
+              useLocation.mockReturnValue({ search: '?shared=true' });
+
+              renderQuickMarcEditor({
+                marcType: MARC_TYPES.BIB,
+                action: QUICK_MARC_ACTIONS.EDIT,
+              });
+
+              expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
+                id: 'ui-quick-marc.bibliographic-record.edit.title',
+                values: { title: 'Test title', shared: true },
+              });
+            });
+          });
+
+          describe('when action is DERIVE', () => {
+            it('should have "shared" in title', () => {
+              useLocation.mockReturnValue({ search: '?shared=true' });
+
+              renderQuickMarcEditor({
+                marcType: MARC_TYPES.BIB,
+                action: QUICK_MARC_ACTIONS.DERIVE,
+              });
+
+              expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
+                id: 'ui-quick-marc.bibliographic-record.derive.title',
+                values: { shared: true },
+              });
+            });
+          });
+        });
+
+        describe('when the record is authority', () => {
+          describe('when action is CREATE', () => {
+            it('should have "shared" in title', () => {
+              renderQuickMarcEditor({
+                action: QUICK_MARC_ACTIONS.CREATE,
+                marcType: MARC_TYPES.AUTHORITY,
+                initialValues: { records: [{ id: 'LDR' }] },
+
+              });
+
+              expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
+                id: 'ui-quick-marc.authority-record.create.title',
+                values: { shared: true },
+              });
+            });
+          });
+
+          describe('when action is EDIT', () => {
+            it('should have "shared" in title', () => {
+              useLocation.mockReturnValue({ search: '?shared=true' });
+
+              renderQuickMarcEditor({
+                action: QUICK_MARC_ACTIONS.EDIT,
+                marcType: MARC_TYPES.AUTHORITY,
+                initialValues: { records: [{ id: 'LDR' }] },
+              });
+
+              expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
+                id: 'ui-quick-marc.authority-record.edit.title',
+                values: { shared: true },
+              });
+            });
+          });
+        });
+      });
+
+      describe('when a user is a member tenant', () => {
+        beforeEach(() => {
+          checkIfUserInCentralTenant.mockReturnValue(false);
+        });
+
+        describe('when the record is bib', () => {
+          describe('when action is CREATE', () => {
+            it('should have the "local" in title', () => {
+              renderQuickMarcEditor({
+                marcType: MARC_TYPES.BIB,
+                action: QUICK_MARC_ACTIONS.CREATE,
+              });
+
+              expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
+                id: 'ui-quick-marc.bibliographic-record.create.title',
+                values: { shared: false },
+              });
+            });
+          });
+
+          describe('when action is EDIT', () => {
+            describe('when the record is shared', () => {
+              it('should have the "shared" in title', () => {
+                useLocation.mockReturnValue({ search: '?shared=true' });
+
+                renderQuickMarcEditor({
+                  marcType: MARC_TYPES.BIB,
+                  action: QUICK_MARC_ACTIONS.EDIT,
+                });
+
+                expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
+                  id: 'ui-quick-marc.bibliographic-record.edit.title',
+                  values: { title: 'Test title', shared: true },
+                });
+              });
+            });
+
+            describe('when the record is local', () => {
+              it('should have the "local" in title', () => {
+                useLocation.mockReturnValue({ search: '?shared=false' });
+
+                renderQuickMarcEditor({
+                  marcType: MARC_TYPES.BIB,
+                  action: QUICK_MARC_ACTIONS.EDIT,
+                });
+
+                expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
+                  id: 'ui-quick-marc.bibliographic-record.edit.title',
+                  values: { title: 'Test title', shared: false },
+                });
+              });
+            });
+          });
+
+          describe('when action is DERIVE', () => {
+            describe('when the record is shared', () => {
+              it('should have the "local" in title', () => {
+                useLocation.mockReturnValue({ search: '?shared=true' });
+
+                renderQuickMarcEditor({
+                  marcType: MARC_TYPES.BIB,
+                  action: QUICK_MARC_ACTIONS.DERIVE,
+                });
+
+                expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
+                  id: 'ui-quick-marc.bibliographic-record.derive.title',
+                  values: { shared: false },
+                });
+              });
+            });
+
+            describe('whe the record is local', () => {
+              it('should have the "local" in title', () => {
+                useLocation.mockReturnValue({ search: '?shared=false' });
+
+                renderQuickMarcEditor({
+                  marcType: MARC_TYPES.BIB,
+                  action: QUICK_MARC_ACTIONS.DERIVE,
+                });
+
+                expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
+                  id: 'ui-quick-marc.bibliographic-record.derive.title',
+                  values: { shared: false },
+                });
+              });
+            });
+          });
+        });
+
+        describe('when the record is authority', () => {
+          describe('when action is CREATE', () => {
+            it('should have the "local" in title', () => {
+              renderQuickMarcEditor({
+                action: QUICK_MARC_ACTIONS.CREATE,
+                marcType: MARC_TYPES.AUTHORITY,
+              });
+
+              expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
+                id: 'ui-quick-marc.authority-record.create.title',
+                values: { shared: false },
+              });
+            });
+          });
+
+          describe('when action is EDIT', () => {
+            describe('when the record is shared', () => {
+              it('should have the "shared" in title', () => {
+                useLocation.mockReturnValue({ search: '?shared=true' });
+
+                renderQuickMarcEditor({
+                  action: QUICK_MARC_ACTIONS.EDIT,
+                  marcType: MARC_TYPES.AUTHORITY,
+                });
+
+                expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
+                  id: 'ui-quick-marc.authority-record.edit.title',
+                  values: { title: 'Coates, Ta-Nehisi', shared: true },
+                });
+              });
+            });
+
+            describe('when the record is local', () => {
+              it('should have the "local" in title', () => {
+                useLocation.mockReturnValue({ search: '?shared=false' });
+
+                renderQuickMarcEditor({
+                  action: QUICK_MARC_ACTIONS.EDIT,
+                  marcType: MARC_TYPES.AUTHORITY,
+                  initialValues: { records: [{ id: 'LDR' }] },
+                });
+
+                expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
+                  id: 'ui-quick-marc.authority-record.edit.title',
+                  values: { shared: false },
+                });
+              });
+            });
+          });
+        });
+
+        describe('when the record is holdings', () => {
+          describe('when action is CREATE', () => {
+            it('should have title', () => {
+              renderQuickMarcEditor({
+                marcType: MARC_TYPES.HOLDINGS,
+                action: QUICK_MARC_ACTIONS.CREATE,
+              });
+
+              expect(Pane.render.mock.lastCall[0].paneTitle.props).toMatchObject({
+                id: 'ui-quick-marc.holdings-record.create.title',
+              });
+            });
+          });
+
+          describe('when action is EDIT', () => {
+            it('should have title', () => {
+              renderQuickMarcEditor({
+                marcType: MARC_TYPES.HOLDINGS,
+                action: QUICK_MARC_ACTIONS.EDIT,
+                locations: [{
+                  id: instance.effectiveLocationId,
+                  name: 'locationName',
+                }],
+              });
+
+              expect(Pane.render.mock.lastCall[0].paneTitle.props).toMatchObject({
+                id: 'ui-quick-marc.holdings-record.edit.title',
+                values: {
+                  callNumber: 'call number',
+                  location: 'locationName',
+                },
+              });
+            });
+          });
+        });
+      });
+    });
+
+    describe('when env is not consortia', () => {
+      beforeEach(() => {
+        useStripes.mockReturnValue(buildStripes({
+          hasInterface: () => false,
+        }));
+        checkIfUserInCentralTenant.mockReturnValue(false);
+      });
+
+      describe('when the record is bib', () => {
+        describe('when action is CREATE', () => {
+          it('should have neither "local" nor "shared" in title', () => {
+            renderQuickMarcEditor({
+              marcType: MARC_TYPES.BIB,
+              action: QUICK_MARC_ACTIONS.CREATE,
+            });
+
+            expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
+              id: 'ui-quick-marc.bibliographic-record.create.title',
+              values: { shared: null },
+            });
+          });
+        });
+
+        describe('when action is EDIT', () => {
+          it('should have neither "shared" nor "local" in title', () => {
+            renderQuickMarcEditor({
+              marcType: MARC_TYPES.BIB,
+              action: QUICK_MARC_ACTIONS.EDIT,
+            });
+
+            expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
+              id: 'ui-quick-marc.bibliographic-record.edit.title',
+              values: { title: 'Test title', shared: null },
+            });
+          });
+        });
+
+        describe('when action is DERIVE', () => {
+          it('should have neither "shared" nor "local" in title', () => {
+            renderQuickMarcEditor({
+              marcType: MARC_TYPES.BIB,
+              action: QUICK_MARC_ACTIONS.DERIVE,
+            });
+
+            expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
+              id: 'ui-quick-marc.bibliographic-record.derive.title',
+              values: { shared: null },
+            });
+          });
+        });
+      });
+
+      describe('when the record is authority', () => {
+        describe('when action is CREATE', () => {
+          it('should have neither "shared" nor "local" in title', () => {
+            renderQuickMarcEditor({
+              action: QUICK_MARC_ACTIONS.CREATE,
+              marcType: MARC_TYPES.AUTHORITY,
+              initialValues: { records: [{ id: 'LDR' }] },
+
+            });
+
+            expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
+              id: 'ui-quick-marc.authority-record.create.title',
+              values: { shared: null },
+            });
+          });
+        });
+
+        describe('when action is EDIT', () => {
+          it('should have neither "shared" nor "local" in title', () => {
+            renderQuickMarcEditor({
+              action: QUICK_MARC_ACTIONS.EDIT,
+              marcType: MARC_TYPES.AUTHORITY,
+              initialValues: { records: [{ id: 'LDR' }] },
+            });
+
+            expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
+              id: 'ui-quick-marc.authority-record.edit.title',
+              values: { shared: null },
+            });
+          });
+        });
+      });
+
+      describe('when the record is holdings', () => {
+        describe('when action is CREATE', () => {
+          it('should have title', () => {
+            renderQuickMarcEditor({
+              marcType: MARC_TYPES.HOLDINGS,
+              action: QUICK_MARC_ACTIONS.CREATE,
+            });
+
+            expect(Pane.render.mock.lastCall[0].paneTitle.props).toMatchObject({
+              id: 'ui-quick-marc.holdings-record.create.title',
+            });
+          });
+        });
+
+        describe('when action is EDIT', () => {
+          it('should have title', () => {
+            renderQuickMarcEditor({
+              marcType: MARC_TYPES.HOLDINGS,
+              action: QUICK_MARC_ACTIONS.EDIT,
+              locations: [{
+                id: instance.effectiveLocationId,
+                name: 'locationName',
+              }],
+            });
+
+            expect(Pane.render.mock.lastCall[0].paneTitle.props).toMatchObject({
+              id: 'ui-quick-marc.holdings-record.edit.title',
+              values: {
+                callNumber: 'call number',
+                location: 'locationName',
+              },
+            });
+          });
+        });
+      });
+    });
   });
 
   describe('when action is CREATE and marc type is BIB', () => {
-    it('should display instance title in pane title', () => {
-      const { getByText } = renderQuickMarcEditor({
-        action: QUICK_MARC_ACTIONS.CREATE,
-      });
-
-      expect(getByText('ui-quick-marc.bibliographic-record.create.title')).toBeDefined();
-    });
-
     it('should have Save & Close button disabled by default', () => {
       const { getByRole } = renderQuickMarcEditor({
         action: QUICK_MARC_ACTIONS.CREATE,
@@ -368,15 +763,6 @@ describe('Given QuickMarcEditor', () => {
 
   describe('when marc record is of type HOLDINGS', () => {
     describe('when action is create', () => {
-      it('should display create holdings record pane title', () => {
-        const { getByText } = renderQuickMarcEditor({
-          action: QUICK_MARC_ACTIONS.CREATE,
-          marcType: MARC_TYPES.HOLDINGS,
-        });
-
-        expect(getByText('ui-quick-marc.holdings-record.create.title')).toBeDefined();
-      });
-
       it('should not show "Save & keep editing" button', () => {
         const { queryByText } = renderQuickMarcEditor({
           action: QUICK_MARC_ACTIONS.CREATE,
@@ -388,14 +774,6 @@ describe('Given QuickMarcEditor', () => {
     });
 
     describe('when action is edit', () => {
-      it('should display edit holdings record pane title', () => {
-        const { getByText } = renderQuickMarcEditor({
-          marcType: MARC_TYPES.HOLDINGS,
-        });
-
-        expect(getByText('ui-quick-marc.holdings-record.edit.title')).toBeDefined();
-      });
-
       it('should display "Save & keep editing" button', () => {
         const { getByText } = renderQuickMarcEditor({
           marcType: MARC_TYPES.HOLDINGS,
@@ -407,14 +785,6 @@ describe('Given QuickMarcEditor', () => {
   });
 
   describe('when marc record is of type AUTHORITY', () => {
-    it('should display edit authority record pane title', () => {
-      const { getByText } = renderQuickMarcEditor({
-        marcType: MARC_TYPES.AUTHORITY,
-      });
-
-      expect(getByText('ui-quick-marc.authority-record.edit.title')).toBeDefined();
-    });
-
     describe('when delete last 1XX field', () => {
       it('should display edit authority record pane title', () => {
         const { getAllByRole, getByText } = renderQuickMarcEditor({
