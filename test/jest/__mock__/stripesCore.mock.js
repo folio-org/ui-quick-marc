@@ -91,7 +91,7 @@ jest.mock('@folio/stripes/core', () => {
     extend: jest.fn(),
   });
 
-  const useStripes = () => STRIPES;
+  const useStripes = jest.fn(() => STRIPES);
 
   const useNamespace = () => ['@folio/marc-authorities', jest.fn()];
 

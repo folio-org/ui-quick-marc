@@ -306,10 +306,13 @@ const QuickMarcEditor = ({
       });
 
       const headingContent = initialHeading?.content;
+      const shared = isConsortiaEnv
+        ? checkIfUserInCentralTenant(stripes) || isShared
+        : null;
 
       formattedMessageValues = {
-        shared: isConsortiaEnv ? checkIfUserInCentralTenant(stripes) : null,
-        title: getContentSubfieldValue(headingContent).$a?.[0],
+        shared,
+        ...(action !== QUICK_MARC_ACTIONS.CREATE && { title: getContentSubfieldValue(headingContent).$a?.[0] }),
       };
     } else if (marcType === MARC_TYPES.BIB && action !== QUICK_MARC_ACTIONS.EDIT) {
       formattedMessageValues = {
