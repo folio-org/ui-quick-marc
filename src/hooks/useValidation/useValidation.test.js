@@ -4,6 +4,7 @@ import Harness from '../../../test/jest/helpers/harness';
 import { useValidation } from './useValidation';
 import { QUICK_MARC_ACTIONS } from '../../QuickMarcEditor/constants';
 import { MARC_TYPES } from '../../common/constants';
+import fixedFieldSpecBib from '../../../test/mocks/fixedFieldSpecBib';
 
 const locations = [{
   code: 'VA/LI/D',
@@ -602,6 +603,33 @@ describe('useValidation', () => {
           expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.fieldIsControlled');
         });
       });
+
+      describe('when 008 content has invalid value', () => {
+        const { fixedFieldSpec } = marcContext;
+
+        it('should return error message', () => {
+          const { result } = renderHook(() => useValidation(marcContext));
+
+          const record = {
+            ...initialValues,
+            records: [
+              {
+                content: '04706cam a2200865Ii 4500',
+                tag: 'LDR',
+              },
+              {
+                tag: '008',
+                content: {
+                  DtSt: '^',
+                },
+              },
+            ],
+            ...fixedFieldSpec,
+          };
+
+          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.008.invalidValue');
+        });
+      });
     };
 
     const initialValues = {
@@ -634,6 +662,7 @@ describe('useValidation', () => {
         naturalId: null,
         linkableBibFields,
         linkingRules,
+        fixedFieldSpec: fixedFieldSpecBib,
       };
 
       testBaseBibValidation({ marcContext });
@@ -648,6 +677,7 @@ describe('useValidation', () => {
         naturalId: null,
         linkableBibFields,
         linkingRules,
+        fixedFieldSpec: fixedFieldSpecBib,
       };
 
       testBaseBibValidation({ marcContext });
@@ -662,6 +692,7 @@ describe('useValidation', () => {
         naturalId: null,
         linkableBibFields,
         linkingRules,
+        fixedFieldSpec: fixedFieldSpecBib,
       };
 
       testBaseBibValidation({ marcContext });

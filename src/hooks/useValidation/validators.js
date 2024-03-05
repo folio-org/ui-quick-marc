@@ -13,7 +13,10 @@ import {
   LEADER_DOCUMENTATION_LINKS,
   UNCONTROLLED_SUBFIELDS,
   TAG_LENGTH,
+  FIXED_FIELD_TAG,
 } from '../../QuickMarcEditor/constants';
+
+import { FixedFieldFactory } from '../../QuickMarcEditor/QuickMarcEditorRows/FixedField';
 
 export const validateTagLength = ({ marcRecords }, rule) => {
   const nonEmptyRecords = marcRecords.filter(field => !checkIsEmptyContent(field));
@@ -298,6 +301,28 @@ export const validateSubfieldIsControlled = ({ marcRecords, linkingRules }, rule
 
   if (uniqueTags.length) {
     return rule.message(uniqueTags);
+  }
+
+  return undefined;
+};
+export const validateSubfieldValueIsValidOption = ({ marcRecords, fixedFieldSpec }, rule) => {
+  const leader = marcRecords[0];
+  const type = leader?.content?.[6];
+  const subtype = leader?.content?.[7];
+
+  const fixedFieldType = FixedFieldFactory.getFixedFieldType(fixedFieldSpec, type, subtype);
+  const field008Selects = fixedFieldType?.items.filter(x => x?.allowedValues || false) || [];
+  const field008Content = marcRecords.find(x => x.tag === FIXED_FIELD_TAG)?.content || '';
+
+  for (const subField of field008Selects) {
+    const contents = field008Content[subField.code];
+
+    if (!contents) return undefined;
+    const subFieldContentArray = Array.isArray(contents) ? contents : [contents];
+
+    if (!subFieldContentArray.every(content => subField.allowedValues.find(value => value.code === content))) {
+      return rule.message(subField.code);
+    }
   }
 
   return undefined;

@@ -57,6 +57,7 @@ import { useAuthorityLinking } from '../../hooks';
 import {
   QUICK_MARC_ACTIONS,
   LEADER_TAG,
+  FIXED_FIELD_TAG,
 } from '../constants';
 import {
   MARC_TYPES,
@@ -106,6 +107,10 @@ const QuickMarcEditorRows = ({
 
   const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType)
     && action === QUICK_MARC_ACTIONS.EDIT;
+
+  const fixedFieldInitialValues = () => {
+    return initialValues.records.find(record => record.tag === FIXED_FIELD_TAG)?.content || {};
+  };
 
   const isNewRow = useCallback((row) => {
     return !initialValues.records.find(record => record.id === row.id);
@@ -300,6 +305,13 @@ const QuickMarcEditorRows = ({
 
             const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') && recordRow._isLinked;
 
+            // Temporary Fix for 008 field document type "maps" and field Proj Array -> String. MODQM-406
+            if (isFixedField) {
+              if (recordRow.content?.Proj && Array.isArray(recordRow.content.Proj)) {
+                recordRow.content.Proj = recordRow.content.Proj.join('');
+              }
+            }
+
             return (
               <div
                 key={recordRow.id}
@@ -485,7 +497,7 @@ const QuickMarcEditorRows = ({
                   {
                     isFixedField && (
                       FixedFieldFactory.getFixedField(
-                        `${name}.content`, fixedFieldSpec, type, subtype,
+                        `${name}.content`, fixedFieldSpec, type, subtype, fixedFieldInitialValues(),
                       )
                     )
                   }

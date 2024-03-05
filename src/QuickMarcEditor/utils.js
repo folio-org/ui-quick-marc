@@ -181,6 +181,10 @@ const fillEmptyFieldValues = ({ fieldConfigByType, field, hiddenValues = {} }) =
       return { ...acc, [fieldConfig.name]: new Array(fieldConfig.bytes).fill('\\') };
     } else if (fieldConfig.type === SUBFIELD_TYPES.STRING) {
       return { ...acc, [fieldConfig.name]: new Array(fieldConfig.length).fill('\\').join('') };
+    } else if (fieldConfig.type === SUBFIELD_TYPES.SELECT) {
+      return { ...acc, [fieldConfig.name]: new Array(fieldConfig.length).fill('\\').join('') };
+    } else if (fieldConfig.type === SUBFIELD_TYPES.SELECTS) {
+      return { ...acc, [fieldConfig.name]: new Array(fieldConfig.bytes).fill('\\') };
     }
 
     return acc;

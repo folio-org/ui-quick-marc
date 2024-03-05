@@ -1,6 +1,7 @@
-import { LEADER_DOCUMENTATION_LINKS, LEADER_TAG } from '../../QuickMarcEditor/constants';
+import { LEADER_DOCUMENTATION_LINKS, LEADER_TAG, FIXED_FIELD_TAG } from '../../QuickMarcEditor/constants';
 import { MARC_TYPES } from '../../common/constants';
 import * as validators from './validators';
+import fixedFieldSpecBib from '../../../test/mocks/fixedFieldSpecBib';
 
 const locations = [{
   code: 'VA/LI/D',
@@ -614,6 +615,82 @@ describe('validators', () => {
       validators.validateSubfieldIsControlled({ marcRecords, linkingRules }, rule);
 
       expect(rule.message).toHaveBeenCalledWith(['600']);
+    });
+  });
+
+  describe('validateFixedFieldSubfieldValidValue', () => {
+    const rule = {
+      message: jest.fn(),
+    };
+
+    const fixedFieldSpec = fixedFieldSpecBib;
+
+    it('should not return an error when a subfield contains valid content', () => {
+      const marcRecords = [{
+        tag: LEADER_TAG,
+        content: '04706cam a2200865Ii 4501',
+      }, {
+        tag: FIXED_FIELD_TAG,
+        content: {
+          'DtSt': 'b',
+          'Ills': ['\\', '\\', '\\', '\\'],
+        },
+      }];
+
+      validators.validateSubfieldValueIsValidOption({ marcRecords, fixedFieldSpec }, rule);
+
+      expect(rule.message).not.toHaveBeenCalled();
+    });
+
+    it('should return an error when a subfield contains invalid content', () => {
+      const marcRecords = [{
+        tag: LEADER_TAG,
+        content: '04706cam a2200865Ii 4501',
+      }, {
+        tag: FIXED_FIELD_TAG,
+        content: {
+          'DtSt': '^',
+          'Ills': ['\\', '\\', '\\', '\\'],
+        },
+      }];
+
+      validators.validateSubfieldValueIsValidOption({ marcRecords, fixedFieldSpec }, rule);
+
+      expect(rule.message).toHaveBeenCalledWith('DtSt');
+    });
+
+    it('should not return an error when a subfiled contains valid value in content array', () => {
+      const marcRecords = [{
+        tag: LEADER_TAG,
+        content: '04706cam a2200865Ii 4501',
+      }, {
+        tag: FIXED_FIELD_TAG,
+        content: {
+          'DtSt': 'b',
+          'Ills': ['|', '\\', 'a', 'b'],
+        },
+      }];
+
+      validators.validateSubfieldValueIsValidOption({ marcRecords, fixedFieldSpec }, rule);
+
+      expect(rule.message).not.toHaveBeenCalledWith('Ills');
+    });
+
+    it('should return an error when a subfiled contains invalid value in content array', () => {
+      const marcRecords = [{
+        tag: LEADER_TAG,
+        content: '04706cam a2200865Ii 4501',
+      }, {
+        tag: FIXED_FIELD_TAG,
+        content: {
+          'DtSt': 'b',
+          'Ills': ['|', '|', '|', '^'],
+        },
+      }];
+
+      validators.validateSubfieldValueIsValidOption({ marcRecords, fixedFieldSpec }, rule);
+
+      expect(rule.message).toHaveBeenCalledWith('Ills');
     });
   });
 });

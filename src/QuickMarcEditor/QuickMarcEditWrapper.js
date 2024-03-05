@@ -98,7 +98,17 @@ const QuickMarcEditWrapper = ({
     naturalId: instance.naturalId,
     linkableBibFields,
     linkingRules,
-  }), [initialValues, marcType, locations, linkableBibFields, linkingRules, linksCount, instance.naturalId]);
+    fixedFieldSpec,
+  }), [
+    initialValues,
+    marcType,
+    locations,
+    linkableBibFields,
+    linkingRules,
+    fixedFieldSpec,
+    linksCount,
+    instance.naturalId,
+  ]);
   const { validate } = useValidation(validationContext);
 
   const prepareForSubmit = useCallback((formValues) => {

@@ -1,6 +1,7 @@
 import { MARC_TYPES } from '../common/constants';
 
 export const LEADER_TAG = 'LDR';
+export const FIXED_FIELD_TAG = '008';
 
 export const TAG_LENGTH = 3;
 

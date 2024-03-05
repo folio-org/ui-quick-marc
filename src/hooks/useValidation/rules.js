@@ -24,6 +24,7 @@ import {
   validateSubfieldChanged,
   validateSubfieldValueMatch,
   validateContentExistence,
+  validateSubfieldValueIsValidOption,
 } from './validators';
 import {
   is010LinkedToBibRecord,
@@ -48,6 +49,7 @@ const RULES = {
   SUBFIELD_VALUE_EXISTS: validateSubfieldValueExists,
   SUBFIELD_VALUE_MATCH: validateSubfieldValueMatch,
   SUBFIELD_CHANGED: validateSubfieldChanged,
+  SUBFIELD_VALUE_VALID_OPTION: validateSubfieldValueIsValidOption,
 };
 
 const COMMON_VALIDATORS = [
@@ -112,6 +114,11 @@ const COMMON_VALIDATORS = [
 
 const BASE_BIB_VALIDATORS = [
   ...COMMON_VALIDATORS,
+  {
+    tag: '008',
+    validator: RULES.SUBFIELD_VALUE_VALID_OPTION,
+    message: (name) => <FormattedMessage id="ui-quick-marc.record.error.008.invalidValue" values={{ name }} />,
+  },
   {
     tag: '010',
     validator: RULES.NON_REPEATABLE,

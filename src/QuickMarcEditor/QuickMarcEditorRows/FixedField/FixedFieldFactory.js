@@ -44,6 +44,18 @@ export const FixedFieldFactory = {
     }
 
     config.fields = fixedFieldType.items.filter(x => !x.readOnly).map((item) => {
+      // Temporary fix API for type mapa and field Proj
+      if (item.code === 'Proj') {
+        item.isArray = false;
+      }
+
+      const itemSelect = (item.allowedValues)
+        ? {
+          type: item.isArray ? SUBFIELD_TYPES.SELECTS : SUBFIELD_TYPES.SELECT,
+          allowedValues: item?.allowedValues,
+        }
+        : {};
+
       if (item.isArray) {
         return {
           name: item.code,
@@ -51,6 +63,7 @@ export const FixedFieldFactory = {
           type: SUBFIELD_TYPES.BYTES,
           bytes: item.length,
           position: item.position,
+          ...itemSelect,
         };
       }
 
@@ -61,6 +74,7 @@ export const FixedFieldFactory = {
           type: SUBFIELD_TYPES.STRING,
           length: item.length,
           position: item.position,
+          ...itemSelect,
         };
       }
 
@@ -69,15 +83,16 @@ export const FixedFieldFactory = {
         hint: item.name,
         type: SUBFIELD_TYPES.BYTE,
         position: item.position,
+        ...itemSelect,
       };
     });
 
     return config;
   },
 
-  getFixedField(name, fixedFieldSpec, type, subtype) {
+  getFixedField(name, fixedFieldSpec, type, subtype, content) {
     const configFixedField = this.getConfigFixedField(fixedFieldSpec, type, subtype);
 
-    return <FixedField name={name} config={configFixedField} />;
+    return <FixedField name={name} config={configFixedField} content={content} />;
   },
 };

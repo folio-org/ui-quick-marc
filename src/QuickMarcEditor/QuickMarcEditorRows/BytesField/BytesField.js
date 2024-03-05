@@ -20,6 +20,7 @@ export const SUBFIELD_TYPES = {
   STRING: 'String',
   BYTES: 'Bytes',
   SELECT: 'Select',
+  SELECTS: 'Selects',
 };
 
 const renderSubField = (name, config) => {
@@ -28,6 +29,36 @@ const renderSubField = (name, config) => {
   const hint = config.hint ? config.hint : config.name;
   const labelHint = <FormattedMessage id={`ui-quick-marc.record.fixedField.tip.${hint}`} />;
   const defaultValue = new Array(config.length || 1).fill('\\').join('');
+  const invalidValue = <FormattedMessage id="ui-quick-marc.record.fixedField.invalid.value" />;
+
+  const addInvalidOptions = (value, options) => {
+    let invalidOption = {};
+    let invalidValueStyle = '';
+
+    if (value && !options.some(option => option.value === value)) {
+      invalidOption = { label: <>{value} - {invalidValue}</>, value, disabled: true };
+      invalidValueStyle = styles.selectInvalidOption;
+
+      return {
+        options: [
+          invalidOption,
+          ...options,
+        ],
+        invalidValueStyle,
+      };
+    }
+
+    return {
+      options,
+      invalidValueStyle,
+    };
+  };
+
+  const error = (ref) => {
+    return (ref.current?.value)
+      ? !config.options.some(x => x.value === ref.current.value)
+      : false;
+  };
 
   if (config.type === SUBFIELD_TYPES.BYTES) {
     return (
@@ -85,18 +116,96 @@ const renderSubField = (name, config) => {
     );
   }
 
+  if (config.type === SUBFIELD_TYPES.SELECTS) {
+    return (
+      <FieldArray name={fieldName}>
+        {() => {
+          return (
+            <div className={styles.bytesFieldSubFieldBytes}>
+              <Label htmlFor={`${fieldName}[0]`}>
+                {label}
+              </Label>
+
+              <div className={styles.bytesFieldSubFieldSelects}>
+                {
+                  Array.from(Array(config.bytes)).map((v, idx) => {
+                    const value = config?.value[idx];
+                    const { options, invalidValueStyle } = addInvalidOptions(value, config.options);
+
+                    return (
+                      <FormattedMessage
+                        key={idx}
+                        id={`ui-quick-marc.record.fixedField.${config.name}`}
+                      >
+                        {([ariaLabel]) => (
+
+                          <Tooltip
+                            id={`ui-quick-marc.record.fixedField-${config.name}${idx}`}
+                            text={labelHint}
+                            placement="bottom-start"
+                          >
+                            {({ ref, ariaIds }) => (
+                              <Field
+                                inputRef={ref}
+                                dirty={false}
+                                error={error(ref)}
+                                aria-label={ariaLabel}
+                                aria-labelledby={ariaIds.text}
+                                name={`${fieldName}[${idx}]`}
+                                component={Select}
+                                disabled={config.disabled}
+                                dataOptions={options}
+                                data-testid={`fixed-field-${config.type}`}
+                                selectClass={invalidValueStyle}
+                              />
+                            )}
+                          </Tooltip>
+                        )}
+                      </FormattedMessage>
+                    );
+                  })
+                }
+              </div>
+            </div>
+          );
+        }}
+      </FieldArray>
+    );
+  }
+
   if (config.type === SUBFIELD_TYPES.SELECT) {
+    const { options, invalidValueStyle } = addInvalidOptions(config.value, config.options);
+
     return (
       <div className={styles.bytesFieldSubFieldSelect}>
-        <Field
-          dirty={false}
-          name={fieldName}
-          label={label}
-          component={Select}
-          disabled={config.disabled}
-          dataOptions={config.options}
-          data-testid={`fixed-field-${config.type}`}
-        />
+        <Label htmlFor={`${fieldName}`}>
+          {label}
+        </Label>
+        <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`}>
+          {([ariaLabel]) => (
+            <Tooltip
+              id={`ui-quick-marc.record.fixedField-${config.name}`}
+              text={labelHint}
+              placement="bottom-start"
+            >
+              {({ ref, ariaIds }) => (
+                <Field
+                  inputRef={ref}
+                  dirty={false}
+                  error={error(ref)}
+                  name={fieldName}
+                  aria-label={ariaLabel}
+                  aria-labelledby={ariaIds.text}
+                  component={Select}
+                  disabled={config.disabled}
+                  dataOptions={options}
+                  data-testid={`fixed-field-${config.type}`}
+                  selectClass={invalidValueStyle}
+                />
+              )}
+            </Tooltip>
+          )}
+        </FormattedMessage>
       </div>
     );
   }
