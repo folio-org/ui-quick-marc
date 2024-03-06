@@ -12,26 +12,28 @@ const configMock = {
     type: 'Select',
     length: 1,
     position: 1,
-    allowedValues: [{
-      code: 'a',
-      name: 'test1',
+    options: [{
+      value: 'a',
+      label: 'a - test1',
     }, {
-      code: 'b',
-      name: 'test2',
+      value: 'b',
+      label: 'b - test2',
     }],
+    value: 'a',
   },
   {
     name: 'Relf',
     type: 'Selects',
     bytes: 4,
     position: 2,
-    allowedValues: [{
-      code: 'c',
-      name: 'test1',
+    options: [{
+      value: 'c',
+      label: 'c - test1',
     }, {
-      code: 'd',
-      name: 'test2',
+      value: 'd',
+      label: 'd - test2',
     }],
+    value: 'c',
   },
   {
     name: 'Ctry',
@@ -39,12 +41,6 @@ const configMock = {
     length: 3,
     position: 3,
   }],
-};
-
-const marcContext = {
-  'DtSt': 'a',
-  'Relf': ['c', 'c', 'd', 'd'],
-  'Ctry': '|||',
 };
 
 const renderFixedField = (config) => (render(
@@ -56,7 +52,6 @@ const renderFixedField = (config) => (render(
         <FixedField
           name="records"
           config={config}
-          content={marcContext}
         />
       )}
     />
@@ -68,8 +63,8 @@ describe('FixedField', () => {
     const { getByText, getByTestId } = renderFixedField(configMock);
 
     expect(getByTestId('fixed-field-Select')).toBeInTheDocument();
-    expect(getByText('a - ui-quick-marc.record.fixedField.test1')).toBeInTheDocument();
-    expect(getByText('b - ui-quick-marc.record.fixedField.test2')).toBeInTheDocument();
+    expect(getByText('a - test1')).toBeInTheDocument();
+    expect(getByText('b - test2')).toBeInTheDocument();
   });
 
   it('Should render 4 selects with proper options', () => {
@@ -78,8 +73,8 @@ describe('FixedField', () => {
     const selects = getAllByTestId('fixed-field-Selects');
 
     expect(selects).toHaveLength(4);
-    expect(getAllByText(/c - ui-quick-marc.record.fixedField.test1/i)).toHaveLength(4);
-    expect(getAllByText(/d - ui-quick-marc.record.fixedField.test2/i)).toHaveLength(4);
+    expect(getAllByText(/c - test1/i)).toHaveLength(4);
+    expect(getAllByText(/d - test2/i)).toHaveLength(4);
   });
 
   it('Should render Ctry as input', () => {

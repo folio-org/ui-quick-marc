@@ -305,7 +305,7 @@ export const validateSubfieldIsControlled = ({ marcRecords, linkingRules }, rule
 
   return undefined;
 };
-export const validateSubfieldValueIsValidOption = ({ marcRecords, fixedFieldSpec }, rule) => {
+export const validateFixedFieldPositions = ({ marcRecords, fixedFieldSpec }, rule) => {
   const leader = marcRecords[0];
   const type = leader?.content?.[6];
   const subtype = leader?.content?.[7];

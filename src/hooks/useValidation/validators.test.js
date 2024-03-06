@@ -618,7 +618,7 @@ describe('validators', () => {
     });
   });
 
-  describe('validateFixedFieldSubfieldValidValue', () => {
+  describe('validateFixedFieldPositions', () => {
     const rule = {
       message: jest.fn(),
     };
@@ -637,7 +637,7 @@ describe('validators', () => {
         },
       }];
 
-      validators.validateSubfieldValueIsValidOption({ marcRecords, fixedFieldSpec }, rule);
+      validators.validateFixedFieldPositions({ marcRecords, fixedFieldSpec }, rule);
 
       expect(rule.message).not.toHaveBeenCalled();
     });
@@ -654,7 +654,7 @@ describe('validators', () => {
         },
       }];
 
-      validators.validateSubfieldValueIsValidOption({ marcRecords, fixedFieldSpec }, rule);
+      validators.validateFixedFieldPositions({ marcRecords, fixedFieldSpec }, rule);
 
       expect(rule.message).toHaveBeenCalledWith('DtSt');
     });
@@ -671,7 +671,7 @@ describe('validators', () => {
         },
       }];
 
-      validators.validateSubfieldValueIsValidOption({ marcRecords, fixedFieldSpec }, rule);
+      validators.validateFixedFieldPositions({ marcRecords, fixedFieldSpec }, rule);
 
       expect(rule.message).not.toHaveBeenCalledWith('Ills');
     });
@@ -688,7 +688,7 @@ describe('validators', () => {
         },
       }];
 
-      validators.validateSubfieldValueIsValidOption({ marcRecords, fixedFieldSpec }, rule);
+      validators.validateFixedFieldPositions({ marcRecords, fixedFieldSpec }, rule);
 
       expect(rule.message).toHaveBeenCalledWith('Ills');
     });

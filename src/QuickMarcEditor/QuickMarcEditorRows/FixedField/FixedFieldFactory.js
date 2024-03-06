@@ -32,7 +32,7 @@ export const FixedFieldFactory = {
     return fixedFieldType;
   },
 
-  getConfigFixedField(fixedFieldSpec, type, subtype = '') {
+  getConfigFixedField(fixedFieldSpec, type, subtype = '', content = {}) {
     const fixedFieldType = this.getFixedFieldType(fixedFieldSpec, type, subtype);
     const config = {
       fields: [],
@@ -49,10 +49,13 @@ export const FixedFieldFactory = {
         item.isArray = false;
       }
 
+      const value = content[item.code] || '';
+
       const itemSelect = (item.allowedValues)
         ? {
           type: item.isArray ? SUBFIELD_TYPES.SELECTS : SUBFIELD_TYPES.SELECT,
-          allowedValues: item?.allowedValues,
+          allowedValues: item.allowedValues,
+          value,
         }
         : {};
 
@@ -90,9 +93,40 @@ export const FixedFieldFactory = {
     return config;
   },
 
-  getFixedField(name, fixedFieldSpec, type, subtype, content) {
-    const configFixedField = this.getConfigFixedField(fixedFieldSpec, type, subtype);
+  getConfigWithOptions(intl, configFixedField) {
+    const getOptionLabel = (allowedValue) => {
+      const key = 'ui-quick-marc.record.fixedField';
+      const label = intl.formatMessage({ id: `${key}.${allowedValue.name}` });
 
-    return <FixedField name={name} config={configFixedField} content={content} />;
+      return `${allowedValue.code} - ${label}`;
+    };
+
+    const fields = configFixedField.fields.map(field => {
+      if ((field.type === SUBFIELD_TYPES.SELECTS) || (field.type === SUBFIELD_TYPES.SELECT)) {
+        return {
+          ...field,
+          options: (field?.allowedValues || []).map(allowedValue => {
+            return {
+              value: allowedValue.code,
+              label: getOptionLabel(allowedValue),
+            };
+          }),
+        };
+      }
+
+      return field;
+    });
+
+    return {
+      ...configFixedField,
+      fields,
+    };
+  },
+
+  getFixedField(intl, name, fixedFieldSpec, type, subtype, content) {
+    const configFixedField = this.getConfigFixedField(fixedFieldSpec, type, subtype, content);
+    const config = this.getConfigWithOptions(intl, configFixedField);
+
+    return <FixedField name={name} config={config} />;
   },
 };

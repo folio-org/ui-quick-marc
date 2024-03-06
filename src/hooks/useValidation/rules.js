@@ -24,7 +24,7 @@ import {
   validateSubfieldChanged,
   validateSubfieldValueMatch,
   validateContentExistence,
-  validateSubfieldValueIsValidOption,
+  validateFixedFieldPositions,
 } from './validators';
 import {
   is010LinkedToBibRecord,
@@ -49,7 +49,7 @@ const RULES = {
   SUBFIELD_VALUE_EXISTS: validateSubfieldValueExists,
   SUBFIELD_VALUE_MATCH: validateSubfieldValueMatch,
   SUBFIELD_CHANGED: validateSubfieldChanged,
-  SUBFIELD_VALUE_VALID_OPTION: validateSubfieldValueIsValidOption,
+  FIXED_FIELD_POSITIONS: validateFixedFieldPositions,
 };
 
 const COMMON_VALIDATORS = [
@@ -116,7 +116,7 @@ const BASE_BIB_VALIDATORS = [
   ...COMMON_VALIDATORS,
   {
     tag: '008',
-    validator: RULES.SUBFIELD_VALUE_VALID_OPTION,
+    validator: RULES.FIXED_FIELD_POSITIONS,
     message: (name) => <FormattedMessage id="ui-quick-marc.record.error.008.invalidValue" values={{ name }} />,
   },
   {

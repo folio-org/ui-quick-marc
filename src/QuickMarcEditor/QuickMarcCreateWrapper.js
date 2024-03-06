@@ -68,7 +68,8 @@ const QuickMarcCreateWrapper = ({
     linkableBibFields,
     linkingRules,
     sourceFiles,
-  }), [initialValues, marcType, locations, linkableBibFields, linkingRules, sourceFiles]);
+    fixedFieldSpec,
+  }), [initialValues, marcType, locations, linkableBibFields, linkingRules, sourceFiles, fixedFieldSpec]);
   const { validate } = useValidation(validationContext);
 
   const prepareForSubmit = useCallback((formValues) => {
