@@ -5,11 +5,12 @@ import {
   getIsSubfieldRemoved,
   getLocationValue,
   checkIsEmptyContent,
+  convertLeaderToString,
+  getLeaderPositions,
 } from '../../QuickMarcEditor/utils';
 import {
   LEADER_EDITABLE_BYTES,
   LEADER_TAG,
-  LEADER_VALUES_FOR_POSITION,
   LEADER_DOCUMENTATION_LINKS,
   UNCONTROLLED_SUBFIELDS,
   TAG_LENGTH,
@@ -17,6 +18,7 @@ import {
 } from '../../QuickMarcEditor/constants';
 
 import { FixedFieldFactory } from '../../QuickMarcEditor/QuickMarcEditorRows/FixedField';
+import { leaderConfig } from '../../QuickMarcEditor/QuickMarcEditorRows/Leader/leaderConfig';
 
 export const validateTagLength = ({ marcRecords }, rule) => {
   const nonEmptyRecords = marcRecords.filter(field => !checkIsEmptyContent(field));
@@ -113,6 +115,16 @@ export const validateNonRepeatableSubfield = ({ marcRecords }, rule) => {
 
   return undefined;
 };
+export const validateLeaderLength = ({ marcRecords, marcType }, rule) => {
+  const leader = marcRecords.find(field => field.tag === LEADER_TAG);
+  const leaderContent = convertLeaderToString(marcType, leader);
+
+  if (leaderContent.length !== 24) {
+    return rule.message();
+  }
+
+  return undefined;
+};
 export const validateCorrectLength = ({ marcRecords }, rule) => {
   const field = marcRecords.find(record => record.tag === rule.tag);
 
@@ -122,9 +134,11 @@ export const validateCorrectLength = ({ marcRecords }, rule) => {
 
   return undefined;
 };
-export const validateEditableBytes = ({ marcRecords, initialValues, marcType }, rule) => {
-  const initialField = initialValues.records.find(record => record.tag === rule.tag);
-  const field = marcRecords.find(record => record.tag === rule.tag);
+export const validateLeaderEditableBytes = ({ marcRecords, initialValues, marcType }, rule) => {
+  const initialField = initialValues.records.find(record => record.tag === LEADER_TAG);
+  const field = marcRecords.find(record => record.tag === LEADER_TAG);
+  const initialContent = convertLeaderToString(marcType, initialField);
+  const fieldContent = convertLeaderToString(marcType, field);
 
   const cutEditableBytes = (str) => (
     LEADER_EDITABLE_BYTES[marcType].reduce((acc, byte, idx) => {
@@ -134,20 +148,17 @@ export const validateEditableBytes = ({ marcRecords, initialValues, marcType }, 
     }, str)
   );
 
-  if (cutEditableBytes(initialField.content) !== cutEditableBytes(field.content)) {
+  if (cutEditableBytes(initialContent) !== cutEditableBytes(fieldContent)) {
     return rule.message(marcType);
   }
 
   return undefined;
 };
 const getInvalidLeaderPositions = (leader, marcType) => {
-  const failedPositions = Object.keys(LEADER_VALUES_FOR_POSITION[marcType]).map(position => {
-    if (!LEADER_VALUES_FOR_POSITION[marcType][position].includes(leader[position])) {
-      return position;
-    }
-
-    return null;
-  }).filter(result => !!result);
+  const failedPositions = leaderConfig[marcType]
+    .filter(config => config.allowedValues)
+    .filter(({ allowedValues, position }) => !allowedValues.some(({ code }) => code === leader[position]))
+    .map(({ position }) => position);
 
   return failedPositions;
 };
@@ -164,8 +175,9 @@ const joinFailedPositions = (failedPositions) => {
 };
 
 export const validateLeaderPositions = ({ marcRecords, marcType }, rule) => {
-  const leader = marcRecords.find(record => record.tag === rule.tag);
-  const failedPositions = getInvalidLeaderPositions(leader.content, marcType);
+  const leader = marcRecords.find(field => field.tag === LEADER_TAG);
+  const leaderContent = convertLeaderToString(marcType, leader);
+  const failedPositions = getInvalidLeaderPositions(leaderContent, marcType);
   const joinedPositions = joinFailedPositions(failedPositions);
 
   if (failedPositions.length) {
@@ -305,11 +317,8 @@ export const validateSubfieldIsControlled = ({ marcRecords, linkingRules }, rule
 
   return undefined;
 };
-export const validateFixedFieldPositions = ({ marcRecords, fixedFieldSpec }, rule) => {
-  const leader = marcRecords[0];
-  const type = leader?.content?.[6];
-  const subtype = leader?.content?.[7];
-
+export const validateFixedFieldPositions = ({ marcRecords, fixedFieldSpec, marcType }, rule) => {
+  const { type, position7: subtype } = getLeaderPositions(marcType, marcRecords);
   const fixedFieldType = FixedFieldFactory.getFixedFieldType(fixedFieldSpec, type, subtype);
   const field008Selects = fixedFieldType?.items.filter(x => x?.allowedValues || false) || [];
   const field008Content = marcRecords.find(x => x.tag === FIXED_FIELD_TAG)?.content || '';

@@ -5,6 +5,11 @@ import { useValidation } from './useValidation';
 import { QUICK_MARC_ACTIONS } from '../../QuickMarcEditor/constants';
 import { MARC_TYPES } from '../../common/constants';
 import fixedFieldSpecBib from '../../../test/mocks/fixedFieldSpecBib';
+import {
+  authorityLeader,
+  bibLeader,
+  holdingsLeader,
+} from '../../../test/jest/fixtures/leaders';
 
 const locations = [{
   code: 'VA/LI/D',
@@ -56,7 +61,10 @@ describe('useValidation', () => {
             ...initialValues,
             records: [
               {
-                content: '04706cam a2200865Ii 450',
+                content: {
+                  ...initialValues.leader,
+                  'Record length': initialValues.leader['Record length'].slice(1),
+                },
                 tag: 'LDR',
               },
             ],
@@ -74,7 +82,10 @@ describe('useValidation', () => {
             ...initialValues,
             records: [
               {
-                content: '14706cam a2200865Ii 4500',
+                content: {
+                  ...initialValues.leader,
+                  'Record length': '10000',
+                },
                 tag: 'LDR',
               },
               {
@@ -98,7 +109,10 @@ describe('useValidation', () => {
             ...initialValues,
             records: [
               {
-                content: '047061xm a2200865ni 4500',
+                content: {
+                  ...initialValues.leader,
+                  Status: '1',
+                },
                 tag: 'LDR',
               },
               {
@@ -258,10 +272,10 @@ describe('useValidation', () => {
 
     describe('when validating Bib record', () => {
       const initialValues = {
-        leader: '04706cam a2200865Ii 4500',
+        leader: bibLeader,
         records: [
           {
-            content: '04706cam a2200865Ii 4500',
+            content: bibLeader,
             tag: 'LDR',
           },
           {
@@ -326,10 +340,10 @@ describe('useValidation', () => {
 
     describe('when validating Holdings record', () => {
       const initialValues = {
-        leader: '04706cxm a2200865mi 4500',
+        leader: holdingsLeader,
         records: [
           {
-            content: '04706cxm a2200865mi 4500',
+            content: holdingsLeader,
             tag: 'LDR',
           },
           {
@@ -366,10 +380,10 @@ describe('useValidation', () => {
 
     describe('when validating Authority record', () => {
       const initialValues = {
-        leader: '04706cxm a2200865ni 4500',
+        leader: authorityLeader,
         records: [
           {
-            content: '04706cxm a2200865ni 4500',
+            content: authorityLeader,
             tag: 'LDR',
           },
           {
@@ -439,7 +453,7 @@ describe('useValidation', () => {
             ...initialValues,
             records: [
               {
-                content: '04706cam a2200865Ii 4500',
+                content: initialValues.leader,
                 tag: 'LDR',
               },
               {
@@ -463,7 +477,7 @@ describe('useValidation', () => {
             ...initialValues,
             records: [
               {
-                content: '04706cam a2200865Ii 4500',
+                content: initialValues.leader,
                 tag: 'LDR',
               },
               {
@@ -493,7 +507,7 @@ describe('useValidation', () => {
             ...initialValues,
             records: [
               {
-                content: '04706cam a2200865Ii 4500',
+                content: initialValues.leader,
                 tag: 'LDR',
               },
               {
@@ -614,7 +628,7 @@ describe('useValidation', () => {
             ...initialValues,
             records: [
               {
-                content: '04706cam a2200865Ii 4500',
+                content: initialValues.leader,
                 tag: 'LDR',
               },
               {
@@ -633,10 +647,10 @@ describe('useValidation', () => {
     };
 
     const initialValues = {
-      leader: '04706cam a2200865Ii 4500',
+      leader: bibLeader,
       records: [
         {
-          content: '04706cam a2200865Ii 4500',
+          content: bibLeader,
           tag: 'LDR',
         },
         {
@@ -740,7 +754,7 @@ describe('useValidation', () => {
             ...initialValues,
             records: [
               {
-                content: '04706cxm a2200865mi 4500',
+                content: initialValues.leader,
                 tag: 'LDR',
               },
               {
@@ -762,7 +776,7 @@ describe('useValidation', () => {
             ...initialValues,
             records: [
               {
-                content: '04706cxm a2200865mi 4500',
+                content: initialValues.leader,
                 tag: 'LDR',
               },
               {
@@ -786,7 +800,7 @@ describe('useValidation', () => {
             ...initialValues,
             records: [
               {
-                content: '04706cxm a2200865mi 4500',
+                content: initialValues.leader,
                 tag: 'LDR',
               },
               {
@@ -818,7 +832,7 @@ describe('useValidation', () => {
             ...initialValues,
             records: [
               {
-                content: '04706cxm a2200865mi 4500',
+                content: initialValues.leader,
                 tag: 'LDR',
               },
               {
@@ -844,7 +858,7 @@ describe('useValidation', () => {
             ...initialValues,
             records: [
               {
-                content: '04706cxm a2200865mi 4500',
+                content: initialValues.leader,
                 tag: 'LDR',
               },
               {
@@ -864,10 +878,10 @@ describe('useValidation', () => {
     };
 
     const initialValues = {
-      leader: '04706cxm a2200865mi 4500',
+      leader: holdingsLeader,
       records: [
         {
-          content: '04706cxm a2200865mi 4500',
+          content: holdingsLeader,
           tag: 'LDR',
         },
         {
@@ -929,7 +943,7 @@ describe('useValidation', () => {
             records: [
               {
                 id: 1,
-                content: '04706cxm a2200865ni 4500',
+                content: initialValues.leader,
                 tag: 'LDR',
               },
               {
@@ -953,7 +967,7 @@ describe('useValidation', () => {
             records: [
               {
                 id: 1,
-                content: '04706cxm a2200865ni 4500',
+                content: initialValues.leader,
                 tag: 'LDR',
               },
               {
@@ -982,7 +996,7 @@ describe('useValidation', () => {
             records: [
               {
                 id: 'LDR',
-                content: '04706cxm a2200865ni 4500',
+                content: initialValues.leader,
                 tag: 'LDR',
               },
               {
@@ -1019,7 +1033,7 @@ describe('useValidation', () => {
             records: [
               {
                 id: 'LDR',
-                content: '04706cxm a2200865ni 4500',
+                content: initialValues.leader,
                 tag: 'LDR',
               },
               {
@@ -1094,11 +1108,11 @@ describe('useValidation', () => {
     };
 
     const initialValues = {
-      leader: '04706cxm a2200865ni 4500',
+      leader: authorityLeader,
       records: [
         {
           id: 1,
-          content: '04706cxm a2200865ni 4500',
+          content: authorityLeader,
           tag: 'LDR',
         },
         {
@@ -1147,11 +1161,11 @@ describe('useValidation', () => {
             const { result } = renderHook(() => useValidation(marcContext));
 
             const record = {
-              leader: '04706cxm a2200865ni 4500',
+              leader: initialValues.leader,
               records: [
                 {
                   id: 1,
-                  content: '04706cxm a2200865ni 4500',
+                  content: initialValues.leader,
                   tag: 'LDR',
                 },
                 {
@@ -1176,11 +1190,11 @@ describe('useValidation', () => {
             const { result } = renderHook(() => useValidation(marcContext));
 
             const record = {
-              leader: '04706cxm a2200865ni 4500',
+              leader: initialValues.leader,
               records: [
                 {
                   id: 1,
-                  content: '04706cxm a2200865ni 4500',
+                  content: initialValues.leader,
                   tag: 'LDR',
                 },
                 {
@@ -1203,11 +1217,11 @@ describe('useValidation', () => {
         describe('when $t was removed from 1XX field', () => {
           it('should return an error', () => {
             const _initialValues = {
-              leader: '04706cxm a2200865ni 4500',
+              leader: initialValues.leader,
               records: [
                 {
                   id: 1,
-                  content: '04706cxm a2200865ni 4500',
+                  content: initialValues.leader,
                   tag: 'LDR',
                 },
                 {
@@ -1229,11 +1243,11 @@ describe('useValidation', () => {
             }));
 
             const record = {
-              leader: '04706cxm a2200865ni 4500',
+              leader: initialValues.leader,
               records: [
                 {
                   id: 1,
-                  content: '04706cxm a2200865ni 4500',
+                  content: initialValues.leader,
                   tag: 'LDR',
                 },
                 {
@@ -1256,11 +1270,11 @@ describe('useValidation', () => {
         describe('when 010 $a was removed', () => {
           it('should return an error message', () => {
             const _initialValues = {
-              leader: '04706cxm a2200865ni 4500',
+              leader: initialValues.leader,
               records: [
                 {
                   id: 1,
-                  content: '04706cxm a2200865ni 4500',
+                  content: initialValues.leader,
                   tag: 'LDR',
                 },
                 {
@@ -1290,7 +1304,7 @@ describe('useValidation', () => {
               records: [
                 {
                   id: 'LDR',
-                  content: '04706cxm a2200865ni 4500',
+                  content: initialValues.leader,
                   tag: 'LDR',
                 },
                 {
@@ -1317,11 +1331,11 @@ describe('useValidation', () => {
         describe('when 010 was removed', () => {
           it('should not return an error message', () => {
             const _initialValues = {
-              leader: '04706cxm a2200865ni 4500',
+              leader: initialValues.leader,
               records: [
                 {
                   id: 1,
-                  content: '04706cxm a2200865ni 4500',
+                  content: initialValues.leader,
                   tag: 'LDR',
                 },
                 {
@@ -1351,7 +1365,7 @@ describe('useValidation', () => {
               records: [
                 {
                   id: 'LDR',
-                  content: '04706cxm a2200865ni 4500',
+                  content: initialValues.leader,
                   tag: 'LDR',
                 },
                 {

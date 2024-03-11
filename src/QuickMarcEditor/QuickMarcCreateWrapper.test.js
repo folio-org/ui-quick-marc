@@ -21,6 +21,11 @@ import { QUICK_MARC_ACTIONS } from './constants';
 import Harness from '../../test/jest/helpers/harness';
 import { useAuthorityLinking } from '../hooks';
 import { saveLinksToNewRecord } from './utils';
+import {
+  authorityLeader,
+  bibLeader,
+  holdingsLeader,
+} from '../../test/jest/fixtures/leaders';
 
 const runWithDelayedPromise = (fn, delay) => () => {
   return new Promise(resolve => setTimeout(() => resolve(fn()), delay));
@@ -56,7 +61,7 @@ const mockRecords = {
   [MARC_TYPES.HOLDINGS]: [
     {
       tag: 'LDR',
-      content: '00000nu\\\\\\2200000un\\4500',
+      content: holdingsLeader,
       id: 'LDR',
     }, {
       tag: '001',
@@ -91,7 +96,7 @@ const mockRecords = {
   [MARC_TYPES.BIB]: [
     {
       'tag': 'LDR',
-      'content': '01178nam\\a2200277ic\\4500',
+      'content': bibLeader,
       'id': 'LDR',
     }, {
       'tag': '001',
@@ -151,7 +156,7 @@ const mockRecords = {
   [MARC_TYPES.AUTHORITY]: [
     {
       'tag': 'LDR',
-      'content': '00000nz\\\\a2200000o\\\\4500',
+      'content': authorityLeader,
       'id': 'LDR',
     },
     {
@@ -199,9 +204,9 @@ const mockRecords = {
 };
 
 const mockLeaders = {
-  [MARC_TYPES.BIB]: '01178nam\\a2200277ic\\4500',
-  [MARC_TYPES.HOLDINGS]: '00000nu\\\\\\2200000un\\4500',
-  [MARC_TYPES.AUTHORITY]: '00000nz\\\\a2200000o\\\\4500',
+  [MARC_TYPES.BIB]: bibLeader,
+  [MARC_TYPES.HOLDINGS]: holdingsLeader,
+  [MARC_TYPES.AUTHORITY]: authorityLeader,
 };
 
 const mockFormValues = jest.fn((marcType) => ({
@@ -273,7 +278,7 @@ const getInstance = () => ({
 
 const record = {
   id: faker.random.uuid(),
-  leader: faker.random.uuid(),
+  leader: bibLeader,
   fields: [],
 };
 

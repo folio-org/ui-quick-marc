@@ -29,6 +29,7 @@ import { ContentField } from './ContentField';
 import { IndicatorField } from './IndicatorField';
 import { MaterialCharsField } from './MaterialCharsField';
 import { PhysDescriptionField } from './PhysDescriptionField';
+import { Leader } from './Leader';
 import { FixedFieldFactory } from './FixedField';
 import { LocationField } from './LocationField';
 import { DeletedRowPlaceholder } from './DeletedRowPlaceholder';
@@ -52,11 +53,11 @@ import {
   isContentRow,
   applyCentralTenantInHeaders,
   isControlNumberRow,
+  isLeaderRow,
 } from '../utils';
 import { useAuthorityLinking } from '../../hooks';
 import {
   QUICK_MARC_ACTIONS,
-  LEADER_TAG,
   FIXED_FIELD_TAG,
 } from '../constants';
 import {
@@ -277,7 +278,7 @@ const QuickMarcEditorRows = ({
               );
             }
 
-            const isLeader = recordRow.tag === LEADER_TAG;
+            const isLeader = isLeaderRow(recordRow);
             const isDisabled = isReadOnly(recordRow, action, marcType);
             const withIndicators = !hasIndicatorException(recordRow);
             const withAddRowAction = hasAddException(recordRow, marcType);
@@ -484,7 +485,13 @@ const QuickMarcEditorRows = ({
                       />
                     )
                   }
-
+                  {isLeader && (
+                    <Leader
+                      name={`${name}.content`}
+                      marcType={marcType}
+                      leaderField={recordRow}
+                    />
+                  )}
                   {
                     isPhysDescriptionField && (
                       <PhysDescriptionField

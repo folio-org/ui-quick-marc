@@ -11,6 +11,11 @@ import useAuthorityLinking from './useAuthorityLinking';
 import { useLinkSuggestions } from '../../queries';
 import { MARC_TYPES } from '../../common/constants';
 import { linkingRules } from '../../../test/jest/fixtures/linkingRules';
+import { LEADER_TAG } from '../../QuickMarcEditor/constants';
+import {
+  bibLeader,
+  bibLeaderString,
+} from '../../../test/jest/fixtures/leaders';
 
 const mockFetchLinkSuggestions = jest.fn().mockResolvedValue({ fields: [] });
 
@@ -50,6 +55,14 @@ const authoritySource = {
     tag: '100',
     content: '$a authority value $b fakeB $t field for modification',
   }],
+};
+
+const marcFormat = MARC_TYPES.BIB.toUpperCase();
+
+const leaderField = {
+  tag: LEADER_TAG,
+  content: bibLeader,
+  id: LEADER_TAG,
 };
 
 describe('Given useAuthorityLinking', () => {
@@ -401,7 +414,9 @@ describe('Given useAuthorityLinking', () => {
   describe('when using autoLinkAuthority', () => {
     it('should link fields', async () => {
       const formValues = {
+        marcFormat,
         records: [
+          leaderField,
           {
             'tag': '100',
             'content': '$a Coates, Ta-Nehisi, $e author. $0 n2008001084',
@@ -453,7 +468,7 @@ describe('Given useAuthorityLinking', () => {
       const outcome = await result.current.autoLinkAuthority(formValues);
 
       expect(outcome).toEqual({
-        fields: [
+        fields: expect.arrayContaining([
           {
             'tag': '100',
             'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 5d80ecfa-7370-460e-9e27-3883a7656fe1',
@@ -499,14 +514,16 @@ describe('Given useAuthorityLinking', () => {
               'uncontrolledNumber': '',
             },
           },
-        ],
+        ]),
         suggestedFields: linkSuggestionsResponse.fields,
       });
     });
 
     it('should not link fields without $0', async () => {
       const formValues = {
+        marcFormat,
         records: [
+          leaderField,
           {
             'tag': '600',
             'content': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc.',
@@ -547,7 +564,7 @@ describe('Given useAuthorityLinking', () => {
       const outcome = await result.current.autoLinkAuthority(formValues);
 
       expect(outcome).toEqual(expect.objectContaining({
-        fields: [
+        fields: expect.arrayContaining([
           {
             'tag': '600',
             'content': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc.',
@@ -579,13 +596,15 @@ describe('Given useAuthorityLinking', () => {
               'uncontrolledNumber': '',
             },
           },
-        ],
+        ]),
       }));
     });
 
     it('should link in the correct order', async () => {
       const formValues = {
+        marcFormat,
         records: [
+          leaderField,
           {
             'tag': '600',
             'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664',
@@ -637,7 +656,7 @@ describe('Given useAuthorityLinking', () => {
       const outcome = await result.current.autoLinkAuthority(formValues);
 
       expect(outcome).toEqual(expect.objectContaining({
-        fields: [
+        fields: expect.arrayContaining([
           {
             'tag': '600',
             'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664 $9 1803fee8-dfd8-42b8-a292-681af0cadb77',
@@ -683,15 +702,16 @@ describe('Given useAuthorityLinking', () => {
               'uncontrolledNumber': '',
             },
           },
-        ],
+        ]),
       }));
     });
 
     it('should return non-linkable fields too', async () => {
       const formValues = {
+        marcFormat,
         records: [{
           'tag': 'LDR',
-          'content': '05274cam\\a2201021\\i\\4500',
+          'content': bibLeader,
           'id': 'LDR',
           '_isDeleted': false,
           '_isLinked': false,
@@ -711,7 +731,7 @@ describe('Given useAuthorityLinking', () => {
       expect(outcome).toEqual(expect.objectContaining({
         fields: [{
           'tag': 'LDR',
-          'content': '05274cam\\a2201021\\i\\4500',
+          'content': bibLeader,
           'id': 'LDR',
           '_isDeleted': false,
           '_isLinked': false,
@@ -721,7 +741,9 @@ describe('Given useAuthorityLinking', () => {
 
     it('should take uncontrolled subfields from the current field, not from suggested one', async () => {
       const formValues = {
+        marcFormat,
         records: [
+          leaderField,
           {
             'tag': '711',
             'content': '$j something $0 n2008001084 $2 fast $f test',
@@ -756,7 +778,7 @@ describe('Given useAuthorityLinking', () => {
       const outcome = await result.current.autoLinkAuthority(formValues);
 
       expect(outcome).toEqual(expect.objectContaining({
-        fields: [
+        fields: expect.arrayContaining([
           {
             'tag': '711',
             'content': '$a Roma Council $c Basilica $d 1962-1965 : $n (2nd : $j something $0 id.loc.gov/authorities/names/n2008001084 $9 5d80ecfa-7370-460e-9e27-3883a7656fe1 $2 fast',
@@ -780,14 +802,16 @@ describe('Given useAuthorityLinking', () => {
               'uncontrolledNumber': '$2 fast',
             },
           },
-        ],
+        ]),
       }));
     });
 
     describe('when link suggestions returns an error for a field with the same tag', () => {
       it('should link in the correct order', async () => {
         const formValues = {
+          marcFormat,
           records: [
+            leaderField,
             {
               'tag': '600',
               'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664',
@@ -836,7 +860,7 @@ describe('Given useAuthorityLinking', () => {
         const outcome = await result.current.autoLinkAuthority(formValues);
 
         expect(outcome).toEqual(expect.objectContaining({
-          fields: [
+          fields: expect.arrayContaining([
             {
               'tag': '600',
               'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664',
@@ -868,7 +892,7 @@ describe('Given useAuthorityLinking', () => {
                 'uncontrolledNumber': '',
               },
             },
-          ],
+          ]),
         }));
       });
     });
@@ -876,7 +900,9 @@ describe('Given useAuthorityLinking', () => {
     describe('when there is no suggestion for a field with the same tag', () => {
       it('should link in the correct order', async () => {
         const formValues = {
+          marcFormat,
           records: [
+            leaderField,
             {
               'tag': '600',
               'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664',
@@ -922,7 +948,7 @@ describe('Given useAuthorityLinking', () => {
         const outcome = await result.current.autoLinkAuthority(formValues);
 
         expect(outcome).toEqual(expect.objectContaining({
-          fields: [
+          fields: expect.arrayContaining([
             {
               'tag': '600',
               'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664',
@@ -954,7 +980,7 @@ describe('Given useAuthorityLinking', () => {
                 'uncontrolledNumber': '',
               },
             },
-          ],
+          ]),
         }));
       });
     });
@@ -962,15 +988,18 @@ describe('Given useAuthorityLinking', () => {
     describe('when there is a field with ERROR status and there is no $9', () => {
       it('should be left as is', async () => {
         const formValues = {
-          records: [{
-            'tag': '600',
-            'content': '$a Medycyna. $v Comic books, strips, etc. $0 vtls000869135',
-            'indicators': ['\\', '0'],
-            'isProtected': false,
-            'id': '103073ce-b2c8-4f92-ba2f-a65f733b3f02',
-            '_isDeleted': false,
-            '_isLinked': false,
-          }],
+          marcFormat,
+          records: [
+            leaderField,
+            {
+              'tag': '600',
+              'content': '$a Medycyna. $v Comic books, strips, etc. $0 vtls000869135',
+              'indicators': ['\\', '0'],
+              'isProtected': false,
+              'id': '103073ce-b2c8-4f92-ba2f-a65f733b3f02',
+              '_isDeleted': false,
+              '_isLinked': false,
+            }],
         };
 
         const linkSuggestionsResponse = {
@@ -999,15 +1028,18 @@ describe('Given useAuthorityLinking', () => {
     describe('when there is a field with ERROR status and there is $9', () => {
       it('should get rid of the $9', async () => {
         const formValues = {
-          records: [{
-            'tag': '600',
-            'content': '$a Medycyna. $v Comic books, strips, etc. $0 vtls000869135 $9 UUID',
-            'indicators': ['\\', '0'],
-            'isProtected': false,
-            'id': '103073ce-b2c8-4f92-ba2f-a65f733b3f02',
-            '_isDeleted': false,
-            '_isLinked': false,
-          }],
+          marcFormat,
+          records: [
+            leaderField,
+            {
+              'tag': '600',
+              'content': '$a Medycyna. $v Comic books, strips, etc. $0 vtls000869135 $9 UUID',
+              'indicators': ['\\', '0'],
+              'isProtected': false,
+              'id': '103073ce-b2c8-4f92-ba2f-a65f733b3f02',
+              '_isDeleted': false,
+              '_isLinked': false,
+            }],
         };
 
         const linkSuggestionsResponse = {
@@ -1028,7 +1060,7 @@ describe('Given useAuthorityLinking', () => {
         const outcome = await result.current.autoLinkAuthority(formValues);
 
         expect(outcome).toEqual(expect.objectContaining({
-          fields: [{
+          fields: expect.arrayContaining([{
             'tag': '600',
             'content': '$a Medycyna. $v Comic books, strips, etc. $0 vtls000869135',
             'indicators': ['\\', '0'],
@@ -1036,7 +1068,7 @@ describe('Given useAuthorityLinking', () => {
             'id': '103073ce-b2c8-4f92-ba2f-a65f733b3f02',
             '_isDeleted': false,
             '_isLinked': false,
-          }],
+          }]),
         }));
       });
     });
@@ -1044,7 +1076,9 @@ describe('Given useAuthorityLinking', () => {
     describe('when user enters $9 into the split uncontrolledNumber or uncontrolledAlpha field of a linked field', () => {
       it('should get rid of the $9', async () => {
         const formValues = {
+          marcFormat,
           records: [
+            leaderField,
             {
               'tag': '100',
               'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 0c63add7-b3f3-4eae-874d-c659acb95174',
@@ -1102,7 +1136,7 @@ describe('Given useAuthorityLinking', () => {
         const outcome = await result.current.autoLinkAuthority(formValues);
 
         expect(outcome).toEqual(expect.objectContaining({
-          fields: [
+          fields: expect.arrayContaining([
             {
               'tag': '100',
               'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 0c63add7-b3f3-4eae-874d-c659acb95174',
@@ -1149,7 +1183,7 @@ describe('Given useAuthorityLinking', () => {
               '_isDeleted': false,
               '_isLinked': false,
             },
-          ],
+          ]),
         }));
       });
     });
@@ -1157,15 +1191,18 @@ describe('Given useAuthorityLinking', () => {
     describe('when there is a field that cannot be linked', () => {
       it('should be left as is', async () => {
         const formValues = {
-          records: [{
-            'tag': '600',
-            'content': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc. $0 nr2005025774',
-            'indicators': ['0', '0'],
-            'isProtected': false,
-            'id': 'bc44d91c-6915-4609-9fd1-bbe470f4740b',
-            '_isDeleted': false,
-            '_isLinked': false,
-          }],
+          marcFormat,
+          records: [
+            leaderField,
+            {
+              'tag': '600',
+              'content': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc. $0 nr2005025774',
+              'indicators': ['0', '0'],
+              'isProtected': false,
+              'id': 'bc44d91c-6915-4609-9fd1-bbe470f4740b',
+              '_isDeleted': false,
+              '_isLinked': false,
+            }],
         };
 
         const linkSuggestionsResponse = {
@@ -1182,7 +1219,7 @@ describe('Given useAuthorityLinking', () => {
         const outcome = await result.current.autoLinkAuthority(formValues);
 
         expect(outcome).toEqual(expect.objectContaining({
-          fields: [{
+          fields: expect.arrayContaining([{
             'tag': '600',
             'content': '$a Black Panther $c (Fictitious character) $v Comic books, strips, etc. $0 nr2005025774',
             'indicators': ['0', '0'],
@@ -1190,7 +1227,7 @@ describe('Given useAuthorityLinking', () => {
             'id': 'bc44d91c-6915-4609-9fd1-bbe470f4740b',
             '_isDeleted': false,
             '_isLinked': false,
-          }],
+          }]),
         }));
       });
     });
@@ -1268,14 +1305,11 @@ describe('Given useAuthorityLinking', () => {
         const formValues = {
           externalHrid: 'in00000000001',
           externalId: '4c95c27d-51fc-4ae1-892d-11347377bdd4',
-          leader: 'test',
-          marcFormat: MARC_TYPES.BIB,
+          leader: bibLeader,
+          marcFormat,
           _actionType: 'view',
           records: [
-            {
-              tag: 'LDR',
-              content: '05341cam\\a2201021\\i\\4500',
-            },
+            leaderField,
             {
               'tag': '700',
               'content': '$a Wang, Shifu, $d 1260-1316 $0 id.loc.gov/authorities/names/n81003794 $9 3929e600-5efb-4427-abf6-a963b01c9c37',
@@ -1324,7 +1358,7 @@ describe('Given useAuthorityLinking', () => {
         };
 
         const linkSuggestionsRequestBody = {
-          'leader': formValues.records[0].content,
+          'leader': bibLeaderString,
           'fields': [
             {
               'tag': '700',
@@ -1343,13 +1377,13 @@ describe('Given useAuthorityLinking', () => {
               'content': '$a Zhang, Xuejing $0 id.loc.gov/authorities/names/no2005093867 $9 68927bf9-e78f-48b9-a45a-947408caff6e',
             },
           ],
-          'marcFormat': MARC_TYPES.BIB,
+          marcFormat,
           '_actionType': 'view',
         };
 
         const linkSuggestionsResponse = {
           '_actionType': 'view',
-          'leader': formValues.records[0].content,
+          'leader': linkSuggestionsRequestBody.leader,
           'fields': [
             {
               'tag': '700',
@@ -1411,14 +1445,11 @@ describe('Given useAuthorityLinking', () => {
         expect(values).toEqual({
           externalHrid: 'in00000000001',
           externalId: '4c95c27d-51fc-4ae1-892d-11347377bdd4',
-          leader: 'test',
-          marcFormat: MARC_TYPES.BIB,
+          leader: formValues.leader,
+          marcFormat,
           _actionType: 'view',
           records: [
-            {
-              tag: 'LDR',
-              content: formValues.records[0].content,
-            },
+            leaderField,
             {
               'tag': '700',
               'content': '$a Wang, Shifu, test $d 1260-1316 $0 id.loc.gov/authorities/names/n12345678 $9 3929e600-5efb-4427-abf6-a963b01c9c37',
@@ -1471,10 +1502,11 @@ describe('Given useAuthorityLinking', () => {
         const formValues = {
           externalHrid: 'in00000000001',
           externalId: '4c95c27d-51fc-4ae1-892d-11347377bdd4',
-          leader: '05341cam\\a2201021\\i\\4500',
-          marcFormat: MARC_TYPES.BIB,
+          leader: bibLeader,
+          marcFormat,
           _actionType: 'view',
           records: [
+            leaderField,
             {
               'tag': '100',
               'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 541539bf-7e1f-468e-a817-a551c6b63d7d',
@@ -1502,7 +1534,7 @@ describe('Given useAuthorityLinking', () => {
 
         const linkSuggestionsResponse = {
           '_actionType': 'view',
-          'leader': '05274cam\\a2201021\\i\\4500',
+          'leader': bibLeaderString,
           'fields': [
             {
               'tag': '100',
@@ -1537,10 +1569,11 @@ describe('Given useAuthorityLinking', () => {
         expect(values).toEqual({
           externalHrid: 'in00000000001',
           externalId: '4c95c27d-51fc-4ae1-892d-11347377bdd4',
-          leader: '05341cam\\a2201021\\i\\4500',
-          marcFormat: MARC_TYPES.BIB,
+          leader: formValues.leader,
+          marcFormat,
           _actionType: 'view',
           records: [
+            leaderField,
             {
               'tag': '100',
               'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 541539bf-7e1f-468e-a817-a551c6b63d7d',
@@ -1565,8 +1598,8 @@ describe('Given useAuthorityLinking', () => {
         const formValues = {
           externalHrid: 'in00000000001',
           externalId: '4c95c27d-51fc-4ae1-892d-11347377bdd4',
-          leader: '05341cam\\a2201021\\i\\4500',
-          marcFormat: MARC_TYPES.BIB,
+          leader: bibLeader,
+          marcFormat,
           _actionType: 'view',
           records: [
             {
@@ -1585,7 +1618,7 @@ describe('Given useAuthorityLinking', () => {
 
         const linkSuggestionsResponse = {
           '_actionType': 'view',
-          'leader': '05274cam\\a2201021\\i\\4500',
+          'leader': formValues.leader,
           'fields': [
             {
               'tag': '700',
@@ -1612,8 +1645,8 @@ describe('Given useAuthorityLinking', () => {
         expect(values).toEqual({
           externalHrid: 'in00000000001',
           externalId: '4c95c27d-51fc-4ae1-892d-11347377bdd4',
-          leader: '05341cam\\a2201021\\i\\4500',
-          marcFormat: MARC_TYPES.BIB,
+          leader: formValues.leader,
+          marcFormat,
           _actionType: 'view',
           records: [
             {

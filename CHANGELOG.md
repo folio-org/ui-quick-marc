@@ -26,6 +26,7 @@
 * [UIQM-625](https://issues.folio.org/browse/UIQM-625) Use `null` instead of empty string as an empty tenantId value.
 * [UIQM-627](https://issues.folio.org/browse/UIQM-627) Add `shared` text to the title when editing a shared authority record.
 * [UIQM-471](https://issues.folio.org/browse/UIQM-471) Added Dropdowns for fixed field 008 bib records.
+* [UIQM-471](https://issues.folio.org/browse/UIQM-610) Split LDR by position & add dropdowns for create/edit/derive.
 
 ## [7.0.5](https://github.com/folio-org/ui-quick-marc/tree/v7.0.5) (2023-12-11)
 

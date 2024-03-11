@@ -23,6 +23,7 @@ import { MARC_TYPES } from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
 import buildStripes from '../../test/jest/__mock__/stripesCore.mock';
+import { bibLeader } from '../../test/jest/fixtures/leaders';
 
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
@@ -104,11 +105,11 @@ const locations = {
 };
 
 const initialValues = {
-  leader: 'assdfgs ds sdg',
+  leader: bibLeader,
   records: [
     {
       tag: 'LDR',
-      content: 'assdfgs ds sdg',
+      content: bibLeader,
       id: 'LDR',
     },
     {
@@ -613,18 +614,6 @@ describe('Given QuickMarcEditor', () => {
     const { getByTestId } = renderQuickMarcEditor();
 
     expect(getByTestId('quick-marc-editor-rows')).toBeDefined();
-  });
-
-  describe('when clearing LDR field', () => {
-    it('should not crash the app', () => {
-      const { getByTestId } = renderQuickMarcEditor();
-
-      const contentField = getByTestId('content-field-0');
-
-      fireEvent.change(contentField, { target: { value: '' } });
-
-      expect(getByTestId('quick-marc-editor-rows')).toBeDefined();
-    });
   });
 
   describe('when deleted a row', () => {
