@@ -85,39 +85,45 @@ describe('FixedFieldFactory', () => {
     ).toBe('unknown');
   });
 
-  it('should return undefined type when there is no matched field', () => {
-    expect(
-      FixedFieldFactory.getFixedField(intl, 'records', fixedFieldSpecBib, 'l').props.config.type,
-    ).toBe(undefined);
+  describe('when document type is unknown', () => {
+    it('should return undefined type when there is no matched field', () => {
+      expect(
+        FixedFieldFactory.getFixedField(intl, 'records', fixedFieldSpecBib, 'l').props.config.type,
+      ).toBe(undefined);
+    });
   });
 
-  it('should field not to be in config when is ReadOnly', () => {
-    const fields = FixedFieldFactory.getFixedField(intl, 'records', fixedFieldSpecBib, 'a', 'm').props.config.fields;
-    const fieldsEntered = fields.filter(x => x.name === 'Entered');
+  describe('when type of document is defined', () => {
+    it('should field not to be in config when is ReadOnly', () => {
+      const fields = FixedFieldFactory.getFixedField(intl, 'records', fixedFieldSpecBib, 'a', 'm').props.config.fields;
+      const fieldsEntered = fields.filter(x => x.name === 'Entered');
 
-    expect(fieldsEntered).toHaveLength(0);
+      expect(fieldsEntered).toHaveLength(0);
+    });
   });
 
-  it('for type books should return type "String" for field Date1', () => {
-    const fields = FixedFieldFactory.getFixedField(intl, 'records', fixedFieldSpecBib, 'a', 'm').props.config.fields;
-    const fieldDate1 = fields.filter(x => x.name === 'Date1')[0];
+  describe('when document type is book', () => {
+    it('should return type "String" for field Date1', () => {
+      const fields = FixedFieldFactory.getFixedField(intl, 'records', fixedFieldSpecBib, 'a', 'm').props.config.fields;
+      const fieldDate1 = fields.filter(x => x.name === 'Date1')[0];
 
-    expect(fieldDate1.type).toBe(SUBFIELD_TYPES.STRING);
-  });
+      expect(fieldDate1.type).toBe(SUBFIELD_TYPES.STRING);
+    });
 
-  it('for type books should return type "Bytes" for field Cont', () => {
-    const fields = FixedFieldFactory.getFixedField(intl, 'records', fixedFieldSpecBib, 'a', 'm').props.config.fields;
-    const fieldCont = fields.filter(x => x.name === 'Cont')[0];
+    it('should return type "Bytes" for field Cont', () => {
+      const fields = FixedFieldFactory.getFixedField(intl, 'records', fixedFieldSpecBib, 'a', 'm').props.config.fields;
+      const fieldCont = fields.filter(x => x.name === 'Cont')[0];
 
-    expect(fieldCont.type).toBe(SUBFIELD_TYPES.BYTES);
-  });
+      expect(fieldCont.type).toBe(SUBFIELD_TYPES.BYTES);
+    });
 
-  it('for type books should return fields config with one select and one selects type', () => {
-    const fields = FixedFieldFactory.getFixedField(intl, 'records', fixedFieldSpecBib, 'a', 'm').props.config.fields;
-    const selectCount = fields.filter(x => x.type === SUBFIELD_TYPES.SELECT);
-    const selectsCount = fields.filter(x => x.type === SUBFIELD_TYPES.SELECTS);
+    it('should return fields config with one select and one selects type', () => {
+      const fields = FixedFieldFactory.getFixedField(intl, 'records', fixedFieldSpecBib, 'a', 'm').props.config.fields;
+      const selectCount = fields.filter(x => x.type === SUBFIELD_TYPES.SELECT);
+      const selectsCount = fields.filter(x => x.type === SUBFIELD_TYPES.SELECTS);
 
-    expect(selectCount).toHaveLength(1);
-    expect(selectsCount).toHaveLength(1);
+      expect(selectCount).toHaveLength(1);
+      expect(selectsCount).toHaveLength(1);
+    });
   });
 });

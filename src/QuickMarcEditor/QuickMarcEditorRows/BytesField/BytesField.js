@@ -36,7 +36,11 @@ const renderSubField = (name, config) => {
     let invalidValueStyle = '';
 
     if (value && !options.some(option => option.value === value)) {
-      invalidOption = { label: <>{value} - {invalidValue}</>, value, disabled: true };
+      invalidOption = {
+        label: <>{value} - {invalidValue}</>,
+        value,
+        disabled: true,
+      };
       invalidValueStyle = styles.selectInvalidOption;
 
       return {
@@ -152,6 +156,7 @@ const renderSubField = (name, config) => {
                                 aria-label={ariaLabel}
                                 aria-labelledby={ariaIds.text}
                                 name={`${fieldName}[${idx}]`}
+                                initialValue={value}
                                 component={Select}
                                 disabled={config.disabled}
                                 dataOptions={options}
@@ -196,6 +201,7 @@ const renderSubField = (name, config) => {
                   name={fieldName}
                   aria-label={ariaLabel}
                   aria-labelledby={ariaIds.text}
+                  initialValue={config.value}
                   component={Select}
                   disabled={config.disabled}
                   dataOptions={options}

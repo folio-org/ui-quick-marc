@@ -49,13 +49,21 @@ export const FixedFieldFactory = {
         item.isArray = false;
       }
 
-      const value = content[item.code] || '';
+      const getValue = () => {
+        if (content[item.code]) {
+          return content[item.code];
+        }
+
+        return item.isArray
+          ? new Array(item.length).fill('\\')
+          : new Array(item.length + 1).join('\\');
+      };
 
       const itemSelect = (item.allowedValues)
         ? {
           type: item.isArray ? SUBFIELD_TYPES.SELECTS : SUBFIELD_TYPES.SELECT,
           allowedValues: item.allowedValues,
-          value,
+          value: getValue(),
         }
         : {};
 
