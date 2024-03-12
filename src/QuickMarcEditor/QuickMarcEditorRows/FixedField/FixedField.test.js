@@ -21,7 +21,7 @@ const configMock = {
       value: 'b',
       label: 'b - test2',
     }],
-    value: 'a',
+    initialValue: 'a',
   },
   {
     name: 'Relf',
@@ -35,7 +35,7 @@ const configMock = {
       value: 'd',
       label: 'd - test2',
     }],
-    value: 'c',
+    initialValue: 'c',
   },
   {
     name: 'Ctry',

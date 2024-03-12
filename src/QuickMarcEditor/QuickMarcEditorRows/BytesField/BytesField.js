@@ -133,8 +133,8 @@ const renderSubField = (name, config) => {
               <div className={styles.bytesFieldSubFieldSelects}>
                 {
                   Array.from(Array(config.bytes)).map((v, idx) => {
-                    const value = config?.value[idx];
-                    const { options, invalidValueStyle } = addInvalidOptions(value, config.options);
+                    const initialValue = config?.initialValue[idx];
+                    const { options, invalidValueStyle } = addInvalidOptions(initialValue, config.options);
 
                     return (
                       <FormattedMessage
@@ -156,7 +156,7 @@ const renderSubField = (name, config) => {
                                 aria-label={ariaLabel}
                                 aria-labelledby={ariaIds.text}
                                 name={`${fieldName}[${idx}]`}
-                                initialValue={value}
+                                initialValue={initialValue}
                                 component={Select}
                                 disabled={config.disabled}
                                 dataOptions={options}
@@ -179,7 +179,7 @@ const renderSubField = (name, config) => {
   }
 
   if (config.type === SUBFIELD_TYPES.SELECT) {
-    const { options, invalidValueStyle } = addInvalidOptions(config.value, config.options);
+    const { options, invalidValueStyle } = addInvalidOptions(config.initialValue, config.options);
 
     return (
       <div className={styles.bytesFieldSubFieldSelect}>
@@ -201,7 +201,7 @@ const renderSubField = (name, config) => {
                   name={fieldName}
                   aria-label={ariaLabel}
                   aria-labelledby={ariaIds.text}
-                  initialValue={config.value}
+                  initialValue={config.initialValue}
                   component={Select}
                   disabled={config.disabled}
                   dataOptions={options}

@@ -126,4 +126,28 @@ describe('FixedFieldFactory', () => {
       expect(selectsCount).toHaveLength(1);
     });
   });
+
+  describe('when config has type select', () => {
+    it('should have initialValue to be equal record content', () => {
+      const content = {
+        DtSt: 'b',
+        Ills: ['a', 'b', 'c', 'd'],
+      };
+      const fields = FixedFieldFactory.getFixedField(intl, 'records', fixedFieldSpecBib, 'a', 'm', content).props.config.fields;
+      const fieldDtSt = fields.filter(x => x.name === 'DtSt')[0];
+      const fieldIlls = fields.filter(x => x.name === 'Ills')[0];
+
+      expect(fieldDtSt.initialValue).toEqual(content.DtSt);
+      expect(fieldIlls.initialValue).toEqual(content.Ills);
+    });
+
+    it('should have initialValue to be set as default when record has no content', () => {
+      const fields = FixedFieldFactory.getFixedField(intl, 'records', fixedFieldSpecBib, 'a', 'm').props.config.fields;
+      const fieldDtSt = fields.filter(x => x.name === 'DtSt')[0];
+      const fieldIlls = fields.filter(x => x.name === 'Ills')[0];
+
+      expect(fieldDtSt.initialValue).toEqual('\\');
+      expect(fieldIlls.initialValue).toEqual(['\\', '\\', '\\', '\\']);
+    });
+  });
 });

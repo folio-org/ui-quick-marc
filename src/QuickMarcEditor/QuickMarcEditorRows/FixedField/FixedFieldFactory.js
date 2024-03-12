@@ -49,21 +49,21 @@ export const FixedFieldFactory = {
         item.isArray = false;
       }
 
-      const getValue = () => {
+      const getInitialValue = () => {
         if (content[item.code]) {
           return content[item.code];
         }
 
         return item.isArray
           ? new Array(item.length).fill('\\')
-          : new Array(item.length + 1).join('\\');
+          : new Array(item.length).fill('\\').join('');
       };
 
       const itemSelect = (item.allowedValues)
         ? {
           type: item.isArray ? SUBFIELD_TYPES.SELECTS : SUBFIELD_TYPES.SELECT,
           allowedValues: item.allowedValues,
-          value: getValue(),
+          initialValue: getInitialValue(),
         }
         : {};
 
