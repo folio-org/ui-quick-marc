@@ -1,7 +1,9 @@
 import React from 'react';
-import { render } from '@folio/jest-config-stripes/testing-library/react';
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
+
+import { render } from '@folio/jest-config-stripes/testing-library/react';
+
 import FixedField from './FixedField';
 import Harness from '../../../../test/jest/helpers/harness';
 
@@ -19,7 +21,7 @@ const configMock = {
       value: 'b',
       label: 'b - test2',
     }],
-    value: 'a',
+    initialValue: 'a',
   },
   {
     name: 'Relf',
@@ -33,7 +35,7 @@ const configMock = {
       value: 'd',
       label: 'd - test2',
     }],
-    value: 'c',
+    initialValue: 'c',
   },
   {
     name: 'Ctry',

@@ -34,14 +34,14 @@ const config = {
       type: SUBFIELD_TYPES.SELECT,
       name: 'Mdt',
       options: [{ value: 'a', label: 'a' }],
-      value: 'a',
+      initialValue: 'a',
     },
     {
       type: SUBFIELD_TYPES.SELECTS,
       name: 'SpFm',
       bytes: 3,
       options: [{ value: 'a', label: 'a' }],
-      value: 'aaa',
+      initialValue: 'aaa',
     },
   ],
 };
@@ -128,7 +128,7 @@ describe('Given Bytes Field', () => {
           type: SUBFIELD_TYPES.SELECT,
           name: 'Mdt',
           options: [{ value: 'a', label: 'a' }],
-          value: 'b',
+          initialValue: 'b',
         },
       ],
     };

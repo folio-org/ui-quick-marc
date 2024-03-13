@@ -18,7 +18,7 @@ const Leader = ({
     const { allowedValues, name: boxName } = config;
 
     if (allowedValues) {
-      const initialBoxCode = leaderField.content[boxName];
+      const initialValue = leaderField.content[boxName];
 
       const options = allowedValues.map(allowedValue => {
         const label = intl.formatMessage({ id: `ui-quick-marc.leader.${allowedValue.name}` });
@@ -33,7 +33,7 @@ const Leader = ({
         name: boxName,
         type: SUBFIELD_TYPES.SELECT,
         options,
-        value: initialBoxCode,
+        initialValue,
       };
     }
 
