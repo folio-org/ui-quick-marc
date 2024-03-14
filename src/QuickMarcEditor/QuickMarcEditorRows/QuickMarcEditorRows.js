@@ -29,7 +29,7 @@ import { ContentField } from './ContentField';
 import { IndicatorField } from './IndicatorField';
 import { MaterialCharsField } from './MaterialCharsField';
 import { PhysDescriptionField } from './PhysDescriptionField';
-import { Leader } from './Leader';
+import { LeaderField } from './LeaderField';
 import { FixedFieldFactory } from './FixedField';
 import { LocationField } from './LocationField';
 import { DeletedRowPlaceholder } from './DeletedRowPlaceholder';
@@ -479,7 +479,7 @@ const QuickMarcEditorRows = ({
                     )
                   }
                   {isLeader && (
-                    <Leader
+                    <LeaderField
                       name={`${name}.content`}
                       marcType={marcType}
                       leaderField={recordRow}

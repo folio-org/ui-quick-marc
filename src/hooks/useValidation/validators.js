@@ -18,7 +18,7 @@ import {
 } from '../../QuickMarcEditor/constants';
 
 import { FixedFieldFactory } from '../../QuickMarcEditor/QuickMarcEditorRows/FixedField';
-import { leaderConfig } from '../../QuickMarcEditor/QuickMarcEditorRows/Leader/leaderConfig';
+import { leaderConfig } from '../../QuickMarcEditor/QuickMarcEditorRows/LeaderField/leaderConfig';
 
 export const validateTagLength = ({ marcRecords }, rule) => {
   const nonEmptyRecords = marcRecords.filter(field => !checkIsEmptyContent(field));

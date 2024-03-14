@@ -8,7 +8,7 @@ import {
 import { leaderConfig } from './leaderConfig';
 import { MARC_TYPES } from '../../../common/constants';
 
-const Leader = ({
+const LeaderField = ({
   name,
   marcType,
   leaderField,
@@ -51,10 +51,10 @@ const Leader = ({
   );
 };
 
-Leader.propTypes = {
+LeaderField.propTypes = {
   name: PropTypes.string.isRequired,
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   leaderField: PropTypes.object.isRequired,
 };
 
-export { Leader };
+export { LeaderField };

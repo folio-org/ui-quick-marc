@@ -218,7 +218,7 @@ const renderSubField = (name, config) => {
   }
 
   const getMaxLengthByType = config.type === SUBFIELD_TYPES.BYTE ? FIXED_FIELD_MAX_LENGTH : config.length;
-  const className = classNames(
+  const textFieldClasses = classNames(
     styles[`bytesFieldSubField${config.type}`],
     {
       [styles.noLabelField]: config.noLabel,
@@ -250,7 +250,7 @@ const renderSubField = (name, config) => {
               component={TextField}
               disabled={config.disabled}
               maxLength={getMaxLengthByType}
-              className={className}
+              className={textFieldClasses}
               hasClearIcon={false}
               data-testid={`fixed-field-${config.type}`}
               defaultValue={defaultValue}

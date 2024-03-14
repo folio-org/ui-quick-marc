@@ -43,7 +43,7 @@ import {
   EXTERNAL_INSTANCE_APIS,
   SOURCES,
 } from '../common/constants';
-import { leaderConfig } from './QuickMarcEditorRows/Leader/leaderConfig';
+import { leaderConfig } from './QuickMarcEditorRows/LeaderField/leaderConfig';
 
 export const isLastRecord = recordRow => {
   return (
