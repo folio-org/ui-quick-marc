@@ -44,11 +44,6 @@ export const FixedFieldFactory = {
     }
 
     config.fields = fixedFieldType.items.filter(x => !x.readOnly).map((item) => {
-      // Temporary fix API for type mapa and field Proj
-      if (item.code === 'Proj') {
-        item.isArray = false;
-      }
-
       const getInitialValue = () => {
         if (content[item.code]) {
           return content[item.code];

@@ -305,13 +305,6 @@ const QuickMarcEditorRows = ({
 
             const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') && recordRow._isLinked;
 
-            // Temporary Fix for 008 field document type "maps" and field Proj Array -> String. MODQM-406
-            if (isFixedField) {
-              if (recordRow.content?.Proj && Array.isArray(recordRow.content.Proj)) {
-                recordRow.content.Proj = recordRow.content.Proj.join('');
-              }
-            }
-
             return (
               <div
                 key={recordRow.id}
