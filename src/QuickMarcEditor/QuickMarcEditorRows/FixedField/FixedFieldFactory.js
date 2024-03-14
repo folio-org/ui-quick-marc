@@ -44,18 +44,21 @@ export const FixedFieldFactory = {
     }
 
     config.fields = fixedFieldType.items.filter(x => !x.readOnly).map((item) => {
-      // Temporary fix API for type mapa and field Proj
-      if (item.code === 'Proj') {
-        item.isArray = false;
-      }
+      const getInitialValue = () => {
+        if (content[item.code]) {
+          return content[item.code];
+        }
 
-      const value = content[item.code] || '';
+        return item.isArray
+          ? new Array(item.length).fill('\\')
+          : new Array(item.length).fill('\\').join('');
+      };
 
       const itemSelect = (item.allowedValues)
         ? {
           type: item.isArray ? SUBFIELD_TYPES.SELECTS : SUBFIELD_TYPES.SELECT,
           allowedValues: item.allowedValues,
-          value,
+          initialValue: getInitialValue(),
         }
         : {};
 

@@ -168,6 +168,7 @@
   "record.fixedField.Punct": "Punct",
   "record.fixedField.Item": "Item",
 
+  "record.fixedField.tip.Type": "Type",
   "record.fixedField.tip.Date entered on file": "Date entered on file",
   "record.fixedField.tip.Type of date/Publication status": "Type of date/Publication status",
   "record.fixedField.tip.Start date": "Date 1",
