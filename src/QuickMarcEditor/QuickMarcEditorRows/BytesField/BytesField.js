@@ -2,7 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
-import { FormattedMessage } from 'react-intl';
+import {
+  FormattedMessage,
+  useIntl,
+} from 'react-intl';
 import classNames from 'classnames';
 
 import {
@@ -24,7 +27,7 @@ export const SUBFIELD_TYPES = {
   SELECTS: 'Selects',
 };
 
-const renderSubField = (name, config) => {
+const renderSubField = (name, config, intl) => {
   const fieldName = `${name}.${config.name}`;
   const label = config.noLabel ? null : <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`} />;
   const hint = config.hint ? config.hint : config.name;
@@ -231,38 +234,44 @@ const renderSubField = (name, config) => {
     },
   );
 
+  const getTextField = (textFieldProps = {}) => (
+    <Field
+      dirty={false}
+      name={fieldName}
+      label={label}
+      ariaLabel={intl.formatMessage({ id: `ui-quick-marc.record.fixedField.${config.name}` })}
+      component={TextField}
+      disabled={config.disabled}
+      maxLength={getMaxLengthByType}
+      className={textFieldClasses}
+      hasClearIcon={false}
+      data-testid={`fixed-field-${config.type}`}
+      defaultValue={defaultValue}
+      {...textFieldProps}
+    />
+  );
+
+  if (config.noLabel) {
+    return getTextField();
+  }
+
   return (
-    <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`}>
-      {([ariaLabel]) => (
-        <Tooltip
-          id={`ui-quick-marc.record.fixedField-${config.name}`}
-          text={labelHint}
-          placement="bottom-start"
-        >
-          {({ ref, ariaIds }) => (
-            <Field
-              inputRef={ref}
-              dirty={false}
-              ariaLabel={ariaLabel}
-              aria-labelledby={ariaIds.text}
-              name={fieldName}
-              label={label}
-              component={TextField}
-              disabled={config.disabled}
-              maxLength={getMaxLengthByType}
-              className={textFieldClasses}
-              hasClearIcon={false}
-              data-testid={`fixed-field-${config.type}`}
-              defaultValue={defaultValue}
-            />
-          )}
-        </Tooltip>
-      )}
-    </FormattedMessage>
+    <Tooltip
+      id={`ui-quick-marc.record.fixedField-${config.name}`}
+      text={labelHint}
+      placement="bottom-start"
+    >
+      {({ ref, ariaIds }) => getTextField({
+        inputRef: ref,
+        'aria-labelledby': ariaIds.text,
+      })}
+    </Tooltip>
   );
 };
 
 export const BytesField = ({ config, name, id }) => {
+  const intl = useIntl();
+
   return (
     <div
       className={styles.bytesFieldRow}
@@ -275,7 +284,7 @@ export const BytesField = ({ config, name, id }) => {
               key={fieldIdx}
               data-testid="bytes-field-col"
             >
-              {renderSubField(name, field)}
+              {renderSubField(name, field, intl)}
             </div>
           );
         })
