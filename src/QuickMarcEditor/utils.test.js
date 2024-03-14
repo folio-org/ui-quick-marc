@@ -5,7 +5,6 @@ import { v4 as uuid } from 'uuid';
 import {
   LEADER_TAG,
   QUICK_MARC_ACTIONS,
-  CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
   HOLDINGS_FIXED_FIELD_DEFAULT_VALUES,
 } from './constants';
 import { MARC_TYPES } from '../common/constants';
@@ -15,6 +14,11 @@ import * as utils from './utils';
 import fixedFieldSpecBib from '../../test/mocks/fixedFieldSpecBib';
 import fixedFieldSpecAuth from '../../test/mocks/fixedFieldSpecAuth';
 import fixedFieldSpecHold from '../../test/mocks/fixedFieldSpecHold';
+import {
+  bibLeader,
+  bibLeaderString,
+  holdingsLeader,
+} from '../../test/jest/fixtures/leaders';
 
 jest.mock('uuid', () => {
   return {
@@ -27,7 +31,8 @@ describe('QuickMarcEditor utils', () => {
     it('should return dehydrated marc record', () => {
       const marcRecord = {
         id: faker.random.uuid(),
-        leader: '02164cam\\a2200469La\\4500',
+        marcFormat: MARC_TYPES.BIB.toUpperCase(),
+        leader: bibLeaderString,
         fields: [
           {
             tag: '001',
@@ -61,7 +66,7 @@ describe('QuickMarcEditor utils', () => {
 
       expect(dehydratedMarcRecord.records[0].tag).toBe(LEADER_TAG);
       expect(dehydratedMarcRecord.records[0].id).toBe(LEADER_TAG);
-      expect(dehydratedMarcRecord.records[0].content).toBe(marcRecord.leader);
+      expect(dehydratedMarcRecord.records[0].content).toEqual(bibLeader);
 
       expect(dehydratedMarcRecord.records[1].id).toBe('uuid');
 
@@ -118,9 +123,10 @@ describe('QuickMarcEditor utils', () => {
   describe('hydrateMarcRecord', () => {
     it('should return hydrated marc record from form', () => {
       const marcRecord = {
+        marcFormat: MARC_TYPES.BIB.toUpperCase(),
         records: [
           {
-            content: '05addsdg asd hds a',
+            content: bibLeader,
           },
           {
             id: '1',
@@ -133,7 +139,7 @@ describe('QuickMarcEditor utils', () => {
 
       expect(hydratedMarcRecord.records).not.toBeDefined();
 
-      expect(hydratedMarcRecord.leader).toBe(marcRecord.records[0].content);
+      expect(hydratedMarcRecord.leader).toBe(bibLeaderString);
 
       expect(hydratedMarcRecord.fields).toBeDefined();
       expect(hydratedMarcRecord.fields.length).toBe(marcRecord.records.length - 1);
@@ -644,11 +650,11 @@ describe('QuickMarcEditor utils', () => {
 
       const record = {
         externalId: instanceId,
-        leader: CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
+        leader: bibLeader,
         fields: undefined,
         records: [{
           tag: LEADER_TAG,
-          content: CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
+          content: bibLeader,
           id: LEADER_TAG,
         }, {
           tag: '001',
@@ -1072,10 +1078,15 @@ describe('QuickMarcEditor utils', () => {
 
   describe('cleanBytesFields', () => {
     it('should return cleaned records', () => {
+      const leader = {
+        ...bibLeader,
+        Type: 'g',
+      };
+
       const record = {
         records: [{
           tag: 'LDR',
-          content: '03685cgm\\a2200757\\i\\4500',
+          content: leader,
         }, {
           tag: '001',
           content: 'some content',
@@ -1133,7 +1144,7 @@ describe('QuickMarcEditor utils', () => {
       const expectedRecord = {
         records: [{
           tag: 'LDR',
-          content: '03685cgm\\a2200757\\i\\4500',
+          content: leader,
         }, {
           tag: '001',
           content: 'some content',
@@ -1187,7 +1198,7 @@ describe('QuickMarcEditor utils', () => {
         },
       };
 
-      expect(utils.cleanBytesFields(record, fixedFieldSpecBib)).toEqual(expectedRecord);
+      expect(utils.cleanBytesFields(record, fixedFieldSpecBib, MARC_TYPES.BIB)).toEqual(expectedRecord);
     });
   });
 
@@ -1224,12 +1235,12 @@ describe('QuickMarcEditor utils', () => {
 
       const expectedResult = {
         externalId: instanceResponse.id,
-        leader: CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
+        leader: holdingsLeader,
         fields: undefined,
         records: [
           {
             tag: LEADER_TAG,
-            content: CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
+            content: holdingsLeader,
             id: LEADER_TAG,
           },
           ...defaultFields,
@@ -1528,20 +1539,20 @@ describe('QuickMarcEditor utils', () => {
       }];
 
       const marcRecord = {
-        marcFormat: MARC_TYPES.BIB,
+        marcFormat: MARC_TYPES.BIB.toUpperCase(),
         _actionType: 'view',
         records: [
           {
             tag: 'LDR',
-            content: 'leader content',
+            content: bibLeader,
           },
           ...fields,
         ],
       };
 
       expect(utils.hydrateForLinkSuggestions(marcRecord, fields)).toEqual({
-        leader: 'leader content',
-        marcFormat: MARC_TYPES.BIB,
+        leader: bibLeaderString,
+        marcFormat: MARC_TYPES.BIB.toUpperCase(),
         _actionType: 'view',
         fields: [
           {

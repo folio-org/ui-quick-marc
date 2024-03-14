@@ -19,8 +19,6 @@ import {
   FIELD_TAGS_TO_REMOVE,
   FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS,
   QUICK_MARC_ACTIONS,
-  CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
-  CREATE_BIB_RECORD_DEFAULT_LEADER_VALUE,
   CREATE_HOLDINGS_RECORD_DEFAULT_FIELD_TAGS,
   HOLDINGS_FIXED_FIELD_DEFAULT_VALUES,
   CORRESPONDING_HEADING_TYPE_TAGS,
@@ -29,7 +27,6 @@ import {
   BIB_FIXED_FIELD_DEFAULT_TYPE,
   BIB_FIXED_FIELD_DEFAULT_BLVL,
   ENTERED_KEY,
-  CREATE_AUTHORITY_RECORD_DEFAULT_LEADER_VALUE,
   CREATE_AUTHORITY_RECORD_DEFAULT_FIELD_TAGS,
   UNCONTROLLED_ALPHA,
   UNCONTROLLED_NUMBER,
@@ -44,9 +41,9 @@ import {
   MARC_TYPES,
   ERROR_TYPES,
   EXTERNAL_INSTANCE_APIS,
-  OKAPI_TENANT_HEADER,
   SOURCES,
 } from '../common/constants';
+import { leaderConfig } from './QuickMarcEditorRows/LeaderField/leaderConfig';
 
 export const isLastRecord = recordRow => {
   return (
@@ -57,6 +54,7 @@ export const isLastRecord = recordRow => {
   );
 };
 
+export const isLeaderRow = recordRow => recordRow.tag === LEADER_TAG;
 export const isControlNumberRow = recordRow => recordRow.tag === '001';
 export const isFixedFieldRow = recordRow => recordRow.tag === '008';
 export const isMaterialCharsRecord = recordRow => recordRow.tag === '006';
@@ -64,6 +62,7 @@ export const isPhysDescriptionRecord = recordRow => recordRow.tag === '007';
 export const isLocationRow = (recordRow, marcType) => marcType === MARC_TYPES.HOLDINGS && recordRow.tag === '852';
 export const isContentRow = (recordRow, marcType) => {
   return !(isLocationRow(recordRow, marcType)
+    || isLeaderRow(recordRow)
     || isFixedFieldRow(recordRow)
     || isMaterialCharsRecord(recordRow)
     || isPhysDescriptionRecord(recordRow)
@@ -298,17 +297,26 @@ const getCreateAuthorityMarcRecordDefaultFields = (instanceRecord, fixedFieldSpe
   return getCreateMarcRecordDefaultFields(contentMap, indicatorMap, CREATE_AUTHORITY_RECORD_DEFAULT_FIELD_TAGS);
 };
 
+const getDefaultLeaderContent = (marcType) => {
+  return leaderConfig[marcType].reduce((acc, fieldConfig) => {
+    acc[fieldConfig.name] = fieldConfig.defaultValue;
+
+    return acc;
+  }, {});
+};
+
 export const getCreateHoldingsMarcRecordResponse = (instanceResponse) => {
   const instanceId = instanceResponse.id;
+  const leader = getDefaultLeaderContent(MARC_TYPES.HOLDINGS);
 
   return {
     externalId: instanceId,
-    leader: CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
+    leader,
     fields: undefined,
     records: [
       {
         tag: LEADER_TAG,
-        content: CREATE_HOLDINGS_RECORD_DEFAULT_LEADER_VALUE,
+        content: leader,
         id: LEADER_TAG,
       },
       ...getCreateHoldingsMarcRecordDefaultFields(instanceResponse),
@@ -319,15 +327,16 @@ export const getCreateHoldingsMarcRecordResponse = (instanceResponse) => {
 
 export const getCreateBibMarcRecordResponse = (instanceResponse, fixedFieldSpec) => {
   const instanceId = '00000000-0000-0000-0000-000000000000'; // For create we need to send any UUID
+  const leader = getDefaultLeaderContent(MARC_TYPES.BIB);
 
   return {
     externalId: instanceId,
-    leader: CREATE_BIB_RECORD_DEFAULT_LEADER_VALUE,
+    leader,
     fields: undefined,
     records: [
       {
         tag: LEADER_TAG,
-        content: CREATE_BIB_RECORD_DEFAULT_LEADER_VALUE,
+        content: leader,
         id: LEADER_TAG,
       },
       ...getCreateBibMarcRecordDefaultFields(instanceResponse, fixedFieldSpec),
@@ -338,15 +347,16 @@ export const getCreateBibMarcRecordResponse = (instanceResponse, fixedFieldSpec)
 
 export const getCreateAuthorityMarcRecordResponse = (instanceResponse, fixedFieldSpec) => {
   const instanceId = '00000000-0000-0000-0000-000000000000'; // For create we need to send any UUID
+  const leader = getDefaultLeaderContent(MARC_TYPES.AUTHORITY);
 
   return {
     externalId: instanceId,
-    leader: CREATE_AUTHORITY_RECORD_DEFAULT_LEADER_VALUE,
+    leader,
     fields: undefined,
     records: [
       {
         tag: LEADER_TAG,
-        content: CREATE_AUTHORITY_RECORD_DEFAULT_LEADER_VALUE,
+        content: leader,
         id: LEADER_TAG,
       },
       ...getCreateAuthorityMarcRecordDefaultFields(instanceResponse, fixedFieldSpec),
@@ -448,17 +458,57 @@ export const addInternalFieldProperties = (marcRecord) => {
   };
 };
 
-export const hydrateMarcRecord = marcRecord => ({
-  ...marcRecord,
-  leader: marcRecord.records[0].content,
-  fields: marcRecord.records.slice(1).map(record => ({
-    tag: record.tag,
-    content: record.content,
-    indicators: record.indicators,
-    linkDetails: record.linkDetails,
-  })),
-  records: undefined,
-});
+export const convertLeaderToObject = (marcType, leader) => {
+  let start = 0;
+
+  return leaderConfig[marcType].reduce((acc, fieldConfig) => {
+    const boxValueLength = fieldConfig.defaultValue.length;
+    const end = start + boxValueLength;
+
+    acc[fieldConfig.name] = leader.substring(start, end);
+
+    start += boxValueLength;
+
+    return acc;
+  }, {});
+};
+
+export const convertLeaderToString = (marcType, leaderField) => {
+  if (!leaderField || !marcType) {
+    return '';
+  }
+
+  return leaderConfig[marcType].reduce((acc, fieldConfig) => {
+    return `${acc}${leaderField.content[fieldConfig.name]}`;
+  }, '');
+};
+
+export const getLeaderPositions = (marcType, records) => {
+  const leaderField = records.find(field => field.tag === LEADER_TAG);
+  const leaderContent = convertLeaderToString(marcType, leaderField);
+
+  return {
+    type: leaderContent[6] || '',
+    position7: leaderContent[7] || '',
+  };
+};
+
+export const hydrateMarcRecord = marcRecord => {
+  const leader = marcRecord.records[0];
+  const marcType = marcRecord.marcFormat.toLowerCase();
+
+  return ({
+    ...marcRecord,
+    leader: convertLeaderToString(marcType, leader),
+    fields: marcRecord.records.slice(1).map(record => ({
+      tag: record.tag,
+      content: record.content,
+      indicators: record.indicators,
+      linkDetails: record.linkDetails,
+    })),
+    records: undefined,
+  });
+};
 
 export const addNewRecord = (index, state) => {
   const records = [...state.formState.values.records];
@@ -766,10 +816,6 @@ export const autopopulatePhysDescriptionField = (formValues) => {
 export const autopopulateFixedField = (formValues, marcType, fixedFieldSpec) => {
   const { records } = formValues;
 
-  const leader = records.find(field => field.tag === LEADER_TAG);
-  const type = leader.content[6];
-  const blvl = leader.content[7];
-
   return {
     ...formValues,
     records: records.map(field => {
@@ -777,9 +823,11 @@ export const autopopulateFixedField = (formValues, marcType, fixedFieldSpec) => 
         return field;
       }
 
+      const { type, position7 } = getLeaderPositions(marcType, records);
+
       return {
         ...field,
-        content: fillEmptyFixedFieldValues(marcType, fixedFieldSpec, type, blvl, field),
+        content: fillEmptyFixedFieldValues(marcType, fixedFieldSpec, type, position7, field),
       };
     }),
   };
@@ -823,15 +871,11 @@ export const autopopulateSubfieldSection = (formValues, marcType = MARC_TYPES.BI
   };
 };
 
-export const cleanBytesFields = (formValues, marcSpec) => {
+export const cleanBytesFields = (formValues, marcSpec, marcType) => {
   const { records } = formValues;
 
-  const leader = records.find(field => field.tag === LEADER_TAG);
-  const type = leader.content[6];
-  const blvl = leader.content[7];
-
   const cleanedRecords = records.map((field) => {
-    if (isString(field.content)) {
+    if (isString(field.content) || field.tag === LEADER_TAG) {
       return field;
     }
 
@@ -846,8 +890,10 @@ export const cleanBytesFields = (formValues, marcSpec) => {
     }
 
     if (isFixedFieldRow(field)) {
+      const { type, position7 } = getLeaderPositions(marcType, records);
+
       fieldConfigByType = FixedFieldFactory
-        .getConfigFixedField(marcSpec, type, blvl)?.fields ?? [];
+        .getConfigFixedField(marcSpec, type, position7)?.fields ?? [];
     }
 
     const content = Object.entries(field.content).reduce((acc, [key, value]) => {
@@ -1069,21 +1115,27 @@ export const isReadOnly = (
   return rows.has(recordRow.tag) || isLastRecord(recordRow);
 };
 
-const addLeaderFieldAndIdToRecords = (marcRecordResponse) => ({
-  ...marcRecordResponse,
-  fields: undefined,
-  records: [
-    {
-      tag: LEADER_TAG,
-      content: marcRecordResponse.leader,
-      id: LEADER_TAG,
-    },
-    ...marcRecordResponse.fields.map(record => ({
-      ...record,
-      id: uuidv4(),
-    })),
-  ],
-});
+const addLeaderFieldAndIdToRecords = (marcRecordResponse) => {
+  const marcType = marcRecordResponse.marcFormat.toLowerCase();
+  const leader = convertLeaderToObject(marcType, marcRecordResponse.leader);
+
+  return {
+    ...marcRecordResponse,
+    leader,
+    fields: undefined,
+    records: [
+      {
+        tag: LEADER_TAG,
+        content: leader,
+        id: LEADER_TAG,
+      },
+      ...marcRecordResponse.fields.map(record => ({
+        ...record,
+        id: uuidv4(),
+      })),
+    ],
+  };
+};
 
 export const dehydrateMarcRecordResponse = (marcRecordResponse, marcType, fixedFieldSpec) => (
   flow(
@@ -1094,25 +1146,18 @@ export const dehydrateMarcRecordResponse = (marcRecordResponse, marcType, fixedF
   )(marcRecordResponse)
 );
 
-export const hydrateForLinkSuggestions = (marcRecord, fields) => ({
-  leader: marcRecord.records[0].content,
-  fields: fields.map(record => ({
-    tag: record.tag,
-    content: record.content,
-  })),
-  marcFormat: marcRecord.marcFormat,
-  _actionType: 'view',
-});
+export const hydrateForLinkSuggestions = (marcRecord, fields) => {
+  const leaderField = marcRecord.records[0];
+  const marcType = marcRecord.marcFormat.toLowerCase();
 
-export const changeTenantHeader = (ky, tenantId) => {
-  return ky.extend({
-    hooks: {
-      beforeRequest: [
-        request => {
-          request.headers.set(OKAPI_TENANT_HEADER, tenantId);
-        },
-      ],
-    },
+  return ({
+    leader: convertLeaderToString(marcType, leaderField),
+    fields: fields.map(record => ({
+      tag: record.tag,
+      content: record.content,
+    })),
+    marcFormat: marcRecord.marcFormat,
+    _actionType: 'view',
   });
 };
 

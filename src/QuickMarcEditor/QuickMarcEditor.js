@@ -60,6 +60,7 @@ import {
   is010LinkedToBibRecord,
   updateRecordAtIndex,
   markLinkedRecords,
+  getLeaderPositions,
 } from './utils';
 import { useAuthorityLinking } from '../hooks';
 
@@ -126,9 +127,7 @@ const QuickMarcEditor = ({
       .filter(({ record }) => record._isDeleted);
   }, [records]);
 
-  const leader = records[0];
-  const type = leader?.content?.[6] || '';
-  const subtype = leader?.content?.[7] || '';
+  const { type, position7 } = getLeaderPositions(marcType, records);
 
   const saveFormDisabled = submitting ? true : pristine;
 
@@ -473,7 +472,7 @@ const QuickMarcEditor = ({
                     name="records"
                     mutators={mutators}
                     type={type}
-                    subtype={subtype}
+                    subtype={position7}
                     marcType={marcType}
                     fixedFieldSpec={fixedFieldSpec}
                     instance={instance}

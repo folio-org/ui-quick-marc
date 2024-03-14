@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Field } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
 import { FormattedMessage } from 'react-intl';
+import classNames from 'classnames';
 
 import {
   Label,
@@ -25,7 +26,7 @@ export const SUBFIELD_TYPES = {
 
 const renderSubField = (name, config) => {
   const fieldName = `${name}.${config.name}`;
-  const label = <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`} />;
+  const label = config.noLabel ? null : <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`} />;
   const hint = config.hint ? config.hint : config.name;
   const labelHint = <FormattedMessage id={`ui-quick-marc.record.fixedField.tip.${hint}`} />;
   const defaultValue = new Array(config.length || 1).fill('\\').join('');
@@ -217,6 +218,18 @@ const renderSubField = (name, config) => {
   }
 
   const getMaxLengthByType = config.type === SUBFIELD_TYPES.BYTE ? FIXED_FIELD_MAX_LENGTH : config.length;
+  const textFieldClasses = classNames(
+    styles[`bytesFieldSubField${config.type}`],
+    {
+      [styles.noLabelField]: config.noLabel,
+      [styles.disabledField]: config.disabled,
+      [styles.width40]: config.width40,
+      [styles.width46]: config.width46,
+      [styles.width48]: config.width48,
+      [styles.width72]: config.width72,
+      [styles.width82]: config.width82,
+    },
+  );
 
   return (
     <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`}>
@@ -237,7 +250,7 @@ const renderSubField = (name, config) => {
               component={TextField}
               disabled={config.disabled}
               maxLength={getMaxLengthByType}
-              className={styles[`bytesFieldSubField${config.type}`]}
+              className={textFieldClasses}
               hasClearIcon={false}
               data-testid={`fixed-field-${config.type}`}
               defaultValue={defaultValue}

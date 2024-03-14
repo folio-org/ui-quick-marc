@@ -2,6 +2,7 @@ import { LEADER_DOCUMENTATION_LINKS, LEADER_TAG, FIXED_FIELD_TAG } from '../../Q
 import { MARC_TYPES } from '../../common/constants';
 import * as validators from './validators';
 import fixedFieldSpecBib from '../../../test/mocks/fixedFieldSpecBib';
+import { bibLeader } from '../../../test/jest/fixtures/leaders';
 
 const locations = [{
   code: 'VA/LI/D',
@@ -276,7 +277,7 @@ describe('validators', () => {
     });
   });
 
-  describe('validateEditableBytes', () => {
+  describe('validateLeaderEditableBytes', () => {
     const rule = {
       tag: LEADER_TAG,
       message: jest.fn(),
@@ -286,35 +287,43 @@ describe('validators', () => {
       const initialValues = {
         records: [{
           tag: LEADER_TAG,
-          content: '04706cam a2200865Ii 4500',
+          content: bibLeader,
         }],
       };
       const marcRecords = [{
         tag: LEADER_TAG,
-        content: '04706cam a2200865Ii 4501',
+        content: {
+          ...bibLeader,
+          '20-23 positions': '4501',
+        },
       }];
       const marcType = MARC_TYPES.BIB;
 
-      validators.validateEditableBytes({ marcRecords, initialValues, marcType }, rule);
+      validators.validateLeaderEditableBytes({ marcRecords, initialValues, marcType }, rule);
 
       expect(rule.message).toHaveBeenCalledWith(marcType);
     });
 
     describe('when initial values contain not valid bytes', () => {
       it('should not call rule.message when forbidden bytes are not edited', () => {
+        const content = {
+          ...bibLeader,
+          ELvl: 'I',
+        };
+
         const initialValues = {
           records: [{
             tag: LEADER_TAG,
-            content: '04706cam a2200865Ii 4501',
+            content,
           }],
         };
         const marcRecords = [{
           tag: LEADER_TAG,
-          content: '04706cam a2200865Ii 4501',
+          content,
         }];
         const marcType = MARC_TYPES.BIB;
 
-        validators.validateEditableBytes({ marcRecords, initialValues, marcType }, rule);
+        validators.validateLeaderEditableBytes({ marcRecords, initialValues, marcType }, rule);
 
         expect(rule.message).not.toHaveBeenCalled();
       });
@@ -331,7 +340,10 @@ describe('validators', () => {
     it('should call rule.message with correct arguments when position 18 is invalid', () => {
       const marcRecords = [{
         tag: LEADER_TAG,
-        content: '04706dam a2200865nfa4500',
+        content: {
+          ...bibLeader,
+          Desc: 'f',
+        },
       }];
 
       validators.validateLeaderPositions({ marcRecords, marcType }, rule);
@@ -342,7 +354,7 @@ describe('validators', () => {
     it('should not call rule.message when leader is valid', () => {
       const marcRecords = [{
         tag: LEADER_TAG,
-        content: '04706cam a2200865Ii 4500',
+        content: bibLeader,
       }];
 
       validators.validateLeaderPositions({ marcRecords, marcType }, rule);
@@ -628,7 +640,7 @@ describe('validators', () => {
     it('should not return an error when a subfield contains valid content', () => {
       const marcRecords = [{
         tag: LEADER_TAG,
-        content: '04706cam a2200865Ii 4501',
+        content: bibLeader,
       }, {
         tag: FIXED_FIELD_TAG,
         content: {
@@ -637,7 +649,9 @@ describe('validators', () => {
         },
       }];
 
-      validators.validateFixedFieldPositions({ marcRecords, fixedFieldSpec }, rule);
+      const marcType = MARC_TYPES.BIB;
+
+      validators.validateFixedFieldPositions({ marcRecords, fixedFieldSpec, marcType }, rule);
 
       expect(rule.message).not.toHaveBeenCalled();
     });
@@ -645,7 +659,7 @@ describe('validators', () => {
     it('should return an error when a subfield contains invalid content', () => {
       const marcRecords = [{
         tag: LEADER_TAG,
-        content: '04706cam a2200865Ii 4501',
+        content: bibLeader,
       }, {
         tag: FIXED_FIELD_TAG,
         content: {
@@ -654,7 +668,7 @@ describe('validators', () => {
         },
       }];
 
-      validators.validateFixedFieldPositions({ marcRecords, fixedFieldSpec }, rule);
+      validators.validateFixedFieldPositions({ marcRecords, fixedFieldSpec, marcType: MARC_TYPES.BIB }, rule);
 
       expect(rule.message).toHaveBeenCalledWith('DtSt');
     });
@@ -662,7 +676,7 @@ describe('validators', () => {
     it('should not return an error when a subfiled contains valid value in content array', () => {
       const marcRecords = [{
         tag: LEADER_TAG,
-        content: '04706cam a2200865Ii 4501',
+        content: bibLeader,
       }, {
         tag: FIXED_FIELD_TAG,
         content: {
@@ -670,8 +684,9 @@ describe('validators', () => {
           'Ills': ['|', '\\', 'a', 'b'],
         },
       }];
+      const marcType = MARC_TYPES.BIB;
 
-      validators.validateFixedFieldPositions({ marcRecords, fixedFieldSpec }, rule);
+      validators.validateFixedFieldPositions({ marcRecords, fixedFieldSpec, marcType }, rule);
 
       expect(rule.message).not.toHaveBeenCalledWith('Ills');
     });
@@ -679,7 +694,7 @@ describe('validators', () => {
     it('should return an error when a subfiled contains invalid value in content array', () => {
       const marcRecords = [{
         tag: LEADER_TAG,
-        content: '04706cam a2200865Ii 4501',
+        content: bibLeader,
       }, {
         tag: FIXED_FIELD_TAG,
         content: {
@@ -687,8 +702,9 @@ describe('validators', () => {
           'Ills': ['|', '|', '|', '^'],
         },
       }];
+      const marcType = MARC_TYPES.BIB;
 
-      validators.validateFixedFieldPositions({ marcRecords, fixedFieldSpec }, rule);
+      validators.validateFixedFieldPositions({ marcRecords, fixedFieldSpec, marcType }, rule);
 
       expect(rule.message).toHaveBeenCalledWith('Ills');
     });

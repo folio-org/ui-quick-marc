@@ -81,7 +81,7 @@ const QuickMarcCreateWrapper = ({
       autopopulatePhysDescriptionField,
       autopopulateMaterialCharsField,
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
-      marcRecord => cleanBytesFields(marcRecord, fixedFieldSpec),
+      marcRecord => cleanBytesFields(marcRecord, fixedFieldSpec, marcType),
     )(formValues);
 
     return formValuesForCreate;

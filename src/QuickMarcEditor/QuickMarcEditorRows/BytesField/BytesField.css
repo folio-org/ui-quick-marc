@@ -16,6 +16,10 @@
   display: flex;
   flex-direction: column;
   width: max-content;
+
+  [class^="feedbackError"] {
+    margin-bottom: 0;
+  }
 }
 
 .bytesFieldSubFieldSelects {
@@ -47,5 +51,34 @@
 
 .selectInvalidOption option:disabled {
   color: var(--error);
-  font-weight: bold; 
+  font-weight: bold;
+}
+
+.noLabelField {
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.width40 [class^="formControl"] {
+  width: 40px;
+}
+
+.width46 [class^="formControl"] {
+  width: 46px;
+}
+
+.width48 [class^="formControl"] {
+  width: 48px;
+}
+
+.width72 [class^="formControl"] {
+  width: 72px;
+}
+
+.width82 [class^="formControl"] {
+  width: 82px;
+}
+
+.disabledField input[disabled] {
+  margin-left: 0;
 }

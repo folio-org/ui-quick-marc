@@ -20,11 +20,14 @@ import Harness from '../../test/jest/helpers/harness';
 import {
   useMarcRecordMutation,
 } from '../queries';
+import {
+  authorityLeader,
+  bibLeader,
+} from '../../test/jest/fixtures/leaders';
 
 jest.mock('./utils', () => ({
   ...jest.requireActual('./utils'),
   applyCentralTenantInHeaders: jest.fn(),
-  changeTenantHeader: jest.fn(ky => ky),
 }));
 
 jest.mock('react-router', () => ({
@@ -46,7 +49,7 @@ const mockRecords = {
   [MARC_TYPES.BIB]: [
     {
       tag: 'LDR',
-      content: '01178nam\\a2200277ic\\4500',
+      content: bibLeader,
       id: 'LDR',
     }, {
       tag: '001',
@@ -150,7 +153,7 @@ const mockRecords = {
   [MARC_TYPES.AUTHORITY]: [
     {
       tag: 'LDR',
-      content: '02949cama2200517Kni50000',
+      content: authorityLeader,
       id: 'LDR',
     },
     {
@@ -251,14 +254,14 @@ const mockRecords = {
 };
 
 const mockLeaders = {
-  [MARC_TYPES.BIB]: '01178nam\\a2200277ic\\4500',
-  [MARC_TYPES.AUTHORITY]: '02949cama2200517Kni50000',
+  [MARC_TYPES.BIB]: bibLeader,
+  [MARC_TYPES.AUTHORITY]: authorityLeader,
 };
 
 const mockFormValues = jest.fn((marcType) => ({
   fields: undefined,
   externalId: '17064f9d-0362-468d-8317-5984b7efd1b5',
-  marcFormat: marcType,
+  marcFormat: marcType.toUpperCase(),
   leader: mockLeaders[marcType],
   parsedRecordDtoId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
   parsedRecordId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
@@ -555,7 +558,7 @@ describe('Given QuickMarcEditWrapper', () => {
         await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
         const expectedFormValues = {
-          marcFormat: MARC_TYPES.BIB,
+          marcFormat: MARC_TYPES.BIB.toUpperCase(),
           records: expect.arrayContaining([
             expect.objectContaining({
               tag: 'LDR',

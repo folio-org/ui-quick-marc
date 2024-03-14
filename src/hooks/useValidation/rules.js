@@ -11,9 +11,10 @@ import {
   validateTagChanged,
   validateLocation,
   validateCorrectLength,
-  validateEditableBytes,
   validateExistence,
+  validateLeaderLength,
   validateLeaderPositions,
+  validateLeaderEditableBytes,
   validateNonRepeatable,
   validateNonRepeatableSubfield,
   validateSubfieldIsControlled,
@@ -41,7 +42,8 @@ const RULES = {
   VALID_LOCATION: validateLocation,
   CONTROLLED_SUBFIELD: validateSubfieldIsControlled,
   CORRECT_LENGTH: validateCorrectLength,
-  EDITABLE_BYTES: validateEditableBytes,
+  LEADER_EDITABLE_BYTES: validateLeaderEditableBytes,
+  LEADER_LENGTH: validateLeaderLength,
   LEADER_POSITIONS: validateLeaderPositions,
   TAG_LENGTH: validateTagLength,
   TAG_CHARACTERS: validateTagCharacters,
@@ -54,16 +56,12 @@ const RULES = {
 
 const COMMON_VALIDATORS = [
   {
-    tag: 'LDR',
-    validator: RULES.CORRECT_LENGTH,
+    validator: RULES.LEADER_LENGTH,
     message: () => <FormattedMessage id="ui-quick-marc.record.error.leader.length" />,
-    length: 24,
   }, {
-    tag: 'LDR',
-    validator: RULES.EDITABLE_BYTES,
+    validator: RULES.LEADER_EDITABLE_BYTES,
     message: (marcType) => <FormattedMessage id={`ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}`} />,
   }, {
-    tag: 'LDR',
     validator: RULES.LEADER_POSITIONS,
     message: (positions, link) => (
       <FormattedMessage

@@ -17,6 +17,7 @@ import { MARC_TYPES } from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
 import { useAuthorityLinking } from '../hooks';
+import { bibLeader } from '../../test/jest/fixtures/leaders';
 
 jest.mock('react-final-form', () => ({
   ...jest.requireActual('react-final-form'),
@@ -36,14 +37,14 @@ jest.mock('../hooks', () => ({
 const mockFormValues = jest.fn(() => ({
   fields: undefined,
   externalId: '17064f9d-0362-468d-8317-5984b7efd1b5',
-  leader: '14706cam a2200865Ii 4500',
+  leader: bibLeader,
   parsedRecordDtoId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
   parsedRecordId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
-  marcFormat: MARC_TYPES.BIB,
+  marcFormat: MARC_TYPES.BIB.toUpperCase(),
   records: [
     {
       tag: 'LDR',
-      content: '14706cam a2200865Ii 4500',
+      content: bibLeader,
       id: 'LDR',
     }, {
       tag: '001',
@@ -246,11 +247,11 @@ const linkingRules = [{
 }];
 
 const initialValues = {
-  leader: '14706cam a2200865Ii 4500',
+  leader: bibLeader,
   records: [
     {
       tag: 'LDR',
-      content: '14706cam a2200865Ii 4500',
+      content: bibLeader,
       id: 'LDR',
     },
     {
@@ -399,11 +400,11 @@ describe('Given QuickMarcDeriveWrapper', () => {
       await act(async () => { fireEvent.click(screen.getByText('stripes-acq-components.FormFooter.save')); });
 
       const expectedFormValues = {
-        marcFormat: MARC_TYPES.BIB,
+        marcFormat: MARC_TYPES.BIB.toUpperCase(),
         records: expect.arrayContaining([
           expect.objectContaining({
             tag: 'LDR',
-            content: '14706cam a2200865Ii 4500',
+            content: bibLeader,
           }),
           expect.objectContaining({
             tag: '100',
