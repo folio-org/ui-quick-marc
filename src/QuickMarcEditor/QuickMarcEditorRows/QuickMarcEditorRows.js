@@ -57,6 +57,7 @@ import { useAuthorityLinking } from '../../hooks';
 import {
   QUICK_MARC_ACTIONS,
   LEADER_TAG,
+  FIXED_FIELD_TAG,
 } from '../constants';
 import {
   MARC_TYPES,
@@ -106,6 +107,10 @@ const QuickMarcEditorRows = ({
 
   const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType)
     && action === QUICK_MARC_ACTIONS.EDIT;
+
+  const fixedFieldInitialValues = () => {
+    return initialValues.records.find(record => record.tag === FIXED_FIELD_TAG)?.content || {};
+  };
 
   const isNewRow = useCallback((row) => {
     return !initialValues.records.find(record => record.id === row.id);
@@ -485,7 +490,7 @@ const QuickMarcEditorRows = ({
                   {
                     isFixedField && (
                       FixedFieldFactory.getFixedField(
-                        `${name}.content`, fixedFieldSpec, type, subtype,
+                        intl, `${name}.content`, fixedFieldSpec, type, subtype, fixedFieldInitialValues(),
                       )
                     )
                   }

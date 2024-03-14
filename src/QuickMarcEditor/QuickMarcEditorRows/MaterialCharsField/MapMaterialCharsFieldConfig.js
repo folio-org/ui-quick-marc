@@ -10,8 +10,8 @@ const MapMaterialCharsFieldConfig = [
   {
     name: 'Proj',
     hint: 'Projection',
-    type: SUBFIELD_TYPES.BYTES,
-    bytes: 2,
+    type: SUBFIELD_TYPES.STRING,
+    length: 2,
   },
   {
     name: 'CrTp',

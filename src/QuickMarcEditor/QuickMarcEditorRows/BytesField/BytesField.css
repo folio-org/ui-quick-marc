@@ -1,3 +1,5 @@
+@import '@folio/stripes-components/lib/variables.css';
+
 .bytesFieldRow {
   display: flex;
   flex: 0 1 auto;
@@ -14,6 +16,10 @@
   display: flex;
   flex-direction: column;
   width: max-content;
+}
+
+.bytesFieldSubFieldSelects {
+  display: flex;
 }
 
 .bytesFieldSubFieldByte [class^="formControl"],
@@ -33,7 +39,13 @@
   display: inline-block;
 }
 
-.bytesFieldSubFieldSelect [class^="selectWrap"] {
+.bytesFieldSubFieldSelect [class^="selectWrap"],
+.bytesFieldSubFieldSelects [class^="selectWrap"] {
   width: 50px;
   display: inline-block;
+}
+
+.selectInvalidOption option:disabled {
+  color: var(--error);
+  font-weight: bold; 
 }

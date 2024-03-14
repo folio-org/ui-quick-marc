@@ -24,7 +24,8 @@
 * [UIQM-607](https://issues.folio.org/browse/UIQM-607) Wait for a redirect in the onSubmit function after creating a record.
 * [UIQM-619](https://issues.folio.org/browse/UIQM-619) During linking, place $a subfield first for the 240 bib field if there is t->a subfield modification.
 * [UIQM-625](https://issues.folio.org/browse/UIQM-625) Use `null` instead of empty string as an empty tenantId value.
-* [UIQM-625](https://issues.folio.org/browse/UIQM-627) Add `shared` text to the title when editing a shared authority record.
+* [UIQM-627](https://issues.folio.org/browse/UIQM-627) Add `shared` text to the title when editing a shared authority record.
+* [UIQM-471](https://issues.folio.org/browse/UIQM-471) Added Dropdowns for fixed field 008 bib records.
 
 ## [7.0.5](https://github.com/folio-org/ui-quick-marc/tree/v7.0.5) (2023-12-11)
 
