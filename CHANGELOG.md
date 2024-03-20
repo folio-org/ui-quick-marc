@@ -28,6 +28,7 @@
 * [UIQM-471](https://issues.folio.org/browse/UIQM-471) Added Dropdowns for fixed field 008 bib records.
 * [UIQM-610](https://issues.folio.org/browse/UIQM-610) Split LDR by position & add dropdowns for create/edit/derive.
 * [UIQM-611](https://issues.folio.org/browse/UIQM-611) Add tooltips for LDR positions.
+* [UIQM-611](https://issues.folio.org/browse/UIQM-639) Use the `$` sign instead of `{dollar}` for search input and search query during manual linking.
 
 ## [7.0.5](https://github.com/folio-org/ui-quick-marc/tree/v7.0.5) (2023-12-11)
 

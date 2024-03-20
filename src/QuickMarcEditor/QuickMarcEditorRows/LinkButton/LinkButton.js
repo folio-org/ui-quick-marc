@@ -165,7 +165,12 @@ const LinkButton = ({
       segment: initialSegment,
     };
 
-    const fieldContent = getContentSubfieldValue(content);
+    const fieldContent = Object.entries(getContentSubfieldValue(content))
+      .reduce((acc, [subfield, subfieldContent]) => {
+        acc[subfield] = subfieldContent.map(value => value.replaceAll('{dollar}', '$'));
+
+        return acc;
+      }, {});
 
     if (fieldContent.$0?.length) {
       const keywordValue = [fieldContent.$a, fieldContent.$d, fieldContent.$t].flat().filter(Boolean).join(' ');
