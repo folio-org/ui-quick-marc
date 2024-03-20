@@ -165,7 +165,15 @@ const LinkButton = ({
       segment: initialSegment,
     };
 
-    const fieldContent = getContentSubfieldValue(content);
+    // To get the desired search result, the search query must contain `$` instead of `{dollar}`.
+    // BE returns `{dollar}` because the field content already uses the `$` sign and there is no way
+    // to distinguish whether `$` is the start of the subfield or just some value in the subfield.
+    const fieldContent = Object.entries(getContentSubfieldValue(content))
+      .reduce((acc, [subfield, subfieldContent]) => {
+        acc[subfield] = subfieldContent.map(value => value.replaceAll('{dollar}', '$'));
+
+        return acc;
+      }, {});
 
     if (fieldContent.$0?.length) {
       const keywordValue = [fieldContent.$a, fieldContent.$d, fieldContent.$t].flat().filter(Boolean).join(' ');

@@ -122,6 +122,36 @@ describe('Given LinkButton', () => {
       });
     });
 
+    describe('when linking Authority and field content contains "{dollar}"', () => {
+      it('should be replaced with $ sign for search input and search query', () => {
+        const { getAllByTestId } = renderComponent({
+          content: '$a {dollar}{dollar}{dollar} 50.00{dollar} $d currency ({dollar}) $0 n123456789 $t test{dollar}',
+        });
+
+        const searchInputValue = `keyword ${EXACT_PHRASE} $$$ 50.00$ currency ($) test$ or identifiers.value ${EXACT_PHRASE} n123456789`;
+
+        const initialValues = {
+          search: {
+            dropdownValue: 'advancedSearch',
+            searchIndex: 'advancedSearch',
+            searchInputValue,
+            searchQuery: searchInputValue,
+            filters: null,
+          },
+          browse: {
+            dropdownValue: 'personalNameTitle',
+            searchIndex: 'personalNameTitle',
+            filters: null,
+          },
+          segment: 'search',
+        };
+
+        fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
+
+        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
+      });
+    });
+
     describe('when linking Authority to a field with $0', () => {
       it('should pass initial values to plugin', async () => {
         const { getAllByTestId } = renderComponent({
