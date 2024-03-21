@@ -1,6 +1,6 @@
 # Change history for ui-quick-marc
 
-## [8.0.0] (IN PROGRESS)
+## [8.0.0](https://github.com/folio-org/ui-quick-marc/tree/v8.0.0) (2024-03-21)
 
 * [UIQM-580](https://issues.folio.org/browse/UIQM-580) *BREAKING* Move QuickMarcView, PrintPopup and getHeaders to stripes-marc-components.
 * [UIQM-543](https://issues.folio.org/browse/UIQM-543) Remove eslint deps that are already listed in eslint-config-stripes.
