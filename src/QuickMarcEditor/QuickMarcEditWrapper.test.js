@@ -480,7 +480,7 @@ describe('Given QuickMarcEditWrapper', () => {
         expect(mockOnSave).toHaveBeenCalled();
       });
 
-      it('should derive record with correct payload', async () => {
+      it('should edit record with correct payload', async () => {
         renderQuickMarcEditWrapper({
           instance,
           mutator,
