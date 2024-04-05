@@ -140,7 +140,7 @@ const QuickMarcEditWrapper = ({
       autopopulatePhysDescriptionField,
       autopopulateMaterialCharsField,
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
-      marcRecord => cleanBytesFields(marcRecord, fixedFieldSpec),
+      marcRecord => cleanBytesFields(marcRecord, fixedFieldSpec, marcType),
       combineSplitFields,
     )(formValues);
 
