@@ -12,17 +12,25 @@ import { runAxeTest } from '@folio/stripes-testing';
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcDeriveWrapper from './QuickMarcDeriveWrapper';
+import QuickMarcEditor from './QuickMarcEditor';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
 import { useAuthorityLinking } from '../hooks';
 import { bibLeader } from '../../test/jest/fixtures/leaders';
+import fixedFieldSpecBib from '../../test/mocks/fixedFieldSpecBib';
 
 jest.mock('react-final-form', () => ({
   ...jest.requireActual('react-final-form'),
   FormSpy: jest.fn(() => (<span>FormSpy</span>)),
 }));
+
+jest.mock('./QuickMarcEditor', () => {
+  const RealQuickMarcEditor = jest.requireActual('./QuickMarcEditor').default;
+
+  return jest.fn(props => <RealQuickMarcEditor {...props} />);
+});
 
 jest.mock('../queries', () => ({
   ...jest.requireActual('../queries'),
@@ -278,6 +286,7 @@ const renderQuickMarcDeriveWrapper = (props) => (render(
       action={QUICK_MARC_ACTIONS.DERIVE}
       initialValues={initialValues}
       marcType={MARC_TYPES.BIB}
+      fixedFieldSpec={fixedFieldSpecBib}
       {...props}
     />
   </Harness>,
@@ -354,6 +363,172 @@ describe('Given QuickMarcDeriveWrapper', () => {
       expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.onSave' });
 
       expect(mockOnClose).toHaveBeenCalledWith('id');
+    });
+
+    it('should derive record with correct payload', async () => {
+      renderQuickMarcDeriveWrapper({
+        instance,
+        mutator,
+      });
+
+      const formValues = {
+        '_actionType': 'view',
+        'leader': {
+          'Record length': '00246',
+          'Status': 'n',
+          'Type': 'a',
+          'BLvl': 'm',
+          'Ctrl': '\\',
+          '9-16 positions': 'a2200085',
+          'ELvl': 'u',
+          'Desc': 'u',
+          'MultiLvl': '\\',
+          '20-23 positions': '4500',
+        },
+        'suppressDiscovery': false,
+        'marcFormat': 'BIBLIOGRAPHIC',
+        'parsedRecordId': '2b56625f-1ca0-4ada-a32d-2667be1bd509',
+        'parsedRecordDtoId': '2b56625f-1ca0-4ada-a32d-2667be1bd509',
+        'externalId': 'e72f49c9-9bbf-4d2b-89eb-3d2ee5878530',
+        'externalHrid': 'in00000000035',
+        'updateInfo': {
+          'recordState': 'NEW',
+        },
+        'records': [
+          {
+            'tag': 'LDR',
+            'content': {
+              'Record length': '00246',
+              'Status': 'n',
+              'Type': 'e',
+              'BLvl': 'm',
+              'Ctrl': '\\',
+              '9-16 positions': 'a2200085',
+              'ELvl': 'u',
+              'Desc': 'u',
+              'MultiLvl': '\\',
+              '20-23 positions': '4500',
+            },
+            'id': 'LDR',
+            '_isDeleted': false,
+            '_isLinked': false,
+          },
+          {
+            'tag': '001',
+            'content': '',
+            'isProtected': true,
+            'id': 'dea3aafd-9367-4592-9996-606592ea4947',
+            '_isDeleted': false,
+            '_isLinked': false,
+          },
+          {
+            'tag': '005',
+            'content': '',
+            'isProtected': false,
+            'id': 'c392e6ca-29cc-4511-9afe-79f9d6472ea9',
+            '_isDeleted': false,
+            '_isLinked': false,
+          },
+          {
+            'tag': '008',
+            'content': {
+              'Type': 'a',
+              'BLvl': 'm',
+              'DtSt': 'u',
+              'Date1': '\\\\\\\\',
+              'Date2': '\\\\\\\\',
+              'Ctry': '\\\\\\',
+              'Lang': '\\\\\\',
+              'MRec': '\\',
+              'Srce': '\\',
+              'Ills': ['p', 'o', 'm', 'l'],
+              'Audn': 'j',
+              'Form': 's',
+              'Cont': ['6', '5', '2', 'y'],
+              'GPub': 's',
+              'Conf': '0',
+              'Fest': '1',
+              'Indx': '0',
+              'LitF': 'p',
+              'Biog': '\\',
+              'SpFm': ['\\', '\\'],
+              'Relf': ['a', 'b', 'c', 'd'],
+              'Proj': '\\\\',
+              'CrTp': 'a',
+            },
+            'isProtected': false,
+            'id': 'c52b10e1-074e-4728-bd6a-440be762aed2',
+            '_isDeleted': false,
+            '_isLinked': false,
+          },
+          {
+            'tag': '245',
+            'content': '$a rec3',
+            'indicators': ['\\', '\\'],
+            'isProtected': false,
+            'id': '6d7001a2-ba49-42e9-a7a1-b5597c9b6449',
+            '_isDeleted': false,
+            '_isLinked': false,
+          },
+          {
+            'tag': '999',
+            'content': '',
+            'indicators': ['f', 'f'],
+            'isProtected': true,
+            'id': '61b93d22-6857-4e68-bfeb-240ed4956318',
+            '_isDeleted': false,
+            '_isLinked': false,
+          },
+        ],
+      };
+      const formValuesForDerive = {
+        '_actionType': 'create',
+        'leader': '00246nem\\a2200085uu\\4500',
+        'fields': [
+          {
+            'tag': '008',
+            'content': {
+              'Type': 'e',
+              'BLvl': 'm',
+              'DtSt': 'u',
+              'Date1': '\\\\\\\\',
+              'Date2': '\\\\\\\\',
+              'Ctry': '\\\\\\',
+              'Lang': '\\\\\\',
+              'MRec': '\\',
+              'Srce': '\\',
+              'Audn': 'j',
+              'Form': 's',
+              'GPub': 's',
+              'Conf': '0',
+              'Fest': '1',
+              'Indx': '0',
+              'LitF': 'p',
+              'Biog': '\\',
+              'SpFm': ['\\', '\\'],
+              'Relf': ['a', 'b', 'c', 'd'],
+              'Proj': '\\\\',
+              'CrTp': 'a',
+            },
+          },
+          {
+            'tag': '245',
+            'content': '$a rec3',
+            'indicators': ['\\', '\\'],
+          },
+        ],
+        'suppressDiscovery': false,
+        'marcFormat': 'BIBLIOGRAPHIC',
+        'parsedRecordId': '2b56625f-1ca0-4ada-a32d-2667be1bd509',
+        'parsedRecordDtoId': '2b56625f-1ca0-4ada-a32d-2667be1bd509',
+        'externalId': 'e72f49c9-9bbf-4d2b-89eb-3d2ee5878530',
+        'externalHrid': 'in00000000035',
+        'relatedRecordVersion': 1,
+      };
+
+      await QuickMarcEditor.mock.calls[0][0].onSubmit(formValues);
+
+      expect(mutator.quickMarcEditMarcRecord.POST).toHaveBeenCalledWith(formValuesForDerive);
     });
 
     describe('when there is an error during POST request', () => {

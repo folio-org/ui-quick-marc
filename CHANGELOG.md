@@ -1,5 +1,9 @@
 # Change history for ui-quick-marc
 
+## [8.0.1] IN PROGRESS
+
+* [UIQM-641](https://issues.folio.org/browse/UIQM-641) Call `cleanBytesFields` function with correct arguments to fix 008 field.
+
 ## [8.0.0](https://github.com/folio-org/ui-quick-marc/tree/v8.0.0) (2024-03-21)
 
 * [UIQM-580](https://issues.folio.org/browse/UIQM-580) *BREAKING* Move QuickMarcView, PrintPopup and getHeaders to stripes-marc-components.

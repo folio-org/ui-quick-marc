@@ -26,6 +26,7 @@ import {
   bibLeader,
   holdingsLeader,
 } from '../../test/jest/fixtures/leaders';
+import fixedFieldSpecBib from '../../test/mocks/fixedFieldSpecBib';
 
 const runWithDelayedPromise = (fn, delay) => () => {
   return new Promise(resolve => setTimeout(() => resolve(fn()), delay));
@@ -301,6 +302,7 @@ const renderQuickMarcCreateWrapper = ({
       mutator={mutator}
       action={QUICK_MARC_ACTIONS.CREATE}
       marcType={marcType}
+      fixedFieldSpec={fixedFieldSpecBib}
       initialValues={mockFormValues(marcType)}
       locations={locations}
     />
@@ -382,6 +384,159 @@ describe('Given QuickMarcCreateWrapper', () => {
 
       expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
     }, 100);
+
+    it('should create bib record with correct payload', async () => {
+      renderQuickMarcCreateWrapper({
+        instance,
+        mutator,
+        marcType: MARC_TYPES.BIB,
+      });
+
+      const formValues = {
+        'externalId': '00000000-0000-0000-0000-000000000000',
+        'leader': {
+          'Record length': '00000',
+          'Status': 'n',
+          'Type': '\\',
+          'BLvl': '\\',
+          'Ctrl': '\\',
+          '9-16 positions': 'a2200000',
+          'ELvl': 'u',
+          'Desc': 'u',
+          'MultiLvl': '\\',
+          '20-23 positions': '4500',
+        },
+        'records': [
+          {
+            'tag': 'LDR',
+            'content': {
+              'Record length': '00000',
+              'Status': 'n',
+              'Type': 'a',
+              'BLvl': 'm',
+              'Ctrl': '\\',
+              '9-16 positions': 'a2200000',
+              'ELvl': 'u',
+              'Desc': 'u',
+              'MultiLvl': '\\',
+              '20-23 positions': '4500',
+            },
+            'id': 'LDR',
+            '_isDeleted': false,
+            '_isLinked': false,
+          },
+          {
+            'tag': '001',
+            'id': '977127cc-efdd-4aa2-b941-ba92f4606e2c',
+            '_isDeleted': false,
+            '_isLinked': false,
+          },
+          {
+            'tag': '005',
+            'id': '4b643154-0d45-4876-9afb-1e2a21d74055',
+            '_isDeleted': false,
+            '_isLinked': false,
+          },
+          {
+            'tag': '008',
+            'id': 'a15db153-9d34-4dc8-b246-31f1e1254d33',
+            'content': {
+              'Type': 'a',
+              'BLvl': 'm',
+              'DtSt': 'u',
+              'Date1': '\\\\\\\\',
+              'Date2': '\\\\\\\\',
+              'Ctry': '\\\\\\',
+              'Ills': ['p', 'o', 'm', 'l'],
+              'Audn': 'j',
+              'Form': 's',
+              'Cont': ['6', '5', '2', 'y'],
+              'GPub': 's',
+              'Conf': '0',
+              'Fest': '1',
+              'Indx': '0',
+              'LitF': 'p',
+              'Biog': '\\',
+              'Lang': '\\\\\\',
+              'MRec': '\\',
+              'Srce': '\\',
+            },
+            '_isDeleted': false,
+            '_isLinked': false,
+          },
+          {
+            'tag': '245',
+            'id': 'ad563802-dd44-4c7a-b429-79f2bd877aef',
+            'indicators': ['\\', '\\'],
+            'content': '$a rec2',
+            '_isDeleted': false,
+            '_isLinked': false,
+          },
+          {
+            'tag': '999',
+            'id': '7ad9a9ab-3107-4fee-acd7-19cc4249b12e',
+            'indicators': ['f', 'f'],
+            '_isDeleted': false,
+            '_isLinked': false,
+          },
+        ],
+        'parsedRecordDtoId': '00000000-0000-0000-0000-000000000000',
+        'relatedRecordVersion': 1,
+        'marcFormat': 'BIBLIOGRAPHIC',
+        'suppressDiscovery': false,
+        'updateInfo': {
+          'recordState': 'NEW',
+        },
+      };
+
+      const formValuesForCreate = {
+        'externalId': '00000000-0000-0000-0000-000000000000',
+        'leader': '00000nam\\a2200000uu\\4500',
+        'fields': [
+          {
+            'tag': '008',
+            'content': {
+              'Type': 'a',
+              'BLvl': 'm',
+              'DtSt': 'u',
+              'Date1': '\\\\\\\\',
+              'Date2': '\\\\\\\\',
+              'Ctry': '\\\\\\',
+              'Ills': ['p', 'o', 'm', 'l'],
+              'Audn': 'j',
+              'Form': 's',
+              'Cont': ['6', '5', '2', 'y'],
+              'GPub': 's',
+              'Conf': '0',
+              'Fest': '1',
+              'Indx': '0',
+              'LitF': 'p',
+              'Biog': '\\',
+              'Lang': '\\\\\\',
+              'MRec': '\\',
+              'Srce': '\\',
+            },
+          },
+          {
+            'tag': '245',
+            'content': '$a rec2',
+            'indicators': ['\\', '\\'],
+          },
+        ],
+        'parsedRecordDtoId': '00000000-0000-0000-0000-000000000000',
+        'relatedRecordVersion': 1,
+        'marcFormat': 'BIBLIOGRAPHIC',
+        'suppressDiscovery': false,
+        'updateInfo': {
+          'recordState': 'NEW',
+        },
+        '_actionType': 'create',
+      };
+
+      await QuickMarcEditor.mock.calls[0][0].onSubmit(formValues);
+
+      expect(mutator.quickMarcEditMarcRecord.POST).toHaveBeenCalledWith(formValuesForCreate);
+    });
 
     it('should create authority record with correct payload and call onSave', async () => {
       const mockOnSave = jest.fn();
