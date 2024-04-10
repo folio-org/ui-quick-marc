@@ -1,5 +1,9 @@
 # Change history for ui-quick-marc
 
+## [8.0.1] (IN PROGRESS)
+
+* [UIQM-640](https://issues.folio.org/browse/UIQM-640) Create authority | Make list of authority files in lookup alphabetical.
+
 ## [8.0.0](https://github.com/folio-org/ui-quick-marc/tree/v8.0.0) (2024-03-21)
 
 * [UIQM-580](https://issues.folio.org/browse/UIQM-580) *BREAKING* Move QuickMarcView, PrintPopup and getHeaders to stripes-marc-components.
