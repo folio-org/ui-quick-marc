@@ -45,6 +45,14 @@ describe('Given useAuthoritySourceFiles', () => {
     expect(mockGet).toHaveBeenCalled();
   });
 
+  it('should sort by name', async () => {
+    const { result } = renderHook(() => useAuthoritySourceFiles(), { wrapper });
+
+    await act(async () => !result.current.isLoading);
+
+    expect(mockGet).toHaveBeenCalledWith('authority-source-files', { searchParams: { limit: 100, query: 'cql.allRecords=1 sortby name' } });
+  });
+
   describe('when passing search parameters', () => {
     it('should include them in the url', async () => {
       const searchParams = { selectable: true };
@@ -53,7 +61,7 @@ describe('Given useAuthoritySourceFiles', () => {
 
       await act(async () => !result.current.isLoading);
 
-      expect(mockGet).toHaveBeenCalledWith('authority-source-files', { searchParams: { limit: 100, query: 'selectable=true' } });
+      expect(mockGet).toHaveBeenCalledWith('authority-source-files', { searchParams: { limit: 100, query: 'selectable=true sortby name' } });
     });
   });
 });
