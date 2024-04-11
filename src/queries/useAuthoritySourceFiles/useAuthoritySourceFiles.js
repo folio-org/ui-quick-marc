@@ -5,6 +5,8 @@ import {
   useOkapiKy,
 } from '@folio/stripes/core';
 
+const CQL_ALL = 'cql.allRecords=1';
+
 const useAuthoritySourceFiles = ({ searchParams, tenantId } = {}) => {
   const ky = useOkapiKy({ tenant: tenantId });
   const [namespace] = useNamespace({ key: 'authority-source-files' });
@@ -13,7 +15,7 @@ const useAuthoritySourceFiles = ({ searchParams, tenantId } = {}) => {
 
   const _searchParams = {
     limit: 100,
-    query: queryString,
+    query: `${queryString || CQL_ALL} sortby name`,
   };
 
   const { isFetching, data } = useQuery(
