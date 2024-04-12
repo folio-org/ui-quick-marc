@@ -1,5 +1,9 @@
 # Change history for ui-quick-marc
 
+## [8.1.0] IN PROGRESS
+
+* [UIQM-647](https://issues.folio.org/browse/UIQM-647) Import `useUserTenantPermissions` from `@folio/stripes/core`.
+
 ## [8.0.1] IN PROGRESS
 
 * [UIQM-641](https://issues.folio.org/browse/UIQM-641) Call `cleanBytesFields` function with correct arguments to fix 008 field.
