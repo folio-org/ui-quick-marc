@@ -1,5 +1,9 @@
 # Change history for ui-quick-marc
 
+## [8.1.0] IN PROGRESS
+
+* [UIQM-563](https://issues.folio.org/browse/UIQM-563) Allow a user to move 00X fields.
+
 ## [8.0.1] IN PROGRESS
 
 * [UIQM-641](https://issues.folio.org/browse/UIQM-641) Call `cleanBytesFields` function with correct arguments to fix 008 field.

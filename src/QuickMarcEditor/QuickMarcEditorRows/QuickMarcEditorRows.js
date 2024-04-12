@@ -283,8 +283,8 @@ const QuickMarcEditorRows = ({
             const withIndicators = !hasIndicatorException(recordRow);
             const withAddRowAction = hasAddException(recordRow, marcType);
             const withDeleteRowAction = hasDeleteException(recordRow, marcType, instance, initialValues, linksCount);
-            const withMoveUpRowAction = hasMoveException(recordRow, fields[idx - 1]);
-            const withMoveDownRowAction = hasMoveException(recordRow, fields[idx + 1]);
+            const withMoveUpRowAction = hasMoveException(recordRow, fields[idx - 1], action);
+            const withMoveDownRowAction = hasMoveException(recordRow, fields[idx + 1], action);
 
             const isMaterialCharsField = isMaterialCharsRecord(recordRow);
             const isPhysDescriptionField = isPhysDescriptionRecord(recordRow);
