@@ -3,6 +3,7 @@ import {
   fireEvent,
   render,
   act,
+  waitFor,
 } from '@folio/jest-config-stripes/testing-library/react';
 
 import { IfPermission } from '@folio/stripes/core';
@@ -370,7 +371,9 @@ describe('Given AutoLinkingButton', () => {
       expect(mockSetLoadingLinkSuggestions).toHaveBeenNthCalledWith(2, false);
       expect(mockAutoLinkAuthority).toHaveBeenCalledWith(_formValues);
       expect(mockMarkRecordsLinked).toHaveBeenCalledWith({ fields });
-      expect(mockShowCallout).toHaveBeenCalledTimes(3);
+      await waitFor(() => {
+        expect(mockShowCallout).toHaveBeenCalledTimes(3);
+      });
 
       expect(mockShowCallout).toHaveBeenNthCalledWith(1, toasts[0]);
       expect(mockShowCallout).toHaveBeenNthCalledWith(2, toasts[1]);
