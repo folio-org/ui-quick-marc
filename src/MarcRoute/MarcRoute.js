@@ -6,11 +6,13 @@ import {
 import PropTypes from 'prop-types';
 
 import { LoadingPane } from '@folio/stripes/components';
-import { useStripes } from '@folio/stripes/core';
+import {
+  useStripes,
+  useUserTenantPermissions,
+} from '@folio/stripes/core';
 
 import { QuickMarcEditorContainer } from '../QuickMarcEditor';
 import { applyCentralTenantInHeaders } from '../QuickMarcEditor/utils';
-import { useUserTenantPermissions } from '../queries';
 import { QUICK_MARC_ACTIONS } from '../QuickMarcEditor/constants';
 
 const MarcRoute = ({
@@ -28,7 +30,6 @@ const MarcRoute = ({
     marcType,
     action,
   } = routeProps;
-  const userId = stripes?.user?.user?.id;
   const centralTenantId = stripes.user.user?.consortium?.centralTenantId;
   const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType)
     && action !== QUICK_MARC_ACTIONS.CREATE;
@@ -37,7 +38,6 @@ const MarcRoute = ({
     userPermissions: centralTenantPermissions,
     isFetching: isCentralTenantPermissionsLoading,
   } = useUserTenantPermissions({
-    userId,
     tenantId: centralTenantId,
   }, {
     enabled: isRequestToCentralTenantFromMember,

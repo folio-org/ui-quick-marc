@@ -1,15 +1,16 @@
 import { render } from '@folio/jest-config-stripes/testing-library/react';
 
+import { useUserTenantPermissions } from '@folio/stripes/core';
+
 import Harness from '../../test/jest/helpers/harness';
 
 import MarcRoute from './MarcRoute';
-import { useUserTenantPermissions } from '../queries';
 import { MARC_TYPES } from '../common/constants';
 import { QUICK_MARC_ACTIONS } from '../QuickMarcEditor/constants';
 import { applyCentralTenantInHeaders } from '../QuickMarcEditor/utils';
 
-jest.mock('../queries', () => ({
-  ...jest.requireActual('../queries'),
+jest.mock('@folio/stripes/core', () => ({
+  ...jest.requireActual('@folio/stripes/core'),
   useUserTenantPermissions: jest.fn(),
 }));
 
@@ -64,7 +65,6 @@ describe('Given Quick Marc', () => {
 
       expect(useUserTenantPermissions).toHaveBeenCalledWith({
         tenantId: 'consortia',
-        userId: 'b1add99d-530b-5912-94f3-4091b4d87e2c',
       }, {
         enabled: true,
       });

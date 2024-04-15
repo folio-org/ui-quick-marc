@@ -2,14 +2,15 @@
 
 import React from 'react';
 import { render } from '@folio/jest-config-stripes/testing-library/react';
+
 import { createMemoryHistory } from 'history';
 
 import QuickMarc from './QuickMarc';
 
 import Harness from '../test/jest/helpers/harness';
 
-jest.mock('./queries', () => ({
-  ...jest.requireActual('./queries'),
+jest.mock('@folio/stripes/core', () => ({
+  ...jest.requireActual('@folio/stripes/core'),
   useUserTenantPermissions: jest.fn().mockReturnValue({
     userPermissions: [],
     isFetching: false,
