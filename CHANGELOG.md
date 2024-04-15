@@ -5,6 +5,7 @@
 * [UIQM-641](https://issues.folio.org/browse/UIQM-641) Call `cleanBytesFields` function with correct arguments to fix 008 field.
 * [UIQM-640](https://issues.folio.org/browse/UIQM-640) Create authority | Make list of authority files in lookup alphabetical.
 * [UIQM-650](https://issues.folio.org/browse/UIQM-650) Use `setTimeout` to defer the execution of `showCallout` to ensure the toasts are shown after the potentially heavy render.
+* [UIQM-649](https://issues.folio.org/browse/UIQM-649) Added validation rule to prevent deletion of 010 when it is a linking point.
 
 ## [8.0.0](https://github.com/folio-org/ui-quick-marc/tree/v8.0.0) (2024-03-21)
 

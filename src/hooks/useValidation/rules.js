@@ -206,6 +206,12 @@ const BASE_AUTHORITY_VALIDATORS = [
   },
   {
     tag: '010',
+    ignore: ({ initialValues, naturalId }) => !is010LinkedToBibRecord(initialValues.records, naturalId),
+    validator: RULES.EXISTS,
+    message: () => <FormattedMessage id="ui-quick-marc.record.error.010.removed" />,
+  },
+  {
+    tag: '010',
     validator: RULES.NON_REPEATABLE,
     message: () => <FormattedMessage id="ui-quick-marc.record.error.010.multiple" />,
   },

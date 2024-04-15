@@ -918,7 +918,7 @@ describe('useValidation', () => {
     });
   });
 
-  describe('when record is MARC Authority record', () => {
+  describe('when validating Authority record', () => {
     const localSourceFile = {
       id: '1',
       source: 'local',
@@ -1328,59 +1328,121 @@ describe('useValidation', () => {
           });
         });
 
-        describe('when 010 was removed', () => {
-          it('should not return an error message', () => {
-            const _initialValues = {
-              leader: initialValues.leader,
-              records: [
-                {
-                  id: 1,
-                  content: initialValues.leader,
-                  tag: 'LDR',
-                },
-                {
-                  id: 2,
-                  content: {},
-                  tag: '008',
-                },
-                {
-                  id: 3,
-                  tag: '110',
-                  content: '$a Record title',
-                },
-                {
-                  id: 4,
-                  tag: '010',
-                  content: '$a n123456',
-                },
-              ],
-            };
-            const { result } = renderHook(() => useValidation({
-              ...marcContext,
-              initialValues: _initialValues,
-            }));
+        describe('when 010 was a linking point', () => {
+          describe('and 010 was removed', () => {
+            it('should return an error message', () => {
+              const _initialValues = {
+                leader: initialValues.leader,
+                records: [
+                  {
+                    id: 1,
+                    content: initialValues.leader,
+                    tag: 'LDR',
+                  },
+                  {
+                    id: 2,
+                    content: {},
+                    tag: '008',
+                  },
+                  {
+                    id: 3,
+                    tag: '110',
+                    content: '$a Record title',
+                  },
+                  {
+                    id: 4,
+                    tag: '010',
+                    content: '$a n123456',
+                  },
+                ],
+              };
+              const { result } = renderHook(() => useValidation({
+                ...marcContext,
+                initialValues: _initialValues,
+                naturalId: 'n123456',
+              }));
 
-            const record = {
-              ...initialValues,
-              records: [
-                {
-                  id: 'LDR',
-                  content: initialValues.leader,
-                  tag: 'LDR',
-                },
-                {
-                  id: 1,
-                  content: {},
-                  tag: '008',
-                },
-                {
-                  id: 3,
-                  tag: '110',
-                },
-              ],
-            };
+              const record = {
+                ...initialValues,
+                records: [
+                  {
+                    id: 'LDR',
+                    content: initialValues.leader,
+                    tag: 'LDR',
+                  },
+                  {
+                    id: 1,
+                    content: {},
+                    tag: '008',
+                  },
+                  {
+                    id: 3,
+                    tag: '110',
+                  },
+                ],
+              };
 
-            expect(result.current.validate(record.records)).toBeUndefined();
+              expect(result.current.validate(record.records).props.id).toBe('ui-quick-marc.record.error.010.removed');
+            });
+          });
+        });
+
+        describe('when 010 was not a linking point', () => {
+          describe('and 010 was removed', () => {
+            it('should not return an error message', () => {
+              const _initialValues = {
+                leader: initialValues.leader,
+                records: [
+                  {
+                    id: 1,
+                    content: initialValues.leader,
+                    tag: 'LDR',
+                  },
+                  {
+                    id: 2,
+                    content: {},
+                    tag: '008',
+                  },
+                  {
+                    id: 3,
+                    tag: '110',
+                    content: '$a Record title',
+                  },
+                  {
+                    id: 4,
+                    tag: '010',
+                    content: '$a n123456',
+                  },
+                ],
+              };
+              const { result } = renderHook(() => useValidation({
+                ...marcContext,
+                initialValues: _initialValues,
+                naturalId: 'n09876',
+              }));
+
+              const record = {
+                ...initialValues,
+                records: [
+                  {
+                    id: 'LDR',
+                    content: initialValues.leader,
+                    tag: 'LDR',
+                  },
+                  {
+                    id: 1,
+                    content: {},
+                    tag: '008',
+                  },
+                  {
+                    id: 3,
+                    tag: '110',
+                  },
+                ],
+              };
+
+              expect(result.current.validate(record.records)).toBeUndefined();
+            });
           });
         });
       });
