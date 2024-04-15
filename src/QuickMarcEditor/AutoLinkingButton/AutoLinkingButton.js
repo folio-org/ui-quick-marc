@@ -115,7 +115,13 @@ const AutoLinkingButton = ({
 
       const toasts = getAutoLinkingToasts(suggestedFields);
 
-      toasts.forEach(toast => showCallout(toast));
+      // Using `setTimeout` to defer the execution of `showCallout` until the browser has completed
+      // other operations. This method queues the callback function into the browser's
+      // MacroTask Queue, giving other pending tasks (like render tasks) a chance to finish.
+      // This way, we ensure the toasts are shown after the potentially heavy render tasks are done.
+      setTimeout(() => {
+        toasts.forEach(toast => showCallout(toast));
+      });
     } catch (e) {
       showCallout({ messageId: 'ui-quick-marc.records.error.autoLinking', type: 'error' });
     } finally {
