@@ -577,115 +577,170 @@ describe('QuickMarcEditor utils', () => {
   });
 
   describe('formatMarcRecordByQuickMarcAction', () => {
-    it('should return original record if action is not "derive" or "create"', () => {
-      const record = {
-        records: [{
-          tag: '001',
-          content: 'some content',
-        }],
-      };
+    describe('when action is "edit"', () => {
+      it('should return original record if ', () => {
+        const record = {
+          records: [{
+            tag: '001',
+            content: 'some content',
+          }],
+        };
 
-      expect(utils.formatMarcRecordByQuickMarcAction(record, QUICK_MARC_ACTIONS.EDIT)).toEqual(record);
+        expect(utils.formatMarcRecordByQuickMarcAction(record, QUICK_MARC_ACTIONS.EDIT)).toEqual(record);
+      });
     });
 
-    it('should return record without 001, 005 and 999ff fields and no updateInfo if action is "derive"', () => {
-      const record = {
-        records: [{
-          tag: '001',
-          content: 'some content',
-        }, {
-          tag: '005',
-          content: 'some content',
-        }, {
-          tag: '019',
-          content: 'some content',
-        }, {
-          tag: '035',
-          content: 'some content',
-        }, {
-          tag: '201',
-          content: 'some content',
-        }, {
-          tag: '999',
-          indicators: ['f', 'f'],
-          content: 'some content',
-        }],
-        updateInfo: {
-          recordState: 'actual',
-          updateDate: '01/01/1970',
-        },
-      };
+    describe('when action is "derive"', () => {
+      it('should return record without 001, 005 and 999ff fields content and no updateInfo', () => {
+        const record = {
+          records: [{
+            tag: LEADER_TAG,
+            content: 'some content',
+          }, {
+            tag: '001',
+            content: 'some content',
+          }, {
+            tag: '005',
+            content: 'some content',
+          }, {
+            tag: '019',
+            content: 'some content',
+          }, {
+            tag: '035',
+            content: 'some content',
+          }, {
+            tag: '201',
+            content: 'some content',
+          }, {
+            tag: '999',
+            indicators: ['f', 'f'],
+            content: 'some content',
+          }],
+          updateInfo: {
+            recordState: 'actual',
+            updateDate: '01/01/1970',
+          },
+        };
 
-      const expectedRecord = {
-        records: [{
-          tag: '001',
-          content: '',
-        }, {
-          tag: '005',
-          content: '',
-        }, {
-          tag: '019',
-          content: '$a',
-        }, {
-          tag: '035',
-          content: '$a',
-        }, {
-          tag: '201',
-          content: 'some content',
-        }, {
-          tag: '999',
-          indicators: ['f', 'f'],
-          content: '',
-        }],
-        updateInfo: {
-          recordState: RECORD_STATUS_NEW,
-        },
-      };
+        const expectedRecord = {
+          records: [{
+            tag: LEADER_TAG,
+            content: 'some content',
+          }, {
+            tag: '001',
+            content: '',
+          }, {
+            tag: '005',
+            content: '',
+          }, {
+            tag: '019',
+            content: '$a',
+          }, {
+            tag: '035',
+            content: '$a',
+          }, {
+            tag: '201',
+            content: 'some content',
+          }, {
+            tag: '999',
+            indicators: ['f', 'f'],
+            content: '',
+          }],
+          updateInfo: {
+            recordState: RECORD_STATUS_NEW,
+          },
+        };
 
-      expect(utils.formatMarcRecordByQuickMarcAction(record, QUICK_MARC_ACTIONS.DERIVE)).toEqual(expectedRecord);
+        expect(utils.formatMarcRecordByQuickMarcAction(record, QUICK_MARC_ACTIONS.DERIVE)).toEqual(expectedRecord);
+      });
+
+      it('should return record with Leader, 001 and 005 fields first', () => {
+        const record = {
+          records: [{
+            tag: LEADER_TAG,
+            content: 'some content',
+          }, {
+            tag: '019',
+            content: 'some content',
+          }, {
+            tag: '001',
+            content: 'some content',
+          }, {
+            tag: '005',
+            content: 'some content',
+          }],
+          updateInfo: {
+            recordState: 'actual',
+            updateDate: '01/01/1970',
+          },
+        };
+
+        const expectedRecord = {
+          records: [{
+            tag: LEADER_TAG,
+            content: 'some content',
+          }, {
+            tag: '001',
+            content: '',
+          }, {
+            tag: '005',
+            content: '',
+          }, {
+            tag: '019',
+            content: '$a',
+          }],
+          updateInfo: {
+            recordState: RECORD_STATUS_NEW,
+          },
+        };
+
+        expect(utils.formatMarcRecordByQuickMarcAction(record, QUICK_MARC_ACTIONS.DERIVE)).toEqual(expectedRecord);
+      });
     });
 
-    it('should return record with additional fields and no updateInfo if action is "create"', () => {
-      const instanceId = 'instanceId';
+    describe('when action is "create"', () => {
+      it('should return record with additional fields and no updateInfo if action is "create"', () => {
+        const instanceId = 'instanceId';
 
-      const record = {
-        externalId: instanceId,
-        leader: bibLeader,
-        fields: undefined,
-        records: [{
-          tag: LEADER_TAG,
-          content: bibLeader,
-          id: LEADER_TAG,
-        }, {
-          tag: '001',
-          id: uuid(),
-        }, {
-          tag: '004',
-          id: uuid(),
-          content: 'instanceHrid',
-        }, {
-          tag: '005',
-          id: uuid(),
-        }, {
-          tag: '999',
-          id: uuid(),
-          indicators: ['f', 'f'],
-        }],
-        parsedRecordDtoId: instanceId,
-      };
+        const record = {
+          externalId: instanceId,
+          leader: bibLeader,
+          fields: undefined,
+          records: [{
+            tag: LEADER_TAG,
+            content: bibLeader,
+            id: LEADER_TAG,
+          }, {
+            tag: '001',
+            id: uuid(),
+          }, {
+            tag: '004',
+            id: uuid(),
+            content: 'instanceHrid',
+          }, {
+            tag: '005',
+            id: uuid(),
+          }, {
+            tag: '999',
+            id: uuid(),
+            indicators: ['f', 'f'],
+          }],
+          parsedRecordDtoId: instanceId,
+        };
 
-      const expectedRecord = {
-        ...record,
-        relatedRecordVersion: 1,
-        marcFormat: 'HOLDINGS',
-        suppressDiscovery: false,
-        updateInfo: {
-          recordState: RECORD_STATUS_NEW,
-        },
-      };
+        const expectedRecord = {
+          ...record,
+          relatedRecordVersion: 1,
+          marcFormat: 'HOLDINGS',
+          suppressDiscovery: false,
+          updateInfo: {
+            recordState: RECORD_STATUS_NEW,
+          },
+        };
 
-      expect(utils.formatMarcRecordByQuickMarcAction(record, QUICK_MARC_ACTIONS.CREATE, MARC_TYPES.HOLDINGS))
-        .toEqual(expectedRecord);
+        expect(utils.formatMarcRecordByQuickMarcAction(record, QUICK_MARC_ACTIONS.CREATE, MARC_TYPES.HOLDINGS))
+          .toEqual(expectedRecord);
+      });
     });
   });
 

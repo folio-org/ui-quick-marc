@@ -365,7 +365,7 @@ export const getCreateAuthorityMarcRecordResponse = (instanceResponse, fixedFiel
   };
 };
 
-const fieldMatchesDescription = (field, descriptionArray) => {
+export const fieldMatchesDescription = (field, descriptionArray) => {
   let match = false;
 
   descriptionArray.forEach(description => {
@@ -422,10 +422,25 @@ const removeMarcRecordFieldContentForDerive = marcRecord => {
   };
 };
 
+const moveIdentifierFieldsAfterLeader = marcRecord => {
+  return {
+    ...marcRecord,
+    records: [
+      marcRecord.records.find(field => field.tag === LEADER_TAG),
+      ...marcRecord.records.filter(field => field.tag === '001'),
+      ...marcRecord.records.filter(field => field.tag === '005'),
+      ...marcRecord.records.filter(field => ![LEADER_TAG, '001', '005'].includes(field.tag)),
+    ],
+  };
+};
+
 export const formatMarcRecordByQuickMarcAction = (marcRecord, action, marcType) => {
   if (action === QUICK_MARC_ACTIONS.DERIVE) {
     return {
-      ...removeMarcRecordFieldContentForDerive(marcRecord),
+      ...flow(
+        removeMarcRecordFieldContentForDerive,
+        moveIdentifierFieldsAfterLeader,
+      )(marcRecord),
       updateInfo: {
         recordState: RECORD_STATUS_NEW,
       },
