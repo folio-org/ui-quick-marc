@@ -89,7 +89,11 @@ export const getContentSubfieldValue = (content = '') => {
     }, {});
 };
 
-export const is010LinkedToBibRecord = (initialRecords, naturalId) => {
+export const is010LinkedToBibRecord = (initialRecords, naturalId, linksCount) => {
+  if (!linksCount) {
+    return false;
+  }
+
   const initial010Field = initialRecords.find(record => record.tag === '010');
 
   if (!initial010Field) {
@@ -1089,7 +1093,7 @@ export const hasDeleteException = (recordRow, marcType = MARC_TYPES.BIB, authori
   if (marcType === MARC_TYPES.AUTHORITY) {
     if (
       is1XXField(recordRow.tag) ||
-      (recordRow.tag === '010' && linksCount && is010LinkedToBibRecord(initialValues.records, authority.naturalId))
+      (recordRow.tag === '010' && is010LinkedToBibRecord(initialValues.records, authority.naturalId, linksCount))
     ) {
       return true;
     }
