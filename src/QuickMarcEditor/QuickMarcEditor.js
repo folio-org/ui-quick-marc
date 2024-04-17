@@ -192,7 +192,7 @@ const QuickMarcEditor = ({
 
       if (
         is010$aUpdated(initialValues.records, records) &&
-        is010LinkedToBibRecord(initialValues.records, instance.naturalId)
+        is010LinkedToBibRecord(initialValues.records, instance.naturalId, linksCount)
       ) {
         setIsUpdate0101xxfieldsAuthRecModalOpen(true);
 

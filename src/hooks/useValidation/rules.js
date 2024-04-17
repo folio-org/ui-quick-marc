@@ -200,13 +200,17 @@ const BASE_AUTHORITY_VALIDATORS = [
   {
     tag: '010',
     subfield: '$a',
-    ignore: ({ initialValues, naturalId }) => !is010LinkedToBibRecord(initialValues.records, naturalId),
+    ignore: ({ linksCount, initialValues, naturalId }) => {
+      return !is010LinkedToBibRecord(initialValues.records, naturalId, linksCount);
+    },
     validator: RULES.SUBFIELD_VALUE_EXISTS,
     message: () => <FormattedMessage id="ui-quick-marc.record.error.010.$aRemoved" />,
   },
   {
     tag: '010',
-    ignore: ({ initialValues, naturalId }) => !is010LinkedToBibRecord(initialValues.records, naturalId),
+    ignore: ({ linksCount, initialValues, naturalId }) => {
+      return !is010LinkedToBibRecord(initialValues.records, naturalId, linksCount);
+    },
     validator: RULES.EXISTS,
     message: () => <FormattedMessage id="ui-quick-marc.record.error.010.removed" />,
   },
