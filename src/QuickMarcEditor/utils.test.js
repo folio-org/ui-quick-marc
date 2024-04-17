@@ -1618,4 +1618,58 @@ describe('QuickMarcEditor utils', () => {
       });
     });
   });
+
+  describe('is010LinkedToBibRecord', () => {
+    describe('when links count is 0', () => {
+      it('should return false', () => {
+        const initialRecords = [{
+          tag: '010',
+          content: '$a n 123456',
+        }];
+        const naturalId = 'n123456';
+        const linksCount = 0;
+
+        expect(utils.is010LinkedToBibRecord(initialRecords, naturalId, linksCount)).toEqual(false);
+      });
+    });
+
+    describe('when 010 field is missing', () => {
+      it('should return false', () => {
+        const initialRecords = [{
+          tag: '011',
+          content: '$a n 123456',
+        }];
+        const naturalId = 'n123456';
+        const linksCount = 1;
+
+        expect(utils.is010LinkedToBibRecord(initialRecords, naturalId, linksCount)).toEqual(false);
+      });
+    });
+
+    describe('when 010$a does not match naturalId', () => {
+      it('should return false', () => {
+        const initialRecords = [{
+          tag: '010',
+          content: '$a n 123456',
+        }];
+        const naturalId = 'n123456789';
+        const linksCount = 1;
+
+        expect(utils.is010LinkedToBibRecord(initialRecords, naturalId, linksCount)).toEqual(false);
+      });
+    });
+
+    describe('when 010$a matches naturalId', () => {
+      it('should return true', () => {
+        const initialRecords = [{
+          tag: '010',
+          content: '$a n 123456',
+        }];
+        const naturalId = 'n123456';
+        const linksCount = 1;
+
+        expect(utils.is010LinkedToBibRecord(initialRecords, naturalId, linksCount)).toEqual(true);
+      });
+    });
+  });
 });

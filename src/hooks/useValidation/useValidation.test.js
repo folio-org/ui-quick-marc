@@ -1446,6 +1446,70 @@ describe('useValidation', () => {
           });
         });
       });
+
+      describe('when authority is not linked to bib record', () => {
+        describe('when 010 $a was removed', () => {
+          it('should not return an error message', () => {
+            const _initialValues = {
+              leader: initialValues.leader,
+              records: [
+                {
+                  id: 1,
+                  content: initialValues.leader,
+                  tag: 'LDR',
+                },
+                {
+                  id: 2,
+                  content: {},
+                  tag: '008',
+                },
+                {
+                  id: 3,
+                  tag: '110',
+                  content: '$a Record title',
+                },
+                {
+                  id: 4,
+                  tag: '010',
+                  content: '$a n123456',
+                },
+              ],
+            };
+            const { result } = renderHook(() => useValidation({
+              ...marcContext,
+              linksCount: 0,
+              initialValues: _initialValues,
+            }));
+
+            const record = {
+              ...initialValues,
+              records: [
+                {
+                  id: 'LDR',
+                  content: initialValues.leader,
+                  tag: 'LDR',
+                },
+                {
+                  id: 1,
+                  content: {},
+                  tag: '008',
+                },
+                {
+                  id: 2,
+                  content: '$a',
+                  tag: '010',
+                },
+                {
+                  id: 3,
+                  tag: '110',
+                },
+              ],
+            };
+
+            expect(result.current.validate(record.records)).not.toBeDefined();
+          });
+        });
+      });
     });
 
     describe('when action is CREATE', () => {
