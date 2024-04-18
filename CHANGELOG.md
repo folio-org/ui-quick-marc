@@ -5,7 +5,7 @@
 * [UIQM-647](https://issues.folio.org/browse/UIQM-647) Import `useUserTenantPermissions` from `@folio/stripes/core`.
 * [UIQM-563](https://issues.folio.org/browse/UIQM-563) Allow a user to move 00X fields.
 
-## [8.0.1] IN PROGRESS
+## [8.0.1] (https://github.com/folio-org/ui-quick-marc/tree/v8.0.1) (2024-04-18)
 
 * [UIQM-641](https://issues.folio.org/browse/UIQM-641) Call `cleanBytesFields` function with correct arguments to fix 008 field.
 * [UIQM-640](https://issues.folio.org/browse/UIQM-640) Create authority | Make list of authority files in lookup alphabetical.
