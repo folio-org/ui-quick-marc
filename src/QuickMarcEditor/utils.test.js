@@ -1268,12 +1268,12 @@ describe('QuickMarcEditor utils', () => {
         tag: '001',
         id: uuid(),
       }, {
+        tag: '005',
+        id: uuid(),
+      }, {
         tag: '004',
         id: uuid(),
         content: instanceResponse.hrid,
-      }, {
-        tag: '005',
-        id: uuid(),
       }, {
         tag: '008',
         id: uuid(),
