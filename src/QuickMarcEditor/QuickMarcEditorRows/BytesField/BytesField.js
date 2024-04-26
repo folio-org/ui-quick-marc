@@ -199,6 +199,7 @@ const renderSubField = (name, config, intl) => {
             >
               {({ ref, ariaIds }) => (
                 <Field
+                  required={error(ref)}
                   inputRef={ref}
                   dirty={false}
                   error={error(ref)}
