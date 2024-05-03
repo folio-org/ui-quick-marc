@@ -35,6 +35,7 @@ const LocationField = ({
       <ContentField
         id={id}
         input={input}
+        aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
         {...inputRest}
       />
       <LocationLookup
