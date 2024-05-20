@@ -36,6 +36,7 @@ import { DeletedRowPlaceholder } from './DeletedRowPlaceholder';
 import { LinkButton } from './LinkButton';
 import { SplitField } from './SplitField';
 import { ControlNumberField } from './ControlNumberField';
+import { SearchLink } from './SearchLink';
 import {
   hasIndicatorException,
   hasAddException,
@@ -305,6 +306,7 @@ const QuickMarcEditorRows = ({
             const canBeLinkedAuto = isRecordForAutoLinking(recordRow, autoLinkableBibFields);
 
             const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') && recordRow._isLinked;
+            const canSearchInInventory = [MARC_TYPES.AUTHORITY, MARC_TYPES.BIB].includes(marcType) && recordRow.tag === '010';
 
             return (
               <div
@@ -536,6 +538,9 @@ const QuickMarcEditorRows = ({
                 </div>
 
                 <div className={styles.quickMarcEditorRightSide}>
+                  {canSearchInInventory && (
+                    <SearchLink field={recordRow} />
+                  )}
                   {isMARCFieldProtections && isProtectedField && (
                     <span data-testid="quick-marc-protected-field-popover">
                       <InfoPopover
