@@ -1,9 +1,7 @@
 import React from 'react';
 
 import { render } from '@folio/jest-config-stripes/testing-library/react';
-
 import { runAxeTest } from '@folio/stripes-testing';
-import { advancedSearchQueryBuilder } from '@folio/stripes-inventory-components';
 
 import { SearchLink } from './SearchLink';
 

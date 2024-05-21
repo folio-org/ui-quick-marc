@@ -2,7 +2,10 @@ import PropTypes from 'prop-types';
 import flatten from 'lodash/flatten';
 
 import { IconButton } from '@folio/stripes/components';
-import { advancedSearchQueryBuilder } from '@folio/stripes-inventory-components';
+import {
+  ADVANCED_SEARCH_INDEX,
+  advancedSearchQueryBuilder,
+} from '@folio/stripes-inventory-components';
 
 import { getContentSubfieldValue } from '../../utils';
 
@@ -29,7 +32,7 @@ const SearchLink = ({ field }) => {
   const builtQuery = advancedSearchQueryBuilder(advancedSearchRows);
 
   const searchParams = new URLSearchParams({
-    qindex: 'advancedSearch',
+    qindex: ADVANCED_SEARCH_INDEX,
     query: builtQuery,
   });
 
