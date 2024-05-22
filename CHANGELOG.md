@@ -1,11 +1,12 @@
 # Change history for ui-quick-marc
 
-## [8.1.0] IN PROGRESS
+## [9.0.0] IN PROGRESS
 
 * [UIQM-647](https://issues.folio.org/browse/UIQM-647) Import `useUserTenantPermissions` from `@folio/stripes/core`.
 * [UIQM-563](https://issues.folio.org/browse/UIQM-563) Allow a user to move 00X fields.
 * [UIQM-563](https://issues.folio.org/browse/UIQM-655) Add a `required` property to `Select` type fields for screen readers.
 * [UIQM-648](https://issues.folio.org/browse/UIQM-648) Add `aria-label` to the location field.
+* [UIQM-660](https://issues.folio.org/browse/UIQM-660) *BREAKING* Added `stripes-inventory-components` to peerDeps. Added inventory search link next to 010 fields.
 
 ## [8.0.1] (https://github.com/folio-org/ui-quick-marc/tree/v8.0.1) (2024-04-18)
 

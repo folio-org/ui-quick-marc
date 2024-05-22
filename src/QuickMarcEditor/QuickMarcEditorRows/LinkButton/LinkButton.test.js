@@ -1,10 +1,11 @@
 import React from 'react';
+import { createMemoryHistory } from 'history';
+
 import {
   act,
   fireEvent,
   render,
 } from '@folio/jest-config-stripes/testing-library/react';
-
 import {
   checkIfUserInMemberTenant,
   checkIfUserInCentralTenant,
@@ -14,7 +15,6 @@ import {
 import { ADVANCED_SEARCH_MATCH_OPTIONS } from '@folio/stripes/components';
 import { runAxeTest } from '@folio/stripes-testing';
 
-import { createMemoryHistory } from 'history';
 import { LinkButton } from './LinkButton';
 import { QUICK_MARC_ACTIONS } from '../../constants';
 
