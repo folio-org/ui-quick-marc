@@ -539,7 +539,10 @@ const QuickMarcEditorRows = ({
 
                 <div className={styles.quickMarcEditorRightSide}>
                   {canSearchInInventory && (
-                    <SearchLink field={recordRow} />
+                    <SearchLink
+                      marcType={marcType}
+                      field={recordRow}
+                    />
                   )}
                   {isMARCFieldProtections && isProtectedField && (
                     <span data-testid="quick-marc-protected-field-popover">

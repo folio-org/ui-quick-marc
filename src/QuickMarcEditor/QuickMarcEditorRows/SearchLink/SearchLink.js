@@ -8,14 +8,16 @@ import {
 } from '@folio/stripes-inventory-components';
 
 import { getContentSubfieldValue } from '../../utils';
+import { MARC_TYPES } from '../../../common/constants';
 
 const propTypes = {
   field: PropTypes.shape({
     content: PropTypes.string.isRequired,
   }).isRequired,
+  marcType: PropTypes.string.isRequired,
 };
 
-const SearchLink = ({ field }) => {
+const SearchLink = ({ field, marcType }) => {
   const content = getContentSubfieldValue(field.content);
 
   const numberOfAdvancedSearchRows = 6;
@@ -36,7 +38,9 @@ const SearchLink = ({ field }) => {
     query: builtQuery,
   });
 
-  const link = `/inventory?${searchParams.toString()}`;
+  const app = marcType === MARC_TYPES.AUTHORITY ? 'marc-authorities' : 'inventory';
+
+  const link = `/${app}?${searchParams.toString()}`;
 
   return (
     <IconButton

@@ -6,6 +6,7 @@ import { runAxeTest } from '@folio/stripes-testing';
 import { SearchLink } from './SearchLink';
 
 import Harness from '../../../../test/jest/helpers/harness';
+import { MARC_TYPES } from '../../../common/constants';
 
 const renderComponent = (props = {}) => render(
   <Harness history={props.history}>
@@ -13,6 +14,7 @@ const renderComponent = (props = {}) => render(
       field={{
         content: '$a some value',
       }}
+      marcType={MARC_TYPES.BIB}
       {...props}
     />
   </Harness>,
@@ -60,6 +62,16 @@ describe('Given SearchLink', () => {
       });
 
       expect(getByRole('link').href).toContain('/inventory?qindex=advancedSearch&query=lccn+exactPhrase+v1+or+lccn+exactPhrase+v2+or+lccn+exactPhrase+v3+or+lccn+exactPhrase+v4+or+lccn+exactPhrase+v5+or+lccn+exactPhrase+v6');
+    });
+  });
+
+  describe('when marcType is Authority', () => {
+    it('should link to marc authorities app', () => {
+      const { getByRole } = renderComponent({
+        marcType: MARC_TYPES.AUTHORITY,
+      });
+
+      expect(getByRole('link').href).toContain('/marc-authorities?qindex=advancedSearch&query=lccn+exactPhrase+some+value');
     });
   });
 });
