@@ -10,13 +10,25 @@ const INDICATOR_EXEPTION_ROWS = new Set([LEADER_TAG, '001', '002', '003', '004',
 export const hasIndicatorException = recordRow => INDICATOR_EXEPTION_ROWS.has(recordRow.tag);
 
 const ADD_EXCEPTION_ROWS = {
-  [MARC_TYPES.BIB]: new Set([LEADER_TAG, '001', '005']),
-  [MARC_TYPES.HOLDINGS]: new Set([LEADER_TAG, '001', '005']),
-  [MARC_TYPES.AUTHORITY]: new Set([LEADER_TAG, '001', '005']),
+  [QUICK_MARC_ACTIONS.CREATE]: {
+    [MARC_TYPES.BIB]: new Set([{ tag: LEADER_TAG }, { tag: '001' }, { tag: '005' }, { tag: '999', indicators: ['f', 'f'] }]),
+    [MARC_TYPES.HOLDINGS]: new Set([{ tag: LEADER_TAG }, { tag: '001' }, { tag: '005' }]),
+    [MARC_TYPES.AUTHORITY]: new Set([{ tag: LEADER_TAG }, { tag: '001' }, { tag: '005' }]),
+  },
+  [QUICK_MARC_ACTIONS.DERIVE]: {
+    [MARC_TYPES.BIB]: new Set([{ tag: LEADER_TAG }, { tag: '001' }, { tag: '005' }, { tag: '999', indicators: ['f', 'f'] }]),
+    [MARC_TYPES.HOLDINGS]: new Set([{ tag: LEADER_TAG }, { tag: '001' }, { tag: '005' }]),
+    [MARC_TYPES.AUTHORITY]: new Set([{ tag: LEADER_TAG }, { tag: '001' }, { tag: '005' }]),
+  },
+  [QUICK_MARC_ACTIONS.EDIT]: {
+    [MARC_TYPES.BIB]: new Set([{ tag: LEADER_TAG }, { tag: '001' }, { tag: '005' }]),
+    [MARC_TYPES.HOLDINGS]: new Set([{ tag: LEADER_TAG }, { tag: '001' }, { tag: '005' }]),
+    [MARC_TYPES.AUTHORITY]: new Set([{ tag: LEADER_TAG }, { tag: '001' }, { tag: '005' }]),
+  },
 };
 
-export const hasAddException = (recordRow, marcType = MARC_TYPES.BIB) => {
-  return ADD_EXCEPTION_ROWS[marcType].has(recordRow.tag);
+export const hasAddException = (recordRow, marcType = MARC_TYPES.BIB, action = QUICK_MARC_ACTIONS.EDIT) => {
+  return fieldMatchesDescription(recordRow, ADD_EXCEPTION_ROWS[action][marcType]);
 };
 
 const MOVE_EXCEPTION_ROWS = new Set([{ tag: LEADER_TAG }]);
