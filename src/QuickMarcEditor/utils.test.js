@@ -586,12 +586,16 @@ describe('QuickMarcEditor utils', () => {
           }],
         };
 
-        expect(utils.formatMarcRecordByQuickMarcAction(record, QUICK_MARC_ACTIONS.EDIT)).toEqual(record);
+        expect(utils.formatMarcRecordByQuickMarcAction(
+          record,
+          QUICK_MARC_ACTIONS.EDIT,
+          MARC_TYPES.BIB,
+        )).toEqual(record);
       });
     });
 
     describe('when action is "derive"', () => {
-      it('should return record without 001, 005 and 999ff fields content and no updateInfo', () => {
+      it('should return record without 001, 005, 010 and 999ff fields content and no updateInfo', () => {
         const record = {
           records: [{
             tag: LEADER_TAG,
@@ -601,6 +605,9 @@ describe('QuickMarcEditor utils', () => {
             content: 'some content',
           }, {
             tag: '005',
+            content: 'some content',
+          }, {
+            tag: '010',
             content: 'some content',
           }, {
             tag: '019',
@@ -633,6 +640,9 @@ describe('QuickMarcEditor utils', () => {
             tag: '005',
             content: '',
           }, {
+            tag: '010',
+            content: '$a',
+          }, {
             tag: '019',
             content: '$a',
           }, {
@@ -651,7 +661,11 @@ describe('QuickMarcEditor utils', () => {
           },
         };
 
-        expect(utils.formatMarcRecordByQuickMarcAction(record, QUICK_MARC_ACTIONS.DERIVE)).toEqual(expectedRecord);
+        expect(utils.formatMarcRecordByQuickMarcAction(
+          record,
+          QUICK_MARC_ACTIONS.DERIVE,
+          MARC_TYPES.BIB,
+        )).toEqual(expectedRecord);
       });
 
       it('should return record with Leader, 001 and 005 fields first', () => {
@@ -694,7 +708,11 @@ describe('QuickMarcEditor utils', () => {
           },
         };
 
-        expect(utils.formatMarcRecordByQuickMarcAction(record, QUICK_MARC_ACTIONS.DERIVE)).toEqual(expectedRecord);
+        expect(utils.formatMarcRecordByQuickMarcAction(
+          record,
+          QUICK_MARC_ACTIONS.DERIVE,
+          MARC_TYPES.BIB,
+        )).toEqual(expectedRecord);
       });
     });
 
@@ -738,8 +756,11 @@ describe('QuickMarcEditor utils', () => {
           },
         };
 
-        expect(utils.formatMarcRecordByQuickMarcAction(record, QUICK_MARC_ACTIONS.CREATE, MARC_TYPES.HOLDINGS))
-          .toEqual(expectedRecord);
+        expect(utils.formatMarcRecordByQuickMarcAction(
+          record,
+          QUICK_MARC_ACTIONS.CREATE,
+          MARC_TYPES.HOLDINGS,
+        )).toEqual(expectedRecord);
       });
     });
   });

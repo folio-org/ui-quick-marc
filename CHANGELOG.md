@@ -8,6 +8,7 @@
 * [UIQM-648](https://issues.folio.org/browse/UIQM-648) Add `aria-label` to the location field.
 * [UIQM-660](https://issues.folio.org/browse/UIQM-660) *BREAKING* Added `stripes-inventory-components` to peerDeps. Added inventory search link next to 010 fields.
 * [UIQM-671](https://issues.folio.org/browse/UIQM-671) Create/Derive a MARC bib/holdings/authority > Remove the add new field on the system generated 999 ff.
+* [UIQM-661](https://issues.folio.org/browse/UIQM-661) Derive a new MARC bib record > Do not copy over 010 field values.
 
 ## [8.0.1] (https://github.com/folio-org/ui-quick-marc/tree/v8.0.1) (2024-04-18)
 
