@@ -12,13 +12,13 @@ export const hasIndicatorException = recordRow => INDICATOR_EXEPTION_ROWS.has(re
 const ADD_EXCEPTION_ROWS = {
   [QUICK_MARC_ACTIONS.CREATE]: {
     [MARC_TYPES.BIB]: new Set([{ tag: LEADER_TAG }, { tag: '001' }, { tag: '005' }, { tag: '999', indicators: ['f', 'f'] }]),
-    [MARC_TYPES.HOLDINGS]: new Set([{ tag: LEADER_TAG }, { tag: '001' }, { tag: '005' }]),
-    [MARC_TYPES.AUTHORITY]: new Set([{ tag: LEADER_TAG }, { tag: '001' }, { tag: '005' }]),
+    [MARC_TYPES.HOLDINGS]: new Set([{ tag: LEADER_TAG }, { tag: '001' }, { tag: '005' }, { tag: '999', indicators: ['f', 'f'] }]),
+    [MARC_TYPES.AUTHORITY]: new Set([{ tag: LEADER_TAG }, { tag: '001' }, { tag: '005' }, { tag: '999', indicators: ['f', 'f'] }]),
   },
   [QUICK_MARC_ACTIONS.DERIVE]: {
     [MARC_TYPES.BIB]: new Set([{ tag: LEADER_TAG }, { tag: '001' }, { tag: '005' }, { tag: '999', indicators: ['f', 'f'] }]),
-    [MARC_TYPES.HOLDINGS]: new Set([{ tag: LEADER_TAG }, { tag: '001' }, { tag: '005' }]),
-    [MARC_TYPES.AUTHORITY]: new Set([{ tag: LEADER_TAG }, { tag: '001' }, { tag: '005' }]),
+    [MARC_TYPES.HOLDINGS]: new Set([{ tag: LEADER_TAG }, { tag: '001' }, { tag: '005' }, { tag: '999', indicators: ['f', 'f'] }]),
+    [MARC_TYPES.AUTHORITY]: new Set([{ tag: LEADER_TAG }, { tag: '001' }, { tag: '005' }, { tag: '999', indicators: ['f', 'f'] }]),
   },
   [QUICK_MARC_ACTIONS.EDIT]: {
     [MARC_TYPES.BIB]: new Set([{ tag: LEADER_TAG }, { tag: '001' }, { tag: '005' }]),
