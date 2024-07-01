@@ -16,7 +16,7 @@ import {
 
 import {
   LEADER_TAG,
-  FIELD_TAGS_TO_REMOVE,
+  FIELDS_TO_CLEAR_FOR_DERIVE,
   FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS,
   QUICK_MARC_ACTIONS,
   CREATE_HOLDINGS_RECORD_DEFAULT_FIELD_TAGS,
@@ -392,14 +392,6 @@ export const fieldMatchesDescription = (field, descriptionArray) => {
   return match;
 };
 
-const getEmptyContent = (field) => {
-  if (field.tag === '035' || field.tag === '019') {
-    return '$a';
-  }
-
-  return '';
-};
-
 export const removeDuplicateSystemGeneratedFields = (marcRecord) => {
   return {
     ...marcRecord,
@@ -413,10 +405,18 @@ export const removeDuplicateSystemGeneratedFields = (marcRecord) => {
   };
 };
 
-const removeMarcRecordFieldContentForDerive = marcRecord => {
+const getEmptyContent = (field) => {
+  if (['010', '019', '035'].includes(field.tag)) {
+    return '$a';
+  }
+
+  return '';
+};
+
+const removeMarcRecordFieldContentForDerive = (marcRecord, marcType) => {
   return {
     ...marcRecord,
-    records: marcRecord.records.map((field) => (fieldMatchesDescription(field, FIELD_TAGS_TO_REMOVE)
+    records: marcRecord.records.map((field) => (fieldMatchesDescription(field, FIELDS_TO_CLEAR_FOR_DERIVE[marcType])
       ? {
         ...field,
         content: getEmptyContent(field),
@@ -442,7 +442,7 @@ export const formatMarcRecordByQuickMarcAction = (marcRecord, action, marcType) 
   if (action === QUICK_MARC_ACTIONS.DERIVE) {
     return {
       ...flow(
-        removeMarcRecordFieldContentForDerive,
+        (formValues) => removeMarcRecordFieldContentForDerive(formValues, marcType),
         moveIdentifierFieldsAfterLeader,
       )(marcRecord),
       updateInfo: {

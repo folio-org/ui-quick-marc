@@ -23,39 +23,65 @@ export const QUICK_MARC_ACTIONS = {
   DERIVE: 'derive',
 };
 
-export const FIELD_TAGS_TO_REMOVE = [
-  { tag: '001' },
-  { tag: '005' },
-  { tag: '019' },
-  { tag: '035' },
-  {
-    tag: '999',
-    indicators: ['f', 'f'],
-  },
-];
+export const FIELDS_TO_CLEAR_FOR_DERIVE = {
+  [MARC_TYPES.BIB]: [
+    { tag: '001' },
+    { tag: '005' },
+    { tag: '010' },
+    { tag: '019' },
+    { tag: '035' },
+    {
+      tag: '999',
+      indicators: ['f', 'f'],
+    },
+  ],
+  [MARC_TYPES.HOLDINGS]: [],
+  [MARC_TYPES.AUTHORITY]: [],
+};
 
 export const FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS = {
   [MARC_TYPES.BIB]: [
     { tag: LEADER_TAG },
-    ...FIELD_TAGS_TO_REMOVE,
+    { tag: '001' },
     { tag: '003' },
+    { tag: '005' },
     { tag: '006' },
     { tag: '007' },
     { tag: '008' },
+    { tag: '019' },
+    { tag: '035' },
+    {
+      tag: '999',
+      indicators: ['f', 'f'],
+    },
   ],
   [MARC_TYPES.HOLDINGS]: [
     { tag: LEADER_TAG },
-    ...FIELD_TAGS_TO_REMOVE,
+    { tag: '001' },
     { tag: '003' },
     { tag: '004' },
+    { tag: '005' },
     { tag: '006' },
     { tag: '007' },
     { tag: '008' },
+    { tag: '019' },
+    { tag: '035' },
+    {
+      tag: '999',
+      indicators: ['f', 'f'],
+    },
   ],
   [MARC_TYPES.AUTHORITY]: [
     { tag: LEADER_TAG },
-    ...FIELD_TAGS_TO_REMOVE,
+    { tag: '001' },
+    { tag: '005' },
     { tag: '008' },
+    { tag: '019' },
+    { tag: '035' },
+    {
+      tag: '999',
+      indicators: ['f', 'f'],
+    },
   ],
 };
 
