@@ -802,7 +802,7 @@
     "record.fixedField.invalid.value": "无效值",
     "record.error.008.invalidValue": "无法保存记录。字段 008 在“ {name} ”子字段中包含无效值。",
     "record.fixedField.Status": "状态",
-    "record.fixedField.ELvl": "ELvl",
+    "record.fixedField.ELvl": "ELvl 编目等级",
     "record.fixedField.MultiLvl": "多级",
     "record.fixedField.Punct": "标点",
     "record.fixedField.Item": "单件",
