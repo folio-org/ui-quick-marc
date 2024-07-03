@@ -485,6 +485,7 @@ const QuickMarcEditorRows = ({
                       name={`${name}.content`}
                       marcType={marcType}
                       leaderField={recordRow}
+                      action={action}
                     />
                   )}
                   {

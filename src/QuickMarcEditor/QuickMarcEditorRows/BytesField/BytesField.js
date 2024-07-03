@@ -187,7 +187,10 @@ const renderSubField = (name, config, intl) => {
 
     return (
       <div className={styles.bytesFieldSubFieldSelect}>
-        <Label htmlFor={`${fieldName}`}>
+        <Label
+          htmlFor={fieldName}
+          required={config.required}
+        >
           {label}
         </Label>
         <FormattedMessage id={`ui-quick-marc.record.fixedField.${config.name}`}>
