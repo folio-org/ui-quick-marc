@@ -62,6 +62,7 @@ export const leaderConfig = {
     },
     {
       ...typeOfRecord,
+      required: true,
       defaultValue: '\\',
       position: 6,
       allowedValues: [
@@ -115,6 +116,7 @@ export const leaderConfig = {
       type: SUBFIELD_TYPES.SELECT,
       defaultValue: '\\',
       position: 7,
+      required: true,
       allowedValues: [
         {
           code: 'a',
