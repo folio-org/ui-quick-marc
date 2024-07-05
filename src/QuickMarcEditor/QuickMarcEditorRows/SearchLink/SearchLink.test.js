@@ -74,4 +74,10 @@ describe('Given SearchLink', () => {
       expect(getByRole('link').href).toContain('/marc-authorities?qindex=advancedSearch&query=lccn+exactPhrase+some+value');
     });
   });
+
+  it('should have a tooltip', () => {
+    const { getByText } = renderComponent();
+
+    expect(getByText('ui-quick-marc.record.searchLink')).toBeInTheDocument();
+  });
 });

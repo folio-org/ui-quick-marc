@@ -902,5 +902,6 @@
   "records.autoLink.notLinkedFields": "Field <b>{fieldTags}</b>{count, plural, one {} =2 { and <b>{lastFieldTag}</b>} other {, and <b>{lastFieldTag}</b>}} must be set manually by selecting the link icon.",
   "records.autoLink.notLinkedFields.multiple": "Field <b>{fieldTags}</b>{count, plural, one {} =2 { and <b>{lastFieldTag}</b>} other {, and <b>{lastFieldTag}</b>}} must be set manually by selecting the link icon. There are multiple authority records that can be matched to this bibliographic field.",
   "autoLinkingButton": "Link headings",
-  "records.error.autoLinking": "Unable to link record(s) due to system error. Please try again or contact support."
+  "records.error.autoLinking": "Unable to link record(s) due to system error. Please try again or contact support.",
+  "record.searchLink": "Search for records by 010 value(s)"
 }

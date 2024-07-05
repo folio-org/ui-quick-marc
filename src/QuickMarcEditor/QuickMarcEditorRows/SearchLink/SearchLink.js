@@ -1,7 +1,11 @@
+import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import flatten from 'lodash/flatten';
 
-import { IconButton } from '@folio/stripes/components';
+import {
+  IconButton,
+  Tooltip,
+} from '@folio/stripes/components';
 import {
   ADVANCED_SEARCH_INDEX,
   advancedSearchQueryBuilder,
@@ -18,6 +22,8 @@ const propTypes = {
 };
 
 const SearchLink = ({ field, marcType }) => {
+  const intl = useIntl();
+
   const content = getContentSubfieldValue(field.content);
 
   const numberOfAdvancedSearchRows = 6;
@@ -43,11 +49,20 @@ const SearchLink = ({ field, marcType }) => {
   const link = `/${app}?${searchParams.toString()}`;
 
   return (
-    <IconButton
-      icon="search"
-      to={link}
-      target="_blank"
-    />
+    <Tooltip
+      id="searchLink"
+      text={intl.formatMessage({ id: 'ui-quick-marc.record.searchLink' })}
+    >
+      {({ ref, ariaIds }) => (
+        <IconButton
+          ref={ref}
+          icon="search"
+          to={link}
+          target="_blank"
+          aria-labelledby={ariaIds.text}
+        />
+      )}
+    </Tooltip>
   );
 };
 
