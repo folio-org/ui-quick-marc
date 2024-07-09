@@ -878,5 +878,6 @@
     "record.fixedField.tip.MultiLvl": "Multipart resource record level",
     "record.fixedField.tip.Punct": "Punctuation policy",
     "record.fixedField.tip.Item": "Informacje o egzemplarzu w rekordzie",
-    "leader.Two-dimensional nonprojectable graphic": "Two-dimensional nonprojectable  graphic"
+    "leader.Two-dimensional nonprojectable graphic": "Two-dimensional nonprojectable  graphic",
+    "record.searchLink": "Search for records by 010 value(s)"
 }
