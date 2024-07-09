@@ -878,5 +878,6 @@
     "record.fixedField.tip.MultiLvl": "Úroveň záznamu o vícedílném zdroji",
     "record.fixedField.tip.Punct": "Pravidlo interpunkce",
     "record.fixedField.tip.Item": "Informace o jednotce v záznamu",
-    "leader.Two-dimensional nonprojectable graphic": "Dvourozměrná nepromítatelná  grafika"
+    "leader.Two-dimensional nonprojectable graphic": "Dvourozměrná nepromítatelná  grafika",
+    "record.searchLink": "Search for records by 010 value(s)"
 }
