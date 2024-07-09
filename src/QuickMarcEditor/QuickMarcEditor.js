@@ -4,16 +4,18 @@ import React, {
   useState,
   useCallback,
   useEffect,
+  useContext,
 } from 'react';
 import {
   useHistory,
   useLocation,
 } from 'react-router';
+import { FormSpy } from 'react-final-form';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import find from 'lodash/find';
 import noop from 'lodash/noop';
-import { FormSpy } from 'react-final-form';
+import isEmpty from 'lodash/isEmpty';
 
 import {
   IfPermission,
@@ -62,7 +64,8 @@ import {
   markLinkedRecords,
   getLeaderPositions,
 } from './utils';
-import { useAuthorityLinking } from '../hooks';
+import { MISSING_FIELD_ID, useAuthorityLinking } from '../hooks';
+import { QuickMarcContext } from '../contexts';
 
 import css from './QuickMarcEditor.css';
 
@@ -115,6 +118,8 @@ const QuickMarcEditor = ({
   const continueAfterSave = useRef(false);
   const formRef = useRef(null);
   const confirmationChecks = useRef({ ...REQUIRED_CONFIRMATIONS });
+  const { setValidationErrors } = useContext(QuickMarcContext);
+
   const isConsortiaEnv = stripes.hasInterface('consortia');
   const searchParameters = new URLSearchParams(location.search);
   const isShared = searchParameters.get('shared') === 'true';
@@ -166,14 +171,21 @@ const QuickMarcEditor = ({
   const confirmSubmit = useCallback((e, isKeepEditing = false) => {
     continueAfterSave.current = isKeepEditing;
 
-    const validationError = validate(getState().values);
+    const validationErrors = validate(getState().values);
 
-    if (validationError) {
+    const validationErrorsWithoutFieldId = validationErrors[MISSING_FIELD_ID] || [];
+
+    validationErrorsWithoutFieldId.forEach((error) => {
       showCallout({
-        message: validationError,
+        messageId: error.id,
+        values: error.values,
         type: 'error',
       });
+    });
 
+    setValidationErrors(validationErrors);
+
+    if (!isEmpty(validationErrors)) {
       return;
     }
 
@@ -215,6 +227,7 @@ const QuickMarcEditor = ({
     validate,
     showCallout,
     instance,
+    setValidationErrors,
   ]);
 
   const paneFooter = useMemo(() => {

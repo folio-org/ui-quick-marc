@@ -4,6 +4,7 @@ import Harness from '../../../test/jest/helpers/harness';
 import { useValidation } from './useValidation';
 import { QUICK_MARC_ACTIONS } from '../../QuickMarcEditor/constants';
 import { MARC_TYPES } from '../../common/constants';
+import { MISSING_FIELD_ID } from './constants';
 import fixedFieldSpecBib from '../../../test/mocks/fixedFieldSpecBib';
 import {
   authorityLeader,
@@ -66,11 +67,12 @@ describe('useValidation', () => {
                   'Record length': initialValues.leader['Record length'].slice(1),
                 },
                 tag: 'LDR',
+                id: 'leader-id',
               },
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.leader.length');
+          expect(result.current.validate(record.records)['leader-id']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.leader.length' }]));
         });
       });
 
@@ -87,6 +89,7 @@ describe('useValidation', () => {
                   'Record length': '10000',
                 },
                 tag: 'LDR',
+                id: 'leader-id',
               },
               {
                 tag: '008',
@@ -97,7 +100,7 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual(`ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}`);
+          expect(result.current.validate(record.records)['leader-id']).toEqual(expect.arrayContaining([{ id: `ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}` }]));
         });
       });
 
@@ -114,6 +117,7 @@ describe('useValidation', () => {
                   Status: '1',
                 },
                 tag: 'LDR',
+                id: 'leader-id',
               },
               {
                 tag: '008',
@@ -124,7 +128,7 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.leader.invalidPositionValue');
+          expect(result.current.validate(record.records)['leader-id']).toEqual(expect.arrayContaining([expect.objectContaining({ id: 'ui-quick-marc.record.error.leader.invalidPositionValue' })]));
         });
       });
 
@@ -142,7 +146,7 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.008.empty');
+          expect(result.current.validate(record.records)[MISSING_FIELD_ID]).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.008.empty' }]));
         });
       });
 
@@ -162,17 +166,20 @@ describe('useValidation', () => {
                 content: {
                   Desc: 'i',
                 },
+                id: '008-id-1',
               },
               {
                 tag: '008',
                 content: {
                   Desc: 'i',
                 },
+                id: '008-id-2',
               },
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.008.multiple');
+          expect(result.current.validate(record.records)['008-id-1']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.008.multiple' }]));
+          expect(result.current.validate(record.records)['008-id-2']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.008.multiple' }]));
         });
       });
 
@@ -184,11 +191,15 @@ describe('useValidation', () => {
             ...initialValues,
             records: [
               ...initialValues.records,
-              { tag: '00' },
+              {
+                tag: '00',
+                content: 'some value',
+                id: 'test-id',
+              },
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.tag.length');
+          expect(result.current.validate(record.records)['test-id']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.tag.length' }]));
         });
       });
 
@@ -200,11 +211,14 @@ describe('useValidation', () => {
             ...initialValues,
             records: [
               ...initialValues.records,
-              { tag: '00a' },
+              {
+                tag: '00a',
+                id: 'test-id',
+              },
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.tag.nonDigits');
+          expect(result.current.validate(record.records)['test-id']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.tag.nonDigits' }]));
         });
       });
 
@@ -229,11 +243,12 @@ describe('useValidation', () => {
                 tag: '245',
                 content: '',
                 indicators: ['\\', '\\'],
+                id: 'test-id',
               },
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.subfield');
+          expect(result.current.validate(record.records)['test-id']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.subfield' }]));
         });
       });
 
@@ -257,15 +272,18 @@ describe('useValidation', () => {
               {
                 tag: '001',
                 content: '',
+                id: 'test-id-1',
               },
               {
                 tag: '001',
                 content: '',
+                id: 'test-id-2',
               },
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.controlField.multiple');
+          expect(result.current.validate(record.records)['test-id-1']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.controlField.multiple' }]));
+          expect(result.current.validate(record.records)['test-id-2']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.controlField.multiple' }]));
         });
       });
     };
@@ -441,7 +459,7 @@ describe('useValidation', () => {
             ...initialValues,
           };
 
-          expect(result.current.validate(record.records)).not.toBeDefined();
+          expect(result.current.validate(record.records)).toEqual({});
         });
       });
 
@@ -465,7 +483,7 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.title.empty');
+          expect(result.current.validate(record.records)[MISSING_FIELD_ID]).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.title.empty' }]));
         });
       });
 
@@ -488,14 +506,17 @@ describe('useValidation', () => {
               },
               {
                 tag: '245',
+                id: 'test-id-1',
               },
               {
                 tag: '245',
+                id: 'test-id-2',
               },
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.title.multiple');
+          expect(result.current.validate(record.records)['test-id-1']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.title.multiple' }]));
+          expect(result.current.validate(record.records)['test-id-2']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.title.multiple' }]));
         });
       });
 
@@ -521,14 +542,17 @@ describe('useValidation', () => {
               },
               {
                 tag: '010',
+                id: 'test-id-1',
               },
               {
                 tag: '010',
+                id: 'test-id-2',
               },
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.010.multiple');
+          expect(result.current.validate(record.records)['test-id-1']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.010.multiple' }]));
+          expect(result.current.validate(record.records)['test-id-2']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.010.multiple' }]));
         });
       });
 
@@ -543,11 +567,12 @@ describe('useValidation', () => {
               {
                 tag: '100',
                 content: '$9 this is not valid',
+                id: 'test-id',
               },
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.$9');
+          expect(result.current.validate(record.records)['test-id']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.$9' }]));
         });
       });
 
@@ -567,11 +592,12 @@ describe('useValidation', () => {
                 linkDetails: {
                   linkingRuleId: 1,
                 },
+                id: 'test-id',
               },
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.$9');
+          expect(result.current.validate(record.records)['test-id']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.$9' }]));
         });
       });
 
@@ -590,7 +616,7 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records)).not.toBeDefined();
+          expect(result.current.validate(record.records)).toEqual({});
         });
       });
 
@@ -610,17 +636,16 @@ describe('useValidation', () => {
                 linkDetails: {
                   linkingRuleId: 1,
                 },
+                id: 'test-id',
               },
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.fieldIsControlled');
+          expect(result.current.validate(record.records)['test-id']).toEqual(expect.arrayContaining([expect.objectContaining({ id: 'ui-quick-marc.record.error.fieldIsControlled' })]));
         });
       });
 
       describe('when 008 content has invalid value', () => {
-        const { fixedFieldSpec } = marcContext;
-
         it('should return error message', () => {
           const { result } = renderHook(() => useValidation(marcContext));
 
@@ -636,12 +661,12 @@ describe('useValidation', () => {
                 content: {
                   DtSt: '^',
                 },
+                id: 'test-id',
               },
             ],
-            ...fixedFieldSpec,
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.008.invalidValue');
+          expect(result.current.validate(record.records)['test-id']).toEqual(expect.arrayContaining([expect.objectContaining({ id: 'ui-quick-marc.record.error.008.invalidValue' })]));
         });
       });
     };
@@ -725,7 +750,7 @@ describe('useValidation', () => {
             ...initialValues,
           };
 
-          expect(result.current.validate(record.records)).not.toBeDefined();
+          expect(result.current.validate(record.records)).toEqual({});
         });
       });
 
@@ -737,12 +762,19 @@ describe('useValidation', () => {
             ...initialValues,
             records: [
               ...initialValues.records,
-              { tag: '004' },
-              { tag: '004' },
+              {
+                tag: '004',
+                id: 'test-id-1',
+              },
+              {
+                tag: '004',
+                id: 'test-id-2',
+              },
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.instanceHrid.multiple');
+          expect(result.current.validate(record.records)['test-id-1']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.instanceHrid.multiple' }]));
+          expect(result.current.validate(record.records)['test-id-2']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.instanceHrid.multiple' }]));
         });
       });
 
@@ -764,7 +796,7 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.location.empty');
+          expect(result.current.validate(record.records)[MISSING_FIELD_ID]).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.location.empty' }]));
         });
       });
 
@@ -783,12 +815,19 @@ describe('useValidation', () => {
                 content: {},
                 tag: '008',
               },
-              { tag: '852' },
-              { tag: '852' },
+              {
+                tag: '852',
+                id: 'test-id-1',
+              },
+              {
+                tag: '852',
+                id: 'test-id-2',
+              },
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.location.multiple');
+          expect(result.current.validate(record.records)['test-id-1']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.location.multiple' }]));
+          expect(result.current.validate(record.records)['test-id-2']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.location.multiple' }]));
         });
       });
 
@@ -810,17 +849,18 @@ describe('useValidation', () => {
               {
                 tag: '852',
                 content: '$b value $b this is not valid',
+                id: 'test-id',
               },
             ],
           };
 
-          expect(result.current.validate(record.records).props).toMatchObject({
+          expect(result.current.validate(record.records)['test-id']).toEqual(expect.arrayContaining([{
             id: 'ui-quick-marc.record.error.field.onlyOneSubfield',
             values: {
               fieldTag: '852',
               subField: '$b',
             },
-          });
+          }]));
         });
       });
 
@@ -842,11 +882,12 @@ describe('useValidation', () => {
               {
                 tag: '852',
                 content: '$b NOT_VALID_CODE',
+                id: 'test-id',
               },
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.location.invalid');
+          expect(result.current.validate(record.records)['test-id']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.location.invalid' }]));
         });
       });
 
@@ -872,7 +913,7 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records)).not.toBeDefined();
+          expect(result.current.validate(record.records)).toEqual({});
         });
       });
     };
@@ -954,7 +995,7 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.heading.empty');
+          expect(result.current.validate(record.records)[MISSING_FIELD_ID]).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.heading.empty' }]));
         });
       });
 
@@ -983,7 +1024,7 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.heading.empty');
+          expect(result.current.validate(record.records)[MISSING_FIELD_ID]).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.heading.empty' }]));
         });
       });
 
@@ -1020,7 +1061,8 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.heading.multiple');
+          expect(result.current.validate(record.records)['3']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.heading.multiple' }]));
+          expect(result.current.validate(record.records)['4']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.heading.multiple' }]));
         });
       });
 
@@ -1058,7 +1100,8 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.heading.multiple');
+          expect(result.current.validate(record.records)['3']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.heading.multiple' }]));
+          expect(result.current.validate(record.records)['4']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.heading.multiple' }]));
         });
       });
 
@@ -1078,7 +1121,7 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.010.$aOnlyOne');
+          expect(result.current.validate(record.records)['4']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.010.$aOnlyOne' }]));
         });
       });
 
@@ -1102,7 +1145,8 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.010.multiple');
+          expect(result.current.validate(record.records)['4']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.010.multiple' }]));
+          expect(result.current.validate(record.records)['5']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.010.multiple' }]));
         });
       });
     };
@@ -1149,7 +1193,7 @@ describe('useValidation', () => {
             ...initialValues,
           };
 
-          expect(result.current.validate(record.records)).not.toBeDefined();
+          expect(result.current.validate(record.records)).toEqual({});
         });
       });
 
@@ -1181,7 +1225,7 @@ describe('useValidation', () => {
               ],
             };
 
-            expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.1xx.change');
+            expect(result.current.validate(record.records)['3']).toEqual(expect.arrayContaining([expect.objectContaining({ id: 'ui-quick-marc.record.error.1xx.change' })]));
           });
         });
 
@@ -1210,7 +1254,7 @@ describe('useValidation', () => {
               ],
             };
 
-            expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.1xx.add$t');
+            expect(result.current.validate(record.records)['3']).toEqual(expect.arrayContaining([expect.objectContaining({ id: 'ui-quick-marc.record.error.1xx.add$t' })]));
           });
         });
 
@@ -1263,7 +1307,7 @@ describe('useValidation', () => {
               ],
             };
 
-            expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.1xx.remove$t');
+            expect(result.current.validate(record.records)['3']).toEqual(expect.arrayContaining([expect.objectContaining({ id: 'ui-quick-marc.record.error.1xx.remove$t' })]));
           });
         });
 
@@ -1324,7 +1368,7 @@ describe('useValidation', () => {
               ],
             };
 
-            expect(result.current.validate(record.records).props.id).toEqual('ui-quick-marc.record.error.010.$aRemoved');
+            expect(result.current.validate(record.records)['2']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.010.$aRemoved' }]));
           });
         });
 
@@ -1382,7 +1426,7 @@ describe('useValidation', () => {
                 ],
               };
 
-              expect(result.current.validate(record.records).props.id).toBe('ui-quick-marc.record.error.010.removed');
+              expect(result.current.validate(record.records)[MISSING_FIELD_ID]).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.010.removed' }]));
             });
           });
         });
@@ -1441,7 +1485,7 @@ describe('useValidation', () => {
                 ],
               };
 
-              expect(result.current.validate(record.records)).toBeUndefined();
+              expect(result.current.validate(record.records)).toEqual({});
             });
           });
         });
@@ -1506,7 +1550,7 @@ describe('useValidation', () => {
               ],
             };
 
-            expect(result.current.validate(record.records)).not.toBeDefined();
+            expect(result.current.validate(record.records)).toEqual({});
           });
         });
       });
@@ -1544,7 +1588,7 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records)).not.toBeDefined();
+          expect(result.current.validate(record.records)).toEqual({});
         });
       });
 
@@ -1557,10 +1601,15 @@ describe('useValidation', () => {
           });
 
           const record = {
-            ...initialValues,
+            leader: initialValues.leader,
+            records: [...initialValues.records, {
+              id: 4,
+              tag: '001',
+              content: '',
+            }],
           };
 
-          expect(result.current.validate(record.records).props.id).toBe('ui-quick-marc.record.error.controlField.content.empty');
+          expect(result.current.validate(record.records)['4']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.controlField.content.empty' }]));
         });
       });
 
@@ -1586,7 +1635,7 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records)).toBeUndefined();
+          expect(result.current.validate(record.records)).toEqual({});
         });
       });
 
@@ -1612,7 +1661,7 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toBe('ui-quick-marc.record.error.010.absent');
+          expect(result.current.validate(record.records)[MISSING_FIELD_ID]).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.010.absent' }]));
         });
       });
 
@@ -1646,7 +1695,7 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records)).toBeUndefined();
+          expect(result.current.validate(record.records)).toEqual({});
         });
       });
 
@@ -1680,7 +1729,7 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toBe('ui-quick-marc.record.error.010.prefix.absent');
+          expect(result.current.validate(record.records)['5']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.010.prefix.absent' }]));
         });
       });
 
@@ -1714,7 +1763,7 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records)).toBeUndefined();
+          expect(result.current.validate(record.records)).toEqual({});
         });
       });
 
@@ -1748,7 +1797,7 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records)).toBeUndefined();
+          expect(result.current.validate(record.records)).toEqual({});
         });
       });
 
@@ -1782,7 +1831,7 @@ describe('useValidation', () => {
             ],
           };
 
-          expect(result.current.validate(record.records).props.id).toBe('ui-quick-marc.record.error.010.prefix.invalid');
+          expect(result.current.validate(record.records)['5']).toEqual(expect.arrayContaining([{ id: 'ui-quick-marc.record.error.010.prefix.invalid' }]));
         });
       });
     });
