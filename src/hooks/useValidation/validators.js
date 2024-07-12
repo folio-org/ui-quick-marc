@@ -310,11 +310,9 @@ export const validateLocation = ({ marcRecords, locations }, rule) => {
   const failingFields = fields.filter(field => {
     const [, locationValue] = getLocationValue(field.content)?.replace(/\s+/, ' ').split(' ') || '';
 
-    if (!locations.find(location => location.code === locationValue)) {
-      return true;
-    }
+    const locationExists = Boolean(locations.find(location => location.code === locationValue));
 
-    return false;
+    return !locationExists;
   });
 
   if (failingFields.length) {

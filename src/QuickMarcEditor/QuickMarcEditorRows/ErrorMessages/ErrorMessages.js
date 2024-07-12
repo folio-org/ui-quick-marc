@@ -19,6 +19,7 @@ const ErrorMessages = ({ errors = [] }) => {
     <>
       {errors.map(error => (
         <div
+          key={error.id}
           data-testid="error-messages-container"
           className={styles.validationErrorMessage}
         >
