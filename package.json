@@ -7,8 +7,10 @@
   "license": "Apache-2.0",
   "stripes": {
     "actsAs": [
-      "plugin"
+      "plugin",
+      "settings"
     ],
+    "route": "/quick-marc",
     "pluginType": "quick-marc",
     "displayName": "ui-quick-marc.meta.title",
     "okapiInterfaces": {
@@ -141,6 +143,14 @@
           "marc-records-editor.links.suggestion.post"
         ],
         "visible": true
+      },
+      {
+        "permissionName": "settings.quick-marc.enabled",
+        "displayName": "Settings (MARC): Module is enabled.",
+        "subPermissions": [
+          "settings.enabled"
+        ],
+        "visible": false
       }
     ]
   },
