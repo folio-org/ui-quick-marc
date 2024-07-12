@@ -1,10 +1,17 @@
-import {
-  render,
-  fireEvent,
-} from '@folio/jest-config-stripes/testing-library/react';
+import { render } from '@folio/jest-config-stripes/testing-library/react';
 
 import { ErrorMessages } from './ErrorMessages';
 import Harness from '../../../../test/jest/helpers/harness';
+
+jest.mock('@folio/stripes/components', () => ({
+  ...jest.requireActual('@folio/stripes/components'),
+  Icon: ({ children }) => children,
+}));
+
+jest.mock('react-intl', () => ({
+  ...jest.requireActual('react-intl'),
+  FormattedMessage: ({ id }) => <span>{id}</span>,
+}));
 
 const getErrorMessages = (props = {}) => (
   <Harness>

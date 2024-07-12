@@ -6,16 +6,6 @@ import { Icon } from '@folio/stripes/components';
 
 import styles from './ErrorMessages.css';
 
-jest.mock('@folio/stripes/components', () => ({
-  ...jest.requireActual('@folio/stripes/components'),
-  Icon: ({ children }) => children,
-}));
-
-jest.mock('react-intl', () => ({
-  ...jest.requireActual('react-intl'),
-  FormattedMessage: ({ id }) => <span>{id}</span>,
-}));
-
 const propTypes = {
   errors: PropTypes.arrayOf(PropTypes.element),
 };
