@@ -878,5 +878,6 @@
     "record.fixedField.tip.MultiLvl": "多部分资源记录级别",
     "record.fixedField.tip.Punct": "标点符号政策",
     "record.fixedField.tip.Item": "记录中的单件信息",
-    "leader.Two-dimensional nonprojectable graphic": "二维非投影图片"
+    "leader.Two-dimensional nonprojectable graphic": "二维非投影图片",
+    "record.searchLink": "Search for records by 010 value(s)"
 }
