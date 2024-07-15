@@ -8,7 +8,7 @@ import {
 } from '@folio/stripes/components';
 import { Settings } from '@folio/stripes/smart-components';
 
-import { MarcBibTemplates } from './MarcBibTemplates';
+import { MarcBibTemplates } from '../MarcBibTemplates';
 
 const QuickMarcSettings = () => {
   const match = useRouteMatch();
