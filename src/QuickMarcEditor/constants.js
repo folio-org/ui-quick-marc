@@ -43,11 +43,14 @@ export const FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS = {
   [MARC_TYPES.BIB]: [
     { tag: LEADER_TAG },
     { tag: '001' },
+    { tag: '002' },
     { tag: '003' },
+    { tag: '004' },
     { tag: '005' },
     { tag: '006' },
     { tag: '007' },
     { tag: '008' },
+    { tag: '009' },
     { tag: '019' },
     { tag: '035' },
     {
@@ -58,12 +61,14 @@ export const FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS = {
   [MARC_TYPES.HOLDINGS]: [
     { tag: LEADER_TAG },
     { tag: '001' },
+    { tag: '002' },
     { tag: '003' },
     { tag: '004' },
     { tag: '005' },
     { tag: '006' },
     { tag: '007' },
     { tag: '008' },
+    { tag: '009' },
     { tag: '019' },
     { tag: '035' },
     {
@@ -74,8 +79,11 @@ export const FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS = {
   [MARC_TYPES.AUTHORITY]: [
     { tag: LEADER_TAG },
     { tag: '001' },
+    { tag: '002' },
+    { tag: '004' },
     { tag: '005' },
     { tag: '008' },
+    { tag: '009' },
     { tag: '019' },
     { tag: '035' },
     {

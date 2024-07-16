@@ -1150,6 +1150,106 @@ describe('QuickMarcEditor utils', () => {
 
       expect(utils.autopopulateSubfieldSection(record)).toEqual(expectedRecord);
     });
+
+    it('should allow saving local control fields of bib record without subfield', () => {
+      const record = {
+        records: [{
+          tag: '002',
+          content: 'some content',
+          id: 'id002',
+        }, {
+          tag: '004',
+          content: 'some content',
+          id: 'id004',
+        }, {
+          tag: '009',
+          content: 'some content',
+          id: 'id009',
+        }],
+      };
+
+      const expectedRecord = {
+        records: [{
+          tag: '002',
+          content: 'some content',
+          id: 'id002',
+        }, {
+          tag: '004',
+          content: 'some content',
+          id: 'id004',
+        }, {
+          tag: '009',
+          content: 'some content',
+          id: 'id009',
+        }],
+      };
+
+      expect(utils.autopopulateSubfieldSection(record, MARC_TYPES.BIB)).toEqual(expectedRecord);
+    });
+
+    it('should allow saving local control fields of authority record without subfield', () => {
+      const record = {
+        records: [{
+          tag: '002',
+          content: 'some content',
+          id: 'id002',
+        }, {
+          tag: '004',
+          content: 'some content',
+          id: 'id004',
+        }, {
+          tag: '009',
+          content: 'some content',
+          id: 'id009',
+        }],
+      };
+
+      const expectedRecord = {
+        records: [{
+          tag: '002',
+          content: 'some content',
+          id: 'id002',
+        }, {
+          tag: '004',
+          content: 'some content',
+          id: 'id004',
+        }, {
+          tag: '009',
+          content: 'some content',
+          id: 'id009',
+        }],
+      };
+
+      expect(utils.autopopulateSubfieldSection(record, MARC_TYPES.AUTHORITY)).toEqual(expectedRecord);
+    });
+
+    it('should allow saving local control fields of holdings record without subfield', () => {
+      const record = {
+        records: [{
+          tag: '002',
+          content: 'some content',
+          id: 'id002',
+        }, {
+          tag: '009',
+          content: 'some content',
+          id: 'id009',
+        }],
+      };
+
+      const expectedRecord = {
+        records: [{
+          tag: '002',
+          content: 'some content',
+          id: 'id002',
+        }, {
+          tag: '009',
+          content: 'some content',
+          id: 'id009',
+        }],
+      };
+
+      expect(utils.autopopulateSubfieldSection(record, MARC_TYPES.HOLDINGS)).toEqual(expectedRecord);
+    });
   });
 
   describe('cleanBytesFields', () => {
