@@ -11,6 +11,7 @@
 * [UIQM-661](https://issues.folio.org/browse/UIQM-661) Derive a new MARC bib record > Do not copy over 010 field values.
 * [UIQM-666](https://issues.folio.org/browse/UIQM-666) Make leader positions `Type` and `BLvl` required when creating a bib record.
 * [UIQM-672](https://issues.folio.org/browse/UIQM-672) Add a tooltip for the search link.
+* [UIQM-670](https://issues.folio.org/browse/UIQM-670) Allow saving local control fields without subfield.
 * [UIQM-669](https://issues.folio.org/browse/UIQM-669) Display validation error messages inline.
 
 ## [8.0.1] (https://github.com/folio-org/ui-quick-marc/tree/v8.0.1) (2024-04-18)
