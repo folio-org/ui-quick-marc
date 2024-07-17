@@ -20,6 +20,6 @@ export const useFocusFirstFieldWithError = () => {
       return;
     }
 
-    document.querySelector(`[data-fieldId="${firstFieldWithErrors.id}"] input`)?.focus();
+    document.querySelector(`[data-fieldid="${firstFieldWithErrors.id}"] input`)?.focus();
   }, [firstFieldWithErrors]);
 };

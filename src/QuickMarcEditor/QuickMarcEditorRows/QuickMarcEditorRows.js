@@ -324,7 +324,7 @@ const QuickMarcEditorRows = ({
                 className={styles.quickMarcEditorRow}
                 data-testid="quick-marc-editorid"
                 data-row={`record-row[${idx}]`}
-                data-fieldId={recordRow.id}
+                data-fieldid={recordRow.id}
               >
                 <div className={styles.quickMarcEditorMovingRow}>
                   {

@@ -7,7 +7,7 @@ import { Icon } from '@folio/stripes/components';
 import styles from './ErrorMessages.css';
 
 const propTypes = {
-  errors: PropTypes.arrayOf(PropTypes.element),
+  errors: PropTypes.arrayOf(PropTypes.object),
 };
 
 const ErrorMessages = ({ errors = [] }) => {
