@@ -20,6 +20,7 @@ import '@folio/stripes-acq-components/test/jest/__mock__';
 import QuickMarcEditor from './QuickMarcEditor';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
+import { MISSING_FIELD_ID } from '../hooks';
 
 import Harness from '../../test/jest/helpers/harness';
 import buildStripes from '../../test/jest/__mock__/stripesCore.mock';
@@ -83,7 +84,7 @@ const onCloseMock = jest.fn();
 const onSaveMock = jest.fn();
 const onSubmitMock = jest.fn(() => Promise.resolve({ version: 1 }));
 const mockShowCallout = jest.fn();
-const mockValidate = jest.fn();
+const mockValidate = jest.fn().mockReturnValue({});
 
 useShowCallout.mockClear().mockReturnValue(mockShowCallout);
 
@@ -165,7 +166,7 @@ const renderQuickMarcEditor = (props) => (render(
 describe('Given QuickMarcEditor', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockValidate.mockClear().mockReturnValue(undefined);
+    mockValidate.mockClear().mockReturnValue({});
     useStripes.mockReturnValue(buildStripes());
     useLocation.mockReturnValue({
       search: 'authRefType=Authorized',
@@ -724,7 +725,7 @@ describe('Given QuickMarcEditor', () => {
 
   describe('when saving form with validation errors and deleted fields', () => {
     beforeEach(() => {
-      mockValidate.mockClear().mockReturnValue('Validation error');
+      mockValidate.mockClear().mockReturnValue({ [MISSING_FIELD_ID]: [{ id: 'some error', values: {} }] });
     });
 
     it('should show errors and not show confirmation modal', () => {
@@ -744,7 +745,8 @@ describe('Given QuickMarcEditor', () => {
 
       expect(queryByText('Confirmation modal')).toBeNull();
       expect(mockShowCallout).toHaveBeenCalledWith({
-        message: 'Validation error',
+        messageId: 'some error',
+        values: {},
         type: 'error',
       });
     });

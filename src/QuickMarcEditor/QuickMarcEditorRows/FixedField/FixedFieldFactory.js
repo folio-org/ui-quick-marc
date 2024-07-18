@@ -1,9 +1,7 @@
 import React from 'react';
 
 import { LEADER_TAG } from '../../constants';
-import {
-  SUBFIELD_TYPES,
-} from '../BytesField';
+import { SUBFIELD_TYPES } from '../BytesField';
 
 import FixedField from './FixedField';
 
@@ -130,6 +128,6 @@ export const FixedFieldFactory = {
     const configFixedField = this.getConfigFixedField(fixedFieldSpec, type, subtype, content);
     const config = this.getConfigWithOptions(intl, configFixedField);
 
-    return <FixedField name={name} config={config} />;
+    return (props) => <FixedField name={name} config={config} {...props} />;
   },
 };

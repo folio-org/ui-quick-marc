@@ -17,6 +17,7 @@ import {
 
 import { SourceFileLookup } from '../../SourceFileLookup';
 import { ContentField } from '../ContentField';
+import { ErrorMessages } from '../ErrorMessages';
 import {
   MARC_TYPES,
   SOURCES,
@@ -32,6 +33,7 @@ const propTypes = {
   marcType: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   recordRows: PropTypes.arrayOf(PropTypes.object).isRequired,
+  fieldId: PropTypes.string.isRequired,
 };
 
 const ControlNumberField = ({
@@ -40,15 +42,18 @@ const ControlNumberField = ({
   marcType,
   action,
   recordRows,
+  fieldId,
 }) => {
   const intl = useIntl();
   const { input } = useField(name);
   const {
     selectedSourceFile,
-    onSetSelectedSourceFile,
+    setSelectedSourceFile,
+    validationErrors,
   } = useContext(QuickMarcContext);
   const { getAuthorityFileNextHrid, isLoading: isLoadingHrid } = useAuthorityFileNextHrid();
 
+  const errors = validationErrors[fieldId];
   const handleChangeContent = input.onChange;
 
   const contentOf010Row = recordRows.find(row => row.tag === '010')?.content;
@@ -70,9 +75,9 @@ const ControlNumberField = ({
       content = valueOf010$a;
     }
 
-    onSetSelectedSourceFile(sourceFile);
+    setSelectedSourceFile(sourceFile);
     handleChangeContent(content);
-  }, [valueOf010$a, handleChangeContent, getAuthorityFileNextHrid, onSetSelectedSourceFile]);
+  }, [valueOf010$a, handleChangeContent, getAuthorityFileNextHrid, setSelectedSourceFile]);
 
   const canSelectSourceFile = marcType === MARC_TYPES.AUTHORITY && action === QUICK_MARC_ACTIONS.CREATE;
 
@@ -92,6 +97,7 @@ const ControlNumberField = ({
         data-testid={id}
         id={id}
         parse={v => v}
+        error={errors && <ErrorMessages errors={errors} />}
       />
       {canSelectSourceFile && (
         <Layout className="display-flex">

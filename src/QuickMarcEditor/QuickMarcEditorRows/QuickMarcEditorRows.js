@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useContext,
   useRef,
 } from 'react';
 import PropTypes from 'prop-types';
@@ -37,6 +38,7 @@ import { LinkButton } from './LinkButton';
 import { SplitField } from './SplitField';
 import { ControlNumberField } from './ControlNumberField';
 import { SearchLink } from './SearchLink';
+import { ErrorMessages } from './ErrorMessages';
 import {
   hasIndicatorException,
   hasAddException,
@@ -56,7 +58,11 @@ import {
   isControlNumberRow,
   isLeaderRow,
 } from '../utils';
-import { useAuthorityLinking } from '../../hooks';
+import {
+  useAuthorityLinking,
+  useFocusFirstFieldWithError,
+} from '../../hooks';
+import { QuickMarcContext } from '../../contexts';
 import {
   QUICK_MARC_ACTIONS,
   FIXED_FIELD_TAG,
@@ -99,6 +105,9 @@ const QuickMarcEditorRows = ({
   const newRowRef = useRef(null);
   const rowContentWidth = useRef(null); // for max-width of resizable textareas
   const childCalloutRef = useRef(null);
+  const { validationErrors } = useContext(QuickMarcContext);
+
+  useFocusFirstFieldWithError();
 
   const {
     linkAuthority,
@@ -281,6 +290,7 @@ const QuickMarcEditorRows = ({
 
             const isLeader = isLeaderRow(recordRow);
             const isDisabled = isReadOnly(recordRow, action, marcType);
+            const fieldValidationErrors = validationErrors[recordRow.id];
             const withIndicators = !hasIndicatorException(recordRow);
             const withAddRowAction = hasAddException(recordRow, marcType, action);
             const withDeleteRowAction = hasDeleteException(recordRow, marcType, instance, initialValues, linksCount);
@@ -314,6 +324,7 @@ const QuickMarcEditorRows = ({
                 className={styles.quickMarcEditorRow}
                 data-testid="quick-marc-editorid"
                 data-row={`record-row[${idx}]`}
+                data-fieldid={recordRow.id}
               >
                 <div className={styles.quickMarcEditorMovingRow}>
                   {
@@ -464,6 +475,7 @@ const QuickMarcEditorRows = ({
                     isControlNumberField && (
                       <ControlNumberField
                         id={`control-number-field-${idx}`}
+                        fieldId={recordRow.id}
                         name={`${name}.content`}
                         marcType={marcType}
                         action={action}
@@ -475,6 +487,7 @@ const QuickMarcEditorRows = ({
                   {
                     isMaterialCharsField && (
                       <MaterialCharsField
+                        fieldId={recordRow.id}
                         name={`${name}.content`}
                         type={recordRow.content.Type}
                       />
@@ -482,15 +495,18 @@ const QuickMarcEditorRows = ({
                   }
                   {isLeader && (
                     <LeaderField
+                      fieldId={recordRow.id}
                       name={`${name}.content`}
                       marcType={marcType}
                       leaderField={recordRow}
                       action={action}
+                      error={fieldValidationErrors}
                     />
                   )}
                   {
                     isPhysDescriptionField && (
                       <PhysDescriptionField
+                        fieldId={recordRow.id}
                         name={`${name}.content`}
                         type={recordRow.content.Category}
                       />
@@ -501,12 +517,16 @@ const QuickMarcEditorRows = ({
                     isFixedField && (
                       FixedFieldFactory.getFixedField(
                         intl, `${name}.content`, fixedFieldSpec, type, subtype, fixedFieldInitialValues(),
-                      )
+                      )({
+                        error: fieldValidationErrors,
+                        fieldId: recordRow.id,
+                      })
                     )
                   }
 
                   {isLocationField && (
                     <LocationField
+                      fieldId={recordRow.id}
                       id={`location-field-${idx}`}
                       name={`${name}.content`}
                     />
@@ -517,6 +537,7 @@ const QuickMarcEditorRows = ({
                       recordRow._isLinked
                         ? (
                           <SplitField
+                            fieldId={recordRow.id}
                             name={name}
                             maxWidth={rowContentWidth.current}
                           />
@@ -532,6 +553,7 @@ const QuickMarcEditorRows = ({
                             id={`content-field-${idx}`}
                             component={ContentField}
                             data-testid={`content-field-${idx}`}
+                            error={fieldValidationErrors && <ErrorMessages errors={fieldValidationErrors} />}
                           />
                         )
                     )

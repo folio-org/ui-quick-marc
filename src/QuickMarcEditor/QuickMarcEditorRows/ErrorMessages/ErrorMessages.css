@@ -1,0 +1,10 @@
+.validationErrorMessage {
+  display: flex;
+
+  align-content: center;
+  margin-top: 0.5rem;
+}
+
+.feedbackErrorIcon {
+  margin-right: 0.4rem;
+}

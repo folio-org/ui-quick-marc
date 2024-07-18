@@ -705,6 +705,7 @@
 
   "record.load.error": "Record cannot be found or loaded.",
 
+  "record.errorMessage.fail": "<b>Fail: </b>",
   "record.error.leader.length": "Record cannot be saved. The Leader must contain 24 characters, including null spaces.",
   "record.error.leader.forbiddenBytes.holdings": "Record cannot be saved. Please check the Leader. Only positions 5, 6, 17, 18 can be edited in the Leader.",
   "record.error.leader.forbiddenBytes.bibliographic": "Record cannot be saved. Please check the Leader. Only positions 5, 6, 7, 8, 17, 18 and/or 19 can be edited in the Leader.",

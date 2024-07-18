@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { Field } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
 import { useIntl } from 'react-intl';
@@ -9,6 +10,7 @@ import {
   HasCommand,
 } from '@folio/stripes/components';
 
+import { QuickMarcContext } from '../../../contexts';
 import { useSubfieldNavigation } from '../../../hooks';
 import {
   UNCONTROLLED_ALPHA,
@@ -16,17 +18,23 @@ import {
 } from '../../constants';
 
 import css from './SplitField.css';
+import { ErrorMessages } from '../ErrorMessages';
 
 const propTypes = {
   name: PropTypes.string.isRequired,
   maxWidth: PropTypes.number,
+  fieldId: PropTypes.string.isRequired,
 };
 
 const SplitField = ({
   name,
   maxWidth,
+  fieldId,
 }) => {
   const intl = useIntl();
+  const { validationErrors } = useContext(QuickMarcContext);
+
+  const errors = validationErrors[fieldId];
 
   const {
     keyCommands,
@@ -83,6 +91,7 @@ const SplitField = ({
             disabled: false,
             name: `${name}.subfieldGroups.${UNCONTROLLED_NUMBER}`,
           })}
+          <ErrorMessages errors={errors} />
         </>
       )}
     </FieldArray>

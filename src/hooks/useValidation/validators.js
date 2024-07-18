@@ -1,3 +1,5 @@
+import isEmpty from 'lodash/isEmpty';
+
 import {
   checkIsInitialRecord,
   getContentSubfieldValue,
@@ -16,15 +18,26 @@ import {
   TAG_LENGTH,
   FIXED_FIELD_TAG,
 } from '../../QuickMarcEditor/constants';
-
 import { FixedFieldFactory } from '../../QuickMarcEditor/QuickMarcEditorRows/FixedField';
 import { leaderConfig } from '../../QuickMarcEditor/QuickMarcEditorRows/LeaderField/leaderConfig';
+import { MISSING_FIELD_ID } from './constants';
+
+const mapFailingFields = (fields, formatMessage) => {
+  return fields.reduce((acc, field) => {
+    return {
+      ...acc,
+      [field.id]: formatMessage(field),
+    };
+  }, {});
+};
 
 export const validateTagLength = ({ marcRecords }, rule) => {
   const nonEmptyRecords = marcRecords.filter(field => !checkIsEmptyContent(field));
 
-  if (nonEmptyRecords.some(({ tag }) => !tag || tag.length !== TAG_LENGTH)) {
-    return rule.message();
+  const failingFields = nonEmptyRecords.filter(({ tag }) => !tag || tag.length !== TAG_LENGTH);
+
+  if (failingFields.length) {
+    return mapFailingFields(failingFields, rule.message);
   }
 
   return undefined;
@@ -34,8 +47,10 @@ export const validateTagCharacters = ({ marcRecords }, rule) => {
 
   const tagDigitsRegex = new RegExp(`^\\d{0,${TAG_LENGTH}}$`);
 
-  if (marcRecordsWithoutLDR.some(({ tag }) => !tag.match(tagDigitsRegex))) {
-    return rule.message();
+  const failingFields = marcRecordsWithoutLDR.filter(({ tag }) => !tag.match(tagDigitsRegex));
+
+  if (failingFields.length) {
+    return mapFailingFields(failingFields, rule.message);
   }
 
   return undefined;
@@ -45,12 +60,12 @@ export const validateEmptySubfields = ({ marcRecords }, rule) => {
     .filter(marcRecord => Boolean(marcRecord.tag))
     .filter(marcRecord => marcRecord.indicators);
 
-  const isEmptySubfield = recordsToValidate.some(marcRecord => {
+  const failingFields = recordsToValidate.filter(marcRecord => {
     return !marcRecord.content && checkIsInitialRecord(marcRecord);
   });
 
-  if (isEmptySubfield) {
-    return rule.message();
+  if (failingFields.length) {
+    return mapFailingFields(failingFields, rule.message);
   }
 
   return undefined;
@@ -64,11 +79,11 @@ export const validateSubfieldValueExists = (context, rule) => {
 
   const records = marcRecords.filter(record => record.tag.match(rule.tag));
 
-  const recordWithEmptySubfield = records
-    .find(record => !getContentSubfieldValue(record.content)[rule.subfield]?.[0]?.length);
+  const recordsWithEmptySubfield = records
+    .filter(record => !getContentSubfieldValue(record.content)[rule.subfield]?.[0]?.length);
 
-  if (recordWithEmptySubfield) {
-    return rule.message(recordWithEmptySubfield.tag, rule.subfield);
+  if (recordsWithEmptySubfield.length) {
+    return mapFailingFields(recordsWithEmptySubfield, (field) => rule.message(field.tag, rule.subfield));
   }
 
   return undefined;
@@ -76,8 +91,12 @@ export const validateSubfieldValueExists = (context, rule) => {
 export const validateContentExistence = (context, rule) => {
   const { marcRecords } = context;
 
-  if (!marcRecords.find(record => record.tag.match(rule.tag))?.content) {
-    return rule.message();
+  const failingFields = marcRecords
+    .filter(record => record.tag.match(rule.tag))
+    .filter(record => !record.content);
+
+  if (failingFields.length) {
+    return mapFailingFields(failingFields, rule.message);
   }
 
   return undefined;
@@ -90,14 +109,16 @@ export const validateExistence = (context, rule) => {
   }
 
   if (!marcRecords.find(record => record.tag.match(rule.tag))) {
-    return rule.message();
+    return { [MISSING_FIELD_ID]: rule.message() };
   }
 
   return undefined;
 };
 export const validateNonRepeatable = ({ marcRecords }, rule) => {
-  if (marcRecords.filter(record => record.tag.match(rule.tag)).length > 1) {
-    return rule.message();
+  const fields = marcRecords.filter(record => record.tag.match(rule.tag));
+
+  if (fields.length > 1) {
+    return mapFailingFields(fields, rule.message);
   }
 
   return undefined;
@@ -105,12 +126,12 @@ export const validateNonRepeatable = ({ marcRecords }, rule) => {
 export const validateNonRepeatableSubfield = ({ marcRecords }, rule) => {
   const fields = marcRecords.filter(record => record.tag === rule.tag);
 
-  const hasError = fields.some((field) => {
+  const failingFields = fields.filter((field) => {
     return getContentSubfieldValue(field.content)[rule.subfield]?.length > 1;
   });
 
-  if (hasError) {
-    return rule.message(rule.tag, rule.subfield);
+  if (failingFields.length) {
+    return mapFailingFields(failingFields, () => rule.message(rule.tag, rule.subfield));
   }
 
   return undefined;
@@ -120,16 +141,18 @@ export const validateLeaderLength = ({ marcRecords, marcType }, rule) => {
   const leaderContent = convertLeaderToString(marcType, leader);
 
   if (leaderContent.length !== 24) {
-    return rule.message();
+    return mapFailingFields([leader], rule.message);
   }
 
   return undefined;
 };
 export const validateCorrectLength = ({ marcRecords }, rule) => {
-  const field = marcRecords.find(record => record.tag === rule.tag);
+  const fields = marcRecords.filter(record => record.tag === rule.tag);
 
-  if (field.content.length !== rule.length) {
-    return rule.message();
+  const failingFields = fields.filter(field => field.content.length !== rule.length);
+
+  if (failingFields.length) {
+    return mapFailingFields(failingFields, rule.message);
   }
 
   return undefined;
@@ -149,7 +172,7 @@ export const validateLeaderEditableBytes = ({ marcRecords, initialValues, marcTy
   );
 
   if (cutEditableBytes(initialContent) !== cutEditableBytes(fieldContent)) {
-    return rule.message(marcType);
+    return mapFailingFields([field], () => rule.message(marcType));
   }
 
   return undefined;
@@ -181,7 +204,7 @@ export const validateLeaderPositions = ({ marcRecords, marcType }, rule) => {
   const joinedPositions = joinFailedPositions(failedPositions);
 
   if (failedPositions.length) {
-    return rule.message(joinedPositions, LEADER_DOCUMENTATION_LINKS[marcType]);
+    return mapFailingFields([leader], () => rule.message(joinedPositions, LEADER_DOCUMENTATION_LINKS[marcType]));
   }
 
   return undefined;
@@ -189,7 +212,7 @@ export const validateLeaderPositions = ({ marcRecords, marcType }, rule) => {
 export const validate$9InLinkable = ({ marcRecords, linkableBibFields }, rule) => {
   const fieldsToCheck = marcRecords.filter(field => linkableBibFields.includes(field.tag));
 
-  const hasEntered$9 = fieldsToCheck.some(field => {
+  const failingFields = fieldsToCheck.filter(field => {
     if (!field.subfieldGroups) {
       return '$9' in getContentSubfieldValue(field.content);
     }
@@ -199,8 +222,8 @@ export const validate$9InLinkable = ({ marcRecords, linkableBibFields }, rule) =
     });
   });
 
-  if (hasEntered$9) {
-    return rule.message();
+  if (failingFields.length) {
+    return mapFailingFields(failingFields, rule.message);
   }
 
   return undefined;
@@ -212,12 +235,12 @@ export const validateTagChanged = (context, rule) => {
     return undefined;
   }
 
-  const recordWithChangedTag = initialValues.records
+  const recordsWithChangedTag = initialValues.records
     .filter(field => field.tag.match(rule.tag))
-    .find(field => marcRecords.find(_field => _field.id === field.id && _field.tag !== field.tag));
+    .filter(field => marcRecords.find(_field => _field.id === field.id && _field.tag !== field.tag));
 
-  if (recordWithChangedTag) {
-    return rule.message(recordWithChangedTag.tag);
+  if (recordsWithChangedTag.length) {
+    return mapFailingFields(recordsWithChangedTag, (field) => rule.message(field.tag));
   }
 
   return undefined;
@@ -229,40 +252,71 @@ export const validateSubfieldChanged = (context, rule) => {
 
   const { marcRecords, initialValues } = context;
 
-  const {
-    tag: initialTag,
-    content: initialContent,
-    id,
-  } = initialValues.records.find(field => field.tag.match(rule.tag));
-  const {
-    content: contentToSave,
-  } = marcRecords.find(field => field.id === id);
+  const runValidationForField = (field) => {
+    const {
+      tag: initialTag,
+      content: initialContent,
+      id,
+    } = field;
 
-  const hasInitiallySubfield = rule.subfield in getContentSubfieldValue(initialContent);
-  const hasSubfieldToSave = rule.subfield in getContentSubfieldValue(contentToSave);
-  const isSubfieldAdded = !hasInitiallySubfield && hasSubfieldToSave;
-  const isSubfieldRemoved = hasInitiallySubfield && getIsSubfieldRemoved(contentToSave, rule.subfield);
-  const isSubfieldValueChanged = getContentSubfieldValue(initialContent)[rule.subfield]?.[0]
+    const fieldToSave = marcRecords.find(_field => _field.id === id);
+
+    if (!fieldToSave) {
+      return undefined;
+    }
+
+    const { content: contentToSave } = fieldToSave;
+    const hasInitiallySubfield = rule.subfield in getContentSubfieldValue(initialContent);
+    const hasSubfieldToSave = rule.subfield in getContentSubfieldValue(contentToSave);
+    const isSubfieldAdded = !hasInitiallySubfield && hasSubfieldToSave;
+    const isSubfieldRemoved = hasInitiallySubfield && getIsSubfieldRemoved(contentToSave, rule.subfield);
+    const isSubfieldValueChanged = getContentSubfieldValue(initialContent)[rule.subfield]?.[0]
     !== getContentSubfieldValue(contentToSave)[rule.subfield]?.[0];
 
-  const changes = {
-    added: isSubfieldAdded,
-    removed: isSubfieldRemoved,
-    changed: !isSubfieldAdded && !isSubfieldRemoved && isSubfieldValueChanged,
+    const changes = {
+      added: isSubfieldAdded,
+      removed: isSubfieldRemoved,
+      changed: !isSubfieldAdded && !isSubfieldRemoved && isSubfieldValueChanged,
+    };
+
+    if (Object.values(changes).some(Boolean)) {
+      return rule.message(changes, initialTag);
+    }
+
+    return undefined;
   };
 
-  if (Object.values(changes).some(Boolean)) {
-    return rule.message(changes, initialTag);
+  const fieldsToCheck = initialValues.records.filter(_field => _field.tag.match(rule.tag));
+
+  const errors = fieldsToCheck.reduce((acc, field) => {
+    const errorMessage = runValidationForField(field);
+
+    if (errorMessage) {
+      return { ...acc, [field.id]: [errorMessage] };
+    }
+
+    return acc;
+  }, {});
+
+  if (!isEmpty(errors)) {
+    return errors;
   }
 
   return undefined;
 };
 export const validateLocation = ({ marcRecords, locations }, rule) => {
-  const field = marcRecords.find(record => record.tag === rule.tag);
-  const [, locationValue] = getLocationValue(field.content)?.replace(/\s+/, ' ').split(' ') || '';
+  const fields = marcRecords.filter(record => record.tag === rule.tag);
 
-  if (!locations.find(location => location.code === locationValue)) {
-    return rule.message();
+  const failingFields = fields.filter(field => {
+    const [, locationValue] = getLocationValue(field.content)?.replace(/\s+/, ' ').split(' ') || '';
+
+    const locationExists = Boolean(locations.find(location => location.code === locationValue));
+
+    return !locationExists;
+  });
+
+  if (failingFields.length) {
+    return mapFailingFields(failingFields, rule.message);
   }
 
   return undefined;
@@ -274,11 +328,16 @@ export const validateSubfieldValueMatch = (context, rule) => {
     return undefined;
   }
 
-  const marcRecord = marcRecords.find(record => record.tag.match(rule.tag));
-  const subfieldValue = getContentSubfieldValue(marcRecord?.content)[rule.subfield]?.[0];
+  const fields = marcRecords.filter(record => record.tag.match(rule.tag));
 
-  if (!subfieldValue.match(rule.pattern(context))) {
-    return rule.message();
+  const failingFields = fields.filter((field) => {
+    const subfieldValue = getContentSubfieldValue(field?.content)[rule.subfield]?.[0];
+
+    return !subfieldValue.match(rule.pattern(context));
+  });
+
+  if (failingFields.length) {
+    return mapFailingFields(failingFields, rule.message);
   }
 
   return undefined;
@@ -311,8 +370,8 @@ export const validateSubfieldIsControlled = ({ marcRecords, linkingRules }, rule
   const fieldTags = linkedFieldsWithEnteredSubfieldsThatCanBeControlled.map(field => field.tag);
   const uniqueTags = [...new Set(fieldTags)];
 
-  if (uniqueTags.length) {
-    return rule.message(uniqueTags);
+  if (linkedFieldsWithEnteredSubfieldsThatCanBeControlled.length) {
+    return mapFailingFields(linkedFieldsWithEnteredSubfieldsThatCanBeControlled, () => rule.message(uniqueTags));
   }
 
   return undefined;
@@ -321,17 +380,30 @@ export const validateFixedFieldPositions = ({ marcRecords, fixedFieldSpec, marcT
   const { type, position7: subtype } = getLeaderPositions(marcType, marcRecords);
   const fixedFieldType = FixedFieldFactory.getFixedFieldType(fixedFieldSpec, type, subtype);
   const field008Selects = fixedFieldType?.items.filter(x => x?.allowedValues || false) || [];
-  const field008Content = marcRecords.find(x => x.tag === FIXED_FIELD_TAG)?.content || '';
+  const fields008 = marcRecords.filter(x => x.tag === FIXED_FIELD_TAG);
 
-  for (const subField of field008Selects) {
-    const contents = field008Content[subField.code];
+  const errors = fields008.reduce((acc, field) => {
+    const field008Content = field.content || '';
 
-    if (!contents) return undefined;
-    const subFieldContentArray = Array.isArray(contents) ? contents : [contents];
+    for (const subField of field008Selects) {
+      const contents = field008Content[subField.code];
 
-    if (!subFieldContentArray.every(content => subField.allowedValues.find(value => value.code === content))) {
-      return rule.message(subField.code);
+      if (!contents) {
+        return acc;
+      }
+
+      const subFieldContentArray = Array.isArray(contents) ? contents : [contents];
+
+      if (!subFieldContentArray.every(content => subField.allowedValues.find(value => value.code === content))) {
+        return { ...acc, [field.id]: [rule.message(subField.code)] };
+      }
     }
+
+    return acc;
+  }, {});
+
+  if (!isEmpty(errors)) {
+    return errors;
   }
 
   return undefined;

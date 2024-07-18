@@ -6,6 +6,7 @@ import { render } from '@folio/jest-config-stripes/testing-library/react';
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import { SplitField } from './SplitField';
+import Harness from '../../../../test/jest/helpers/harness';
 
 const initialValues = {
   test: {
@@ -17,16 +18,18 @@ const initialValues = {
 };
 
 const renderSplitField = () => render(
-  <Form
-    onSubmit={() => {}}
-    mutators={arrayMutators}
-    initialValues={initialValues}
-    render={() => (
-      <SplitField
-        name="test"
-      />
-    )}
-  />,
+  <Harness>
+    <Form
+      onSubmit={() => {}}
+      mutators={arrayMutators}
+      initialValues={initialValues}
+      render={() => (
+        <SplitField
+          name="test"
+        />
+      )}
+    />
+  </Harness>,
 );
 
 describe('Given SplitField', () => {

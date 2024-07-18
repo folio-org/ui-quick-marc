@@ -18,6 +18,7 @@ import {
 import { FIXED_FIELD_MAX_LENGTH } from '../../../common/constants';
 
 import styles from './BytesField.css';
+import { ErrorMessages } from '../ErrorMessages';
 
 export const SUBFIELD_TYPES = {
   BYTE: 'Byte',
@@ -273,27 +274,32 @@ const renderSubField = (name, config, intl) => {
   );
 };
 
-export const BytesField = ({ config, name, id }) => {
+export const BytesField = ({ config, name, id, error }) => {
   const intl = useIntl();
 
   return (
-    <div
-      className={styles.bytesFieldRow}
-      data-testid={id || `row-${name}`}
-    >
-      {
-        config.fields.map((field, fieldIdx) => {
-          return (
-            <div
-              key={fieldIdx}
-              data-testid="bytes-field-col"
-            >
-              {renderSubField(name, field, intl)}
-            </div>
-          );
-        })
-      }
-    </div>
+    <>
+      <div
+        className={styles.bytesFieldRow}
+        data-testid={id || `row-${name}`}
+      >
+        {
+          config.fields.map((field, fieldIdx) => {
+            return (
+              <div
+                key={fieldIdx}
+                data-testid="bytes-field-col"
+              >
+                {renderSubField(name, field, intl)}
+              </div>
+            );
+          })
+        }
+      </div>
+      <div role="alert">
+        <ErrorMessages errors={error} />
+      </div>
+    </>
   );
 };
 
@@ -301,6 +307,7 @@ BytesField.propTypes = {
   name: PropTypes.string.isRequired,
   config: PropTypes.object.isRequired,
   id: PropTypes.string,
+  error: PropTypes.element,
 };
 
 BytesField.defaultProps = {
