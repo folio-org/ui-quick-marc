@@ -8,20 +8,12 @@ import {
 } from '@folio/stripes/components';
 import { Settings } from '@folio/stripes/smart-components';
 
-import { MarcBibTemplates } from '../MarcBibTemplates';
-
 const QuickMarcSettings = () => {
   const match = useRouteMatch();
   const location = useLocation();
   const { formatMessage } = useIntl();
 
-  const pages = [
-    {
-      component: MarcBibTemplates,
-      label: formatMessage({ id: 'ui-quick-marc.settings.marcBibTemplates.pane.title' }),
-      route: 'marc-bib-templates',
-    },
-  ];
+  const pages = [];
 
   return (
     <CommandList commands={defaultKeyboardShortcuts}>
