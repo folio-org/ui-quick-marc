@@ -1,10 +1,16 @@
+@import "@folio/stripes-components/lib/variables.css";
+
 .validationErrorMessage {
   display: flex;
 
   align-content: center;
   margin-top: 0.5rem;
+
+  color: var(--error);
 }
 
 .feedbackErrorIcon {
+  align-items: flex-start;
   margin-right: 0.4rem;
+  max-width: 100%;
 }
