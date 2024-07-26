@@ -81,6 +81,10 @@ jest.mock('../queries', () => ({
     fetchLinkSuggestions: jest.fn(),
     isLoading: false,
   }),
+  useLccnDuplicateConfig: jest.fn().mockReturnValue({
+    isLoading: false,
+    duplicateLccnCheckingEnabled: false,
+  }),
 }));
 
 const getInstance = () => ({

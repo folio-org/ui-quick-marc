@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useContext,
   useMemo,
   useState,
 } from 'react';
@@ -13,6 +14,7 @@ import QuickMarcEditor from './QuickMarcEditor';
 import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
 import {
   useAuthorityLinking,
+  useLccnDuplicationCheck,
   useValidation,
 } from '../hooks';
 import { QUICK_MARC_ACTIONS } from './constants';
@@ -31,7 +33,9 @@ import {
   autopopulateMaterialCharsField,
   autopopulateIndicators,
   removeRowsWithoutContent,
+  joinErrors,
 } from './utils';
+import { QuickMarcContext } from '../contexts';
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
@@ -57,8 +61,10 @@ const QuickMarcCreateWrapper = ({
   locations,
 }) => {
   const showCallout = useShowCallout();
+  const { setValidationErrors } = useContext(QuickMarcContext);
   const [httpError, setHttpError] = useState(null);
   const { linkableBibFields, actualizeLinks, linkingRules, sourceFiles } = useAuthorityLinking({ marcType, action });
+  const { validateLccnDuplication } = useLccnDuplicationCheck({ marcType });
 
   const validationContext = useMemo(() => ({
     initialValues,
@@ -102,6 +108,14 @@ const QuickMarcCreateWrapper = ({
   }, [onSave, marcType]);
 
   const onSubmit = useCallback(async (formValues) => {
+    const lccnDuplicationError = await validateLccnDuplication(formValues);
+
+    if (lccnDuplicationError) {
+      setValidationErrors(curErrors => joinErrors(curErrors, lccnDuplicationError));
+
+      return;
+    }
+
     const formValuesToProcess = flow(
       prepareForSubmit,
       combineSplitFields,
@@ -161,7 +175,15 @@ const QuickMarcCreateWrapper = ({
         setHttpError(parsedError);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onClose, showCallout, prepareForSubmit, actualizeLinks]);
+  }, [
+    onClose,
+    showCallout,
+    prepareForSubmit,
+    actualizeLinks,
+    validateLccnDuplication,
+    setValidationErrors,
+    joinErrors,
+  ]);
 
   return (
     <QuickMarcEditor

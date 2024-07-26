@@ -2,14 +2,10 @@ import {
   useCallback,
   useContext,
 } from 'react';
-import assignWith from 'lodash/assignWith';
 
 import { validators } from './rules';
 import { QuickMarcContext } from '../../contexts';
-
-const joinErrors = (errorsA, errorsB) => {
-  return assignWith({}, errorsA, errorsB, (objValue = [], srcValue = []) => objValue.concat(srcValue));
-};
+import { joinErrors } from '../../QuickMarcEditor/utils';
 
 const useValidation = (context) => {
   const quickMarcContext = useContext(QuickMarcContext);

@@ -725,6 +725,7 @@
   "record.error.010.prefix.invalid": "Record cannot be saved. Prefix in the 010 field does not match the selected authority file.",
   "record.error.010.$aRemoved": "Cannot remove 010 $a for this record.",
   "record.error.010.$aOnlyOne": "010 can only have one $a.",
+  "record.error.010.lccnDuplicated": "010 $a already exists.",
   "record.error.008.empty": "Record cannot be saved without 008 field",
   "record.error.008.multiple": "Record cannot be saved with more than one 008 field",
   "record.error.008.invalidValue": "Record cannot be saved. Field 008 contains an invalid value in \"{name}\" subfield.",

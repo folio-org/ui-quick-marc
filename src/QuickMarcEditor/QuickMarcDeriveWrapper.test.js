@@ -17,7 +17,10 @@ import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
-import { useAuthorityLinking } from '../hooks';
+import {
+  useAuthorityLinking,
+  useLccnDuplicationCheck,
+} from '../hooks';
 import { bibLeader } from '../../test/jest/fixtures/leaders';
 import fixedFieldSpecBib from '../../test/mocks/fixedFieldSpecBib';
 
@@ -40,6 +43,7 @@ jest.mock('../queries', () => ({
 jest.mock('../hooks', () => ({
   ...jest.requireActual('../hooks'),
   useAuthorityLinking: jest.fn(),
+  useLccnDuplicationCheck: jest.fn(),
 }));
 
 const mockFormValues = jest.fn(() => ({
@@ -278,8 +282,10 @@ const initialValues = {
   ],
 };
 
-const renderQuickMarcDeriveWrapper = (props) => (render(
-  <Harness>
+const renderQuickMarcDeriveWrapper = (props, { quickMarcContext } = {}) => (render(
+  <Harness
+    quickMarcContext={quickMarcContext}
+  >
     <QuickMarcDeriveWrapper
       onClose={mockOnClose}
       onSave={mockOnSave}
@@ -321,6 +327,7 @@ describe('Given QuickMarcDeriveWrapper', () => {
       autoLinkAuthority: jest.fn(),
       linkingRules,
     });
+    useLccnDuplicationCheck.mockReturnValue({ validateLccnDuplication: () => Promise.resolve() });
   });
 
   it('should render with no axe errors', async () => {
@@ -606,6 +613,49 @@ describe('Given QuickMarcDeriveWrapper', () => {
       };
 
       expect(mockActualizeLinks).toHaveBeenCalledWith(expect.objectContaining(expectedFormValues));
+    });
+
+    describe('when there is the LCCN duplication error', () => {
+      it('should merge previous errors with a new one', async () => {
+        const lccnDuplicationError = { fieldId: { id: 'new-error-id' } };
+        let sentErrors;
+
+        const setValidationErrors = cb => {
+          if (typeof cb !== 'function') return;
+
+          const currentErrors = {
+            foo: [{ id: 'error' }],
+            fieldId: [{ id: 'prev-error' }],
+          };
+
+          sentErrors = cb(currentErrors);
+        };
+
+        useLccnDuplicationCheck.mockReturnValue({
+          validateLccnDuplication: () => Promise.resolve(lccnDuplicationError),
+        });
+
+        const { getByText } = renderQuickMarcDeriveWrapper({
+          instance,
+          mutator,
+        }, {
+          quickMarcContext: {
+            setValidationErrors,
+            validationErrors: {},
+          },
+        });
+
+        await act(async () => fireEvent.click(getByText('stripes-acq-components.FormFooter.save')));
+
+        expect(sentErrors).toEqual({
+          foo: [{ id: 'error' }],
+          fieldId: [
+            { id: 'prev-error' },
+            { id: 'new-error-id' },
+          ],
+        });
+        expect(mutator.quickMarcEditMarcRecord.POST).not.toHaveBeenCalled();
+      });
     });
   });
 });

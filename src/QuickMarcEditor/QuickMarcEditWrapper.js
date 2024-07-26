@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useContext,
   useMemo,
   useState,
 } from 'react';
@@ -18,6 +19,7 @@ import { getHeaders } from '@folio/stripes-marc-components';
 import QuickMarcEditor from './QuickMarcEditor';
 import {
   useAuthorityLinking,
+  useLccnDuplicationCheck,
   useValidation,
 } from '../hooks';
 import { QUICK_MARC_ACTIONS } from './constants';
@@ -40,10 +42,12 @@ import {
   autopopulatePhysDescriptionField,
   autopopulateMaterialCharsField,
   applyCentralTenantInHeaders,
+  joinErrors,
 } from './utils';
 import {
   useMarcRecordMutation,
 } from '../queries';
+import { QuickMarcContext } from '../contexts';
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
@@ -79,6 +83,7 @@ const QuickMarcEditWrapper = ({
   const stripes = useStripes();
   const showCallout = useShowCallout();
   const location = useLocation();
+  const { setValidationErrors } = useContext(QuickMarcContext);
   const [httpError, setHttpError] = useState(null);
 
   const { token, locale } = stripes.okapi;
@@ -88,6 +93,7 @@ const QuickMarcEditWrapper = ({
 
   const { linkableBibFields, actualizeLinks, linkingRules } = useAuthorityLinking({ marcType, action });
   const { updateMarcRecord } = useMarcRecordMutation({ tenantId });
+  const { validateLccnDuplication } = useLccnDuplicationCheck({ marcType });
 
   const validationContext = useMemo(() => ({
     initialValues,
@@ -127,6 +133,14 @@ const QuickMarcEditWrapper = ({
   }, [validate, prepareForSubmit]);
 
   const onSubmit = useCallback(async (formValues) => {
+    const lccnDuplicationError = await validateLccnDuplication(formValues);
+
+    if (lccnDuplicationError) {
+      setValidationErrors(curErrors => joinErrors(curErrors, lccnDuplicationError));
+
+      return;
+    }
+
     let is1xxOr010Updated = false;
 
     if (marcType === MARC_TYPES.AUTHORITY && linksCount > 0) {
@@ -243,6 +257,8 @@ const QuickMarcEditWrapper = ({
     locale,
     updateMarcRecord,
     isRequestToCentralTenantFromMember,
+    validateLccnDuplication,
+    setValidationErrors,
   ]);
 
   return (
