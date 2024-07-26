@@ -16,10 +16,10 @@ export const useFocusFirstFieldWithError = () => {
   }, [values.records, validationErrors]);
 
   useEffect(() => {
-    if (!firstFieldWithErrors) {
+    if (!firstFieldWithErrors?.id) {
       return;
     }
 
-    document.querySelector(`[data-fieldid="${firstFieldWithErrors.id}"] input`)?.focus();
-  }, [firstFieldWithErrors]);
+    document.querySelector(`[data-fieldid="${firstFieldWithErrors.id}"] input:enabled`)?.focus();
+  }, [firstFieldWithErrors?.id, validationErrors]);
 };
