@@ -514,11 +514,10 @@ export const getLeaderPositions = (marcType, records) => {
 
 export const hydrateMarcRecord = marcRecord => {
   const leader = marcRecord.records[0];
-  const marcType = marcRecord.marcFormat.toLowerCase();
 
   return ({
     ...marcRecord,
-    leader: convertLeaderToString(marcType, leader),
+    leader: leader.content,
     fields: marcRecord.records.slice(1).map(record => ({
       tag: record.tag,
       content: record.content,
@@ -715,6 +714,25 @@ export const updateRecordAtIndex = (index, field, state) => {
   records[index] = field;
 
   return records;
+};
+
+export const formatLeaderForSubmit = (marcType, formValues) => {
+  const { records } = formValues;
+
+  return {
+    ...formValues,
+    leader: convertLeaderToString(marcType, records.find(isLeaderRow)),
+    records: formValues.records.map(record => {
+      if (!isLeaderRow(record)) {
+        return record;
+      }
+
+      return {
+        ...record,
+        content: convertLeaderToString(marcType, record),
+      };
+    }),
+  };
 };
 
 export const removeDeletedRecords = (formValues) => {

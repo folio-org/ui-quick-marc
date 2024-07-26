@@ -19,6 +19,7 @@ import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 import {
   hydrateMarcRecord,
+  formatLeaderForSubmit,
   autopopulateSubfieldSection,
   cleanBytesFields,
   parseHttpError,
@@ -82,12 +83,13 @@ const QuickMarcCreateWrapper = ({
       autopopulateMaterialCharsField,
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
       marcRecord => cleanBytesFields(marcRecord, fixedFieldSpec, marcType),
+      marcRecord => formatLeaderForSubmit(marcType, marcRecord),
     )(formValues);
 
     return formValuesForCreate;
   }, [marcType, fixedFieldSpec]);
 
-  const runValidation = useCallback((formValues) => {
+  const runValidation = useCallback(async (formValues) => {
     const formValuesForValidation = prepareForSubmit(formValues);
 
     return validate(formValuesForValidation.records);

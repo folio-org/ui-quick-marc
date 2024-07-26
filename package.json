@@ -44,7 +44,8 @@
           "marc-records-editor.links.suggestion.post",
           "instance-authority-links.instances.collection.post",
           "marc-records-editor.status.item.get",
-          "marc-specifications.item.get"
+          "marc-specifications.item.get",
+          "marc-records-editor.validate.post"
         ],
         "visible": true
       },
@@ -57,7 +58,8 @@
           "marc-records-editor.item.put",
           "marc-records-editor.links.suggestion.post",
           "instance-authority-links.instances.collection.put",
-          "marc-specifications.item.get"
+          "marc-specifications.item.get",
+          "marc-records-editor.validate.post"
         ],
         "visible": true
       },
@@ -102,7 +104,8 @@
           "marc-records-editor.item.post",
           "marc-records-editor.links.suggestion.post",
           "instance-authority-links.instances.collection.put",
-          "marc-specifications.item.get"
+          "marc-specifications.item.get",
+          "marc-records-editor.validate.post"
         ],
         "visible": true
       },
@@ -116,7 +119,8 @@
           "instance-authority-links.instances.collection.post",
           "instance-authority-links.authorities.bulk.post",
           "marc-records-editor.status.item.get",
-          "marc-specifications.item.get"
+          "marc-specifications.item.get",
+          "marc-records-editor.validate.post"
         ],
         "visible": true
       },
@@ -128,7 +132,8 @@
           "marc-records-editor.item.put",
           "inventory-storage.locations.collection.get",
           "marc-specifications.item.get",
-          "search.authorities.collection.get"
+          "search.authorities.collection.get",
+          "marc-records-editor.validate.post"
         ],
         "visible": true
       },

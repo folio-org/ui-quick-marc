@@ -15,7 +15,6 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import find from 'lodash/find';
 import noop from 'lodash/noop';
-import isEmpty from 'lodash/isEmpty';
 
 import {
   IfPermission,
@@ -42,6 +41,8 @@ import { QuickMarcRecordInfo } from './QuickMarcRecordInfo';
 import { QuickMarcEditorRows } from './QuickMarcEditorRows';
 import { OptimisticLockingBanner } from './OptimisticLockingBanner';
 import { AutoLinkingButton } from './AutoLinkingButton';
+import { QuickMarcContext } from '../contexts';
+import { useAuthorityLinking } from '../hooks';
 import { QUICK_MARC_ACTIONS } from './constants';
 import {
   ERROR_TYPES,
@@ -64,8 +65,6 @@ import {
   markLinkedRecords,
   getLeaderPositions,
 } from './utils';
-import { MISSING_FIELD_ID, useAuthorityLinking } from '../hooks';
-import { QuickMarcContext } from '../contexts';
 
 import css from './QuickMarcEditor.css';
 
@@ -102,8 +101,8 @@ const QuickMarcEditor = ({
   externalRecordPath,
   confirmRemoveAuthorityLinking,
   linksCount,
-  validate,
   onCheckCentralTenantPerm,
+  modifiedSinceLastSubmit,
 }) => {
   const stripes = useStripes();
   const formValues = getState().values;
@@ -118,13 +117,17 @@ const QuickMarcEditor = ({
   const continueAfterSave = useRef(false);
   const formRef = useRef(null);
   const confirmationChecks = useRef({ ...REQUIRED_CONFIRMATIONS });
-  const { setValidationErrors } = useContext(QuickMarcContext);
+  const { setModifiedSinceLastSubmit } = useContext(QuickMarcContext);
 
   const isConsortiaEnv = stripes.hasInterface('consortia');
   const searchParameters = new URLSearchParams(location.search);
   const isShared = searchParameters.get('shared') === 'true';
 
   const { unlinkAuthority } = useAuthorityLinking({ marcType, action });
+
+  useEffect(() => {
+    setModifiedSinceLastSubmit(modifiedSinceLastSubmit);
+  }, [modifiedSinceLastSubmit, setModifiedSinceLastSubmit]);
 
   const deletedRecords = useMemo(() => {
     return records
@@ -168,26 +171,8 @@ const QuickMarcEditor = ({
     setIsUnlinkRecordsModalOpen(false);
   };
 
-  const confirmSubmit = useCallback((e, isKeepEditing = false) => {
+  const confirmSubmit = useCallback(async (e, isKeepEditing = false) => {
     continueAfterSave.current = isKeepEditing;
-
-    const validationErrors = validate(getState().values);
-
-    const validationErrorsWithoutFieldId = validationErrors[MISSING_FIELD_ID] || [];
-
-    validationErrorsWithoutFieldId.forEach((error) => {
-      showCallout({
-        messageId: error.id,
-        values: error.values,
-        type: 'error',
-      });
-    });
-
-    setValidationErrors(validationErrors);
-
-    if (!isEmpty(validationErrors)) {
-      return;
-    }
 
     if (confirmationChecks.current[CONFIRMATIONS.DELETE_RECORDS] && deletedRecords.length) {
       setIsDeleteModalOpened(true);
@@ -223,11 +208,7 @@ const QuickMarcEditor = ({
     initialValues,
     linksCount,
     records,
-    getState,
-    validate,
-    showCallout,
     instance,
-    setValidationErrors,
   ]);
 
   const paneFooter = useMemo(() => {
@@ -575,7 +556,6 @@ QuickMarcEditor.propTypes = {
     httpStatus: PropTypes.number,
   }),
   confirmRemoveAuthorityLinking: PropTypes.bool,
-  validate: PropTypes.func.isRequired,
   onCheckCentralTenantPerm: PropTypes.func,
 };
 
@@ -587,6 +567,9 @@ QuickMarcEditor.defaultProps = {
 
 export default stripesFinalForm({
   navigationCheck: true,
+  subscription: {
+    modifiedSinceLastSubmit: true,
+  },
   mutators: {
     addRecord: ([{ index }], state, tools) => {
       const records = addNewRecord(index, state);

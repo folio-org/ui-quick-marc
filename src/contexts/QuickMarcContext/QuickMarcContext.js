@@ -19,17 +19,22 @@ const QuickMarcProvider = ({
 }) => {
   const [selectedSourceFile, setSelectedSourceFile] = useState(null);
   const [validationErrors, setValidationErrors] = useState({});
+  const [modifiedSinceLastSubmit, setModifiedSinceLastSubmit] = useState(false);
 
   const contextValue = useMemo(() => ({
     selectedSourceFile,
     setSelectedSourceFile,
     validationErrors,
     setValidationErrors,
+    modifiedSinceLastSubmit,
+    setModifiedSinceLastSubmit,
   }), [
     selectedSourceFile,
     setSelectedSourceFile,
     validationErrors,
     setValidationErrors,
+    modifiedSinceLastSubmit,
+    setModifiedSinceLastSubmit,
   ]);
 
   return (
