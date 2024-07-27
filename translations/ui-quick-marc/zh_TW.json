@@ -879,5 +879,6 @@
     "record.fixedField.tip.Punct": "標點符號政策",
     "record.fixedField.tip.Item": "記錄中的館藏資訊",
     "leader.Two-dimensional nonprojectable graphic": "二維非投影圖形",
-    "record.searchLink": "Search for records by 010 value(s)"
+    "record.searchLink": "Search for records by 010 value(s)",
+    "record.errorMessage.fail": "<b>Fail: </b>"
 }
