@@ -879,5 +879,6 @@
     "record.fixedField.tip.Punct": "Punctuation policy",
     "record.fixedField.tip.Item": "Item information in record",
     "leader.Two-dimensional nonprojectable graphic": "Two-dimensional nonprojectable  graphic",
-    "record.searchLink": "Search for records by 010 value(s)"
+    "record.searchLink": "Search for records by 010 value(s)",
+    "record.errorMessage.fail": "<b>Fail: </b>"
 }

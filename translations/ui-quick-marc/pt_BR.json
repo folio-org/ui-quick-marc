@@ -879,5 +879,6 @@
     "record.fixedField.tip.Punct": "Política de pontuação",
     "record.fixedField.tip.Item": "Informações do item no registro",
     "leader.Two-dimensional nonprojectable graphic": "Material gráfico bidimensional não projetável",
-    "record.searchLink": "Pesquisar registros por 010 valor(es)"
+    "record.searchLink": "Pesquisar registros por 010 valor(es)",
+    "record.errorMessage.fail": "<b>Falha: </b>"
 }
