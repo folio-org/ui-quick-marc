@@ -44,8 +44,7 @@
           "marc-records-editor.links.suggestion.post",
           "instance-authority-links.instances.collection.post",
           "marc-records-editor.status.item.get",
-          "marc-specifications.item.get",
-          "ui-quick-marc.settings.lccn-duplicate-check"
+          "marc-specifications.item.get"
         ],
         "visible": true
       },
@@ -58,8 +57,7 @@
           "marc-records-editor.item.put",
           "marc-records-editor.links.suggestion.post",
           "instance-authority-links.instances.collection.put",
-          "marc-specifications.item.get",
-          "ui-quick-marc.settings.lccn-duplicate-check"
+          "marc-specifications.item.get"
         ],
         "visible": true
       },
@@ -104,8 +102,7 @@
           "marc-records-editor.item.post",
           "marc-records-editor.links.suggestion.post",
           "instance-authority-links.instances.collection.put",
-          "marc-specifications.item.get",
-          "ui-quick-marc.settings.lccn-duplicate-check"
+          "marc-specifications.item.get"
         ],
         "visible": true
       },
@@ -119,8 +116,7 @@
           "instance-authority-links.instances.collection.post",
           "instance-authority-links.authorities.bulk.post",
           "marc-records-editor.status.item.get",
-          "marc-specifications.item.get",
-          "ui-quick-marc.settings.lccn-duplicate-check"
+          "marc-specifications.item.get"
         ],
         "visible": true
       },
@@ -132,8 +128,7 @@
           "marc-records-editor.item.put",
           "inventory-storage.locations.collection.get",
           "marc-specifications.item.get",
-          "search.authorities.collection.get",
-          "ui-quick-marc.settings.lccn-duplicate-check"
+          "search.authorities.collection.get"
         ],
         "visible": true
       },
@@ -148,29 +143,12 @@
         "visible": true
       },
       {
-        "permissionName": "settings.quick-marc.enabled",
-        "displayName": "Settings (MARC): Module is enabled.",
-        "subPermissions": [
-          "settings.enabled"
-        ],
-        "visible": false
-      },
-      {
-        "permissionName": "ui-quick-marc.settings.lccn-duplicate-check",
-        "displayName": "Enable duplicate LCCN (010 $a) checking of MARC bibliographic and authority records",
+        "permissionName": "ui-quick-marc.settings.lccn-duplicate-check.view",
+        "displayName": "View: Enable duplicate LCCN (010 $a) checking of MARC bibliographic and authority records",
         "subPermissions": [
           "mod-settings.entries.collection.get",
           "mod-settings.entries.item.get",
           "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check"
-        ],
-        "visible": false
-      },
-      {
-        "permissionName": "ui-quick-marc.settings.lccn-duplicate-check.view",
-        "displayName": "View: Enable duplicate LCCN (010 $a) checking of MARC bibliographic and authority records",
-        "subPermissions": [
-          "settings.quick-marc.enabled",
-          "ui-quick-marc.settings.lccn-duplicate-check"
         ],
         "visible": true
       },
