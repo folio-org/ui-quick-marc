@@ -1,7 +1,6 @@
 import {
   useCallback,
   useContext,
-  useMemo,
 } from 'react';
 import assignWith from 'lodash/assignWith';
 
@@ -55,6 +54,10 @@ const useValidation = (context) => {
   }, [context, quickMarcContext]);
 
   const formatBEValidationResponse = (response, marcRecords) => {
+    if (!response.issues) {
+      return {};
+    }
+
     return response.issues.reduce((acc, cur) => {
       const match = cur.tag.match(/(.{0,3})\[(\d)\]/);
       const fieldTag = match[1];
@@ -98,7 +101,7 @@ const useValidation = (context) => {
   }, [quickMarcContext, context, runFrontEndValidation, runBackEndValidation]);
 
   const hasIssuesBySeverity = (severity) => {
-    return Object.values(quickMarcContext.validationErrors)
+    return Object.values(quickMarcContext.validationErrorsRef.current)
       .reduce((hasError, errorsList) => {
         return hasError || Boolean(errorsList.find(err => err.severity === severity));
       }, false);

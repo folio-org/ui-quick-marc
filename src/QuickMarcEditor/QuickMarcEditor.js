@@ -15,6 +15,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import find from 'lodash/find';
 import noop from 'lodash/noop';
+import isEmpty from 'lodash/isEmpty';
 
 import {
   IfPermission,
@@ -42,7 +43,7 @@ import { QuickMarcEditorRows } from './QuickMarcEditorRows';
 import { OptimisticLockingBanner } from './OptimisticLockingBanner';
 import { AutoLinkingButton } from './AutoLinkingButton';
 import { QuickMarcContext } from '../contexts';
-import { useAuthorityLinking } from '../hooks';
+import { MISSING_FIELD_ID, useAuthorityLinking, useValidation } from '../hooks';
 import { QUICK_MARC_ACTIONS } from './constants';
 import {
   ERROR_TYPES,
@@ -102,6 +103,7 @@ const QuickMarcEditor = ({
   confirmRemoveAuthorityLinking,
   linksCount,
   onCheckCentralTenantPerm,
+  validate,
   modifiedSinceLastSubmit,
 }) => {
   const stripes = useStripes();
@@ -117,7 +119,8 @@ const QuickMarcEditor = ({
   const continueAfterSave = useRef(false);
   const formRef = useRef(null);
   const confirmationChecks = useRef({ ...REQUIRED_CONFIRMATIONS });
-  const { setModifiedSinceLastSubmit } = useContext(QuickMarcContext);
+  const { validationErrorsRef, setModifiedSinceLastSubmit, setValidationErrors } = useContext(QuickMarcContext);
+  const { hasErrorIssues } = useValidation();
 
   const isConsortiaEnv = stripes.hasInterface('consortia');
   const searchParameters = new URLSearchParams(location.search);
@@ -173,6 +176,32 @@ const QuickMarcEditor = ({
 
   const confirmSubmit = useCallback(async (e, isKeepEditing = false) => {
     continueAfterSave.current = isKeepEditing;
+    let skipValidation = false;
+
+    // if there are no error issues and user hasn't modified a record since last submit click
+    // then we can skip validation and save the record even if there are warnings
+    if (!isEmpty(validationErrorsRef.current) && !modifiedSinceLastSubmit && !hasErrorIssues) {
+      skipValidation = true;
+    }
+
+    // if made edits after last attempt to save then validate again
+    // otherwise save record
+    if (!skipValidation) {
+      const newValidationErrors = await validate(getState().values);
+
+      const validationErrorsWithoutFieldId = newValidationErrors[MISSING_FIELD_ID] || [];
+
+      validationErrorsWithoutFieldId.forEach((error) => {
+        showCallout({
+          message: error.message,
+          messageId: error.id,
+          values: error.values,
+          type: 'error',
+        });
+      });
+    } else {
+      setValidationErrors({});
+    }
 
     if (confirmationChecks.current[CONFIRMATIONS.DELETE_RECORDS] && deletedRecords.length) {
       setIsDeleteModalOpened(true);
@@ -209,6 +238,13 @@ const QuickMarcEditor = ({
     linksCount,
     records,
     instance,
+    getState,
+    hasErrorIssues,
+    modifiedSinceLastSubmit,
+    setValidationErrors,
+    showCallout,
+    validate,
+    validationErrorsRef,
   ]);
 
   const paneFooter = useMemo(() => {
@@ -557,6 +593,8 @@ QuickMarcEditor.propTypes = {
   }),
   confirmRemoveAuthorityLinking: PropTypes.bool,
   onCheckCentralTenantPerm: PropTypes.func,
+  validate: PropTypes.func.isRequired,
+  modifiedSinceLastSubmit: PropTypes.bool.isRequired,
 };
 
 QuickMarcEditor.defaultProps = {

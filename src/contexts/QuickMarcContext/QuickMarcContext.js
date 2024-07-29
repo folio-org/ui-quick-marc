@@ -1,6 +1,8 @@
 import {
   createContext,
+  useCallback,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import PropTypes from 'prop-types';
@@ -18,13 +20,17 @@ const QuickMarcProvider = ({
   children,
 }) => {
   const [selectedSourceFile, setSelectedSourceFile] = useState(null);
-  const [validationErrors, setValidationErrors] = useState({});
+  const validationErrors = useRef({});
   const [modifiedSinceLastSubmit, setModifiedSinceLastSubmit] = useState(false);
+
+  const setValidationErrors = useCallback((newValidationErrors) => {
+    validationErrors.current = newValidationErrors;
+  }, []);
 
   const contextValue = useMemo(() => ({
     selectedSourceFile,
     setSelectedSourceFile,
-    validationErrors,
+    validationErrorsRef: validationErrors,
     setValidationErrors,
     modifiedSinceLastSubmit,
     setModifiedSinceLastSubmit,

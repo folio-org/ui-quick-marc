@@ -17,7 +17,6 @@ import { getHeaders } from '@folio/stripes-marc-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
 import {
-  MISSING_FIELD_ID,
   useAuthorityLinking,
   useValidation,
 } from '../hooks';
@@ -81,7 +80,7 @@ const QuickMarcEditWrapper = ({
   const showCallout = useShowCallout();
   const location = useLocation();
   const [httpError, setHttpError] = useState(null);
-  const { validationErrors, modifiedSinceLastSubmit } = useContext(QuickMarcContext);
+  const { validationErrorsRef } = useContext(QuickMarcContext);
 
   const { token, locale } = stripes.okapi;
   const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType);
@@ -111,7 +110,7 @@ const QuickMarcEditWrapper = ({
     linksCount,
     instance.naturalId,
   ]);
-  const { validate, hasErrorIssues } = useValidation(validationContext);
+  const { validate } = useValidation(validationContext);
 
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesToSave = flow(
@@ -129,36 +128,12 @@ const QuickMarcEditWrapper = ({
     return validate(formValuesForValidation.records);
   }, [validate, prepareForSubmit]);
 
-  const onSubmit = useCallback(async (formValues) => {
+  const onSubmit = useCallback(async (formValues, api, complete) => {
     let is1xxOr010Updated = false;
 
-    // if made edits after last attempt to save then validate again
-    // otherwise save record
-
-    let newValidationErrors = null;
-
-    if (modifiedSinceLastSubmit || isEmpty(validationErrors)) {
-      newValidationErrors = await runValidation(formValues);
-
-      const validationErrorsWithoutFieldId = newValidationErrors[MISSING_FIELD_ID] || [];
-
-      validationErrorsWithoutFieldId.forEach((error) => {
-        showCallout({
-          message: error.message,
-          messageId: error.id,
-          values: error.values,
-          type: 'error',
-        });
-      });
-    }
-
-    // if validation has any issues
-    if (!isEmpty(newValidationErrors)) {
-      return false;
-    }
-
-    if (hasErrorIssues) {
-      return false;
+    // if validation has any issues - cancel submit
+    if (!isEmpty(validationErrorsRef.current)) {
+      return complete();
     }
 
     if (marcType === MARC_TYPES.AUTHORITY && linksCount > 0) {
@@ -275,9 +250,7 @@ const QuickMarcEditWrapper = ({
     locale,
     updateMarcRecord,
     isRequestToCentralTenantFromMember,
-    runValidation,
-    validationErrors,
-    modifiedSinceLastSubmit,
+    validationErrorsRef,
   ]);
 
   return (
@@ -296,6 +269,7 @@ const QuickMarcEditWrapper = ({
       externalRecordPath={externalRecordPath}
       linksCount={linksCount}
       onCheckCentralTenantPerm={onCheckCentralTenantPerm}
+      validate={runValidation}
     />
   );
 };
