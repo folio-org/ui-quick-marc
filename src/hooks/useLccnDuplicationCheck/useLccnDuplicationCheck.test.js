@@ -1,22 +1,26 @@
 import { useOkapiKy } from '@folio/stripes/core';
-import { renderHook } from '@folio/jest-config-stripes/testing-library/react';
+import { act, renderHook } from '@folio/jest-config-stripes/testing-library/react';
 
 import { useLccnDuplicationCheck } from './useLccnDuplicationCheck';
 import { useLccnDuplicateConfig } from '../../queries';
 import { MARC_TYPES } from '../../common/constants';
+import { QUICK_MARC_ACTIONS } from '../../QuickMarcEditor/constants';
 
 jest.mock('../../queries', () => ({
   ...jest.requireActual('../../queries'),
   useLccnDuplicateConfig: jest.fn(),
 }));
 
+const id = 'record-id';
+
 describe('useLccnDuplicationCheck', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useLccnDuplicateConfig.mockReturnValue({ duplicateLccnCheckingEnabled: false });
   });
 
   describe('when marc type is bib', () => {
-    describe('when duplicateLccnCheckingEnabled is enabled and LCCN is already used in a record', () => {
+    describe('when duplicateLccnCheckingEnabled is enabled and LCCN is already used in another record', () => {
       it('should return error', async () => {
         const fieldId = 'field-id';
         const formValues = {
@@ -39,13 +43,15 @@ describe('useLccnDuplicationCheck', () => {
         const { result } = renderHook(useLccnDuplicationCheck, {
           initialProps: {
             marcType: MARC_TYPES.BIB,
+            action: QUICK_MARC_ACTIONS.EDIT,
+            id,
           },
         });
 
-        const error = await result.current.validateLccnDuplication(formValues);
+        const error = await act(() => result.current.validateLccnDuplication(formValues));
 
         expect(mockGet).toHaveBeenCalledWith(
-          'search/instances?limit=1&query=(lccn=="123" or lccn=="456" and source=="MARC")',
+          `search/instances?limit=1&query=((lccn=="123" or lccn=="456") not id=="${id}" and source=="MARC")`,
         );
         expect(error).toEqual({
           [fieldId]: { id: 'ui-quick-marc.record.error.010.lccnDuplicated' },
@@ -76,13 +82,15 @@ describe('useLccnDuplicationCheck', () => {
         const { result } = renderHook(useLccnDuplicationCheck, {
           initialProps: {
             marcType: MARC_TYPES.BIB,
+            action: QUICK_MARC_ACTIONS.DERIVE,
+            id,
           },
         });
 
-        const error = await result.current.validateLccnDuplication(formValues);
+        const error = await act(() => result.current.validateLccnDuplication(formValues));
 
         expect(mockGet).toHaveBeenCalledWith(
-          'search/instances?limit=1&query=(lccn=="123" or lccn=="456" and source=="MARC")',
+          'search/instances?limit=1&query=((lccn=="123" or lccn=="456") and source=="MARC")',
         );
         expect(error).toBeUndefined();
       });
@@ -151,7 +159,7 @@ describe('useLccnDuplicationCheck', () => {
       });
     });
 
-    describe('when duplicateLccnCheckingEnabled is enabled and LCCN is already used in a record', () => {
+    describe('when duplicateLccnCheckingEnabled is enabled and LCCN is already used in another record', () => {
       it('should return error', async () => {
         const fieldId = 'field-id';
         const formValues = {
@@ -174,12 +182,13 @@ describe('useLccnDuplicationCheck', () => {
         const { result } = renderHook(useLccnDuplicationCheck, {
           initialProps: {
             marcType: MARC_TYPES.AUTHORITY,
+            action: QUICK_MARC_ACTIONS.CREATE,
           },
         });
 
-        const error = await result.current.validateLccnDuplication(formValues);
+        const error = await act(() => result.current.validateLccnDuplication(formValues));
 
-        expect(mockGet).toHaveBeenCalledWith('search/authorities?limit=1&query=(lccn=="123" or lccn=="456")');
+        expect(mockGet).toHaveBeenCalledWith('search/authorities?limit=1&query=((lccn=="123" or lccn=="456"))');
         expect(error).toEqual({
           [fieldId]: { id: 'ui-quick-marc.record.error.010.lccnDuplicated' },
         });
@@ -209,12 +218,16 @@ describe('useLccnDuplicationCheck', () => {
         const { result } = renderHook(useLccnDuplicationCheck, {
           initialProps: {
             marcType: MARC_TYPES.AUTHORITY,
+            action: QUICK_MARC_ACTIONS.EDIT,
+            id,
           },
         });
 
-        const error = await result.current.validateLccnDuplication(formValues);
+        const error = await act(() => result.current.validateLccnDuplication(formValues));
 
-        expect(mockGet).toHaveBeenCalledWith('search/authorities?limit=1&query=(lccn=="123" or lccn=="456")');
+        expect(mockGet).toHaveBeenCalledWith(
+          `search/authorities?limit=1&query=((lccn=="123" or lccn=="456") not id=="${id}")`,
+        );
         expect(error).toBeUndefined();
       });
     });

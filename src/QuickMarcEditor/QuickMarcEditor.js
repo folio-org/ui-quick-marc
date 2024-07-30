@@ -63,8 +63,13 @@ import {
   updateRecordAtIndex,
   markLinkedRecords,
   getLeaderPositions,
+  joinErrors,
 } from './utils';
-import { MISSING_FIELD_ID, useAuthorityLinking } from '../hooks';
+import {
+  MISSING_FIELD_ID,
+  useAuthorityLinking,
+  useLccnDuplicationCheck,
+} from '../hooks';
 import { QuickMarcContext } from '../contexts';
 
 import css from './QuickMarcEditor.css';
@@ -125,6 +130,10 @@ const QuickMarcEditor = ({
   const isShared = searchParameters.get('shared') === 'true';
 
   const { unlinkAuthority } = useAuthorityLinking({ marcType, action });
+  const {
+    validateLccnDuplication,
+    isValidatingLccnDuplication,
+  } = useLccnDuplicationCheck({ marcType, id: instance?.id, action });
 
   const deletedRecords = useMemo(() => {
     return records
@@ -134,7 +143,7 @@ const QuickMarcEditor = ({
 
   const { type, position7 } = getLeaderPositions(marcType, records);
 
-  const saveFormDisabled = submitting ? true : pristine;
+  const saveFormDisabled = submitting || isValidatingLccnDuplication || pristine;
 
   const redirectToVersion = useCallback((updatedVersion) => {
     const searchParams = new URLSearchParams(location.search);
@@ -168,12 +177,15 @@ const QuickMarcEditor = ({
     setIsUnlinkRecordsModalOpen(false);
   };
 
-  const confirmSubmit = useCallback((e, isKeepEditing = false) => {
+  const confirmSubmit = useCallback(async (e, isKeepEditing = false) => {
     continueAfterSave.current = isKeepEditing;
 
-    const validationErrors = validate(getState().values);
+    let validationErrors = validate(getState().values);
 
     const validationErrorsWithoutFieldId = validationErrors[MISSING_FIELD_ID] || [];
+    const lccnDuplicationError = await validateLccnDuplication(getState().values);
+
+    validationErrors = joinErrors(validationErrors, lccnDuplicationError);
 
     validationErrorsWithoutFieldId.forEach((error) => {
       showCallout({
@@ -228,6 +240,7 @@ const QuickMarcEditor = ({
     showCallout,
     instance,
     setValidationErrors,
+    validateLccnDuplication,
   ]);
 
   const paneFooter = useMemo(() => {
@@ -249,9 +262,9 @@ const QuickMarcEditor = ({
             buttonClass={css.saveContinueBtn}
             disabled={saveFormDisabled}
             id="quick-marc-record-save-edit"
-            onClick={(event) => {
+            onClick={async (event) => {
               confirmationChecks.current = { ...REQUIRED_CONFIRMATIONS };
-              confirmSubmit(event, true);
+              await confirmSubmit(event, true);
             }}
             marginBottom0
           >
@@ -262,9 +275,9 @@ const QuickMarcEditor = ({
           buttonStyle="primary mega"
           disabled={saveFormDisabled}
           id="quick-marc-record-save"
-          onClick={(e) => {
+          onClick={async (e) => {
             confirmationChecks.current = { ...REQUIRED_CONFIRMATIONS };
-            confirmSubmit(e);
+            await confirmSubmit(e);
           }}
           marginBottom0
         >
@@ -348,15 +361,15 @@ const QuickMarcEditor = ({
     setIsUpdate0101xxfieldsAuthRecModalOpen(false);
   };
 
-  const confirmUpdateLinks = (e) => {
+  const confirmUpdateLinks = async (e) => {
     confirmationChecks.current[CONFIRMATIONS.UPDATE_LINKED] = false;
-    confirmSubmit(e, continueAfterSave.current);
+    await confirmSubmit(e, continueAfterSave.current);
   };
 
-  const confirmDeleteFields = (e) => {
+  const confirmDeleteFields = async (e) => {
     setIsDeleteModalOpened(false);
     confirmationChecks.current[CONFIRMATIONS.DELETE_RECORDS] = false;
-    confirmSubmit(e, continueAfterSave.current);
+    await confirmSubmit(e, continueAfterSave.current);
   };
 
   const cancelDeleteFields = () => {
@@ -391,11 +404,11 @@ const QuickMarcEditor = ({
   const shortcuts = useMemo(() => ([{
     name: 'save',
     shortcut: 'mod+s',
-    handler: (e) => {
+    handler: async (e) => {
       if (!saveFormDisabled) {
         e.preventDefault();
         confirmationChecks.current = { ...REQUIRED_CONFIRMATIONS };
-        confirmSubmit(e, continueAfterSave.current);
+        await confirmSubmit(e, continueAfterSave.current);
       }
     },
   }, {

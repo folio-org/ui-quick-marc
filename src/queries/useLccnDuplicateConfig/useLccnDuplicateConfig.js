@@ -3,14 +3,13 @@ import { useQuery } from 'react-query';
 import {
   useNamespace,
   useOkapiKy,
-  useStripes,
 } from '@folio/stripes/core';
+import { MARC_TYPES } from '../../common/constants';
 
 const KEY = 'lccn-duplicate-check';
 const SCOPE = 'ui-quick-marc.lccn-duplicate-check';
 
-const useLccnDuplicateConfig = () => {
-  const stripes = useStripes();
+const useLccnDuplicateConfig = ({ marcType }) => {
   const ky = useOkapiKy();
   const [namespace] = useNamespace({ key: 'lccn-duplicate-config' });
 
@@ -23,7 +22,7 @@ const useLccnDuplicateConfig = () => {
       },
     }).json(),
     {
-      enabled: Boolean(stripes.hasPerm('ui-quick-marc.settings.lccn-duplicate-check.view')),
+      enabled: [MARC_TYPES.BIB, MARC_TYPES.AUTHORITY].includes(marcType),
       cacheTime: 0, // to avoid having irrelevant flag after the permission was revoked.
     },
   );

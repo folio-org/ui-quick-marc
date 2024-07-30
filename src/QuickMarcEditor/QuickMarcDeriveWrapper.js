@@ -1,6 +1,5 @@
 import React, {
   useCallback,
-  useContext,
   useMemo,
   useState,
 } from 'react';
@@ -13,7 +12,6 @@ import QuickMarcEditor from './QuickMarcEditor';
 import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
 import {
   useAuthorityLinking,
-  useLccnDuplicationCheck,
   useValidation,
 } from '../hooks';
 import { QUICK_MARC_ACTIONS } from './constants';
@@ -33,9 +31,7 @@ import {
   removeEnteredDate,
   autopopulatePhysDescriptionField,
   autopopulateMaterialCharsField,
-  joinErrors,
 } from './utils';
-import { QuickMarcContext } from '../contexts';
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
@@ -57,9 +53,7 @@ const QuickMarcDeriveWrapper = ({
   fixedFieldSpec,
 }) => {
   const showCallout = useShowCallout();
-  const { setValidationErrors } = useContext(QuickMarcContext);
   const { linkableBibFields, actualizeLinks, linkingRules } = useAuthorityLinking({ marcType, action });
-  const { validateLccnDuplication } = useLccnDuplicationCheck({ marcType });
   const [httpError, setHttpError] = useState(null);
 
   const validationContext = useMemo(() => ({
@@ -99,14 +93,6 @@ const QuickMarcDeriveWrapper = ({
       prepareForSubmit,
       combineSplitFields,
     )(formValues);
-
-    const lccnDuplicationError = await validateLccnDuplication(formValues);
-
-    if (lccnDuplicationError) {
-      setValidationErrors(curErrors => joinErrors(curErrors, lccnDuplicationError));
-
-      return;
-    }
 
     showCallout({ messageId: 'ui-quick-marc.record.saveNew.onSave' });
 
@@ -159,15 +145,7 @@ const QuickMarcDeriveWrapper = ({
         setHttpError(parsedError);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    onClose,
-    showCallout,
-    prepareForSubmit,
-    actualizeLinks,
-    validateLccnDuplication,
-    setValidationErrors,
-    joinErrors,
-  ]);
+  }, [onClose, showCallout, prepareForSubmit, actualizeLinks]);
 
   return (
     <QuickMarcEditor
