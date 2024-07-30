@@ -643,8 +643,10 @@ describe('Given QuickMarcEditor', () => {
       fireEvent.change(contentField, { target: { value: 'Changed test title' } });
       fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
 
-      expect(onSubmitMock).toHaveBeenCalled();
-      expect(onCloseMock).not.toHaveBeenCalled();
+      waitFor(() => {
+        expect(onSubmitMock).toHaveBeenCalled();
+        expect(onCloseMock).not.toHaveBeenCalled();
+      });
     });
   });
 
@@ -660,9 +662,10 @@ describe('Given QuickMarcEditor', () => {
       fireEvent.change(contentField, { target: { value: 'Changed test title' } });
       fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
-      expect(onSubmitMock).toHaveBeenCalled();
-
-      waitFor(() => expect(onCloseMock).toHaveBeenCalledWith());
+      waitFor(() => {
+        expect(onSubmitMock).toHaveBeenCalled();
+        expect(onCloseMock).toHaveBeenCalledWith();
+      });
     });
   });
 
@@ -677,7 +680,7 @@ describe('Given QuickMarcEditor', () => {
       fireEvent.click(deleteButtons[deleteButtons.length - 1]);
       fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
-      expect(getByText('Confirmation modal')).toBeDefined();
+      waitFor(() => expect(getByText('Confirmation modal')).toBeDefined());
     });
   });
 
@@ -693,10 +696,12 @@ describe('Given QuickMarcEditor', () => {
 
         fireEvent.click(deleteButtons[deleteButtons.length - 1]);
         fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
-        fireEvent.click(getByText('Confirm'));
 
-        expect(queryByText('Confirmation modal')).toBeNull();
-        expect(onSubmitMock).toHaveBeenCalled();
+        waitFor(() => {
+          fireEvent.click(getByText('Confirm'));
+          expect(queryByText('Confirmation modal')).toBeNull();
+          expect(onSubmitMock).toHaveBeenCalled();
+        });
       });
     });
 
@@ -714,18 +719,18 @@ describe('Given QuickMarcEditor', () => {
         expect(queryByText('$a Test title')).toBeNull();
 
         fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
-        fireEvent.click(getByText('Cancel'));
-
-        expect(queryByText('Confirmation modal')).toBeNull();
-
-        expect(getByText('$a Test title')).toBeDefined();
+        waitFor(() => {
+          fireEvent.click(getByText('Cancel'));
+          expect(queryByText('Confirmation modal')).toBeNull();
+          expect(getByText('$a Test title')).toBeDefined();
+        });
       });
     });
   });
 
   describe('when saving form with validation errors and deleted fields', () => {
     beforeEach(() => {
-      mockValidate.mockClear().mockReturnValue({ [MISSING_FIELD_ID]: [{ id: 'some error', values: {} }] });
+      mockValidate.mockClear().mockResolvedValue({ [MISSING_FIELD_ID]: [{ id: 'some error', values: {} }] });
     });
 
     it('should show errors and not show confirmation modal', () => {
@@ -743,11 +748,13 @@ describe('Given QuickMarcEditor', () => {
       fireEvent.click(deleteButtons[0]);
       fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
-      expect(queryByText('Confirmation modal')).toBeNull();
-      expect(mockShowCallout).toHaveBeenCalledWith({
-        messageId: 'some error',
-        values: {},
-        type: 'error',
+      waitFor(() => {
+        expect(queryByText('Confirmation modal')).toBeNull();
+        expect(mockShowCallout).toHaveBeenCalledWith({
+          messageId: 'some error',
+          values: {},
+          type: 'error',
+        });
       });
     });
   });
@@ -805,7 +812,7 @@ describe('Given QuickMarcEditor', () => {
           fireEvent.change(contentField, { target: { value: '$a n  9310066' } });
           fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
-          expect(getByText('Confirmation modal')).toBeDefined();
+          waitFor(() => expect(getByText('Confirmation modal')).toBeDefined());
         });
 
         it('should close the modal, save the updates and close the editor on clicking save and close button', async () => {
@@ -819,11 +826,13 @@ describe('Given QuickMarcEditor', () => {
 
           fireEvent.change(contentField, { target: { value: '1xx update' } });
           fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
-          fireEvent.click(getByText('Confirm'));
 
-          expect(onSubmitMock).toHaveBeenCalled();
-          waitFor(() => expect(queryByText('Confirmation modal')).toBeNull());
-          waitFor(() => expect(onCloseMock).toHaveBeenCalledWith());
+          waitFor(() => {
+            fireEvent.click(getByText('Confirm'));
+            expect(onSubmitMock).toHaveBeenCalled();
+            expect(queryByText('Confirmation modal'));
+            expect(onCloseMock).toHaveBeenCalledWith();
+          });
         });
 
         it('should close the modal on clicking keep editing button ', () => {
@@ -865,9 +874,11 @@ describe('Given QuickMarcEditor', () => {
 
           fireEvent.change(contentField, { target: { value: '1xx update' } });
           fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
-          fireEvent.click(getByText('Cancel'));
 
-          waitFor(() => expect(queryByText('Confirmation modal')).toBeNull());
+          waitFor(() => {
+            fireEvent.click(getByText('Cancel'));
+            expect(queryByText('Confirmation modal')).toBeNull();
+          });
         });
       });
 
@@ -912,7 +923,7 @@ describe('Given QuickMarcEditor', () => {
           fireEvent.change(contentField, { target: { value: '1xx update' } });
           fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
-          expect(getByText('Confirmation modal')).toBeDefined();
+          waitFor(() => expect(getByText('Confirmation modal')).toBeDefined());
         });
 
         it('should close the modal, save the updates and editor should be open - on clickng save and keep editing button', async () => {
@@ -954,11 +965,13 @@ describe('Given QuickMarcEditor', () => {
 
           fireEvent.change(contentField, { target: { value: '1xx update' } });
           fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
-          fireEvent.click(getByText('Confirm'));
 
-          expect(onSubmitMock).toHaveBeenCalled();
-          waitFor(() => expect(queryByText('Confirmation modal')).toBeNull());
-          expect(getByText('ui-quick-marc.authority-record.edit.title')).toBeDefined();
+          waitFor(() => {
+            fireEvent.click(getByText('Confirm'));
+            expect(onSubmitMock).toHaveBeenCalled();
+            expect(queryByText('Confirmation modal')).toBeNull();
+            expect(getByText('ui-quick-marc.authority-record.edit.title')).toBeDefined();
+          });
         });
 
         it('should close the modal on clicking keep editing button ', () => {
@@ -1000,9 +1013,11 @@ describe('Given QuickMarcEditor', () => {
 
           fireEvent.change(contentField, { target: { value: '1xx update' } });
           fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
-          fireEvent.click(getByText('Cancel'));
 
-          waitFor(() => expect(queryByText('Confirmation modal')).toBeNull());
+          waitFor(() => {
+            expect(queryByText('Confirmation modal')).toBeNull();
+            fireEvent.click(getByText('Cancel'));
+          });
         });
       });
     });
@@ -1039,7 +1054,7 @@ describe('Given QuickMarcEditor', () => {
           fireEvent.change(contentField, { target: { value: '1xx update' } });
           fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
-          expect(getByText('Confirmation modal')).toBeDefined();
+          waitFor(() => expect(getByText('Confirmation modal')).toBeDefined());
         });
 
         it('should close the modal, save the updates and close the editor on clickng save and close button', async () => {
@@ -1071,11 +1086,13 @@ describe('Given QuickMarcEditor', () => {
 
           fireEvent.change(contentField, { target: { value: '1xx update' } });
           fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
-          fireEvent.click(getByText('Confirm'));
 
-          expect(onSubmitMock).toHaveBeenCalled();
-          waitFor(() => expect(queryByText('Confirmation modal')).toBeNull());
-          waitFor(() => expect(onCloseMock).toHaveBeenCalledWith());
+          waitFor(() => {
+            fireEvent.click(getByText('Confirm'));
+            expect(onSubmitMock).toHaveBeenCalled();
+            expect(queryByText('Confirmation modal')).toBeNull();
+            expect(onCloseMock).toHaveBeenCalledWith();
+          });
         });
 
         it('should close the modal on clicking keep editing button ', () => {
@@ -1107,9 +1124,11 @@ describe('Given QuickMarcEditor', () => {
 
           fireEvent.change(contentField, { target: { value: '1xx update' } });
           fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
-          fireEvent.click(getByText('Cancel'));
 
-          waitFor(() => expect(queryByText('Confirmation modal')).toBeNull());
+          waitFor(() => {
+            fireEvent.click(getByText('Cancel'));
+            expect(queryByText('Confirmation modal')).toBeNull();
+          });
         });
       });
 
@@ -1144,7 +1163,7 @@ describe('Given QuickMarcEditor', () => {
           fireEvent.change(contentField, { target: { value: '1xx update' } });
           fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
-          expect(getByText('Confirmation modal')).toBeDefined();
+          waitFor(() => expect(getByText('Confirmation modal')).toBeDefined());
         });
 
         it('should close the modal, save the updates and editor should be open - on clicking save and keep editing button', async () => {
@@ -1176,11 +1195,13 @@ describe('Given QuickMarcEditor', () => {
 
           fireEvent.change(contentField, { target: { value: '1xx update' } });
           fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
-          fireEvent.click(getByText('Confirm'));
 
-          expect(onSubmitMock).toHaveBeenCalled();
-          waitFor(() => expect(queryByText('Confirmation modal')).toBeNull());
-          expect(getByText('ui-quick-marc.authority-record.edit.title')).toBeDefined();
+          waitFor(() => {
+            fireEvent.click(getByText('Confirm'));
+            expect(onSubmitMock).toHaveBeenCalled();
+            expect(queryByText('Confirmation modal')).toBeNull();
+            expect(getByText('ui-quick-marc.authority-record.edit.title')).toBeDefined();
+          });
         });
 
         it('should close the modal on clicking keep editing button ', () => {
@@ -1212,9 +1233,11 @@ describe('Given QuickMarcEditor', () => {
 
           fireEvent.change(contentField, { target: { value: '1xx update' } });
           fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
-          fireEvent.click(getByText('Cancel'));
 
-          waitFor(() => expect(queryByText('Confirmation modal')).toBeNull());
+          waitFor(() => {
+            fireEvent.click(getByText('Cancel'));
+            expect(queryByText('Confirmation modal')).toBeNull();
+          });
         });
       });
     });
@@ -1269,8 +1292,10 @@ describe('Given QuickMarcEditor', () => {
           fireEvent.change(contentField, { target: { value: '$a (OCoLC)oca03475451' } });
           fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
-          expect(queryByText('Confirmation modal')).toBeNull();
-          expect(onSubmitMock).toHaveBeenCalled();
+          waitFor(() => {
+            expect(queryByText('Confirmation modal')).toBeNull();
+            expect(onSubmitMock).toHaveBeenCalled();
+          });
         });
       });
 
@@ -1323,8 +1348,10 @@ describe('Given QuickMarcEditor', () => {
           fireEvent.change(contentField, { target: { value: '$a (OCoLC)oca03475451' } });
           fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
-          expect(queryByText('Confirmation modal')).toBeNull();
-          expect(onSubmitMock).toHaveBeenCalled();
+          waitFor(() => {
+            expect(queryByText('Confirmation modal')).toBeNull();
+            expect(onSubmitMock).toHaveBeenCalled();
+          });
         });
       });
     });

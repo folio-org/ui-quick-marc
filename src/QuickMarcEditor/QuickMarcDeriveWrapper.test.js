@@ -18,7 +18,7 @@ import { MARC_TYPES } from '../common/constants';
 
 import Harness from '../../test/jest/helpers/harness';
 import { useAuthorityLinking } from '../hooks';
-import { bibLeader } from '../../test/jest/fixtures/leaders';
+import { bibLeader, bibLeaderString } from '../../test/jest/fixtures/leaders';
 import fixedFieldSpecBib from '../../test/mocks/fixedFieldSpecBib';
 
 jest.mock('react-final-form', () => ({
@@ -579,7 +579,7 @@ describe('Given QuickMarcDeriveWrapper', () => {
         records: expect.arrayContaining([
           expect.objectContaining({
             tag: 'LDR',
-            content: bibLeader,
+            content: bibLeaderString,
           }),
           expect.objectContaining({
             tag: '100',

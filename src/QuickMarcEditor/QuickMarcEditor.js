@@ -227,8 +227,8 @@ const QuickMarcEditor = ({
     }
 
     handleSubmit(e)
-      .then(handleSubmitResponse)
-      .finally(closeModals);
+      ?.then(handleSubmitResponse)
+      ?.finally(closeModals);
   }, [
     deletedRecords,
     handleSubmit,

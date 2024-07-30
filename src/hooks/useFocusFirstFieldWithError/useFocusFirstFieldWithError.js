@@ -13,7 +13,8 @@ export const useFocusFirstFieldWithError = () => {
 
   const firstFieldWithErrors = useMemo(() => {
     return values.records.find(({ id }) => Boolean(validationErrorsRef.current[id]));
-  }, [values.records, validationErrorsRef]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.records, validationErrorsRef.current]);
 
   useEffect(() => {
     if (!firstFieldWithErrors?.id) {

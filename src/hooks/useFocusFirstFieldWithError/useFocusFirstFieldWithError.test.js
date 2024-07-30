@@ -23,8 +23,10 @@ jest.mock('react-final-form', () => ({
 const Wrapper = ({ children }) => (
   <Harness
     quickMarcContext={{
-      validationErrors: {
-        'id-with-error': [{ id: 'some-error' }],
+      validationErrorsRef: {
+        current: {
+          'id-with-error': [{ id: 'some-error' }],
+        },
       },
     }}
   >

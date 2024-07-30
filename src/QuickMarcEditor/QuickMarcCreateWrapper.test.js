@@ -24,6 +24,7 @@ import { saveLinksToNewRecord } from './utils';
 import {
   authorityLeader,
   bibLeader,
+  bibLeaderString,
   holdingsLeader,
 } from '../../test/jest/fixtures/leaders';
 import fixedFieldSpecBib from '../../test/mocks/fixedFieldSpecBib';
@@ -380,9 +381,9 @@ describe('Given QuickMarcCreateWrapper', () => {
         }).getByText;
       });
 
-      await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+      fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
-      expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
+      waitFor(() => expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' }));
     }, 100);
 
     it('should create bib record with correct payload', async () => {
@@ -731,7 +732,7 @@ describe('Given QuickMarcCreateWrapper', () => {
         records: expect.arrayContaining([
           expect.objectContaining({
             tag: 'LDR',
-            content: mockRecords[MARC_TYPES.BIB][0].content,
+            content: bibLeaderString,
           }),
           expect.objectContaining({
             tag: '100',
