@@ -1,15 +1,18 @@
 import React, {
   useCallback,
+  useContext,
   useMemo,
   useState,
 } from 'react';
 import PropTypes from 'prop-types';
 import flow from 'lodash/flow';
 import noop from 'lodash/noop';
+import isEmpty from 'lodash/isEmpty';
 
 import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
+import { QuickMarcContext } from '../contexts';
 import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
 import {
   useAuthorityLinking,
@@ -60,6 +63,7 @@ const QuickMarcCreateWrapper = ({
   const showCallout = useShowCallout();
   const [httpError, setHttpError] = useState(null);
   const { linkableBibFields, actualizeLinks, linkingRules, sourceFiles } = useAuthorityLinking({ marcType, action });
+  const { validationErrorsRef } = useContext(QuickMarcContext);
 
   const validationContext = useMemo(() => ({
     initialValues,
@@ -103,7 +107,12 @@ const QuickMarcCreateWrapper = ({
     }
   }, [onSave, marcType]);
 
-  const onSubmit = useCallback(async (formValues) => {
+  const onSubmit = useCallback(async (formValues, _api, complete) => {
+    // if validation has any issues - cancel submit
+    if (!isEmpty(validationErrorsRef.current)) {
+      return complete();
+    }
+
     const formValuesToProcess = flow(
       prepareForSubmit,
       combineSplitFields,
@@ -163,7 +172,7 @@ const QuickMarcCreateWrapper = ({
         setHttpError(parsedError);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onClose, showCallout, prepareForSubmit, actualizeLinks]);
+  }, [onClose, showCallout, prepareForSubmit, actualizeLinks, validationErrorsRef]);
 
   return (
     <QuickMarcEditor

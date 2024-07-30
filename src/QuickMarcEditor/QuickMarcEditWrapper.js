@@ -128,7 +128,7 @@ const QuickMarcEditWrapper = ({
     return validate(formValuesForValidation.records);
   }, [validate, prepareForSubmit]);
 
-  const onSubmit = useCallback(async (formValues, api, complete) => {
+  const onSubmit = useCallback(async (formValues, _api, complete) => {
     let is1xxOr010Updated = false;
 
     // if validation has any issues - cancel submit
