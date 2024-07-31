@@ -30,9 +30,7 @@
           "marc-records-editor.item.get",
           "inventory.instances.item.get",
           "instance-authority-links.instances.collection.get",
-          "instance-authority.linking-rules.collection.get",
-          "mod-settings.entries.collection.get",
-          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check"
+          "instance-authority.linking-rules.collection.get"
         ],
         "visible": true
       },
@@ -46,7 +44,9 @@
           "marc-records-editor.links.suggestion.post",
           "instance-authority-links.instances.collection.post",
           "marc-records-editor.status.item.get",
-          "marc-specifications.item.get"
+          "marc-specifications.item.get",
+          "mod-settings.entries.collection.get",
+          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check"
         ],
         "visible": true
       },
@@ -59,7 +59,9 @@
           "marc-records-editor.item.put",
           "marc-records-editor.links.suggestion.post",
           "instance-authority-links.instances.collection.put",
-          "marc-specifications.item.get"
+          "marc-specifications.item.get",
+          "mod-settings.entries.collection.get",
+          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check"
         ],
         "visible": true
       },
@@ -104,7 +106,9 @@
           "marc-records-editor.item.post",
           "marc-records-editor.links.suggestion.post",
           "instance-authority-links.instances.collection.put",
-          "marc-specifications.item.get"
+          "marc-specifications.item.get",
+          "mod-settings.entries.collection.get",
+          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check"
         ],
         "visible": true
       },
@@ -118,7 +122,9 @@
           "instance-authority-links.instances.collection.post",
           "instance-authority-links.authorities.bulk.post",
           "marc-records-editor.status.item.get",
-          "marc-specifications.item.get"
+          "marc-specifications.item.get",
+          "mod-settings.entries.collection.get",
+          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check"
         ],
         "visible": true
       },
