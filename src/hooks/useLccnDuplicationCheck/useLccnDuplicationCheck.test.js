@@ -51,7 +51,7 @@ describe('useLccnDuplicationCheck', () => {
         const error = await act(() => result.current.validateLccnDuplication(formValues));
 
         expect(mockGet).toHaveBeenCalledWith(
-          `search/instances?limit=1&query=((lccn=="123" or lccn=="456") not id=="${id}" and source=="MARC")`,
+          `search/instances?limit=1&query=((lccn=="123" or lccn=="456") not id=="${id}")`,
         );
         expect(error).toEqual({
           [fieldId]: { id: 'ui-quick-marc.record.error.010.lccnDuplicated' },
@@ -90,7 +90,7 @@ describe('useLccnDuplicationCheck', () => {
         const error = await act(() => result.current.validateLccnDuplication(formValues));
 
         expect(mockGet).toHaveBeenCalledWith(
-          'search/instances?limit=1&query=((lccn=="123" or lccn=="456") and source=="MARC")',
+          'search/instances?limit=1&query=((lccn=="123" or lccn=="456"))',
         );
         expect(error).toBeUndefined();
       });
