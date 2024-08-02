@@ -7,7 +7,6 @@ import {
   render,
   fireEvent,
   waitFor,
-  act,
 } from '@folio/jest-config-stripes/testing-library/react';
 import { runAxeTest } from '@folio/stripes-testing';
 import { useShowCallout } from '@folio/stripes-acq-components';
@@ -1100,7 +1099,7 @@ describe('Given QuickMarcEditor', () => {
 
           fireEvent.change(contentField, { target: { value: '1xx update' } });
           await act(() => fireEvent.click(getByText('stripes-acq-components.FormFooter.save')));
-          await act(() => fireEvent.click(await getByText('Confirm')));
+          await act(() => fireEvent.click(getByText('Confirm')));
 
           await waitFor(() => {
             expect(onSubmitMock).toHaveBeenCalled();

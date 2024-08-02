@@ -18,11 +18,11 @@ const useLccnDuplicationCheck = ({ marcType, id, action }) => {
   const validateLccnDuplication = useCallback(async (marcRecords) => {
     const field010 = marcRecords.find(field => field.tag === '010');
 
-    // if (!duplicateLccnCheckingEnabled
-    //   || !field010
-    //   || ![MARC_TYPES.BIB, MARC_TYPES.AUTHORITY].includes(marcType)) {
-    //   return undefined;
-    // }
+    if (!duplicateLccnCheckingEnabled
+      || !field010
+      || ![MARC_TYPES.BIB, MARC_TYPES.AUTHORITY].includes(marcType)) {
+      return undefined;
+    }
 
     const { $a = [] } = getContentSubfieldValue(field010?.content);
 

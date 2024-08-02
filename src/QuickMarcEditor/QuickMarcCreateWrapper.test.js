@@ -762,7 +762,7 @@ describe('Given QuickMarcCreateWrapper', () => {
     });
 
     describe('when marc type is not a bibliographic', () => {
-      it('should not be called actualizeLinks', async () => {
+      it('should not call actualizeLinks', async () => {
         await act(async () => {
           renderQuickMarcCreateWrapper({
             instance,

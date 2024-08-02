@@ -753,7 +753,7 @@ describe('Given QuickMarcEditWrapper', () => {
       });
 
       describe('when marc type is not a bibliographic', () => {
-        it('should not be called actualizeLinks', async () => {
+        it('should not call actualizeLinks', async () => {
           const { getByText } = renderQuickMarcEditWrapper({
             instance,
             mutator,
