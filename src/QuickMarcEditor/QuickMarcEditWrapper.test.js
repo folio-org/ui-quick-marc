@@ -18,9 +18,7 @@ import { MARC_TYPES } from '../common/constants';
 import { applyCentralTenantInHeaders } from './utils';
 
 import Harness from '../../test/jest/helpers/harness';
-import {
-  useMarcRecordMutation,
-} from '../queries';
+import { useMarcRecordMutation } from '../queries';
 import {
   authorityLeader,
   bibLeader,
@@ -46,6 +44,10 @@ jest.mock('react-router', () => ({
 jest.mock('../queries', () => ({
   ...jest.requireActual('../queries'),
   useMarcRecordMutation: jest.fn(),
+  useLccnDuplicateConfig: jest.fn().mockReturnValue({
+    isLoading: false,
+    duplicateLccnCheckingEnabled: false,
+  }),
 }));
 
 jest.mock('../hooks', () => ({

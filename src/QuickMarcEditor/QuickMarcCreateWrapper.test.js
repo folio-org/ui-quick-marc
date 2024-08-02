@@ -58,6 +58,14 @@ jest.mock('../hooks', () => ({
   useAuthorityLinking: jest.fn(),
 }));
 
+jest.mock('../queries', () => ({
+  ...jest.requireActual('../queries'),
+  useLccnDuplicateConfig: jest.fn().mockReturnValue({
+    isLoading: false,
+    duplicateLccnCheckingEnabled: false,
+  }),
+}));
+
 const mockRecords = {
   [MARC_TYPES.HOLDINGS]: [
     {
@@ -382,8 +390,10 @@ describe('Given QuickMarcCreateWrapper', () => {
 
       await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
-      expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
-    }, 100);
+      await waitFor(() => {
+        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
+      });
+    });
 
     it('should create bib record with correct payload', async () => {
       renderQuickMarcCreateWrapper({

@@ -35,6 +35,10 @@ jest.mock('./QuickMarcEditor', () => {
 jest.mock('../queries', () => ({
   ...jest.requireActual('../queries'),
   useLinkSuggestions: jest.fn().mockReturnValue({ isLoading: false, fetchLinkSuggestions: jest.fn() }),
+  useLccnDuplicateConfig: jest.fn().mockReturnValue({
+    isLoading: false,
+    duplicateLccnCheckingEnabled: false,
+  }),
 }));
 
 jest.mock('../hooks', () => ({
