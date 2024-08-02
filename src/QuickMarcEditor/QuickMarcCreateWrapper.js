@@ -74,7 +74,8 @@ const QuickMarcCreateWrapper = ({
     linkingRules,
     sourceFiles,
     fixedFieldSpec,
-  }), [initialValues, marcType, locations, linkableBibFields, linkingRules, sourceFiles, fixedFieldSpec]);
+    instanceId: instance.id,
+  }), [initialValues, marcType, locations, linkableBibFields, linkingRules, sourceFiles, fixedFieldSpec, instance.id]);
   const { validate } = useValidation(validationContext);
 
   const prepareForSubmit = useCallback((formValues) => {
@@ -172,7 +173,13 @@ const QuickMarcCreateWrapper = ({
         setHttpError(parsedError);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onClose, showCallout, prepareForSubmit, actualizeLinks, validationErrorsRef]);
+  }, [
+    onClose,
+    showCallout,
+    prepareForSubmit,
+    actualizeLinks,
+    validationErrorsRef,
+  ]);
 
   return (
     <QuickMarcEditor

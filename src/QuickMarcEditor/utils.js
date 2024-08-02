@@ -9,6 +9,7 @@ import isNumber from 'lodash/isNumber';
 import toPairs from 'lodash/toPairs';
 import flatten from 'lodash/flatten';
 import flow from 'lodash/flow';
+import assignWith from 'lodash/assignWith';
 
 import {
   checkIfUserInMemberTenant,
@@ -1211,4 +1212,8 @@ export const applyCentralTenantInHeaders = (location, stripes, marcType) => {
 
 export const isFolioSourceFileNotSelected = ({ selectedSourceFile }) => {
   return selectedSourceFile?.source !== SOURCES.FOLIO;
+};
+
+export const joinErrors = (errorsA, errorsB) => {
+  return assignWith({}, errorsA, errorsB, (objValue = [], srcValue = []) => objValue.concat(srcValue));
 };

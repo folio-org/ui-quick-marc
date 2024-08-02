@@ -38,6 +38,10 @@ jest.mock('react-router', () => ({
 jest.mock('../queries', () => ({
   ...jest.requireActual('../queries'),
   useMarcRecordMutation: jest.fn(),
+  useLccnDuplicateConfig: jest.fn().mockReturnValue({
+    isLoading: false,
+    duplicateLccnCheckingEnabled: false,
+  }),
 }));
 
 jest.mock('../hooks', () => ({

@@ -43,7 +43,12 @@ import { QuickMarcEditorRows } from './QuickMarcEditorRows';
 import { OptimisticLockingBanner } from './OptimisticLockingBanner';
 import { AutoLinkingButton } from './AutoLinkingButton';
 import { QuickMarcContext } from '../contexts';
-import { MISSING_FIELD_ID, useAuthorityLinking, useValidation } from '../hooks';
+import {
+  MISSING_FIELD_ID,
+  useAuthorityLinking,
+  useValidation,
+  useLccnDuplicationCheck,
+} from '../hooks';
 import { QUICK_MARC_ACTIONS } from './constants';
 import {
   ERROR_TYPES,
@@ -65,6 +70,7 @@ import {
   updateRecordAtIndex,
   markLinkedRecords,
   getLeaderPositions,
+  joinErrors,
 } from './utils';
 
 import css from './QuickMarcEditor.css';
@@ -140,7 +146,7 @@ const QuickMarcEditor = ({
 
   const { type, position7 } = getLeaderPositions(marcType, records);
 
-  const saveFormDisabled = submitting ? true : pristine;
+  const saveFormDisabled = submitting || pristine;
 
   const redirectToVersion = useCallback((updatedVersion) => {
     const searchParams = new URLSearchParams(location.search);
@@ -272,9 +278,9 @@ const QuickMarcEditor = ({
             buttonClass={css.saveContinueBtn}
             disabled={saveFormDisabled}
             id="quick-marc-record-save-edit"
-            onClick={(event) => {
+            onClick={async (event) => {
               confirmationChecks.current = { ...REQUIRED_CONFIRMATIONS };
-              confirmSubmit(event, true);
+              await confirmSubmit(event, true);
             }}
             marginBottom0
           >
@@ -285,9 +291,9 @@ const QuickMarcEditor = ({
           buttonStyle="primary mega"
           disabled={saveFormDisabled}
           id="quick-marc-record-save"
-          onClick={(e) => {
+          onClick={async (e) => {
             confirmationChecks.current = { ...REQUIRED_CONFIRMATIONS };
-            confirmSubmit(e);
+            await confirmSubmit(e);
           }}
           marginBottom0
         >
@@ -371,15 +377,15 @@ const QuickMarcEditor = ({
     setIsUpdate0101xxfieldsAuthRecModalOpen(false);
   };
 
-  const confirmUpdateLinks = (e) => {
+  const confirmUpdateLinks = async (e) => {
     confirmationChecks.current[CONFIRMATIONS.UPDATE_LINKED] = false;
-    confirmSubmit(e, continueAfterSave.current);
+    await confirmSubmit(e, continueAfterSave.current);
   };
 
-  const confirmDeleteFields = (e) => {
+  const confirmDeleteFields = async (e) => {
     setIsDeleteModalOpened(false);
     confirmationChecks.current[CONFIRMATIONS.DELETE_RECORDS] = false;
-    confirmSubmit(e, continueAfterSave.current);
+    await confirmSubmit(e, continueAfterSave.current);
   };
 
   const cancelDeleteFields = () => {
@@ -414,11 +420,11 @@ const QuickMarcEditor = ({
   const shortcuts = useMemo(() => ([{
     name: 'save',
     shortcut: 'mod+s',
-    handler: (e) => {
+    handler: async (e) => {
       if (!saveFormDisabled) {
         e.preventDefault();
         confirmationChecks.current = { ...REQUIRED_CONFIRMATIONS };
-        confirmSubmit(e, continueAfterSave.current);
+        await confirmSubmit(e, continueAfterSave.current);
       }
     },
   }, {

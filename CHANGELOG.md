@@ -13,6 +13,7 @@
 * [UIQM-672](https://issues.folio.org/browse/UIQM-672) Add a tooltip for the search link.
 * [UIQM-670](https://issues.folio.org/browse/UIQM-670) Allow saving local control fields without subfield.
 * [UIQM-669](https://issues.folio.org/browse/UIQM-669) Display validation error messages inline.
+* [UIQM-658](https://issues.folio.org/browse/UIQM-658) Check for duplicate LCCN (010 $a) bib or authority records.
 * [UIQM-631](https://issues.folio.org/browse/UIQM-631) Create/Edit/Derive a MARC bib/authority/holdings record > Display MARC record validation errors inline.
 
 ## [8.0.1] (https://github.com/folio-org/ui-quick-marc/tree/v8.0.1) (2024-04-18)

@@ -100,6 +100,7 @@ const QuickMarcEditWrapper = ({
     linkableBibFields,
     linkingRules,
     fixedFieldSpec,
+    instanceId: instance.id,
   }), [
     initialValues,
     marcType,
@@ -109,6 +110,7 @@ const QuickMarcEditWrapper = ({
     fixedFieldSpec,
     linksCount,
     instance.naturalId,
+    instance.id,
   ]);
   const { validate } = useValidation(validationContext);
 

@@ -7,6 +7,7 @@ import {
   render,
   fireEvent,
   waitFor,
+  act,
 } from '@folio/jest-config-stripes/testing-library/react';
 import { runAxeTest } from '@folio/stripes-testing';
 import { useShowCallout } from '@folio/stripes-acq-components';
@@ -20,7 +21,10 @@ import '@folio/stripes-acq-components/test/jest/__mock__';
 import QuickMarcEditor from './QuickMarcEditor';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
-import { MISSING_FIELD_ID } from '../hooks';
+import {
+  MISSING_FIELD_ID,
+  useLccnDuplicationCheck,
+} from '../hooks';
 
 import Harness from '../../test/jest/helpers/harness';
 import buildStripes from '../../test/jest/__mock__/stripesCore.mock';
@@ -80,11 +84,17 @@ jest.mock('./QuickMarcRecordInfo', () => {
   };
 });
 
+jest.mock('../hooks', () => ({
+  ...jest.requireActual('../hooks'),
+  useLccnDuplicationCheck: jest.fn(),
+}));
+
 const onCloseMock = jest.fn();
 const onSaveMock = jest.fn();
 const onSubmitMock = jest.fn(() => Promise.resolve({ version: 1 }));
 const mockShowCallout = jest.fn();
 const mockValidate = jest.fn().mockReturnValue({});
+const mockSetValidationErrors = jest.fn();
 
 useShowCallout.mockClear().mockReturnValue(mockShowCallout);
 
@@ -140,8 +150,8 @@ const initialValues = {
 
 const linksCount = 0;
 
-const renderQuickMarcEditor = (props) => (render(
-  <Harness>
+const renderQuickMarcEditor = (props = {}, { quickMarcContext } = {}) => (render(
+  <Harness quickMarcContext={quickMarcContext}>
     <QuickMarcEditor
       action={QUICK_MARC_ACTIONS.EDIT}
       instance={instance}
@@ -158,6 +168,7 @@ const renderQuickMarcEditor = (props) => (render(
       locations={locations}
       linksCount={linksCount}
       validate={mockValidate}
+      fixedFieldSpec={{}}
       {...props}
     />
   </Harness>,
@@ -172,6 +183,10 @@ describe('Given QuickMarcEditor', () => {
       search: 'authRefType=Authorized',
     });
     checkIfUserInCentralTenant.mockReturnValue(false);
+    useLccnDuplicationCheck.mockReturnValue({
+      validateLccnDuplication: jest.fn().mockResolvedValue(undefined),
+      isValidatingLccnDuplication: false,
+    });
   });
 
   it('should render with no axe errors', async () => {
@@ -641,7 +656,7 @@ describe('Given QuickMarcEditor', () => {
       const contentField = getByTestId('content-field-3');
 
       fireEvent.change(contentField, { target: { value: 'Changed test title' } });
-      fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
+      await fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
 
       await waitFor(() => {
         expect(onSubmitMock).toHaveBeenCalled();
@@ -678,7 +693,7 @@ describe('Given QuickMarcEditor', () => {
       const deleteButtons = getAllByRole('button', { name: 'ui-quick-marc.record.deleteField' });
 
       fireEvent.click(deleteButtons[deleteButtons.length - 1]);
-      fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+      await act(() => fireEvent.click(getByText('stripes-acq-components.FormFooter.save')));
 
       await waitFor(() => expect(getByText('Confirmation modal')).toBeDefined());
     });
@@ -696,10 +711,7 @@ describe('Given QuickMarcEditor', () => {
 
         fireEvent.click(deleteButtons[deleteButtons.length - 1]);
         await act(() => fireEvent.click(getByText('stripes-acq-components.FormFooter.save')));
-
-        const confirmButton = await getByText('Confirm');
-
-        fireEvent.click(confirmButton);
+        fireEvent.click(await getByText('Confirm'));
 
         await waitFor(() => {
           expect(queryByText('Confirmation modal')).toBeNull();
@@ -719,12 +731,14 @@ describe('Given QuickMarcEditor', () => {
 
         fireEvent.click(deleteButtons[deleteButtons.length - 1]);
 
-        expect(queryByText('$a Test title')).toBeNull();
+        await waitFor(() => {
+          expect(queryByText('$a Test title')).toBeNull();
+        });
 
-        fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+        await act(async () => fireEvent.click(getByText('stripes-acq-components.FormFooter.save')));
+        await fireEvent.click(getByText('Cancel'));
 
         await waitFor(() => {
-          fireEvent.click(getByText('Cancel'));
           expect(queryByText('Confirmation modal')).toBeNull();
           expect(getByText('$a Test title')).toBeDefined();
         });
@@ -750,8 +764,7 @@ describe('Given QuickMarcEditor', () => {
 
       fireEvent.change(contentField, { target: { value: '' } });
       fireEvent.click(deleteButtons[0]);
-
-      await act(() => fireEvent.click(getByText('stripes-acq-components.FormFooter.save')));
+      await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
       await waitFor(() => {
         expect(queryByText('Confirmation modal')).toBeNull();
@@ -815,7 +828,7 @@ describe('Given QuickMarcEditor', () => {
           const contentField = getByTestId('content-field-1');
 
           fireEvent.change(contentField, { target: { value: '$a n  9310066' } });
-          fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+          await act(async () => fireEvent.click(getByText('stripes-acq-components.FormFooter.save')));
 
           await waitFor(() => expect(getByText('Confirmation modal')).toBeDefined());
         });
@@ -831,10 +844,7 @@ describe('Given QuickMarcEditor', () => {
 
           fireEvent.change(contentField, { target: { value: '1xx update' } });
           await act(() => fireEvent.click(getByText('stripes-acq-components.FormFooter.save')));
-
-          const confirmButton = await getByText('Confirm');
-
-          fireEvent.click(confirmButton);
+          fireEvent.click(await getByText('Confirm'));
 
           await waitFor(() => {
             expect(onSubmitMock).toHaveBeenCalled();
@@ -881,12 +891,10 @@ describe('Given QuickMarcEditor', () => {
           const contentField = getByTestId('content-field-1');
 
           fireEvent.change(contentField, { target: { value: '1xx update' } });
-          fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
+          await act(() => fireEvent.click(getByText('ui-quick-marc.record.save.continue')));
+          fireEvent.click(getByText('Cancel'));
 
-          await waitFor(() => {
-            fireEvent.click(getByText('Cancel'));
-            expect(queryByText('Confirmation modal')).toBeNull();
-          });
+          await waitFor(() => expect(queryByText('Confirmation modal')).toBeNull());
         });
       });
 
@@ -929,7 +937,7 @@ describe('Given QuickMarcEditor', () => {
           const contentField = getByTestId('content-field-1');
 
           fireEvent.change(contentField, { target: { value: '1xx update' } });
-          fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+          await act(() => fireEvent.click(getByText('stripes-acq-components.FormFooter.save')));
 
           await waitFor(() => expect(getByText('Confirmation modal')).toBeDefined());
         });
@@ -1020,15 +1028,10 @@ describe('Given QuickMarcEditor', () => {
           const contentField = getByTestId('content-field-1');
 
           fireEvent.change(contentField, { target: { value: '1xx update' } });
-          await act(() => fireEvent.click(getByText('ui-quick-marc.record.save.continue')));
+          await act(async () => fireEvent.click(getByText('ui-quick-marc.record.save.continue')));
+          fireEvent.click(getByText('Cancel'));
 
-          await waitFor(() => expect(getByText('Confirmation modal')).toBeInTheDocument());
-
-          fireEvent.click(await getByText('Cancel'));
-
-          await waitFor(() => {
-            expect(queryByText('Confirmation modal')).toBeNull();
-          });
+          await waitFor(() => expect(queryByText('Confirmation modal')).toBeNull());
         });
       });
     });
@@ -1063,7 +1066,7 @@ describe('Given QuickMarcEditor', () => {
           const contentField = getByTestId('content-field-1');
 
           fireEvent.change(contentField, { target: { value: '1xx update' } });
-          fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+          await act(() => fireEvent.click(getByText('stripes-acq-components.FormFooter.save')));
 
           await waitFor(() => expect(getByText('Confirmation modal')).toBeDefined());
         });
@@ -1097,10 +1100,7 @@ describe('Given QuickMarcEditor', () => {
 
           fireEvent.change(contentField, { target: { value: '1xx update' } });
           await act(() => fireEvent.click(getByText('stripes-acq-components.FormFooter.save')));
-
-          const confirmButton = await getByText('Confirm');
-
-          await act(() => fireEvent.click(confirmButton));
+          await act(() => fireEvent.click(await getByText('Confirm')));
 
           await waitFor(() => {
             expect(onSubmitMock).toHaveBeenCalled();
@@ -1137,12 +1137,10 @@ describe('Given QuickMarcEditor', () => {
           const contentField = getByTestId('content-field-1');
 
           fireEvent.change(contentField, { target: { value: '1xx update' } });
-          fireEvent.click(getByText('ui-quick-marc.record.save.continue'));
+          await act(async () => fireEvent.click(getByText('ui-quick-marc.record.save.continue')));
+          await act(async () => fireEvent.click(getByText('Cancel')));
 
-          await waitFor(() => {
-            fireEvent.click(getByText('Cancel'));
-            expect(queryByText('Confirmation modal')).toBeNull();
-          });
+          await waitFor(() => expect(queryByText('Confirmation modal')).toBeNull());
         });
       });
 
@@ -1175,7 +1173,7 @@ describe('Given QuickMarcEditor', () => {
           const contentField = getByTestId('content-field-1');
 
           fireEvent.change(contentField, { target: { value: '1xx update' } });
-          fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+          await act(() => fireEvent.click(getByText('stripes-acq-components.FormFooter.save')));
 
           await waitFor(() => expect(getByText('Confirmation modal')).toBeDefined());
         });
@@ -1208,18 +1206,12 @@ describe('Given QuickMarcEditor', () => {
           const contentField = getByTestId('content-field-1');
 
           fireEvent.change(contentField, { target: { value: '1xx update' } });
-
           await act(() => fireEvent.click(getByText('ui-quick-marc.record.save.continue')));
+          await fireEvent.click(getByText('Confirm'));
 
-          const confirmButton = await getByText('Confirm');
-
-          fireEvent.click(confirmButton);
-
-          await waitFor(async () => {
-            expect(onSubmitMock).toHaveBeenCalled();
-            expect(queryByText('Confirmation modal')).toBeNull();
-            expect(getByText('ui-quick-marc.authority-record.edit.title')).toBeDefined();
-          });
+          expect(onSubmitMock).toHaveBeenCalled();
+          await waitFor(() => expect(queryByText('Confirmation modal')).toBeNull());
+          expect(getByText('ui-quick-marc.authority-record.edit.title')).toBeDefined();
         });
 
         it('should close the modal on clicking keep editing button ', async () => {
@@ -1251,11 +1243,9 @@ describe('Given QuickMarcEditor', () => {
 
           fireEvent.change(contentField, { target: { value: '1xx update' } });
           await act(() => fireEvent.click(getByText('ui-quick-marc.record.save.continue')));
-          fireEvent.click(await getByText('Cancel'));
+          fireEvent.click(getByText('Cancel'));
 
-          await waitFor(() => {
-            expect(queryByText('Confirmation modal')).toBeNull();
-          });
+          await waitFor(() => expect(queryByText('Confirmation modal')).toBeNull());
         });
       });
     });
@@ -1308,7 +1298,7 @@ describe('Given QuickMarcEditor', () => {
           const contentField = getByTestId('content-field-2');
 
           fireEvent.change(contentField, { target: { value: '$a (OCoLC)oca03475451' } });
-          fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+          await act(async () => fireEvent.click(getByText('stripes-acq-components.FormFooter.save')));
 
           await waitFor(() => {
             expect(queryByText('Confirmation modal')).toBeNull();
@@ -1364,7 +1354,7 @@ describe('Given QuickMarcEditor', () => {
           const contentField = getByTestId('content-field-2');
 
           fireEvent.change(contentField, { target: { value: '$a (OCoLC)oca03475451' } });
-          fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+          await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
           await waitFor(() => {
             expect(queryByText('Confirmation modal')).toBeNull();

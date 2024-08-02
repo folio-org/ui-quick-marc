@@ -2,27 +2,31 @@ import {
   useCallback,
   useContext,
 } from 'react';
-import assignWith from 'lodash/assignWith';
 
 import { validators } from './rules';
 import { QuickMarcContext } from '../../contexts';
 import { useValidate } from '../../queries';
-import { isLeaderRow } from '../../QuickMarcEditor/utils';
+import { useLccnDuplicationCheck } from '../useLccnDuplicationCheck';
+import {
+  isLeaderRow,
+  joinErrors,
+} from '../../QuickMarcEditor/utils';
 import { MARC_TYPES } from '../../common/constants';
 import {
   MISSING_FIELD_ID,
   SEVERITY,
 } from './constants';
 
-const joinErrors = (errorsA, errorsB) => {
-  return assignWith({}, errorsA, errorsB, (objValue = [], srcValue = []) => objValue.concat(srcValue));
-};
-
 const BE_VALIDATION_MARC_TYPES = [MARC_TYPES.BIB, MARC_TYPES.AUTHORITY];
 
 const useValidation = (context) => {
   const quickMarcContext = useContext(QuickMarcContext);
   const { validate: validateFetch } = useValidate();
+  const { validateLccnDuplication } = useLccnDuplicationCheck({
+    marcType: context?.marcType,
+    id: context?.instanceId,
+    action: context?.action,
+  });
 
   // accept { [field.id]: ["message", "message"...]}
   // return { [field.id]: [{ id, values, severity }]}
@@ -95,10 +99,14 @@ const useValidation = (context) => {
       errors = runFrontEndValidation(marcRecords);
     }
 
-    quickMarcContext.setValidationErrors(errors);
+    const lccnDuplicationError = await validateLccnDuplication(marcRecords);
 
-    return errors;
-  }, [quickMarcContext, context, runFrontEndValidation, runBackEndValidation]);
+    const joinedErrors = joinErrors(errors, lccnDuplicationError);
+
+    quickMarcContext.setValidationErrors(joinedErrors);
+
+    return joinedErrors;
+  }, [quickMarcContext, context, runFrontEndValidation, runBackEndValidation, validateLccnDuplication]);
 
   const hasIssuesBySeverity = (severity) => {
     return Object.values(quickMarcContext.validationErrorsRef.current)

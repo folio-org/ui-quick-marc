@@ -21,6 +21,12 @@ jest.mock('../../queries', () => ({
   }),
 }));
 
+jest.mock('../useLccnDuplicationCheck', () => ({
+  useLccnDuplicationCheck: jest.fn().mockReturnValue({
+    validateLccnDuplication: jest.fn(),
+  }),
+}));
+
 const locations = [{
   code: 'VA/LI/D',
 }, {

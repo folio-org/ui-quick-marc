@@ -68,7 +68,8 @@ const QuickMarcDeriveWrapper = ({
     linkableBibFields,
     linkingRules,
     fixedFieldSpec,
-  }), [initialValues, marcType, linkableBibFields, linkingRules, fixedFieldSpec]);
+    instanceId: instance.id,
+  }), [initialValues, marcType, linkableBibFields, linkingRules, fixedFieldSpec, instance.id]);
   const { validate } = useValidation(validationContext);
 
   const prepareForSubmit = useCallback((formValues) => {
