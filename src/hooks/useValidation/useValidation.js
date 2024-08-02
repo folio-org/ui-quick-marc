@@ -97,14 +97,13 @@ const useValidation = (context) => {
 
     quickMarcContext.setValidationErrors(errors);
 
-    return Promise.resolve(errors);
+    return errors;
   }, [quickMarcContext, context, runFrontEndValidation, runBackEndValidation]);
 
   const hasIssuesBySeverity = (severity) => {
     return Object.values(quickMarcContext.validationErrorsRef.current)
-      .reduce((hasError, errorsList) => {
-        return hasError || Boolean(errorsList.find(err => err.severity === severity));
-      }, false);
+      .flat()
+      .some(fieldError => fieldError.severity === severity);
   };
 
   return {

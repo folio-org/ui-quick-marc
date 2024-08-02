@@ -186,8 +186,11 @@ const QuickMarcEditor = ({
 
     // if made edits after last attempt to save then validate again
     // otherwise save record
+
+    let newValidationErrors = {};
+
     if (!skipValidation) {
-      const newValidationErrors = await validate(getState().values);
+      newValidationErrors = await validate(getState().values);
 
       const validationErrorsWithoutFieldId = newValidationErrors[MISSING_FIELD_ID] || [];
 
@@ -203,26 +206,29 @@ const QuickMarcEditor = ({
       setValidationErrors({});
     }
 
-    if (confirmationChecks.current[CONFIRMATIONS.DELETE_RECORDS] && deletedRecords.length) {
-      setIsDeleteModalOpened(true);
-
-      return;
-    }
-
-    if (confirmationChecks.current[CONFIRMATIONS.UPDATE_LINKED] && marcType === MARC_TYPES.AUTHORITY && linksCount) {
-      if (is1XXUpdated(initialValues.records, records)) {
-        setIsUpdate0101xxfieldsAuthRecModalOpen(true);
+    // run confirmations only when all validation errors had been fixed and user clicked save the second time or there are no issues in the first place
+    if (isEmpty(newValidationErrors) || skipValidation) {
+      if (confirmationChecks.current[CONFIRMATIONS.DELETE_RECORDS] && deletedRecords.length) {
+        setIsDeleteModalOpened(true);
 
         return;
       }
 
-      if (
-        is010$aUpdated(initialValues.records, records) &&
-        is010LinkedToBibRecord(initialValues.records, instance.naturalId, linksCount)
-      ) {
-        setIsUpdate0101xxfieldsAuthRecModalOpen(true);
+      if (confirmationChecks.current[CONFIRMATIONS.UPDATE_LINKED] && marcType === MARC_TYPES.AUTHORITY && linksCount) {
+        if (is1XXUpdated(initialValues.records, records)) {
+          setIsUpdate0101xxfieldsAuthRecModalOpen(true);
 
-        return;
+          return;
+        }
+
+        if (
+          is010$aUpdated(initialValues.records, records) &&
+          is010LinkedToBibRecord(initialValues.records, instance.naturalId, linksCount)
+        ) {
+          setIsUpdate0101xxfieldsAuthRecModalOpen(true);
+
+          return;
+        }
       }
     }
 
