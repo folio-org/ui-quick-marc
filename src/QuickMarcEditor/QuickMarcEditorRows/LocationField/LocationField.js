@@ -23,9 +23,9 @@ const LocationField = ({
 }) => {
   const intl = useIntl();
   const { input, ...inputRest } = useField(name);
-  const { validationErrors } = useContext(QuickMarcContext);
+  const { validationErrorsRef } = useContext(QuickMarcContext);
 
-  const errors = validationErrors[fieldId];
+  const errors = validationErrorsRef.current[fieldId];
 
   const handleSelectLocation = (location) => {
     const permanentLocation = `$b ${location.code}`;

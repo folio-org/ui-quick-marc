@@ -9,11 +9,12 @@ import { QuickMarcContext } from '../../contexts';
 
 export const useFocusFirstFieldWithError = () => {
   const { values } = useFormState();
-  const { validationErrors } = useContext(QuickMarcContext);
+  const { validationErrorsRef } = useContext(QuickMarcContext);
 
   const firstFieldWithErrors = useMemo(() => {
-    return values.records.find(({ id }) => Boolean(validationErrors[id]));
-  }, [values.records, validationErrors]);
+    return values.records.find(({ id }) => Boolean(validationErrorsRef.current[id]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.records, validationErrorsRef.current]);
 
   useEffect(() => {
     if (!firstFieldWithErrors?.id) {
@@ -21,5 +22,5 @@ export const useFocusFirstFieldWithError = () => {
     }
 
     document.querySelector(`[data-fieldid="${firstFieldWithErrors.id}"] input:enabled`)?.focus();
-  }, [firstFieldWithErrors?.id, validationErrors]);
+  }, [firstFieldWithErrors?.id, validationErrorsRef]);
 };

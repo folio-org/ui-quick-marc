@@ -105,7 +105,7 @@ const QuickMarcEditorRows = ({
   const newRowRef = useRef(null);
   const rowContentWidth = useRef(null); // for max-width of resizable textareas
   const childCalloutRef = useRef(null);
-  const { validationErrors } = useContext(QuickMarcContext);
+  const { validationErrorsRef } = useContext(QuickMarcContext);
 
   useFocusFirstFieldWithError();
 
@@ -290,7 +290,7 @@ const QuickMarcEditorRows = ({
 
             const isLeader = isLeaderRow(recordRow);
             const isDisabled = isReadOnly(recordRow, action, marcType);
-            const fieldValidationErrors = validationErrors[recordRow.id];
+            const fieldValidationErrors = validationErrorsRef.current[recordRow.id];
             const withIndicators = !hasIndicatorException(recordRow);
             const withAddRowAction = hasAddException(recordRow, marcType, action);
             const withDeleteRowAction = hasDeleteException(recordRow, marcType, instance, initialValues, linksCount);
