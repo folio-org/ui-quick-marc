@@ -41,7 +41,7 @@ const useLccnDuplicationCheck = ({ marcType, id, action }) => {
     }
 
     const requests = {
-      [MARC_TYPES.BIB]: () => ky.get(`search/instances?limit=1&query=((${lccnQuery})${idQuery} and source=="MARC")`),
+      [MARC_TYPES.BIB]: () => ky.get(`search/instances?limit=1&query=((${lccnQuery})${idQuery})`),
       [MARC_TYPES.AUTHORITY]: () => ky.get(`search/authorities?limit=1&query=((${lccnQuery})${idQuery})`),
     };
 
