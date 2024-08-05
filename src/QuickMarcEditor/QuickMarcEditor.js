@@ -47,7 +47,6 @@ import {
   MISSING_FIELD_ID,
   useAuthorityLinking,
   useValidation,
-  useLccnDuplicationCheck,
 } from '../hooks';
 import { QUICK_MARC_ACTIONS } from './constants';
 import {
@@ -70,7 +69,6 @@ import {
   updateRecordAtIndex,
   markLinkedRecords,
   getLeaderPositions,
-  joinErrors,
 } from './utils';
 
 import css from './QuickMarcEditor.css';
@@ -180,6 +178,33 @@ const QuickMarcEditor = ({
     setIsUnlinkRecordsModalOpen(false);
   };
 
+  const runConfirmationChecks = useCallback(() => {
+    if (confirmationChecks.current[CONFIRMATIONS.DELETE_RECORDS] && deletedRecords.length) {
+      setIsDeleteModalOpened(true);
+
+      return true;
+    }
+
+    if (confirmationChecks.current[CONFIRMATIONS.UPDATE_LINKED] && marcType === MARC_TYPES.AUTHORITY && linksCount) {
+      if (is1XXUpdated(initialValues.records, records)) {
+        setIsUpdate0101xxfieldsAuthRecModalOpen(true);
+
+        return true;
+      }
+
+      if (
+        is010$aUpdated(initialValues.records, records) &&
+        is010LinkedToBibRecord(initialValues.records, instance.naturalId, linksCount)
+      ) {
+        setIsUpdate0101xxfieldsAuthRecModalOpen(true);
+
+        return true;
+      }
+    }
+
+    return false;
+  }, [deletedRecords, initialValues, instance, linksCount, marcType, records]);
+
   const confirmSubmit = useCallback(async (e, isKeepEditing = false) => {
     continueAfterSave.current = isKeepEditing;
     let skipValidation = false;
@@ -214,27 +239,10 @@ const QuickMarcEditor = ({
 
     // run confirmations only when all validation errors had been fixed and user clicked save the second time or there are no issues in the first place
     if (isEmpty(newValidationErrors) || skipValidation) {
-      if (confirmationChecks.current[CONFIRMATIONS.DELETE_RECORDS] && deletedRecords.length) {
-        setIsDeleteModalOpened(true);
+      const confirmationFailed = runConfirmationChecks();
 
+      if (confirmationFailed) {
         return;
-      }
-
-      if (confirmationChecks.current[CONFIRMATIONS.UPDATE_LINKED] && marcType === MARC_TYPES.AUTHORITY && linksCount) {
-        if (is1XXUpdated(initialValues.records, records)) {
-          setIsUpdate0101xxfieldsAuthRecModalOpen(true);
-
-          return;
-        }
-
-        if (
-          is010$aUpdated(initialValues.records, records) &&
-          is010LinkedToBibRecord(initialValues.records, instance.naturalId, linksCount)
-        ) {
-          setIsUpdate0101xxfieldsAuthRecModalOpen(true);
-
-          return;
-        }
       }
     }
 
@@ -242,14 +250,8 @@ const QuickMarcEditor = ({
       ?.then(handleSubmitResponse)
       ?.finally(closeModals);
   }, [
-    deletedRecords,
     handleSubmit,
     handleSubmitResponse,
-    marcType,
-    initialValues,
-    linksCount,
-    records,
-    instance,
     getState,
     hasErrorIssues,
     modifiedSinceLastSubmit,
@@ -257,6 +259,7 @@ const QuickMarcEditor = ({
     showCallout,
     validate,
     validationErrorsRef,
+    runConfirmationChecks,
   ]);
 
   const paneFooter = useMemo(() => {
@@ -424,7 +427,7 @@ const QuickMarcEditor = ({
       if (!saveFormDisabled) {
         e.preventDefault();
         confirmationChecks.current = { ...REQUIRED_CONFIRMATIONS };
-        await confirmSubmit(e, continueAfterSave.current);
+        confirmSubmit(e, continueAfterSave.current);
       }
     },
   }, {
