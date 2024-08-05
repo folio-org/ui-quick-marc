@@ -11,25 +11,19 @@ import arrayMutators from 'final-form-arrays';
 import { useLocation } from 'react-router';
 
 import QuickMarcEditWrapper from './QuickMarcEditWrapper';
-import QuickMarcEditor from './QuickMarcEditor';
 import { useAuthorityLinking } from '../hooks';
+import { useMarcRecordMutation } from '../queries';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 import { applyCentralTenantInHeaders } from './utils';
 
 import Harness from '../../test/jest/helpers/harness';
-import { useMarcRecordMutation } from '../queries';
 import {
   authorityLeader,
   bibLeader,
+  bibLeaderString,
 } from '../../test/jest/fixtures/leaders';
 import fixedFieldSpecBib from '../../test/mocks/fixedFieldSpecBib';
-
-jest.mock('./QuickMarcEditor', () => {
-  const RealQuickMarcEditor = jest.requireActual('./QuickMarcEditor').default;
-
-  return jest.fn(props => <RealQuickMarcEditor {...props} />);
-});
 
 jest.mock('./utils', () => ({
   ...jest.requireActual('./utils'),
@@ -71,28 +65,31 @@ const mockRecords = {
       id: '93213747-46fb-4861-b8e8-8774bf4a46a4',
     }, {
       tag: '008',
-      content: {
-        Type: 'a',
-        BLvl: 'm',
-        Desc: 'c',
-        Entered: '211212',
-        DtSt: '|',
-        Date1: '2016',
-        Date2: '||||',
-        Ctry: '|||',
-        Lang: 'mul',
-        MRec: '|',
-        Srce: '|',
-        Ills: ['|', '|', '|', '|'],
-        Audn: '|',
-        Form: '\\',
-        Cont: ['\\', '\\', '\\', '\\'],
-        GPub: '\\',
-        Conf: '\\',
-        Fest: '|',
-        Indx: '|',
-        LitF: '|',
-        Biog: '|',
+      'content': {
+        'Type': 'a',
+        'BLvl': 'm',
+        'Entered': '240404',
+        'DtSt': 'u',
+        'Date1': '\\\\\\\\',
+        'Date2': '\\\\\\\\',
+        'Ctry': '\\\\\\',
+        'Lang': '\\\\\\',
+        'MRec': '\\',
+        'Srce': '\\',
+        'Ills': ['p', 'o', 'm', 'l'],
+        'Audn': 'j',
+        'Form': 's',
+        'Cont': ['6', '5', '2', 'y'],
+        'GPub': 's',
+        'Conf': '0',
+        'Fest': '1',
+        'Indx': '0',
+        'LitF': 'p',
+        'Biog': '\\',
+        'SpFm': ['\\', '\\'],
+        'Relf': ['a', 'b', 'c', 'd'],
+        'Proj': '\\\\',
+        'CrTp': 'a',
       },
     }, {
       'tag': '100',
@@ -483,201 +480,137 @@ describe('Given QuickMarcEditWrapper', () => {
       });
 
       it('should edit record with correct payload', async () => {
-        renderQuickMarcEditWrapper({
+        const { getByText } = renderQuickMarcEditWrapper({
           instance,
           mutator,
         });
 
-        const formValues = {
-          '_actionType': 'view',
-          'leader': {
-            'Record length': '00246',
-            'Status': 'n',
-            'Type': 'a',
-            'BLvl': 'm',
-            'Ctrl': '\\',
-            '9-16 positions': 'a2200085',
-            'ELvl': 'u',
-            'Desc': 'u',
-            'MultiLvl': '\\',
-            '20-23 positions': '4500',
-          },
-          'suppressDiscovery': false,
-          'marcFormat': 'BIBLIOGRAPHIC',
-          'parsedRecordId': '2b56625f-1ca0-4ada-a32d-2667be1bd509',
-          'parsedRecordDtoId': '2b56625f-1ca0-4ada-a32d-2667be1bd509',
-          'externalId': 'e72f49c9-9bbf-4d2b-89eb-3d2ee5878530',
-          'externalHrid': 'in00000000035',
-          'updateInfo': {
-            'recordState': 'ACTUAL',
-            'updateDate': '2024-04-04T12:25:57.937Z',
-            'updatedBy': {
-              'userId': '7b51e0cd-e1cb-5715-9592-e6f9c9aa0c33',
-              'username': 'diku_admin',
-              'lastName': 'ADMINISTRATOR',
-              'firstName': 'DIKU',
-            },
-          },
-          'records': [
-            {
-              'tag': 'LDR',
-              'content': {
-                'Record length': '00246',
-                'Status': 'n',
-                'Type': 'e',
-                'BLvl': 'm',
-                'Ctrl': '\\',
-                '9-16 positions': 'a2200085',
-                'ELvl': 'u',
-                'Desc': 'u',
-                'MultiLvl': '\\',
-                '20-23 positions': '4500',
-              },
-              'id': 'LDR',
-              '_isDeleted': false,
-              '_isLinked': false,
-            },
-            {
-              'tag': '001',
-              'content': 'in00000000035',
-              'isProtected': true,
-              'id': '7460b69e-ec5b-4eb3-9563-09495ee21729',
-              '_isDeleted': false,
-              '_isLinked': false,
-            },
-            {
-              'tag': '005',
-              'content': '20240404122557.9',
-              'isProtected': false,
-              'id': 'a152e415-2923-47c6-9e1e-0ed3622a47b9',
-              '_isDeleted': false,
-              '_isLinked': false,
-            },
-            {
-              'tag': '008',
-              'content': {
-                'Type': 'a',
-                'BLvl': 'm',
-                'Entered': '240404',
-                'DtSt': 'u',
-                'Date1': '\\\\\\\\',
-                'Date2': '\\\\\\\\',
-                'Ctry': '\\\\\\',
-                'Lang': '\\\\\\',
-                'MRec': '\\',
-                'Srce': '\\',
-                'Ills': ['p', 'o', 'm', 'l'],
-                'Audn': 'j',
-                'Form': 's',
-                'Cont': ['6', '5', '2', 'y'],
-                'GPub': 's',
-                'Conf': '0',
-                'Fest': '1',
-                'Indx': '0',
-                'LitF': 'p',
-                'Biog': '\\',
-                'SpFm': ['\\', '\\'],
-                'Relf': ['a', 'b', 'c', 'd'],
-                'Proj': '\\\\',
-                'CrTp': 'a',
-              },
-              'isProtected': false,
-              'id': '81d06703-2a0a-4cf0-87c8-a03ff0d995b5',
-              '_isDeleted': false,
-              '_isLinked': false,
-            },
-            {
-              'tag': '245',
-              'content': '$a rec2',
-              'indicators': ['\\', '\\'],
-              'isProtected': false,
-              'id': '373aa74f-c1e9-4316-a47c-749d65fab1b4',
-              '_isDeleted': false,
-              '_isLinked': false,
-            },
-            {
-              'tag': '999',
-              'content': '$i e72f49c9-9bbf-4d2b-89eb-3d2ee5878530 $s 2b56625f-1ca0-4ada-a32d-2667be1bd509',
-              'indicators': ['f', 'f'],
-              'isProtected': true,
-              'id': 'be587dc9-80f9-4099-a721-e58d09f4af93',
-              '_isDeleted': false,
-              '_isLinked': false,
-            },
-          ],
-        };
-        const formValuesForDerive = {
+        const formValuesForEdit = {
           '_actionType': 'edit',
-          'leader': '00246nem\\a2200085uu\\4500',
+          'externalId': '17064f9d-0362-468d-8317-5984b7efd1b5',
           'fields': [
             {
+              'content': 'in00000000003',
+              'indicators': undefined,
+              'linkDetails': undefined,
               'tag': '001',
-              'content': 'in00000000035',
             },
             {
-              'tag': '005',
-              'content': '20240404122557.9',
+              'content': 'in00000000022',
+              'indicators': undefined,
+              'linkDetails': undefined,
+              'tag': '004',
             },
             {
-              'tag': '008',
               'content': {
-                'Type': 'e',
-                'BLvl': 'm',
-                'Entered': '240404',
-                'DtSt': 'u',
+                'Audn': 'j',
+                'BLvl': 'e',
+                'Biog': '\\',
+                'Conf': '0',
+                'CrTp': 'a',
+                'Ctry': '\\\\\\',
                 'Date1': '\\\\\\\\',
                 'Date2': '\\\\\\\\',
-                'Ctry': '\\\\\\',
-                'Lang': '\\\\\\',
-                'MRec': '\\',
-                'Srce': '\\',
-                'Audn': 'j',
+                'DtSt': 'u',
+                'Entered': '240404',
+                'Fest': '1',
                 'Form': 's',
                 'GPub': 's',
-                'Conf': '0',
-                'Fest': '1',
                 'Indx': '0',
+                'Lang': '\\\\\\',
                 'LitF': 'p',
-                'Biog': '\\',
-                'SpFm': ['\\', '\\'],
-                'Relf': ['a', 'b', 'c', 'd'],
+                'MRec': '\\',
                 'Proj': '\\\\',
-                'CrTp': 'a',
+                'Srce': '\\',
+                'Type': 'n',
               },
+              'indicators': undefined,
+              'linkDetails': undefined,
+              'tag': '008',
             },
             {
+              'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 4808f6ae-8379-41e9-a795-915ac4751668',
+              'indicators': [
+                '1',
+                '\\',
+              ],
+              'linkDetails': {
+                'authorityId': '4808f6ae-8379-41e9-a795-915ac4751668',
+                'authorityNaturalId': 'n2008001084',
+                'linkingRuleId': 1,
+                'status': 'ACTUAL',
+              },
+              'tag': '100',
+            },
+            {
+              'content': '$a Ma, Wei $0 id.loc.gov/authorities/names/n84160718 $9 495884af-28d7-4d69-85e4-e84c5de693db',
+              'indicators': [
+                '\\',
+                '\\',
+              ],
+              'linkDetails': {
+                'authorityId': '495884af-28d7-4d69-85e4-e84c5de693db',
+                'authorityNaturalId': 'n84160718',
+                'linkingRuleId': 1,
+                'status': 'NEW',
+              },
+              'tag': '100',
+            },
+            {
+              'content': '$a Title',
+              'indicators': undefined,
+              'linkDetails': undefined,
               'tag': '245',
-              'content': '$a rec2',
-              'indicators': ['\\', '\\'],
             },
             {
+              'content': '$b KU/CC/DI/A $t 3 $h M3 $i .M93 1955 $m + $x Rec\'d in Music Lib ;',
+              'indicators': [
+                '0',
+                '1',
+              ],
+              'linkDetails': undefined,
+              'tag': '852',
+            },
+            {
+              'content': '$a ABS3966CU004',
+              'indicators': [
+                '1',
+                '\\',
+              ],
+              'linkDetails': undefined,
+              'tag': '014',
+            },
+            {
+              'content': '20221228135005.0',
+              'indicators': undefined,
+              'linkDetails': undefined,
+              'tag': '005',
+            },
+            {
+              'content': '$s 9585bca7-8e4c-4cbb-bab4-46c5832e7654 $i 9012727e-bffc-4298-a424-7da30d6008aa',
+              'indicators': [
+                'f',
+                'f',
+              ],
+              'linkDetails': undefined,
               'tag': '999',
-              'content': '$i e72f49c9-9bbf-4d2b-89eb-3d2ee5878530 $s 2b56625f-1ca0-4ada-a32d-2667be1bd509',
-              'indicators': ['f', 'f'],
             },
           ],
-          'suppressDiscovery': false,
+          'leader': '00000nam\\a2200000uu\\4500',
           'marcFormat': 'BIBLIOGRAPHIC',
-          'parsedRecordId': '2b56625f-1ca0-4ada-a32d-2667be1bd509',
-          'parsedRecordDtoId': '2b56625f-1ca0-4ada-a32d-2667be1bd509',
-          'externalId': 'e72f49c9-9bbf-4d2b-89eb-3d2ee5878530',
-          'externalHrid': 'in00000000035',
-          'updateInfo': {
-            'recordState': 'ACTUAL',
-            'updateDate': '2024-04-04T12:25:57.937Z',
-            'updatedBy': {
-              'userId': '7b51e0cd-e1cb-5715-9592-e6f9c9aa0c33',
-              'username': 'diku_admin',
-              'lastName': 'ADMINISTRATOR',
-              'firstName': 'DIKU',
-            },
-          },
+          'parsedRecordDtoId': '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
+          'parsedRecordId': '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
+          'records': undefined,
           'relatedRecordVersion': '1',
+          'suppressDiscovery': false,
+          'updateInfo': {
+            'recordState': 'NEW',
+          },
         };
 
-        await QuickMarcEditor.mock.calls[0][0].onSubmit(formValues);
+        await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
-        expect(mockUpdateMarcRecord).toHaveBeenCalledWith(formValuesForDerive);
+        expect(mockUpdateMarcRecord).toHaveBeenCalledWith(formValuesForEdit);
       });
 
       describe('when there is an error during POST request', () => {
@@ -771,7 +704,7 @@ describe('Given QuickMarcEditWrapper', () => {
           records: expect.arrayContaining([
             expect.objectContaining({
               tag: 'LDR',
-              content: mockRecords[MARC_TYPES.BIB][0].content,
+              content: bibLeaderString,
             }),
             expect.objectContaining({
               tag: '100',
@@ -820,7 +753,7 @@ describe('Given QuickMarcEditWrapper', () => {
       });
 
       describe('when marc type is not a bibliographic', () => {
-        it('should not be called actualizeLinks', async () => {
+        it('should not call actualizeLinks', async () => {
           const { getByText } = renderQuickMarcEditWrapper({
             instance,
             mutator,

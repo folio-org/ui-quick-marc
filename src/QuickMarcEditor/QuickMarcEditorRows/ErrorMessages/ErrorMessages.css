@@ -5,8 +5,14 @@
 
   align-content: center;
   margin-top: 0.5rem;
+}
 
+.validationIssueError {
   color: var(--error);
+}
+
+.validationIssueWarn {
+  color: var(--warn);
 }
 
 .feedbackErrorIcon {

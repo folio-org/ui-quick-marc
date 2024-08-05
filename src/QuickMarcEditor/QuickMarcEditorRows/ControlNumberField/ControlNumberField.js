@@ -49,11 +49,11 @@ const ControlNumberField = ({
   const {
     selectedSourceFile,
     setSelectedSourceFile,
-    validationErrors,
+    validationErrorsRef,
   } = useContext(QuickMarcContext);
   const { getAuthorityFileNextHrid, isLoading: isLoadingHrid } = useAuthorityFileNextHrid();
 
-  const errors = validationErrors[fieldId];
+  const errors = validationErrorsRef.current[fieldId];
   const handleChangeContent = input.onChange;
 
   const contentOf010Row = recordRows.find(row => row.tag === '010')?.content;

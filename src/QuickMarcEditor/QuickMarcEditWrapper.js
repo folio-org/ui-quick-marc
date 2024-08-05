@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useContext,
   useMemo,
   useState,
 } from 'react';
@@ -8,10 +9,9 @@ import PropTypes from 'prop-types';
 import flow from 'lodash/flow';
 import noop from 'lodash/noop';
 import isNil from 'lodash/isNil';
+import isEmpty from 'lodash/isEmpty';
 
-import {
-  useStripes,
-} from '@folio/stripes/core';
+import { useStripes } from '@folio/stripes/core';
 import { useShowCallout } from '@folio/stripes-acq-components';
 import { getHeaders } from '@folio/stripes-marc-components';
 
@@ -20,6 +20,8 @@ import {
   useAuthorityLinking,
   useValidation,
 } from '../hooks';
+import { useMarcRecordMutation } from '../queries';
+import { QuickMarcContext } from '../contexts';
 import { QUICK_MARC_ACTIONS } from './constants';
 import {
   EXTERNAL_INSTANCE_APIS,
@@ -28,6 +30,7 @@ import {
 } from '../common/constants';
 import {
   hydrateMarcRecord,
+  formatLeaderForSubmit,
   autopopulateIndicators,
   autopopulateSubfieldSection,
   cleanBytesFields,
@@ -41,9 +44,6 @@ import {
   autopopulateMaterialCharsField,
   applyCentralTenantInHeaders,
 } from './utils';
-import {
-  useMarcRecordMutation,
-} from '../queries';
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
@@ -80,6 +80,7 @@ const QuickMarcEditWrapper = ({
   const showCallout = useShowCallout();
   const location = useLocation();
   const [httpError, setHttpError] = useState(null);
+  const { validationErrorsRef } = useContext(QuickMarcContext);
 
   const { token, locale } = stripes.okapi;
   const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType);
@@ -99,6 +100,7 @@ const QuickMarcEditWrapper = ({
     linkableBibFields,
     linkingRules,
     fixedFieldSpec,
+    instanceId: instance.id,
   }), [
     initialValues,
     marcType,
@@ -108,6 +110,7 @@ const QuickMarcEditWrapper = ({
     fixedFieldSpec,
     linksCount,
     instance.naturalId,
+    instance.id,
   ]);
   const { validate } = useValidation(validationContext);
 
@@ -115,19 +118,25 @@ const QuickMarcEditWrapper = ({
     const formValuesToSave = flow(
       removeDeletedRecords,
       removeDuplicateSystemGeneratedFields,
+      marcRecord => formatLeaderForSubmit(marcType, marcRecord),
     )(formValues);
 
     return formValuesToSave;
-  }, []);
+  }, [marcType]);
 
-  const runValidation = useCallback((formValues) => {
+  const runValidation = useCallback(async (formValues) => {
     const formValuesForValidation = prepareForSubmit(formValues);
 
     return validate(formValuesForValidation.records);
   }, [validate, prepareForSubmit]);
 
-  const onSubmit = useCallback(async (formValues) => {
+  const onSubmit = useCallback(async (formValues, _api, complete) => {
     let is1xxOr010Updated = false;
+
+    // if validation has any issues - cancel submit
+    if (!isEmpty(validationErrorsRef.current)) {
+      return complete();
+    }
 
     if (marcType === MARC_TYPES.AUTHORITY && linksCount > 0) {
       is1xxOr010Updated = are010Or1xxUpdated(initialValues.records, formValues.records);
@@ -243,6 +252,7 @@ const QuickMarcEditWrapper = ({
     locale,
     updateMarcRecord,
     isRequestToCentralTenantFromMember,
+    validationErrorsRef,
   ]);
 
   return (
@@ -260,8 +270,8 @@ const QuickMarcEditWrapper = ({
       httpError={httpError}
       externalRecordPath={externalRecordPath}
       linksCount={linksCount}
-      validate={runValidation}
       onCheckCentralTenantPerm={onCheckCentralTenantPerm}
+      validate={runValidation}
     />
   );
 };

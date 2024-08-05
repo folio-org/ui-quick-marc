@@ -14,10 +14,10 @@ const propTypes = {
 };
 
 const MaterialCharsField = ({ fieldId, name, type }) => {
-  const { validationErrors } = useContext(QuickMarcContext);
+  const { validationErrorsRef } = useContext(QuickMarcContext);
   const selectField = useSelectField(TYPE_SELECT_FIELD_PROPS);
 
-  const errors = validationErrors[fieldId];
+  const errors = validationErrorsRef.current[fieldId];
 
   return (
     <BytesField

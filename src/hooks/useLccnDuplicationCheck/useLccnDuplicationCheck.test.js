@@ -23,13 +23,12 @@ describe('useLccnDuplicationCheck', () => {
     describe('when duplicateLccnCheckingEnabled is enabled and LCCN is already used in another record', () => {
       it('should return error', async () => {
         const fieldId = 'field-id';
-        const formValues = {
-          records: [{
-            id: fieldId,
-            tag: '010',
-            content: '$a 123 $a 456 $z 789',
-          }],
-        };
+        const marcRecords = [{
+          id: fieldId,
+          tag: '010',
+          content: '$a 123 $a 456 $z 789',
+        }];
+
         const mockGet = jest.fn(() => ({
           json: () => Promise.resolve({ instances: [{ id: 'id' }] }),
         }));
@@ -48,7 +47,7 @@ describe('useLccnDuplicationCheck', () => {
           },
         });
 
-        const error = await act(() => result.current.validateLccnDuplication(formValues));
+        const error = await act(() => result.current.validateLccnDuplication(marcRecords));
 
         expect(mockGet).toHaveBeenCalledWith(
           `search/instances?limit=1&query=((lccn=="123" or lccn=="456") not id=="${id}")`,
@@ -62,13 +61,11 @@ describe('useLccnDuplicationCheck', () => {
     describe('when duplicateLccnCheckingEnabled is enabled and LCCN is not used in any record', () => {
       it('should not return an error', async () => {
         const fieldId = 'field-id';
-        const formValues = {
-          records: [{
-            id: fieldId,
-            tag: '010',
-            content: '$a 123 $a 456 $z 789',
-          }],
-        };
+        const marcRecords = [{
+          id: fieldId,
+          tag: '010',
+          content: '$a 123 $a 456 $z 789',
+        }];
         const mockGet = jest.fn(() => ({
           json: () => Promise.resolve({ instances: [] }),
         }));
@@ -87,7 +84,7 @@ describe('useLccnDuplicationCheck', () => {
           },
         });
 
-        const error = await act(() => result.current.validateLccnDuplication(formValues));
+        const error = await act(() => result.current.validateLccnDuplication(marcRecords));
 
         expect(mockGet).toHaveBeenCalledWith(
           'search/instances?limit=1&query=((lccn=="123" or lccn=="456"))',
@@ -99,13 +96,11 @@ describe('useLccnDuplicationCheck', () => {
     describe('when duplicateLccnCheckingEnabled is disabled', () => {
       it('should not return an error', async () => {
         const fieldId = 'field-id';
-        const formValues = {
-          records: [{
-            id: fieldId,
-            tag: '010',
-            content: '$a 123 $a 456 $z 789',
-          }],
-        };
+        const marcRecords = [{
+          id: fieldId,
+          tag: '010',
+          content: '$a 123 $a 456 $z 789',
+        }];
         const mockGet = jest.fn(() => ({
           json: () => Promise.resolve({ instances: [{ id: 'id' }] }),
         }));
@@ -122,7 +117,7 @@ describe('useLccnDuplicationCheck', () => {
           },
         });
 
-        const error = await result.current.validateLccnDuplication(formValues);
+        const error = await result.current.validateLccnDuplication(marcRecords);
 
         expect(mockGet).not.toHaveBeenCalled();
         expect(error).toBeUndefined();
@@ -133,9 +128,7 @@ describe('useLccnDuplicationCheck', () => {
   describe('when marc type is authority', () => {
     describe('when 010 field is absent', () => {
       it('should not return an error', async () => {
-        const formValues = {
-          records: [{}],
-        };
+        const marcRecords = [{}];
         const mockGet = jest.fn(() => ({
           json: () => Promise.resolve({ authorities: [{ id: 'id' }] }),
         }));
@@ -152,7 +145,7 @@ describe('useLccnDuplicationCheck', () => {
           },
         });
 
-        const error = await result.current.validateLccnDuplication(formValues);
+        const error = await result.current.validateLccnDuplication(marcRecords);
 
         expect(mockGet).not.toHaveBeenCalled();
         expect(error).toBeUndefined();
@@ -162,13 +155,11 @@ describe('useLccnDuplicationCheck', () => {
     describe('when duplicateLccnCheckingEnabled is enabled and LCCN is already used in another record', () => {
       it('should return error', async () => {
         const fieldId = 'field-id';
-        const formValues = {
-          records: [{
-            id: fieldId,
-            tag: '010',
-            content: '$a 123 $a 456 $z 789',
-          }],
-        };
+        const marcRecords = [{
+          id: fieldId,
+          tag: '010',
+          content: '$a 123 $a 456 $z 789',
+        }];
         const mockGet = jest.fn(() => ({
           json: () => Promise.resolve({ authorities: [{ id: 'id' }] }),
         }));
@@ -186,7 +177,7 @@ describe('useLccnDuplicationCheck', () => {
           },
         });
 
-        const error = await act(() => result.current.validateLccnDuplication(formValues));
+        const error = await act(() => result.current.validateLccnDuplication(marcRecords));
 
         expect(mockGet).toHaveBeenCalledWith('search/authorities?limit=1&query=((lccn=="123" or lccn=="456"))');
         expect(error).toEqual({
@@ -198,13 +189,11 @@ describe('useLccnDuplicationCheck', () => {
     describe('when duplicateLccnCheckingEnabled is enabled and LCCN is not used in any record', () => {
       it('should not return an error', async () => {
         const fieldId = 'field-id';
-        const formValues = {
-          records: [{
-            id: fieldId,
-            tag: '010',
-            content: '$a 123 $a 456 $z 789',
-          }],
-        };
+        const marcRecords = [{
+          id: fieldId,
+          tag: '010',
+          content: '$a 123 $a 456 $z 789',
+        }];
         const mockGet = jest.fn(() => ({
           json: () => Promise.resolve({ authorities: [] }),
         }));
@@ -223,7 +212,7 @@ describe('useLccnDuplicationCheck', () => {
           },
         });
 
-        const error = await act(() => result.current.validateLccnDuplication(formValues));
+        const error = await act(() => result.current.validateLccnDuplication(marcRecords));
 
         expect(mockGet).toHaveBeenCalledWith(
           `search/authorities?limit=1&query=((lccn=="123" or lccn=="456") not id=="${id}")`,
@@ -235,13 +224,11 @@ describe('useLccnDuplicationCheck', () => {
     describe('when duplicateLccnCheckingEnabled is disabled', () => {
       it('should not return an error', async () => {
         const fieldId = 'field-id';
-        const formValues = {
-          records: [{
-            id: fieldId,
-            tag: '010',
-            content: '$a 123 $a 456 $z 789',
-          }],
-        };
+        const marcRecords = [{
+          id: fieldId,
+          tag: '010',
+          content: '$a 123 $a 456 $z 789',
+        }];
         const mockGet = jest.fn(() => ({
           json: () => Promise.resolve({ authorities: [{ id: 'id' }] }),
         }));
@@ -258,7 +245,7 @@ describe('useLccnDuplicationCheck', () => {
           },
         });
 
-        const error = await result.current.validateLccnDuplication(formValues);
+        const error = await result.current.validateLccnDuplication(marcRecords);
 
         expect(mockGet).not.toHaveBeenCalled();
         expect(error).toBeUndefined();

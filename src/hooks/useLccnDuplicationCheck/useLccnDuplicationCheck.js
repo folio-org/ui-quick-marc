@@ -15,8 +15,8 @@ const useLccnDuplicationCheck = ({ marcType, id, action }) => {
   const { duplicateLccnCheckingEnabled } = useLccnDuplicateConfig({ marcType });
   const [isLoading, setIsLoading] = useState(false);
 
-  const validateLccnDuplication = useCallback(async (formValues) => {
-    const field010 = formValues.records.find(field => field.tag === '010');
+  const validateLccnDuplication = useCallback(async (marcRecords) => {
+    const field010 = marcRecords.find(field => field.tag === '010');
 
     if (!duplicateLccnCheckingEnabled
       || !field010

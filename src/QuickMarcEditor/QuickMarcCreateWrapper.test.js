@@ -24,6 +24,7 @@ import { saveLinksToNewRecord } from './utils';
 import {
   authorityLeader,
   bibLeader,
+  bibLeaderString,
   holdingsLeader,
 } from '../../test/jest/fixtures/leaders';
 import fixedFieldSpecBib from '../../test/mocks/fixedFieldSpecBib';
@@ -388,7 +389,7 @@ describe('Given QuickMarcCreateWrapper', () => {
         }).getByText;
       });
 
-      await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+      fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
 
       await waitFor(() => {
         expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
@@ -741,7 +742,7 @@ describe('Given QuickMarcCreateWrapper', () => {
         records: expect.arrayContaining([
           expect.objectContaining({
             tag: 'LDR',
-            content: mockRecords[MARC_TYPES.BIB][0].content,
+            content: bibLeaderString,
           }),
           expect.objectContaining({
             tag: '100',
@@ -761,7 +762,7 @@ describe('Given QuickMarcCreateWrapper', () => {
     });
 
     describe('when marc type is not a bibliographic', () => {
-      it('should not be called actualizeLinks', async () => {
+      it('should not call actualizeLinks', async () => {
         await act(async () => {
           renderQuickMarcCreateWrapper({
             instance,

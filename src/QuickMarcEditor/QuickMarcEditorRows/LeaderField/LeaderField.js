@@ -19,9 +19,9 @@ const LeaderField = ({
   fieldId,
 }) => {
   const intl = useIntl();
-  const { validationErrors } = useContext(QuickMarcContext);
+  const { validationErrorsRef } = useContext(QuickMarcContext);
 
-  const errors = validationErrors[fieldId];
+  const errors = validationErrorsRef.current[fieldId];
 
   const fields = leaderConfig[marcType].map(config => {
     const { allowedValues, name: boxName, required } = config;

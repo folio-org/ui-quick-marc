@@ -5,3 +5,4 @@ export * from './useLinkSuggestions';
 export * from './useMarcRecordMutation';
 export * from './useAuthorityFileNextHrid';
 export * from './useLccnDuplicateConfig';
+export * from './useValidate';
