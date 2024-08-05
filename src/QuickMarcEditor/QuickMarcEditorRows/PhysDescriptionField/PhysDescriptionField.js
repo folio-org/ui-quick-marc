@@ -14,10 +14,10 @@ const propTypes = {
 };
 
 const PhysDescriptionField = ({ name, type, fieldId }) => {
-  const { validationErrors } = useContext(QuickMarcContext);
+  const { validationErrorsRef } = useContext(QuickMarcContext);
   const selectField = useSelectField(CATEGORY_SELECT_FIELD_PROPS);
 
-  const errors = validationErrors[fieldId];
+  const errors = validationErrorsRef.current[fieldId];
 
   return (
     <BytesField

@@ -32,9 +32,9 @@ const SplitField = ({
   fieldId,
 }) => {
   const intl = useIntl();
-  const { validationErrors } = useContext(QuickMarcContext);
+  const { validationErrorsRef } = useContext(QuickMarcContext);
 
-  const errors = validationErrors[fieldId];
+  const errors = validationErrorsRef.current[fieldId];
 
   const {
     keyCommands,

@@ -1,15 +1,18 @@
 import React, {
   useCallback,
+  useContext,
   useMemo,
   useState,
 } from 'react';
 import PropTypes from 'prop-types';
 import flow from 'lodash/flow';
 import noop from 'lodash/noop';
+import isEmpty from 'lodash/isEmpty';
 
 import { useShowCallout } from '@folio/stripes-acq-components';
 
 import QuickMarcEditor from './QuickMarcEditor';
+import { QuickMarcContext } from '../contexts';
 import getQuickMarcRecordStatus from './getQuickMarcRecordStatus';
 import {
   useAuthorityLinking,
@@ -19,6 +22,7 @@ import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 import {
   hydrateMarcRecord,
+  formatLeaderForSubmit,
   autopopulateSubfieldSection,
   cleanBytesFields,
   parseHttpError,
@@ -59,6 +63,7 @@ const QuickMarcCreateWrapper = ({
   const showCallout = useShowCallout();
   const [httpError, setHttpError] = useState(null);
   const { linkableBibFields, actualizeLinks, linkingRules, sourceFiles } = useAuthorityLinking({ marcType, action });
+  const { validationErrorsRef } = useContext(QuickMarcContext);
 
   const validationContext = useMemo(() => ({
     initialValues,
@@ -69,7 +74,8 @@ const QuickMarcCreateWrapper = ({
     linkingRules,
     sourceFiles,
     fixedFieldSpec,
-  }), [initialValues, marcType, locations, linkableBibFields, linkingRules, sourceFiles, fixedFieldSpec]);
+    instanceId: instance.id,
+  }), [initialValues, marcType, locations, linkableBibFields, linkingRules, sourceFiles, fixedFieldSpec, instance.id]);
   const { validate } = useValidation(validationContext);
 
   const prepareForSubmit = useCallback((formValues) => {
@@ -82,12 +88,13 @@ const QuickMarcCreateWrapper = ({
       autopopulateMaterialCharsField,
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
       marcRecord => cleanBytesFields(marcRecord, fixedFieldSpec, marcType),
+      marcRecord => formatLeaderForSubmit(marcType, marcRecord),
     )(formValues);
 
     return formValuesForCreate;
   }, [marcType, fixedFieldSpec]);
 
-  const runValidation = useCallback((formValues) => {
+  const runValidation = useCallback(async (formValues) => {
     const formValuesForValidation = prepareForSubmit(formValues);
 
     return validate(formValuesForValidation.records);
@@ -101,7 +108,12 @@ const QuickMarcCreateWrapper = ({
     }
   }, [onSave, marcType]);
 
-  const onSubmit = useCallback(async (formValues) => {
+  const onSubmit = useCallback(async (formValues, _api, complete) => {
+    // if validation has any issues - cancel submit
+    if (!isEmpty(validationErrorsRef.current)) {
+      return complete();
+    }
+
     const formValuesToProcess = flow(
       prepareForSubmit,
       combineSplitFields,
@@ -166,6 +178,7 @@ const QuickMarcCreateWrapper = ({
     showCallout,
     prepareForSubmit,
     actualizeLinks,
+    validationErrorsRef,
   ]);
 
   return (

@@ -42,6 +42,12 @@ import { QuickMarcRecordInfo } from './QuickMarcRecordInfo';
 import { QuickMarcEditorRows } from './QuickMarcEditorRows';
 import { OptimisticLockingBanner } from './OptimisticLockingBanner';
 import { AutoLinkingButton } from './AutoLinkingButton';
+import { QuickMarcContext } from '../contexts';
+import {
+  MISSING_FIELD_ID,
+  useAuthorityLinking,
+  useValidation,
+} from '../hooks';
 import { QUICK_MARC_ACTIONS } from './constants';
 import {
   ERROR_TYPES,
@@ -63,14 +69,7 @@ import {
   updateRecordAtIndex,
   markLinkedRecords,
   getLeaderPositions,
-  joinErrors,
 } from './utils';
-import {
-  MISSING_FIELD_ID,
-  useAuthorityLinking,
-  useLccnDuplicationCheck,
-} from '../hooks';
-import { QuickMarcContext } from '../contexts';
 
 import css from './QuickMarcEditor.css';
 
@@ -107,8 +106,9 @@ const QuickMarcEditor = ({
   externalRecordPath,
   confirmRemoveAuthorityLinking,
   linksCount,
-  validate,
   onCheckCentralTenantPerm,
+  validate,
+  modifiedSinceLastSubmit,
 }) => {
   const stripes = useStripes();
   const formValues = getState().values;
@@ -123,17 +123,18 @@ const QuickMarcEditor = ({
   const continueAfterSave = useRef(false);
   const formRef = useRef(null);
   const confirmationChecks = useRef({ ...REQUIRED_CONFIRMATIONS });
-  const { setValidationErrors } = useContext(QuickMarcContext);
+  const { validationErrorsRef, setModifiedSinceLastSubmit, setValidationErrors } = useContext(QuickMarcContext);
+  const { hasErrorIssues } = useValidation();
 
   const isConsortiaEnv = stripes.hasInterface('consortia');
   const searchParameters = new URLSearchParams(location.search);
   const isShared = searchParameters.get('shared') === 'true';
 
   const { unlinkAuthority } = useAuthorityLinking({ marcType, action });
-  const {
-    validateLccnDuplication,
-    isValidatingLccnDuplication,
-  } = useLccnDuplicationCheck({ marcType, id: instance?.id, action });
+
+  useEffect(() => {
+    setModifiedSinceLastSubmit(modifiedSinceLastSubmit);
+  }, [modifiedSinceLastSubmit, setModifiedSinceLastSubmit]);
 
   const deletedRecords = useMemo(() => {
     return records
@@ -143,7 +144,7 @@ const QuickMarcEditor = ({
 
   const { type, position7 } = getLeaderPositions(marcType, records);
 
-  const saveFormDisabled = submitting || isValidatingLccnDuplication || pristine;
+  const saveFormDisabled = submitting || pristine;
 
   const redirectToVersion = useCallback((updatedVersion) => {
     const searchParams = new URLSearchParams(location.search);
@@ -177,41 +178,18 @@ const QuickMarcEditor = ({
     setIsUnlinkRecordsModalOpen(false);
   };
 
-  const confirmSubmit = useCallback(async (e, isKeepEditing = false) => {
-    continueAfterSave.current = isKeepEditing;
-
-    let validationErrors = validate(getState().values);
-
-    const validationErrorsWithoutFieldId = validationErrors[MISSING_FIELD_ID] || [];
-    const lccnDuplicationError = await validateLccnDuplication(getState().values);
-
-    validationErrors = joinErrors(validationErrors, lccnDuplicationError);
-
-    validationErrorsWithoutFieldId.forEach((error) => {
-      showCallout({
-        messageId: error.id,
-        values: error.values,
-        type: 'error',
-      });
-    });
-
-    setValidationErrors(validationErrors);
-
-    if (!isEmpty(validationErrors)) {
-      return;
-    }
-
+  const runConfirmationChecks = useCallback(() => {
     if (confirmationChecks.current[CONFIRMATIONS.DELETE_RECORDS] && deletedRecords.length) {
       setIsDeleteModalOpened(true);
 
-      return;
+      return true;
     }
 
     if (confirmationChecks.current[CONFIRMATIONS.UPDATE_LINKED] && marcType === MARC_TYPES.AUTHORITY && linksCount) {
       if (is1XXUpdated(initialValues.records, records)) {
         setIsUpdate0101xxfieldsAuthRecModalOpen(true);
 
-        return;
+        return true;
       }
 
       if (
@@ -220,27 +198,68 @@ const QuickMarcEditor = ({
       ) {
         setIsUpdate0101xxfieldsAuthRecModalOpen(true);
 
+        return true;
+      }
+    }
+
+    return false;
+  }, [deletedRecords, initialValues, instance, linksCount, marcType, records]);
+
+  const confirmSubmit = useCallback(async (e, isKeepEditing = false) => {
+    continueAfterSave.current = isKeepEditing;
+    let skipValidation = false;
+
+    // if there are no error issues and user hasn't modified a record since last submit click
+    // then we can skip validation and save the record even if there are warnings
+    if (!isEmpty(validationErrorsRef.current) && !modifiedSinceLastSubmit && !hasErrorIssues) {
+      skipValidation = true;
+    }
+
+    // if made edits after last attempt to save then validate again
+    // otherwise save record
+
+    let newValidationErrors = {};
+
+    if (!skipValidation) {
+      newValidationErrors = await validate(getState().values);
+
+      const validationErrorsWithoutFieldId = newValidationErrors[MISSING_FIELD_ID] || [];
+
+      validationErrorsWithoutFieldId.forEach((error) => {
+        showCallout({
+          message: error.message,
+          messageId: error.id,
+          values: error.values,
+          type: 'error',
+        });
+      });
+    } else {
+      setValidationErrors({});
+    }
+
+    // run confirmations only when all validation errors had been fixed and user clicked save the second time or there are no issues in the first place
+    if (isEmpty(newValidationErrors) || skipValidation) {
+      const confirmationFailed = runConfirmationChecks();
+
+      if (confirmationFailed) {
         return;
       }
     }
 
     handleSubmit(e)
-      .then(handleSubmitResponse)
-      .finally(closeModals);
+      ?.then(handleSubmitResponse)
+      ?.finally(closeModals);
   }, [
-    deletedRecords,
     handleSubmit,
     handleSubmitResponse,
-    marcType,
-    initialValues,
-    linksCount,
-    records,
     getState,
-    validate,
-    showCallout,
-    instance,
+    hasErrorIssues,
+    modifiedSinceLastSubmit,
     setValidationErrors,
-    validateLccnDuplication,
+    showCallout,
+    validate,
+    validationErrorsRef,
+    runConfirmationChecks,
   ]);
 
   const paneFooter = useMemo(() => {
@@ -408,7 +427,7 @@ const QuickMarcEditor = ({
       if (!saveFormDisabled) {
         e.preventDefault();
         confirmationChecks.current = { ...REQUIRED_CONFIRMATIONS };
-        await confirmSubmit(e, continueAfterSave.current);
+        confirmSubmit(e, continueAfterSave.current);
       }
     },
   }, {
@@ -588,8 +607,9 @@ QuickMarcEditor.propTypes = {
     httpStatus: PropTypes.number,
   }),
   confirmRemoveAuthorityLinking: PropTypes.bool,
-  validate: PropTypes.func.isRequired,
   onCheckCentralTenantPerm: PropTypes.func,
+  validate: PropTypes.func.isRequired,
+  modifiedSinceLastSubmit: PropTypes.bool.isRequired,
 };
 
 QuickMarcEditor.defaultProps = {
@@ -600,6 +620,9 @@ QuickMarcEditor.defaultProps = {
 
 export default stripesFinalForm({
   navigationCheck: true,
+  subscription: {
+    modifiedSinceLastSubmit: true,
+  },
   mutators: {
     addRecord: ([{ index }], state, tools) => {
       const records = addNewRecord(index, state);

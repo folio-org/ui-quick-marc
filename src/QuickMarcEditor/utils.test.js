@@ -139,7 +139,7 @@ describe('QuickMarcEditor utils', () => {
 
       expect(hydratedMarcRecord.records).not.toBeDefined();
 
-      expect(hydratedMarcRecord.leader).toBe(bibLeaderString);
+      expect(hydratedMarcRecord.leader).toBe(bibLeader);
 
       expect(hydratedMarcRecord.fields).toBeDefined();
       expect(hydratedMarcRecord.fields.length).toBe(marcRecord.records.length - 1);

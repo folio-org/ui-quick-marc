@@ -138,7 +138,7 @@ export const validateNonRepeatableSubfield = ({ marcRecords }, rule) => {
 };
 export const validateLeaderLength = ({ marcRecords, marcType }, rule) => {
   const leader = marcRecords.find(field => field.tag === LEADER_TAG);
-  const leaderContent = convertLeaderToString(marcType, leader);
+  const leaderContent = typeof leader.content === 'object' ? convertLeaderToString(marcType, leader) : leader.content;
 
   if (leaderContent.length !== 24) {
     return mapFailingFields([leader], rule.message);
@@ -160,8 +160,8 @@ export const validateCorrectLength = ({ marcRecords }, rule) => {
 export const validateLeaderEditableBytes = ({ marcRecords, initialValues, marcType }, rule) => {
   const initialField = initialValues.records.find(record => record.tag === LEADER_TAG);
   const field = marcRecords.find(record => record.tag === LEADER_TAG);
-  const initialContent = convertLeaderToString(marcType, initialField);
-  const fieldContent = convertLeaderToString(marcType, field);
+  const initialContent = typeof initialField.content === 'object' ? convertLeaderToString(marcType, initialField) : initialField.content;
+  const fieldContent = typeof field.content === 'object' ? convertLeaderToString(marcType, field) : field.content;
 
   const cutEditableBytes = (str) => (
     LEADER_EDITABLE_BYTES[marcType].reduce((acc, byte, idx) => {
@@ -199,7 +199,7 @@ const joinFailedPositions = (failedPositions) => {
 
 export const validateLeaderPositions = ({ marcRecords, marcType }, rule) => {
   const leader = marcRecords.find(field => field.tag === LEADER_TAG);
-  const leaderContent = convertLeaderToString(marcType, leader);
+  const leaderContent = typeof leader.content === 'object' ? convertLeaderToString(marcType, leader) : leader.content;
   const failedPositions = getInvalidLeaderPositions(leaderContent, marcType);
   const joinedPositions = joinFailedPositions(failedPositions);
 
