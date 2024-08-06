@@ -53,7 +53,7 @@ describe('useLccnDuplicationCheck', () => {
           `search/instances?limit=1&query=((lccn=="123" or lccn=="456") not id=="${id}")`,
         );
         expect(error).toEqual({
-          [fieldId]: { id: 'ui-quick-marc.record.error.010.lccnDuplicated' },
+          [fieldId]: [{ id: 'ui-quick-marc.record.error.010.lccnDuplicated' }],
         });
       });
     });
@@ -181,7 +181,7 @@ describe('useLccnDuplicationCheck', () => {
 
         expect(mockGet).toHaveBeenCalledWith('search/authorities?limit=1&query=((lccn=="123" or lccn=="456"))');
         expect(error).toEqual({
-          [fieldId]: { id: 'ui-quick-marc.record.error.010.lccnDuplicated' },
+          [fieldId]: [{ id: 'ui-quick-marc.record.error.010.lccnDuplicated' }],
         });
       });
     });
