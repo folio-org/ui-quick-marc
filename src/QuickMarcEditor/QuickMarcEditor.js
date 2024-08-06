@@ -35,6 +35,8 @@ import {
   HasCommand,
   checkScope,
   Layer,
+  Loading,
+  Modal,
 } from '@folio/stripes/components';
 import { useShowCallout } from '@folio/stripes-acq-components';
 
@@ -119,12 +121,13 @@ const QuickMarcEditor = ({
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const [isUnlinkRecordsModalOpen, setIsUnlinkRecordsModalOpen] = useState(false);
   const [isUpdate0101xxfieldsAuthRecModalOpen, setIsUpdate0101xxfieldsAuthRecModalOpen] = useState(false);
+  const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
   const [isLoadingLinkSuggestions, setIsLoadingLinkSuggestions] = useState(false);
   const continueAfterSave = useRef(false);
   const formRef = useRef(null);
   const confirmationChecks = useRef({ ...REQUIRED_CONFIRMATIONS });
   const { validationErrorsRef, setModifiedSinceLastSubmit, setValidationErrors } = useContext(QuickMarcContext);
-  const { hasErrorIssues } = useValidation();
+  const { hasErrorIssues, isBackEndValidationMarcType } = useValidation();
 
   const isConsortiaEnv = stripes.hasInterface('consortia');
   const searchParameters = new URLSearchParams(location.search);
@@ -205,6 +208,21 @@ const QuickMarcEditor = ({
     return false;
   }, [deletedRecords, initialValues, instance, linksCount, marcType, records]);
 
+  const manageBackendValidationModal = useCallback(() => {
+    let timerId;
+
+    if (isBackEndValidationMarcType(marcType)) {
+      timerId = setTimeout(() => setIsValidationModalOpen(true), 2000);
+    }
+
+    return () => {
+      if (timerId) {
+        clearTimeout(timerId);
+        setIsValidationModalOpen(false);
+      }
+    };
+  }, [setIsValidationModalOpen, isBackEndValidationMarcType, marcType]);
+
   const confirmSubmit = useCallback(async (e, isKeepEditing = false) => {
     continueAfterSave.current = isKeepEditing;
     let skipValidation = false;
@@ -221,7 +239,11 @@ const QuickMarcEditor = ({
     let newValidationErrors = {};
 
     if (!skipValidation) {
+      const closeValidationModal = manageBackendValidationModal();
+
       newValidationErrors = await validate(getState().values);
+
+      closeValidationModal();
 
       const validationErrorsWithoutFieldId = newValidationErrors[MISSING_FIELD_ID] || [];
 
@@ -260,6 +282,7 @@ const QuickMarcEditor = ({
     validate,
     validationErrorsRef,
     runConfirmationChecks,
+    manageBackendValidationModal,
   ]);
 
   const paneFooter = useMemo(() => {
@@ -573,6 +596,18 @@ const QuickMarcEditor = ({
         onConfirm={confirmUpdateLinks}
         onCancel={cancelUpdateLinks}
       />
+      <Modal
+        open={isValidationModalOpen}
+        id="quick-marc-validation-modal"
+        label={<FormattedMessage id="ui-quick-marc.validation.modal.heading" />}
+        scope="module"
+        size="small"
+      >
+        <span className={css.validationModalContent}>
+          <FormattedMessage id="ui-quick-marc.validation.modal.message" />
+          <Loading size="large" />
+        </span>
+      </Modal>
       <FormSpy
         subscription={spySubscription}
         onChange={changeRecords}

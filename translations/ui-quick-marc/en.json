@@ -707,6 +707,7 @@
 
   "record.errorMessage.error": "<b>Fail: </b>",
   "record.errorMessage.warn": "<b>Warn: </b>",
+  "record.error.generic": "Communication problem with server. Please try again.",
   "record.error.leader.length": "Record cannot be saved. The Leader must contain 24 characters, including null spaces.",
   "record.error.leader.forbiddenBytes.holdings": "Record cannot be saved. Please check the Leader. Only positions 5, 6, 17, 18 can be edited in the Leader.",
   "record.error.leader.forbiddenBytes.bibliographic": "Record cannot be saved. Please check the Leader. Only positions 5, 6, 7, 8, 17, 18 and/or 19 can be edited in the Leader.",
@@ -906,5 +907,8 @@
   "records.autoLink.notLinkedFields.multiple": "Field <b>{fieldTags}</b>{count, plural, one {} =2 { and <b>{lastFieldTag}</b>} other {, and <b>{lastFieldTag}</b>}} must be set manually by selecting the link icon. There are multiple authority records that can be matched to this bibliographic field.",
   "autoLinkingButton": "Link headings",
   "records.error.autoLinking": "Unable to link record(s) due to system error. Please try again or contact support.",
-  "record.searchLink": "Search for records by 010 value(s)"
+  "record.searchLink": "Search for records by 010 value(s)",
+
+  "validation.modal.heading": "MARC validation rules check",
+  "validation.modal.message": "There might be a slight delay while the system is checking against the library's validation rules. You can continue to work with Inventory in a different browser tab if needed."
 }
