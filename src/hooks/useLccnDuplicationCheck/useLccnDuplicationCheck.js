@@ -53,12 +53,12 @@ const useLccnDuplicationCheck = ({ marcType, id, action }) => {
 
       if (isLccnDuplicated) {
         return {
-          [field010.id]: { id: 'ui-quick-marc.record.error.010.lccnDuplicated' },
+          [field010.id]: [{ id: 'ui-quick-marc.record.error.010.lccnDuplicated' }],
         };
       }
     } catch (e) {
       return {
-        [field010.id]: { id: 'ui-quick-marc.record.save.error.generic' },
+        [field010.id]: [{ id: 'ui-quick-marc.record.save.error.generic' }],
       };
     } finally {
       setIsLoading(false);
