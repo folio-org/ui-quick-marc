@@ -48,7 +48,7 @@ describe('Given ErrorMessages', () => {
     });
 
     describe('when helpUrl is available', () => {
-      it('should render help link list of errors', () => {
+      it('should render a help link', () => {
         const { getByRole } = renderErrorMessages({
           errors: [{
             id: 'error-1',
