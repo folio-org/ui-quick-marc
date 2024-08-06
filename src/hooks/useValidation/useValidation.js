@@ -30,7 +30,7 @@ const useValidation = (context) => {
 
   // accept { [field.id]: ["message", "message"...]}
   // return { [field.id]: [{ id, values, severity }]}
-  const formatFEValidation = (errors) => {
+  const formatFEValidation = (errors = {}) => {
     return Object.keys(errors).reduce((acc, fieldId) => {
       const fieldErrors = errors[fieldId];
 
@@ -102,8 +102,9 @@ const useValidation = (context) => {
     }
 
     const lccnDuplicationError = await validateLccnDuplication(marcRecords);
+    const formattedLccnDuplicationError = formatFEValidation(lccnDuplicationError);
 
-    const joinedErrors = joinErrors(errors, lccnDuplicationError);
+    const joinedErrors = joinErrors(errors, formattedLccnDuplicationError);
 
     quickMarcContext.setValidationErrors(joinedErrors);
 
