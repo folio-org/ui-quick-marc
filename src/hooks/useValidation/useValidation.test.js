@@ -14,6 +14,7 @@ import {
   bibLeaderString,
   holdingsLeader,
 } from '../../../test/jest/fixtures/leaders';
+import { useLccnDuplicationCheck } from '../useLccnDuplicationCheck';
 
 jest.mock('../../queries', () => ({
   useValidate: jest.fn().mockReturnValue({
@@ -412,6 +413,9 @@ describe('useValidation', () => {
       useValidate.mockReturnValue({
         validate: mockValidate,
       });
+      useLccnDuplicationCheck.mockReturnValue({
+        validateLccnDuplication: jest.fn(),
+      });
     });
 
     const initialValues = {
@@ -469,6 +473,33 @@ describe('useValidation', () => {
         },
       ],
     };
+
+    describe('when LCCN validation returns an error', () => {
+      it('should set the error with severity', async () => {
+        const fieldId = 'field-id';
+
+        const error = {
+          [fieldId]: [{ id: 'message-id' }],
+        };
+
+        useLccnDuplicationCheck.mockReturnValue({
+          validateLccnDuplication: jest.fn().mockResolvedValue(error),
+        });
+
+        const { result } = renderHook(() => useValidation(marcContext), {
+          wrapper: getWrapper(),
+        });
+
+        await result.current.validate(record.records);
+
+        expect(quickMarcContext.setValidationErrors).toHaveBeenCalledWith(expect.objectContaining({
+          [fieldId]: [{
+            id: 'message-id',
+            severity: 'error',
+          }],
+        }));
+      });
+    });
 
     it('should make a request to validate endpoint', async () => {
       const { result } = renderHook(() => useValidation(marcContext), {
