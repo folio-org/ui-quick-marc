@@ -50,7 +50,10 @@ import {
   useAuthorityLinking,
   useValidation,
 } from '../hooks';
-import { QUICK_MARC_ACTIONS } from './constants';
+import {
+  QUICK_MARC_ACTIONS,
+  VALIDATION_MODAL_DELAY,
+} from './constants';
 import {
   ERROR_TYPES,
   MARC_TYPES,
@@ -212,7 +215,7 @@ const QuickMarcEditor = ({
     let timerId;
 
     if (isBackEndValidationMarcType(marcType)) {
-      timerId = setTimeout(() => setIsValidationModalOpen(true), 2000);
+      timerId = setTimeout(() => setIsValidationModalOpen(true), VALIDATION_MODAL_DELAY);
     }
 
     return () => {
