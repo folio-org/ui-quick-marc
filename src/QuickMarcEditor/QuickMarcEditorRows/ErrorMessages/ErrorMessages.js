@@ -2,7 +2,7 @@ import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import { Icon } from '@folio/stripes/components';
+import { Icon, TextLink } from '@folio/stripes/components';
 
 import { SEVERITY } from '../../../hooks/useValidation/constants';
 
@@ -44,6 +44,21 @@ const ErrorMessages = ({ errors = [] }) => {
               ? error.message
               : <FormattedMessage id={error.id} values={error.values} />
             }
+            {error.helpUrl && (
+              <TextLink
+                rel="noopener noreferrer"
+                target="_blank"
+                href={error.helpUrl}
+              >
+                <Icon
+                  icon="external-link"
+                  iconPosition="end"
+                  iconRootClass={styles.helpLinkIcon}
+                >
+                  <FormattedMessage id="ui-quick-marc.record.errorMessage.help" />
+                </Icon>
+              </TextLink>
+            )}
           </Icon>
         </div>
       ))}

@@ -46,5 +46,21 @@ describe('Given ErrorMessages', () => {
       expect(getByText('error-1')).toBeInTheDocument();
       expect(getByText('error-2')).toBeInTheDocument();
     });
+
+    describe('when helpUrl is available', () => {
+      it('should render a help link', () => {
+        const { getByRole } = renderErrorMessages({
+          errors: [{
+            id: 'error-1',
+            helpUrl: 'http://test.link',
+          }],
+        });
+
+        const link = getByRole('link');
+
+        expect(link).toBeInTheDocument();
+        expect(link.href).toEqual('http://test.link/');
+      });
+    });
   });
 });
