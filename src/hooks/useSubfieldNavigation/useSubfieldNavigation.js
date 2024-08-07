@@ -8,6 +8,10 @@ import { KEYBOARD_COMMAND_NAMES } from '../../common/constants';
 
 export const useSubfieldNavigation = () => {
   const processSubfieldFocus = useCallback(({ target }) => {
+    if (!target.value) {
+      return;
+    }
+
     const end = target.value.length;
 
     target.setSelectionRange(end, end);
