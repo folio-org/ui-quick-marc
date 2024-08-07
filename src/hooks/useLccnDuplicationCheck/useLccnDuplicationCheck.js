@@ -45,6 +45,10 @@ const useLccnDuplicationCheck = ({ marcType, id, action }) => {
       [MARC_TYPES.AUTHORITY]: () => ky.get(`search/authorities?limit=1&query=((${lccnQuery})${idQuery})`),
     };
 
+    const buildError = (messageId) => ({
+      [field010.id]: [{ id: messageId }],
+    });
+
     try {
       setIsLoading(true);
 
@@ -52,14 +56,10 @@ const useLccnDuplicationCheck = ({ marcType, id, action }) => {
       const isLccnDuplicated = records?.authorities?.[0] || records?.instances?.[0];
 
       if (isLccnDuplicated) {
-        return {
-          [field010.id]: [{ id: 'ui-quick-marc.record.error.010.lccnDuplicated' }],
-        };
+        return buildError('ui-quick-marc.record.error.010.lccnDuplicated');
       }
     } catch (e) {
-      return {
-        [field010.id]: [{ id: 'ui-quick-marc.record.save.error.generic' }],
-      };
+      return buildError('ui-quick-marc.record.error.generic');
     } finally {
       setIsLoading(false);
     }

@@ -90,10 +90,12 @@ const useValidation = (context) => {
     return formatBEValidationResponse(response, marcRecords);
   }, [context, validateFetch]);
 
+  const isBackEndValidationMarcType = useCallback(marcType => BE_VALIDATION_MARC_TYPES.includes(marcType), []);
+
   const validate = useCallback(async (marcRecords) => {
     let errors = {};
 
-    if (BE_VALIDATION_MARC_TYPES.includes(context.marcType)) {
+    if (isBackEndValidationMarcType(context.marcType)) {
       errors = await runBackEndValidation(marcRecords);
     } else {
       errors = runFrontEndValidation(marcRecords);
@@ -107,7 +109,14 @@ const useValidation = (context) => {
     quickMarcContext.setValidationErrors(joinedErrors);
 
     return joinedErrors;
-  }, [quickMarcContext, context, runFrontEndValidation, runBackEndValidation, validateLccnDuplication]);
+  }, [
+    quickMarcContext,
+    context,
+    runFrontEndValidation,
+    runBackEndValidation,
+    validateLccnDuplication,
+    isBackEndValidationMarcType,
+  ]);
 
   const hasIssuesBySeverity = (severity) => {
     return Object.values(quickMarcContext.validationErrorsRef.current)
@@ -119,6 +128,7 @@ const useValidation = (context) => {
     validate,
     hasErrorIssues: hasIssuesBySeverity(SEVERITY.ERROR),
     hasWarnIssues: hasIssuesBySeverity(SEVERITY.WARN),
+    isBackEndValidationMarcType,
   };
 };
 

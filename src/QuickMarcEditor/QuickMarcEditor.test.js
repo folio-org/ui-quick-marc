@@ -7,6 +7,7 @@ import {
   render,
   fireEvent,
   waitFor,
+  screen,
 } from '@folio/jest-config-stripes/testing-library/react';
 import { runAxeTest } from '@folio/stripes-testing';
 import { useShowCallout } from '@folio/stripes-acq-components';
@@ -93,7 +94,6 @@ const onSaveMock = jest.fn();
 const onSubmitMock = jest.fn(() => Promise.resolve({ version: 1 }));
 const mockShowCallout = jest.fn();
 const mockValidate = jest.fn().mockReturnValue({});
-const mockSetValidationErrors = jest.fn();
 
 useShowCallout.mockClear().mockReturnValue(mockShowCallout);
 
@@ -660,6 +660,27 @@ describe('Given QuickMarcEditor', () => {
       await waitFor(() => {
         expect(onSubmitMock).toHaveBeenCalled();
         expect(onCloseMock).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('and backend validation takes over 2 seconds', () => {
+      it('should display a modal window', async () => {
+        jest.useFakeTimers();
+
+        await act(async () => renderQuickMarcEditor({
+          validate: () => new Promise(resolve => setTimeout(resolve, 2100)),
+        }));
+
+        const contentField = screen.getByTestId('content-field-3');
+
+        fireEvent.change(contentField, { target: { value: 'test' } });
+        await fireEvent.click(screen.getByText('stripes-acq-components.FormFooter.save'));
+
+        await act(async () => jest.advanceTimersByTime(2000));
+
+        expect(screen.getByText('ui-quick-marc.validation.modal.heading')).toBeInTheDocument();
+
+        jest.clearAllTimers();
       });
     });
   });

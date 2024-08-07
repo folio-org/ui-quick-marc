@@ -252,4 +252,39 @@ describe('useLccnDuplicationCheck', () => {
       });
     });
   });
+
+  describe('when request is rejected', () => {
+    it('should display the generic error', async () => {
+      const fieldId = 'field-id';
+      const marcRecords = [{
+        id: fieldId,
+        tag: '010',
+        content: '$a 123 $a 456 $z 789',
+      }];
+      const mockGet = jest.fn(() => ({
+        json: jest.fn().mockRejectedValue({}),
+      }));
+
+      useLccnDuplicateConfig.mockReturnValue({ duplicateLccnCheckingEnabled: true });
+
+      useOkapiKy.mockReturnValue({
+        get: mockGet,
+      });
+
+      const { result } = renderHook(useLccnDuplicationCheck, {
+        initialProps: {
+          marcType: MARC_TYPES.AUTHORITY,
+          action: QUICK_MARC_ACTIONS.CREATE,
+        },
+      });
+
+      const error = await act(() => result.current.validateLccnDuplication(marcRecords));
+
+      expect(error).toEqual({
+        [fieldId]: [{
+          id: 'ui-quick-marc.record.error.generic',
+        }],
+      });
+    });
+  });
 });
