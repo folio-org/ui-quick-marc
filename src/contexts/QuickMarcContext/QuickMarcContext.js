@@ -21,7 +21,6 @@ const QuickMarcProvider = ({
 }) => {
   const [selectedSourceFile, setSelectedSourceFile] = useState(null);
   const validationErrors = useRef({});
-  const [modifiedSinceLastSubmit, setModifiedSinceLastSubmit] = useState(false);
 
   const setValidationErrors = useCallback((newValidationErrors) => {
     validationErrors.current = newValidationErrors;
@@ -32,15 +31,11 @@ const QuickMarcProvider = ({
     setSelectedSourceFile,
     validationErrorsRef: validationErrors,
     setValidationErrors,
-    modifiedSinceLastSubmit,
-    setModifiedSinceLastSubmit,
   }), [
     selectedSourceFile,
     setSelectedSourceFile,
     validationErrors,
     setValidationErrors,
-    modifiedSinceLastSubmit,
-    setModifiedSinceLastSubmit,
   ]);
 
   return (

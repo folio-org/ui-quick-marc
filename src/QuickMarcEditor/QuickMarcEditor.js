@@ -108,7 +108,6 @@ const QuickMarcEditor = ({
   linksCount,
   onCheckCentralTenantPerm,
   validate,
-  modifiedSinceLastSubmit,
 }) => {
   const stripes = useStripes();
   const formValues = getState().values;
@@ -120,10 +119,12 @@ const QuickMarcEditor = ({
   const [isUnlinkRecordsModalOpen, setIsUnlinkRecordsModalOpen] = useState(false);
   const [isUpdate0101xxfieldsAuthRecModalOpen, setIsUpdate0101xxfieldsAuthRecModalOpen] = useState(false);
   const [isLoadingLinkSuggestions, setIsLoadingLinkSuggestions] = useState(false);
+  // null by default to run validation for the first time
+  const [madeChangesSinceValidation, setMadeChangesSinceValidation] = useState(null);
   const continueAfterSave = useRef(false);
   const formRef = useRef(null);
   const confirmationChecks = useRef({ ...REQUIRED_CONFIRMATIONS });
-  const { validationErrorsRef, setModifiedSinceLastSubmit, setValidationErrors } = useContext(QuickMarcContext);
+  const { setValidationErrors } = useContext(QuickMarcContext);
   const { hasErrorIssues } = useValidation();
 
   const isConsortiaEnv = stripes.hasInterface('consortia');
@@ -133,8 +134,8 @@ const QuickMarcEditor = ({
   const { unlinkAuthority } = useAuthorityLinking({ marcType, action });
 
   useEffect(() => {
-    setModifiedSinceLastSubmit(modifiedSinceLastSubmit);
-  }, [modifiedSinceLastSubmit, setModifiedSinceLastSubmit]);
+    setMadeChangesSinceValidation(true);
+  }, [formValues, setMadeChangesSinceValidation]);
 
   const deletedRecords = useMemo(() => {
     return records
@@ -211,7 +212,8 @@ const QuickMarcEditor = ({
 
     // if there are no error issues and user hasn't modified a record since last submit click
     // then we can skip validation and save the record even if there are warnings
-    if (!isEmpty(validationErrorsRef.current) && !modifiedSinceLastSubmit && !hasErrorIssues) {
+    // checking `madeChangesSinceValidation` specifically for `false` because `null` means that validation hasn't been run yet
+    if (madeChangesSinceValidation === false && !hasErrorIssues) {
       skipValidation = true;
     }
 
@@ -233,15 +235,14 @@ const QuickMarcEditor = ({
           type: 'error',
         });
       });
+      setMadeChangesSinceValidation(false);
     } else {
       setValidationErrors({});
     }
 
     // run confirmations only when all validation errors had been fixed and user clicked save the second time or there are no issues in the first place
-    if (isEmpty(newValidationErrors) || skipValidation) {
-      const confirmationFailed = runConfirmationChecks();
-
-      if (confirmationFailed) {
+    if ((isEmpty(newValidationErrors) || skipValidation)) {
+      if (runConfirmationChecks()) {
         return;
       }
     }
@@ -254,12 +255,12 @@ const QuickMarcEditor = ({
     handleSubmitResponse,
     getState,
     hasErrorIssues,
-    modifiedSinceLastSubmit,
     setValidationErrors,
     showCallout,
     validate,
-    validationErrorsRef,
     runConfirmationChecks,
+    madeChangesSinceValidation,
+    setMadeChangesSinceValidation,
   ]);
 
   const paneFooter = useMemo(() => {
@@ -609,7 +610,6 @@ QuickMarcEditor.propTypes = {
   confirmRemoveAuthorityLinking: PropTypes.bool,
   onCheckCentralTenantPerm: PropTypes.func,
   validate: PropTypes.func.isRequired,
-  modifiedSinceLastSubmit: PropTypes.bool.isRequired,
 };
 
 QuickMarcEditor.defaultProps = {
@@ -620,9 +620,6 @@ QuickMarcEditor.defaultProps = {
 
 export default stripesFinalForm({
   navigationCheck: true,
-  subscription: {
-    modifiedSinceLastSubmit: true,
-  },
   mutators: {
     addRecord: ([{ index }], state, tools) => {
       const records = addNewRecord(index, state);
