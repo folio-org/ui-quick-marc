@@ -9,10 +9,8 @@ import {
   HasCommand,
 } from '@folio/stripes/components';
 
-import { useSubfieldNavigation } from '../../../hooks';
-import {
-  getResizeStyles,
-} from './utils';
+import { useSubfieldNavigation } from '../../../hooks/useSubfieldNavigation';
+import { getResizeStyles } from './utils';
 
 export const ContentField = ({
   input,

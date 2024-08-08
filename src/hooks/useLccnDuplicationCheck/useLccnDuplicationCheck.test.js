@@ -19,6 +19,34 @@ describe('useLccnDuplicationCheck', () => {
     useLccnDuplicateConfig.mockReturnValue({ duplicateLccnCheckingEnabled: false });
   });
 
+  it('should not validate if 010 $a is empty', async () => {
+    const fieldId = 'field-id';
+    const marcRecords = [{
+      id: fieldId,
+      tag: '010',
+      content: '$a ',
+    }];
+    const mockGet = jest.fn();
+
+    useLccnDuplicateConfig.mockReturnValue({ duplicateLccnCheckingEnabled: true });
+
+    useOkapiKy.mockReturnValue({
+      get: mockGet,
+    });
+
+    const { result } = renderHook(useLccnDuplicationCheck, {
+      initialProps: {
+        marcType: MARC_TYPES.BIB,
+        action: QUICK_MARC_ACTIONS.EDIT,
+        id,
+      },
+    });
+
+    await act(() => result.current.validateLccnDuplication(marcRecords));
+
+    expect(mockGet).not.toHaveBeenCalled();
+  });
+
   describe('when marc type is bib', () => {
     describe('when duplicateLccnCheckingEnabled is enabled and LCCN is already used in another record', () => {
       it('should return error', async () => {
@@ -50,7 +78,13 @@ describe('useLccnDuplicationCheck', () => {
         const error = await act(() => result.current.validateLccnDuplication(marcRecords));
 
         expect(mockGet).toHaveBeenCalledWith(
-          `search/instances?limit=1&query=((lccn=="123" or lccn=="456") not id=="${id}")`,
+          'search/instances',
+          {
+            searchParams: {
+              limit: 1,
+              query: '(lccn=="123" or lccn=="456") not id=="record-id"',
+            },
+          },
         );
         expect(error).toEqual({
           [fieldId]: [{ id: 'ui-quick-marc.record.error.010.lccnDuplicated' }],
@@ -87,7 +121,13 @@ describe('useLccnDuplicationCheck', () => {
         const error = await act(() => result.current.validateLccnDuplication(marcRecords));
 
         expect(mockGet).toHaveBeenCalledWith(
-          'search/instances?limit=1&query=((lccn=="123" or lccn=="456"))',
+          'search/instances',
+          {
+            searchParams: {
+              limit: 1,
+              query: '(lccn=="123" or lccn=="456")',
+            },
+          },
         );
         expect(error).toBeUndefined();
       });
@@ -179,7 +219,15 @@ describe('useLccnDuplicationCheck', () => {
 
         const error = await act(() => result.current.validateLccnDuplication(marcRecords));
 
-        expect(mockGet).toHaveBeenCalledWith('search/authorities?limit=1&query=((lccn=="123" or lccn=="456"))');
+        expect(mockGet).toHaveBeenCalledWith(
+          'search/authorities',
+          {
+            searchParams: {
+              limit: 1,
+              query: '(lccn=="123" or lccn=="456")',
+            },
+          },
+        );
         expect(error).toEqual({
           [fieldId]: [{ id: 'ui-quick-marc.record.error.010.lccnDuplicated' }],
         });
@@ -215,7 +263,13 @@ describe('useLccnDuplicationCheck', () => {
         const error = await act(() => result.current.validateLccnDuplication(marcRecords));
 
         expect(mockGet).toHaveBeenCalledWith(
-          `search/authorities?limit=1&query=((lccn=="123" or lccn=="456") not id=="${id}")`,
+          'search/authorities',
+          {
+            searchParams: {
+              limit: 1,
+              query: `(lccn=="123" or lccn=="456") not id=="${id}"`,
+            },
+          },
         );
         expect(error).toBeUndefined();
       });

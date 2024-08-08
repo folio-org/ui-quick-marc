@@ -10,15 +10,15 @@ import {
   HasCommand,
 } from '@folio/stripes/components';
 
+import { ErrorMessages } from '../ErrorMessages';
 import { QuickMarcContext } from '../../../contexts';
-import { useSubfieldNavigation } from '../../../hooks';
+import { useSubfieldNavigation } from '../../../hooks/useSubfieldNavigation';
 import {
   UNCONTROLLED_ALPHA,
   UNCONTROLLED_NUMBER,
 } from '../../constants';
 
 import css from './SplitField.css';
-import { ErrorMessages } from '../ErrorMessages';
 
 const propTypes = {
   name: PropTypes.string.isRequired,

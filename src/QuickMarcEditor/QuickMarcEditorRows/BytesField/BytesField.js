@@ -15,10 +15,10 @@ import {
   Select,
 } from '@folio/stripes/components';
 
+import { ErrorMessages } from '../ErrorMessages';
 import { FIXED_FIELD_MAX_LENGTH } from '../../../common/constants';
 
 import styles from './BytesField.css';
-import { ErrorMessages } from '../ErrorMessages';
 
 export const SUBFIELD_TYPES = {
   BYTE: 'Byte',
