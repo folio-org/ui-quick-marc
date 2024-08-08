@@ -19,6 +19,34 @@ describe('useLccnDuplicationCheck', () => {
     useLccnDuplicateConfig.mockReturnValue({ duplicateLccnCheckingEnabled: false });
   });
 
+  it('should not validate if 010 $a is empty', async () => {
+    const fieldId = 'field-id';
+    const marcRecords = [{
+      id: fieldId,
+      tag: '010',
+      content: '$a ',
+    }];
+    const mockGet = jest.fn();
+
+    useLccnDuplicateConfig.mockReturnValue({ duplicateLccnCheckingEnabled: true });
+
+    useOkapiKy.mockReturnValue({
+      get: mockGet,
+    });
+
+    const { result } = renderHook(useLccnDuplicationCheck, {
+      initialProps: {
+        marcType: MARC_TYPES.BIB,
+        action: QUICK_MARC_ACTIONS.EDIT,
+        id,
+      },
+    });
+
+    await act(() => result.current.validateLccnDuplication(marcRecords));
+
+    expect(mockGet).not.toHaveBeenCalled();
+  });
+
   describe('when marc type is bib', () => {
     describe('when duplicateLccnCheckingEnabled is enabled and LCCN is already used in another record', () => {
       it('should return error', async () => {
