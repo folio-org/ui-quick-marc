@@ -119,8 +119,7 @@ const QuickMarcEditor = ({
   const [isUnlinkRecordsModalOpen, setIsUnlinkRecordsModalOpen] = useState(false);
   const [isUpdate0101xxfieldsAuthRecModalOpen, setIsUpdate0101xxfieldsAuthRecModalOpen] = useState(false);
   const [isLoadingLinkSuggestions, setIsLoadingLinkSuggestions] = useState(false);
-  // null by default to run validation for the first time
-  const [madeChangesSinceValidation, setMadeChangesSinceValidation] = useState(null);
+  const [isValidatedCurrentValues, setIsValidatedCurrentValues] = useState(false);
   const continueAfterSave = useRef(false);
   const formRef = useRef(null);
   const confirmationChecks = useRef({ ...REQUIRED_CONFIRMATIONS });
@@ -134,8 +133,8 @@ const QuickMarcEditor = ({
   const { unlinkAuthority } = useAuthorityLinking({ marcType, action });
 
   useEffect(() => {
-    setMadeChangesSinceValidation(true);
-  }, [formValues, setMadeChangesSinceValidation]);
+    setIsValidatedCurrentValues(false);
+  }, [formValues, setIsValidatedCurrentValues]);
 
   const deletedRecords = useMemo(() => {
     return records
@@ -212,8 +211,7 @@ const QuickMarcEditor = ({
 
     // if there are no error issues and user hasn't modified a record since last submit click
     // then we can skip validation and save the record even if there are warnings
-    // checking `madeChangesSinceValidation` specifically for `false` because `null` means that validation hasn't been run yet
-    if (madeChangesSinceValidation === false && !hasErrorIssues) {
+    if (isValidatedCurrentValues && !hasErrorIssues) {
       skipValidation = true;
     }
 
@@ -235,7 +233,7 @@ const QuickMarcEditor = ({
           type: 'error',
         });
       });
-      setMadeChangesSinceValidation(false);
+      setIsValidatedCurrentValues(true);
     } else {
       setValidationErrors({});
     }
@@ -259,8 +257,8 @@ const QuickMarcEditor = ({
     showCallout,
     validate,
     runConfirmationChecks,
-    madeChangesSinceValidation,
-    setMadeChangesSinceValidation,
+    isValidatedCurrentValues,
+    setIsValidatedCurrentValues,
   ]);
 
   const paneFooter = useMemo(() => {
