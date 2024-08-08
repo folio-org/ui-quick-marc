@@ -17,14 +17,14 @@ const useLccnDuplicationCheck = ({ marcType, id, action }) => {
 
   const validateLccnDuplication = useCallback(async (marcRecords) => {
     const field010 = marcRecords.find(field => field.tag === '010');
+    const { $a = [] } = getContentSubfieldValue(field010?.content);
 
     if (!duplicateLccnCheckingEnabled
       || !field010
+      || !$a.filter(lccn => lccn).length
       || ![MARC_TYPES.BIB, MARC_TYPES.AUTHORITY].includes(marcType)) {
       return undefined;
     }
-
-    const { $a = [] } = getContentSubfieldValue(field010?.content);
 
     const lccnQuery = $a
       .filter(lccn => lccn)
@@ -40,10 +40,19 @@ const useLccnDuplicationCheck = ({ marcType, id, action }) => {
       idQuery = '';
     }
 
-    const requests = {
-      [MARC_TYPES.BIB]: () => ky.get(`search/instances?limit=1&query=((${lccnQuery})${idQuery})`),
-      [MARC_TYPES.AUTHORITY]: () => ky.get(`search/authorities?limit=1&query=((${lccnQuery})${idQuery})`),
+    const searchParams = {
+      limit: 1,
+      query: `(${lccnQuery})${idQuery}`,
     };
+
+    const requests = {
+      [MARC_TYPES.BIB]: () => ky.get('search/instances', { searchParams }),
+      [MARC_TYPES.AUTHORITY]: () => ky.get('search/authorities', { searchParams }),
+    };
+
+    const buildError = (messageId) => ({
+      [field010.id]: [{ id: messageId }],
+    });
 
     try {
       setIsLoading(true);
@@ -52,14 +61,10 @@ const useLccnDuplicationCheck = ({ marcType, id, action }) => {
       const isLccnDuplicated = records?.authorities?.[0] || records?.instances?.[0];
 
       if (isLccnDuplicated) {
-        return {
-          [field010.id]: [{ id: 'ui-quick-marc.record.error.010.lccnDuplicated' }],
-        };
+        return buildError('ui-quick-marc.record.error.010.lccnDuplicated');
       }
     } catch (e) {
-      return {
-        [field010.id]: [{ id: 'ui-quick-marc.record.save.error.generic' }],
-      };
+      return buildError('ui-quick-marc.record.error.generic');
     } finally {
       setIsLoading(false);
     }

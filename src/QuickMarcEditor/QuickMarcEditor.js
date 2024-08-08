@@ -35,6 +35,8 @@ import {
   HasCommand,
   checkScope,
   Layer,
+  Loading,
+  Modal,
 } from '@folio/stripes/components';
 import { useShowCallout } from '@folio/stripes-acq-components';
 
@@ -48,7 +50,10 @@ import {
   useAuthorityLinking,
   useValidation,
 } from '../hooks';
-import { QUICK_MARC_ACTIONS } from './constants';
+import {
+  QUICK_MARC_ACTIONS,
+  VALIDATION_MODAL_DELAY,
+} from './constants';
 import {
   ERROR_TYPES,
   MARC_TYPES,
@@ -118,13 +123,14 @@ const QuickMarcEditor = ({
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const [isUnlinkRecordsModalOpen, setIsUnlinkRecordsModalOpen] = useState(false);
   const [isUpdate0101xxfieldsAuthRecModalOpen, setIsUpdate0101xxfieldsAuthRecModalOpen] = useState(false);
+  const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
   const [isLoadingLinkSuggestions, setIsLoadingLinkSuggestions] = useState(false);
   const [isValidatedCurrentValues, setIsValidatedCurrentValues] = useState(false);
   const continueAfterSave = useRef(false);
   const formRef = useRef(null);
   const confirmationChecks = useRef({ ...REQUIRED_CONFIRMATIONS });
   const { setValidationErrors } = useContext(QuickMarcContext);
-  const { hasErrorIssues } = useValidation();
+  const { hasErrorIssues, isBackEndValidationMarcType } = useValidation();
 
   const isConsortiaEnv = stripes.hasInterface('consortia');
   const searchParameters = new URLSearchParams(location.search);
@@ -205,6 +211,21 @@ const QuickMarcEditor = ({
     return false;
   }, [deletedRecords, initialValues, instance, linksCount, marcType, records]);
 
+  const manageBackendValidationModal = useCallback(() => {
+    let timerId;
+
+    if (isBackEndValidationMarcType(marcType)) {
+      timerId = setTimeout(() => setIsValidationModalOpen(true), VALIDATION_MODAL_DELAY);
+    }
+
+    return () => {
+      if (timerId) {
+        clearTimeout(timerId);
+        setIsValidationModalOpen(false);
+      }
+    };
+  }, [setIsValidationModalOpen, isBackEndValidationMarcType, marcType]);
+
   const confirmSubmit = useCallback(async (e, isKeepEditing = false) => {
     continueAfterSave.current = isKeepEditing;
     let skipValidation = false;
@@ -221,7 +242,11 @@ const QuickMarcEditor = ({
     let newValidationErrors = {};
 
     if (!skipValidation) {
+      const closeValidationModal = manageBackendValidationModal();
+
       newValidationErrors = await validate(getState().values);
+
+      closeValidationModal();
 
       const validationErrorsWithoutFieldId = newValidationErrors[MISSING_FIELD_ID] || [];
 
@@ -259,6 +284,7 @@ const QuickMarcEditor = ({
     runConfirmationChecks,
     isValidatedCurrentValues,
     setIsValidatedCurrentValues,
+    manageBackendValidationModal,
   ]);
 
   const paneFooter = useMemo(() => {
@@ -572,6 +598,18 @@ const QuickMarcEditor = ({
         onConfirm={confirmUpdateLinks}
         onCancel={cancelUpdateLinks}
       />
+      <Modal
+        open={isValidationModalOpen}
+        id="quick-marc-validation-modal"
+        label={<FormattedMessage id="ui-quick-marc.validation.modal.heading" />}
+        scope="module"
+        size="small"
+      >
+        <span className={css.validationModalContent}>
+          <FormattedMessage id="ui-quick-marc.validation.modal.message" />
+          <Loading size="large" />
+        </span>
+      </Modal>
       <FormSpy
         subscription={spySubscription}
         onChange={changeRecords}
