@@ -50,7 +50,13 @@ describe('useLccnDuplicationCheck', () => {
         const error = await act(() => result.current.validateLccnDuplication(marcRecords));
 
         expect(mockGet).toHaveBeenCalledWith(
-          `search/instances?limit=1&query=((lccn=="123" or lccn=="456") not id=="${id}")`,
+          'search/instances',
+          {
+            searchParams: {
+              limit: 1,
+              query: '(lccn=="123" or lccn=="456") not id=="record-id"',
+            },
+          },
         );
         expect(error).toEqual({
           [fieldId]: [{ id: 'ui-quick-marc.record.error.010.lccnDuplicated' }],
@@ -87,7 +93,13 @@ describe('useLccnDuplicationCheck', () => {
         const error = await act(() => result.current.validateLccnDuplication(marcRecords));
 
         expect(mockGet).toHaveBeenCalledWith(
-          'search/instances?limit=1&query=((lccn=="123" or lccn=="456"))',
+          'search/instances',
+          {
+            searchParams: {
+              limit: 1,
+              query: '(lccn=="123" or lccn=="456")',
+            },
+          },
         );
         expect(error).toBeUndefined();
       });
@@ -179,7 +191,15 @@ describe('useLccnDuplicationCheck', () => {
 
         const error = await act(() => result.current.validateLccnDuplication(marcRecords));
 
-        expect(mockGet).toHaveBeenCalledWith('search/authorities?limit=1&query=((lccn=="123" or lccn=="456"))');
+        expect(mockGet).toHaveBeenCalledWith(
+          'search/authorities',
+          {
+            searchParams: {
+              limit: 1,
+              query: '(lccn=="123" or lccn=="456")',
+            },
+          },
+        );
         expect(error).toEqual({
           [fieldId]: [{ id: 'ui-quick-marc.record.error.010.lccnDuplicated' }],
         });
@@ -215,7 +235,13 @@ describe('useLccnDuplicationCheck', () => {
         const error = await act(() => result.current.validateLccnDuplication(marcRecords));
 
         expect(mockGet).toHaveBeenCalledWith(
-          `search/authorities?limit=1&query=((lccn=="123" or lccn=="456") not id=="${id}")`,
+          'search/authorities',
+          {
+            searchParams: {
+              limit: 1,
+              query: `(lccn=="123" or lccn=="456") not id=="${id}"`,
+            },
+          },
         );
         expect(error).toBeUndefined();
       });
