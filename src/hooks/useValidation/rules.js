@@ -57,10 +57,12 @@ const COMMON_VALIDATORS = [
   {
     validator: RULES.LEADER_LENGTH,
     message: () => ({ id: 'ui-quick-marc.record.error.leader.length' }),
-  }, {
+  },
+  {
     validator: RULES.LEADER_EDITABLE_BYTES,
     message: (marcType) => ({ id: `ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}` }),
-  }, {
+  },
+  {
     validator: RULES.LEADER_POSITIONS,
     message: (positions, link) => ({
       id: 'ui-quick-marc.record.error.leader.invalidPositionValue',
@@ -92,45 +94,39 @@ const COMMON_VALIDATORS = [
     validator: RULES.TAG_CHARACTERS,
     message: () => ({ id: 'ui-quick-marc.record.error.tag.nonDigits' }),
   },
-  {
+  { // TODO: do we need this rule? Should it stay on FE?
     validator: RULES.EMPTY_SUBFIELDS,
     message: () => ({ id: 'ui-quick-marc.record.error.subfield' }),
-  },
-  {
-    tag: '008',
-    validator: RULES.EXISTS,
-    message: () => ({ id: 'ui-quick-marc.record.error.008.empty' }),
-  }, {
-    tag: '008',
-    validator: RULES.NON_REPEATABLE,
-    message: () => ({ id: 'ui-quick-marc.record.error.008.multiple' }),
   },
 ];
 
 const BASE_BIB_VALIDATORS = [
-  ...COMMON_VALIDATORS,
+  // {
+  //   tag: '008',
+  //   validator: RULES.FIXED_FIELD_POSITIONS,
+  //   message: (name) => ({
+  //     id: 'ui-quick-marc.record.error.008.invalidValue',
+  //     values: { name },
+  //   }),
+  // },
+  // {
+  //   tag: '010',
+  //   validator: RULES.NON_REPEATABLE,
+  //   message: () => ({ id: 'ui-quick-marc.record.error.010.multiple' }),
+  // },
+  // {
+  //   tag: '245',
+  //   validator: RULES.EXISTS,
+  //   message: () => ({ id: 'ui-quick-marc.record.error.title.empty' }),
+  // },
+  // {
+  //   tag: '245',
+  //   validator: RULES.NON_REPEATABLE,
+  //   message: () => ({ id: 'ui-quick-marc.record.error.title.multiple' }),
+  // },
   {
-    tag: '008',
-    validator: RULES.FIXED_FIELD_POSITIONS,
-    message: (name) => ({
-      id: 'ui-quick-marc.record.error.008.invalidValue',
-      values: { name },
-    }),
-  },
-  {
-    tag: '010',
-    validator: RULES.NON_REPEATABLE,
-    message: () => ({ id: 'ui-quick-marc.record.error.010.multiple' }),
-  },
-  {
-    tag: '245',
-    validator: RULES.EXISTS,
-    message: () => ({ id: 'ui-quick-marc.record.error.title.empty' }),
-  },
-  {
-    tag: '245',
-    validator: RULES.NON_REPEATABLE,
-    message: () => ({ id: 'ui-quick-marc.record.error.title.multiple' }),
+    validator: RULES.LEADER_EDITABLE_BYTES,
+    message: (marcType) => ({ id: `ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}` }),
   },
   {
     validator: RULES.$9IN_LINKABLE,
@@ -169,6 +165,15 @@ const BASE_HOLDINGS_VALIDATORS = [
     message: () => ({ id: 'ui-quick-marc.record.error.instanceHrid.multiple' }),
   },
   {
+    tag: '008',
+    validator: RULES.EXISTS,
+    message: () => ({ id: 'ui-quick-marc.record.error.008.empty' }),
+  }, {
+    tag: '008',
+    validator: RULES.NON_REPEATABLE,
+    message: () => ({ id: 'ui-quick-marc.record.error.008.multiple' }),
+  },
+  {
     tag: '852',
     validator: RULES.EXISTS,
     message: () => ({ id: 'ui-quick-marc.record.error.location.empty' }),
@@ -195,7 +200,10 @@ const BASE_HOLDINGS_VALIDATORS = [
 ];
 
 const BASE_AUTHORITY_VALIDATORS = [
-  ...COMMON_VALIDATORS,
+  {
+    validator: RULES.LEADER_EDITABLE_BYTES,
+    message: (marcType) => ({ id: `ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}` }),
+  },
   {
     tag: '010',
     subfield: '$a',
@@ -213,27 +221,27 @@ const BASE_AUTHORITY_VALIDATORS = [
     validator: RULES.EXISTS,
     message: () => ({ id: 'ui-quick-marc.record.error.010.removed' }),
   },
-  {
-    tag: '010',
-    validator: RULES.NON_REPEATABLE,
-    message: () => ({ id: 'ui-quick-marc.record.error.010.multiple' }),
-  },
-  {
-    tag: '010',
-    subfield: '$a',
-    validator: RULES.NON_REPEATABLE_SUBFIELD,
-    message: () => ({ id: 'ui-quick-marc.record.error.010.$aOnlyOne' }),
-  },
-  {
-    tag: new RegExp(`${CORRESPONDING_HEADING_TYPE_TAGS.join('|')}`),
-    validator: RULES.EXISTS,
-    message: () => ({ id: 'ui-quick-marc.record.error.heading.empty' }),
-  },
-  {
-    tag: new RegExp(/1\d\d/),
-    validator: RULES.NON_REPEATABLE,
-    message: () => ({ id: 'ui-quick-marc.record.error.heading.multiple' }),
-  },
+  // {
+  //   tag: '010',
+  //   validator: RULES.NON_REPEATABLE,
+  //   message: () => ({ id: 'ui-quick-marc.record.error.010.multiple' }),
+  // },
+  // {
+  //   tag: '010',
+  //   subfield: '$a',
+  //   validator: RULES.NON_REPEATABLE_SUBFIELD,
+  //   message: () => ({ id: 'ui-quick-marc.record.error.010.$aOnlyOne' }),
+  // },
+  // {
+  //   tag: new RegExp(`${CORRESPONDING_HEADING_TYPE_TAGS.join('|')}`),
+  //   validator: RULES.EXISTS,
+  //   message: () => ({ id: 'ui-quick-marc.record.error.heading.empty' }),
+  // },
+  // {
+  //   tag: new RegExp(/1\d\d/),
+  //   validator: RULES.NON_REPEATABLE,
+  //   message: () => ({ id: 'ui-quick-marc.record.error.heading.multiple' }),
+  // },
   {
     tag: new RegExp(`${CORRESPONDING_HEADING_TYPE_TAGS.join('|')}`),
     validator: RULES.TAG_CHANGED,
@@ -296,11 +304,11 @@ const CREATE_AUTHORITY_VALIDATORS = [
     validator: RULES.SUBFIELD_VALUE_MATCH,
     message: () => ({ id: 'ui-quick-marc.record.error.010.prefix.invalid' }),
   },
-  {
-    tag: '001',
-    validator: RULES.CONTENT_EXISTS,
-    message: () => ({ id: 'ui-quick-marc.record.error.controlField.content.empty' }),
-  },
+  // {
+  //   tag: '001',
+  //   validator: RULES.CONTENT_EXISTS,
+  //   message: () => ({ id: 'ui-quick-marc.record.error.controlField.content.empty' }),
+  // },
 ];
 
 export const validators = {

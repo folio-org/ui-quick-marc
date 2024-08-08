@@ -93,18 +93,20 @@ const useValidation = (context) => {
   const isBackEndValidationMarcType = useCallback(marcType => BE_VALIDATION_MARC_TYPES.includes(marcType), []);
 
   const validate = useCallback(async (marcRecords) => {
-    let errors = {};
+    let backEndValidationErrors = {};
+
+    const frontEndValidationErrors = runFrontEndValidation(marcRecords);
 
     if (isBackEndValidationMarcType(context.marcType)) {
-      errors = await runBackEndValidation(marcRecords);
-    } else {
-      errors = runFrontEndValidation(marcRecords);
+      backEndValidationErrors = await runBackEndValidation(marcRecords);
     }
 
     const lccnDuplicationError = await validateLccnDuplication(marcRecords);
     const formattedLccnDuplicationError = formatFEValidation(lccnDuplicationError);
 
-    const joinedErrors = joinErrors(errors, formattedLccnDuplicationError);
+    let joinedErrors = joinErrors(frontEndValidationErrors, formattedLccnDuplicationError);
+
+    joinedErrors = joinErrors(joinedErrors, backEndValidationErrors);
 
     quickMarcContext.setValidationErrors(joinedErrors);
 

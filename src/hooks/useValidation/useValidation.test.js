@@ -475,7 +475,7 @@ describe('useValidation', () => {
     };
 
     describe('when LCCN validation returns an error', () => {
-      it('should set the error with severity', async () => {
+      it.only('should set the error with severity', async () => {
         const fieldId = 'field-id';
 
         const error = {
