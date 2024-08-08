@@ -17,10 +17,12 @@ import {
   UNCONTROLLED_SUBFIELDS,
   TAG_LENGTH,
   FIXED_FIELD_TAG,
+  QUICK_MARC_ACTIONS,
 } from '../../QuickMarcEditor/constants';
 import { FixedFieldFactory } from '../../QuickMarcEditor/QuickMarcEditorRows/FixedField';
 import { leaderConfig } from '../../QuickMarcEditor/QuickMarcEditorRows/LeaderField/leaderConfig';
 import { MISSING_FIELD_ID } from './constants';
+import { MARC_TYPES } from '../../common/constants';
 
 const mapFailingFields = (fields, formatMessage) => {
   return fields.reduce((acc, field) => {
@@ -404,6 +406,66 @@ export const validateFixedFieldPositions = ({ marcRecords, fixedFieldSpec, marcT
 
   if (!isEmpty(errors)) {
     return errors;
+  }
+
+  return undefined;
+};
+export const validateLccnDuplication = async ({
+  ky,
+  marcRecords,
+  duplicateLccnCheckingEnabled,
+  instanceId,
+  action,
+  marcType,
+}, rule) => {
+  if (!duplicateLccnCheckingEnabled) {
+    return undefined;
+  }
+
+  const fields = marcRecords.filter(record => record.tag.match(rule.tag));
+
+  const validateField = async (field) => {
+    const { $a = [] } = getContentSubfieldValue(field.content);
+
+    const lccnQuery = $a
+      .filter(lccn => lccn)
+      .map(lccn => `lccn=="${lccn}"`)
+      .join(' or ');
+
+    // prevent retrieving a record with the same id to avoid getting the record we are validating.
+    let idQuery = ` not id=="${instanceId}"`;
+
+    // Derive mode uses the derived record id during saving, so a record with that id must also be searched to avoid
+    // duplication in 010 $a.
+    if ([QUICK_MARC_ACTIONS.CREATE, QUICK_MARC_ACTIONS.DERIVE].includes(action)) {
+      idQuery = '';
+    }
+
+    const requests = {
+      [MARC_TYPES.BIB]: () => ky.get(`search/instances?limit=1&query=((${lccnQuery})${idQuery})`),
+      [MARC_TYPES.AUTHORITY]: () => ky.get(`search/authorities?limit=1&query=((${lccnQuery})${idQuery})`),
+    };
+
+    try {
+      const records = await requests[marcType]().json();
+      const isLccnDuplicated = records?.authorities?.[0] || records?.instances?.[0];
+
+      if (isLccnDuplicated) {
+        return rule.message();
+      }
+
+      return undefined;
+    } catch (e) {
+      return { id: 'ui-quick-marc.record.error.generic' };
+    }
+  };
+
+  const failingFields = fields.filter((field) => {
+    return validateField(field);
+  });
+
+  if (failingFields.length) {
+    return mapFailingFields(failingFields, rule.message);
   }
 
   return undefined;

@@ -3,10 +3,14 @@ import {
   useContext,
 } from 'react';
 
+import { useOkapiKy } from '@folio/stripes/core';
+
 import { validators } from './rules';
 import { QuickMarcContext } from '../../contexts';
-import { useValidate } from '../../queries';
-import { useLccnDuplicationCheck } from '../useLccnDuplicationCheck';
+import {
+  useLccnDuplicateConfig,
+  useValidate,
+} from '../../queries';
 import {
   isLeaderRow,
   joinErrors,
@@ -19,43 +23,46 @@ import {
 
 const BE_VALIDATION_MARC_TYPES = [MARC_TYPES.BIB, MARC_TYPES.AUTHORITY];
 
-const useValidation = (context) => {
+// accept { [field.id]: ["message", "message"...]}
+// return { [field.id]: [{ id, values, severity }]}
+const formatFEValidation = (errors = {}) => {
+  return Object.keys(errors).reduce((acc, fieldId) => {
+    const fieldErrors = errors[fieldId];
+
+    return {
+      ...acc,
+      [fieldId]: fieldErrors.map(fieldError => ({
+        severity: SEVERITY.ERROR,
+        ...fieldError,
+      })),
+    };
+  }, {});
+};
+
+const useValidation = (context = {}) => {
   const quickMarcContext = useContext(QuickMarcContext);
   const { validate: validateFetch } = useValidate();
-  const { validateLccnDuplication } = useLccnDuplicationCheck({
-    marcType: context?.marcType,
-    id: context?.instanceId,
-    action: context?.action,
-  });
-
-  // accept { [field.id]: ["message", "message"...]}
-  // return { [field.id]: [{ id, values, severity }]}
-  const formatFEValidation = (errors = {}) => {
-    return Object.keys(errors).reduce((acc, fieldId) => {
-      const fieldErrors = errors[fieldId];
-
-      return {
-        ...acc,
-        [fieldId]: fieldErrors.map(fieldError => ({
-          severity: SEVERITY.ERROR,
-          ...fieldError,
-        })),
-      };
-    }, {});
-  };
+  const { duplicateLccnCheckingEnabled } = useLccnDuplicateConfig({ marcType: context.marcType });
+  const ky = useOkapiKy();
 
   const runFrontEndValidation = useCallback((marcRecords) => {
     const validationRules = validators[context.marcType][context.action];
 
-    const errors = validationRules.reduce((joinedErrors, rule) => {
+    const errors = validationRules.reduce(async (joinedErrors, rule) => {
       // returns undefined or { [field.id]: 'error message' }
-      const ruleErrors = rule.validator({ ...context, ...quickMarcContext, marcRecords }, rule);
+      const ruleErrors = await rule.validator({
+        ...context,
+        ...quickMarcContext,
+        marcRecords,
+        duplicateLccnCheckingEnabled,
+        ky,
+      }, rule);
 
       return joinErrors(joinedErrors, ruleErrors);
     }, {});
 
     return formatFEValidation(errors);
-  }, [context, quickMarcContext]);
+  }, [context, quickMarcContext, duplicateLccnCheckingEnabled, ky]);
 
   const formatBEValidationResponse = (response, marcRecords) => {
     if (!response.issues) {
@@ -101,12 +108,7 @@ const useValidation = (context) => {
       backEndValidationErrors = await runBackEndValidation(marcRecords);
     }
 
-    const lccnDuplicationError = await validateLccnDuplication(marcRecords);
-    const formattedLccnDuplicationError = formatFEValidation(lccnDuplicationError);
-
-    let joinedErrors = joinErrors(frontEndValidationErrors, formattedLccnDuplicationError);
-
-    joinedErrors = joinErrors(joinedErrors, backEndValidationErrors);
+    const joinedErrors = joinErrors(frontEndValidationErrors, backEndValidationErrors);
 
     quickMarcContext.setValidationErrors(joinedErrors);
 
@@ -116,7 +118,7 @@ const useValidation = (context) => {
     context,
     runFrontEndValidation,
     runBackEndValidation,
-    validateLccnDuplication,
+    // validateLccnDuplication,
     isBackEndValidationMarcType,
   ]);
 

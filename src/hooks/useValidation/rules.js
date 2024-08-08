@@ -25,6 +25,7 @@ import {
   validateSubfieldValueMatch,
   validateContentExistence,
   validateFixedFieldPositions,
+  validateLccnDuplication,
 } from './validators';
 import {
   is010LinkedToBibRecord,
@@ -51,6 +52,7 @@ const RULES = {
   SUBFIELD_VALUE_MATCH: validateSubfieldValueMatch,
   SUBFIELD_CHANGED: validateSubfieldChanged,
   FIXED_FIELD_POSITIONS: validateFixedFieldPositions,
+  DUPLICATE_LCCN: validateLccnDuplication,
 };
 
 const COMMON_VALIDATORS = [
@@ -154,6 +156,11 @@ const BASE_BIB_VALIDATORS = [
         },
       });
     },
+  },
+  {
+    tag: '010',
+    validator: RULES.DUPLICATE_LCCN,
+    message: () => ({ id: 'ui-quick-marc.record.error.010.lccnDuplicated' }),
   },
 ];
 
