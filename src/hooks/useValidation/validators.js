@@ -448,6 +448,7 @@ export const validateLccnDuplication = async ({
 
     try {
       const records = await requests[marcType]().json();
+
       const isLccnDuplicated = records?.authorities?.[0] || records?.instances?.[0];
 
       if (isLccnDuplicated) {
@@ -460,12 +461,18 @@ export const validateLccnDuplication = async ({
     }
   };
 
-  const failingFields = fields.filter((field) => {
-    return validateField(field);
-  });
+  const errors = (await Promise.all(fields.map(validateField))).reduce((acc, validationError, index) => {
+    const field = fields[index];
 
-  if (failingFields.length) {
-    return mapFailingFields(failingFields, rule.message);
+    if (validationError) {
+      return { ...acc, [field.id]: [validationError] };
+    }
+
+    return acc;
+  }, {});
+
+  if (!isEmpty(errors)) {
+    return errors;
   }
 
   return undefined;

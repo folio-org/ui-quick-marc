@@ -442,7 +442,9 @@ describe('useValidation', () => {
     describe('when LCCN validation returns an error', () => {
       it('should set the error with severity', async () => {
         useOkapiKy.mockReturnValueOnce({
-          get: jest.fn().mockResolvedValue({ instances: [{}] }),
+          get: jest.fn().mockReturnValue({
+            json: jest.fn().mockResolvedValue({ instances: [{}] }),
+          }),
         });
         const { result } = renderHook(() => useValidation(marcContext), {
           wrapper: getWrapper(),

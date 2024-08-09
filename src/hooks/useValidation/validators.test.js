@@ -1,8 +1,9 @@
-import { LEADER_DOCUMENTATION_LINKS, LEADER_TAG, FIXED_FIELD_TAG } from '../../QuickMarcEditor/constants';
+import { LEADER_DOCUMENTATION_LINKS, LEADER_TAG, FIXED_FIELD_TAG, QUICK_MARC_ACTIONS } from '../../QuickMarcEditor/constants';
 import { MARC_TYPES } from '../../common/constants';
 import * as validators from './validators';
 import fixedFieldSpecBib from '../../../test/mocks/fixedFieldSpecBib';
 import { bibLeader } from '../../../test/jest/fixtures/leaders';
+import { waitFor } from '@folio/jest-config-stripes/testing-library/react';
 
 const locations = [{
   code: 'VA/LI/D',
@@ -707,6 +708,74 @@ describe('validators', () => {
       validators.validateFixedFieldPositions({ marcRecords, fixedFieldSpec, marcType }, rule);
 
       expect(rule.message).toHaveBeenCalledWith('Ills');
+    });
+  });
+
+  describe('validateLccnDuplication', () => {
+    const rule = {
+      tag: '010',
+      message: jest.fn(),
+    };
+
+    describe('when 010 $a is not duplicated', () => {
+      it('should not return an error', async () => {
+        const marcRecords = [{
+          tag: LEADER_TAG,
+          content: bibLeader,
+        }, {
+          tag: '010',
+          content: '$a test',
+        }];
+        const ky = {
+          get: jest.fn().mockReturnValue({
+            json: jest.fn().mockResolvedValue({ instances: [] }),
+          }),
+        };
+
+        const marcType = MARC_TYPES.BIB;
+        const action = QUICK_MARC_ACTIONS.EDIT;
+        const duplicateLccnCheckingEnabled = true;
+
+        await validators.validateLccnDuplication({
+          ky,
+          marcRecords,
+          marcType,
+          action,
+          duplicateLccnCheckingEnabled,
+        }, rule);
+
+        expect(rule.message).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when 010 $a is duplicated', () => {
+      it('should return an error', async () => {
+        const marcRecords = [{
+          tag: LEADER_TAG,
+          content: bibLeader,
+        }, {
+          tag: '010',
+          content: '$a test',
+        }];
+        const ky = {
+          get: jest.fn().mockReturnValue({
+            json: jest.fn().mockResolvedValue({ instances: [{}] }),
+          }),
+        };
+        const marcType = MARC_TYPES.BIB;
+        const action = QUICK_MARC_ACTIONS.EDIT;
+        const duplicateLccnCheckingEnabled = true;
+
+        await validators.validateLccnDuplication({
+          ky,
+          marcRecords,
+          marcType,
+          action,
+          duplicateLccnCheckingEnabled,
+        }, rule);
+
+        expect(rule.message).toHaveBeenCalled();
+      });
     });
   });
 });
