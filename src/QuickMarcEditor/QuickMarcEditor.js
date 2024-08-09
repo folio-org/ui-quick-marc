@@ -12,7 +12,7 @@ import {
 } from 'react-router';
 import { FormSpy } from 'react-final-form';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import find from 'lodash/find';
 import noop from 'lodash/noop';
 import isEmpty from 'lodash/isEmpty';
@@ -115,6 +115,7 @@ const QuickMarcEditor = ({
   validate,
 }) => {
   const stripes = useStripes();
+  const intl = useIntl();
   const formValues = getState().values;
   const history = useHistory();
   const location = useLocation();
@@ -244,9 +245,19 @@ const QuickMarcEditor = ({
     if (!skipValidation) {
       const closeValidationModal = manageBackendValidationModal();
 
-      newValidationErrors = await validate(getState().values);
+      try {
+        newValidationErrors = await validate(getState().values);
+        closeValidationModal();
+      } catch (err) {
+        closeValidationModal();
 
-      closeValidationModal();
+        showCallout({
+          messageId: 'ui-quick-marc.record.save.error.generic',
+          type: 'error',
+        });
+
+        return;
+      }
 
       const validationErrorsWithoutFieldId = newValidationErrors[MISSING_FIELD_ID] || [];
 
@@ -606,7 +617,14 @@ const QuickMarcEditor = ({
         size="small"
       >
         <span className={css.validationModalContent}>
-          <FormattedMessage id="ui-quick-marc.validation.modal.message" />
+          <FormattedMessage
+            id="ui-quick-marc.validation.modal.message"
+            values={{
+              appName: marcType === MARC_TYPES.BIB
+                ? intl.formatMessage({ id: 'ui-quick-marc.Inventory' })
+                : intl.formatMessage({ id: 'ui-quick-marc.MARC-authority' }),
+            }}
+          />
           <Loading size="large" />
         </span>
       </Modal>

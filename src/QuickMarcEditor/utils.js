@@ -1185,11 +1185,8 @@ export const dehydrateMarcRecordResponse = (marcRecordResponse, marcType, fixedF
 );
 
 export const hydrateForLinkSuggestions = (marcRecord, fields) => {
-  const leaderField = marcRecord.records[0];
-  const marcType = marcRecord.marcFormat.toLowerCase();
-
   return ({
-    leader: convertLeaderToString(marcType, leaderField),
+    leader: marcRecord.records.find(field => field.tag === LEADER_TAG)?.content,
     fields: fields.map(record => ({
       tag: record.tag,
       content: record.content,

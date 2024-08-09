@@ -63,7 +63,7 @@ const useValidation = (context) => {
     }
 
     return response.issues.reduce((acc, cur) => {
-      const match = cur.tag.match(/(.{0,3})\[(\d)\]/);
+      const match = cur.tag.match(/(.{0,3})\[(\d+)\]/);
       const fieldTag = match[1];
       const fieldIndex = parseInt(match[2], 10);
 
