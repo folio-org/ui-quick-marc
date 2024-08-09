@@ -21,10 +21,7 @@ import '@folio/stripes-acq-components/test/jest/__mock__';
 import QuickMarcEditor from './QuickMarcEditor';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
-import {
-  MISSING_FIELD_ID,
-  useLccnDuplicationCheck,
-} from '../hooks';
+import { MISSING_FIELD_ID } from '../hooks';
 
 import Harness from '../../test/jest/helpers/harness';
 import buildStripes from '../../test/jest/__mock__/stripesCore.mock';
@@ -83,11 +80,6 @@ jest.mock('./QuickMarcRecordInfo', () => {
     QuickMarcRecordInfo: () => <span>QuickMarcRecordInfo</span>,
   };
 });
-
-jest.mock('../hooks', () => ({
-  ...jest.requireActual('../hooks'),
-  useLccnDuplicationCheck: jest.fn(),
-}));
 
 const onCloseMock = jest.fn();
 const onSaveMock = jest.fn();
@@ -182,10 +174,6 @@ describe('Given QuickMarcEditor', () => {
       search: 'authRefType=Authorized',
     });
     checkIfUserInCentralTenant.mockReturnValue(false);
-    useLccnDuplicationCheck.mockReturnValue({
-      validateLccnDuplication: jest.fn().mockResolvedValue(undefined),
-      isValidatingLccnDuplication: false,
-    });
   });
 
   it('should render with no axe errors', async () => {

@@ -114,7 +114,6 @@ const useValidation = (context = {}) => {
     context,
     runFrontEndValidation,
     runBackEndValidation,
-    // validateLccnDuplication,
     isBackEndValidationMarcType,
   ]);
 
