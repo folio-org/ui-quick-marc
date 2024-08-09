@@ -61,7 +61,7 @@ const marcFormat = MARC_TYPES.BIB.toUpperCase();
 
 const leaderField = {
   tag: LEADER_TAG,
-  content: bibLeader,
+  content: bibLeaderString,
   id: LEADER_TAG,
 };
 
@@ -1305,7 +1305,7 @@ describe('Given useAuthorityLinking', () => {
         const formValues = {
           externalHrid: 'in00000000001',
           externalId: '4c95c27d-51fc-4ae1-892d-11347377bdd4',
-          leader: bibLeader,
+          leader: bibLeaderString,
           marcFormat,
           _actionType: 'view',
           records: [
