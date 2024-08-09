@@ -911,5 +911,5 @@
   "record.searchLink": "Search for records by 010 value(s)",
 
   "validation.modal.heading": "MARC validation rules check",
-  "validation.modal.message": "There might be a slight delay while the system is checking against the library's validation rules. You can continue to work with Inventory in a different browser tab if needed."
+  "validation.modal.message": "There might be a slight delay while the system is checking against the library's validation rules. You can continue to work with {appName} in a different browser tab if needed."
 }

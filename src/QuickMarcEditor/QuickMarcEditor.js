@@ -244,9 +244,19 @@ const QuickMarcEditor = ({
     if (!skipValidation) {
       const closeValidationModal = manageBackendValidationModal();
 
-      newValidationErrors = await validate(getState().values);
+      try {
+        newValidationErrors = await validate(getState().values);
+        closeValidationModal();
+      } catch (err) {
+        closeValidationModal();
 
-      closeValidationModal();
+        showCallout({
+          messageId: 'ui-quick-marc.record.save.error.generic',
+          type: 'error',
+        });
+
+        return;
+      }
 
       const validationErrorsWithoutFieldId = newValidationErrors[MISSING_FIELD_ID] || [];
 
@@ -606,7 +616,10 @@ const QuickMarcEditor = ({
         size="small"
       >
         <span className={css.validationModalContent}>
-          <FormattedMessage id="ui-quick-marc.validation.modal.message" />
+          <FormattedMessage
+            id="ui-quick-marc.validation.modal.message"
+            values={{ appName: marcType === MARC_TYPES.BIB ? 'Inventory' : 'MARC authority' }}
+          />
           <Loading size="large" />
         </span>
       </Modal>

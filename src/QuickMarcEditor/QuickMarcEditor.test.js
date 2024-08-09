@@ -683,6 +683,44 @@ describe('Given QuickMarcEditor', () => {
         jest.clearAllTimers();
       });
     });
+
+    describe('when validation is over after 2 seconds', () => {
+      it('should close the validation modal', async () => {
+        jest.useFakeTimers();
+
+        await act(async () => renderQuickMarcEditor({
+          validate: () => new Promise(resolve => setTimeout(() => resolve({}), 2100)),
+        }));
+
+        const contentField = screen.getByTestId('content-field-3');
+
+        fireEvent.change(contentField, { target: { value: 'test' } });
+        await fireEvent.click(screen.getByText('stripes-acq-components.FormFooter.save'));
+        await act(async () => jest.advanceTimersByTime(2100));
+
+        expect(screen.queryByText('ui-quick-marc.validation.modal.heading')).not.toBeInTheDocument();
+      });
+    });
+
+    describe('when validation throws an error', () => {
+      it('should close the validation modal and prevent the submitting', async () => {
+        jest.useFakeTimers();
+
+        await act(async () => renderQuickMarcEditor({
+          validate: () => new Promise((_, reject) => setTimeout(reject, 2100)),
+        }));
+
+        const contentField = screen.getByTestId('content-field-3');
+
+        fireEvent.change(contentField, { target: { value: 'test' } });
+        await fireEvent.click(screen.getByText('stripes-acq-components.FormFooter.save'));
+
+        await act(async () => jest.runAllTimers());
+
+        expect(screen.queryByText('ui-quick-marc.validation.modal.heading')).not.toBeInTheDocument();
+        expect(onSubmitMock).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe('when clicked save button', () => {
