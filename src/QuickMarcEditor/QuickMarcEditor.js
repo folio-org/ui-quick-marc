@@ -12,7 +12,7 @@ import {
 } from 'react-router';
 import { FormSpy } from 'react-final-form';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import find from 'lodash/find';
 import noop from 'lodash/noop';
 import isEmpty from 'lodash/isEmpty';
@@ -115,6 +115,7 @@ const QuickMarcEditor = ({
   validate,
 }) => {
   const stripes = useStripes();
+  const intl = useIntl();
   const formValues = getState().values;
   const history = useHistory();
   const location = useLocation();
@@ -618,7 +619,11 @@ const QuickMarcEditor = ({
         <span className={css.validationModalContent}>
           <FormattedMessage
             id="ui-quick-marc.validation.modal.message"
-            values={{ appName: marcType === MARC_TYPES.BIB ? 'Inventory' : 'MARC authority' }}
+            values={{
+              appName: marcType === MARC_TYPES.BIB
+                ? intl.formatMessage({ id: 'ui-quick-marc.Inventory' })
+                : intl.formatMessage({ id: 'ui-quick-marc.MARC-authority' }),
+            }}
           />
           <Loading size="large" />
         </span>
