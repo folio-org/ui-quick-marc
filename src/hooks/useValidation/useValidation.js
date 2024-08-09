@@ -45,21 +45,17 @@ const useValidation = (context = {}) => {
   const { duplicateLccnCheckingEnabled } = useLccnDuplicateConfig({ marcType: context.marcType });
   const ky = useOkapiKy();
 
-  const runFrontEndValidation = useCallback((marcRecords) => {
+  const runFrontEndValidation = useCallback(async (marcRecords) => {
     const validationRules = validators[context.marcType][context.action];
 
-    const errors = validationRules.reduce(async (joinedErrors, rule) => {
-      // returns undefined or { [field.id]: 'error message' }
-      const ruleErrors = await rule.validator({
-        ...context,
-        ...quickMarcContext,
-        marcRecords,
-        duplicateLccnCheckingEnabled,
-        ky,
-      }, rule);
-
-      return joinErrors(joinedErrors, ruleErrors);
-    }, {});
+    const errors = await Promise.all(validationRules.map(rule => rule.validator({
+      ...context,
+      ...quickMarcContext,
+      marcRecords,
+      duplicateLccnCheckingEnabled,
+      ky,
+    }, rule)))
+      .then(errorsList => errorsList.reduce((joinedErrors, ruleErrors) => joinErrors(joinedErrors, ruleErrors), {}));
 
     return formatFEValidation(errors);
   }, [context, quickMarcContext, duplicateLccnCheckingEnabled, ky]);
@@ -102,7 +98,7 @@ const useValidation = (context = {}) => {
   const validate = useCallback(async (marcRecords) => {
     let backEndValidationErrors = {};
 
-    const frontEndValidationErrors = runFrontEndValidation(marcRecords);
+    const frontEndValidationErrors = await runFrontEndValidation(marcRecords);
 
     if (isBackEndValidationMarcType(context.marcType)) {
       backEndValidationErrors = await runBackEndValidation(marcRecords);

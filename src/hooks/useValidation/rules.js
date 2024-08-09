@@ -96,10 +96,6 @@ const COMMON_VALIDATORS = [
     validator: RULES.TAG_CHARACTERS,
     message: () => ({ id: 'ui-quick-marc.record.error.tag.nonDigits' }),
   },
-  { // TODO: do we need this rule? Should it stay on FE?
-    validator: RULES.EMPTY_SUBFIELDS,
-    message: () => ({ id: 'ui-quick-marc.record.error.subfield' }),
-  },
 ];
 
 const BASE_BIB_VALIDATORS = [
