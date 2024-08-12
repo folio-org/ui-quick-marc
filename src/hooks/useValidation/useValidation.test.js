@@ -434,7 +434,7 @@ describe('useValidation', () => {
         {
           id: 4,
           tag: '010',
-          content: '',
+          content: '$a test',
         },
       ],
     };
@@ -484,7 +484,7 @@ describe('useValidation', () => {
           }, {
             id: 4,
             tag: '010',
-            content: '',
+            content: '$a test',
           }],
           leader: bibLeaderString,
           marcFormat: 'BIBLIOGRAPHIC',

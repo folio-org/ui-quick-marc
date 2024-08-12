@@ -427,6 +427,10 @@ export const validateLccnDuplication = async ({
   const validateField = async (field) => {
     const { $a = [] } = getContentSubfieldValue(field.content);
 
+    if (!$a.filter(lccn => lccn).length) {
+      return undefined;
+    }
+
     const lccnQuery = $a
       .filter(lccn => lccn)
       .map(lccn => `lccn=="${lccn}"`)
@@ -441,9 +445,14 @@ export const validateLccnDuplication = async ({
       idQuery = '';
     }
 
+    const searchParams = {
+      limit: 1,
+      query: `(${lccnQuery})${idQuery}`,
+    };
+
     const requests = {
-      [MARC_TYPES.BIB]: () => ky.get(`search/instances?limit=1&query=((${lccnQuery})${idQuery})`),
-      [MARC_TYPES.AUTHORITY]: () => ky.get(`search/authorities?limit=1&query=((${lccnQuery})${idQuery})`),
+      [MARC_TYPES.BIB]: () => ky.get('search/instances', { searchParams }),
+      [MARC_TYPES.AUTHORITY]: () => ky.get('search/authorities', { searchParams }),
     };
 
     try {

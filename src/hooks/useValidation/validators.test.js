@@ -1,9 +1,13 @@
-import { LEADER_DOCUMENTATION_LINKS, LEADER_TAG, FIXED_FIELD_TAG, QUICK_MARC_ACTIONS } from '../../QuickMarcEditor/constants';
+import {
+  LEADER_DOCUMENTATION_LINKS,
+  LEADER_TAG,
+  FIXED_FIELD_TAG,
+  QUICK_MARC_ACTIONS,
+} from '../../QuickMarcEditor/constants';
 import { MARC_TYPES } from '../../common/constants';
 import * as validators from './validators';
 import fixedFieldSpecBib from '../../../test/mocks/fixedFieldSpecBib';
 import { bibLeader } from '../../../test/jest/fixtures/leaders';
-import { waitFor } from '@folio/jest-config-stripes/testing-library/react';
 
 const locations = [{
   code: 'VA/LI/D',
