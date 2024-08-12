@@ -229,6 +229,11 @@ const BASE_AUTHORITY_VALIDATORS = [
       return null;
     },
   },
+  {
+    tag: '010',
+    validator: RULES.DUPLICATE_LCCN,
+    message: () => ({ id: 'ui-quick-marc.record.error.010.lccnDuplicated' }),
+  },
 ];
 
 const CREATE_AUTHORITY_VALIDATORS = [

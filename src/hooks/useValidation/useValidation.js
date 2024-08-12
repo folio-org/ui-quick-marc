@@ -96,13 +96,18 @@ const useValidation = (context = {}) => {
   const isBackEndValidationMarcType = useCallback(marcType => BE_VALIDATION_MARC_TYPES.includes(marcType), []);
 
   const validate = useCallback(async (marcRecords) => {
-    let backEndValidationErrors = {};
+    let backEndValidationPromise = null;
 
-    const frontEndValidationErrors = await runFrontEndValidation(marcRecords);
+    const frontEndValidationPromise = runFrontEndValidation(marcRecords);
 
     if (isBackEndValidationMarcType(context.marcType)) {
-      backEndValidationErrors = await runBackEndValidation(marcRecords);
+      backEndValidationPromise = runBackEndValidation(marcRecords);
     }
+
+    const [
+      frontEndValidationErrors,
+      backEndValidationErrors,
+    ] = await Promise.all([frontEndValidationPromise, backEndValidationPromise]);
 
     const joinedErrors = joinErrors(frontEndValidationErrors, backEndValidationErrors);
 
