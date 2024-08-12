@@ -1720,7 +1720,7 @@ describe('QuickMarcEditor utils', () => {
         records: [
           {
             tag: 'LDR',
-            content: bibLeader,
+            content: bibLeaderString,
           },
           ...fields,
         ],
