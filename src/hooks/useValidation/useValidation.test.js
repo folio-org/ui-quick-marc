@@ -1,4 +1,5 @@
 import { renderHook } from '@folio/jest-config-stripes/testing-library/react';
+import { useOkapiKy } from '@folio/stripes/core';
 
 import Harness from '../../../test/jest/helpers/harness';
 import { useValidation } from './useValidation';
@@ -14,17 +15,13 @@ import {
   bibLeaderString,
   holdingsLeader,
 } from '../../../test/jest/fixtures/leaders';
-import { useLccnDuplicationCheck } from '../useLccnDuplicationCheck';
 
 jest.mock('../../queries', () => ({
   useValidate: jest.fn().mockReturnValue({
     validate: jest.fn(),
   }),
-}));
-
-jest.mock('../useLccnDuplicationCheck', () => ({
-  useLccnDuplicationCheck: jest.fn().mockReturnValue({
-    validateLccnDuplication: jest.fn(),
+  useLccnDuplicateConfig: jest.fn().mockReturnValue({
+    duplicateLccnCheckingEnabled: true,
   }),
 }));
 
@@ -291,40 +288,6 @@ describe('useValidation', () => {
         });
       });
 
-      describe('when fields contain empty subfields', () => {
-        it('should return error message', async () => {
-          const { result } = renderHook(() => useValidation(marcContext), {
-            wrapper: getWrapper(),
-          });
-
-          const record = {
-            ...initialValues,
-            records: [
-              {
-                content: initialValues.leader,
-                tag: 'LDR',
-              },
-              {
-                tag: '008',
-                content: {
-                  Desc: 'i',
-                },
-              },
-              {
-                tag: '245',
-                content: '',
-                indicators: ['\\', '\\'],
-                id: 'test-id',
-              },
-            ],
-          };
-
-          const validationErrors = await result.current.validate(record.records);
-
-          expect(validationErrors['test-id']).toEqual(expect.arrayContaining([expect.objectContaining({ id: 'ui-quick-marc.record.error.subfield' })]));
-        });
-      });
-
       describe('when there are multiple 001 fields', () => {
         it('should return error message', async () => {
           const { result } = renderHook(() => useValidation(marcContext), {
@@ -413,9 +376,6 @@ describe('useValidation', () => {
       useValidate.mockReturnValue({
         validate: mockValidate,
       });
-      useLccnDuplicationCheck.mockReturnValue({
-        validateLccnDuplication: jest.fn(),
-      });
     });
 
     const initialValues = {
@@ -471,21 +431,21 @@ describe('useValidation', () => {
           content: 'Test title',
           indicators: ['\\', '\\'],
         },
+        {
+          id: 4,
+          tag: '010',
+          content: '$a test',
+        },
       ],
     };
 
     describe('when LCCN validation returns an error', () => {
       it('should set the error with severity', async () => {
-        const fieldId = 'field-id';
-
-        const error = {
-          [fieldId]: [{ id: 'message-id' }],
-        };
-
-        useLccnDuplicationCheck.mockReturnValue({
-          validateLccnDuplication: jest.fn().mockResolvedValue(error),
+        useOkapiKy.mockReturnValueOnce({
+          get: jest.fn().mockReturnValue({
+            json: jest.fn().mockResolvedValue({ instances: [{}] }),
+          }),
         });
-
         const { result } = renderHook(() => useValidation(marcContext), {
           wrapper: getWrapper(),
         });
@@ -493,8 +453,8 @@ describe('useValidation', () => {
         await result.current.validate(record.records);
 
         expect(quickMarcContext.setValidationErrors).toHaveBeenCalledWith(expect.objectContaining({
-          [fieldId]: [{
-            id: 'message-id',
+          4: [{
+            id: 'ui-quick-marc.record.error.010.lccnDuplicated',
             severity: 'error',
           }],
         }));
@@ -521,6 +481,10 @@ describe('useValidation', () => {
             tag: '245',
             content: 'Test title',
             indicators: ['\\', '\\'],
+          }, {
+            id: 4,
+            tag: '010',
+            content: '$a test',
           }],
           leader: bibLeaderString,
           marcFormat: 'BIBLIOGRAPHIC',
@@ -535,9 +499,9 @@ describe('useValidation', () => {
 
       const validationErrors = await result.current.validate(record.records);
 
-      expect(validationErrors).toEqual({
+      expect(validationErrors).toEqual(expect.objectContaining({
         3: [{ message: 'error message', severity: 'error', tag: '245[0]' }],
-      });
+      }));
     });
   });
 

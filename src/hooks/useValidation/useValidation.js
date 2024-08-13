@@ -3,10 +3,14 @@ import {
   useContext,
 } from 'react';
 
+import { useOkapiKy } from '@folio/stripes/core';
+
 import { validators } from './rules';
 import { QuickMarcContext } from '../../contexts';
-import { useValidate } from '../../queries';
-import { useLccnDuplicationCheck } from '../useLccnDuplicationCheck';
+import {
+  useLccnDuplicateConfig,
+  useValidate,
+} from '../../queries';
 import {
   isLeaderRow,
   joinErrors,
@@ -19,43 +23,42 @@ import {
 
 const BE_VALIDATION_MARC_TYPES = [MARC_TYPES.BIB, MARC_TYPES.AUTHORITY];
 
-const useValidation = (context) => {
+// accept { [field.id]: ["message", "message"...]}
+// return { [field.id]: [{ id, values, severity }]}
+const formatFEValidation = (errors = {}) => {
+  return Object.keys(errors).reduce((acc, fieldId) => {
+    const fieldErrors = errors[fieldId];
+
+    return {
+      ...acc,
+      [fieldId]: fieldErrors.map(fieldError => ({
+        severity: SEVERITY.ERROR,
+        ...fieldError,
+      })),
+    };
+  }, {});
+};
+
+const useValidation = (context = {}) => {
   const quickMarcContext = useContext(QuickMarcContext);
   const { validate: validateFetch } = useValidate();
-  const { validateLccnDuplication } = useLccnDuplicationCheck({
-    marcType: context?.marcType,
-    id: context?.instanceId,
-    action: context?.action,
-  });
+  const { duplicateLccnCheckingEnabled } = useLccnDuplicateConfig({ marcType: context.marcType });
+  const ky = useOkapiKy();
 
-  // accept { [field.id]: ["message", "message"...]}
-  // return { [field.id]: [{ id, values, severity }]}
-  const formatFEValidation = (errors = {}) => {
-    return Object.keys(errors).reduce((acc, fieldId) => {
-      const fieldErrors = errors[fieldId];
-
-      return {
-        ...acc,
-        [fieldId]: fieldErrors.map(fieldError => ({
-          severity: SEVERITY.ERROR,
-          ...fieldError,
-        })),
-      };
-    }, {});
-  };
-
-  const runFrontEndValidation = useCallback((marcRecords) => {
+  const runFrontEndValidation = useCallback(async (marcRecords) => {
     const validationRules = validators[context.marcType][context.action];
 
-    const errors = validationRules.reduce((joinedErrors, rule) => {
-      // returns undefined or { [field.id]: 'error message' }
-      const ruleErrors = rule.validator({ ...context, ...quickMarcContext, marcRecords }, rule);
-
-      return joinErrors(joinedErrors, ruleErrors);
-    }, {});
+    const errors = await Promise.all(validationRules.map(rule => rule.validator({
+      ...context,
+      ...quickMarcContext,
+      marcRecords,
+      duplicateLccnCheckingEnabled,
+      ky,
+    }, rule)))
+      .then(errorsList => errorsList.reduce((joinedErrors, ruleErrors) => joinErrors(joinedErrors, ruleErrors), {}));
 
     return formatFEValidation(errors);
-  }, [context, quickMarcContext]);
+  }, [context, quickMarcContext, duplicateLccnCheckingEnabled, ky]);
 
   const formatBEValidationResponse = (response, marcRecords) => {
     if (!response.issues) {
@@ -93,18 +96,20 @@ const useValidation = (context) => {
   const isBackEndValidationMarcType = useCallback(marcType => BE_VALIDATION_MARC_TYPES.includes(marcType), []);
 
   const validate = useCallback(async (marcRecords) => {
-    let errors = {};
+    let backEndValidationPromise = null;
+
+    const frontEndValidationPromise = runFrontEndValidation(marcRecords);
 
     if (isBackEndValidationMarcType(context.marcType)) {
-      errors = await runBackEndValidation(marcRecords);
-    } else {
-      errors = runFrontEndValidation(marcRecords);
+      backEndValidationPromise = runBackEndValidation(marcRecords);
     }
 
-    const lccnDuplicationError = await validateLccnDuplication(marcRecords);
-    const formattedLccnDuplicationError = formatFEValidation(lccnDuplicationError);
+    const [
+      frontEndValidationErrors,
+      backEndValidationErrors,
+    ] = await Promise.all([frontEndValidationPromise, backEndValidationPromise]);
 
-    const joinedErrors = joinErrors(errors, formattedLccnDuplicationError);
+    const joinedErrors = joinErrors(frontEndValidationErrors, backEndValidationErrors);
 
     quickMarcContext.setValidationErrors(joinedErrors);
 
@@ -114,7 +119,6 @@ const useValidation = (context) => {
     context,
     runFrontEndValidation,
     runBackEndValidation,
-    validateLccnDuplication,
     isBackEndValidationMarcType,
   ]);
 

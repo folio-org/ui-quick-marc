@@ -25,6 +25,7 @@ import {
   validateSubfieldValueMatch,
   validateContentExistence,
   validateFixedFieldPositions,
+  validateLccnDuplication,
 } from './validators';
 import {
   is010LinkedToBibRecord,
@@ -51,16 +52,58 @@ const RULES = {
   SUBFIELD_VALUE_MATCH: validateSubfieldValueMatch,
   SUBFIELD_CHANGED: validateSubfieldChanged,
   FIXED_FIELD_POSITIONS: validateFixedFieldPositions,
+  DUPLICATE_LCCN: validateLccnDuplication,
 };
 
-const COMMON_VALIDATORS = [
+const BASE_BIB_VALIDATORS = [
+  {
+    validator: RULES.LEADER_EDITABLE_BYTES,
+    message: (marcType) => ({ id: `ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}` }),
+  },
+  {
+    validator: RULES.$9IN_LINKABLE,
+    message: () => ({ id: 'ui-quick-marc.record.error.$9' }),
+  },
+  {
+    validator: RULES.CONTROLLED_SUBFIELD,
+    message: (uniqueTags) => {
+      if (uniqueTags.length === 1) {
+        return ({
+          id: 'ui-quick-marc.record.error.fieldIsControlled',
+          values: {
+            count: 1,
+            fieldTags: `MARC ${uniqueTags[0]}`,
+          },
+        });
+      }
+
+      return ({
+        id: 'ui-quick-marc.record.error.fieldsAreControlled',
+        values: {
+          count: uniqueTags.length,
+          fieldTags: uniqueTags.slice(0, -1).map(tag => `MARC ${tag}`).join(', '),
+          lastFieldTag: `MARC ${uniqueTags[uniqueTags.length - 1]}`,
+        },
+      });
+    },
+  },
+  {
+    tag: '010',
+    validator: RULES.DUPLICATE_LCCN,
+    message: () => ({ id: 'ui-quick-marc.record.error.010.lccnDuplicated' }),
+  },
+];
+
+const BASE_HOLDINGS_VALIDATORS = [
   {
     validator: RULES.LEADER_LENGTH,
     message: () => ({ id: 'ui-quick-marc.record.error.leader.length' }),
-  }, {
+  },
+  {
     validator: RULES.LEADER_EDITABLE_BYTES,
     message: (marcType) => ({ id: `ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}` }),
-  }, {
+  },
+  {
     validator: RULES.LEADER_POSITIONS,
     message: (positions, link) => ({
       id: 'ui-quick-marc.record.error.leader.invalidPositionValue',
@@ -93,8 +136,9 @@ const COMMON_VALIDATORS = [
     message: () => ({ id: 'ui-quick-marc.record.error.tag.nonDigits' }),
   },
   {
-    validator: RULES.EMPTY_SUBFIELDS,
-    message: () => ({ id: 'ui-quick-marc.record.error.subfield' }),
+    tag: '004',
+    validator: RULES.NON_REPEATABLE,
+    message: () => ({ id: 'ui-quick-marc.record.error.instanceHrid.multiple' }),
   },
   {
     tag: '008',
@@ -104,69 +148,6 @@ const COMMON_VALIDATORS = [
     tag: '008',
     validator: RULES.NON_REPEATABLE,
     message: () => ({ id: 'ui-quick-marc.record.error.008.multiple' }),
-  },
-];
-
-const BASE_BIB_VALIDATORS = [
-  ...COMMON_VALIDATORS,
-  {
-    tag: '008',
-    validator: RULES.FIXED_FIELD_POSITIONS,
-    message: (name) => ({
-      id: 'ui-quick-marc.record.error.008.invalidValue',
-      values: { name },
-    }),
-  },
-  {
-    tag: '010',
-    validator: RULES.NON_REPEATABLE,
-    message: () => ({ id: 'ui-quick-marc.record.error.010.multiple' }),
-  },
-  {
-    tag: '245',
-    validator: RULES.EXISTS,
-    message: () => ({ id: 'ui-quick-marc.record.error.title.empty' }),
-  },
-  {
-    tag: '245',
-    validator: RULES.NON_REPEATABLE,
-    message: () => ({ id: 'ui-quick-marc.record.error.title.multiple' }),
-  },
-  {
-    validator: RULES.$9IN_LINKABLE,
-    message: () => ({ id: 'ui-quick-marc.record.error.$9' }),
-  },
-  {
-    validator: RULES.CONTROLLED_SUBFIELD,
-    message: (uniqueTags) => {
-      if (uniqueTags.length === 1) {
-        return ({
-          id: 'ui-quick-marc.record.error.fieldIsControlled',
-          values: {
-            count: 1,
-            fieldTags: `MARC ${uniqueTags[0]}`,
-          },
-        });
-      }
-
-      return ({
-        id: 'ui-quick-marc.record.error.fieldsAreControlled',
-        values: {
-          count: uniqueTags.length,
-          fieldTags: uniqueTags.slice(0, -1).map(tag => `MARC ${tag}`).join(', '),
-          lastFieldTag: `MARC ${uniqueTags[uniqueTags.length - 1]}`,
-        },
-      });
-    },
-  },
-];
-
-const BASE_HOLDINGS_VALIDATORS = [
-  ...COMMON_VALIDATORS,
-  {
-    tag: '004',
-    validator: RULES.NON_REPEATABLE,
-    message: () => ({ id: 'ui-quick-marc.record.error.instanceHrid.multiple' }),
   },
   {
     tag: '852',
@@ -195,7 +176,10 @@ const BASE_HOLDINGS_VALIDATORS = [
 ];
 
 const BASE_AUTHORITY_VALIDATORS = [
-  ...COMMON_VALIDATORS,
+  {
+    validator: RULES.LEADER_EDITABLE_BYTES,
+    message: (marcType) => ({ id: `ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}` }),
+  },
   {
     tag: '010',
     subfield: '$a',
@@ -212,27 +196,6 @@ const BASE_AUTHORITY_VALIDATORS = [
     },
     validator: RULES.EXISTS,
     message: () => ({ id: 'ui-quick-marc.record.error.010.removed' }),
-  },
-  {
-    tag: '010',
-    validator: RULES.NON_REPEATABLE,
-    message: () => ({ id: 'ui-quick-marc.record.error.010.multiple' }),
-  },
-  {
-    tag: '010',
-    subfield: '$a',
-    validator: RULES.NON_REPEATABLE_SUBFIELD,
-    message: () => ({ id: 'ui-quick-marc.record.error.010.$aOnlyOne' }),
-  },
-  {
-    tag: new RegExp(`${CORRESPONDING_HEADING_TYPE_TAGS.join('|')}`),
-    validator: RULES.EXISTS,
-    message: () => ({ id: 'ui-quick-marc.record.error.heading.empty' }),
-  },
-  {
-    tag: new RegExp(/1\d\d/),
-    validator: RULES.NON_REPEATABLE,
-    message: () => ({ id: 'ui-quick-marc.record.error.heading.multiple' }),
   },
   {
     tag: new RegExp(`${CORRESPONDING_HEADING_TYPE_TAGS.join('|')}`),
@@ -266,6 +229,11 @@ const BASE_AUTHORITY_VALIDATORS = [
       return null;
     },
   },
+  {
+    tag: '010',
+    validator: RULES.DUPLICATE_LCCN,
+    message: () => ({ id: 'ui-quick-marc.record.error.010.lccnDuplicated' }),
+  },
 ];
 
 const CREATE_AUTHORITY_VALIDATORS = [
@@ -295,11 +263,6 @@ const CREATE_AUTHORITY_VALIDATORS = [
     },
     validator: RULES.SUBFIELD_VALUE_MATCH,
     message: () => ({ id: 'ui-quick-marc.record.error.010.prefix.invalid' }),
-  },
-  {
-    tag: '001',
-    validator: RULES.CONTENT_EXISTS,
-    message: () => ({ id: 'ui-quick-marc.record.error.controlField.content.empty' }),
   },
 ];
 
