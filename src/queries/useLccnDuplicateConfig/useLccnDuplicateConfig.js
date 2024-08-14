@@ -17,8 +17,7 @@ const useLccnDuplicateConfig = ({ marcType }) => {
     [namespace],
     () => ky.get('settings/entries', {
       searchParams: {
-        key: KEY,
-        scope: SCOPE,
+        query: `(key==${KEY} and scope==${SCOPE})`,
       },
     }).json(),
     {
