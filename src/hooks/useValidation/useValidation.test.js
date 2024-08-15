@@ -765,68 +765,16 @@ describe('useValidation', () => {
       });
     });
 
-    const initialValues = {
-      leader: authorityLeader,
-      records: [
-        {
-          id: 1,
-          content: authorityLeader,
-          tag: 'LDR',
-        },
-        {
-          id: 2,
-          content: {},
-          tag: '008',
-        },
-        {
-          id: 3,
-          tag: '110',
-          content: '$a Record title',
-        },
-      ],
-    };
-
-    const marcContext = {
-      initialValues,
-      marcType: MARC_TYPES.AUTHORITY,
-      action: QUICK_MARC_ACTIONS.EDIT,
-      linksCount: 0,
-      naturalId: null,
-      linkableBibFields,
-      linkingRules,
-    };
-
-    const record = {
-      leader: authorityLeaderString,
-      records: [
-        {
-          id: 1,
-          content: authorityLeaderString,
-          tag: 'LDR',
-        },
-        {
-          id: 2,
-          content: {},
-          tag: '008',
-        },
-        {
-          id: 3,
-          tag: '110',
-          content: '$a Record title',
-        },
-      ],
-    };
-
-    it('should make a request to validate endpoint', async () => {
-      const { result } = renderHook(() => useValidation(marcContext), {
-        wrapper: getWrapper(),
-      });
-
-      await result.current.validate(record.records);
-
-      expect(mockValidate).toHaveBeenCalledWith({
-        body: {
-          fields: [{
+    describe('when action is EDIT', () => {
+      const initialValues = {
+        leader: authorityLeader,
+        records: [
+          {
+            id: 1,
+            content: authorityLeader,
+            tag: 'LDR',
+          },
+          {
             id: 2,
             content: {},
             tag: '008',
@@ -835,22 +783,153 @@ describe('useValidation', () => {
             id: 3,
             tag: '110',
             content: '$a Record title',
-          }],
-          leader: authorityLeaderString,
-          marcFormat: 'AUTHORITY',
-        },
+          },
+        ],
+      };
+
+      const marcContext = {
+        initialValues,
+        marcType: MARC_TYPES.AUTHORITY,
+        action: QUICK_MARC_ACTIONS.EDIT,
+        linksCount: 0,
+        naturalId: null,
+        linkableBibFields,
+        linkingRules,
+      };
+
+      const record = {
+        leader: authorityLeaderString,
+        records: [
+          {
+            id: 1,
+            content: authorityLeaderString,
+            tag: 'LDR',
+          },
+          {
+            id: 2,
+            content: {},
+            tag: '008',
+          },
+          {
+            id: 3,
+            tag: '110',
+            content: '$a Record title',
+          },
+        ],
+      };
+
+      it('should make a request to validate endpoint', async () => {
+        const { result } = renderHook(() => useValidation(marcContext), {
+          wrapper: getWrapper(),
+        });
+
+        await result.current.validate(record.records);
+
+        expect(mockValidate).toHaveBeenCalledWith({
+          body: {
+            fields: [{
+              id: 2,
+              content: {},
+              tag: '008',
+            },
+            {
+              id: 3,
+              tag: '110',
+              content: '$a Record title',
+            }],
+            leader: authorityLeaderString,
+            marcFormat: 'AUTHORITY',
+          },
+        });
+      });
+
+      it('should format response from validate endpoint', async () => {
+        const { result } = renderHook(() => useValidation(marcContext), {
+          wrapper: getWrapper(),
+        });
+
+        const validationErrors = await result.current.validate(record.records);
+
+        expect(validationErrors).toEqual({
+          [MISSING_FIELD_ID]: [{ message: 'error message', severity: 'error', tag: '245[0]' }],
+        });
       });
     });
 
-    it('should format response from validate endpoint', async () => {
-      const { result } = renderHook(() => useValidation(marcContext), {
-        wrapper: getWrapper(),
+    describe('when action is CREATE', () => {
+      beforeEach(() => {
+        mockValidate.mockResolvedValue({});
       });
 
-      const validationErrors = await result.current.validate(record.records);
+      const initialValues = {
+        leader: authorityLeader,
+        records: [
+          {
+            id: 1,
+            content: authorityLeader,
+            tag: 'LDR',
+          },
+          {
+            id: 2,
+            content: {},
+            tag: '008',
+          },
+          {
+            id: 3,
+            tag: '110',
+            content: '$a Record title',
+          },
+        ],
+      };
 
-      expect(validationErrors).toEqual({
-        [MISSING_FIELD_ID]: [{ message: 'error message', severity: 'error', tag: '245[0]' }],
+      const marcContext = {
+        initialValues,
+        marcType: MARC_TYPES.AUTHORITY,
+        action: QUICK_MARC_ACTIONS.CREATE,
+        linksCount: 0,
+        naturalId: null,
+        linkableBibFields,
+        linkingRules,
+      };
+
+      const record = {
+        leader: authorityLeaderString,
+        records: [
+          {
+            id: 1,
+            content: authorityLeaderString,
+            tag: 'LDR',
+          },
+          {
+            id: 2,
+            content: {},
+            tag: '008',
+          },
+          {
+            id: 3,
+            tag: '110',
+            content: '$a Record title',
+          },
+          {
+            id: 4,
+            tag: '001',
+            content: '',
+          },
+        ],
+      };
+
+      describe('and 001 row content is empty', () => {
+        it('should return an error message', async () => {
+          const { result } = renderHook(() => useValidation(marcContext), {
+            wrapper: getWrapper(),
+          });
+
+          const validationErrors = await result.current.validate(record.records);
+
+          expect(validationErrors).toEqual({
+            4: [expect.objectContaining({ id: 'ui-quick-marc.record.error.controlField.content.empty' })],
+          });
+        });
       });
     });
   });

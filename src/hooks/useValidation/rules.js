@@ -264,6 +264,11 @@ const CREATE_AUTHORITY_VALIDATORS = [
     validator: RULES.SUBFIELD_VALUE_MATCH,
     message: () => ({ id: 'ui-quick-marc.record.error.010.prefix.invalid' }),
   },
+  {
+    tag: '001',
+    validator: RULES.CONTENT_EXISTS,
+    message: () => ({ id: 'ui-quick-marc.record.error.controlField.content.empty' }),
+  },
 ];
 
 export const validators = {

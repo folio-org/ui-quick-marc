@@ -93,6 +93,10 @@ export const validateSubfieldValueExists = (context, rule) => {
 export const validateContentExistence = (context, rule) => {
   const { marcRecords } = context;
 
+  if (!marcRecords.find(record => record.tag.match(rule.tag))) {
+    return { [MISSING_FIELD_ID]: rule.message() };
+  }
+
   const failingFields = marcRecords
     .filter(record => record.tag.match(rule.tag))
     .filter(record => !record.content);
