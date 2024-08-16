@@ -880,5 +880,13 @@
     "record.fixedField.tip.Item": "Item information in record",
     "leader.Two-dimensional nonprojectable graphic": "Two-dimensional nonprojectable  graphic",
     "record.searchLink": "Search for records by 010 value(s)",
-    "record.errorMessage.fail": "<b>Échec : </b>"
+    "record.error.010.lccnDuplicated": "010 $a already exists.",
+    "record.errorMessage.error": "<b>Fail: </b>",
+    "record.errorMessage.warn": "<b>Warn: </b>",
+    "record.error.generic": "Communication problem with server. Please try again.",
+    "validation.modal.heading": "MARC validation rules check",
+    "validation.modal.message": "There might be a slight delay while the system is checking against the library's validation rules. You can continue to work with {appName} in a different browser tab if needed.",
+    "record.errorMessage.help": "Help",
+    "Inventory": "Inventory",
+    "MARC-authority": "MARC authority"
 }
