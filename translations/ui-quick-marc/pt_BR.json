@@ -880,5 +880,13 @@
     "record.fixedField.tip.Item": "Informações do item no registro",
     "leader.Two-dimensional nonprojectable graphic": "Material gráfico bidimensional não projetável",
     "record.searchLink": "Pesquisar registros por 010 valor(es)",
-    "record.errorMessage.fail": "<b>Falha: </b>"
+    "record.error.010.lccnDuplicated": "010 $a já existe.",
+    "record.errorMessage.error": "<b>Falhou: </b>",
+    "record.errorMessage.warn": "<b>Aviso: </b>",
+    "record.error.generic": "Problema de comunicação com o servidor. Por favor, tente novamente.",
+    "validation.modal.heading": "Verificação das regras de validação MARC",
+    "validation.modal.message": "Pode haver um pequeno atraso enquanto o sistema verifica as regras de validação da biblioteca. Você pode continuar a trabalhar com {appName} em uma aba diferente do navegador, se necessário.",
+    "record.errorMessage.help": "Ajuda",
+    "Inventory": "Inventário",
+    "MARC-authority": "Autoridade MARC"
 }
