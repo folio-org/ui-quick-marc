@@ -498,8 +498,14 @@ export const convertLeaderToString = (marcType, leaderField) => {
     return '';
   }
 
+  if (typeof leaderField.content === 'string') {
+    return leaderField.content;
+  }
+
   return leaderConfig[marcType].reduce((acc, fieldConfig) => {
-    return `${acc}${leaderField.content[fieldConfig.name]}`;
+    const value = leaderField.content[fieldConfig.name] || fieldConfig.defaultValue;
+
+    return `${acc}${value}`;
   }, '');
 };
 
