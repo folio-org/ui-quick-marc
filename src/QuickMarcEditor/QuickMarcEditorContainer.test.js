@@ -286,16 +286,16 @@ describe('Given Quick Marc Editor Container', () => {
           });
         });
 
-        recordLengthField = screen.getByRole('textbox', { name: 'ui-quick-marc.record.fixedField.Record length' });
-        statusField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.Status' });
-        typeField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.Type' });
-        blvlField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.BLvl' });
-        ctrlField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.Ctrl' });
-        positions9to16Field = screen.getByRole('textbox', { name: 'ui-quick-marc.record.fixedField.9-16 positions' });
-        elvlField = screen.getByRole('textbox', { name: 'ui-quick-marc.record.fixedField.tip.ELvl' });
-        descField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.Desc' });
-        multiLvlField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.MultiLvl' });
-        positions20to23Field = screen.getByRole('textbox', { name: 'ui-quick-marc.record.fixedField.20-23 positions' });
+        recordLengthField = screen.getByRole('textbox', { name: /ui-quick-marc.record.fixedField.Record length/ });
+        statusField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.Status/ });
+        typeField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.Type/ });
+        blvlField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.BLvl/ });
+        ctrlField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.Ctrl/ });
+        positions9to16Field = screen.getByRole('textbox', { name: /ui-quick-marc.record.fixedField.9-16 positions/ });
+        elvlField = screen.getByRole('textbox', { name: /ui-quick-marc.record.fixedField.tip.ELvl/ });
+        descField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.Desc/ });
+        multiLvlField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.MultiLvl/ });
+        positions20to23Field = screen.getByRole('textbox', { name: /ui-quick-marc.record.fixedField.20-23 positions/ });
       });
 
       it('should display correct default values', () => {
@@ -412,13 +412,13 @@ describe('Given Quick Marc Editor Container', () => {
           });
         });
 
-        recordLengthField = screen.getByRole('textbox', { name: 'ui-quick-marc.record.fixedField.Record length' });
-        statusField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.Status' });
-        typeField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.Type' });
-        positions7to16Field = screen.getByRole('textbox', { name: 'ui-quick-marc.record.fixedField.7-16 positions' });
-        elvlField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.ELvl' });
-        punctField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.Punct' });
-        positions19to23Field = screen.getByRole('textbox', { name: 'ui-quick-marc.record.fixedField.19-23 positions' });
+        recordLengthField = screen.getByRole('textbox', { name: /ui-quick-marc.record.fixedField.Record length/ });
+        statusField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.Status/ });
+        typeField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.Type/ });
+        positions7to16Field = screen.getByRole('textbox', { name: /ui-quick-marc.record.fixedField.7-16 positions/ });
+        elvlField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.ELvl/ });
+        punctField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.Punct/ });
+        positions19to23Field = screen.getByRole('textbox', { name: /ui-quick-marc.record.fixedField.19-23 positions/ });
       });
 
       it('should display correct default values', () => {
@@ -496,13 +496,13 @@ describe('Given Quick Marc Editor Container', () => {
           });
         });
 
-        recordLengthField = screen.getByRole('textbox', { name: 'ui-quick-marc.record.fixedField.Record length' });
-        statusField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.Status' });
-        typeField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.Type' });
-        positions7to16Field = screen.getByRole('textbox', { name: 'ui-quick-marc.record.fixedField.7-16 positions' });
-        elvlField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.ELvl' });
-        itemField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.Item' });
-        positions19to23Field = screen.getByRole('textbox', { name: 'ui-quick-marc.record.fixedField.19-23 positions' });
+        recordLengthField = screen.getByRole('textbox', { name: /ui-quick-marc.record.fixedField.Record length/ });
+        statusField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.Status/ });
+        typeField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.Type/ });
+        positions7to16Field = screen.getByRole('textbox', { name: /ui-quick-marc.record.fixedField.7-16 positions/ });
+        elvlField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.ELvl/ });
+        itemField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.Item/ });
+        positions19to23Field = screen.getByRole('textbox', { name: /ui-quick-marc.record.fixedField.19-23 positions/ });
       });
 
       it('should display correct default values', async () => {
