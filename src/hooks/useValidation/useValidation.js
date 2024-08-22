@@ -20,6 +20,7 @@ import {
   MISSING_FIELD_ID,
   SEVERITY,
 } from './constants';
+import { QUICK_MARC_ACTIONS } from '../../QuickMarcEditor/constants';
 
 const BE_VALIDATION_MARC_TYPES = [MARC_TYPES.BIB, MARC_TYPES.AUTHORITY];
 
@@ -65,20 +66,25 @@ const useValidation = (context = {}) => {
       return {};
     }
 
-    return response.issues.reduce((acc, cur) => {
-      const match = cur.tag.match(/(.{0,3})\[(\d+)\]/);
-      const fieldTag = match[1];
-      const fieldIndex = parseInt(match[2], 10);
+    // filter out issue 001 for bib records as this field is system generated and expected to be empty
+    return response.issues
+      .filter(issue => !(context.marcType === MARC_TYPES.BIB
+        && [QUICK_MARC_ACTIONS.CREATE, QUICK_MARC_ACTIONS.DERIVE].includes(context.action)
+        && issue.tag.startsWith('001')))
+      .reduce((acc, cur) => {
+        const match = cur.tag.match(/(.{0,3})\[(\d+)\]/);
+        const fieldTag = match[1];
+        const fieldIndex = parseInt(match[2], 10);
 
-      const field = marcRecords.filter(_field => _field.tag === fieldTag)[fieldIndex];
+        const field = marcRecords.filter(_field => _field.tag === fieldTag)[fieldIndex];
 
-      const existingIssues = acc[field?.id || MISSING_FIELD_ID] || [];
+        const existingIssues = acc[field?.id || MISSING_FIELD_ID] || [];
 
-      return {
-        ...acc,
-        [field?.id || MISSING_FIELD_ID]: [...existingIssues, cur],
-      };
-    }, {});
+        return {
+          ...acc,
+          [field?.id || MISSING_FIELD_ID]: [...existingIssues, cur],
+        };
+      }, {});
   };
 
   const runBackEndValidation = useCallback(async (marcRecords) => {
