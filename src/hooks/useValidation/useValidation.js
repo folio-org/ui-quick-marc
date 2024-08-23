@@ -86,17 +86,21 @@ const useValidation = (context = {}) => {
   // remove field 001 error related to missing field for Bib records during create and derive,
   // as this field is system generated and expected to be empty.
   const removeError001MissingField = useCallback(formattedBEValidation => {
-    if (!formattedBEValidation[MISSING_FIELD_ID]) {
+    if (!(context.marcType === MARC_TYPES.BIB) || context.action === QUICK_MARC_ACTIONS.EDIT) {
       return formattedBEValidation;
     }
 
-    return {
+    const validationResult = {
       ...formattedBEValidation,
-      [MISSING_FIELD_ID]: formattedBEValidation[MISSING_FIELD_ID].filter(error => !(
-        context.marcType === MARC_TYPES.BIB
-        && [QUICK_MARC_ACTIONS.CREATE, QUICK_MARC_ACTIONS.DERIVE].includes(context.action)
-        && error.tag.startsWith('001'))),
+      [MISSING_FIELD_ID]: formattedBEValidation[MISSING_FIELD_ID].filter(error => !error.tag.startsWith('001')),
     };
+
+    // Missed fields shouldn't be an empty array, so that the record can be saved on the first try if there are no other issues.
+    if (!validationResult[MISSING_FIELD_ID].length) {
+      delete validationResult[MISSING_FIELD_ID];
+    }
+
+    return validationResult;
   }, [context.action, context.marcType]);
 
   const runBackEndValidation = useCallback(async (marcRecords) => {
