@@ -90,17 +90,17 @@ const useValidation = (context = {}) => {
       return formattedBEValidation;
     }
 
-    const validationResult = {
+    const issues = {
       ...formattedBEValidation,
-      [MISSING_FIELD_ID]: formattedBEValidation[MISSING_FIELD_ID].filter(error => !error.tag.startsWith('001')),
+      [MISSING_FIELD_ID]: formattedBEValidation[MISSING_FIELD_ID]?.filter(error => !error.tag.startsWith('001')) || [],
     };
 
     // Missed fields shouldn't be an empty array, so that the record can be saved on the first try if there are no other issues.
-    if (!validationResult[MISSING_FIELD_ID].length) {
-      delete validationResult[MISSING_FIELD_ID];
+    if (!issues[MISSING_FIELD_ID].length) {
+      delete issues[MISSING_FIELD_ID];
     }
 
-    return validationResult;
+    return issues;
   }, [context.action, context.marcType]);
 
   const runBackEndValidation = useCallback(async (marcRecords) => {
