@@ -507,13 +507,14 @@ describe('useValidation', () => {
     it.each([
       QUICK_MARC_ACTIONS.CREATE,
       QUICK_MARC_ACTIONS.DERIVE,
-    ])('should filter out issue 001 for create and derive', async (action) => {
+    ])('should filter out error 001 missing field for create and derive', async (action) => {
       useValidate.mockReturnValue({
         validate: () => ({
           issues: [{
-            message: 'error message',
             tag: '001[0]',
-            severity: 'warn',
+            severity: 'error',
+            definitionType: 'field',
+            message: 'Field 001 is required.',
           }],
         }),
       });
@@ -525,7 +526,9 @@ describe('useValidation', () => {
 
       const validationErrors = await result.current.validate(record.records);
 
-      expect(validationErrors).toEqual({});
+      expect(validationErrors).toEqual({
+        [MISSING_FIELD_ID]: [],
+      });
     });
   });
 

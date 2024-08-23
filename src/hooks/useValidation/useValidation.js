@@ -2,6 +2,7 @@ import {
   useCallback,
   useContext,
 } from 'react';
+import flow from 'lodash/flow';
 
 import { useOkapiKy } from '@folio/stripes/core';
 
@@ -66,26 +67,37 @@ const useValidation = (context = {}) => {
       return {};
     }
 
-    // filter out issue 001 for bib records as this field is system generated and expected to be empty
-    return response.issues
-      .filter(issue => !(context.marcType === MARC_TYPES.BIB
-        && [QUICK_MARC_ACTIONS.CREATE, QUICK_MARC_ACTIONS.DERIVE].includes(context.action)
-        && issue.tag.startsWith('001')))
-      .reduce((acc, cur) => {
-        const match = cur.tag.match(/(.{0,3})\[(\d+)\]/);
-        const fieldTag = match[1];
-        const fieldIndex = parseInt(match[2], 10);
+    return response.issues.reduce((acc, cur) => {
+      const match = cur.tag.match(/(.{0,3})\[(\d+)\]/);
+      const fieldTag = match[1];
+      const fieldIndex = parseInt(match[2], 10);
 
-        const field = marcRecords.filter(_field => _field.tag === fieldTag)[fieldIndex];
+      const field = marcRecords.filter(_field => _field.tag === fieldTag)[fieldIndex];
 
-        const existingIssues = acc[field?.id || MISSING_FIELD_ID] || [];
+      const existingIssues = acc[field?.id || MISSING_FIELD_ID] || [];
 
-        return {
-          ...acc,
-          [field?.id || MISSING_FIELD_ID]: [...existingIssues, cur],
-        };
-      }, {});
+      return {
+        ...acc,
+        [field?.id || MISSING_FIELD_ID]: [...existingIssues, cur],
+      };
+    }, {});
   };
+
+  // remove field 001 error related to missing field for Bib records during create and derive,
+  // as this field is system generated and expected to be empty.
+  const removeError001MissingField = useCallback(formattedBEValidation => {
+    if (!formattedBEValidation[MISSING_FIELD_ID]) {
+      return formattedBEValidation;
+    }
+
+    return {
+      ...formattedBEValidation,
+      [MISSING_FIELD_ID]: formattedBEValidation[MISSING_FIELD_ID].filter(error => !(
+        context.marcType === MARC_TYPES.BIB
+        && [QUICK_MARC_ACTIONS.CREATE, QUICK_MARC_ACTIONS.DERIVE].includes(context.action)
+        && error.tag.startsWith('001'))),
+    };
+  }, [context.action, context.marcType]);
 
   const runBackEndValidation = useCallback(async (marcRecords) => {
     const body = {
@@ -96,8 +108,11 @@ const useValidation = (context = {}) => {
 
     const response = await validateFetch({ body });
 
-    return formatBEValidationResponse(response, marcRecords);
-  }, [context, validateFetch]);
+    return flow(
+      () => formatBEValidationResponse(response, marcRecords),
+      removeError001MissingField,
+    )();
+  }, [context, validateFetch, removeError001MissingField]);
 
   const isBackEndValidationMarcType = useCallback(marcType => BE_VALIDATION_MARC_TYPES.includes(marcType), []);
 
