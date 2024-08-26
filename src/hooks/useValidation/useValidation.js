@@ -86,7 +86,7 @@ const useValidation = (context = {}) => {
   // remove field 001 error related to missing field for Bib records during create and derive,
   // as this field is system generated and expected to be empty.
   const removeError001MissingField = useCallback(formattedBEValidation => {
-    if (!(context.marcType === MARC_TYPES.BIB) || context.action === QUICK_MARC_ACTIONS.EDIT) {
+    if (context.marcType !== MARC_TYPES.BIB || context.action === QUICK_MARC_ACTIONS.EDIT) {
       return formattedBEValidation;
     }
 
