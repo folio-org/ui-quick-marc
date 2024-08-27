@@ -223,7 +223,7 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
   }, [getSubfieldGroups]);
 
   const getSuggestedFields = useCallback(async (formValues, fieldsToHydrate, extraRequestArgs = {}) => {
-    const payload = hydrateForLinkSuggestions(formValues, fieldsToHydrate);
+    const payload = hydrateForLinkSuggestions(formValues, marcType, fieldsToHydrate);
 
     const requestArgs = {
       body: payload,
@@ -233,7 +233,7 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
     const { fields: memberSuggestedFields } = await fetchLinkSuggestions(requestArgs);
 
     return memberSuggestedFields;
-  }, [fetchLinkSuggestions]);
+  }, [fetchLinkSuggestions, marcType]);
 
   const autoLinkAuthority = useCallback(async (formValues) => {
     const fieldsToLink = formValues.records.filter(record => isRecordForAutoLinking(record, autoLinkableBibFields));
