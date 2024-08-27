@@ -526,9 +526,7 @@ describe('useValidation', () => {
 
       const validationErrors = await result.current.validate(record.records);
 
-      expect(validationErrors).toEqual({
-        [MISSING_FIELD_ID]: [],
-      });
+      expect(validationErrors).toEqual({});
     });
   });
 
