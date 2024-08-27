@@ -503,6 +503,31 @@ describe('useValidation', () => {
         3: [{ message: 'error message', severity: 'error', tag: '245[0]' }],
       }));
     });
+
+    it.each([
+      QUICK_MARC_ACTIONS.CREATE,
+      QUICK_MARC_ACTIONS.DERIVE,
+    ])('should filter out error 001 missing field for create and derive', async (action) => {
+      useValidate.mockReturnValue({
+        validate: () => ({
+          issues: [{
+            tag: '001[0]',
+            severity: 'error',
+            definitionType: 'field',
+            message: 'Field 001 is required.',
+          }],
+        }),
+      });
+
+      const { result } = renderHook(() => useValidation({
+        ...marcContext,
+        action,
+      }), { wrapper: getWrapper() });
+
+      const validationErrors = await result.current.validate(record.records);
+
+      expect(validationErrors).toEqual({});
+    });
   });
 
   describe('when validating Holdings record', () => {

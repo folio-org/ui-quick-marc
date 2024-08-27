@@ -2,6 +2,7 @@ import {
   useCallback,
   useContext,
 } from 'react';
+import flow from 'lodash/flow';
 
 import { useOkapiKy } from '@folio/stripes/core';
 
@@ -20,6 +21,7 @@ import {
   MISSING_FIELD_ID,
   SEVERITY,
 } from './constants';
+import { QUICK_MARC_ACTIONS } from '../../QuickMarcEditor/constants';
 
 const BE_VALIDATION_MARC_TYPES = [MARC_TYPES.BIB, MARC_TYPES.AUTHORITY];
 
@@ -81,6 +83,26 @@ const useValidation = (context = {}) => {
     }, {});
   };
 
+  // remove field 001 error related to missing field for Bib records during create and derive,
+  // as this field is system generated and expected to be empty.
+  const removeError001MissingField = useCallback(formattedBEValidation => {
+    if (context.marcType !== MARC_TYPES.BIB || context.action === QUICK_MARC_ACTIONS.EDIT) {
+      return formattedBEValidation;
+    }
+
+    const issues = {
+      ...formattedBEValidation,
+      [MISSING_FIELD_ID]: formattedBEValidation[MISSING_FIELD_ID]?.filter(error => !error.tag.startsWith('001')) || [],
+    };
+
+    // Missed fields shouldn't be an empty array, so that the record can be saved on the first try if there are no other issues.
+    if (!issues[MISSING_FIELD_ID].length) {
+      delete issues[MISSING_FIELD_ID];
+    }
+
+    return issues;
+  }, [context.action, context.marcType]);
+
   const runBackEndValidation = useCallback(async (marcRecords) => {
     const body = {
       fields: marcRecords.filter(record => !isLeaderRow(record)),
@@ -90,8 +112,11 @@ const useValidation = (context = {}) => {
 
     const response = await validateFetch({ body });
 
-    return formatBEValidationResponse(response, marcRecords);
-  }, [context, validateFetch]);
+    return flow(
+      () => formatBEValidationResponse(response, marcRecords),
+      removeError001MissingField,
+    )();
+  }, [context, validateFetch, removeError001MissingField]);
 
   const isBackEndValidationMarcType = useCallback(marcType => BE_VALIDATION_MARC_TYPES.includes(marcType), []);
 
