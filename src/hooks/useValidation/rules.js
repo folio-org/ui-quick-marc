@@ -61,6 +61,30 @@ const BASE_BIB_VALIDATORS = [
     message: (marcType) => ({ id: `ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}` }),
   },
   {
+    validator: RULES.LEADER_POSITIONS,
+    message: (positions, link) => ({
+      id: 'ui-quick-marc.record.error.leader.invalidPositionValue',
+      values: {
+        positions,
+        link: (
+          <Link
+            to={{
+              pathname: link,
+            }}
+            target="_blank"
+          >
+            {link}
+          </Link>
+        ),
+      },
+    }),
+  },
+  {
+    tag: '008',
+    validator: RULES.FIXED_FIELD_POSITIONS,
+    message: (name) => ({ id: 'ui-quick-marc.record.error.008.invalidValue', values: { name } }),
+  },
+  {
     validator: RULES.$9IN_LINKABLE,
     message: () => ({ id: 'ui-quick-marc.record.error.$9' }),
   },
@@ -179,6 +203,25 @@ const BASE_AUTHORITY_VALIDATORS = [
   {
     validator: RULES.LEADER_EDITABLE_BYTES,
     message: (marcType) => ({ id: `ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}` }),
+  },
+  {
+    validator: RULES.LEADER_POSITIONS,
+    message: (positions, link) => ({
+      id: 'ui-quick-marc.record.error.leader.invalidPositionValue',
+      values: {
+        positions,
+        link: (
+          <Link
+            to={{
+              pathname: link,
+            }}
+            target="_blank"
+          >
+            {link}
+          </Link>
+        ),
+      },
+    }),
   },
   {
     tag: '010',
