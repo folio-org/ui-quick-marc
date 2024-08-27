@@ -1726,7 +1726,7 @@ describe('QuickMarcEditor utils', () => {
         ],
       };
 
-      expect(utils.hydrateForLinkSuggestions(marcRecord, fields)).toEqual({
+      expect(utils.hydrateForLinkSuggestions(marcRecord, MARC_TYPES.BIB, fields)).toEqual({
         leader: bibLeaderString,
         marcFormat: MARC_TYPES.BIB.toUpperCase(),
         _actionType: 'view',

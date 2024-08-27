@@ -1433,7 +1433,7 @@ describe('Given useAuthorityLinking', () => {
           fetchLinkSuggestions: mockFetchLinkSuggestions.mockResolvedValue(linkSuggestionsResponse),
         });
 
-        const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+        const { result } = renderHook(() => useAuthorityLinking({ marcType: MARC_TYPES.BIB }), { wrapper });
 
         const values = await result.current.actualizeLinks(formValues);
 
