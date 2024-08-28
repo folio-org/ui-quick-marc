@@ -119,10 +119,16 @@ const QuickMarcEditWrapper = ({
       removeDeletedRecords,
       removeDuplicateSystemGeneratedFields,
       marcRecord => formatLeaderForSubmit(marcType, marcRecord),
+      autopopulateIndicators,
+      marcRecord => autopopulateFixedField(marcRecord, marcType, fixedFieldSpec),
+      autopopulatePhysDescriptionField,
+      autopopulateMaterialCharsField,
+      marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
+      marcRecord => cleanBytesFields(marcRecord, fixedFieldSpec, marcType),
     )(formValues);
 
     return formValuesToSave;
-  }, [marcType]);
+  }, [marcType, fixedFieldSpec]);
 
   const runValidation = useCallback(async (formValues) => {
     const formValuesForValidation = prepareForSubmit(formValues);
@@ -144,12 +150,6 @@ const QuickMarcEditWrapper = ({
 
     const formValuesToProcess = flow(
       prepareForSubmit,
-      autopopulateIndicators,
-      marcRecord => autopopulateFixedField(marcRecord, marcType, fixedFieldSpec),
-      autopopulatePhysDescriptionField,
-      autopopulateMaterialCharsField,
-      marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
-      marcRecord => cleanBytesFields(marcRecord, fixedFieldSpec, marcType),
       combineSplitFields,
     )(formValues);
 
