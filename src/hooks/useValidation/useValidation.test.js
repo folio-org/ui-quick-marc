@@ -528,6 +528,31 @@ describe('useValidation', () => {
 
       expect(validationErrors).toEqual({});
     });
+
+    describe('when 008 content has invalid value', () => {
+      it('should return error message', async () => {
+        const { result } = renderHook(() => useValidation(marcContext), {
+          wrapper: getWrapper(),
+        });
+
+        const validationErrors = await result.current.validate(
+          [...record.records, {
+            id: 5,
+            tag: '008',
+            content: {
+              DtSt: '^',
+            },
+          }],
+        );
+
+        expect(validationErrors[5]).toEqual(
+          expect.arrayContaining([expect.objectContaining({
+            id: 'ui-quick-marc.record.error.008.invalidValue',
+            severity: 'error',
+          })]),
+        );
+      });
+    });
   });
 
   describe('when validating Holdings record', () => {
