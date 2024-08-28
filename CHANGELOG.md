@@ -21,6 +21,7 @@
 * [UIQM-688](https://issues.folio.org/browse/UIQM-688) Convert Leader from Object to string when fetching links autosuggestions.
 * [UIQM-687](https://issues.folio.org/browse/UIQM-687) Create/Derive MARC Bib records - remove field 001 error related to missing field during validation.
 * [UIQM-686](https://issues.folio.org/browse/UIQM-686) Return removed UI validation in "quickmarc".
+* [UIQM-690](https://issues.folio.org/browse/UIQM-690) Match payload formatting for submit and validate when editing.
 
 ## [8.0.1] (https://github.com/folio-org/ui-quick-marc/tree/v8.0.1) (2024-04-18)
 
