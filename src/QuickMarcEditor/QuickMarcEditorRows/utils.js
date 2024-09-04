@@ -56,13 +56,13 @@ export const separateValidationErrorsAndWarnings = (validationErrors = []) => {
       }
 
       acc.errors = [...acc.errors, cur];
-    }
+    } else {
+      if (!acc.warnings) {
+        acc.warnings = [];
+      }
 
-    if (!acc.warnings) {
-      acc.warnings = [];
+      acc.warnings = [...acc.warnings, cur];
     }
-
-    acc.warnings = [...acc.warnings, cur];
 
     return acc;
   }, {
