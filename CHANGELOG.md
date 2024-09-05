@@ -25,6 +25,7 @@
 * [UIQM-668](https://issues.folio.org/browse/UIQM-668) Change "subfield" to "position" in 008 validation messages.
 * [UIQM-665](https://issues.folio.org/browse/UIQM-665) Fix to generate array content in 008 after changing document type of MARC bib.
 
+
 ## [8.0.1] (https://github.com/folio-org/ui-quick-marc/tree/v8.0.1) (2024-04-18)
 
 * [UIQM-641](https://issues.folio.org/browse/UIQM-641) Call `cleanBytesFields` function with correct arguments to fix 008 field.
