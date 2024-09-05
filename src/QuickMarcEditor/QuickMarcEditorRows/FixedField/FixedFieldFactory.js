@@ -44,6 +44,13 @@ export const FixedFieldFactory = {
     config.fields = fixedFieldType.items.filter(x => !x.readOnly).map((item) => {
       const getInitialValue = () => {
         if (content[item.code]) {
+          if (item.isArray) {
+            return content[item.code]
+              .slice(0, item.length)
+              .concat(new Array(item.length).fill('\\'))
+              .slice(0, item.length);
+          }
+
           return content[item.code];
         }
 

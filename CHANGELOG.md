@@ -23,6 +23,7 @@
 * [UIQM-686](https://issues.folio.org/browse/UIQM-686) Return removed UI validation in "quickmarc".
 * [UIQM-690](https://issues.folio.org/browse/UIQM-690) Match payload formatting for submit and validate when editing.
 * [UIQM-668](https://issues.folio.org/browse/UIQM-668) Change "subfield" to "position" in 008 validation messages.
+* [UIQM-665](https://issues.folio.org/browse/UIQM-665) Fix to generate array content in 008 after changing document type of MARC bib.
 
 ## [8.0.1] (https://github.com/folio-org/ui-quick-marc/tree/v8.0.1) (2024-04-18)
 
