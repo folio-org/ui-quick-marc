@@ -2,6 +2,7 @@ import {
   LEADER_TAG,
   QUICK_MARC_ACTIONS,
 } from '../constants';
+import { SEVERITY } from '../../hooks';
 import { MARC_TYPES } from '../../common/constants';
 import { fieldMatchesDescription } from '../utils';
 
@@ -45,4 +46,27 @@ export const hasMoveException = (recordRow, sibling, action = QUICK_MARC_ACTIONS
     || fieldMatchesDescription(recordRow, rows)
     || fieldMatchesDescription(sibling, rows)
   );
+};
+
+export const separateValidationErrorsAndWarnings = (validationErrors = []) => {
+  return validationErrors.reduce((acc, cur) => {
+    if (cur.severity === SEVERITY.ERROR) {
+      if (!acc.errors) {
+        acc.errors = [];
+      }
+
+      acc.errors = [...acc.errors, cur];
+    } else {
+      if (!acc.warnings) {
+        acc.warnings = [];
+      }
+
+      acc.warnings = [...acc.warnings, cur];
+    }
+
+    return acc;
+  }, {
+    errors: null,
+    warnings: null,
+  });
 };

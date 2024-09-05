@@ -43,6 +43,7 @@ import {
   hasIndicatorException,
   hasAddException,
   hasMoveException,
+  separateValidationErrorsAndWarnings,
 } from './utils';
 import {
   isRecordForManualLinking,
@@ -290,7 +291,9 @@ const QuickMarcEditorRows = ({
 
             const isLeader = isLeaderRow(recordRow);
             const isDisabled = isReadOnly(recordRow, action, marcType);
-            const fieldValidationErrors = validationErrorsRef.current[recordRow.id];
+            const fieldValidationIssues = separateValidationErrorsAndWarnings(
+              validationErrorsRef.current[recordRow.id],
+            );
             const withIndicators = !hasIndicatorException(recordRow);
             const withAddRowAction = hasAddException(recordRow, marcType, action);
             const withDeleteRowAction = hasDeleteException(recordRow, marcType, instance, initialValues, linksCount);
@@ -500,7 +503,7 @@ const QuickMarcEditorRows = ({
                       marcType={marcType}
                       leaderField={recordRow}
                       action={action}
-                      error={fieldValidationErrors}
+                      error={fieldValidationIssues}
                     />
                   )}
                   {
@@ -518,7 +521,7 @@ const QuickMarcEditorRows = ({
                       FixedFieldFactory.getFixedField(
                         intl, `${name}.content`, fixedFieldSpec, type, subtype, fixedFieldInitialValues(),
                       )({
-                        error: fieldValidationErrors,
+                        error: fieldValidationIssues,
                         fieldId: recordRow.id,
                       })
                     )
@@ -553,7 +556,10 @@ const QuickMarcEditorRows = ({
                             id={`content-field-${idx}`}
                             component={ContentField}
                             data-testid={`content-field-${idx}`}
-                            error={fieldValidationErrors && <ErrorMessages errors={fieldValidationErrors} />}
+                            error={fieldValidationIssues.errors
+                              && <ErrorMessages errors={fieldValidationIssues.errors} />}
+                            warning={fieldValidationIssues.warnings
+                              && <ErrorMessages errors={fieldValidationIssues.warnings} />}
                           />
                         )
                     )
