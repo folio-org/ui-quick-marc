@@ -800,7 +800,7 @@
     "record.fixedField.Playing cards": "Hrací karty",
     "record.fixedField.Loose-leaf": "Volný list",
     "record.fixedField.invalid.value": "neplatná hodnota",
-    "record.error.008.invalidValue": "Záznam nelze uložit. Pole 008 obsahuje neplatnou hodnotu v podpoli \"{name}\".",
+    "record.error.008.invalidValue": "Záznam nelze uložit. Pole 008 obsahuje neplatnou hodnotu na pozici \"{name}\".",
     "record.fixedField.Status": "Stav",
     "record.fixedField.ELvl": "ELvl",
     "record.fixedField.MultiLvl": "MultiLvl",
