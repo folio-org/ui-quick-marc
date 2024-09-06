@@ -794,7 +794,7 @@ describe('Given QuickMarcEditor', () => {
 
   describe('when saving form with validation errors and deleted fields', () => {
     beforeEach(() => {
-      mockValidate.mockClear().mockResolvedValue({ [MISSING_FIELD_ID]: [{ id: 'some error', values: {} }] });
+      mockValidate.mockClear().mockResolvedValue({ [MISSING_FIELD_ID]: [{ id: 'some error', severity: 'error', values: {} }] });
     });
 
     it('should show errors and not show confirmation modal', async () => {

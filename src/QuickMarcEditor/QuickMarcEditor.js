@@ -47,6 +47,7 @@ import { AutoLinkingButton } from './AutoLinkingButton';
 import { QuickMarcContext } from '../contexts';
 import {
   MISSING_FIELD_ID,
+  SEVERITY,
   useAuthorityLinking,
   useValidation,
 } from '../hooks';
@@ -227,6 +228,17 @@ const QuickMarcEditor = ({
     };
   }, [setIsValidationModalOpen, isBackEndValidationMarcType, marcType]);
 
+  const showValidationIssuesCallouts = useCallback((issues) => {
+    issues.forEach((error) => {
+      showCallout({
+        message: error.message,
+        messageId: error.id,
+        values: error.values,
+        type: error.severity === SEVERITY.ERROR ? 'error' : 'warning',
+      });
+    });
+  }, [showCallout]);
+
   const confirmSubmit = useCallback(async (e, isKeepEditing = false) => {
     continueAfterSave.current = isKeepEditing;
     let skipValidation = false;
@@ -258,17 +270,9 @@ const QuickMarcEditor = ({
 
         return;
       }
-
       const validationErrorsWithoutFieldId = newValidationErrors[MISSING_FIELD_ID] || [];
 
-      validationErrorsWithoutFieldId.forEach((error) => {
-        showCallout({
-          message: error.message,
-          messageId: error.id,
-          values: error.values,
-          type: 'error',
-        });
-      });
+      showValidationIssuesCallouts(validationErrorsWithoutFieldId);
       setIsValidatedCurrentValues(true);
     } else {
       setValidationErrors({});
@@ -290,6 +294,7 @@ const QuickMarcEditor = ({
     getState,
     hasErrorIssues,
     setValidationErrors,
+    showValidationIssuesCallouts,
     showCallout,
     validate,
     runConfirmationChecks,

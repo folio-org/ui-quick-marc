@@ -1,3 +1,4 @@
+import { SEVERITY } from '../../hooks';
 import {
   LEADER_TAG,
   QUICK_MARC_ACTIONS,
@@ -168,6 +169,25 @@ describe('QuickMarcEditorRows utils', () => {
 
           expect(utils.hasMoveException(field, _sibling, action)).toBeTruthy();
         });
+      });
+    });
+  });
+
+  describe('separateValidationErrorsAndWarnings', () => {
+    it('should separate warn and error issues into separate arrays', () => {
+      const error = {
+        severity: SEVERITY.ERROR,
+        message: 'error',
+      };
+      const warning = {
+        severity: SEVERITY.WARN,
+        message: 'warning',
+      };
+      const issues = [error, warning];
+
+      expect(utils.separateValidationErrorsAndWarnings(issues)).toEqual({
+        errors: [error],
+        warnings: [warning],
       });
     });
   });
