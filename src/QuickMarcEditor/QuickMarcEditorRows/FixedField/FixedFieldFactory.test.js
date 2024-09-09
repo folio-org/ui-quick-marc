@@ -141,6 +141,28 @@ describe('FixedFieldFactory', () => {
       expect(fieldIlls.initialValue).toEqual(content.Ills);
     });
 
+    it('should have initalValue array to be filled with record content and rest with default value', () => {
+      const content = {
+        Ills: ['a', 'b', 'c'],
+      };
+
+      const fields = FixedFieldFactory.getFixedField(intl, 'records', fixedFieldSpecBib, 'a', 'm', content)().props.config.fields;
+      const fieldIlls = fields.filter(x => x.name === 'Ills')[0];
+
+      expect(fieldIlls.initialValue).toEqual(['a', 'b', 'c', '\\']);
+    });
+
+    it('should have initalValue array to be filled with record content to field length', () => {
+      const content = {
+        Ills: ['a', 'b', 'c', 'd', 'e', 'f', 'g'],
+      };
+
+      const fields = FixedFieldFactory.getFixedField(intl, 'records', fixedFieldSpecBib, 'a', 'm', content)().props.config.fields;
+      const fieldIlls = fields.filter(x => x.name === 'Ills')[0];
+
+      expect(fieldIlls.initialValue).toEqual(['a', 'b', 'c', 'd']);
+    });
+
     it('should have initialValue to be set as default when record has no content', () => {
       const fields = FixedFieldFactory.getFixedField(intl, 'records', fixedFieldSpecBib, 'a', 'm')().props.config.fields;
       const fieldDtSt = fields.filter(x => x.name === 'DtSt')[0];
