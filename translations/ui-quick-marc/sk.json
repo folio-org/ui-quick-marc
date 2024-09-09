@@ -800,7 +800,7 @@
     "record.fixedField.Playing cards": "Playing cards",
     "record.fixedField.Loose-leaf": "Loose-leaf",
     "record.fixedField.invalid.value": "invalid value",
-    "record.error.008.invalidValue": "Record cannot be saved. Field 008 contains an invalid value in \"{name}\" subfield.",
+    "record.error.008.invalidValue": "Record cannot be saved. Field 008 contains an invalid value in \"{name}\" position.",
     "record.fixedField.Status": "Status",
     "record.fixedField.ELvl": "ELvl",
     "record.fixedField.MultiLvl": "MultiLvl",

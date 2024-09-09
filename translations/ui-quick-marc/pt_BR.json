@@ -800,7 +800,7 @@
     "record.fixedField.Playing cards": "Cartas para jogo",
     "record.fixedField.Loose-leaf": "Folha solta",
     "record.fixedField.invalid.value": "Valor inválido",
-    "record.error.008.invalidValue": "O registro não pode ser salvo. O campo 008 contém um valor inválido no subcampo \" {name} \".",
+    "record.error.008.invalidValue": "O registro não pode ser salvo. O campo 008 contém um valor inválido na posição \"{name}\".",
     "record.fixedField.Status": "Status",
     "record.fixedField.ELvl": "ELvl",
     "record.fixedField.MultiLvl": "MultiLvl",
