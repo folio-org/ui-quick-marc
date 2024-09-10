@@ -241,7 +241,6 @@ const QuickMarcEditWrapper = ({
     initialValues,
     instance,
     marcType,
-    fixedFieldSpec,
     mutator,
     linksCount,
     location,
