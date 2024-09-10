@@ -631,7 +631,7 @@ describe('validators', () => {
 
       validators.validateSubfieldIsControlled({ marcRecords, linkingRules }, rule);
 
-      expect(rule.message).toHaveBeenCalledWith(['600']);
+      expect(rule.message).toHaveBeenCalled();
     });
   });
 

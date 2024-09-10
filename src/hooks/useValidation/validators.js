@@ -373,11 +373,8 @@ export const validateSubfieldIsControlled = ({ marcRecords, linkingRules }, rule
     });
   });
 
-  const fieldTags = linkedFieldsWithEnteredSubfieldsThatCanBeControlled.map(field => field.tag);
-  const uniqueTags = [...new Set(fieldTags)];
-
   if (linkedFieldsWithEnteredSubfieldsThatCanBeControlled.length) {
-    return mapFailingFields(linkedFieldsWithEnteredSubfieldsThatCanBeControlled, () => rule.message(uniqueTags));
+    return mapFailingFields(linkedFieldsWithEnteredSubfieldsThatCanBeControlled, () => rule.message());
   }
 
   return undefined;
