@@ -1220,3 +1220,9 @@ export const isFolioSourceFileNotSelected = ({ selectedSourceFile }) => {
 export const joinErrors = (errorsA, errorsB) => {
   return assignWith({}, errorsA, errorsB, (objValue = [], srcValue = []) => objValue.concat(srcValue));
 };
+
+export const getVisibleNonSelectable008Subfields = (fixedFieldType) => {
+  return fixedFieldType.items
+    .filter(field => !field.readOnly)
+    .filter(field => !field.isArray);
+};

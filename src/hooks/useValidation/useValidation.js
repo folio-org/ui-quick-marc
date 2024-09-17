@@ -15,6 +15,7 @@ import {
 } from '../../queries';
 import {
   getLeaderPositions,
+  getVisibleNonSelectable008Subfields,
   isLeaderRow,
   joinErrors,
 } from '../../QuickMarcEditor/utils';
@@ -121,9 +122,7 @@ const useValidation = (context = {}) => {
     const { type, position7 } = getLeaderPositions(context.marcType, marcRecords);
     const fixedFieldType = FixedFieldFactory.getFixedFieldType(context.fixedFieldSpec, type, position7);
 
-    const fieldsMap = fixedFieldType.items
-      .filter(field => !field.isArray)
-      .filter(field => !field.readOnly)
+    const fieldsMap = getVisibleNonSelectable008Subfields(fixedFieldType)
       .reduce((acc, field) => ({ ...acc, [field.code]: field }), {});
 
     return marcRecords.map(field => {
