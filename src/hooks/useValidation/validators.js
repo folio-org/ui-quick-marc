@@ -415,7 +415,9 @@ export const validateFixedFieldLength = ({ marcRecords, fixedFieldSpec, marcType
   const { type, position7: subtype } = getLeaderPositions(marcType, marcRecords);
   const fixedFieldType = FixedFieldFactory.getFixedFieldType(fixedFieldSpec, type, subtype);
   const fields008 = marcRecords.filter(x => x.tag === FIXED_FIELD_TAG);
-  const nonSelectableSubfields = fixedFieldType.items.filter(field => !field.isArray);
+  const nonSelectableSubfields = fixedFieldType.items
+    .filter(field => !field.readOnly)
+    .filter(field => !field.isArray);
 
   const errors = fields008.reduce((acc, field) => {
     nonSelectableSubfields.forEach(subfield => {

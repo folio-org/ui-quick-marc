@@ -69,7 +69,7 @@ const mockRecords = {
       'content': {
         'Type': 'a',
         'BLvl': 'm',
-        'Entered': '24040',
+        'Entered': '240404',
         'DtSt': 'u',
         'Date1': '\\\\\\\\',
         'Date2': '\\\\\\\\',
@@ -519,7 +519,7 @@ describe('Given QuickMarcEditWrapper', () => {
                 'Date1': '\\\\\\\\',
                 'Date2': '\\\\\\\\',
                 'DtSt': 'u',
-                'Entered': '24040',
+                'Entered': '240404',
                 'Fest': '1',
                 'Form': 's',
                 'GPub': 's',

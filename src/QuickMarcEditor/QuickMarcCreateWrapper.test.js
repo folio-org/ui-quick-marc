@@ -119,7 +119,7 @@ const mockRecords = {
         'Type': 'a',
         'BLvl': 'm',
         'Desc': 'c',
-        'Entered': '21121',
+        'Entered': '211212',
         'DtSt': '|',
         'Date1': '2016',
         'Date2': '||||',

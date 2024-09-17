@@ -123,6 +123,7 @@ const useValidation = (context = {}) => {
 
     const fieldsMap = fixedFieldType.items
       .filter(field => !field.isArray)
+      .filter(field => !field.readOnly)
       .reduce((acc, field) => ({ ...acc, [field.code]: field }), {});
 
     return marcRecords.map(field => {
