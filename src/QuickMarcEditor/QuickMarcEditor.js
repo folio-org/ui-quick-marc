@@ -465,6 +465,10 @@ const QuickMarcEditor = ({
     name: 'save',
     shortcut: 'mod+s',
     handler: async (e) => {
+      if (['ctrl', 'alt'].every(x => e.pressedKeys.includes(x))) {
+        return;
+      }
+
       if (!saveFormDisabled) {
         e.preventDefault();
         confirmationChecks.current = { ...REQUIRED_CONFIRMATIONS };
