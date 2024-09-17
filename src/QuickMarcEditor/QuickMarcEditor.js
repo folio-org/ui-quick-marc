@@ -465,6 +465,7 @@ const QuickMarcEditor = ({
     name: 'save',
     shortcut: 'mod+s',
     handler: async (e) => {
+      // Comments: ctrl+alt+s is combination for ś. Checking combination to prevent saving record.
       if (['ctrl', 'alt'].every(x => e.pressedKeys.includes(x))) {
         return;
       }
