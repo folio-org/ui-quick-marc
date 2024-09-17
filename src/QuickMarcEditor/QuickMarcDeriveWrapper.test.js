@@ -73,7 +73,7 @@ const mockFormValues = jest.fn(() => ({
         Cont: ['b', '\\', '\\', '\\'],
         Ctry: 'miu',
         Date1: '2009',
-        Date2: '\\\\',
+        Date2: '\\\\\\\\',
         Desc: 'i',
         DtSt: 's',
         Entered: '130325',

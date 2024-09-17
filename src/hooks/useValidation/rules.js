@@ -26,6 +26,7 @@ import {
   validateContentExistence,
   validateFixedFieldPositions,
   validateLccnDuplication,
+  validateFixedFieldLength,
 } from './validators';
 import {
   is010LinkedToBibRecord,
@@ -52,6 +53,7 @@ const RULES = {
   SUBFIELD_VALUE_MATCH: validateSubfieldValueMatch,
   SUBFIELD_CHANGED: validateSubfieldChanged,
   FIXED_FIELD_POSITIONS: validateFixedFieldPositions,
+  FIXED_FIELD_LENGTH: validateFixedFieldLength,
   DUPLICATE_LCCN: validateLccnDuplication,
 };
 
@@ -83,6 +85,11 @@ const BASE_BIB_VALIDATORS = [
     tag: '008',
     validator: RULES.FIXED_FIELD_POSITIONS,
     message: (name) => ({ id: 'ui-quick-marc.record.error.008.invalidValue', values: { name } }),
+  },
+  {
+    tag: '008',
+    validator: RULES.FIXED_FIELD_LENGTH,
+    message: (name, length) => ({ id: 'ui-quick-marc.record.error.008.invalidLength', values: { name, length } }),
   },
   {
     validator: RULES.$9IN_LINKABLE,
@@ -257,6 +264,11 @@ const BASE_AUTHORITY_VALIDATORS = [
     tag: '010',
     validator: RULES.DUPLICATE_LCCN,
     message: () => ({ id: 'ui-quick-marc.record.error.010.lccnDuplicated' }),
+  },
+  {
+    tag: '008',
+    validator: RULES.FIXED_FIELD_LENGTH,
+    message: (name, length) => ({ id: 'ui-quick-marc.record.error.008.invalidLength', values: { name, length } }),
   },
 ];
 

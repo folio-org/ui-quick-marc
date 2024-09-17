@@ -8,6 +8,7 @@ import { QUICK_MARC_ACTIONS } from '../../QuickMarcEditor/constants';
 import { MARC_TYPES } from '../../common/constants';
 import { MISSING_FIELD_ID } from './constants';
 import fixedFieldSpecBib from '../../../test/mocks/fixedFieldSpecBib';
+import fixedFieldSpecAuth from '../../../test/mocks/fixedFieldSpecAuth';
 import {
   authorityLeader,
   authorityLeaderString,
@@ -553,6 +554,103 @@ describe('useValidation', () => {
         );
       });
     });
+
+    describe('when the length of the subfields of field 008 does not correspond with the one from spec', () => {
+      it('should append backslashes if there are fewer characters and cut off extra ones', async () => {
+        const { result } = renderHook(() => useValidation(marcContext), {
+          wrapper: getWrapper(),
+        });
+
+        await result.current.validate([
+          ...record.records,
+          {
+            id: 5,
+            tag: '008',
+            content: {
+              Date1: '199',
+              Ctry: 'a',
+            },
+          },
+          {
+            id: 6,
+            tag: '008',
+            content: {
+              Date2: '19999',
+            },
+          },
+        ]);
+
+        expect(mockValidate).toHaveBeenCalledWith({
+          body: expect.objectContaining({
+            fields: expect.arrayContaining([{
+              id: 5,
+              tag: '008',
+              content: {
+                Date1: '199\\',
+                Ctry: 'a\\\\',
+              },
+            }, {
+              id: 6,
+              tag: '008',
+              content: {
+                Date2: '1999',
+              },
+            }]),
+          }),
+        });
+      });
+
+      it('should return error messages for each field 008', async () => {
+        const { result } = renderHook(() => useValidation(marcContext), {
+          wrapper: getWrapper(),
+        });
+
+        const validationErrors = await result.current.validate([
+          ...record.records,
+          {
+            id: 5,
+            tag: '008',
+            content: {
+              Date1: '199',
+              Ctry: 'a',
+            },
+          },
+          {
+            id: 6,
+            tag: '008',
+            content: {
+              Date2: '19999',
+            },
+          },
+        ]);
+
+        expect(validationErrors).toEqual(expect.objectContaining({
+          5: [{
+            id: 'ui-quick-marc.record.error.008.invalidLength',
+            severity: 'error',
+            values: {
+              length: 4,
+              name: 'ui-quick-marc.record.fixedField.Date1',
+            },
+          }, {
+            id: 'ui-quick-marc.record.error.008.invalidLength',
+            severity: 'error',
+            values: {
+              length: 3,
+              name: 'ui-quick-marc.record.fixedField.Ctry',
+            },
+          }],
+          6: [{
+            id: 'ui-quick-marc.record.error.008.invalidLength',
+            severity: 'error',
+            values: {
+              length: 4,
+              name: 'ui-quick-marc.record.fixedField.Date2',
+            },
+          }],
+        }));
+      });
+    });
   });
 
   describe('when validating Holdings record', () => {
@@ -845,6 +943,7 @@ describe('useValidation', () => {
         naturalId: null,
         linkableBibFields,
         linkingRules,
+        fixedFieldSpec: fixedFieldSpecAuth,
       };
 
       const record = {
@@ -904,6 +1003,42 @@ describe('useValidation', () => {
           [MISSING_FIELD_ID]: [{ message: 'error message', severity: 'error', tag: '245[0]' }],
         });
       });
+
+      describe('when the length of the subfields of field 008 exceeds the limit', () => {
+        it('should return error messages', async () => {
+          const { result } = renderHook(() => useValidation(marcContext), {
+            wrapper: getWrapper(),
+          });
+
+          const validationErrors = await result.current.validate([
+            ...record.records,
+            {
+              id: 4,
+              content: {
+                'Geo Subd': 'test',
+                'Lang': 'test',
+              },
+              tag: '008',
+            },
+          ]);
+
+          expect(validationErrors[4]).toEqual([{
+            id: 'ui-quick-marc.record.error.008.invalidLength',
+            severity: 'error',
+            values: {
+              length: 1,
+              name: 'ui-quick-marc.record.fixedField.Geo Subd',
+            },
+          }, {
+            id: 'ui-quick-marc.record.error.008.invalidLength',
+            severity: 'error',
+            values: {
+              length: 1,
+              name: 'ui-quick-marc.record.fixedField.Lang',
+            },
+          }]);
+        });
+      });
     });
 
     describe('when action is CREATE', () => {
@@ -940,6 +1075,7 @@ describe('useValidation', () => {
         naturalId: null,
         linkableBibFields,
         linkingRules,
+        fixedFieldSpec: fixedFieldSpecAuth,
       };
 
       const record = {
