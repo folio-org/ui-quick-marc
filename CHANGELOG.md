@@ -26,6 +26,7 @@
 * [UIQM-691](https://issues.folio.org/browse/UIQM-691) Show correct field and toast color when validation returns warnings.
 * [UIQM-665](https://issues.folio.org/browse/UIQM-665) Fix to generate array content in 008 after changing document type of MARC bib.
 * [UIQM-694](https://issues.folio.org/browse/UIQM-694) Separate error messages triggered by controlled subfields of different linked fields.
+* [UIQM-592](https://issues.folio.org/browse/UIQM-592) Fix to input polish special chars into fields.
 
 ## [8.0.1] (https://github.com/folio-org/ui-quick-marc/tree/v8.0.1) (2024-04-18)
 
