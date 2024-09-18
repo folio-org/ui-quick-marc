@@ -399,7 +399,6 @@
     "sourceFileLookupModal.placeholder": "选择规范档",
     "authority-record.create.title": "创建新的{shared, select, true { shared } false { local } other {}} MARC 规范记录",
     "record.error.fieldIsControlled": "<b> {fieldTags} </b>有一个无法保存的子字段，因为该字段由规范记录控制。",
-    "record.error.fieldsAreControlled": "<b> {fieldTags}{count, plural, one {} =2 { 和 {lastFieldTag}} other { , 和 {lastFieldTag}}} </b>有一个无法保存的子字段，因为字段受控于规范记录。",
     "record.error.controlField.content.empty": "记录无法保存。需要规范档",
     "record.error.010.absent": "如果没有010字段，则无法保存记录。",
     "record.error.010.prefix.absent": "如果010字段中没有前缀，则无法保存记录。",
