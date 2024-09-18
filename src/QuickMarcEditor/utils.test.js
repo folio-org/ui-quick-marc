@@ -1793,4 +1793,22 @@ describe('QuickMarcEditor utils', () => {
       });
     });
   });
+
+  describe('isDiacritic', () => {
+    it('should all chars to be detected as diacritics', () => {
+      const diacriticArray = 'ąćęłńóśźżĄĆĘŁŃÓŚŹŻøãéžŽšŠşŞß';
+
+      [...diacriticArray].forEach(c => {
+        expect(utils.isDiacritic(c)).toBeTruthy();
+      });
+    });
+
+    it('should all chars to be detected as not diacritics', () => {
+      const diacriticArray = 'acelnoszACELNOSZ';
+
+      [...diacriticArray].forEach(c => {
+        expect(utils.isDiacritic(c)).toBeFalsy();
+      });
+    });
+  });
 });
