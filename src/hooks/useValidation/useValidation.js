@@ -41,7 +41,7 @@ const formatFEValidation = (errors = {}) => {
   }, {});
 };
 
-const useValidation = (context = {}, tenantId) => {
+const useValidation = (context = {}, tenantId = null) => {
   const quickMarcContext = useContext(QuickMarcContext);
   const { validate: validateFetch } = useValidate({ tenantId });
   const { duplicateLccnCheckingEnabled } = useLccnDuplicateConfig({ marcType: context.marcType });
