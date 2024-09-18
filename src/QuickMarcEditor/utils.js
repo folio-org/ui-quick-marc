@@ -1221,6 +1221,14 @@ export const joinErrors = (errorsA, errorsB) => {
   return assignWith({}, errorsA, errorsB, (objValue = [], srcValue = []) => objValue.concat(srcValue));
 };
 
+export const isDiacritic = (char) => {
+  const specialDiactrics = 'łŁøß';
+
+  if (specialDiactrics.includes(char)) return true;
+
+  return char.normalize('NFD') !== char;
+};
+
 export const getVisibleNonSelectable008Subfields = (fixedFieldType) => {
   return fixedFieldType.items
     .filter(field => !field.readOnly)

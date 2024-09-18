@@ -399,7 +399,6 @@
     "sourceFileLookupModal.placeholder": "Select authority file",
     "authority-record.create.title": "Create a new {shared, select, true {shared} false {local} other {}} MARC authority record",
     "record.error.fieldIsControlled": "<b>{fieldTags}</b> ma podpole(-a), które nie mogą zostać zapisane, ponieważ pole jest kontrolowane przez rekord wzorcowy.",
-    "record.error.fieldsAreControlled": "<b>{fieldTags}{count, plural, one {} =2 { and {lastFieldTag}} other {, and {lastFieldTag}}}</b> has a subfield(s) that cannot be saved because the fields are controlled by authority records.",
     "record.error.controlField.content.empty": "Nie można zapisać rekordu. Hasło jest wymagane",
     "record.error.010.absent": "Rekord nie może być zapisany bez pola 010.",
     "record.error.010.prefix.absent": "Rekord nie może być zapisany bez prefiksu w polu 010.",

@@ -75,6 +75,7 @@ import {
   updateRecordAtIndex,
   markLinkedRecords,
   getLeaderPositions,
+  isDiacritic,
 } from './utils';
 
 import css from './QuickMarcEditor.css';
@@ -465,6 +466,8 @@ const QuickMarcEditor = ({
     name: 'save',
     shortcut: 'mod+s',
     handler: async (e) => {
+      if (isDiacritic(e.key)) return;
+
       if (!saveFormDisabled) {
         e.preventDefault();
         confirmationChecks.current = { ...REQUIRED_CONFIRMATIONS };
