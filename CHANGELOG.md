@@ -29,6 +29,7 @@
 * [UIQM-592](https://issues.folio.org/browse/UIQM-592) Fix to input polish special chars into fields.
 * [UIQM-697](https://issues.folio.org/browse/UIQM-697) Field 008: Validate the length of subfields. Add backslashes if the length of a subfield of field 008 is shorter, if longer - cut off the extra characters.
 * [UIQM-699](https://issues.folio.org/browse/UIQM-699) ECS - send validation request with central tenant id for shared Bib and Authority records.
+* [UIQM-693](https://issues.folio.org/browse/UIQM-693) Hide permission - Edit, View: Enable duplicate LCCN (010 $a) checking of MARC bibliographic and authority records.
 
 ## [8.0.1] (https://github.com/folio-org/ui-quick-marc/tree/v8.0.1) (2024-04-18)
 
