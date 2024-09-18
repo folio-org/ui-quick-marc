@@ -48,9 +48,9 @@ const formatFEValidation = (errors = {}) => {
   }, {});
 };
 
-const useValidation = (context = {}) => {
+const useValidation = (context = {}, tenantId = null) => {
   const quickMarcContext = useContext(QuickMarcContext);
-  const { validate: validateFetch } = useValidate();
+  const { validate: validateFetch } = useValidate({ tenantId });
   const { duplicateLccnCheckingEnabled } = useLccnDuplicateConfig({ marcType: context.marcType });
   const ky = useOkapiKy();
   const intl = useIntl();

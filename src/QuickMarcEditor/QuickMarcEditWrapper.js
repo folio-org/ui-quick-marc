@@ -112,7 +112,7 @@ const QuickMarcEditWrapper = ({
     instance.naturalId,
     instance.id,
   ]);
-  const { validate } = useValidation(validationContext);
+  const { validate } = useValidation(validationContext, tenantId);
 
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesToSave = flow(

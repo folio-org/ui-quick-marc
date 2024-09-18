@@ -4,12 +4,14 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import flow from 'lodash/flow';
 import noop from 'lodash/noop';
 import isEmpty from 'lodash/isEmpty';
 
 import { useShowCallout } from '@folio/stripes-acq-components';
+import { useStripes } from '@folio/stripes/core';
 
 import QuickMarcEditor from './QuickMarcEditor';
 import { QuickMarcContext } from '../contexts';
@@ -35,6 +37,7 @@ import {
   autopopulateMaterialCharsField,
   autopopulateIndicators,
   removeRowsWithoutContent,
+  applyCentralTenantInHeaders,
 } from './utils';
 
 const propTypes = {
@@ -60,10 +63,16 @@ const QuickMarcCreateWrapper = ({
   fixedFieldSpec,
   locations,
 }) => {
+  const stripes = useStripes();
+  const location = useLocation();
   const showCallout = useShowCallout();
   const [httpError, setHttpError] = useState(null);
   const { linkableBibFields, actualizeLinks, linkingRules, sourceFiles } = useAuthorityLinking({ marcType, action });
   const { validationErrorsRef } = useContext(QuickMarcContext);
+
+  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType);
+  const centralTenantId = stripes.user.user.consortium?.centralTenantId;
+  const tenantId = isRequestToCentralTenantFromMember ? centralTenantId : '';
 
   const validationContext = useMemo(() => ({
     initialValues,
@@ -76,7 +85,7 @@ const QuickMarcCreateWrapper = ({
     fixedFieldSpec,
     instanceId: instance.id,
   }), [initialValues, marcType, locations, linkableBibFields, linkingRules, sourceFiles, fixedFieldSpec, instance.id]);
-  const { validate } = useValidation(validationContext);
+  const { validate } = useValidation(validationContext, tenantId);
 
   const prepareForSubmit = useCallback((formValues) => {
     const formValuesForCreate = flow(
