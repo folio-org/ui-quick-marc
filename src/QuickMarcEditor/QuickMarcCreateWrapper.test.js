@@ -28,6 +28,7 @@ import {
   holdingsLeader,
 } from '../../test/jest/fixtures/leaders';
 import fixedFieldSpecBib from '../../test/mocks/fixedFieldSpecBib';
+import fixedFieldSpecAuth from '../../test/mocks/fixedFieldSpecAuth';
 
 const runWithDelayedPromise = (fn, delay) => () => {
   return new Promise(resolve => setTimeout(() => resolve(fn()), delay));
@@ -232,6 +233,11 @@ const mockFormValues = jest.fn((marcType) => ({
   updateInfo: { recordState: 'NEW' },
 }));
 
+const mockSpecs = {
+  [MARC_TYPES.BIB]: fixedFieldSpecBib,
+  [MARC_TYPES.AUTHORITY]: fixedFieldSpecAuth,
+};
+
 jest.mock('@folio/stripes/final-form', () => () => (Component) => ({
   onSubmit,
   marcType,
@@ -311,7 +317,7 @@ const renderQuickMarcCreateWrapper = ({
       mutator={mutator}
       action={QUICK_MARC_ACTIONS.CREATE}
       marcType={marcType}
-      fixedFieldSpec={fixedFieldSpecBib}
+      fixedFieldSpec={mockSpecs[marcType]}
       initialValues={mockFormValues(marcType)}
       locations={locations}
     />

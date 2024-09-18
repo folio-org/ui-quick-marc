@@ -1228,3 +1228,9 @@ export const isDiacritic = (char) => {
 
   return char.normalize('NFD') !== char;
 };
+
+export const getVisibleNonSelectable008Subfields = (fixedFieldType) => {
+  return fixedFieldType.items
+    .filter(field => !field.readOnly)
+    .filter(field => !field.isArray);
+};

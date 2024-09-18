@@ -2,6 +2,7 @@ import {
   useCallback,
   useContext,
 } from 'react';
+import { useIntl } from 'react-intl';
 import flow from 'lodash/flow';
 
 import { useOkapiKy } from '@folio/stripes/core';
@@ -13,6 +14,8 @@ import {
   useValidate,
 } from '../../queries';
 import {
+  getLeaderPositions,
+  getVisibleNonSelectable008Subfields,
   isLeaderRow,
   joinErrors,
 } from '../../QuickMarcEditor/utils';
@@ -21,7 +24,11 @@ import {
   MISSING_FIELD_ID,
   SEVERITY,
 } from './constants';
-import { QUICK_MARC_ACTIONS } from '../../QuickMarcEditor/constants';
+import {
+  FIXED_FIELD_TAG,
+  QUICK_MARC_ACTIONS,
+} from '../../QuickMarcEditor/constants';
+import { FixedFieldFactory } from '../../QuickMarcEditor/QuickMarcEditorRows/FixedField';
 
 const BE_VALIDATION_MARC_TYPES = [MARC_TYPES.BIB, MARC_TYPES.AUTHORITY];
 
@@ -46,6 +53,7 @@ const useValidation = (context = {}, tenantId = null) => {
   const { validate: validateFetch } = useValidate({ tenantId });
   const { duplicateLccnCheckingEnabled } = useLccnDuplicateConfig({ marcType: context.marcType });
   const ky = useOkapiKy();
+  const intl = useIntl();
 
   const runFrontEndValidation = useCallback(async (marcRecords) => {
     const validationRules = validators[context.marcType][context.action];
@@ -56,11 +64,12 @@ const useValidation = (context = {}, tenantId = null) => {
       marcRecords,
       duplicateLccnCheckingEnabled,
       ky,
+      intl,
     }, rule)))
       .then(errorsList => errorsList.reduce((joinedErrors, ruleErrors) => joinErrors(joinedErrors, ruleErrors), {}));
 
     return formatFEValidation(errors);
-  }, [context, quickMarcContext, duplicateLccnCheckingEnabled, ky]);
+  }, [context, quickMarcContext, duplicateLccnCheckingEnabled, ky, intl]);
 
   const formatBEValidationResponse = (response, marcRecords) => {
     if (!response.issues) {
@@ -103,7 +112,49 @@ const useValidation = (context = {}, tenantId = null) => {
     return issues;
   }, [context.action, context.marcType]);
 
-  const runBackEndValidation = useCallback(async (marcRecords) => {
+  // if the length of a subfield of field 008 is shorter, then add backslashes,
+  // if longer, then cut off the extra characters.
+  const fillIn008FieldBlanks = useCallback((marcRecords) => {
+    if (![MARC_TYPES.BIB, MARC_TYPES.AUTHORITY].includes(context.marcType)) {
+      return marcRecords;
+    }
+
+    const { type, position7 } = getLeaderPositions(context.marcType, marcRecords);
+    const fixedFieldType = FixedFieldFactory.getFixedFieldType(context.fixedFieldSpec, type, position7);
+
+    const fieldsMap = getVisibleNonSelectable008Subfields(fixedFieldType)
+      .reduce((acc, field) => ({ ...acc, [field.code]: field }), {});
+
+    return marcRecords.map(field => {
+      if (field.tag !== FIXED_FIELD_TAG) {
+        return field;
+      }
+
+      // if the spec contains a subfield length of 4, then '123456' becomes '1234' and '12' becomes '12\\\\'
+      return {
+        ...field,
+        content: Object.keys(field.content).reduce((acc, code) => {
+          const value = field.content[code];
+
+          if (Array.isArray(value) || !fieldsMap[code]) {
+            acc[code] = value;
+          } else {
+            const length = fieldsMap[code].length;
+
+            acc[code] = value.length === length
+              ? value
+              : value.substring(0, length).padEnd(length, '\\');
+          }
+
+          return acc;
+        }, {}),
+      };
+    });
+  }, [context.fixedFieldSpec, context.marcType]);
+
+  const runBackEndValidation = useCallback(async (records) => {
+    const marcRecords = fillIn008FieldBlanks(records);
+
     const body = {
       fields: marcRecords.filter(record => !isLeaderRow(record)),
       leader: marcRecords.find(isLeaderRow)?.content,
@@ -116,7 +167,7 @@ const useValidation = (context = {}, tenantId = null) => {
       () => formatBEValidationResponse(response, marcRecords),
       removeError001MissingField,
     )();
-  }, [context, validateFetch, removeError001MissingField]);
+  }, [context, validateFetch, removeError001MissingField, fillIn008FieldBlanks]);
 
   const isBackEndValidationMarcType = useCallback(marcType => BE_VALIDATION_MARC_TYPES.includes(marcType), []);
 
