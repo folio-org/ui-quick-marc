@@ -75,6 +75,7 @@ import {
   updateRecordAtIndex,
   markLinkedRecords,
   getLeaderPositions,
+  isDiacritic,
 } from './utils';
 
 import css from './QuickMarcEditor.css';
@@ -465,10 +466,7 @@ const QuickMarcEditor = ({
     name: 'save',
     shortcut: 'mod+s',
     handler: async (e) => {
-      // Comments: ctrl+alt+s is combination for ś. Checking combination to prevent saving record.
-      if (['ctrl', 'alt'].every(x => e.pressedKeys.includes(x))) {
-        return;
-      }
+      if (isDiacritic(e.key)) return;
 
       if (!saveFormDisabled) {
         e.preventDefault();

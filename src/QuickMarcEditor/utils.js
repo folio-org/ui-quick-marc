@@ -1220,3 +1220,11 @@ export const isFolioSourceFileNotSelected = ({ selectedSourceFile }) => {
 export const joinErrors = (errorsA, errorsB) => {
   return assignWith({}, errorsA, errorsB, (objValue = [], srcValue = []) => objValue.concat(srcValue));
 };
+
+export const isDiacritic = (char) => {
+  const specialDiactrics = 'łŁøß';
+
+  if (specialDiactrics.includes(char)) return true;
+
+  return char.normalize('NFD') !== char;
+};
