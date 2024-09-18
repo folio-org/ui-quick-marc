@@ -24,6 +24,7 @@ import {
   bibLeaderString,
 } from '../../test/jest/fixtures/leaders';
 import fixedFieldSpecBib from '../../test/mocks/fixedFieldSpecBib';
+import fixedFieldSpecAuth from '../../test/mocks/fixedFieldSpecAuth';
 
 jest.mock('./utils', () => ({
   ...jest.requireActual('./utils'),
@@ -277,6 +278,11 @@ const mockFormValues = jest.fn((marcType) => ({
   updateInfo: { recordState: 'NEW' },
 }));
 
+const mockSpecs = {
+  [MARC_TYPES.BIB]: fixedFieldSpecBib,
+  [MARC_TYPES.AUTHORITY]: fixedFieldSpecAuth,
+};
+
 const mockActualizeLinks = jest.fn((formValuesToProcess) => Promise.resolve(formValuesToProcess));
 const mockUpdateMarcRecord = jest.fn().mockResolvedValue();
 const mockOnCheckCentralTenantPerm = jest.fn().mockReturnValue(false);
@@ -383,7 +389,7 @@ const renderQuickMarcEditWrapper = ({
           locations={locations}
           externalRecordPath="/some-record"
           refreshPageData={jest.fn().mockResolvedValue()}
-          fixedFieldSpec={fixedFieldSpecBib}
+          fixedFieldSpec={mockSpecs[marcType]}
           onCheckCentralTenantPerm={mockOnCheckCentralTenantPerm}
           {...renderProps}
           {...props}
