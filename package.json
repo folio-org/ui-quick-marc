@@ -167,7 +167,7 @@
           "mod-settings.entries.item.put",
           "mod-settings.global.write.ui-quick-marc.lccn-duplicate-check"
         ],
-        "visible": true
+        "visible": false
       },
       {
         "permissionName": "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check",
