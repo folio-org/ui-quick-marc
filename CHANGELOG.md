@@ -26,6 +26,7 @@
 * [UIQM-691](https://issues.folio.org/browse/UIQM-691) Show correct field and toast color when validation returns warnings.
 * [UIQM-665](https://issues.folio.org/browse/UIQM-665) Fix to generate array content in 008 after changing document type of MARC bib.
 * [UIQM-694](https://issues.folio.org/browse/UIQM-694) Separate error messages triggered by controlled subfields of different linked fields.
+* [UIQM-699](https://issues.folio.org/browse/UIQM-699) ECS - send validation request with central tenant id for shared Bib and Authority records.
 
 ## [8.0.1] (https://github.com/folio-org/ui-quick-marc/tree/v8.0.1) (2024-04-18)
 

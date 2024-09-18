@@ -7,8 +7,8 @@ import {
 
 import { VALIDATE_API } from '../../common/constants';
 
-export const useValidate = () => {
-  const ky = useOkapiKy();
+export const useValidate = ({ tenantId } = {}) => {
+  const ky = useOkapiKy({ tenant: tenantId });
   const [namespace] = useNamespace({ key: 'MARC_VALIDATE' });
 
   const { isFetching, data, mutateAsync } = useMutation(
