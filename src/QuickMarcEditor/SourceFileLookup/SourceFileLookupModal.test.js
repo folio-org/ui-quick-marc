@@ -49,7 +49,7 @@ describe('Given SourceFileLookupModal', () => {
     it('should disable Save & close button', () => {
       const { getByRole } = renderSourceFileLookupModal();
 
-      const button = getByRole('button', { name: 'stripes-components.saveAndClose' });
+      const button = getByRole('button', { name: 'stripes-components.saveAndClose', hidden: true });
 
       expect(button).toBeDisabled();
     });
@@ -58,15 +58,15 @@ describe('Given SourceFileLookupModal', () => {
   describe('when some source file value is selected', () => {
     it('should enable Save & close button', async () => {
       const {
-        getByRole,
         getByLabelText,
+        getByText,
       } = renderSourceFileLookupModal();
 
       const select = getByLabelText('ui-quick-marc.sourceFileLookupModal.fieldLabel');
 
       fireEvent.change(select, { target: { value: sourceFileOptions[0].value } });
 
-      const button = getByRole('button', { name: 'stripes-components.saveAndClose' });
+      const button = getByText('stripes-components.saveAndClose').closest('button');
 
       expect(button).toBeEnabled();
     });
@@ -75,15 +75,15 @@ describe('Given SourceFileLookupModal', () => {
   describe('when confirming Source File selection', () => {
     it('should call onConfirm with correct source file id', async () => {
       const {
-        getByRole,
         getByLabelText,
+        getByText,
       } = renderSourceFileLookupModal();
 
       const select = getByLabelText('ui-quick-marc.sourceFileLookupModal.fieldLabel');
 
       fireEvent.change(select, { target: { value: sourceFileOptions[0].value } });
 
-      const button = getByRole('button', { name: 'stripes-components.saveAndClose' });
+      const button = getByText('stripes-components.saveAndClose').closest('button');
 
       fireEvent.click(button);
 
@@ -93,9 +93,9 @@ describe('Given SourceFileLookupModal', () => {
 
   describe('when closing the modal', () => {
     it('should call onCancel', async () => {
-      const { getByRole } = renderSourceFileLookupModal();
+      const { getByText } = renderSourceFileLookupModal();
 
-      const button = getByRole('button', { name: 'stripes-components.cancel' });
+      const button = getByText('stripes-components.cancel').closest('button');
 
       fireEvent.click(button);
 
