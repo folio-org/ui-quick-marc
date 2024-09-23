@@ -887,5 +887,6 @@
     "validation.modal.message": "There might be a slight delay while the system is checking against the library's validation rules. You can continue to work with {appName} in a different browser tab if needed.",
     "record.errorMessage.help": "Help",
     "Inventory": "Inventory",
-    "MARC-authority": "MARC authority"
+    "MARC-authority": "MARC authority",
+    "record.error.008.invalidLength": "Invalid {name} field length, must be {length} characters."
 }

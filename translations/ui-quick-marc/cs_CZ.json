@@ -243,8 +243,8 @@
     "linkedToMarcAuthority": "Propojeno s MARC autoritou",
     "record.link.validation.invalidHeading": "Vybrali jste neplatný nadpis na základě bibliografického pole, které chcete řídit. Upravte prosím svůj výběr.",
     "record.error.1xx.change": "Nelze změnit <b>uložené pole MARC autority {tag}</b>, protože řídí bibliografické pole. Chcete-li změnit toto 1XX, musíte zrušit propojení všech řízených bibliografických polí.",
-    "record.error.1xx.add$t": "Nelze přidat <b>$t do pole ${tag}</b>, protože řídí bibliografické pole, které nemůže toto podpole řídit. Chcete-li změnit tuto hodnotu 1XX, musíte zrušit propojení všech řízených bibliografických polí, která nemohou řídit $t.",
-    "record.error.1xx.remove$t": "Nelze odstranit <b>$t z pole ${tag}</b>, protože řídí bibliografické pole, které toto podpole vyžaduje. Chcete-li změnit tuto hodnotu 1XX, musíte zrušit propojení všech řízených bibliografických polí, která vyžadují kontrolu $t.",
+    "record.error.1xx.add$t": "Nelze přidat <b>$t do pole {tag}</b> protože řídí bibliografická pole, která nemohou ovládat toto podpole. Chcete-li změnit tuto hodnotu 1XX, musíte odpojit všechna kontrolovaná bibliografická pole, která nemohou ovládat $t.",
+    "record.error.1xx.remove$t": "Nelze odstranit <b>$t z pole {tag}</b> protože řídí bibliografická pole, která toto podpole vyžadují. Chcete-li změnit tuto hodnotu 1XX, musíte odpojit všechna kontrolovaná bibliografická pole, která vyžadují kontrolu $t.",
     "record.save.updatingLinkedBibRecords": "Tento záznam byl úspěšně uložen a zpracovává se. Byly zahájeny aktualizace <b> {count} </b> propojených bibliografických záznamů.",
     "update-linked-bib-fields.modal.label": "Opravdu?",
     "update-linked-bib-fields.modal.keep-editing": "Pokračovat v úpravách",
@@ -887,5 +887,6 @@
     "validation.modal.message": "Během kontroly systému podle validačních pravidel knihovny může dojít k mírnému zpoždění. V případě potřeby můžete pokračovat v práci s {appName} na jiné kartě prohlížeče.",
     "record.errorMessage.help": "Nápověda",
     "Inventory": "Katalog",
-    "MARC-authority": "MARC autorita"
+    "MARC-authority": "MARC autorita",
+    "record.error.008.invalidLength": "Neplatná délka pole {name} , musí obsahovat {length} znaků."
 }
