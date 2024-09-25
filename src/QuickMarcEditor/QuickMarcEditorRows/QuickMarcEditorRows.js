@@ -503,7 +503,6 @@ const QuickMarcEditorRows = ({
                       marcType={marcType}
                       leaderField={recordRow}
                       action={action}
-                      error={fieldValidationIssues}
                     />
                   )}
                   {

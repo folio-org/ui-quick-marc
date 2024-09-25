@@ -732,7 +732,7 @@
   "record.error.008.empty": "Record cannot be saved without 008 field",
   "record.error.008.multiple": "Record cannot be saved with more than one 008 field",
   "record.error.008.invalidValue": "Record cannot be saved. Field 008 contains an invalid value in \"{name}\" position.",
-  "record.error.008.invalidLength": "Invalid {name} field length, must be {length} characters.",
+  "record.error.fixedField.invalidLength": "Invalid {name} field length, must be {length} characters.",
   "record.error.heading.empty": "Record cannot be saved without 1XX field.",
   "record.error.heading.multiple": "Record cannot be saved. Cannot have multiple 1XXs",
   "record.error.title.multiple": "Record cannot be saved with more than one field 245.",

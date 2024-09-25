@@ -9,7 +9,7 @@ import {
   checkIsEmptyContent,
   convertLeaderToString,
   getLeaderPositions,
-  getVisibleNonSelectable008Subfields,
+  getFixedFieldStringPositions,
 } from '../../QuickMarcEditor/utils';
 import {
   LEADER_EDITABLE_BYTES,
@@ -412,16 +412,19 @@ export const validateFixedFieldPositions = ({ marcRecords, fixedFieldSpec, marcT
 
   return undefined;
 };
+
 export const validateFixedFieldLength = ({ marcRecords, fixedFieldSpec, marcType, intl }, rule) => {
   const { type, position7: subtype } = getLeaderPositions(marcType, marcRecords);
-  const fixedFieldType = FixedFieldFactory.getFixedFieldType(fixedFieldSpec, type, subtype);
-  const fields008 = marcRecords.filter(x => x.tag === FIXED_FIELD_TAG);
-  const nonSelectableSubfields = getVisibleNonSelectable008Subfields(fixedFieldType);
+  const fieldsToCheck = marcRecords.filter(x => x.tag === rule.tag);
 
-  const errors = fields008.reduce((acc, field) => {
+  const errors = fieldsToCheck.reduce((acc, field) => {
+    const nonSelectableSubfields = getFixedFieldStringPositions(type, subtype, field, fixedFieldSpec);
+
     nonSelectableSubfields.forEach(subfield => {
-      if (field.content[subfield.code] && field.content[subfield.code].length !== subfield.length) {
-        const subfieldName = intl.formatMessage({ id: `ui-quick-marc.record.fixedField.${subfield.code}` });
+      const content = field.content[subfield.code || subfield.name];
+
+      if (content && content.length !== subfield.length) {
+        const subfieldName = intl.formatMessage({ id: `ui-quick-marc.record.fixedField.${subfield.code || subfield.name}` });
 
         acc[field.id] = [
           ...(acc[field.id] || []),

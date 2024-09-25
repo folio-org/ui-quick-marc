@@ -1234,3 +1234,26 @@ export const getVisibleNonSelectable008Subfields = (fixedFieldType) => {
     .filter(field => !field.readOnly)
     .filter(field => !field.isArray);
 };
+
+export const getFixedFieldStringPositions = (type, subtype, field, fixedFieldSpec) => {
+  if (isFixedFieldRow(field)) {
+    const fixedFieldType = FixedFieldFactory.getFixedFieldType(fixedFieldSpec, type, subtype);
+    const nonSelectableSubfields = getVisibleNonSelectable008Subfields(fixedFieldType);
+
+    return nonSelectableSubfields;
+  }
+
+  if (isMaterialCharsRecord(field)) {
+    const materialCharsConfig = getMaterialCharsFieldConfig(field.content.Type);
+
+    return materialCharsConfig.filter(item => item.type === SUBFIELD_TYPES.STRING);
+  }
+
+  if (isPhysDescriptionRecord(field)) {
+    const materialCharsConfig = getPhysDescriptionFieldConfig(field.content.Category);
+
+    return materialCharsConfig.filter(item => item.type === SUBFIELD_TYPES.STRING);
+  }
+
+  return [];
+};
