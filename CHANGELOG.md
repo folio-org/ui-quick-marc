@@ -32,6 +32,7 @@
 * [UIQM-693](https://issues.folio.org/browse/UIQM-693) Hide permission - Edit, View: Enable duplicate LCCN (010 $a) checking of MARC bibliographic and authority records.
 * [UIQM-695](https://issues.folio.org/browse/UIQM-695) Remove extra `$` from error messages when adding/removing `$t` from 1XX of linked MARC authority record.
 * [UIQM-706](https://issues.folio.org/browse/UIQM-706) *BREAKING* Upgrade `marc-records-editor` to `6.0`.
+* [UIQM-698](https://issues.folio.org/browse/UIQM-698) Validate 006/007 field lengths.
 
 ## [8.0.1] (https://github.com/folio-org/ui-quick-marc/tree/v8.0.1) (2024-04-18)
 

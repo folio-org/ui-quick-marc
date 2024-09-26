@@ -87,9 +87,19 @@ const BASE_BIB_VALIDATORS = [
     message: (name) => ({ id: 'ui-quick-marc.record.error.008.invalidValue', values: { name } }),
   },
   {
+    tag: '006',
+    validator: RULES.FIXED_FIELD_LENGTH,
+    message: (name, length) => ({ id: 'ui-quick-marc.record.error.fixedField.invalidLength', values: { name, length } }),
+  },
+  {
+    tag: '007',
+    validator: RULES.FIXED_FIELD_LENGTH,
+    message: (name, length) => ({ id: 'ui-quick-marc.record.error.fixedField.invalidLength', values: { name, length } }),
+  },
+  {
     tag: '008',
     validator: RULES.FIXED_FIELD_LENGTH,
-    message: (name, length) => ({ id: 'ui-quick-marc.record.error.008.invalidLength', values: { name, length } }),
+    message: (name, length) => ({ id: 'ui-quick-marc.record.error.fixedField.invalidLength', values: { name, length } }),
   },
   {
     validator: RULES.$9IN_LINKABLE,
@@ -266,9 +276,19 @@ const BASE_AUTHORITY_VALIDATORS = [
     message: () => ({ id: 'ui-quick-marc.record.error.010.lccnDuplicated' }),
   },
   {
+    tag: '006',
+    validator: RULES.FIXED_FIELD_LENGTH,
+    message: (name, length) => ({ id: 'ui-quick-marc.record.error.fixedField.invalidLength', values: { name, length } }),
+  },
+  {
+    tag: '007',
+    validator: RULES.FIXED_FIELD_LENGTH,
+    message: (name, length) => ({ id: 'ui-quick-marc.record.error.fixedField.invalidLength', values: { name, length } }),
+  },
+  {
     tag: '008',
     validator: RULES.FIXED_FIELD_LENGTH,
-    message: (name, length) => ({ id: 'ui-quick-marc.record.error.008.invalidLength', values: { name, length } }),
+    message: (name, length) => ({ id: 'ui-quick-marc.record.error.fixedField.invalidLength', values: { name, length } }),
   },
 ];
 

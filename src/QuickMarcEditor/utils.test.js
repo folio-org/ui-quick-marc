@@ -1,7 +1,8 @@
 /* eslint-disable max-lines */
 import faker from 'faker';
-
 import { v4 as uuid } from 'uuid';
+
+import { FixedFieldFactory } from './QuickMarcEditorRows/FixedField';
 import {
   LEADER_TAG,
   QUICK_MARC_ACTIONS,
@@ -19,6 +20,7 @@ import {
   bibLeaderString,
   holdingsLeader,
 } from '../../test/jest/fixtures/leaders';
+import { SUBFIELD_TYPES } from './QuickMarcEditorRows/BytesField';
 
 jest.mock('uuid', () => {
   return {
@@ -1808,6 +1810,64 @@ describe('QuickMarcEditor utils', () => {
 
       [...diacriticArray].forEach(c => {
         expect(utils.isDiacritic(c)).toBeFalsy();
+      });
+    });
+  });
+
+  describe('getFixedFieldStringPositions', () => {
+    beforeEach(() => {
+      jest.spyOn(FixedFieldFactory, 'getFixedFieldType').mockReturnValue({
+        items: [{
+          code: 'test1',
+          isArray: true,
+        }, {
+          code: 'test2',
+          isArray: false,
+          readOnly: false,
+        }],
+      });
+    });
+
+    describe('when a field is an 008', () => {
+      it('should return an 008 config', () => {
+        const field = { tag: '008' };
+
+        expect(utils.getFixedFieldStringPositions('a', 'm', field, fixedFieldSpecBib)).toEqual([
+          {
+            code: 'test2',
+            isArray: false,
+            readOnly: false,
+          },
+        ]);
+      });
+    });
+
+    describe('when a field is an 007', () => {
+      it('should return an 007 config', () => {
+        const field = { tag: '007', content: { Category: 'c' } };
+
+        expect(utils.getFixedFieldStringPositions('a', 'm', field, fixedFieldSpecBib)).toEqual([
+          {
+            name: 'Image bit depth',
+            type: SUBFIELD_TYPES.STRING,
+            length: 3,
+          },
+        ]);
+      });
+    });
+
+    describe('when a field is an 006', () => {
+      it('should return an 006 config', () => {
+        const field = { tag: '006', content: { Type: 'f' } };
+
+        expect(utils.getFixedFieldStringPositions('f', 'm', field, fixedFieldSpecBib)).toEqual([
+          {
+            name: 'Proj',
+            hint: 'Projection',
+            type: SUBFIELD_TYPES.STRING,
+            length: 2,
+          },
+        ]);
       });
     });
   });

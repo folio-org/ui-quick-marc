@@ -626,14 +626,14 @@ describe('useValidation', () => {
 
         expect(validationErrors).toEqual(expect.objectContaining({
           5: [{
-            id: 'ui-quick-marc.record.error.008.invalidLength',
+            id: 'ui-quick-marc.record.error.fixedField.invalidLength',
             severity: 'error',
             values: {
               length: 4,
               name: 'ui-quick-marc.record.fixedField.Date1',
             },
           }, {
-            id: 'ui-quick-marc.record.error.008.invalidLength',
+            id: 'ui-quick-marc.record.error.fixedField.invalidLength',
             severity: 'error',
             values: {
               length: 3,
@@ -641,7 +641,7 @@ describe('useValidation', () => {
             },
           }],
           6: [{
-            id: 'ui-quick-marc.record.error.008.invalidLength',
+            id: 'ui-quick-marc.record.error.fixedField.invalidLength',
             severity: 'error',
             values: {
               length: 4,
@@ -1023,14 +1023,14 @@ describe('useValidation', () => {
           ]);
 
           expect(validationErrors[4]).toEqual([{
-            id: 'ui-quick-marc.record.error.008.invalidLength',
+            id: 'ui-quick-marc.record.error.fixedField.invalidLength',
             severity: 'error',
             values: {
               length: 1,
               name: 'ui-quick-marc.record.fixedField.Geo Subd',
             },
           }, {
-            id: 'ui-quick-marc.record.error.008.invalidLength',
+            id: 'ui-quick-marc.record.error.fixedField.invalidLength',
             severity: 'error',
             values: {
               length: 1,
