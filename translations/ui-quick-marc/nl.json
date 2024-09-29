@@ -888,5 +888,5 @@
     "record.errorMessage.help": "Help",
     "Inventory": "Collectiebezit",
     "MARC-authority": "MARC Authority",
-    "record.error.008.invalidLength": "Invalid {name} field length, must be {length} characters."
+    "record.error.fixedField.invalidLength": "Invalid {name} field length, must be {length} characters."
 }
