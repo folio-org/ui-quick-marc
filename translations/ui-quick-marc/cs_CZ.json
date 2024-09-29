@@ -888,5 +888,5 @@
     "record.errorMessage.help": "Nápověda",
     "Inventory": "Katalog",
     "MARC-authority": "MARC autorita",
-    "record.error.008.invalidLength": "Neplatná délka pole {name} , musí obsahovat {length} znaků."
+    "record.error.fixedField.invalidLength": "Neplatná délka pole {name}, musí obsahovat {length} znaků."
 }
