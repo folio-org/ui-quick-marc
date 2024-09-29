@@ -888,5 +888,5 @@
     "record.errorMessage.help": "Ajuda",
     "Inventory": "Inventário",
     "MARC-authority": "Autoridade MARC",
-    "record.error.008.invalidLength": "Comprimento do campo {name} inválido, deve ter {length} caracteres."
+    "record.error.fixedField.invalidLength": "Comprimento do campo {name} inválido, deve ter {length} caracteres."
 }

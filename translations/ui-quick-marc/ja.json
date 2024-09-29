@@ -888,5 +888,5 @@
     "record.errorMessage.help": "ヘルプ",
     "Inventory": "インベントリ",
     "MARC-authority": "MARC authority",
-    "record.error.008.invalidLength": "Invalid {name} field length, must be {length} characters."
+    "record.error.fixedField.invalidLength": "{name}フィールドの長さが無効です。 {length}文字にする必要があります"
 }
