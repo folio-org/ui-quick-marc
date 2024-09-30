@@ -887,5 +887,6 @@
     "validation.modal.message": "Er kan een kleine vertraging optreden terwijl het systeem de validatieregels van de bibliotheek controleert. U kunt met {appName} verder werken in een ander browsertabblad indien nodig.",
     "record.errorMessage.help": "Help",
     "Inventory": "Collectiebezit",
-    "MARC-authority": "MARC Authority"
+    "MARC-authority": "MARC Authority",
+    "record.error.fixedField.invalidLength": "Invalid {name} field length, must be {length} characters."
 }

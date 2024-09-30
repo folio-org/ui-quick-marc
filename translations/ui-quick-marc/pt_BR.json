@@ -887,5 +887,6 @@
     "validation.modal.message": "Pode haver um pequeno atraso enquanto o sistema verifica as regras de validação da biblioteca. Você pode continuar a trabalhar com {appName} em uma aba diferente do navegador, se necessário.",
     "record.errorMessage.help": "Ajuda",
     "Inventory": "Inventário",
-    "MARC-authority": "Autoridade MARC"
+    "MARC-authority": "Autoridade MARC",
+    "record.error.fixedField.invalidLength": "Comprimento do campo {name} inválido, deve ter {length} caracteres."
 }

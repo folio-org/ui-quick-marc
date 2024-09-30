@@ -300,7 +300,7 @@ describe('Given LinkButton', () => {
       });
 
       fireEvent.click(getAllByTestId('unlink-authority-button-fakeId')[0]);
-      fireEvent.click(getByText('ui-quick-marc.record.unlink.confirm.confirm'));
+      fireEvent.click(getByText('confirm'));
 
       expect(mockHandleUnlinkAuthority).toHaveBeenCalled();
     });

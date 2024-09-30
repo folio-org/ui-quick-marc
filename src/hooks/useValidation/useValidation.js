@@ -14,9 +14,12 @@ import {
   useValidate,
 } from '../../queries';
 import {
+  getFixedFieldStringPositions,
   getLeaderPositions,
-  getVisibleNonSelectable008Subfields,
+  isFixedFieldRow,
   isLeaderRow,
+  isMaterialCharsRecord,
+  isPhysDescriptionRecord,
   joinErrors,
 } from '../../QuickMarcEditor/utils';
 import { MARC_TYPES } from '../../common/constants';
@@ -24,11 +27,7 @@ import {
   MISSING_FIELD_ID,
   SEVERITY,
 } from './constants';
-import {
-  FIXED_FIELD_TAG,
-  QUICK_MARC_ACTIONS,
-} from '../../QuickMarcEditor/constants';
-import { FixedFieldFactory } from '../../QuickMarcEditor/QuickMarcEditorRows/FixedField';
+import { QUICK_MARC_ACTIONS } from '../../QuickMarcEditor/constants';
 
 const BE_VALIDATION_MARC_TYPES = [MARC_TYPES.BIB, MARC_TYPES.AUTHORITY];
 
@@ -112,23 +111,22 @@ const useValidation = (context = {}, tenantId = null) => {
     return issues;
   }, [context.action, context.marcType]);
 
-  // if the length of a subfield of field 008 is shorter, then add backslashes,
+  // if the length of a subfield of a fixed field is shorter, then add backslashes,
   // if longer, then cut off the extra characters.
-  const fillIn008FieldBlanks = useCallback((marcRecords) => {
+  const fillInFixedFieldBlanks = useCallback((marcRecords) => {
     if (![MARC_TYPES.BIB, MARC_TYPES.AUTHORITY].includes(context.marcType)) {
       return marcRecords;
     }
 
-    const { type, position7 } = getLeaderPositions(context.marcType, marcRecords);
-    const fixedFieldType = FixedFieldFactory.getFixedFieldType(context.fixedFieldSpec, type, position7);
-
-    const fieldsMap = getVisibleNonSelectable008Subfields(fixedFieldType)
-      .reduce((acc, field) => ({ ...acc, [field.code]: field }), {});
+    const { type, position7: subtype } = getLeaderPositions(context.marcType, marcRecords);
 
     return marcRecords.map(field => {
-      if (field.tag !== FIXED_FIELD_TAG) {
+      if (!isFixedFieldRow(field) && !isMaterialCharsRecord(field) && !isPhysDescriptionRecord(field)) {
         return field;
       }
+
+      const fieldsMap = getFixedFieldStringPositions(type, subtype, field, context.fixedFieldSpec)
+        .reduce((acc, _field) => ({ ...acc, [_field.code || _field.name]: _field }), {});
 
       // if the spec contains a subfield length of 4, then '123456' becomes '1234' and '12' becomes '12\\\\'
       return {
@@ -153,7 +151,7 @@ const useValidation = (context = {}, tenantId = null) => {
   }, [context.fixedFieldSpec, context.marcType]);
 
   const runBackEndValidation = useCallback(async (records) => {
-    const marcRecords = fillIn008FieldBlanks(records);
+    const marcRecords = fillInFixedFieldBlanks(records);
 
     const body = {
       fields: marcRecords.filter(record => !isLeaderRow(record)),
@@ -167,7 +165,7 @@ const useValidation = (context = {}, tenantId = null) => {
       () => formatBEValidationResponse(response, marcRecords),
       removeError001MissingField,
     )();
-  }, [context, validateFetch, removeError001MissingField, fillIn008FieldBlanks]);
+  }, [context, validateFetch, removeError001MissingField, fillInFixedFieldBlanks]);
 
   const isBackEndValidationMarcType = useCallback(marcType => BE_VALIDATION_MARC_TYPES.includes(marcType), []);
 
