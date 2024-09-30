@@ -125,6 +125,7 @@ const QuickMarcEditWrapper = ({
       autopopulateMaterialCharsField,
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
       marcRecord => cleanBytesFields(marcRecord, fixedFieldSpec, marcType),
+      combineSplitFields,
     )(formValues);
 
     return formValuesToSave;
@@ -148,10 +149,7 @@ const QuickMarcEditWrapper = ({
       is1xxOr010Updated = are010Or1xxUpdated(initialValues.records, formValues.records);
     }
 
-    const formValuesToProcess = flow(
-      prepareForSubmit,
-      combineSplitFields,
-    )(formValues);
+    const formValuesToProcess = prepareForSubmit(formValues);
 
     const path = EXTERNAL_INSTANCE_APIS[marcType];
 

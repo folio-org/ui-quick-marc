@@ -93,6 +93,7 @@ const QuickMarcDeriveWrapper = ({
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
       marcRecord => cleanBytesFields(marcRecord, fixedFieldSpec, marcType),
       marcRecord => formatLeaderForSubmit(marcType, marcRecord),
+      combineSplitFields,
     )(formValues);
 
     return formValuesForDerive;
@@ -110,10 +111,7 @@ const QuickMarcDeriveWrapper = ({
       return complete();
     }
 
-    const formValuesToProcess = flow(
-      prepareForSubmit,
-      combineSplitFields,
-    )(formValues);
+    const formValuesToProcess = prepareForSubmit(formValues);
 
     showCallout({ messageId: 'ui-quick-marc.record.saveNew.onSave' });
 
