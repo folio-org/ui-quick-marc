@@ -12,7 +12,10 @@ import { useLocation } from 'react-router';
 
 import QuickMarcEditWrapper from './QuickMarcEditWrapper';
 import { useAuthorityLinking } from '../hooks';
-import { useMarcRecordMutation } from '../queries';
+import {
+  useMarcRecordMutation,
+  useValidate,
+} from '../queries';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
 import { applyCentralTenantInHeaders } from './utils';
@@ -43,6 +46,7 @@ jest.mock('../queries', () => ({
     isLoading: false,
     duplicateLccnCheckingEnabled: false,
   }),
+  useValidate: jest.fn(),
 }));
 
 jest.mock('../hooks', () => ({
@@ -266,17 +270,7 @@ const mockLeaders = {
   [MARC_TYPES.AUTHORITY]: authorityLeader,
 };
 
-const mockFormValues = jest.fn((marcType) => ({
-  fields: undefined,
-  externalId: '17064f9d-0362-468d-8317-5984b7efd1b5',
-  marcFormat: marcType.toUpperCase(),
-  leader: mockLeaders[marcType],
-  parsedRecordDtoId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
-  parsedRecordId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
-  records: mockRecords[marcType],
-  suppressDiscovery: false,
-  updateInfo: { recordState: 'NEW' },
-}));
+const mockFormValues = jest.fn();
 
 const mockSpecs = {
   [MARC_TYPES.BIB]: fixedFieldSpecBib,
@@ -286,6 +280,7 @@ const mockSpecs = {
 const mockActualizeLinks = jest.fn((formValuesToProcess) => Promise.resolve(formValuesToProcess));
 const mockUpdateMarcRecord = jest.fn().mockResolvedValue();
 const mockOnCheckCentralTenantPerm = jest.fn().mockReturnValue(false);
+const mockValidateFetch = jest.fn().mockResolvedValue({});
 
 jest.mock('@folio/stripes/final-form', () => () => (Component) => ({
   onSubmit,
@@ -421,6 +416,18 @@ describe('Given QuickMarcEditWrapper', () => {
       },
     };
 
+    mockFormValues.mockImplementation((marcType) => ({
+      fields: undefined,
+      externalId: '17064f9d-0362-468d-8317-5984b7efd1b5',
+      marcFormat: marcType.toUpperCase(),
+      leader: mockLeaders[marcType],
+      parsedRecordDtoId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
+      parsedRecordId: '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
+      records: mockRecords[marcType],
+      suppressDiscovery: false,
+      updateInfo: { recordState: 'NEW' },
+    }));
+
     useAuthorityLinking.mockReturnValue({
       linkableBibFields: [],
       actualizeLinks: mockActualizeLinks,
@@ -437,6 +444,10 @@ describe('Given QuickMarcEditWrapper', () => {
 
     useLocation.mockReturnValue({
       search: 'relatedRecordVersion=1',
+    });
+
+    useValidate.mockReturnValue({
+      validate: mockValidateFetch,
     });
 
     jest.clearAllMocks();
@@ -619,6 +630,62 @@ describe('Given QuickMarcEditWrapper', () => {
         await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
 
         expect(mockUpdateMarcRecord).toHaveBeenCalledWith(formValuesForEdit);
+      });
+
+      describe('and there is a linked field', () => {
+        it('should run backend validation with the content from all split fields', async () => {
+          const formValues = mockFormValues(MARC_TYPES.BIB);
+
+          const field240 = {
+            'tag': '240',
+            'content': '$a a $0 http://id.loc.gov/authorities/names/n2016004081 $9 58e3deb0-d1c9-4e22-918d-a393f627e18c',
+            'indicators': ['\\', '\\'],
+            'isProtected': false,
+            'linkDetails': {
+              'authorityId': '58e3deb0-d1c9-4e22-918d-a393f627e18c',
+              'authorityNaturalId': 'n2016004081',
+              'linkingRuleId': 5,
+              'status': 'ACTUAL',
+            },
+            'id': '5cc17747-0b0a-44f6-807e-fd28138bbcaa',
+            '_isDeleted': false,
+            '_isLinked': true,
+            'subfieldGroups': {
+              'controlled': '$a a',
+              'uncontrolledAlpha': '$3 test',
+              'zeroSubfield': '$0 http://id.loc.gov/authorities/names/n2016004081',
+              'nineSubfield': '$9 58e3deb0-d1c9-4e22-918d-a393f627e18c',
+              'uncontrolledNumber': '',
+            },
+          };
+
+          mockFormValues.mockReturnValue({
+            ...formValues,
+            records: [
+              field240,
+              ...formValues.records,
+            ],
+          });
+
+          const { getByText } = renderQuickMarcEditWrapper({
+            instance,
+            mutator,
+          });
+
+          await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
+
+          expect(mockValidateFetch).toHaveBeenCalledWith(expect.objectContaining({
+            body: expect.objectContaining({
+              fields: expect.arrayContaining([
+                expect.objectContaining({
+                  tag: '240',
+                  content: '$a a $3 test $0 http://id.loc.gov/authorities/names/n2016004081 $9 58e3deb0-d1c9-4e22-918d-a393f627e18c',
+                  indicators: ['\\', '\\'],
+                }),
+              ]),
+            }),
+          }));
+        });
       });
 
       describe('when there is an error during POST request', () => {
