@@ -112,6 +112,7 @@ const BASE_BIB_VALIDATORS = [
   {
     tag: '010',
     validator: RULES.DUPLICATE_LCCN,
+    ignore: ({ duplicateLccnCheckingEnabled }) => !duplicateLccnCheckingEnabled,
     message: () => ({ id: 'ui-quick-marc.record.error.010.lccnDuplicated' }),
   },
 ];
@@ -273,6 +274,7 @@ const BASE_AUTHORITY_VALIDATORS = [
   {
     tag: '010',
     validator: RULES.DUPLICATE_LCCN,
+    ignore: ({ duplicateLccnCheckingEnabled }) => !duplicateLccnCheckingEnabled,
     message: () => ({ id: 'ui-quick-marc.record.error.010.lccnDuplicated' }),
   },
   {

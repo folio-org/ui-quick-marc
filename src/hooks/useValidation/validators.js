@@ -442,17 +442,18 @@ export const validateFixedFieldLength = ({ marcRecords, fixedFieldSpec, marcType
 
   return undefined;
 };
-export const validateLccnDuplication = async ({
-  ky,
-  marcRecords,
-  duplicateLccnCheckingEnabled,
-  instanceId,
-  action,
-  marcType,
-}, rule) => {
-  if (!duplicateLccnCheckingEnabled) {
+export const validateLccnDuplication = async (context, rule) => {
+  if (rule.ignore?.(context)) {
     return undefined;
   }
+
+  const {
+    ky,
+    marcRecords,
+    instanceId,
+    action,
+    marcType,
+  } = context;
 
   const fields = marcRecords.filter(record => record.tag.match(rule.tag));
 
@@ -488,9 +489,15 @@ export const validateLccnDuplication = async ({
     };
 
     try {
-      const records = await requests[marcType]().json();
+      const response = await requests[marcType]().json();
 
-      const isLccnDuplicated = records?.authorities?.[0] || records?.instances?.[0];
+      const records = response?.authorities || response?.instances || [];
+
+      if (!records.length) {
+        return undefined;
+      }
+
+      const isLccnDuplicated = records.some((record) => !record.staffSuppress && !record.discoverySuppress);
 
       if (isLccnDuplicated) {
         return rule.message();
