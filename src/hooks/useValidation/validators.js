@@ -480,7 +480,7 @@ export const validateLccnDuplication = async (context, rule) => {
 
     const searchParams = {
       limit: 1,
-      query: `(${lccnQuery})${idQuery}`,
+      query: `(${lccnQuery})${idQuery} and (staffSuppress=="false" or discoverySuppress=="false")`,
     };
 
     const requests = {
@@ -491,13 +491,7 @@ export const validateLccnDuplication = async (context, rule) => {
     try {
       const response = await requests[marcType]().json();
 
-      const records = response?.authorities || response?.instances || [];
-
-      if (!records.length) {
-        return undefined;
-      }
-
-      const isLccnDuplicated = records.some((record) => !record.staffSuppress && !record.discoverySuppress);
+      const isLccnDuplicated = response?.authorities?.[0] || response?.instances?.[0];
 
       if (isLccnDuplicated) {
         return rule.message();
