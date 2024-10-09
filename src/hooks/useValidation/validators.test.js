@@ -805,7 +805,7 @@ describe('validators', () => {
 
       expect(ky.get).toHaveBeenCalledWith('search/instances', {
         searchParams: expect.objectContaining({
-          query: expect.stringContaining(' and (staffSuppress=="false" or discoverySuppress=="false")'),
+          query: expect.stringContaining(' not (staffSuppress=="true" and discoverySuppress=="true")'),
         }),
       });
     });

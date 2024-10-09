@@ -483,7 +483,7 @@ export const validateLccnDuplication = async ({
     };
 
     if (marcType === MARC_TYPES.BIB) {
-      searchParams.query += ' and (staffSuppress=="false" or discoverySuppress=="false")';
+      searchParams.query += ' not (staffSuppress=="true" and discoverySuppress=="true")';
     }
 
     const requests = {
