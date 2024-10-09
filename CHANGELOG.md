@@ -35,6 +35,7 @@
 * [UIQM-698](https://issues.folio.org/browse/UIQM-698) Validate 006/007 field lengths.
 * [UIQM-704](https://issues.folio.org/browse/UIQM-704) Linked fields - combine split fields before sending for validation.
 * [UIQM-708](https://issues.folio.org/browse/UIQM-708) Change 007 Microforms type to allow 4 characters in RRR/RR field.
+* [UIQM-714](https://issues.folio.org/browse/UIQM-714) *BREAKING* Upgrade `inventory` to `14.0`.
 
 ## [8.0.1] (https://github.com/folio-org/ui-quick-marc/tree/v8.0.1) (2024-04-18)
 
