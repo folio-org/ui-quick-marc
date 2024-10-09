@@ -16,7 +16,7 @@ const ProjGraphicPhysDescriptionFieldConfig = [
     type: SUBFIELD_TYPES.BYTE,
   },
   {
-    type: SUBFIELD_TYPES.STRING,
+    type: SUBFIELD_TYPES.BYTE,
     name: 'Medium for sound',
   },
   {
