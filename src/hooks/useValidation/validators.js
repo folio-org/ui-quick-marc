@@ -482,6 +482,10 @@ export const validateLccnDuplication = async ({
       query: `(${lccnQuery})${idQuery}`,
     };
 
+    if (marcType === MARC_TYPES.BIB) {
+      searchParams.query += ' not (staffSuppress=="true" and discoverySuppress=="true")';
+    }
+
     const requests = {
       [MARC_TYPES.BIB]: () => ky.get('search/instances', { searchParams }),
       [MARC_TYPES.AUTHORITY]: () => ky.get('search/authorities', { searchParams }),
