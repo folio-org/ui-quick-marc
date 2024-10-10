@@ -14,12 +14,15 @@ const propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]).isRequired,
+  relatedRecordVersion: PropTypes.number,
 };
 
 const QuickMarcProvider = ({
   children,
+  relatedRecordVersion,
 }) => {
   const [selectedSourceFile, setSelectedSourceFile] = useState(null);
+  const [_relatedRecordVersion, setRelatedRecordVersion] = useState(relatedRecordVersion);
   const validationErrors = useRef({});
 
   const setValidationErrors = useCallback((newValidationErrors) => {
@@ -31,11 +34,15 @@ const QuickMarcProvider = ({
     setSelectedSourceFile,
     validationErrorsRef: validationErrors,
     setValidationErrors,
+    relatedRecordVersion: _relatedRecordVersion,
+    setRelatedRecordVersion,
   }), [
     selectedSourceFile,
     setSelectedSourceFile,
     validationErrors,
     setValidationErrors,
+    _relatedRecordVersion,
+    setRelatedRecordVersion,
   ]);
 
   return (

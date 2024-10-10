@@ -119,7 +119,6 @@ const QuickMarcEditor = ({
   const stripes = useStripes();
   const intl = useIntl();
   const formValues = getState().values;
-  const history = useHistory();
   const location = useLocation();
   const showCallout = useShowCallout();
   const [records, setRecords] = useState([]);
@@ -131,8 +130,9 @@ const QuickMarcEditor = ({
   const [isValidatedCurrentValues, setIsValidatedCurrentValues] = useState(false);
   const continueAfterSave = useRef(false);
   const formRef = useRef(null);
+  const lastFocusedInput = useRef(null);
   const confirmationChecks = useRef({ ...REQUIRED_CONFIRMATIONS });
-  const { setValidationErrors } = useContext(QuickMarcContext);
+  const { setValidationErrors, setRelatedRecordVersion } = useContext(QuickMarcContext);
   const { hasErrorIssues, isBackEndValidationMarcType } = useValidation();
 
   const isConsortiaEnv = stripes.hasInterface('consortia');
@@ -155,16 +155,6 @@ const QuickMarcEditor = ({
 
   const saveFormDisabled = submitting || pristine;
 
-  const redirectToVersion = useCallback((updatedVersion) => {
-    const searchParams = new URLSearchParams(location.search);
-
-    searchParams.set('relatedRecordVersion', updatedVersion);
-
-    history.replace({
-      search: searchParams.toString(),
-    });
-  }, [history, location.search]);
-
   const handleSubmitResponse = useCallback((updatedRecord) => {
     if (!updatedRecord?.version) {
       continueAfterSave.current = false;
@@ -173,13 +163,14 @@ const QuickMarcEditor = ({
     }
 
     if (continueAfterSave.current) {
-      redirectToVersion(updatedRecord.version);
+      setRelatedRecordVersion(updatedRecord.version);
+      lastFocusedInput.current?.focus();
 
       return;
     }
 
     onSave();
-  }, [redirectToVersion, onSave]);
+  }, [setRelatedRecordVersion, onSave]);
 
   const closeModals = () => {
     setIsDeleteModalOpened(false);
@@ -462,6 +453,10 @@ const QuickMarcEditor = ({
     }
   }, []);
 
+  const saveLastFocusedInput = useCallback((e) => {
+    lastFocusedInput.current = e.target;
+  }, [lastFocusedInput]);
+
   const shortcuts = useMemo(() => ([{
     name: 'save',
     shortcut: 'mod+s',
@@ -568,6 +563,7 @@ const QuickMarcEditor = ({
                     linksCount={linksCount}
                     isLoadingLinkSuggestions={isLoadingLinkSuggestions}
                     onCheckCentralTenantPerm={onCheckCentralTenantPerm}
+                    onInputFocus={saveLastFocusedInput}
                   />
                 </Col>
               </Row>
