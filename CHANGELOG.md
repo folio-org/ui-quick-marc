@@ -36,6 +36,7 @@
 * [UIQM-704](https://issues.folio.org/browse/UIQM-704) Linked fields - combine split fields before sending for validation.
 * [UIQM-708](https://issues.folio.org/browse/UIQM-708) Change 007 Microforms type to allow 4 characters in RRR/RR field.
 * [UIQM-714](https://issues.folio.org/browse/UIQM-714) *BREAKING* Upgrade `inventory` to `14.0`.
+* [UIQM-709](https://issues.folio.org/browse/UIQM-709) LCCN duplication: Update the bib request query to include only the non-suppressed record in the search results.
 * [UIQM-701](https://issues.folio.org/browse/UIQM-701) Use new GA workflows.
 
 ## [8.0.1] (https://github.com/folio-org/ui-quick-marc/tree/v8.0.1) (2024-04-18)
