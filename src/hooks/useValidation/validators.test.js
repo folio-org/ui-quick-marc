@@ -800,5 +800,33 @@ describe('validators', () => {
         expect(rule.message).toHaveBeenCalled();
       });
     });
+
+    it('should call the bib record with the `staffSuppress` and `discoverySuppress` parameters', async () => {
+      const marcRecords = [{
+        tag: LEADER_TAG,
+        content: bibLeader,
+      }, {
+        tag: '010',
+        content: '$a test',
+      }];
+      const ky = {
+        get: jest.fn().mockResolvedValue({}),
+      };
+
+      await validators.validateLccnDuplication({
+        ky,
+        marcRecords,
+        marcType: MARC_TYPES.BIB,
+        action: QUICK_MARC_ACTIONS.EDIT,
+        duplicateLccnCheckingEnabled: true,
+        instanceId: 'instanceId-1',
+      }, rule);
+
+      expect(ky.get).toHaveBeenCalledWith('search/instances', {
+        searchParams: expect.objectContaining({
+          query: expect.stringContaining(' not (staffSuppress=="true" and discoverySuppress=="true")'),
+        }),
+      });
+    });
   });
 });
