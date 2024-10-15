@@ -399,7 +399,7 @@ export const validateFixedFieldPositions = ({ marcRecords, fixedFieldSpec, marcT
       const subFieldContentArray = Array.isArray(contents) ? contents : [contents];
 
       if (!subFieldContentArray.every(content => subField.allowedValues.find(value => value.code === content))) {
-        return { ...acc, [field.id]: [rule.message(subField.code)] };
+        acc[field.id] = [...(acc[field.id] || []), rule.message(subField.code)];
       }
     }
 

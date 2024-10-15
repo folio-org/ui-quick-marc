@@ -38,6 +38,7 @@
 * [UIQM-714](https://issues.folio.org/browse/UIQM-714) *BREAKING* Upgrade `inventory` to `14.0`.
 * [UIQM-709](https://issues.folio.org/browse/UIQM-709) LCCN duplication: Update the bib request query to include only the non-suppressed record in the search results.
 * [UIQM-701](https://issues.folio.org/browse/UIQM-701) Use new GA workflows.
+* [UIQM-711](https://issues.folio.org/browse/UIQM-711) Update `validateFixedFieldPositions` to display all 008 field errors instead of one in Bibliographic records.
 
 ## [8.0.1] (https://github.com/folio-org/ui-quick-marc/tree/v8.0.1) (2024-04-18)
 
