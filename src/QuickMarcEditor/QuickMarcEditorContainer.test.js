@@ -226,43 +226,6 @@ describe('Given Quick Marc Editor Container', () => {
     expect(getByText(instance.title)).toBeDefined();
   });
 
-  describe('when the action is not CREATE', () => {
-    it('should append the relatedRecordVersion parameter to URL', async () => {
-      const spyHistory = jest.spyOn(mockHistory, 'replace');
-
-      await act(async () => {
-        await renderQuickMarcEditorContainer({
-          mutator,
-          onClose: jest.fn(),
-          action: QUICK_MARC_ACTIONS.EDIT,
-          wrapper: QuickMarcEditWrapper,
-        });
-      });
-
-      expect(spyHistory).toHaveBeenCalledWith({ search: expect.stringContaining('relatedRecordVersion=1') });
-    });
-  });
-
-  describe('when the action is CREATE', () => {
-    it('should not append the relatedRecordVersion parameter to URL', async () => {
-      const history = createMemoryHistory();
-
-      history.replace = jest.fn();
-
-      await act(async () => {
-        await renderQuickMarcEditorContainer({
-          mutator,
-          onClose: jest.fn(),
-          action: QUICK_MARC_ACTIONS.CREATE,
-          wrapper: QuickMarcEditWrapper,
-          history,
-        });
-      });
-
-      expect(history.replace).not.toHaveBeenCalled();
-    });
-  });
-
   describe('Leader field', () => {
     describe('when the action is CREATE a bib record', () => {
       let recordLengthField;

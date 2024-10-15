@@ -241,7 +241,6 @@ const QuickMarcEditWrapper = ({
     marcType,
     mutator,
     linksCount,
-    location,
     prepareForSubmit,
     actualizeLinks,
     centralTenantId,
@@ -250,6 +249,7 @@ const QuickMarcEditWrapper = ({
     updateMarcRecord,
     isRequestToCentralTenantFromMember,
     validationErrorsRef,
+    relatedRecordVersion,
   ]);
 
   return (

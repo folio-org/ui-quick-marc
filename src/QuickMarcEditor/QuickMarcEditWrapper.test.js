@@ -361,9 +361,10 @@ const renderQuickMarcEditWrapper = ({
   instance,
   mutator,
   marcType = MARC_TYPES.BIB,
+  quickMarcContext,
   ...props
 }) => (render(
-  <Harness>
+  <Harness quickMarcContext={quickMarcContext}>
     <Form
       onSubmit={jest.fn()}
       mutators={arrayMutators}
@@ -442,9 +443,7 @@ describe('Given QuickMarcEditWrapper', () => {
       isLoading: false,
     });
 
-    useLocation.mockReturnValue({
-      search: 'relatedRecordVersion=1',
-    });
+    useLocation.mockReturnValue({});
 
     useValidate.mockReturnValue({
       validate: mockValidateFetch,
@@ -481,13 +480,16 @@ describe('Given QuickMarcEditWrapper', () => {
       it('should show on save message and redirect on load page', async () => {
         const mockOnSave = jest.fn();
 
-        const { getByText } = renderQuickMarcEditWrapper({
+        const { getByRole } = renderQuickMarcEditWrapper({
           instance,
           mutator,
           onSave: mockOnSave,
+          quickMarcContext: {
+            relatedRecordVersion: 1,
+          },
         });
 
-        await act(async () => { fireEvent.click(getByText('stripes-acq-components.FormFooter.save')); });
+        await act(async () => { fireEvent.click(getByRole('button', { name: 'stripes-acq-components.FormFooter.save' })); });
 
         expect(mutator.quickMarcEditInstance.GET).toHaveBeenCalled();
         expect(mockUpdateMarcRecord).toHaveBeenCalled();
@@ -620,7 +622,6 @@ describe('Given QuickMarcEditWrapper', () => {
           'parsedRecordDtoId': '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
           'parsedRecordId': '1bf159d9-4da8-4c3f-9aac-c83e68356bbf',
           'records': undefined,
-          'relatedRecordVersion': '1',
           'suppressDiscovery': false,
           'updateInfo': {
             'recordState': 'NEW',

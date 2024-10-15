@@ -20,8 +20,13 @@ const defaultHistory = createMemoryHistory();
 
 const queryClient = new QueryClient();
 
+const defaultQuickMarcContextValue = {
+  validationErrorsRef: { current: {} },
+  setValidationErrors: jest.fn(),
+};
+
 const QuickMarcProviderMock = ({ ctxValue, children }) => (
-  <QuickMarcContext.Provider value={ctxValue}>
+  <QuickMarcContext.Provider value={{ ...defaultQuickMarcContextValue, ...ctxValue }}>
     {children}
   </QuickMarcContext.Provider>
 );
