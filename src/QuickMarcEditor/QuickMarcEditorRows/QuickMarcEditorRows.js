@@ -662,6 +662,7 @@ QuickMarcEditorRows.propTypes = {
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   fixedFieldSpec: PropTypes.object.isRequired,
   onCheckCentralTenantPerm: PropTypes.func,
+  onInputFocus: PropTypes.func.isRequired,
 };
 
 QuickMarcEditorRows.defaultProps = {
