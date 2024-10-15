@@ -713,6 +713,25 @@ describe('validators', () => {
 
       expect(rule.message).toHaveBeenCalledWith('Ills');
     });
+
+    it('should return all errors instead of one', () => {
+      const marcRecords = [{
+        tag: LEADER_TAG,
+        content: bibLeader,
+      }, {
+        id: 'id-008',
+        tag: FIXED_FIELD_TAG,
+        content: {
+          DtSt: '_',
+          Ills: '_',
+        },
+      }];
+      const marcType = MARC_TYPES.BIB;
+
+      const errors = validators.validateFixedFieldPositions({ marcRecords, fixedFieldSpec, marcType }, rule);
+
+      expect(errors['id-008'].length).toBe(2);
+    });
   });
 
   describe('validateLccnDuplication', () => {
