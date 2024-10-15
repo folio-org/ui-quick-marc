@@ -6,10 +6,7 @@ import React, {
   useEffect,
   useContext,
 } from 'react';
-import {
-  useHistory,
-  useLocation,
-} from 'react-router';
+import { useLocation } from 'react-router';
 import { FormSpy } from 'react-final-form';
 import PropTypes from 'prop-types';
 import { FormattedMessage, useIntl } from 'react-intl';
