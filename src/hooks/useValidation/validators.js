@@ -399,7 +399,7 @@ export const validateFixedFieldPositions = ({ marcRecords, fixedFieldSpec, marcT
       const subFieldContentArray = Array.isArray(contents) ? contents : [contents];
 
       if (!subFieldContentArray.every(content => subField.allowedValues.find(value => value.code === content))) {
-        return { ...acc, [field.id]: [rule.message(subField.code)] };
+        acc[field.id] = [...(acc[field.id] || []), rule.message(subField.code)];
       }
     }
 
@@ -481,6 +481,10 @@ export const validateLccnDuplication = async ({
       limit: 1,
       query: `(${lccnQuery})${idQuery}`,
     };
+
+    if (marcType === MARC_TYPES.BIB) {
+      searchParams.query += ' not (staffSuppress=="true" and discoverySuppress=="true")';
+    }
 
     const requests = {
       [MARC_TYPES.BIB]: () => ky.get('search/instances', { searchParams }),

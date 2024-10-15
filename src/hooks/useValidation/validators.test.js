@@ -713,6 +713,25 @@ describe('validators', () => {
 
       expect(rule.message).toHaveBeenCalledWith('Ills');
     });
+
+    it('should return all errors instead of one', () => {
+      const marcRecords = [{
+        tag: LEADER_TAG,
+        content: bibLeader,
+      }, {
+        id: 'id-008',
+        tag: FIXED_FIELD_TAG,
+        content: {
+          DtSt: '_',
+          Ills: '_',
+        },
+      }];
+      const marcType = MARC_TYPES.BIB;
+
+      const errors = validators.validateFixedFieldPositions({ marcRecords, fixedFieldSpec, marcType }, rule);
+
+      expect(errors['id-008'].length).toBe(2);
+    });
   });
 
   describe('validateLccnDuplication', () => {
@@ -779,6 +798,34 @@ describe('validators', () => {
         }, rule);
 
         expect(rule.message).toHaveBeenCalled();
+      });
+    });
+
+    it('should call the bib record with the `staffSuppress` and `discoverySuppress` parameters', async () => {
+      const marcRecords = [{
+        tag: LEADER_TAG,
+        content: bibLeader,
+      }, {
+        tag: '010',
+        content: '$a test',
+      }];
+      const ky = {
+        get: jest.fn().mockResolvedValue({}),
+      };
+
+      await validators.validateLccnDuplication({
+        ky,
+        marcRecords,
+        marcType: MARC_TYPES.BIB,
+        action: QUICK_MARC_ACTIONS.EDIT,
+        duplicateLccnCheckingEnabled: true,
+        instanceId: 'instanceId-1',
+      }, rule);
+
+      expect(ky.get).toHaveBeenCalledWith('search/instances', {
+        searchParams: expect.objectContaining({
+          query: expect.stringContaining(' not (staffSuppress=="true" and discoverySuppress=="true")'),
+        }),
       });
     });
   });
