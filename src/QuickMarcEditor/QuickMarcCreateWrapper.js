@@ -98,6 +98,7 @@ const QuickMarcCreateWrapper = ({
       marcRecord => autopopulateSubfieldSection(marcRecord, marcType),
       marcRecord => cleanBytesFields(marcRecord, fixedFieldSpec, marcType),
       marcRecord => formatLeaderForSubmit(marcType, marcRecord),
+      combineSplitFields,
     )(formValues);
 
     return formValuesForCreate;
@@ -123,10 +124,7 @@ const QuickMarcCreateWrapper = ({
       return complete();
     }
 
-    const formValuesToProcess = flow(
-      prepareForSubmit,
-      combineSplitFields,
-    )(formValues);
+    const formValuesToProcess = prepareForSubmit(formValues);
 
     let formValuesToHydrate;
 
