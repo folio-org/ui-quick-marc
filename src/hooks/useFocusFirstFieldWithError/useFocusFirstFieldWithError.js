@@ -21,6 +21,8 @@ export const useFocusFirstFieldWithError = () => {
       return;
     }
 
-    document.querySelector(`[data-fieldid="${firstFieldWithErrors.id}"] input:enabled`)?.focus();
+    const fieldSelector = `[data-fieldid="${firstFieldWithErrors.id}"]`;
+
+    document.querySelector(`${fieldSelector} input:enabled, ${fieldSelector} textarea:enabled`)?.focus();
   }, [firstFieldWithErrors?.id, validationErrorsRef]);
 };

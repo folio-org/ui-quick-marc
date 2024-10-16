@@ -80,7 +80,7 @@ const QuickMarcEditWrapper = ({
   const showCallout = useShowCallout();
   const location = useLocation();
   const [httpError, setHttpError] = useState(null);
-  const { validationErrorsRef } = useContext(QuickMarcContext);
+  const { validationErrorsRef, relatedRecordVersion } = useContext(QuickMarcContext);
 
   const { token, locale } = stripes.okapi;
   const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType);
@@ -203,7 +203,7 @@ const QuickMarcEditWrapper = ({
     formValuesToHydrate._actionType = 'edit';
     formValuesToHydrate.relatedRecordVersion = marcType === MARC_TYPES.AUTHORITY
       ? instance._version
-      : new URLSearchParams(location.search).get('relatedRecordVersion');
+      : relatedRecordVersion;
 
     const formValuesToSave = hydrateMarcRecord(formValuesToHydrate);
 
@@ -241,7 +241,6 @@ const QuickMarcEditWrapper = ({
     marcType,
     mutator,
     linksCount,
-    location,
     prepareForSubmit,
     actualizeLinks,
     centralTenantId,
@@ -250,6 +249,7 @@ const QuickMarcEditWrapper = ({
     updateMarcRecord,
     isRequestToCentralTenantFromMember,
     validationErrorsRef,
+    relatedRecordVersion,
   ]);
 
   return (

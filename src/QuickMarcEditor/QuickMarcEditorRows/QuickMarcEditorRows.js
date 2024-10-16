@@ -96,6 +96,7 @@ const QuickMarcEditorRows = ({
   linksCount,
   isLoadingLinkSuggestions,
   onCheckCentralTenantPerm,
+  onInputFocus,
 }) => {
   const location = useLocation();
   const stripes = useStripes();
@@ -266,6 +267,7 @@ const QuickMarcEditorRows = ({
       id="quick-marc-editor-rows"
       data-testid="quick-marc-editor-rows"
       ref={containerRef}
+      onFocus={onInputFocus}
     >
       <FieldArray
         name="records"
@@ -660,6 +662,7 @@ QuickMarcEditorRows.propTypes = {
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   fixedFieldSpec: PropTypes.object.isRequired,
   onCheckCentralTenantPerm: PropTypes.func,
+  onInputFocus: PropTypes.func.isRequired,
 };
 
 QuickMarcEditorRows.defaultProps = {

@@ -1,4 +1,4 @@
-import React, {
+import {
   useEffect,
   useState,
   useCallback,
@@ -9,10 +9,7 @@ import { withRouter } from 'react-router';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import noop from 'lodash/noop';
 
-import {
-  stripesConnect,
-} from '@folio/stripes/core';
-
+import { stripesConnect } from '@folio/stripes/core';
 import { LoadingView } from '@folio/stripes/components';
 import {
   baseManifest,
@@ -20,6 +17,8 @@ import {
 } from '@folio/stripes-acq-components';
 import { getHeaders } from '@folio/stripes-marc-components';
 
+import { useAuthorityLinksCount } from '../queries';
+import { QuickMarcProvider } from '../contexts';
 import {
   EXTERNAL_INSTANCE_APIS,
   MARC_RECORD_API,
@@ -28,7 +27,6 @@ import {
   LINKING_RULES_API,
   MARC_SPEC_API,
 } from '../common/constants';
-
 import {
   dehydrateMarcRecordResponse,
   getCreateHoldingsMarcRecordResponse,
@@ -40,8 +38,6 @@ import {
   applyCentralTenantInHeaders,
 } from './utils';
 import { QUICK_MARC_ACTIONS } from './constants';
-import { useAuthorityLinksCount } from '../queries';
-import { QuickMarcProvider } from '../contexts';
 
 const propTypes = {
   action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
@@ -89,16 +85,14 @@ const QuickMarcEditorContainer = ({
   const [locations, setLocations] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [fixedFieldSpec, setFixedFieldSpec] = useState();
+  const showCallout = useShowCallout();
+  const { linksCount } = useAuthorityLinksCount({ id: marcType === MARC_TYPES.AUTHORITY && externalId });
 
-  const searchParams = new URLSearchParams(location.search);
   const { token, locale } = stripes.okapi;
   const centralTenantId = stripes.user.user.consortium?.centralTenantId;
 
   const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType)
     && action !== QUICK_MARC_ACTIONS.CREATE;
-
-  const showCallout = useShowCallout();
-  const { linksCount } = useAuthorityLinksCount({ id: marcType === MARC_TYPES.AUTHORITY && externalId });
 
   const getCloseEditorParams = useCallback((id) => {
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
@@ -125,8 +119,6 @@ const QuickMarcEditorContainer = ({
   }, [externalRecordPath, marcType, externalId, instanceId, action]);
 
   const loadData = useCallback(async () => {
-    setIsLoading(true);
-
     const path = action === QUICK_MARC_ACTIONS.CREATE && marcType === MARC_TYPES.HOLDINGS
       ? EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]
       : EXTERNAL_INSTANCE_APIS[marcType];
@@ -175,14 +167,6 @@ const QuickMarcEditorContainer = ({
         linkingRulesResponse,
         fixedFieldSpecResponse,
       ]) => {
-        if (action !== QUICK_MARC_ACTIONS.CREATE) {
-          searchParams.set('relatedRecordVersion', instanceResponse._version);
-
-          history.replace({
-            search: searchParams.toString(),
-          });
-        }
-
         let dehydratedMarcRecord;
 
         if (action === QUICK_MARC_ACTIONS.CREATE) {
@@ -231,7 +215,7 @@ const QuickMarcEditorContainer = ({
   }
 
   return (
-    <QuickMarcProvider>
+    <QuickMarcProvider relatedRecordVersion={instance?._version}>
       <Wrapper
         instance={instance}
         onClose={handleClose}
