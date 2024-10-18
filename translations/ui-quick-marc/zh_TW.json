@@ -398,7 +398,7 @@
     "sourceFileLookupModal.fieldLabel": "權威檔案名稱",
     "sourceFileLookupModal.placeholder": "選擇權威檔案",
     "authority-record.create.title": "建立新的{shared, select, true { shared } false { local } other {}} MARC 權威紀錄",
-    "record.error.fieldIsControlled": "<b> {fieldTags} </b>有一個無法保存的子欄位，因為該欄位由權威紀錄控制。",
+    "record.error.fieldIsControlled": "A subfield(s) cannot be updated because it is controlled by an authority heading.",
     "record.error.controlField.content.empty": "紀錄無法保存。需要權威檔案",
     "record.error.010.absent": "如果沒有 010 欄位，則無法儲存紀錄。",
     "record.error.010.prefix.absent": "如果 010 欄位中沒有前綴，則無法儲存紀錄。",
