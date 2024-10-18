@@ -398,7 +398,7 @@
     "sourceFileLookupModal.fieldLabel": "Authoritybestandsnaam",
     "sourceFileLookupModal.placeholder": "Selecteer authoritybestand",
     "authority-record.create.title": "Een nieuwe {shared, select, true {shared} false {local} other {}} MARC-authorityrecord aanmaken",
-    "record.error.fieldIsControlled": "<b>{fieldTags}</b> heeft één of meer subvelden die niet kunnen worden opgeslagen omdat het veld wordt gecontroleerd door een authorityrecord.",
+    "record.error.fieldIsControlled": "A subfield(s) cannot be updated because it is controlled by an authority heading.",
     "record.error.controlField.content.empty": "Record kan niet worden opgeslagen. Er is een authorityrecord vereist",
     "record.error.010.absent": "Record kan niet worden opgeslagen zonder 010-veld.",
     "record.error.010.prefix.absent": "Record kan niet worden opgeslagen zonder voorvoegsel in het 010-veld.",

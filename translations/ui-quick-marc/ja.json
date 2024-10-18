@@ -398,7 +398,7 @@
     "sourceFileLookupModal.fieldLabel": "Authority file name",
     "sourceFileLookupModal.placeholder": "典拠ファイルの選択",
     "authority-record.create.title": "Create a new {shared, select, true {shared} false {local} other {}} MARC authority record",
-    "record.error.fieldIsControlled": "<b> {fieldTags} </b>フィールドがオーソリティレコードによって制御されているため保存できないサブフィールドがあります。",
+    "record.error.fieldIsControlled": "A subfield(s) cannot be updated because it is controlled by an authority heading.",
     "record.error.controlField.content.empty": "レコードを保存できません。典拠ファイルが必要です",
     "record.error.010.absent": "010 フィールドがないとレコードを保存できません",
     "record.error.010.prefix.absent": "010 フィールドに接頭語がないとレコードを保存できません",
