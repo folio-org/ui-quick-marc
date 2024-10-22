@@ -314,6 +314,7 @@ jest.mock('@folio/stripes/final-form', () => () => (Component) => ({
 });
 
 const mockShowCallout = jest.fn();
+const mockRefreshPageData = jest.fn().mockResolvedValue();
 
 jest.mock('@folio/stripes-acq-components', () => ({
   ...jest.requireActual('@folio/stripes-acq-components'),
@@ -384,7 +385,7 @@ const renderQuickMarcEditWrapper = ({
           location={{}}
           locations={locations}
           externalRecordPath="/some-record"
-          refreshPageData={jest.fn().mockResolvedValue()}
+          refreshPageData={mockRefreshPageData}
           fixedFieldSpec={mockSpecs[marcType]}
           onCheckCentralTenantPerm={mockOnCheckCentralTenantPerm}
           {...renderProps}
@@ -473,6 +474,23 @@ describe('Given QuickMarcEditWrapper', () => {
         expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
         expect(mockOnClose).not.toHaveBeenCalled();
         expect(mockOnSave).not.toHaveBeenCalled();
+      });
+
+      it('pass ids of fields to the refreshPageData', async () => {
+        const mockOnClose = jest.fn();
+        const mockOnSave = jest.fn();
+
+        const { getByText } = renderQuickMarcEditWrapper({
+          instance,
+          mutator,
+          onClose: mockOnClose,
+          onSave: mockOnSave,
+        });
+
+        await act(async () => { fireEvent.click(getByText('ui-quick-marc.record.save.continue')); });
+
+        const fieldIds = mockRecords[MARC_TYPES.BIB].slice(1).map(field => field.id);
+        expect(mockRefreshPageData).toHaveBeenCalledWith(fieldIds);
       });
     });
 

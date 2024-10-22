@@ -40,6 +40,7 @@
 * [UIQM-701](https://issues.folio.org/browse/UIQM-701) Use new GA workflows.
 * [UIQM-711](https://issues.folio.org/browse/UIQM-711) Update `validateFixedFieldPositions` to display all 008 field errors instead of one in Bibliographic records.
 * [UIQM-712](https://issues.folio.org/browse/UIQM-712) In field 007 for Projected Graphic type: change the `MfS` field type to `Byte` to allow only 1 character to be entered.
+* [UIQM-715](https://issues.folio.org/browse/UIQM-715) Reuse existing ids for fields after saving a record to avoid re-rendering and be able to focus on a field by ref.
 
 ## [8.0.1] (https://github.com/folio-org/ui-quick-marc/tree/v8.0.1) (2024-04-18)
 

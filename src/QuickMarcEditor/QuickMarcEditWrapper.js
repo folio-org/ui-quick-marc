@@ -224,7 +224,9 @@ const QuickMarcEditWrapper = ({
           });
         }
 
-        await refreshPageData();
+        const fieldIds = formValuesToHydrate.records.slice(1).map(field => field.id);
+
+        await refreshPageData(fieldIds);
 
         return { version: parseInt(formValuesToSave.relatedRecordVersion, 10) + 1 };
       })

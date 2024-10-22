@@ -1159,7 +1159,7 @@ export const isReadOnly = (
   return rows.has(recordRow.tag) || isLastRecord(recordRow);
 };
 
-const addLeaderFieldAndIdToRecords = (marcRecordResponse) => {
+const addLeaderFieldAndIdToRecords = (marcRecordResponse, fieldIds) => {
   const marcType = marcRecordResponse.marcFormat.toLowerCase();
   const leader = convertLeaderToObject(marcType, marcRecordResponse.leader);
 
@@ -1173,17 +1173,17 @@ const addLeaderFieldAndIdToRecords = (marcRecordResponse) => {
         content: leader,
         id: LEADER_TAG,
       },
-      ...marcRecordResponse.fields.map(record => ({
+      ...marcRecordResponse.fields.map((record, index) => ({
         ...record,
-        id: uuidv4(),
+        id: fieldIds?.[index] || uuidv4(),
       })),
     ],
   };
 };
 
-export const dehydrateMarcRecordResponse = (marcRecordResponse, marcType, fixedFieldSpec) => (
+export const dehydrateMarcRecordResponse = (marcRecordResponse, marcType, fixedFieldSpec, fieldIds) => (
   flow(
-    addLeaderFieldAndIdToRecords,
+    marcRecord => addLeaderFieldAndIdToRecords(marcRecord, fieldIds),
     marcRecord => autopopulateFixedField(marcRecord, marcType, fixedFieldSpec),
     autopopulatePhysDescriptionField,
     autopopulateMaterialCharsField,
