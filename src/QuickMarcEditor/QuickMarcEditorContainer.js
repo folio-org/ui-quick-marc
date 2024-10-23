@@ -172,7 +172,12 @@ const QuickMarcEditorContainer = ({
         if (action === QUICK_MARC_ACTIONS.CREATE) {
           dehydratedMarcRecord = createRecordDefaults[marcType](instanceResponse, fixedFieldSpecResponse);
         } else {
-          dehydratedMarcRecord = dehydrateMarcRecordResponse(marcRecordResponse, marcType, fixedFieldSpecResponse, fieldIds);
+          dehydratedMarcRecord = dehydrateMarcRecordResponse(
+            marcRecordResponse,
+            marcType,
+            fixedFieldSpecResponse,
+            fieldIds,
+          );
         }
 
         const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, action, marcType);

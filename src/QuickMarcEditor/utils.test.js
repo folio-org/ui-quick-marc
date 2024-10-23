@@ -154,7 +154,12 @@ describe('QuickMarcEditor utils', () => {
 
       const fieldIds = ['id-1', 'id-2'];
 
-      const dehydratedMarcRecord = utils.dehydrateMarcRecordResponse(marcRecord, MARC_TYPES.BIB, fixedFieldSpecBib, fieldIds);
+      const dehydratedMarcRecord = utils.dehydrateMarcRecordResponse(
+        marcRecord,
+        MARC_TYPES.BIB,
+        fixedFieldSpecBib,
+        fieldIds,
+      );
       const field001 = dehydratedMarcRecord.records[1];
       const field006 = dehydratedMarcRecord.records[2];
       const field007 = dehydratedMarcRecord.records[3];

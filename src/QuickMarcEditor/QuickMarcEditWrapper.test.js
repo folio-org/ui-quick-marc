@@ -490,6 +490,7 @@ describe('Given QuickMarcEditWrapper', () => {
         await act(async () => { fireEvent.click(getByText('ui-quick-marc.record.save.continue')); });
 
         const fieldIds = mockRecords[MARC_TYPES.BIB].slice(1).map(field => field.id);
+
         expect(mockRefreshPageData).toHaveBeenCalledWith(fieldIds);
       });
     });
