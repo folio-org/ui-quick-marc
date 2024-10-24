@@ -118,7 +118,7 @@ const QuickMarcEditorContainer = ({
     return `${externalRecordPath}/${externalId}`;
   }, [externalRecordPath, marcType, externalId, instanceId, action]);
 
-  const loadData = useCallback(async () => {
+  const loadData = useCallback(async (fieldIds) => {
     const path = action === QUICK_MARC_ACTIONS.CREATE && marcType === MARC_TYPES.HOLDINGS
       ? EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]
       : EXTERNAL_INSTANCE_APIS[marcType];
@@ -172,7 +172,12 @@ const QuickMarcEditorContainer = ({
         if (action === QUICK_MARC_ACTIONS.CREATE) {
           dehydratedMarcRecord = createRecordDefaults[marcType](instanceResponse, fixedFieldSpecResponse);
         } else {
-          dehydratedMarcRecord = dehydrateMarcRecordResponse(marcRecordResponse, marcType, fixedFieldSpecResponse);
+          dehydratedMarcRecord = dehydrateMarcRecordResponse(
+            marcRecordResponse,
+            marcType,
+            fixedFieldSpecResponse,
+            fieldIds,
+          );
         }
 
         const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, action, marcType);

@@ -120,6 +120,56 @@ describe('QuickMarcEditor utils', () => {
         Date2: '\\\\\\\\',
       });
     });
+
+    it('should reuse existing ids for fields if they are available', () => {
+      const marcRecord = {
+        id: faker.random.uuid(),
+        marcFormat: MARC_TYPES.BIB.toUpperCase(),
+        leader: bibLeaderString,
+        fields: [
+          {
+            id: 'id-1',
+            tag: '001',
+            content: '$a fss $b asd',
+          },
+          {
+            id: 'id-2',
+            tag: '006',
+            content: {
+              Type: 'c',
+            },
+          },
+          {
+            tag: '007',
+            content: {
+              Category: 'c',
+            },
+          },
+          {
+            tag: '008',
+            content: {},
+          },
+        ],
+      };
+
+      const fieldIds = ['id-1', 'id-2'];
+
+      const dehydratedMarcRecord = utils.dehydrateMarcRecordResponse(
+        marcRecord,
+        MARC_TYPES.BIB,
+        fixedFieldSpecBib,
+        fieldIds,
+      );
+      const field001 = dehydratedMarcRecord.records[1];
+      const field006 = dehydratedMarcRecord.records[2];
+      const field007 = dehydratedMarcRecord.records[3];
+      const field008 = dehydratedMarcRecord.records[4];
+
+      expect(field001.id).toBe('id-1');
+      expect(field006.id).toBe('id-2');
+      expect(field007.id).toBe('uuid');
+      expect(field008.id).toBe('uuid');
+    });
   });
 
   describe('hydrateMarcRecord', () => {

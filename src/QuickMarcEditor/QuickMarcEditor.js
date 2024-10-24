@@ -514,7 +514,7 @@ const QuickMarcEditor = ({
         <Paneset>
           <Layer
             isOpen
-            contentLabel="ui-quick-marc.record.quickMarcEditorLabel"
+            contentLabel={intl.formatMessage({ id: 'ui-quick-marc.record.quickMarcEditorLabel' })}
           >
             <Pane
               id="quick-marc-editor-pane"
