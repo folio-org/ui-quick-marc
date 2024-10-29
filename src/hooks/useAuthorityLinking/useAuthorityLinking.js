@@ -4,7 +4,6 @@ import {
 } from 'react';
 import { useLocation } from 'react-router-dom';
 import get from 'lodash/get';
-import omit from 'lodash/omit';
 import pick from 'lodash/pick';
 
 import { useStripes } from '@folio/stripes/core';
