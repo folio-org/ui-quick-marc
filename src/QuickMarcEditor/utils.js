@@ -598,7 +598,7 @@ export const isRecordForManualLinking = (
   isRequestToCentralTenantFromMember,
   onCheckCentralTenantPerm,
 ) => {
-  const permission = 'ui-quick-marc.quick-marc-authority-records.linkUnlink';
+  const permission = 'ui-quick-marc.quick-marc-authority-records.link-unlink.execute';
 
   return (
     marcType === MARC_TYPES.BIB

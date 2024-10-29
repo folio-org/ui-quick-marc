@@ -7,7 +7,7 @@ import {
 import { MARC_TYPES } from '../../common/constants';
 
 const KEY = 'lccn-duplicate-check';
-const SCOPE = 'ui-quick-marc.lccn-duplicate-check';
+const SCOPE = 'ui-quick-marc.lccn-duplicate-check.manage';
 
 const useLccnDuplicateConfig = ({ marcType }) => {
   const ky = useOkapiKy();
