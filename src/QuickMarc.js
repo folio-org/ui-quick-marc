@@ -36,7 +36,7 @@ const QuickMarc = ({
     },
     {
       path: `${basePath}/duplicate-bib/:externalId`,
-      permission: 'ui-quick-marc.quick-marc-editor.duplicate.execute',
+      permission: 'ui-quick-marc.quick-marc-editor.derive.execute',
       props: {
         action: QUICK_MARC_ACTIONS.DERIVE,
         wrapper: QuickMarcDeriveWrapper,

@@ -7,7 +7,7 @@
   "permission.quick-marc-holdings-editor.view": "quickMARC: View MARC holdings record",
   "permission.quick-marc-holdings-editor.all": "quickMARC: View, edit MARC holdings record",
   "permission.quick-marc-holdings-editor.create": "quickMARC: Create a new MARC holdings record",
-  "permission.quick-marc-editor.duplicate.execute": "quickMARC: Derive new MARC bibliographic record",
+  "permission.quick-marc-editor.derive.execute": "quickMARC: Derive new MARC bibliographic record",
   "permission.quick-marc-editor.create": "quickMARC: Create a new MARC bibliographic record",
   "permission.quick-marc-authorities-editor.create": "quickMARC: Create a new MARC authority record",
   "permission.quick-marc-authorities-editor.all": "quickMARC: View, edit MARC authorities record",
