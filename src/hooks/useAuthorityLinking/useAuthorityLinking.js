@@ -14,7 +14,6 @@ import {
   useAuthoritySourceFiles,
   useLinkSuggestions,
 } from '../../queries';
-
 import {
   getContentSubfieldValue,
   groupSubfields,
@@ -25,6 +24,7 @@ import {
   isFieldLinked,
   applyCentralTenantInHeaders,
 } from '../../QuickMarcEditor/utils';
+import { MarcFieldContent } from '../../common';
 import {
   AUTOLINKING_STATUSES,
   UNCONTROLLED_ALPHA,
@@ -71,34 +71,70 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
 
   const copySubfieldsFromAuthority = useCallback((bibSubfields, authField, bibTag) => {
     const linkingRule = findLinkingRule(bibTag, authField.tag);
-    const authSubfields = getContentSubfieldValue(authField.content);
-    let subfieldsFromAuthority = {};
+    const authSubfields = new MarcFieldContent(authField.content);
+    const subfieldsAfterLinking = new MarcFieldContent();
 
-    linkingRule.authoritySubfields.forEach(subfieldCode => {
-      const subfieldModification = linkingRule.subfieldModifications?.find(mod => mod.source === subfieldCode);
+    const isSubfieldControlled = (subfieldLetter) => {
+      return linkingRule.authoritySubfields.includes(subfieldLetter)
+        || linkingRule.subfieldModifications.find(mod => mod.target === subfieldLetter);
+    };
+
+    /*
+      Rules for linking fields are:
+      1. Iterate over authority subfields.
+      2. If a subfield is not controlled - don't add it to linked field
+      3. If a subfield is modified - apply the modification rule and add it to linked field
+      4. If a subfield is a target of modification - don't add it to linked field
+      5. If a subfield is not modified - add it to linked field
+      6. Iterate over bib subfields
+      7. If a subfield is controlled - don't add it to linked field
+      8. If a subfield is uncontrolled - add it to linked field
+    */
+
+    authSubfields.forEach(subfield => {
+      const subfieldLetter = subfield.code.replace('$', '');
+      const isControlled = isSubfieldControlled(subfieldLetter);
+      const subfieldModification = linkingRule.subfieldModifications
+        ?.find(mod => mod.source === subfieldLetter);
+
+      // if authority subfield is a target of modification then don't add it to linked field
+      const isSubfieldTarget = linkingRule.subfieldModifications
+        ?.find(mod => mod.target === subfieldLetter);
+
+      if (isSubfieldTarget) {
+        return;
+      }
+
+      if (!isControlled) {
+        return;
+      }
 
       if (subfieldModification) {
-        subfieldsFromAuthority[formatSubfieldCode(subfieldModification.target)] =
-          authSubfields[formatSubfieldCode(subfieldCode)];
-      } else if (authSubfields[formatSubfieldCode(subfieldCode)]?.[0]) {
-        subfieldsFromAuthority[formatSubfieldCode(subfieldCode)] = authSubfields[formatSubfieldCode(subfieldCode)];
+        // special case of modification, where $t becomes $a and should therefore be the first subfield
+        // in this case we'll pre-pend the subfield
+        if (bibTag === '240' && subfieldLetter === 't' && subfieldModification.source === 't' && subfieldModification.target === 'a') {
+          subfieldsAfterLinking.removeByCode('$a');
+          subfieldsAfterLinking.prepend('$a', subfield.value);
+        } else {
+          subfieldsAfterLinking.append(formatSubfieldCode(subfieldModification.target), subfield.value);
+        }
       } else {
-        delete bibSubfields[formatSubfieldCode(subfieldCode)];
+        subfieldsAfterLinking.append(subfield.code, subfield.value);
       }
     });
 
-    if (bibTag === '240' && linkingRule.subfieldModifications?.find(mod => mod.source === 't')?.target === 'a') {
-      subfieldsFromAuthority = {
-        $a: subfieldsFromAuthority.$a,
-        ...omit(subfieldsFromAuthority, '$a'),
-      };
-    }
+    bibSubfields.forEach(subfield => {
+      const subfieldLetter = subfield.code.replace('$', '');
+      const isControlled = isSubfieldControlled(subfieldLetter);
 
-    // take authority subfields first and then bib subfields
-    return {
-      ...subfieldsFromAuthority,
-      ...omit(bibSubfields, Object.keys(subfieldsFromAuthority)),
-    };
+      if (isControlled) {
+        return;
+      }
+
+      subfieldsAfterLinking.append(subfield.code, subfield.value);
+    });
+
+    return subfieldsAfterLinking;
   }, [findLinkingRule]);
 
   const getLinkableAuthorityField = useCallback((authoritySource, bibField) => {
@@ -138,7 +174,7 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
   }, [findLinkingRule]);
 
   const updateBibFieldWithLinkingData = useCallback((bibField, linkedAuthorityField, authorityRecord) => {
-    const bibSubfields = getContentSubfieldValue(bibField.content);
+    const bibSubfields = new MarcFieldContent(bibField.content);
     const sourceFile = sourceFiles.find(file => file.id === authorityRecord.sourceFileId);
 
     let newZeroSubfield = '';
@@ -149,13 +185,15 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
       newZeroSubfield = authorityRecord.naturalId;
     }
 
-    bibSubfields.$0 = [newZeroSubfield];
+    bibSubfields.removeByCode('$0');
+    bibSubfields.append('$0', newZeroSubfield);
 
     const updatedBibSubfields = copySubfieldsFromAuthority(bibSubfields, linkedAuthorityField, bibField.tag);
 
-    updatedBibSubfields.$9 = [authorityRecord.id];
+    updatedBibSubfields.removeByCode('$9');
+    updatedBibSubfields.append('$9', authorityRecord.id);
     bibField.prevContent = bibField.content;
-    bibField.content = joinSubfields(updatedBibSubfields);
+    bibField.content = updatedBibSubfields.join();
   }, [copySubfieldsFromAuthority, sourceFiles]);
 
   const getSubfieldGroups = useCallback((field, suggestedField) => {
@@ -170,15 +208,15 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
   }, [linkingRules]);
 
   const updateLinkedField = useCallback((field) => {
-    const uncontrolledNumberSubfields = getContentSubfieldValue(field.subfieldGroups?.[UNCONTROLLED_NUMBER]);
-    const uncontrolledAlphaSubfields = getContentSubfieldValue(field.subfieldGroups?.[UNCONTROLLED_ALPHA]);
+    const uncontrolledNumberSubfields = new MarcFieldContent(field.subfieldGroups?.[UNCONTROLLED_NUMBER]);
+    const uncontrolledAlphaSubfields = new MarcFieldContent(field.subfieldGroups?.[UNCONTROLLED_ALPHA]);
 
     const uncontrolledNumber = uncontrolledNumberSubfields.$9?.[0]
-      ? joinSubfields(omit(uncontrolledNumberSubfields, '$9'))
+      ? uncontrolledNumberSubfields.removeByCode('$9').join()
       : field.subfieldGroups[UNCONTROLLED_NUMBER];
 
     const uncontrolledAlpha = uncontrolledAlphaSubfields.$9?.[0]
-      ? joinSubfields(omit(uncontrolledAlphaSubfields, '$9'))
+      ? uncontrolledAlphaSubfields.removeByCode('$9').join()
       : field.subfieldGroups[UNCONTROLLED_ALPHA];
 
     return {
@@ -192,15 +230,15 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
   }, []);
 
   const updateAutoLinkableField = useCallback((field, suggestedField) => {
+    const subfields = new MarcFieldContent(field.content);
+
     if (
       suggestedField.linkDetails?.status === AUTOLINKING_STATUSES.ERROR
-      && getContentSubfieldValue(field.content).$9?.[0]
+      && subfields.$9?.[0]
     ) {
-      const subfields = getContentSubfieldValue(field.content);
-
       return {
         ...field,
-        content: joinSubfields(omit(subfields, '$9')),
+        content: subfields.removeByCode('$9').join(),
       };
     }
 
@@ -295,13 +333,13 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
   ]);
 
   const unlinkAuthority = useCallback((field) => {
-    const bibSubfields = getContentSubfieldValue(field.content);
+    const bibSubfields = new MarcFieldContent(field.content);
 
-    delete bibSubfields.$9;
+    bibSubfields.removeByCode('$9');
     delete field.linkDetails;
     delete field.subfieldGroups;
 
-    field.content = field.prevContent ?? joinSubfields(bibSubfields);
+    field.content = field.prevContent ?? bibSubfields.join();
     delete field.prevContent;
 
     return {

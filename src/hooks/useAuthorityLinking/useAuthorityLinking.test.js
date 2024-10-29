@@ -305,7 +305,7 @@ describe('Given useAuthorityLinking', () => {
         };
 
         expect(result.current.linkAuthority(authority, _authoritySource, field)).toMatchObject({
-          content: '$a field for modification $f ff $g gg $h hh $k kk $0 some.url/n0001 $9 authority-id',
+          content: '$a field for modification $f ff $h hh $g gg $k kk $0 some.url/n0001 $9 authority-id',
           linkDetails: {
             authorityId: 'authority-id',
             authorityNaturalId: 'n0001',
@@ -336,6 +336,35 @@ describe('Given useAuthorityLinking', () => {
 
       expect(result.current.linkAuthority(authority, _authoritySource, field)).toMatchObject({
         content: '$a Black Panther $c (Fictitious character) $2 fast $0 some.url/n0001 $9 authority-id',
+        linkDetails: {
+          authorityId: 'authority-id',
+          authorityNaturalId: 'n0001',
+          linkingRuleId: 8,
+        },
+      });
+    });
+
+    it('should not group subfields together', () => {
+      const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+
+      const authority = {
+        id: 'authority-id',
+        sourceFileId: '1',
+        naturalId: 'n0001',
+      };
+      const field = {
+        tag: '600',
+        content: '$c (Fictitious character) $x x1 $y y $x x2 $a Black Panther $2 fast $0 (OCoLC)fst02000849',
+      };
+      const _authoritySource = {
+        fields: [{
+          tag: '100',
+          content: '$a Black Panther $c (Fictitious character)',
+        }],
+      };
+
+      expect(result.current.linkAuthority(authority, _authoritySource, field)).toMatchObject({
+        content: '$a Black Panther $c (Fictitious character) $x x1 $y y $x x2 $2 fast $0 some.url/n0001 $9 authority-id',
         linkDetails: {
           authorityId: 'authority-id',
           authorityNaturalId: 'n0001',

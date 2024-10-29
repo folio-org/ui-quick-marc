@@ -6,7 +6,6 @@ import omit from 'lodash/omit';
 import compact from 'lodash/compact';
 import isString from 'lodash/isString';
 import isNumber from 'lodash/isNumber';
-import toPairs from 'lodash/toPairs';
 import flatten from 'lodash/flatten';
 import flow from 'lodash/flow';
 import assignWith from 'lodash/assignWith';
@@ -38,6 +37,7 @@ import { SUBFIELD_TYPES } from './QuickMarcEditorRows/BytesField';
 import getMaterialCharsFieldConfig from './QuickMarcEditorRows/MaterialCharsField/getMaterialCharsFieldConfig';
 import getPhysDescriptionFieldConfig from './QuickMarcEditorRows/PhysDescriptionField/getPhysDescriptionFieldConfig';
 import { FixedFieldFactory } from './QuickMarcEditorRows/FixedField';
+import { MarcFieldContent } from '../common';
 import {
   MARC_TYPES,
   ERROR_TYPES,
@@ -69,6 +69,9 @@ export const isContentRow = (recordRow, marcType) => {
     || isPhysDescriptionRecord(recordRow)
     || isControlNumberRow(recordRow));
 };
+
+// returns an object with subfields values. order of subfields is not kept
+// '$a valueA1 $a value A2 $b valueB' -> { '$a': ['valueA1', 'valueA2'], '$b': ['valueB'] }
 
 export const getContentSubfieldValue = (content = '') => {
   return content.split(/\$/)
@@ -1008,47 +1011,42 @@ export const getCorrespondingMarcTag = (records) => {
 };
 
 export const groupSubfields = (field, authorityControlledSubfields = []) => {
-  const subfields = toPairs(getContentSubfieldValue(field.content));
+  const subfields = new MarcFieldContent(field.content);
 
   return subfields.reduce((groups, subfield) => {
-    const isControlled = authorityControlledSubfields.includes(subfield[0].replace('$', ''));
-    const isNum = /\$\d/.test(subfield[0]);
-    const isZero = /\$0/.test(subfield[0]);
-    const isNine = /\$9/.test(subfield[0]);
+    const isControlled = authorityControlledSubfields.includes(subfield.code.replace('$', ''));
+    const isNum = /\$\d/.test(subfield.code);
+    const isZero = /\$0/.test(subfield.code);
+    const isNine = /\$9/.test(subfield.code);
 
-    const fieldContent = subfield[1].reduce((content, value) => [content, `${subfield[0]} ${value}`].join(' ').trimStart(), '');
-
-    const formattedSubfield = {
-      content: fieldContent,
-      code: subfield[0],
-    };
+    const subfieldCodeAndValue = `${subfield.code} ${subfield.value}`;
 
     if (isControlled) {
-      groups.controlled = [groups.controlled, formattedSubfield.content].join(' ').trim();
+      groups.controlled = [groups.controlled, subfieldCodeAndValue].join(' ').trim();
 
       return groups;
     }
 
     if (!isControlled && !isNum) {
-      groups[UNCONTROLLED_ALPHA] = [groups[UNCONTROLLED_ALPHA], formattedSubfield.content].join(' ').trim();
+      groups[UNCONTROLLED_ALPHA] = [groups[UNCONTROLLED_ALPHA], subfieldCodeAndValue].join(' ').trim();
 
       return groups;
     }
 
     if (isZero) {
-      groups.zeroSubfield = [groups.zeroSubfield, formattedSubfield.content].join(' ').trim();
+      groups.zeroSubfield = [groups.zeroSubfield, subfieldCodeAndValue].join(' ').trim();
 
       return groups;
     }
 
     if (isNine) {
-      groups.nineSubfield = [groups.nineSubfield, formattedSubfield.content].join(' ').trim();
+      groups.nineSubfield = [groups.nineSubfield, subfieldCodeAndValue].join(' ').trim();
 
       return groups;
     }
 
     if (isNum) {
-      groups[UNCONTROLLED_NUMBER] = [groups[UNCONTROLLED_NUMBER], formattedSubfield.content].join(' ').trim();
+      groups[UNCONTROLLED_NUMBER] = [groups[UNCONTROLLED_NUMBER], subfieldCodeAndValue].join(' ').trim();
 
       return groups;
     }
