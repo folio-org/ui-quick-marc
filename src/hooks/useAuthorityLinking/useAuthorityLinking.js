@@ -31,12 +31,6 @@ import {
   QUICK_MARC_ACTIONS,
 } from '../../QuickMarcEditor/constants';
 
-const joinSubfields = (subfields) => Object.keys(subfields).reduce((content, key) => {
-  const subfield = subfields[key].join(` ${key} `);
-
-  return [content, `${key} ${subfield}`].join(' ');
-}, '').trim();
-
 const formatSubfieldCode = (code) => { return code.startsWith('$') ? code : `$${code}`; };
 
 const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
@@ -192,7 +186,7 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
     updatedBibSubfields.removeByCode('$9');
     updatedBibSubfields.append('$9', authorityRecord.id);
     bibField.prevContent = bibField.content;
-    bibField.content = updatedBibSubfields.join();
+    bibField.content = updatedBibSubfields.toContentString();
   }, [copySubfieldsFromAuthority, sourceFiles]);
 
   const getSubfieldGroups = useCallback((field, suggestedField) => {
@@ -211,11 +205,11 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
     const uncontrolledAlphaSubfields = new MarcFieldContent(field.subfieldGroups?.[UNCONTROLLED_ALPHA]);
 
     const uncontrolledNumber = uncontrolledNumberSubfields.$9?.[0]
-      ? uncontrolledNumberSubfields.removeByCode('$9').join()
+      ? uncontrolledNumberSubfields.removeByCode('$9').toContentString()
       : field.subfieldGroups[UNCONTROLLED_NUMBER];
 
     const uncontrolledAlpha = uncontrolledAlphaSubfields.$9?.[0]
-      ? uncontrolledAlphaSubfields.removeByCode('$9').join()
+      ? uncontrolledAlphaSubfields.removeByCode('$9').toContentString()
       : field.subfieldGroups[UNCONTROLLED_ALPHA];
 
     return {
@@ -237,7 +231,7 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
     ) {
       return {
         ...field,
-        content: subfields.removeByCode('$9').join(),
+        content: subfields.removeByCode('$9').toContentString(),
       };
     }
 
@@ -338,7 +332,7 @@ const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
     delete field.linkDetails;
     delete field.subfieldGroups;
 
-    field.content = field.prevContent ?? bibSubfields.join();
+    field.content = field.prevContent ?? bibSubfields.toContentString();
     delete field.prevContent;
 
     return {

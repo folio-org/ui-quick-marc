@@ -57,7 +57,7 @@ export class MarcFieldContent {
     return this.subfieldsArr.forEach(callback);
   }
 
-  join() {
+  toContentString() {
     return this.subfieldsArr.reduce((acc, cur) => {
       return `${acc} ${cur.code} ${cur.value}`;
     }, '').trim();

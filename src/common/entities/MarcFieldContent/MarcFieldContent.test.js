@@ -51,9 +51,9 @@ describe('MarcFieldContent', () => {
     });
   });
 
-  describe('when calling `join`', () => {
+  describe('when calling `toContentString`', () => {
     it('should transform subfields array back to a string', () => {
-      expect(marcFieldContent.join()).toEqual(content);
+      expect(marcFieldContent.toContentString()).toEqual(content);
     });
   });
 
@@ -61,7 +61,7 @@ describe('MarcFieldContent', () => {
     it('should add a new subfield to the end', () => {
       marcFieldContent.append('$a', 'a3');
 
-      expect(marcFieldContent.join()).toEqual(`${content} $a a3`);
+      expect(marcFieldContent.toContentString()).toEqual(`${content} $a a3`);
     });
   });
 
@@ -69,7 +69,7 @@ describe('MarcFieldContent', () => {
     it('should add a new subfield to the beginning', () => {
       marcFieldContent.prepend('$a', 'a3');
 
-      expect(marcFieldContent.join()).toEqual(`$a a3 ${content}`);
+      expect(marcFieldContent.toContentString()).toEqual(`$a a3 ${content}`);
     });
   });
 
@@ -77,7 +77,7 @@ describe('MarcFieldContent', () => {
     it('should remove all subfields by code', () => {
       marcFieldContent.removeByCode('$a');
 
-      expect(marcFieldContent.join()).toEqual('$b b1 $b b2');
+      expect(marcFieldContent.toContentString()).toEqual('$b b1 $b b2');
     });
   });
 
