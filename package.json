@@ -46,7 +46,7 @@
           "marc-records-editor.status.item.get",
           "marc-specifications.item.get",
           "mod-settings.entries.collection.get",
-          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check",
+          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check.manage",
           "marc-records-editor.validate.post"
         ],
         "visible": true
@@ -62,7 +62,7 @@
           "instance-authority-links.instances.collection.put",
           "marc-specifications.item.get",
           "mod-settings.entries.collection.get",
-          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check",
+          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check.manage",
           "marc-records-editor.validate.post"
         ],
         "visible": true
@@ -99,8 +99,9 @@
         "visible": true
       },
       {
-        "permissionName": "ui-quick-marc.quick-marc-editor.duplicate",
+        "permissionName": "ui-quick-marc.quick-marc-editor.derive.execute",
         "displayName": "quickMARC: Derive new MARC bibliographic record",
+        "replaces": ["ui-quick-marc.quick-marc-editor.duplicate"],
         "subPermissions": [
           "ui-quick-marc.quick-marc-editor.view",
           "marc-records-editor.status.item.get",
@@ -110,7 +111,7 @@
           "instance-authority-links.instances.collection.put",
           "marc-specifications.item.get",
           "mod-settings.entries.collection.get",
-          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check",
+          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check.manage",
           "marc-records-editor.validate.post"
         ],
         "visible": true
@@ -127,7 +128,7 @@
           "marc-records-editor.status.item.get",
           "marc-specifications.item.get",
           "mod-settings.entries.collection.get",
-          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check",
+          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check.manage",
           "marc-records-editor.validate.post"
         ],
         "visible": true
@@ -142,14 +143,15 @@
           "marc-specifications.item.get",
           "search.authorities.collection.get",
           "mod-settings.entries.collection.get",
-          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check",
+          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check.manage",
           "marc-records-editor.validate.post"
         ],
         "visible": true
       },
       {
-        "permissionName": "ui-quick-marc.quick-marc-authority-records.linkUnlink",
+        "permissionName": "ui-quick-marc.quick-marc-authority-records.link-unlink.execute",
         "displayName": "quickMARC: Can Link/unlink authority records to bib records",
+        "replaces": ["ui-quick-marc.quick-marc-authority-records.linkUnlink"],
         "subPermissions": [
           "instance-authority.linking-rules.collection.get",
           "inventory-storage.authority-source-files.collection.get",
@@ -162,20 +164,20 @@
         "displayName": "Edit, View: Enable duplicate LCCN (010 $a) checking of MARC bibliographic and authority records",
         "subPermissions": [
           "mod-settings.entries.collection.get",
-          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check",
+          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check.manage",
           "mod-settings.entries.item.post",
           "mod-settings.entries.item.put",
-          "mod-settings.global.write.ui-quick-marc.lccn-duplicate-check"
+          "mod-settings.global.write.ui-quick-marc.lccn-duplicate-check.manage"
         ],
         "visible": false
       },
       {
-        "permissionName": "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check",
+        "permissionName": "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check.manage",
         "displayName": "Settings (MARC): read LCCN duplicate check settings",
         "visible": false
       },
       {
-        "permissionName": "mod-settings.global.write.ui-quick-marc.lccn-duplicate-check",
+        "permissionName": "mod-settings.global.write.ui-quick-marc.lccn-duplicate-check.manage",
         "displayName": "Settings (MARC): write LCCN duplicate check settings",
         "visible": false
       }
