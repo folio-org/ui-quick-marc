@@ -580,7 +580,7 @@ const QuickMarcEditor = ({
       />
       {
         confirmRemoveAuthorityLinking && (
-          <IfPermission perm="ui-quick-marc.quick-marc-authority-records.linkUnlink">
+          <IfPermission perm="ui-quick-marc.quick-marc-authority-records.link-unlink.execute">
             <ConfirmationModal
               id="quick-marc-remove-authority-linking-confirm-modal"
               open={isUnlinkRecordsModalOpen}

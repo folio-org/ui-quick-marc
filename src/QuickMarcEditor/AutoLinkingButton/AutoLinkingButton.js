@@ -134,7 +134,7 @@ const AutoLinkingButton = ({
   }
 
   return (
-    <IfPermission perm="ui-quick-marc.quick-marc-authority-records.linkUnlink">
+    <IfPermission perm="ui-quick-marc.quick-marc-authority-records.link-unlink.execute">
       <Button
         marginBottom0
         disabled={!hasAutoLinkableRecord || isLoadingLinkSuggestions}
