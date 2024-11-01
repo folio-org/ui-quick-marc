@@ -220,7 +220,6 @@
     "record.error.controlField.multiple": "紀錄無法保存。只能有一個 MARC 001。",
     "record.save.error.notFound": "該紀錄已被其他用戶刪除。您無法再編輯該紀錄，請點選取消按鈕返回上一頁。",
     "noPlugin": "沒有安裝外掛程式",
-    "permission.quick-marc-authority-records.linkUnlink": "quickMARC：可以將權威紀錄連結/取消連結到書目紀錄",
     "record.fieldDeleted": "<strong>欄位{tag} </strong>已從此 MARC 紀錄中刪除。",
     "record.fieldDeleted.undo": "復原",
     "record.fieldDeleted.undoLabel": "復原欄位{tag}的刪除",
@@ -239,7 +238,6 @@
     "remove-authority-linking.modal.keep-linking": "保持連結",
     "remove-authority-linking.modal.message": "您想刪除此新書目紀錄的權威連結嗎？",
     "record.save.error.derive": "實例無法更新。已棄用的實例版本。",
-    "permission.quick-marc-editor.duplicate": "quickMARC：匯出新的 MARC 書目紀錄",
     "linkedToMarcAuthority": "連結至 MARC 權威",
     "record.link.validation.invalidHeading": "您根據要控制的書目欄位選擇了無效標題。請修改您的選擇。",
     "record.error.1xx.change": "無法變更<b>已儲存的 MARC 權威欄位{tag} </b>因為它控制著書目欄位。若要變更此 1XX，您必須取消所有受控書目欄位的連結。",
@@ -888,5 +886,7 @@
     "record.errorMessage.help": "Help",
     "Inventory": "Inventory",
     "MARC-authority": "MARC authority",
-    "record.error.fixedField.invalidLength": "Invalid {name} field length, must be {length} characters."
+    "record.error.fixedField.invalidLength": "Invalid {name} field length, must be {length} characters.",
+    "permission.quick-marc-editor.derive.execute": "quickMARC: Derive new MARC bibliographic record",
+    "permission.quick-marc-authority-records.link-unlink.execute": "quickMARC: Can Link/unlink authority records to bib records"
 }

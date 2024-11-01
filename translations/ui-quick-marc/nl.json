@@ -220,7 +220,6 @@
     "record.error.controlField.multiple": "Record kan niet worden opgeslagen. Kan slechts één MARC 001 hebben.",
     "record.save.error.notFound": "Dit record is verwijderd door een andere gebruiker. U kunt dit record niet meer bewerken. Klik op de knop 'Annuleren' om terug te keren naar de vorige pagina.",
     "noPlugin": "Er is geen plugin geïnstalleerd",
-    "permission.quick-marc-authority-records.linkUnlink": "quickMARC: Kan authorityrecords aan bib-records koppelen/ontkoppelen",
     "record.fieldDeleted": "<strong>Veld {tag}</strong> is verwijderd uit dit MARC-record.",
     "record.fieldDeleted.undo": "Ongedaan maken",
     "record.fieldDeleted.undoLabel": "Ongedaan maken van verwijderen van veld {tag}",
@@ -239,7 +238,6 @@
     "remove-authority-linking.modal.keep-linking": "Koppeling behouden",
     "remove-authority-linking.modal.message": "Wilt u de authoritykoppeling voor dit nieuwe bibliografische record verwijderen?",
     "record.save.error.derive": "Instance kan niet bijgewerkt worden. Verouderde versie van instance.",
-    "permission.quick-marc-editor.duplicate": "quickMARC: Nieuwe MARC bibliographic record ontlenen",
     "linkedToMarcAuthority": "Gekoppeld aan MARC-authority",
     "record.link.validation.invalidHeading": "U hebt een ongeldige heading geselecteerd op basis van het bibliografisch veld dat u wilt controleren. Uw selectie wijzigen a.u.b.",
     "record.error.1xx.change": "Kan het <b>opgeslagen MARC-authorityveld {tag}</b> niet wijzigen omdat het één of meer bibliografische velden controleert. Als u deze 1XX wilt wijzigen, moet u alle gecontroleerde bibliografische velden ontkoppelen.",
@@ -888,5 +886,7 @@
     "record.errorMessage.help": "Help",
     "Inventory": "Collectiebezit",
     "MARC-authority": "MARC Authority",
-    "record.error.fixedField.invalidLength": "Invalid {name} field length, must be {length} characters."
+    "record.error.fixedField.invalidLength": "Invalid {name} field length, must be {length} characters.",
+    "permission.quick-marc-editor.derive.execute": "quickMARC: Derive new MARC bibliographic record",
+    "permission.quick-marc-authority-records.link-unlink.execute": "quickMARC: Can Link/unlink authority records to bib records"
 }

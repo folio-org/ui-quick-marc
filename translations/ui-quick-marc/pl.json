@@ -220,7 +220,6 @@
     "record.error.controlField.multiple": "Record cannot be saved. Can only have one MARC 001.",
     "record.save.error.notFound": "Ten rekord został usunięty przez innego użytkownika. Nie możesz już edytować tego rekordu, naciśnij przycisk Anuluj, aby wrócić do poprzedniej strony.",
     "noPlugin": "No plugin is installed",
-    "permission.quick-marc-authority-records.linkUnlink": "quickMARC: Może łączyć/rozłączać rekordy wzorcowe z rekordami bibliograficznymi",
     "record.fieldDeleted": "<strong>Pole {tag}</strong> zostało usunięte z rekordu MARC.",
     "record.fieldDeleted.undo": "Cofnij",
     "record.fieldDeleted.undoLabel": "Cofnij usunięcie pola {tag}",
@@ -239,7 +238,6 @@
     "remove-authority-linking.modal.keep-linking": "Keep linking",
     "remove-authority-linking.modal.message": "Do you want to remove authority linking for this new bibliographic record?",
     "record.save.error.derive": "Instance cannot be updated. Deprecated instance version.",
-    "permission.quick-marc-editor.duplicate": "quickMARC: Duplikowanie rekordu bibliograficznego MARC",
     "linkedToMarcAuthority": "Linked to MARC authority",
     "record.link.validation.invalidHeading": "You have selected an invalid heading based on the bibliographic field you want controlled. Please revise your selection.",
     "record.error.1xx.change": "Cannot change the <b>saved MARC authority field {tag}</b> because it controls a bibliographic field(s). To change this 1XX, you must unlink all controlled bibliographic fields.",
@@ -888,5 +886,7 @@
     "record.errorMessage.help": "Help",
     "Inventory": "Inventory",
     "MARC-authority": "MARC authority",
-    "record.error.fixedField.invalidLength": "Invalid {name} field length, must be {length} characters."
+    "record.error.fixedField.invalidLength": "Invalid {name} field length, must be {length} characters.",
+    "permission.quick-marc-editor.derive.execute": "quickMARC: Derive new MARC bibliographic record",
+    "permission.quick-marc-authority-records.link-unlink.execute": "quickMARC: Can Link/unlink authority records to bib records"
 }

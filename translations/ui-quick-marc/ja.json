@@ -220,7 +220,6 @@
     "record.error.controlField.multiple": "レコードは保存できない。MARC 001は1つしか持てません",
     "record.save.error.notFound": "このレコードは別のユーザーによって削除されたので、編集できなくなりました。キャンセル ボタンをクリックして前のページに戻ります。",
     "noPlugin": "No plugin is installed",
-    "permission.quick-marc-authority-records.linkUnlink": "quickMARC: Can Link/unlink authority records to bib records",
     "record.fieldDeleted": "<strong>Field {tag}</strong> has been deleted from this MARC record.",
     "record.fieldDeleted.undo": "Undo",
     "record.fieldDeleted.undoLabel": "Undo delete of field {tag}",
@@ -239,7 +238,6 @@
     "remove-authority-linking.modal.keep-linking": "Keep linking",
     "remove-authority-linking.modal.message": "Do you want to remove authority linking for this new bibliographic record?",
     "record.save.error.derive": "インスタンスを更新できません。不使用のインスタンス バージョン。",
-    "permission.quick-marc-editor.duplicate": "quickMARC: Derive new MARC bibliographic record",
     "linkedToMarcAuthority": "Linked to MARC authority",
     "record.link.validation.invalidHeading": "You have selected an invalid heading based on the bibliographic field you want controlled. Please revise your selection.",
     "record.error.1xx.change": "Cannot change the <b>saved MARC authority field {tag}</b> because it controls a bibliographic field(s). To change this 1XX, you must unlink all controlled bibliographic fields.",
@@ -888,5 +886,7 @@
     "record.errorMessage.help": "ヘルプ",
     "Inventory": "インベントリ",
     "MARC-authority": "MARC authority",
-    "record.error.fixedField.invalidLength": "{name}フィールドの長さが無効です。 {length}文字にする必要があります"
+    "record.error.fixedField.invalidLength": "{name}フィールドの長さが無効です。 {length}文字にする必要があります",
+    "permission.quick-marc-editor.derive.execute": "quickMARC: Derive new MARC bibliographic record",
+    "permission.quick-marc-authority-records.link-unlink.execute": "quickMARC: Can Link/unlink authority records to bib records"
 }
