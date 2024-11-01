@@ -1,6 +1,6 @@
 # Change history for ui-quick-marc
 
-## [9.0.0] IN PROGRESS
+## [9.0.0](https://github.com/folio-org/ui-quick-marc/tree/v9.0.0) (2024-11-01)
 
 * [UIQM-647](https://issues.folio.org/browse/UIQM-647) Import `useUserTenantPermissions` from `@folio/stripes/core`.
 * [UIQM-563](https://issues.folio.org/browse/UIQM-563) Allow a user to move 00X fields.
@@ -42,7 +42,7 @@
 * [UIQM-712](https://issues.folio.org/browse/UIQM-712) In field 007 for Projected Graphic type: change the `MfS` field type to `Byte` to allow only 1 character to be entered.
 * [UIQM-715](https://issues.folio.org/browse/UIQM-715) Reuse existing ids for fields after saving a record to avoid re-rendering and be able to focus on a field by ref.
 * [UIQM-723](https://issues.folio.org/browse/UIQM-723) Rename permissions.
-* * [UIQM-724](https://issues.folio.org/browse/UIQM-724) Do not group together subfields during linking.
+* [UIQM-724](https://issues.folio.org/browse/UIQM-724) Do not group together subfields during linking.
 
 ## [8.0.1] (https://github.com/folio-org/ui-quick-marc/tree/v8.0.1) (2024-04-18)
 
