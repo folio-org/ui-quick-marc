@@ -220,7 +220,6 @@
     "record.error.controlField.multiple": "无法保存记录。只能有一个MARC 001。",
     "record.save.error.notFound": "此记录已被其他用户删除。不能再编辑此记录。点击取消按钮返回上一页。",
     "noPlugin": "未安装插件",
-    "permission.quick-marc-authority-records.linkUnlink": "quickMARC：可以将规范记录链接/取消链接到书目记录",
     "record.fieldDeleted": "<strong>字段{tag} </strong>已从此 MARC 记录中删除。",
     "record.fieldDeleted.undo": "撤消",
     "record.fieldDeleted.undoLabel": "撤消删除字段{tag}",
@@ -239,7 +238,6 @@
     "remove-authority-linking.modal.keep-linking": "保持链接",
     "remove-authority-linking.modal.message": "您要移除此新书目记录的规范链接吗？",
     "record.save.error.derive": "无法更新实例。弃用的实例版本。",
-    "permission.quick-marc-editor.duplicate": "quickMARC：衍生新MARC书目记录",
     "linkedToMarcAuthority": "链接到MARC规范",
     "record.link.validation.invalidHeading": "您根据要控制的书目字段选择了无效的标题。请修改您的选择。",
     "record.error.1xx.change": "无法更改<b>保存的 MARC 规范字段{tag} </b> ，因为它控制书目字段。要更改此 1XX，必须取消链接所有受控书目字段。",
@@ -888,5 +886,7 @@
     "record.errorMessage.help": "帮助",
     "Inventory": "典藏",
     "MARC-authority": "MARC规范",
-    "record.error.fixedField.invalidLength": "{name}字段长度无效，必须为{length}个字符。"
+    "record.error.fixedField.invalidLength": "{name}字段长度无效，必须为{length}个字符。",
+    "permission.quick-marc-editor.derive.execute": "quickMARC: Derive new MARC bibliographic record",
+    "permission.quick-marc-authority-records.link-unlink.execute": "quickMARC: Can Link/unlink authority records to bib records"
 }

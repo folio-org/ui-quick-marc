@@ -220,7 +220,6 @@
     "record.error.controlField.multiple": "El registro no se puede guardar. Sólo puede tener un MARC 001.",
     "record.save.error.notFound": "Este registro ha sido borrado por otro usuario. Ya no puede editar este registro, pulse el botón cancelar para volver a la página anterior.",
     "noPlugin": "No hay ningún plugin instalado",
-    "permission.quick-marc-authority-records.linkUnlink": "quickMARC: Puede vincular/desvincular los registros de autoridad a los registros bibliográficos",
     "record.fieldDeleted": "El <strong>campo {tag}</strong> ha sido eliminado de este registro MARC.",
     "record.fieldDeleted.undo": "Deshacer",
     "record.fieldDeleted.undoLabel": "Deshacer la eliminación del campo {tag}",
@@ -239,7 +238,6 @@
     "remove-authority-linking.modal.keep-linking": "Seguir vinculando",
     "remove-authority-linking.modal.message": "¿Desea eliminar el enlace de autoridad para este nuevo registro bibliográfico?",
     "record.save.error.derive": "No se puede actualizar la instancia. Versión de instancia obsoleta.",
-    "permission.quick-marc-editor.duplicate": "quickMARC: Derivar un nuevo registro bibliográfico MARC",
     "linkedToMarcAuthority": "Vinculado a la autoridad MARC",
     "record.link.validation.invalidHeading": "Ha seleccionado un encabezamiento no válido basado en el campo bibliográfico que desea controlar. Por favor, revise su selección.",
     "record.error.1xx.change": "No se puede cambiar el <b>campo de autoridad MARC {tag} guardado</b> porque controla un(os) campo(s) bibliográfico(s). Para cambiar este 1XX, debe desvincular todos los campos bibliográficos controlados.",
@@ -888,5 +886,7 @@
     "record.errorMessage.help": "Help",
     "Inventory": "Inventory",
     "MARC-authority": "MARC authority",
-    "record.error.fixedField.invalidLength": "Invalid {name} field length, must be {length} characters."
+    "record.error.fixedField.invalidLength": "Invalid {name} field length, must be {length} characters.",
+    "permission.quick-marc-editor.derive.execute": "quickMARC: Derive new MARC bibliographic record",
+    "permission.quick-marc-authority-records.link-unlink.execute": "quickMARC: Can Link/unlink authority records to bib records"
 }
