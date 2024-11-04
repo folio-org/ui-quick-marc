@@ -1228,6 +1228,10 @@ export const isDiacritic = (char) => {
 };
 
 export const getVisibleNonSelectable008Subfields = (fixedFieldType) => {
+  if (!fixedFieldType) {
+    return [];
+  }
+
   return fixedFieldType.items
     .filter(field => !field.readOnly)
     .filter(field => !field.isArray);

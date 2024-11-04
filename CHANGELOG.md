@@ -1,5 +1,9 @@
 # Change history for ui-quick-marc
 
+## [9.0.1] (IN PROGRESS)
+
+* [UIQM-725](https://issues.folio.org/browse/UIQM-725) Fix wrong error message while saving MARC Bib record with invalid LDR position values.
+
 ## [9.0.0](https://github.com/folio-org/ui-quick-marc/tree/v9.0.0) (2024-11-01)
 
 * [UIQM-647](https://issues.folio.org/browse/UIQM-647) Import `useUserTenantPermissions` from `@folio/stripes/core`.
