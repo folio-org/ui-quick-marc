@@ -1865,21 +1865,19 @@ describe('QuickMarcEditor utils', () => {
   });
 
   describe('getFixedFieldStringPositions', () => {
-    beforeEach(() => {
-      jest.spyOn(FixedFieldFactory, 'getFixedFieldType').mockReturnValue({
-        items: [{
-          code: 'test1',
-          isArray: true,
-        }, {
-          code: 'test2',
-          isArray: false,
-          readOnly: false,
-        }],
-      });
-    });
-
     describe('when a field is an 008', () => {
       it('should return an 008 config', () => {
+        jest.spyOn(FixedFieldFactory, 'getFixedFieldType').mockReturnValueOnce({
+          items: [{
+            code: 'test1',
+            isArray: true,
+          }, {
+            code: 'test2',
+            isArray: false,
+            readOnly: false,
+          }],
+        });
+
         const field = { tag: '008' };
 
         expect(utils.getFixedFieldStringPositions('a', 'm', field, fixedFieldSpecBib)).toEqual([
@@ -1889,6 +1887,14 @@ describe('QuickMarcEditor utils', () => {
             readOnly: false,
           },
         ]);
+      });
+
+      describe('when type or subtype are invalid', () => {
+        it('should return an empty array', () => {
+          const field = { tag: '008' };
+
+          expect(utils.getFixedFieldStringPositions('|', '|', field, fixedFieldSpecBib)).toEqual([]);
+        });
       });
     });
 
