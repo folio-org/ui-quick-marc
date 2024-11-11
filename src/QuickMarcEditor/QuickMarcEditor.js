@@ -136,6 +136,14 @@ const QuickMarcEditor = ({
   const searchParameters = new URLSearchParams(location.search);
   const isShared = searchParameters.get('shared') === 'true';
 
+  const saveLastFocusedInput = useCallback((e) => {
+    lastFocusedInput.current = e.target;
+  }, [lastFocusedInput]);
+
+  const focusLastFocusedInput = useCallback(() => {
+    lastFocusedInput.current?.focus();
+  }, [lastFocusedInput]);
+
   const { unlinkAuthority } = useAuthorityLinking({ marcType, action });
 
   useEffect(() => {
@@ -161,13 +169,13 @@ const QuickMarcEditor = ({
 
     if (continueAfterSave.current) {
       setRelatedRecordVersion(updatedRecord.version);
-      lastFocusedInput.current?.focus();
+      focusLastFocusedInput();
 
       return;
     }
 
     onSave();
-  }, [setRelatedRecordVersion, onSave]);
+  }, [setRelatedRecordVersion, onSave, focusLastFocusedInput]);
 
   const closeModals = () => {
     setIsDeleteModalOpened(false);
@@ -217,7 +225,7 @@ const QuickMarcEditor = ({
     };
   }, [setIsValidationModalOpen, isBackEndValidationMarcType, marcType]);
 
-  const showValidationIssuesCallouts = useCallback((issues) => {
+  const showErrorsForMissingFields = useCallback((issues) => {
     issues.forEach((error) => {
       showCallout({
         message: error.message,
@@ -225,6 +233,32 @@ const QuickMarcEditor = ({
         values: error.values,
         type: error.severity === SEVERITY.ERROR ? 'error' : 'warning',
       });
+    });
+  }, [showCallout]);
+
+  const showValidationIssuesToasts = useCallback((validationErrors) => {
+    const allIssuesArray = Object.values(validationErrors).flat();
+    const failCount = allIssuesArray.filter(issue => issue.severity === SEVERITY.ERROR).length;
+    const warnCount = allIssuesArray.length - failCount;
+
+    const values = {
+      warnCount,
+      failCount,
+    };
+    let messageId = null;
+
+    if (failCount && warnCount) {
+      messageId = 'ui-quick-marc.record.save.error.failAndWarn';
+    } else if (failCount) {
+      messageId = 'ui-quick-marc.record.save.error.fail';
+    } else {
+      messageId = 'ui-quick-marc.record.save.error.warn';
+    }
+
+    showCallout({
+      messageId,
+      values,
+      type: failCount ? 'error' : 'warning',
     });
   }, [showCallout]);
 
@@ -259,9 +293,12 @@ const QuickMarcEditor = ({
 
         return;
       }
+
       const validationErrorsWithoutFieldId = newValidationErrors[MISSING_FIELD_ID] || [];
 
-      showValidationIssuesCallouts(validationErrorsWithoutFieldId);
+      showErrorsForMissingFields(validationErrorsWithoutFieldId);
+      showValidationIssuesToasts(newValidationErrors);
+      focusLastFocusedInput();
       setIsValidatedCurrentValues(true);
     } else {
       setValidationErrors({});
@@ -283,13 +320,15 @@ const QuickMarcEditor = ({
     getState,
     hasErrorIssues,
     setValidationErrors,
-    showValidationIssuesCallouts,
+    showErrorsForMissingFields,
     showCallout,
     validate,
     runConfirmationChecks,
     isValidatedCurrentValues,
     setIsValidatedCurrentValues,
     manageBackendValidationModal,
+    focusLastFocusedInput,
+    showValidationIssuesToasts,
   ]);
 
   const paneFooter = useMemo(() => {
@@ -450,10 +489,6 @@ const QuickMarcEditor = ({
     }
   }, []);
 
-  const saveLastFocusedInput = useCallback((e) => {
-    lastFocusedInput.current = e.target;
-  }, [lastFocusedInput]);
-
   const shortcuts = useMemo(() => ([{
     name: 'save',
     shortcut: 'mod+s',
@@ -580,7 +615,7 @@ const QuickMarcEditor = ({
       />
       {
         confirmRemoveAuthorityLinking && (
-          <IfPermission perm="ui-quick-marc.quick-marc-authority-records.link-unlink.execute">
+          <IfPermission perm="ui-quick-marc.quick-marc-authority-records.linkUnlink">
             <ConfirmationModal
               id="quick-marc-remove-authority-linking-confirm-modal"
               open={isUnlinkRecordsModalOpen}

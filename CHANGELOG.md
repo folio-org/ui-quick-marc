@@ -1,5 +1,9 @@
 # Change history for ui-quick-marc
 
+## [9.1.0] (IN PROGRESS)
+
+* [UIQM-730](https://issues.folio.org/browse/UIQM-730) Create/Edit/Derive MARC record - Retain focus when MARC record validation rules error display. Show validation issues toasts.
+
 ## [9.0.1] (IN PROGRESS)
 
 * [UIQM-725](https://issues.folio.org/browse/UIQM-725) Fix wrong error message while saving MARC Bib record with invalid LDR position values.
