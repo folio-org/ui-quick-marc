@@ -8,6 +8,9 @@ import { createMemoryHistory } from 'history';
 import QuickMarc from './QuickMarc';
 
 import Harness from '../test/jest/helpers/harness';
+import { QuickMarcProvider } from './contexts';
+import { QUICK_MARC_ACTIONS } from './QuickMarcEditor/constants';
+import { MARC_TYPES } from './common';
 
 jest.mock('@folio/stripes/core', () => ({
   ...jest.requireActual('@folio/stripes/core'),
@@ -19,19 +22,25 @@ jest.mock('@folio/stripes/core', () => ({
 
 jest.mock('./QuickMarcEditor', () => {
   return {
-    QuickMarcEditorContainer: ({ action }) => <span>QuickMarcEditorContainer {action}</span>,
+    QuickMarcEditorContainer: () => <span>QuickMarcEditorContainer</span>,
   };
 });
 
+jest.mock('./contexts', () => ({
+  QuickMarcProvider: jest.fn(({ children }) => <div>{children}</div>),
+}));
+
 const mockOnSave = jest.fn();
 const mockOnClose = jest.fn();
+
+const basePath = '/some-path';
 
 const renderQuickMarc = (props = {}) => (render(
   <Harness history={props.history}>
     <QuickMarc
       onClose={mockOnClose}
       onSave={mockOnSave}
-      basePath="/some-path"
+      basePath={basePath}
       {...props}
     />
   </Harness>,
@@ -44,39 +53,63 @@ describe('Given Quick Marc', () => {
     history = createMemoryHistory();
   });
 
-  describe('When visiting "duplicate" route', () => {
+  describe('When visiting "derive" route', () => {
     beforeEach(() => {
-      history.push('/some-path/duplicate-bib/1234');
+      history.push(`${basePath}/derive-bibliographic/1234`);
     });
 
     it('should display correct route', () => {
       const { getByText } = renderQuickMarc({ history });
 
-      expect(getByText('QuickMarcEditorContainer derive')).toBeDefined();
+      const expectedProps = {
+        action: QUICK_MARC_ACTIONS.DERIVE,
+        marcType: MARC_TYPES.BIB,
+        basePath,
+        children: expect.anything(),
+      };
+
+      expect(getByText('QuickMarcEditorContainer')).toBeDefined();
+      expect(QuickMarcProvider).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
     });
   });
 
   describe('When visiting "edit" route', () => {
     beforeEach(() => {
-      history.push('/some-path/edit-bib/1234');
+      history.push(`${basePath}/edit-bibliographic/1234`);
     });
 
     it('should display correct route', () => {
       const { getByText } = renderQuickMarc({ history });
 
-      expect(getByText('QuickMarcEditorContainer edit')).toBeDefined();
+      const expectedProps = {
+        action: QUICK_MARC_ACTIONS.EDIT,
+        marcType: MARC_TYPES.BIB,
+        basePath,
+        children: expect.anything(),
+      };
+
+      expect(getByText('QuickMarcEditorContainer')).toBeDefined();
+      expect(QuickMarcProvider).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
     });
   });
 
   describe('When visiting "create" route', () => {
     beforeEach(() => {
-      history.push('/some-path/create-holdings/1234');
+      history.push(`${basePath}/create-holdings/1234`);
     });
 
     it('should display correct route', () => {
       const { getByText } = renderQuickMarc({ history });
 
-      expect(getByText('QuickMarcEditorContainer create')).toBeDefined();
+      const expectedProps = {
+        action: QUICK_MARC_ACTIONS.CREATE,
+        marcType: MARC_TYPES.HOLDINGS,
+        basePath,
+        children: expect.anything(),
+      };
+
+      expect(getByText('QuickMarcEditorContainer')).toBeDefined();
+      expect(QuickMarcProvider).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
     });
   });
 });

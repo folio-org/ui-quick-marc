@@ -1259,3 +1259,10 @@ export const getFixedFieldStringPositions = (type, subtype, field, fixedFieldSpe
 
   return [];
 };
+
+export const getFieldIds = (formValues) => {
+  return formValues.records
+    .slice(1)
+    .filter(field => !field._isDeleted)
+    .map(field => field.id);
+};

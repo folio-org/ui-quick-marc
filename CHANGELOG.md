@@ -1,5 +1,9 @@
 # Change history for ui-quick-marc
 
+## [10.0.0] (IN PROGRESS)
+
+* [UIQM-716](https://issues.folio.org/browse/UIQM-716) *BREAKING* Consolidate routes based on MARC type for bib and authority records to avoid page refresh after redirecting from the create page to the edit one.
+
 ## [9.0.1] (IN PROGRESS)
 
 * [UIQM-725](https://issues.folio.org/browse/UIQM-725) Fix wrong error message while saving MARC Bib record with invalid LDR position values.
