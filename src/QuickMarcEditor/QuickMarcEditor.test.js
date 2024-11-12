@@ -793,15 +793,12 @@ describe('Given QuickMarcEditor', () => {
   });
 
   describe('when saving form with validation errors and deleted fields', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       mockValidate.mockClear().mockResolvedValue({ [MISSING_FIELD_ID]: [{ id: 'some error', severity: 'error', values: {} }] });
-    });
 
-    it('should show errors and not show confirmation modal', async () => {
       const {
         getAllByRole,
         getByText,
-        queryByText,
         getByTestId,
       } = renderQuickMarcEditor();
 
@@ -811,12 +808,90 @@ describe('Given QuickMarcEditor', () => {
       fireEvent.change(contentField, { target: { value: '' } });
       fireEvent.click(deleteButtons[0]);
       await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+    });
 
+    it('should show errors and not show confirmation modal', async () => {
       await waitFor(() => {
-        expect(queryByText('Confirmation modal')).toBeNull();
+        expect(screen.queryByText('Confirmation modal')).toBeNull();
         expect(mockShowCallout).toHaveBeenCalledWith({
           messageId: 'some error',
           values: {},
+          type: 'error',
+        });
+      });
+    });
+
+    it('should show a toast notification about validation error', async () => {
+      await waitFor(() => {
+        expect(mockShowCallout).toHaveBeenCalledWith({
+          messageId: 'ui-quick-marc.record.save.error.fail',
+          values: {
+            failCount: 1,
+            warnCount: 0,
+          },
+          type: 'error',
+        });
+      });
+    });
+  });
+
+  describe('when saving form with validation warnings', () => {
+    beforeEach(async () => {
+      mockValidate.mockClear().mockResolvedValue({ [MISSING_FIELD_ID]: [{ id: 'some warning', severity: 'warn', values: {} }] });
+
+      const {
+        getByText,
+        getByTestId,
+      } = renderQuickMarcEditor();
+
+      const contentField = getByTestId('content-field-3');
+
+      fireEvent.change(contentField, { target: { value: '' } });
+      await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+    });
+
+    it('should show a toast notification about validation warning', async () => {
+      await waitFor(() => {
+        expect(mockShowCallout).toHaveBeenCalledWith({
+          messageId: 'ui-quick-marc.record.save.error.warn',
+          values: {
+            failCount: 0,
+            warnCount: 1,
+          },
+          type: 'warning',
+        });
+      });
+    });
+  });
+
+  describe('when saving form with validation warnings and errors', () => {
+    beforeEach(async () => {
+      mockValidate.mockClear().mockResolvedValue({
+        [MISSING_FIELD_ID]: [
+          { id: 'some warning', severity: 'warn', values: {} },
+          { id: 'some error', severity: 'error', values: {} },
+        ],
+      });
+
+      const {
+        getByText,
+        getByTestId,
+      } = renderQuickMarcEditor();
+
+      const contentField = getByTestId('content-field-3');
+
+      fireEvent.change(contentField, { target: { value: '' } });
+      await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+    });
+
+    it('should show a toast notification about validation warning and error', async () => {
+      await waitFor(() => {
+        expect(mockShowCallout).toHaveBeenCalledWith({
+          messageId: 'ui-quick-marc.record.save.error.failAndWarn',
+          values: {
+            failCount: 1,
+            warnCount: 1,
+          },
           type: 'error',
         });
       });
