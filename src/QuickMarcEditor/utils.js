@@ -1266,3 +1266,37 @@ export const getFieldIds = (formValues) => {
     .filter(field => !field._isDeleted)
     .map(field => field.id);
 };
+
+export const redirectToRecord = async (externalId, instanceId, marcType, onSave) => {
+  if (marcType === MARC_TYPES.HOLDINGS) {
+    await onSave(`${instanceId}/${externalId}`);
+  } else {
+    await onSave(externalId);
+  }
+};
+
+export const processEditingAfterCreation = async (
+  formValues,
+  externalId,
+  basePath,
+  location,
+  history,
+  refreshPageData,
+  marcType,
+) => {
+  const fieldIds = getFieldIds(formValues);
+  const searchParams = new URLSearchParams(location.search);
+
+  const routes = {
+    [MARC_TYPES.BIB]: `${basePath}/edit-bibliographic/${externalId}`,
+    [MARC_TYPES.AUTHORITY]: `${basePath}/edit-authority/${externalId}`,
+    [MARC_TYPES.HOLDINGS]: `${basePath}/edit-holdings/${externalId}`,
+  };
+
+  await refreshPageData(fieldIds, QUICK_MARC_ACTIONS.EDIT, externalId);
+
+  history.push({
+    pathname: routes[marcType],
+    search: searchParams.toString(),
+  });
+};

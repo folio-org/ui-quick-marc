@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import {
   Switch,
@@ -13,6 +13,19 @@ import {
   MARC_TYPES,
   keyboardCommands,
 } from './common/constants';
+import { useMarcCreate } from './QuickMarcEditor/useMarcCreate';
+import { useMarcEdit } from './QuickMarcEditor/useMarcEdit';
+import { useMarcDerive } from './QuickMarcEditor/useMarcDerive';
+
+const createUseMarcActionHandler = (action) => {
+  const marcActionHooks = {
+    [QUICK_MARC_ACTIONS.CREATE]: useMarcCreate,
+    [QUICK_MARC_ACTIONS.EDIT]: useMarcEdit,
+    [QUICK_MARC_ACTIONS.DERIVE]: useMarcDerive,
+  };
+
+  return marcActionHooks[action];
+};
 
 const QuickMarc = ({
   basePath,
@@ -33,6 +46,8 @@ const QuickMarc = ({
   // .../some-path/create-bibliographic => [, create-bibliographic, create, bibliographic]
   const [, page, action] = location.pathname.match(/\/((edit|create|derive)-(bibliographic|authority|holdings))/) || [];
 
+  const useMarcActionHandler = useMemo(() => createUseMarcActionHandler(action), [action]);
+
   const editorRoutesConfig = [
     {
       path: `${basePath}/:action-bibliographic/:externalId?`,
@@ -40,6 +55,7 @@ const QuickMarc = ({
       props: {
         action,
         marcType: MARC_TYPES.BIB,
+        useMarcActionHandler,
       },
     },
     {
@@ -48,22 +64,25 @@ const QuickMarc = ({
       props: {
         action,
         marcType: MARC_TYPES.AUTHORITY,
+        useMarcActionHandler,
       },
     },
     {
       path: `${basePath}/create-holdings/:externalId`,
       permission: 'ui-quick-marc.quick-marc-holdings-editor.create',
       props: {
-        action: QUICK_MARC_ACTIONS.CREATE,
+        action,
         marcType: MARC_TYPES.HOLDINGS,
+        useMarcActionHandler,
       },
     },
     {
       path: `${basePath}/edit-holdings/:instanceId/:externalId`,
       permission: 'ui-quick-marc.quick-marc-holdings-editor.all',
       props: {
-        action: QUICK_MARC_ACTIONS.EDIT,
+        action,
         marcType: MARC_TYPES.HOLDINGS,
+        useMarcActionHandler,
       },
     },
   ];

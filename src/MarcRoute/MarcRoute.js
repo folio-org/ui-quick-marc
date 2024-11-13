@@ -31,6 +31,7 @@ const MarcRoute = ({
   const {
     marcType,
     action,
+    useMarcActionHandler,
   } = routeProps;
   const centralTenantId = stripes.user.user?.consortium?.centralTenantId;
   const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType)
@@ -75,6 +76,7 @@ const MarcRoute = ({
             onClose={onClose}
             onSave={onSave}
             externalRecordPath={externalRecordPath}
+            useMarcActionHandler={useMarcActionHandler}
             onCheckCentralTenantPerm={checkCentralTenantPerm}
           />
         </QuickMarcProvider>

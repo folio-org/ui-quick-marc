@@ -69,6 +69,7 @@ const QuickMarcEditorContainer = ({
   location,
   externalRecordPath,
   stripes,
+  useMarcActionHandler,
   onCheckCentralTenantPerm,
 }) => {
   const {
@@ -216,7 +217,17 @@ const QuickMarcEditorContainer = ({
     setRelatedRecordVersion,
   ]);
 
-  const { onSubmit, httpError, runValidation } = useSaveRecord({
+  // const { onSubmit, httpError, runValidation } = useSaveRecord({
+  //   linksCount,
+  //   locations,
+  //   fixedFieldSpec,
+  //   mutator,
+  //   refreshPageData: loadData,
+  //   onClose: handleClose,
+  //   onSave: handleSave,
+  // });
+
+  const { onSubmit, httpError, runValidation } = useMarcActionHandler({
     linksCount,
     locations,
     fixedFieldSpec,
@@ -224,7 +235,7 @@ const QuickMarcEditorContainer = ({
     refreshPageData: loadData,
     onClose: handleClose,
     onSave: handleSave,
-  });
+  })
 
   useEffect(() => {
     loadData();
