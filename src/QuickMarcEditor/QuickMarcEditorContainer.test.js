@@ -12,8 +12,6 @@ import faker from 'faker';
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcEditorContainer from './QuickMarcEditorContainer';
-import QuickMarcEditWrapper from './QuickMarcEditWrapper';
-import QuickMarcDeriveWrapper from './QuickMarcDeriveWrapper';
 import { QUICK_MARC_ACTIONS } from './constants';
 import {
   MARC_TYPES,
@@ -100,8 +98,6 @@ const record = {
   fields: [],
 };
 
-const resources = {};
-
 const locations = [];
 
 const externalRecordPath = '/external/record/path';
@@ -109,14 +105,21 @@ const externalRecordPath = '/external/record/path';
 const mockOnClose = jest.fn();
 const mockOnSave = jest.fn();
 
-const renderQuickMarcEditorContainer = ({ history, ...props } = {}) => (render(
-  <Harness history={history}>
+const renderQuickMarcEditorContainer = ({
+  history,
+  action = QUICK_MARC_ACTIONS.EDIT,
+  marcType = MARC_TYPES.BIB,
+  ...props
+} = {}) => (render(
+  <Harness
+    history={history}
+    action={action}
+    marcType={marcType}
+  >
     <QuickMarcEditorContainer
-      marcType={MARC_TYPES.BIB}
       externalRecordPath={externalRecordPath}
       onClose={mockOnClose}
       onSave={mockOnSave}
-      resources={resources}
       {...props}
       onCheckCentralTenantPerm={() => false}
     />
@@ -160,8 +163,6 @@ describe('Given Quick Marc Editor Container', () => {
       await renderQuickMarcEditorContainer({
         mutator,
         onClose: jest.fn(),
-        action: QUICK_MARC_ACTIONS.EDIT,
-        wrapper: QuickMarcEditWrapper,
       });
     });
 
@@ -175,7 +176,6 @@ describe('Given Quick Marc Editor Container', () => {
           mutator,
           onClose: jest.fn(),
           action: QUICK_MARC_ACTIONS.EDIT,
-          wrapper: QuickMarcEditWrapper,
           marcType: MARC_TYPES.AUTHORITY,
         });
       });
@@ -195,7 +195,6 @@ describe('Given Quick Marc Editor Container', () => {
           mutator,
           onClose,
           action: QUICK_MARC_ACTIONS.DERIVE,
-          wrapper: QuickMarcEditWrapper,
         });
       });
     });
@@ -216,8 +215,6 @@ describe('Given Quick Marc Editor Container', () => {
       const renderer = await renderQuickMarcEditorContainer({
         mutator,
         onClose: jest.fn(),
-        action: QUICK_MARC_ACTIONS.EDIT,
-        wrapper: QuickMarcEditWrapper,
       });
 
       getByText = renderer.getByText;
@@ -245,7 +242,6 @@ describe('Given Quick Marc Editor Container', () => {
             mutator,
             onClose: jest.fn(),
             action: QUICK_MARC_ACTIONS.CREATE,
-            wrapper: QuickMarcEditWrapper,
           });
         });
 
@@ -371,7 +367,6 @@ describe('Given Quick Marc Editor Container', () => {
             onClose: jest.fn(),
             action: QUICK_MARC_ACTIONS.CREATE,
             marcType: MARC_TYPES.AUTHORITY,
-            wrapper: QuickMarcEditWrapper,
           });
         });
 
@@ -455,7 +450,6 @@ describe('Given Quick Marc Editor Container', () => {
             onClose: jest.fn(),
             action: QUICK_MARC_ACTIONS.CREATE,
             marcType: MARC_TYPES.HOLDINGS,
-            wrapper: QuickMarcEditWrapper,
           });
         });
 
@@ -527,7 +521,6 @@ describe('Given Quick Marc Editor Container', () => {
           mutator,
           onClose,
           action: QUICK_MARC_ACTIONS.EDIT,
-          wrapper: QuickMarcEditWrapper,
           marcType: MARC_TYPES.BIB,
         });
 
@@ -561,7 +554,6 @@ describe('Given Quick Marc Editor Container', () => {
           mutator,
           onClose: jest.fn(),
           action: QUICK_MARC_ACTIONS.DERIVE,
-          wrapper: QuickMarcDeriveWrapper,
           stripes,
         });
       });
@@ -607,7 +599,6 @@ describe('Given Quick Marc Editor Container', () => {
           mutator: newMutator,
           onClose: jest.fn(),
           action: QUICK_MARC_ACTIONS.DERIVE,
-          wrapper: QuickMarcDeriveWrapper,
           stripes,
           location: newLocation,
         });

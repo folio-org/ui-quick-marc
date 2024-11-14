@@ -1,8 +1,9 @@
-import {
+import React, {
   useEffect,
   useState,
   useCallback,
   useMemo,
+  useContext,
 } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
@@ -17,8 +18,10 @@ import {
 } from '@folio/stripes-acq-components';
 import { getHeaders } from '@folio/stripes-marc-components';
 
+import QuickMarcEditor from './QuickMarcEditor';
 import { useAuthorityLinksCount } from '../queries';
-import { QuickMarcProvider } from '../contexts';
+import { QuickMarcContext } from '../contexts';
+import { useSaveRecord } from './useSaveRecord';
 import {
   EXTERNAL_INSTANCE_APIS,
   MARC_RECORD_API,
@@ -40,18 +43,14 @@ import {
 import { QUICK_MARC_ACTIONS } from './constants';
 
 const propTypes = {
-  action: PropTypes.oneOf(Object.values(QUICK_MARC_ACTIONS)).isRequired,
   onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   externalRecordPath: PropTypes.string.isRequired,
   history: ReactRouterPropTypes.history.isRequired,
   location: ReactRouterPropTypes.location.isRequired,
-  marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   mutator: PropTypes.object.isRequired,
   match: ReactRouterPropTypes.match.isRequired,
-  resources: PropTypes.object.isRequired,
   stripes: PropTypes.object.isRequired,
-  wrapper: PropTypes.func.isRequired,
   onCheckCentralTenantPerm: PropTypes.func,
 };
 
@@ -62,17 +61,13 @@ const createRecordDefaults = {
 };
 
 const QuickMarcEditorContainer = ({
-  action,
   mutator,
   match,
   onClose,
   onSave,
-  wrapper: Wrapper,
   history,
   location,
-  marcType,
   externalRecordPath,
-  resources,
   stripes,
   onCheckCentralTenantPerm,
 }) => {
@@ -80,8 +75,16 @@ const QuickMarcEditorContainer = ({
     externalId,
     instanceId,
   } = match.params;
-  const [instance, setInstance] = useState();
-  const [marcRecord, setMarcRecord] = useState();
+
+  const {
+    action,
+    marcType,
+    initialValues,
+    instance,
+    setInstance,
+    setMarcRecord,
+    setRelatedRecordVersion,
+  } = useContext(QuickMarcContext);
   const [locations, setLocations] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [fixedFieldSpec, setFixedFieldSpec] = useState();
@@ -118,8 +121,11 @@ const QuickMarcEditorContainer = ({
     return `${externalRecordPath}/${externalId}`;
   }, [externalRecordPath, marcType, externalId, instanceId, action]);
 
-  const loadData = useCallback(async (fieldIds) => {
-    const path = action === QUICK_MARC_ACTIONS.CREATE && marcType === MARC_TYPES.HOLDINGS
+  const loadData = useCallback(async (fieldIds, nextAction, nextExternalId) => {
+    const _action = nextAction || action;
+    const _externalId = nextExternalId || externalId;
+
+    const path = _action === QUICK_MARC_ACTIONS.CREATE && marcType === MARC_TYPES.HOLDINGS
       ? EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]
       : EXTERNAL_INSTANCE_APIS[marcType];
 
@@ -127,17 +133,17 @@ const QuickMarcEditorContainer = ({
       ? { headers: getHeaders(centralTenantId, token, locale) }
       : {};
 
-    const instancePromise = action === QUICK_MARC_ACTIONS.CREATE && marcType !== MARC_TYPES.HOLDINGS
+    const instancePromise = _action === QUICK_MARC_ACTIONS.CREATE && marcType !== MARC_TYPES.HOLDINGS
       ? Promise.resolve({})
       : mutator.quickMarcEditInstance.GET({
-        path: `${path}/${externalId}`,
+        path: `${path}/${_externalId}`,
         ...headers,
       });
 
-    const marcRecordPromise = action === QUICK_MARC_ACTIONS.CREATE
+    const marcRecordPromise = _action === QUICK_MARC_ACTIONS.CREATE
       ? Promise.resolve({})
       : mutator.quickMarcEditMarcRecord.GET({
-        params: { externalId },
+        params: { externalId: _externalId },
         ...headers,
       });
 
@@ -169,7 +175,7 @@ const QuickMarcEditorContainer = ({
       ]) => {
         let dehydratedMarcRecord;
 
-        if (action === QUICK_MARC_ACTIONS.CREATE) {
+        if (_action === QUICK_MARC_ACTIONS.CREATE) {
           dehydratedMarcRecord = createRecordDefaults[marcType](instanceResponse, fixedFieldSpecResponse);
         } else {
           dehydratedMarcRecord = dehydrateMarcRecordResponse(
@@ -180,17 +186,20 @@ const QuickMarcEditorContainer = ({
           );
         }
 
-        const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, action, marcType);
+        const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, _action, marcType);
         const marcRecordWithInternalProps = addInternalFieldProperties(formattedMarcRecord);
         const marcRecordWithSplitFields = splitFields(marcRecordWithInternalProps, linkingRulesResponse);
 
+        setRelatedRecordVersion(instanceResponse?._version);
         setInstance(instanceResponse);
         setMarcRecord(marcRecordWithSplitFields);
         setLocations(locationsResponse);
         setFixedFieldSpec(fixedFieldSpecResponse);
         setIsLoading(false);
       })
-      .catch(() => {
+      .catch((err) => {
+        // eslint-disable-next-line no-console
+        console.error(err);
         showCallout({ messageId: 'ui-quick-marc.record.load.error', type: 'error' });
         handleClose();
       });
@@ -198,16 +207,29 @@ const QuickMarcEditorContainer = ({
   }, [
     externalId,
     history,
+    action,
     marcType,
     centralTenantId,
     token,
     locale,
     isRequestToCentralTenantFromMember,
+    setRelatedRecordVersion,
   ]);
+
+  const { onSubmit, httpError, runValidation } = useSaveRecord({
+    linksCount,
+    locations,
+    fixedFieldSpec,
+    mutator,
+    refreshPageData: loadData,
+    onClose: handleClose,
+    onSave: handleSave,
+  });
 
   useEffect(() => {
     loadData();
-  }, [loadData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (isLoading) {
     return (
@@ -220,26 +242,22 @@ const QuickMarcEditorContainer = ({
   }
 
   return (
-    <QuickMarcProvider relatedRecordVersion={instance?._version}>
-      <Wrapper
-        instance={instance}
-        onClose={handleClose}
-        onSave={handleSave}
-        initialValues={marcRecord}
-        action={action}
-        mutator={mutator}
-        history={history}
-        linksCount={linksCount}
-        location={location}
-        locations={locations}
-        marcType={marcType}
-        fixedFieldSpec={fixedFieldSpec}
-        refreshPageData={loadData}
-        externalRecordPath={externalRecordUrl}
-        resources={resources}
-        onCheckCentralTenantPerm={onCheckCentralTenantPerm}
-      />
-    </QuickMarcProvider>
+    <QuickMarcEditor
+      action={action}
+      instance={instance}
+      onClose={handleClose}
+      onSubmit={onSubmit}
+      initialValues={initialValues}
+      marcType={marcType}
+      fixedFieldSpec={fixedFieldSpec}
+      locations={locations}
+      httpError={httpError}
+      externalRecordPath={externalRecordUrl}
+      confirmRemoveAuthorityLinking={action === QUICK_MARC_ACTIONS.DERIVE}
+      linksCount={linksCount}
+      onCheckCentralTenantPerm={onCheckCentralTenantPerm}
+      validate={runValidation}
+    />
   );
 };
 

@@ -23,6 +23,12 @@ const queryClient = new QueryClient();
 const defaultQuickMarcContextValue = {
   validationErrorsRef: { current: {} },
   setValidationErrors: jest.fn(),
+  setInstance: jest.fn(),
+  setMarcRecord: jest.fn(),
+  setRelatedRecordVersion: jest.fn(),
+  setSelectedSourceFile: jest.fn(),
+  basePath: '/base-path',
+  continueAfterSave: { current: false },
 };
 
 const QuickMarcProviderMock = ({ ctxValue, children }) => (
@@ -37,6 +43,9 @@ const Harness = ({
   children,
   history = defaultHistory,
   quickMarcContext,
+  action,
+  marcType,
+  basePath,
 }) => {
   const QuickMarcProviderComponent = quickMarcContext
     ? QuickMarcProviderMock
@@ -47,7 +56,12 @@ const Harness = ({
       <StripesContext.Provider value={stripes || STRIPES}>
         <Router history={history}>
           <IntlProvider>
-            <QuickMarcProviderComponent ctxValue={quickMarcContext}>
+            <QuickMarcProviderComponent
+              action={action}
+              marcType={marcType}
+              basePath={basePath}
+              ctxValue={quickMarcContext}
+            >
               {children}
             </QuickMarcProviderComponent>
           </IntlProvider>

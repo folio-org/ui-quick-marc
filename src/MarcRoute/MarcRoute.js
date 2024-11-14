@@ -14,12 +14,14 @@ import {
 import { QuickMarcEditorContainer } from '../QuickMarcEditor';
 import { applyCentralTenantInHeaders } from '../QuickMarcEditor/utils';
 import { QUICK_MARC_ACTIONS } from '../QuickMarcEditor/constants';
+import { QuickMarcProvider } from '../contexts';
 
 const MarcRoute = ({
   externalRecordPath,
   path,
   permission,
   routeProps,
+  basePath,
   onClose,
   onSave,
 }) => {
@@ -64,13 +66,18 @@ const MarcRoute = ({
       path={path}
       key={path}
       render={() => (
-        <QuickMarcEditorContainer
-          onClose={onClose}
-          onSave={onSave}
-          externalRecordPath={externalRecordPath}
-          onCheckCentralTenantPerm={checkCentralTenantPerm}
-          {...routeProps}
-        />
+        <QuickMarcProvider
+          action={action}
+          marcType={marcType}
+          basePath={basePath}
+        >
+          <QuickMarcEditorContainer
+            onClose={onClose}
+            onSave={onSave}
+            externalRecordPath={externalRecordPath}
+            onCheckCentralTenantPerm={checkCentralTenantPerm}
+          />
+        </QuickMarcProvider>
       )}
     />
   );
@@ -81,6 +88,7 @@ MarcRoute.propTypes = {
   path: PropTypes.string.isRequired,
   permission: PropTypes.string,
   routeProps: PropTypes.object.isRequired,
+  basePath: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
 };
