@@ -82,7 +82,6 @@ jest.mock('./QuickMarcRecordInfo', () => {
 });
 
 const onCloseMock = jest.fn();
-const onSaveMock = jest.fn();
 const onSubmitMock = jest.fn(() => Promise.resolve({ version: 1 }));
 const mockShowCallout = jest.fn();
 const mockValidate = jest.fn().mockReturnValue({});
@@ -147,7 +146,6 @@ const renderQuickMarcEditor = (props = {}, { quickMarcContext } = {}) => (render
       action={QUICK_MARC_ACTIONS.EDIT}
       instance={instance}
       onClose={onCloseMock}
-      onSave={onSaveMock}
       onSubmit={onSubmitMock}
       mutators={{
         addRecord: jest.fn(),
@@ -725,7 +723,6 @@ describe('Given QuickMarcEditor', () => {
 
       await waitFor(() => {
         expect(onSubmitMock).toHaveBeenCalled();
-        expect(onSaveMock).toHaveBeenCalledWith();
       });
     });
   });
@@ -970,7 +967,6 @@ describe('Given QuickMarcEditor', () => {
           await waitFor(() => {
             expect(onSubmitMock).toHaveBeenCalled();
             expect(queryByText('Confirmation modal'));
-            expect(onSaveMock).toHaveBeenCalledWith();
           });
         });
 
@@ -1226,7 +1222,6 @@ describe('Given QuickMarcEditor', () => {
           await waitFor(() => {
             expect(onSubmitMock).toHaveBeenCalled();
             expect(queryByText('Confirmation modal')).toBeNull();
-            expect(onSaveMock).toHaveBeenCalled();
           });
         });
 

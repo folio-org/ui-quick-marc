@@ -93,7 +93,6 @@ const QuickMarcEditor = ({
   action,
   instance,
   onClose,
-  onSave,
   handleSubmit,
   submitting,
   pristine,
@@ -125,11 +124,13 @@ const QuickMarcEditor = ({
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
   const [isLoadingLinkSuggestions, setIsLoadingLinkSuggestions] = useState(false);
   const [isValidatedCurrentValues, setIsValidatedCurrentValues] = useState(false);
-  const continueAfterSave = useRef(false);
   const formRef = useRef(null);
   const lastFocusedInput = useRef(null);
   const confirmationChecks = useRef({ ...REQUIRED_CONFIRMATIONS });
-  const { setValidationErrors, setRelatedRecordVersion } = useContext(QuickMarcContext);
+  const {
+    setValidationErrors,
+    continueAfterSave,
+  } = useContext(QuickMarcContext);
   const { hasErrorIssues, isBackEndValidationMarcType } = useValidation();
 
   const isConsortiaEnv = stripes.hasInterface('consortia');
@@ -160,22 +161,12 @@ const QuickMarcEditor = ({
 
   const saveFormDisabled = submitting || pristine;
 
-  const handleSubmitResponse = useCallback((updatedRecord) => {
-    if (!updatedRecord?.version) {
-      continueAfterSave.current = false;
-
-      return;
-    }
-
+  const handleSubmitResponse = useCallback(() => {
     if (continueAfterSave.current) {
-      setRelatedRecordVersion(updatedRecord.version);
+      continueAfterSave.current = false;
       focusLastFocusedInput();
-
-      return;
     }
-
-    onSave();
-  }, [setRelatedRecordVersion, onSave, focusLastFocusedInput]);
+  }, [continueAfterSave, focusLastFocusedInput]);
 
   const closeModals = () => {
     setIsDeleteModalOpened(false);
@@ -285,6 +276,8 @@ const QuickMarcEditor = ({
         newValidationErrors = await validate(getState().values);
         closeValidationModal();
       } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(err);
         closeValidationModal();
 
         showCallout({
@@ -330,6 +323,7 @@ const QuickMarcEditor = ({
     manageBackendValidationModal,
     focusLastFocusedInput,
     showValidationIssuesToasts,
+    continueAfterSave,
   ]);
 
   const paneFooter = useMemo(() => {
@@ -345,7 +339,7 @@ const QuickMarcEditor = ({
 
     const end = (
       <>
-        {action === QUICK_MARC_ACTIONS.EDIT && (
+        {([MARC_TYPES.BIB, MARC_TYPES.AUTHORITY].includes(marcType) || action === QUICK_MARC_ACTIONS.EDIT) && (
           <Button
             buttonStyle="default mega"
             buttonClass={css.saveContinueBtn}
@@ -381,7 +375,7 @@ const QuickMarcEditor = ({
         renderEnd={end}
       />
     );
-  }, [confirmSubmit, saveFormDisabled, onClose, action]);
+  }, [confirmSubmit, saveFormDisabled, onClose, action, marcType]);
 
   const getConfirmModalMessage = () => (
     <FormattedMessage
@@ -509,7 +503,7 @@ const QuickMarcEditor = ({
       e.preventDefault();
       onClose();
     },
-  }]), [saveFormDisabled, confirmSubmit, onClose]);
+  }]), [saveFormDisabled, confirmSubmit, onClose, continueAfterSave]);
 
   useEffect(() => {
     if (!httpError) {
@@ -678,7 +672,6 @@ QuickMarcEditor.propTypes = {
   externalRecordPath: PropTypes.string,
   instance: PropTypes.object,
   onClose: PropTypes.func.isRequired,
-  onSave: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   submitting: PropTypes.bool,
   pristine: PropTypes.bool,

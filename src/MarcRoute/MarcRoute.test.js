@@ -28,7 +28,7 @@ const renderMarcRoute = ({ history, ...props } = {}) => (render(
   <Harness history={history}>
     <MarcRoute
       externalRecordPath="/inventory/view"
-      path="/inventory/quick-marc/edit-bib/:externalId"
+      path="/inventory/quick-marc/edit-bibliographic/:externalId"
       permission="ui-quick-marc.quick-marc-editor.all"
       routeProps={routeProps}
       onClose={() => {}}

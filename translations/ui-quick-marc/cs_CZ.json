@@ -887,6 +887,6 @@
     "Inventory": "Katalog",
     "MARC-authority": "MARC autorita",
     "record.error.fixedField.invalidLength": "Neplatná délka pole {name}, musí obsahovat {length} znaků.",
-    "permission.quick-marc-editor.derive.execute": "quickMARC: Derive new MARC bibliographic record",
-    "permission.quick-marc-authority-records.link-unlink.execute": "quickMARC: Can Link/unlink authority records to bib records"
+    "permission.quick-marc-editor.derive.execute": "quickMARC: Odvození nového MARC bibliografického záznamu",
+    "permission.quick-marc-authority-records.link-unlink.execute": "quickMARC: Může propojit/odpojit záznamy autorit s bib. záznamy"
 }

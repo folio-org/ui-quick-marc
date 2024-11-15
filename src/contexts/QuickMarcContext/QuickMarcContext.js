@@ -10,20 +10,27 @@ import PropTypes from 'prop-types';
 const QuickMarcContext = createContext();
 
 const propTypes = {
+  action: PropTypes.string.isRequired,
+  marcType: PropTypes.string.isRequired,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]).isRequired,
-  relatedRecordVersion: PropTypes.number,
+  basePath: PropTypes.string.isRequired,
 };
 
 const QuickMarcProvider = ({
   children,
-  relatedRecordVersion,
+  action,
+  marcType,
+  basePath,
 }) => {
+  const [instance, setInstance] = useState(null);
+  const [marcRecord, setMarcRecord] = useState(null);
   const [selectedSourceFile, setSelectedSourceFile] = useState(null);
-  const [_relatedRecordVersion, setRelatedRecordVersion] = useState(relatedRecordVersion);
+  const [_relatedRecordVersion, setRelatedRecordVersion] = useState();
   const validationErrors = useRef({});
+  const continueAfterSave = useRef(false);
 
   const setValidationErrors = useCallback((newValidationErrors) => {
     validationErrors.current = newValidationErrors;
@@ -36,6 +43,14 @@ const QuickMarcProvider = ({
     setValidationErrors,
     relatedRecordVersion: _relatedRecordVersion,
     setRelatedRecordVersion,
+    continueAfterSave,
+    action,
+    marcType,
+    setInstance,
+    instance,
+    initialValues: marcRecord,
+    setMarcRecord,
+    basePath,
   }), [
     selectedSourceFile,
     setSelectedSourceFile,
@@ -43,6 +58,14 @@ const QuickMarcProvider = ({
     setValidationErrors,
     _relatedRecordVersion,
     setRelatedRecordVersion,
+    continueAfterSave,
+    action,
+    marcType,
+    setInstance,
+    instance,
+    marcRecord,
+    setMarcRecord,
+    basePath,
   ]);
 
   return (
