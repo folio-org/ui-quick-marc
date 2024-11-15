@@ -235,7 +235,7 @@ const QuickMarcEditor = ({
     const values = {
       warnCount,
       failCount,
-      breakingLine: <br style={{ margin: '2px 0' }} />,
+      breakingLine: <br />,
     };
     let messageId = null;
 

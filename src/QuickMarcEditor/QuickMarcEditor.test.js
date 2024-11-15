@@ -820,14 +820,14 @@ describe('Given QuickMarcEditor', () => {
 
     it('should show a toast notification about validation error', async () => {
       await waitFor(() => {
-        expect(mockShowCallout).toHaveBeenCalledWith({
+        expect(mockShowCallout).toHaveBeenCalledWith(expect.objectContaining({
           messageId: 'ui-quick-marc.record.save.error.fail',
-          values: {
+          values: expect.objectContaining({
             failCount: 1,
             warnCount: 0,
-          },
+          }),
           type: 'error',
-        });
+        }));
       });
     });
   });
@@ -849,14 +849,14 @@ describe('Given QuickMarcEditor', () => {
 
     it('should show a toast notification about validation warning', async () => {
       await waitFor(() => {
-        expect(mockShowCallout).toHaveBeenCalledWith({
+        expect(mockShowCallout).toHaveBeenCalledWith(expect.objectContaining({
           messageId: 'ui-quick-marc.record.save.error.warn',
-          values: {
+          values: expect.objectContaining({
             failCount: 0,
             warnCount: 1,
-          },
+          }),
           type: 'warning',
-        });
+        }));
       });
     });
   });
@@ -883,14 +883,14 @@ describe('Given QuickMarcEditor', () => {
 
     it('should show a toast notification about validation warning and error', async () => {
       await waitFor(() => {
-        expect(mockShowCallout).toHaveBeenCalledWith({
+        expect(mockShowCallout).toHaveBeenCalledWith(expect.objectContaining({
           messageId: 'ui-quick-marc.record.save.error.failAndWarn',
-          values: {
+          values: expect.objectContaining({
             failCount: 1,
             warnCount: 1,
-          },
+          }),
           type: 'error',
-        });
+        }));
       });
     });
   });
