@@ -876,7 +876,7 @@
     "record.fixedField.tip.Punct": "Política de pontuação",
     "record.fixedField.tip.Item": "Informações do item no registro",
     "leader.Two-dimensional nonprojectable graphic": "Material gráfico bidimensional não projetável",
-    "record.searchLink": "Pesquisar registros por 010 valor(es)",
+    "record.searchLink": "Buscar registros por 010 valor(es)",
     "record.error.010.lccnDuplicated": "010 $a já existe.",
     "record.errorMessage.error": "<b>Falhou: </b>",
     "record.errorMessage.warn": "<b>Aviso: </b>",
