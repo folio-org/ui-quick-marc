@@ -1,6 +1,6 @@
 # Change history for ui-quick-marc
 
-## [9.0.1] (IN PROGRESS)
+## [9.0.1](https://github.com/folio-org/ui-quick-marc/tree/v9.0.1) (2024-11-22)
 
 * [UIQM-725](https://issues.folio.org/browse/UIQM-725) Fix wrong error message while saving MARC Bib record with invalid LDR position values.
 
