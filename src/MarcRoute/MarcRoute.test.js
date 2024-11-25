@@ -40,7 +40,7 @@ const renderMarcRoute = ({ history, ...props } = {}) => (render(
 describe('Given Quick Marc', () => {
   beforeEach(() => {
     useUserTenantPermissions.mockReturnValue({
-      userPermissions: [],
+      userPermissions: new Set(),
       isFetching: false,
     });
 
@@ -49,9 +49,7 @@ describe('Given Quick Marc', () => {
 
   describe('when a member tenant edits shared record', () => {
     it('should fetch the central tenant permissions', () => {
-      const userPermissions = [{
-        permissionName: 'ui-quick-marc.quick-marc-editor.all',
-      }];
+      const userPermissions = new Set(['ui-quick-marc.quick-marc-editor.all']);
 
       useUserTenantPermissions.mockReturnValue({
         userPermissions,
