@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 
 import {
@@ -48,10 +49,26 @@ const useUserTenantPermissions = (
     },
   );
 
+  const centralTenantPermissions = data.permissionNames || INITIAL_DATA;
+
+  const flattenCentralTenantPermissions = useMemo(() => {
+    const permSet = new Set();
+
+    centralTenantPermissions.forEach(perm => {
+      permSet.add(perm.permissionName);
+
+      perm.subPermissions?.forEach(subPermission => {
+        permSet.add(subPermission);
+      });
+    });
+
+    return permSet;
+  }, [centralTenantPermissions]);
+
   return ({
     isFetching,
     isLoading,
-    userPermissions: data.permissionNames || INITIAL_DATA,
+    userPermissions: flattenCentralTenantPermissions,
     totalRecords: data.totalRecords,
   });
 };

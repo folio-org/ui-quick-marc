@@ -1,5 +1,9 @@
 # Change history for ui-quick-marc
 
+## [8.0.2] (IN PROGRESS)
+
+* [UIQM-735](https://issues.folio.org/browse/UIQM-735) Return also sub permissions in `useUserTenantPermissions` hook.
+
 ## [8.0.1] (https://github.com/folio-org/ui-quick-marc/tree/v8.0.1) (2024-04-18)
 
 * [UIQM-641](https://issues.folio.org/browse/UIQM-641) Call `cleanBytesFields` function with correct arguments to fix 008 field.
