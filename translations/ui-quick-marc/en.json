@@ -760,6 +760,9 @@
   "record.save.error.notFound": "This record has been deleted by another user. You can no longer edit this record, hit the cancel button to return to the previous page.",
   "record.save.error.generic": "Record not saved: Communication problem with server. Please try again.",
   "record.save.error.derive": "Instance cannot be updated. Deprecated instance version.",
+  "record.save.error.warn": "<b>Please scroll to view the entire record. Resolve ussyes as needed and save to revalidate the record.</b>{breakingLine}Warn errors: <b>{warnCount}</b>",
+  "record.save.error.fail": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Fail errors: <b>{failCount}</b>{breakingLine}Record cannot be saved with a fail error.",
+  "record.save.error.failAndWarn": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Warn errors: <b>{warnCount}</b>{breakingLine}Fail errors: <b>{failCount}</b>{breakingLine}Record cannot be saved with a fail error.",
   "record.save.updatingLinkedBibRecords": "This record has successfully saved and is in process. <b>{count}</b> linked bibliographic record(s) updates have begun.",
   "record.save.continue": "Save & keep editing",
 

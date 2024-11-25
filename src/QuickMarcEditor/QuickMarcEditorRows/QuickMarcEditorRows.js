@@ -59,10 +59,7 @@ import {
   isControlNumberRow,
   isLeaderRow,
 } from '../utils';
-import {
-  useAuthorityLinking,
-  useFocusFirstFieldWithError,
-} from '../../hooks';
+import { useAuthorityLinking } from '../../hooks';
 import { QuickMarcContext } from '../../contexts';
 import {
   QUICK_MARC_ACTIONS,
@@ -108,8 +105,6 @@ const QuickMarcEditorRows = ({
   const rowContentWidth = useRef(null); // for max-width of resizable textareas
   const childCalloutRef = useRef(null);
   const { validationErrorsRef } = useContext(QuickMarcContext);
-
-  useFocusFirstFieldWithError();
 
   const {
     linkAuthority,
