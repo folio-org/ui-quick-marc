@@ -4,7 +4,6 @@ import faker from 'faker';
 import { useLocation } from 'react-router';
 import { createMemoryHistory } from 'history';
 
-
 import {
   render,
   fireEvent,
