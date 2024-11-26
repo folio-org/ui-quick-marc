@@ -49,12 +49,12 @@ const useUserTenantPermissions = (
     },
   );
 
-  const centralTenantPermissions = data.permissionNames || INITIAL_DATA;
+  const tenantPermissions = data.permissionNames || INITIAL_DATA;
 
-  const flattenCentralTenantPermissions = useMemo(() => {
+  const flattenTenantPermissions = useMemo(() => {
     const permSet = new Set();
 
-    centralTenantPermissions.forEach(perm => {
+    tenantPermissions.forEach(perm => {
       permSet.add(perm.permissionName);
 
       perm.subPermissions?.forEach(subPermission => {
@@ -63,12 +63,12 @@ const useUserTenantPermissions = (
     });
 
     return permSet;
-  }, [centralTenantPermissions]);
+  }, [tenantPermissions]);
 
   return ({
     isFetching,
     isLoading,
-    userPermissions: flattenCentralTenantPermissions,
+    userPermissions: flattenTenantPermissions,
     totalRecords: data.totalRecords,
   });
 };
