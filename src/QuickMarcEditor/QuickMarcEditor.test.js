@@ -2,6 +2,7 @@
 import React from 'react';
 import faker from 'faker';
 import { useLocation } from 'react-router';
+import { createMemoryHistory } from 'history';
 
 import {
   render,
@@ -25,9 +26,12 @@ import Harness from '../../test/jest/helpers/harness';
 import buildStripes from '../../test/jest/__mock__/stripesCore.mock';
 import { bibLeader } from '../../test/jest/fixtures/leaders';
 
+const mockHistory = createMemoryHistory();
+
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
   useLocation: jest.fn(),
+  withRouter: Component => props => <Component history={mockHistory} {...props} />,
 }));
 
 jest.mock('../queries', () => ({

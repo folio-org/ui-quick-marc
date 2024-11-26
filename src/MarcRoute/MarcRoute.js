@@ -44,7 +44,7 @@ const MarcRoute = ({
   });
 
   const checkCentralTenantPerm = useCallback((perm) => {
-    return centralTenantPermissions.some(({ permissionName }) => permissionName === perm);
+    return centralTenantPermissions.has(perm);
   }, [centralTenantPermissions]);
 
   if (isCentralTenantPermissionsLoading) {

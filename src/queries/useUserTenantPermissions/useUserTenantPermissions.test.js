@@ -18,7 +18,16 @@ const wrapper = ({ children }) => (
 );
 
 const response = {
-  permissionNames: [],
+  permissionNames: [
+    {
+      permissionName: 'permissionName1',
+      subPermissions: ['subPermissions1', 'subPermissions2'],
+    },
+    {
+      permissionName: 'permissionName2',
+      subPermissions: ['subPermissions1', 'subPermissions3'],
+    },
+  ],
   totalRecords: 0,
 };
 
@@ -53,5 +62,23 @@ describe('useUserTenantPermissions', () => {
 
     expect(setHeaderMock).toHaveBeenCalledWith('X-Okapi-Tenant', options.tenantId);
     expect(getMock).toHaveBeenCalledWith(`perms/users/${options.userId}/permissions`, expect.objectContaining({}));
+  });
+
+  it('should consider sub permissions without duplicates', async () => {
+    const options = {
+      userId: 'userId',
+      tenantId: 'tenantId',
+    };
+    const { result } = renderHook(() => useUserTenantPermissions(options), { wrapper });
+
+    await act(async () => !result.current.isLoading);
+
+    expect([...result.current.userPermissions]).toEqual([
+      'permissionName1',
+      'subPermissions1',
+      'subPermissions2',
+      'permissionName2',
+      'subPermissions3',
+    ]);
   });
 });
