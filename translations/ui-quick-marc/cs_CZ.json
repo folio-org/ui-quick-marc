@@ -888,5 +888,8 @@
     "MARC-authority": "MARC autorita",
     "record.error.fixedField.invalidLength": "Neplatná délka pole {name}, musí obsahovat {length} znaků.",
     "permission.quick-marc-editor.derive.execute": "quickMARC: Odvození nového MARC bibliografického záznamu",
-    "permission.quick-marc-authority-records.link-unlink.execute": "quickMARC: Může propojit/odpojit záznamy autorit s bib. záznamy"
+    "permission.quick-marc-authority-records.link-unlink.execute": "quickMARC: Může propojit/odpojit záznamy autorit s bib. záznamy",
+    "record.save.error.warn": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Warn errors: <b>{warnCount}</b>",
+    "record.save.error.fail": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Fail errors: <b>{failCount}</b>{breakingLine}Record cannot be saved with a fail error.",
+    "record.save.error.failAndWarn": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Warn errors: <b>{warnCount}</b>{breakingLine}Fail errors: <b>{failCount}</b>{breakingLine}Record cannot be saved with a fail error."
 }
