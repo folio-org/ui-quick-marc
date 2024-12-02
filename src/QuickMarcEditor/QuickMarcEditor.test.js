@@ -895,6 +895,30 @@ describe('Given QuickMarcEditor', () => {
     });
   });
 
+  describe('when saving form without validation warnings or errors', () => {
+    beforeEach(async () => {
+      mockValidate.mockClear().mockResolvedValue({});
+
+      const {
+        getByText,
+        getByTestId,
+      } = renderQuickMarcEditor();
+
+      const contentField = getByTestId('content-field-3');
+
+      fireEvent.change(contentField, { target: { value: '' } });
+      await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+    });
+
+    it('should show a toast notification about validation warning and error', async () => {
+      await waitFor(() => {
+        expect(mockShowCallout).not.toHaveBeenCalledWith(expect.objectContaining({
+          messageId: expect.stringContaining('ui-quick-marc.record.save.error'),
+        }));
+      });
+    });
+  });
+
   describe('when marc record is of type HOLDINGS', () => {
     describe('when action is create', () => {
       it('should not show "Save & keep editing" button', () => {

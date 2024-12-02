@@ -232,11 +232,16 @@ const QuickMarcEditor = ({
     const failCount = allIssuesArray.filter(issue => issue.severity === SEVERITY.ERROR).length;
     const warnCount = allIssuesArray.length - failCount;
 
+    if (!failCount && !warnCount) {
+      return;
+    }
+
     const values = {
       warnCount,
       failCount,
       breakingLine: <br />,
     };
+
     let messageId = null;
 
     if (failCount && warnCount) {
