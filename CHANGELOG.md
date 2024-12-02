@@ -1,6 +1,6 @@
 # Change history for ui-quick-marc
 
-## [8.0.2] (IN PROGRESS)
+## [8.0.2] (https://github.com/folio-org/ui-quick-marc/tree/v8.0.2) (2024-12-02)
 
 * [UIQM-735](https://issues.folio.org/browse/UIQM-735) Return also sub permissions in `useUserTenantPermissions` hook.
 
