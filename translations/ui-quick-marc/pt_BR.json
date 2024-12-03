@@ -888,5 +888,8 @@
     "MARC-authority": "Autoridade MARC",
     "record.error.fixedField.invalidLength": "Comprimento do campo {name} inválido, deve ter {length} caracteres.",
     "permission.quick-marc-editor.derive.execute": "quickMARC: Derivar novo registro MARC bibliográfico",
-    "permission.quick-marc-authority-records.link-unlink.execute": "QuickMARC: pode vincular/desvincular registros de autoridade a registros bibliográficos"
+    "permission.quick-marc-authority-records.link-unlink.execute": "QuickMARC: pode vincular/desvincular registros de autoridade a registros bibliográficos",
+    "record.save.error.warn": "<b>Role a tela para visualizar o registro inteiro. Resolva os problemas conforme necessário e salve para revalidar o registro.</b> {breakingLine} Avisar erros: <b>{warnCount}</b>",
+    "record.save.error.fail": "<b>Role a tela para visualizar o registro inteiro. Resolva os problemas conforme necessário e salve para revalidar o registro.</b>{breakingLine}Erros de falha: <b>{failCount}</b>{breakingLine}O registro não pode ser salvo com um erro de falha.",
+    "record.save.error.failAndWarn": "<b>Role a tela para visualizar o registro inteiro. Resolva os problemas conforme necessário e salve para revalidar o registro.</b>{breakingLine}Avisar erros: <b>{warnCount}</b>{breakingLine}Erros de falha: <b>{failCount}</b>{breakingLine}O registro não pode ser salvo com um erro de falha."
 }
