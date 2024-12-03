@@ -6,6 +6,10 @@
 * [UIQM-730](https://issues.folio.org/browse/UIQM-730) Create/Edit/Derive MARC record - Retain focus when MARC record validation rules error display. Show validation issues toasts.
 * [UIQM-740](https://issues.folio.org/browse/UIQM-740) Don't show warn/fail error toasts when there are no warns/fails.
 
+## [9.0.2] (IN PROGRESS)
+
+* [UIQM-726](https://issues.folio.org/browse/UIQM-726) Use a larger width of 7-16 leader positions field.
+
 ## [9.0.1](https://github.com/folio-org/ui-quick-marc/tree/v9.0.1) (2024-11-22)
 
 * [UIQM-725](https://issues.folio.org/browse/UIQM-725) Fix wrong error message while saving MARC Bib record with invalid LDR position values.
