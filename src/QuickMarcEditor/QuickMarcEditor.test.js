@@ -910,7 +910,7 @@ describe('Given QuickMarcEditor', () => {
       await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
     });
 
-    it('should show a toast notification about validation warning and error', async () => {
+    it('should not show a toast notification about validation warning and error', async () => {
       await waitFor(() => {
         expect(mockShowCallout).not.toHaveBeenCalledWith(expect.objectContaining({
           messageId: expect.stringContaining('ui-quick-marc.record.save.error'),
