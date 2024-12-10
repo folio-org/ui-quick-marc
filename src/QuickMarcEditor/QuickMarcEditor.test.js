@@ -135,6 +135,12 @@ const initialValues = {
       indicators: ['2', '\\'],
       id: 'test-id-1',
     },
+    {
+      tag: '999',
+      content: '',
+      indicators: ['f', 'f'],
+      id: '999',
+    },
   ],
 };
 
@@ -764,7 +770,7 @@ describe('Given QuickMarcEditor', () => {
     });
 
     describe('when click Cancel', () => {
-      it('should hide ConfirmationModal and restore deleted fields', async () => {
+      beforeEach(async () => {
         const {
           getAllByRole,
           getByText,
@@ -780,10 +786,21 @@ describe('Given QuickMarcEditor', () => {
 
         await act(async () => fireEvent.click(getByText('stripes-acq-components.FormFooter.save')));
         await fireEvent.click(getByText('Cancel'));
+      });
+
+      it('should hide ConfirmationModal and restore deleted fields', async () => {
+        await waitFor(() => {
+          expect(screen.queryByText('Confirmation modal')).toBeNull();
+          expect(screen.getByText('$a Test title')).toBeDefined();
+        });
+      });
+
+      it('should keep focus on the last focused element', async () => {
+        const moveUpButtons = screen.getAllByRole('button', { name: 'ui-quick-marc.record.moveUpRow' });
 
         await waitFor(() => {
-          expect(queryByText('Confirmation modal')).toBeNull();
-          expect(getByText('$a Test title')).toBeDefined();
+          expect(screen.getByText('$a Test title')).toBeDefined();
+          expect(moveUpButtons[moveUpButtons.length - 1]).toHaveFocus();
         });
       });
     });

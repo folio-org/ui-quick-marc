@@ -5,6 +5,7 @@
 * [UIQM-716](https://issues.folio.org/browse/UIQM-716) *BREAKING* Consolidate routes based on MARC type for bib and authority records to avoid page refresh after redirecting from the create page to the edit one.
 * [UIQM-730](https://issues.folio.org/browse/UIQM-730) Create/Edit/Derive MARC record - Retain focus when MARC record validation rules error display. Show validation issues toasts.
 * [UIQM-740](https://issues.folio.org/browse/UIQM-740) Don't show warn/fail error toasts when there are no warns/fails.
+* [UIQM-728](https://issues.folio.org/browse/UIQM-728) Keep focus on last focused element when user cancels on confirmation modals.
 
 ## [9.0.2] (IN PROGRESS)
 
