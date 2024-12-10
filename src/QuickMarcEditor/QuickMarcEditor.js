@@ -478,9 +478,6 @@ const QuickMarcEditor = ({
 
   const cancelRemoveLinking = () => {
     setIsUnlinkRecordsModalOpen(false);
-    setTimeout(() => {
-      focusLastFocusedInput();
-    });
   };
 
   const confirmRemoveLinking = () => {
