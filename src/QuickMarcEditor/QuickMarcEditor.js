@@ -447,6 +447,9 @@ const QuickMarcEditor = ({
 
   const cancelUpdateLinks = () => {
     setIsUpdate0101xxfieldsAuthRecModalOpen(false);
+    setTimeout(() => {
+      focusLastFocusedInput();
+    });
   };
 
   const confirmUpdateLinks = async (e) => {
@@ -461,17 +464,23 @@ const QuickMarcEditor = ({
   };
 
   const cancelDeleteFields = () => {
-    setIsDeleteModalOpened(false);
-
     if (deletedRecords.length) {
       restoreDeletedRecords();
     } else {
       reset();
     }
+
+    setIsDeleteModalOpened(false);
+    setTimeout(() => {
+      focusLastFocusedInput();
+    });
   };
 
   const cancelRemoveLinking = () => {
     setIsUnlinkRecordsModalOpen(false);
+    setTimeout(() => {
+      focusLastFocusedInput();
+    });
   };
 
   const confirmRemoveLinking = () => {
