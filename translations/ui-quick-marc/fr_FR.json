@@ -246,7 +246,7 @@
     "record.save.updatingLinkedBibRecords": "This record has successfully saved and is in process. <b>{count}</b> linked bibliographic record(s) updates have begun.",
     "update-linked-bib-fields.modal.label": "Êtes-vous sûr(e) ?",
     "update-linked-bib-fields.modal.keep-editing": "Keep editing",
-    "print": "Papier",
+    "print": "Imprimer",
     "record.error.$9": "$9 is an invalid subfield for linkable bibliographic fields.",
     "update-linked-bib-fields.modal.message-save": "<b>{count} {count, plural, one {bibliographic record} other {bibliographic records}}</b> {count, plural, one {is} other {are}} linked to this authority record and will be updated by clicking the <b>Save</b> button.",
     "update-linked-bib-fields.modal.save": "Save",

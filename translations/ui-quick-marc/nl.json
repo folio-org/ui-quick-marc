@@ -396,7 +396,7 @@
     "sourceFileLookupModal.fieldLabel": "Authoritybestandsnaam",
     "sourceFileLookupModal.placeholder": "Selecteer authoritybestand",
     "authority-record.create.title": "Een nieuwe {shared, select, true {shared} false {local} other {}} MARC-authorityrecord aanmaken",
-    "record.error.fieldIsControlled": "A subfield(s) cannot be updated because it is controlled by an authority heading.",
+    "record.error.fieldIsControlled": "Een subveld(en) kan niet worden bijgewerkt omdat het wordt gecontroleerd door een authority heading.",
     "record.error.controlField.content.empty": "Record kan niet worden opgeslagen. Er is een authorityrecord vereist",
     "record.error.010.absent": "Record kan niet worden opgeslagen zonder 010-veld.",
     "record.error.010.prefix.absent": "Record kan niet worden opgeslagen zonder voorvoegsel in het 010-veld.",
@@ -889,7 +889,7 @@
     "record.error.fixedField.invalidLength": "Invalid {name} field length, must be {length} characters.",
     "permission.quick-marc-editor.derive.execute": "quickMARC: Derive new MARC bibliographic record",
     "permission.quick-marc-authority-records.link-unlink.execute": "quickMARC: Can Link/unlink authority records to bib records",
-    "record.save.error.warn": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Warn errors: <b>{warnCount}</b>",
-    "record.save.error.fail": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Fail errors: <b>{failCount}</b>{breakingLine}Record cannot be saved with a fail error.",
-    "record.save.error.failAndWarn": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Warn errors: <b>{warnCount}</b>{breakingLine}Fail errors: <b>{failCount}</b>{breakingLine}Record cannot be saved with a fail error."
+    "record.save.error.warn": "<b>Scroll alstublieft om het volledige Record te bekijken. Los eventuele Nummers op en sla op om het Record opnieuw te valideren.</b>{breakingLine}Waarschuwingsfouten: <b>{warnCount}</b>",
+    "record.save.error.fail": "<b>Scroll alstublieft om het volledige Record te bekijken. Los eventuele Nummers op en sla op om het Record opnieuw te valideren.</b>{breakingLine}Foutmeldingen: <b>{failCount}</b>{breakingLine}Record kan niet worden opgeslagen met een foutmelding.",
+    "record.save.error.failAndWarn": "<b>Scroll alstublieft om het volledige Record te bekijken. Los problemen op indien nodig en sla op om het Record opnieuw te valideren.</b>{breakingLine}Waarschuwingsfouten: <b>{warnCount}</b>{breakingLine}Foutfouten: <b>{failCount}</b>{breakingLine}Record kan niet worden opgeslagen met een foutfout."
 }
