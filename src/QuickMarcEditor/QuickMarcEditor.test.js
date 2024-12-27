@@ -912,6 +912,32 @@ describe('Given QuickMarcEditor', () => {
     });
   });
 
+  describe('when saving form with validation issue', () => {
+    it('should prevent submitting', async () => {
+      const {
+        getByText,
+        getByTestId,
+      } = renderQuickMarcEditor({}, {
+        quickMarcContext: {
+          validationErrorsRef: {
+            current: {
+              [MISSING_FIELD_ID]: [
+                { id: 'some warning', severity: 'warn', values: {} },
+              ],
+            },
+          },
+        },
+      });
+
+      const contentField = getByTestId('content-field-3');
+
+      fireEvent.change(contentField, { target: { value: '' } });
+      await fireEvent.click(getByText('stripes-acq-components.FormFooter.save'));
+
+      expect(onSubmitMock).not.toHaveBeenCalled();
+    });
+  });
+
   describe('when saving form without validation warnings or errors', () => {
     beforeEach(async () => {
       mockValidate.mockClear().mockResolvedValue({});
