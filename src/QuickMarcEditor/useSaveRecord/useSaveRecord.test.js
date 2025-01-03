@@ -94,9 +94,7 @@ const mockOnSave = jest.fn();
 const mockActualizeLinks = jest.fn((formValuesToProcess) => Promise.resolve(formValuesToProcess));
 const mockUpdateMarcRecord = jest.fn().mockResolvedValue();
 const mockValidateFetch = jest.fn().mockResolvedValue({});
-const mockComplete = jest.fn();
 
-const _api = null;
 const basePath = '/base-path';
 
 const locations = [{
@@ -719,29 +717,6 @@ describe('useSaveRecord', () => {
   });
 
   describe('when creating', () => {
-    describe('when there is a validation error', () => {
-      it('should stop submitting', async () => {
-        const { result } = renderHook(useSaveRecord, {
-          initialProps: getInitialProps(MARC_TYPES.BIB),
-          wrapper: getWrapper({
-            quickMarcContext: {
-              action: QUICK_MARC_ACTIONS.CREATE,
-              validationErrorsRef: {
-                current: {
-                  'id-with-error': [{ id: 'some-error' }],
-                },
-              },
-            },
-          }),
-        });
-
-        await result.current.onSubmit(null, _api, mockComplete);
-
-        expect(mockComplete).toHaveBeenCalled();
-        expect(getMutator().quickMarcEditMarcRecord.POST).not.toHaveBeenCalled();
-      });
-    });
-
     describe('when marc type is not a bib', () => {
       it('should not call actualizeLinks', async () => {
         const marcType = MARC_TYPES.HOLDINGS;
@@ -1156,28 +1131,6 @@ describe('useSaveRecord', () => {
   });
 
   describe('when editing', () => {
-    describe('when there is a validation error', () => {
-      it('should stop submitting', async () => {
-        const { result } = renderHook(useSaveRecord, {
-          initialProps: getInitialProps(MARC_TYPES.BIB),
-          wrapper: getWrapper({
-            quickMarcContext: {
-              action: QUICK_MARC_ACTIONS.EDIT,
-              validationErrorsRef: {
-                current: {
-                  'id-with-error': [{ id: 'some-error' }],
-                },
-              },
-            },
-          }),
-        });
-
-        await result.current.onSubmit(null, _api, mockComplete);
-
-        expect(mockComplete).toHaveBeenCalled();
-      });
-    });
-
     describe('when marc type is not a bib', () => {
       it('should not call actualizeLinks', async () => {
         const marcType = MARC_TYPES.AUTHORITY;
@@ -1672,28 +1625,6 @@ describe('useSaveRecord', () => {
   });
 
   describe('when deriving', () => {
-    describe('when there is a validation error', () => {
-      it('should stop submitting', async () => {
-        const { result } = renderHook(useSaveRecord, {
-          initialProps: getInitialProps(MARC_TYPES.BIB),
-          wrapper: getWrapper({
-            quickMarcContext: {
-              action: QUICK_MARC_ACTIONS.DERIVE,
-              validationErrorsRef: {
-                current: {
-                  'id-with-error': [{ id: 'some-error' }],
-                },
-              },
-            },
-          }),
-        });
-
-        await result.current.onSubmit(null, _api, mockComplete);
-
-        expect(mockComplete).toHaveBeenCalled();
-      });
-    });
-
     it('should actualize links', async () => {
       const action = QUICK_MARC_ACTIONS.DERIVE;
       const marcType = MARC_TYPES.BIB;

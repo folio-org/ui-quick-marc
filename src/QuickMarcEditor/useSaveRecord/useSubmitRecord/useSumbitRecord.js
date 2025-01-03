@@ -8,7 +8,6 @@ import {
   useLocation,
   useParams,
 } from 'react-router-dom';
-import isEmpty from 'lodash/isEmpty';
 import noop from 'lodash/noop';
 import isNil from 'lodash/isNil';
 
@@ -56,7 +55,6 @@ const useSubmitRecord = ({
     basePath,
     initialValues,
     instance,
-    validationErrorsRef,
     continueAfterSave,
     relatedRecordVersion,
   } = useContext(QuickMarcContext);
@@ -95,12 +93,7 @@ const useSubmitRecord = ({
     });
   }, [basePath, marcType, location, history, refreshPageData]);
 
-  const onCreate = useCallback(async (formValues, _api, complete) => {
-    // if validation has any issues - cancel submit
-    if (!isEmpty(validationErrorsRef.current)) {
-      return complete();
-    }
-
+  const onCreate = useCallback(async (formValues, _api) => {
     const formValuesToProcess = prepareForSubmit(formValues);
 
     let formValuesToHydrate;
@@ -168,7 +161,6 @@ const useSubmitRecord = ({
     showCallout,
     prepareForSubmit,
     actualizeLinks,
-    validationErrorsRef,
     marcType,
     continueAfterSave,
     mutator,
@@ -176,13 +168,8 @@ const useSubmitRecord = ({
     redirectToRecord,
   ]);
 
-  const onEdit = useCallback(async (formValues, _api, complete) => {
+  const onEdit = useCallback(async (formValues, _api) => {
     let is1xxOr010Updated = false;
-
-    // if validation has any issues - cancel submit
-    if (!isEmpty(validationErrorsRef.current)) {
-      return complete();
-    }
 
     if (marcType === MARC_TYPES.AUTHORITY && linksCount > 0) {
       is1xxOr010Updated = are010Or1xxUpdated(initialValues.records, formValues.records);
@@ -293,7 +280,6 @@ const useSubmitRecord = ({
     locale,
     updateMarcRecord,
     isRequestToCentralTenantFromMember,
-    validationErrorsRef,
     relatedRecordVersion,
     _externalId,
     _instanceId,
@@ -301,12 +287,7 @@ const useSubmitRecord = ({
     redirectToRecord,
   ]);
 
-  const onDerive = useCallback(async (formValues, _api, complete) => {
-    // if validation has any issues - cancel submit
-    if (!isEmpty(validationErrorsRef.current)) {
-      return complete();
-    }
-
+  const onDerive = useCallback(async (formValues, _api) => {
     const formValuesToProcess = prepareForSubmit(formValues);
 
     showCallout({ messageId: 'ui-quick-marc.record.saveNew.onSave' });
@@ -379,7 +360,6 @@ const useSubmitRecord = ({
     showCallout,
     prepareForSubmit,
     actualizeLinks,
-    validationErrorsRef,
     continueAfterSave,
     mutator,
     processEditingAfterCreation,

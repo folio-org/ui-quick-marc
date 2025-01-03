@@ -130,6 +130,7 @@ const QuickMarcEditor = ({
   const {
     setValidationErrors,
     continueAfterSave,
+    validationErrorsRef,
   } = useContext(QuickMarcContext);
   const { hasErrorIssues, isBackEndValidationMarcType } = useValidation();
 
@@ -310,6 +311,11 @@ const QuickMarcEditor = ({
       }
     }
 
+    // if validation has any issues - cancel submit
+    if (!isEmpty(validationErrorsRef.current)) {
+      return;
+    }
+
     handleSubmit(e)
       ?.then(handleSubmitResponse)
       ?.finally(closeModals);
@@ -329,6 +335,7 @@ const QuickMarcEditor = ({
     focusLastFocusedInput,
     showValidationIssuesToasts,
     continueAfterSave,
+    validationErrorsRef,
   ]);
 
   const paneFooter = useMemo(() => {
