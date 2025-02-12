@@ -11,11 +11,12 @@ import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
 import {
-  Layout,
+  Col,
   Loading,
+  Row,
 } from '@folio/stripes/components';
 
-import { SourceFileLookup } from '../../SourceFileLookup';
+import { SourceFileSelect } from '../../SourceFileSelect';
 import { ContentField } from '../ContentField';
 import { ErrorMessages } from '../ErrorMessages';
 import {
@@ -100,12 +101,14 @@ const ControlNumberField = ({
         error={errors && <ErrorMessages errors={errors} />}
       />
       {canSelectSourceFile && (
-        <Layout className="display-flex">
-          <SourceFileLookup
-            onSourceFileSelect={handleSourceFileSelection}
-          />
+        <Row>
+          <Col xs={4}>
+            <SourceFileSelect
+              onSourceFileSelect={handleSourceFileSelection}
+            />
+          </Col>
           {isLoadingHrid && <Loading data-testid="hridLoading" />}
-        </Layout>
+        </Row>
       )}
     </>
   );
