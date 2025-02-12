@@ -1,21 +1,11 @@
 import {
   render,
   fireEvent,
-  waitFor,
 } from '@folio/jest-config-stripes/testing-library/react';
 
 import { SourceFileLookup } from './SourceFileLookup';
 import { useAuthoritySourceFiles } from '../../queries';
 import Harness from '../../../test/jest/helpers/harness';
-
-jest.mock('./SourceFileLookupModal', () => ({
-  SourceFileLookupModal: ({ onConfirm }) => (
-    <>
-      SourceFileLookupModal
-      <button type="button" onClick={() => onConfirm('source-file-id')}>Confirm</button>
-    </>
-  ),
-}));
 
 jest.mock('../../queries', () => ({
   ...jest.requireActual('../../queries'),
@@ -48,36 +38,33 @@ describe('Given SourceFileLookup', () => {
     jest.clearAllMocks();
   });
 
-  it('should render the modal trigger button', async () => {
-    const {
-      getByRole,
-      getByText,
-    } = renderSourceFileLookup();
-
-    fireEvent.click(getByRole('button', { name: 'ui-quick-marc.sourceFileLookup' }));
-
-    await waitFor(() => expect(getByText('SourceFileLookupModal')).toBeDefined());
-  });
-
   it('should only fetch selectable source files', () => {
-    const { getByRole } = renderSourceFileLookup();
-
-    fireEvent.click(getByRole('button', { name: 'ui-quick-marc.sourceFileLookup' }));
+    renderSourceFileLookup();
 
     expect(useAuthoritySourceFiles).toHaveBeenCalledWith({ searchParams: { selectable: true } });
   });
 
-  describe('when confirming source file selection in modal', () => {
+  describe('when selecting a source file', () => {
     it('should call onSourceFileSelect callback with correct source file', async () => {
       const {
         getByRole,
-        getByText,
       } = renderSourceFileLookup();
 
-      fireEvent.click(getByRole('button', { name: 'ui-quick-marc.sourceFileLookup' }));
-      fireEvent.click(getByText('Confirm'));
+      const select = getByRole('combobox', { name: 'ui-quick-marc.sourceFileLookup.fieldLabel' });
+
+      fireEvent.change(select, { target: { value: sourceFiles[0].id } });
 
       expect(mockOnSourceFileSelect).toHaveBeenCalledWith(sourceFiles[0]);
+    });
+  });
+
+  describe('when no value is selected', () => {
+    it('should have empty default value selected', () => {
+      const { getByRole } = renderSourceFileLookup();
+
+      const select = getByRole('combobox', { name: 'ui-quick-marc.sourceFileLookup.fieldLabel' });
+
+      expect(select.value).toBe('');
     });
   });
 });

@@ -7,6 +7,7 @@
 * [UIQM-740](https://issues.folio.org/browse/UIQM-740) Don't show warn/fail error toasts when there are no warns/fails.
 * [UIQM-728](https://issues.folio.org/browse/UIQM-728) Keep focus on last focused element when user cancels on confirmation modals.
 * [UIQM-743](https://issues.folio.org/browse/UIQM-743) Prevent `handleSubmit` from running if there is any validation issue, instead of using the `complete` form API.
+* [UIQM-754](https://issues.folio.org/browse/UIQM-754) Replace the source file lookup modal with a dropdown.
 
 ## [9.0.2] (IN PROGRESS)
 

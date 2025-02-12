@@ -6,40 +6,30 @@ import {
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
-import { Button } from '@folio/stripes/components';
+import { Select } from '@folio/stripes/components';
 
 import { useAuthoritySourceFiles } from '../../queries';
-import { SourceFileLookupModal } from './SourceFileLookupModal';
 
 const propTypes = {
-  disabled: PropTypes.bool.isRequired,
   onSourceFileSelect: PropTypes.func.isRequired,
 };
 
 const SourceFileLookup = ({
-  disabled,
   onSourceFileSelect,
 }) => {
   const intl = useIntl();
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { sourceFiles } = useAuthoritySourceFiles({ searchParams: { selectable: true } });
 
-  const openModal = useCallback(() => setIsModalOpen(true), [setIsModalOpen]);
-  const closeModal = useCallback(() => setIsModalOpen(false), [setIsModalOpen]);
+  const [selectedSourceFileId, setSelectedSourceFileId] = useState('');
 
-  const onCancelModal = useCallback(() => {
-    closeModal();
-  }, [closeModal]);
+  const handleSourceFileChange = useCallback((e) => {
+    const sourceFileId = e.target.value;
+    const sourceFile = sourceFiles.find(({ id }) => id === sourceFileId);
 
-  const onConfirmModal = useCallback((sourceFileId) => {
-    const selectedSourceFile = sourceFiles.find(sourceFile => sourceFile.id === sourceFileId);
+    onSourceFileSelect(sourceFile);
+    setSelectedSourceFileId(sourceFileId);
+  }, [onSourceFileSelect, sourceFiles]);
 
-    onSourceFileSelect(selectedSourceFile);
-    closeModal();
-  }, [onSourceFileSelect, closeModal, sourceFiles]);
-
-  const label = intl.formatMessage({ id: 'ui-quick-marc.sourceFileLookup' });
   const sourceFileOptions = useMemo(() => sourceFiles.map(sourceFile => ({
     label: sourceFile.name,
     value: sourceFile.id,
@@ -47,19 +37,13 @@ const SourceFileLookup = ({
 
   return (
     <>
-      <Button
-        buttonStyle="link"
-        disabled={disabled}
+      <Select
+        aria-label={intl.formatMessage({ id: 'ui-quick-marc.sourceFileLookup.fieldLabel' })}
+        placeholder={intl.formatMessage({ id: 'ui-quick-marc.sourceFileLookup.placeholder' })}
         marginBottom0
-        onClick={openModal}
-      >
-        {label}
-      </Button>
-      <SourceFileLookupModal
-        open={isModalOpen}
-        sourceFileOptions={sourceFileOptions}
-        onConfirm={onConfirmModal}
-        onCancel={onCancelModal}
+        value={selectedSourceFileId}
+        dataOptions={sourceFileOptions}
+        onChange={handleSourceFileChange}
       />
     </>
   );

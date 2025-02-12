@@ -102,7 +102,6 @@ const ControlNumberField = ({
       {canSelectSourceFile && (
         <Layout className="display-flex">
           <SourceFileLookup
-            disabled={isLoadingHrid}
             onSourceFileSelect={handleSourceFileSelection}
           />
           {isLoadingHrid && <Loading data-testid="hridLoading" />}

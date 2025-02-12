@@ -889,10 +889,8 @@
   "record.quickMarcEditorLabel": "Quick MARC editor",
 
   "permanentLocationLookup": "Permanent location look-up",
-  "sourceFileLookup": "Authority file look-up",
-  "sourceFileLookupModal": "Select authority file",
-  "sourceFileLookupModal.fieldLabel": "Authority file name",
-  "sourceFileLookupModal.placeholder": "Select authority file",
+  "sourceFileLookup.fieldLabel": "Authority file name",
+  "sourceFileLookup.placeholder": "Select authority file",
   "noPlugin": "No plugin is installed",
   "print": "Print",
 
