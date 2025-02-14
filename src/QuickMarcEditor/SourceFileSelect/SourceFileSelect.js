@@ -36,16 +36,14 @@ const SourceFileSelect = ({
   })), [sourceFiles]);
 
   return (
-    <>
-      <Select
-        aria-label={intl.formatMessage({ id: 'ui-quick-marc.sourceFileSelect.fieldLabel' })}
-        placeholder={intl.formatMessage({ id: 'ui-quick-marc.sourceFileSelect.placeholder' })}
-        marginBottom0
-        value={selectedSourceFileId}
-        dataOptions={sourceFileOptions}
-        onChange={handleSourceFileChange}
-      />
-    </>
+    <Select
+      aria-label={intl.formatMessage({ id: 'ui-quick-marc.sourceFileSelect.fieldLabel' })}
+      placeholder={intl.formatMessage({ id: 'ui-quick-marc.sourceFileSelect.placeholder' })}
+      marginBottom0
+      value={selectedSourceFileId}
+      dataOptions={sourceFileOptions}
+      onChange={handleSourceFileChange}
+    />
   );
 };
 
