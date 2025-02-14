@@ -5,15 +5,15 @@ import {
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 
-import { SourceFileLookup } from '../../SourceFileLookup';
+import { SourceFileSelect } from '../../SourceFileSelect';
 import { ControlNumberField } from './ControlNumberField';
 import { useAuthorityFileNextHrid } from '../../../queries';
 import { MARC_TYPES } from '../../../common/constants';
 import { QUICK_MARC_ACTIONS } from '../../constants';
 import Harness from '../../../../test/jest/helpers/harness';
 
-jest.mock('../../SourceFileLookup', () => ({
-  SourceFileLookup: jest.fn(() => <div>SourceFileLookup</div>),
+jest.mock('../../SourceFileSelect', () => ({
+  SourceFileSelect: jest.fn(() => <div>SourceFileSelect</div>),
 }));
 
 const hrid = 'n1';
@@ -82,26 +82,26 @@ describe('Given ControlNumberField', () => {
     } = renderControlNumberField();
 
     expect(getByRole('textbox')).toBeDefined();
-    expect(getByText('SourceFileLookup')).toBeDefined();
+    expect(getByText('SourceFileSelect')).toBeDefined();
   });
 
   describe('when marc type is not AUTHORITY', () => {
-    it('should not render source file lookup', () => {
+    it('should not render source file select', () => {
       const { queryByText } = renderControlNumberField({
         marcType: MARC_TYPES.BIB,
       });
 
-      expect(queryByText('SourceFileLookup')).toBeNull();
+      expect(queryByText('SourceFileSelect')).toBeNull();
     });
   });
 
   describe('when action is not CREATE', () => {
-    it('should not render source file lookup', () => {
+    it('should not render source file select', () => {
       const { queryByText } = renderControlNumberField({
         action: QUICK_MARC_ACTIONS.EDIT,
       });
 
-      expect(queryByText('ui-quick-marc.sourceFileLookup')).toBeNull();
+      expect(queryByText('ui-quick-marc.sourceFileSelect')).toBeNull();
     });
   });
 
@@ -118,9 +118,9 @@ describe('Given ControlNumberField', () => {
           source: 'local',
         };
 
-        expect(getByText('SourceFileLookup')).toBeVisible();
+        expect(getByText('SourceFileSelect')).toBeVisible();
 
-        await act(async () => SourceFileLookup.mock.calls[0][0].onSourceFileSelect(sourceFile));
+        await act(async () => SourceFileSelect.mock.calls[0][0].onSourceFileSelect(sourceFile));
 
         expect(mockGetAuthorityFileNextHrid).toHaveBeenCalledWith(sourceFile.id);
         expect(getByRole('textbox', { name: 'ui-quick-marc.record.subfield' }).value).toBe(hrid);
@@ -154,7 +154,7 @@ describe('Given ControlNumberField', () => {
           source: 'folio',
         };
 
-        await act(async () => SourceFileLookup.mock.calls[0][0].onSourceFileSelect(sourceFile));
+        await act(async () => SourceFileSelect.mock.calls[0][0].onSourceFileSelect(sourceFile));
 
         expect(getByRole('textbox', { name: 'ui-quick-marc.record.subfield' }).value).toBe('some content');
 
@@ -177,7 +177,7 @@ describe('Given ControlNumberField', () => {
     });
 
     describe('and FOLIO source file is selected and the next HRID is loading', () => {
-      it('should display loading next to the source file lookup', async () => {
+      it('should display loading next to the source file select', async () => {
         useAuthorityFileNextHrid.mockReturnValue({
           isLoading: true,
         });
@@ -187,7 +187,7 @@ describe('Given ControlNumberField', () => {
           marcType: MARC_TYPES.AUTHORITY,
         });
 
-        expect(queryByText('SourceFileLookup')).toBeVisible();
+        expect(queryByText('SourceFileSelect')).toBeVisible();
         expect(getByTestId('hridLoading')).toBeVisible();
       });
     });
