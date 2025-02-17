@@ -8,6 +8,8 @@
 * [UIQM-728](https://issues.folio.org/browse/UIQM-728) Keep focus on last focused element when user cancels on confirmation modals.
 * [UIQM-743](https://issues.folio.org/browse/UIQM-743) Prevent `handleSubmit` from running if there is any validation issue, instead of using the `complete` form API.
 * [UIQM-754](https://issues.folio.org/browse/UIQM-754) Replace the source file lookup modal with a dropdown.
+* [UIQM-751](https://issues.folio.org/browse/UIQM-751) *BREAKING* migrate stripes dependencies to their Sunflower versions.
+* [UIQM-752](https://issues.folio.org/browse/UIQM-752) *BREAKING* migrate react-intl to v7.
 
 ## [9.0.2] (IN PROGRESS)
 
