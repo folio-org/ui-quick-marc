@@ -92,7 +92,7 @@ const QuickMarcEditorRows = ({
   instance,
   linksCount,
   isLoadingLinkSuggestions,
-  onCheckCentralTenantPerm,
+  onCheckCentralTenantPerm = noop,
   onInputFocus,
 }) => {
   const location = useLocation();
@@ -658,10 +658,6 @@ QuickMarcEditorRows.propTypes = {
   fixedFieldSpec: PropTypes.object.isRequired,
   onCheckCentralTenantPerm: PropTypes.func,
   onInputFocus: PropTypes.func.isRequired,
-};
-
-QuickMarcEditorRows.defaultProps = {
-  onCheckCentralTenantPerm: noop,
 };
 
 export default QuickMarcEditorRows;
