@@ -391,10 +391,6 @@
     "record.fixedField.tip.Deterioration stage": "Slijtagefase",
     "record.fixedField.tip.Kind of color stock or print": "Soort kleur of print",
     "record.fixedField.tip.Refined categories of color": "Verfijnde categorieën van kleur",
-    "sourceFileLookup": "Authoritybestand opzoeken",
-    "sourceFileLookupModal": "Authoritybestand selecteren",
-    "sourceFileLookupModal.fieldLabel": "Authoritybestandsnaam",
-    "sourceFileLookupModal.placeholder": "Selecteer authoritybestand",
     "authority-record.create.title": "Een nieuwe {shared, select, true {shared} false {local} other {}} MARC-authorityrecord aanmaken",
     "record.error.fieldIsControlled": "Een subveld(en) kan niet worden bijgewerkt omdat het wordt gecontroleerd door een authority heading.",
     "record.error.controlField.content.empty": "Record kan niet worden opgeslagen. Er is een authorityrecord vereist",
@@ -891,5 +887,7 @@
     "permission.quick-marc-authority-records.link-unlink.execute": "quickMARC: Can Link/unlink authority records to bib records",
     "record.save.error.warn": "<b>Scroll alstublieft om het volledige Record te bekijken. Los eventuele Nummers op en sla op om het Record opnieuw te valideren.</b>{breakingLine}Waarschuwingsfouten: <b>{warnCount}</b>",
     "record.save.error.fail": "<b>Scroll alstublieft om het volledige Record te bekijken. Los eventuele Nummers op en sla op om het Record opnieuw te valideren.</b>{breakingLine}Foutmeldingen: <b>{failCount}</b>{breakingLine}Record kan niet worden opgeslagen met een foutmelding.",
-    "record.save.error.failAndWarn": "<b>Scroll alstublieft om het volledige Record te bekijken. Los problemen op indien nodig en sla op om het Record opnieuw te valideren.</b>{breakingLine}Waarschuwingsfouten: <b>{warnCount}</b>{breakingLine}Foutfouten: <b>{failCount}</b>{breakingLine}Record kan niet worden opgeslagen met een foutfout."
+    "record.save.error.failAndWarn": "<b>Scroll alstublieft om het volledige Record te bekijken. Los problemen op indien nodig en sla op om het Record opnieuw te valideren.</b>{breakingLine}Waarschuwingsfouten: <b>{warnCount}</b>{breakingLine}Foutfouten: <b>{failCount}</b>{breakingLine}Record kan niet worden opgeslagen met een foutfout.",
+    "sourceFileSelect.fieldLabel": "Authority file name",
+    "sourceFileSelect.placeholder": "Select authority file"
 }
