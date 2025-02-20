@@ -19,20 +19,15 @@ import {
 import { SourceFileSelect } from '../../SourceFileSelect';
 import { ContentField } from '../ContentField';
 import { ErrorMessages } from '../ErrorMessages';
-import {
-  MARC_TYPES,
-  SOURCES,
-} from '../../../common/constants';
-import { QUICK_MARC_ACTIONS } from '../../constants';
+import { SOURCES } from '../../../common/constants';
 import { getContentSubfieldValue } from '../../utils';
 import { useAuthorityFileNextHrid } from '../../../queries';
 import { QuickMarcContext } from '../../../contexts';
 
 const propTypes = {
+  canSelectSourceFile: PropTypes.bool.isRequired,
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  marcType: PropTypes.string.isRequired,
-  action: PropTypes.string.isRequired,
   recordRows: PropTypes.arrayOf(PropTypes.object).isRequired,
   fieldId: PropTypes.string.isRequired,
 };
@@ -40,10 +35,9 @@ const propTypes = {
 const ControlNumberField = ({
   id,
   name,
-  marcType,
-  action,
   recordRows,
   fieldId,
+  canSelectSourceFile,
 }) => {
   const intl = useIntl();
   const { input } = useField(name);
@@ -80,8 +74,6 @@ const ControlNumberField = ({
     handleChangeContent(content);
   }, [valueOf010$a, handleChangeContent, getAuthorityFileNextHrid, setSelectedSourceFile]);
 
-  const canSelectSourceFile = marcType === MARC_TYPES.AUTHORITY && action === QUICK_MARC_ACTIONS.CREATE;
-
   useEffect(() => {
     if (selectedSourceFile?.source === SOURCES.FOLIO) {
       handleChangeContent(valueOf010$a);
@@ -90,16 +82,6 @@ const ControlNumberField = ({
 
   return (
     <>
-      <Field
-        component={ContentField}
-        aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
-        name={name}
-        disabled
-        data-testid={id}
-        id={id}
-        parse={v => v}
-        error={errors && <ErrorMessages errors={errors} />}
-      />
       {canSelectSourceFile && (
         <Row>
           <Col xs={4}>
@@ -110,6 +92,17 @@ const ControlNumberField = ({
           {isLoadingHrid && <Loading data-testid="hridLoading" />}
         </Row>
       )}
+      <Field
+        component={ContentField}
+        aria-label={intl.formatMessage({ id: 'ui-quick-marc.record.subfield' })}
+        name={name}
+        disabled
+        data-testid={id}
+        id={id}
+        parse={v => v}
+        error={errors && <ErrorMessages errors={errors} />}
+        marginBottom0
+      />
     </>
   );
 };

@@ -8,8 +8,6 @@ import arrayMutators from 'final-form-arrays';
 import { SourceFileSelect } from '../../SourceFileSelect';
 import { ControlNumberField } from './ControlNumberField';
 import { useAuthorityFileNextHrid } from '../../../queries';
-import { MARC_TYPES } from '../../../common/constants';
-import { QUICK_MARC_ACTIONS } from '../../constants';
 import Harness from '../../../../test/jest/helpers/harness';
 
 jest.mock('../../SourceFileSelect', () => ({
@@ -51,9 +49,8 @@ const getControlNumberField = (props = {}, formProps = {}) => (
       <ControlNumberField
         id="id-1"
         name="controlNumber"
-        marcType={MARC_TYPES.AUTHORITY}
-        action={QUICK_MARC_ACTIONS.CREATE}
         recordRows={values.records}
+        canSelectSourceFile
         {...props}
       />
     )}
@@ -85,23 +82,13 @@ describe('Given ControlNumberField', () => {
     expect(getByText('SourceFileSelect')).toBeDefined();
   });
 
-  describe('when marc type is not AUTHORITY', () => {
+  describe('when marc type is not AUTHORITY or action is not CREATE', () => {
     it('should not render source file select', () => {
       const { queryByText } = renderControlNumberField({
-        marcType: MARC_TYPES.BIB,
+        canSelectSourceFile: false,
       });
 
       expect(queryByText('SourceFileSelect')).toBeNull();
-    });
-  });
-
-  describe('when action is not CREATE', () => {
-    it('should not render source file select', () => {
-      const { queryByText } = renderControlNumberField({
-        action: QUICK_MARC_ACTIONS.EDIT,
-      });
-
-      expect(queryByText('ui-quick-marc.sourceFileSelect')).toBeNull();
     });
   });
 
@@ -109,8 +96,7 @@ describe('Given ControlNumberField', () => {
     describe('and a local source file is selected', () => {
       it('should have row content equal to the next HRID', async () => {
         const { getByText, getByRole } = renderControlNumberField({
-          action: QUICK_MARC_ACTIONS.CREATE,
-          marcType: MARC_TYPES.AUTHORITY,
+          canSelectSourceFile: true,
         });
 
         const sourceFile = {
@@ -130,8 +116,7 @@ describe('Given ControlNumberField', () => {
     describe('and FOLIO source file is selected', () => {
       it('should have row content equal to 010 $a', async () => {
         const props = {
-          action: QUICK_MARC_ACTIONS.CREATE,
-          marcType: MARC_TYPES.AUTHORITY,
+          canSelectSourceFile: true,
         };
 
         const formProps = {
@@ -183,8 +168,7 @@ describe('Given ControlNumberField', () => {
         });
 
         const { getByTestId, queryByText } = renderControlNumberField({
-          action: QUICK_MARC_ACTIONS.CREATE,
-          marcType: MARC_TYPES.AUTHORITY,
+          canSelectSourceFile: true,
         });
 
         expect(queryByText('SourceFileSelect')).toBeVisible();
