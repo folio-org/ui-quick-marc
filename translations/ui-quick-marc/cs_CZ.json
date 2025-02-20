@@ -391,10 +391,6 @@
     "record.fixedField.tip.Deterioration stage": "Fáze zhoršování",
     "record.fixedField.tip.Kind of color stock or print": "Druh barevného materiálu nebo tisku",
     "record.fixedField.tip.Refined categories of color": "Upřesněné kategorie barev",
-    "sourceFileLookup": "Vyhledat soubory autorit",
-    "sourceFileLookupModal": "Vybrat soubor autority",
-    "sourceFileLookupModal.fieldLabel": "Název souboru autority",
-    "sourceFileLookupModal.placeholder": "Vybrat soubor autority",
     "authority-record.create.title": "Vytvořit nový {shared, select, true {sdílený} false {místní} other {}} MARC záznam autority",
     "record.error.fieldIsControlled": "Podpole nelze aktualizovat, protože je řízeno záhlavím autority.",
     "record.error.controlField.content.empty": "Záznam nelze uložit. Je vyžadován soubor autority",
@@ -891,5 +887,7 @@
     "permission.quick-marc-authority-records.link-unlink.execute": "quickMARC: Může propojit/odpojit záznamy autorit s bib. záznamy",
     "record.save.error.warn": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Warn errors: <b>{warnCount}</b>",
     "record.save.error.fail": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Fail errors: <b>{failCount}</b>{breakingLine}Record cannot be saved with a fail error.",
-    "record.save.error.failAndWarn": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Warn errors: <b>{warnCount}</b>{breakingLine}Fail errors: <b>{failCount}</b>{breakingLine}Record cannot be saved with a fail error."
+    "record.save.error.failAndWarn": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Warn errors: <b>{warnCount}</b>{breakingLine}Fail errors: <b>{failCount}</b>{breakingLine}Record cannot be saved with a fail error.",
+    "sourceFileSelect.fieldLabel": "Authority file name",
+    "sourceFileSelect.placeholder": "Select authority file"
 }
