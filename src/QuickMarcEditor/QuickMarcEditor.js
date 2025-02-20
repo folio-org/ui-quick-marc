@@ -105,11 +105,11 @@ const QuickMarcEditor = ({
   marcType,
   fixedFieldSpec,
   locations,
-  httpError,
+  httpError = null,
   externalRecordPath,
-  confirmRemoveAuthorityLinking,
+  confirmRemoveAuthorityLinking = false,
   linksCount,
-  onCheckCentralTenantPerm,
+  onCheckCentralTenantPerm = noop,
   validate,
 }) => {
   const stripes = useStripes();
@@ -712,12 +712,6 @@ QuickMarcEditor.propTypes = {
   confirmRemoveAuthorityLinking: PropTypes.bool,
   onCheckCentralTenantPerm: PropTypes.func,
   validate: PropTypes.func.isRequired,
-};
-
-QuickMarcEditor.defaultProps = {
-  httpError: null,
-  confirmRemoveAuthorityLinking: false,
-  onCheckCentralTenantPerm: noop,
 };
 
 export default stripesFinalForm({

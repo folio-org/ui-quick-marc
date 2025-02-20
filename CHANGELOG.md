@@ -10,6 +10,7 @@
 * [UIQM-754](https://issues.folio.org/browse/UIQM-754) Replace the source file lookup modal with a dropdown.
 * [UIQM-751](https://issues.folio.org/browse/UIQM-751) *BREAKING* migrate stripes dependencies to their Sunflower versions.
 * [UIQM-752](https://issues.folio.org/browse/UIQM-752) *BREAKING* migrate react-intl to v7.
+* [UIQM-659](https://issues.folio.org/browse/UIQM-659) React v19: refactor away from default props for functional components.
 
 ## [9.0.2] (IN PROGRESS)
 

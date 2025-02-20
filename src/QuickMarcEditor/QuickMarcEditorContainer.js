@@ -69,7 +69,7 @@ const QuickMarcEditorContainer = ({
   location,
   externalRecordPath,
   stripes,
-  onCheckCentralTenantPerm,
+  onCheckCentralTenantPerm = noop,
 }) => {
   const {
     externalId,
@@ -307,8 +307,5 @@ QuickMarcEditorContainer.manifest = Object.freeze({
 });
 
 QuickMarcEditorContainer.propTypes = propTypes;
-QuickMarcEditorContainer.defaultProps = {
-  onCheckCentralTenantPerm: noop,
-};
 
 export default withRouter(stripesConnect(QuickMarcEditorContainer));

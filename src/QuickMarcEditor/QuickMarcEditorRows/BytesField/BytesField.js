@@ -274,7 +274,12 @@ const renderSubField = (name, config, intl) => {
   );
 };
 
-export const BytesField = ({ config, name, id, error }) => {
+export const BytesField = ({
+  config,
+  name,
+  id = '',
+  error,
+}) => {
   const intl = useIntl();
 
   return (
@@ -308,8 +313,4 @@ BytesField.propTypes = {
   config: PropTypes.object.isRequired,
   id: PropTypes.string,
   error: PropTypes.element,
-};
-
-BytesField.defaultProps = {
-  id: '',
 };
