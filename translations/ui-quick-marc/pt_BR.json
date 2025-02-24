@@ -391,10 +391,6 @@
     "record.fixedField.tip.Deterioration stage": "Estágio de deterioração",
     "record.fixedField.tip.Kind of color stock or print": "Tipo de estoque de cores ou impressão",
     "record.fixedField.tip.Refined categories of color": "Categorias refinadas de cores",
-    "sourceFileLookup": "Consulta de arquivo de autoridade",
-    "sourceFileLookupModal": "Selecione o arquivo de autoridade",
-    "sourceFileLookupModal.fieldLabel": "Nome do arquivo de autoridade",
-    "sourceFileLookupModal.placeholder": "Selecione o arquivo de autoridade",
     "authority-record.create.title": "Criar um novo registro de autoridade MARC {shared, select, true {shared} false {local} other {}}",
     "record.error.fieldIsControlled": "Um subcampo(s) não pode(m) ser atualizado(s) porque é(são) controlado(s) por um cabeçalho de autoridade.",
     "record.error.controlField.content.empty": "O registro não pode ser salvo. É necessário um arquivo de autoridade",
@@ -891,5 +887,7 @@
     "permission.quick-marc-authority-records.link-unlink.execute": "QuickMARC: pode vincular/desvincular registros de autoridade a registros bibliográficos",
     "record.save.error.warn": "<b>Role a tela para visualizar o registro inteiro. Resolva os problemas conforme necessário e salve para revalidar o registro.</b> {breakingLine} Avisar erros: <b>{warnCount}</b>",
     "record.save.error.fail": "<b>Role a tela para visualizar o registro inteiro. Resolva os problemas conforme necessário e salve para revalidar o registro.</b>{breakingLine}Erros de falha: <b>{failCount}</b>{breakingLine}O registro não pode ser salvo com um erro de falha.",
-    "record.save.error.failAndWarn": "<b>Role a tela para visualizar o registro inteiro. Resolva os problemas conforme necessário e salve para revalidar o registro.</b>{breakingLine}Avisar erros: <b>{warnCount}</b>{breakingLine}Erros de falha: <b>{failCount}</b>{breakingLine}O registro não pode ser salvo com um erro de falha."
+    "record.save.error.failAndWarn": "<b>Role a tela para visualizar o registro inteiro. Resolva os problemas conforme necessário e salve para revalidar o registro.</b>{breakingLine}Avisar erros: <b>{warnCount}</b>{breakingLine}Erros de falha: <b>{failCount}</b>{breakingLine}O registro não pode ser salvo com um erro de falha.",
+    "sourceFileSelect.fieldLabel": "Nome do arquivo de autoridade",
+    "sourceFileSelect.placeholder": "Selecione o arquivo de autoridade"
 }
