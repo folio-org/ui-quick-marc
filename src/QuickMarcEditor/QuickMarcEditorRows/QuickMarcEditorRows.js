@@ -17,6 +17,7 @@ import { useIntl } from 'react-intl';
 import isEqual from 'lodash/isEqual';
 import defer from 'lodash/defer';
 import noop from 'lodash/noop';
+import classNames from 'classnames';
 
 import { useStripes } from '@folio/stripes/core';
 import {
@@ -317,6 +318,11 @@ const QuickMarcEditorRows = ({
 
             const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') && recordRow._isLinked;
             const canSearchInInventory = [MARC_TYPES.AUTHORITY, MARC_TYPES.BIB].includes(marcType) && recordRow.tag === '010';
+            const canSelectSourceFile = marcType === MARC_TYPES.AUTHORITY && action === QUICK_MARC_ACTIONS.CREATE;
+
+            const tagClassName = classNames(styles.quickMarcEditorRowTag, {
+              [styles.marginTopAuto]: isControlNumberField && canSelectSourceFile,
+            });
 
             return (
               <div
@@ -415,7 +421,7 @@ const QuickMarcEditorRows = ({
                   }
                 </div>
 
-                <div className={styles.quickMarcEditorRowTag}>
+                <div className={tagClassName}>
                   <Field
                     inputRef={processTagRef}
                     data-index={idx}
@@ -477,9 +483,8 @@ const QuickMarcEditorRows = ({
                         id={`control-number-field-${idx}`}
                         fieldId={recordRow.id}
                         name={`${name}.content`}
-                        marcType={marcType}
-                        action={action}
                         recordRows={records.value}
+                        canSelectSourceFile={canSelectSourceFile}
                       />
                     )
                   }
