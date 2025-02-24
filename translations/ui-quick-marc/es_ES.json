@@ -391,10 +391,6 @@
     "record.fixedField.tip.Deterioration stage": "Deterioration stage",
     "record.fixedField.tip.Kind of color stock or print": "Kind of color stock or print",
     "record.fixedField.tip.Refined categories of color": "Refined categories of color",
-    "sourceFileLookup": "Authority file look-up",
-    "sourceFileLookupModal": "Select authority file",
-    "sourceFileLookupModal.fieldLabel": "Authority file name",
-    "sourceFileLookupModal.placeholder": "Seleccione el archivo de autoridad",
     "authority-record.create.title": "Create a new {shared, select, true {shared} false {local} other {}} MARC authority record",
     "record.error.fieldIsControlled": "A subfield(s) cannot be updated because it is controlled by an authority heading.",
     "record.error.controlField.content.empty": "Record cannot be saved. An authority file is required",
@@ -891,5 +887,7 @@
     "permission.quick-marc-authority-records.link-unlink.execute": "quickMARC: Can Link/unlink authority records to bib records",
     "record.save.error.warn": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Warn errors: <b>{warnCount}</b>",
     "record.save.error.fail": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Fail errors: <b>{failCount}</b>{breakingLine}Record cannot be saved with a fail error.",
-    "record.save.error.failAndWarn": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Warn errors: <b>{warnCount}</b>{breakingLine}Fail errors: <b>{failCount}</b>{breakingLine}Record cannot be saved with a fail error."
+    "record.save.error.failAndWarn": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Warn errors: <b>{warnCount}</b>{breakingLine}Fail errors: <b>{failCount}</b>{breakingLine}Record cannot be saved with a fail error.",
+    "sourceFileSelect.fieldLabel": "Authority file name",
+    "sourceFileSelect.placeholder": "Select authority file"
 }

@@ -391,10 +391,6 @@
     "record.fixedField.tip.Deterioration stage": "惡化階段",
     "record.fixedField.tip.Kind of color stock or print": "彩色庫存或印刷品的種類",
     "record.fixedField.tip.Refined categories of color": "細化顏色類別",
-    "sourceFileLookup": "權威檔案查詢",
-    "sourceFileLookupModal": "選擇權威檔案",
-    "sourceFileLookupModal.fieldLabel": "權威檔案名稱",
-    "sourceFileLookupModal.placeholder": "選擇權威檔案",
     "authority-record.create.title": "建立新的{shared, select, true { shared } false { local } other {}} MARC 權威紀錄",
     "record.error.fieldIsControlled": "A subfield(s) cannot be updated because it is controlled by an authority heading.",
     "record.error.controlField.content.empty": "紀錄無法保存。需要權威檔案",
@@ -891,5 +887,7 @@
     "permission.quick-marc-authority-records.link-unlink.execute": "quickMARC: Can Link/unlink authority records to bib records",
     "record.save.error.warn": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Warn errors: <b>{warnCount}</b>",
     "record.save.error.fail": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Fail errors: <b>{failCount}</b>{breakingLine}Record cannot be saved with a fail error.",
-    "record.save.error.failAndWarn": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Warn errors: <b>{warnCount}</b>{breakingLine}Fail errors: <b>{failCount}</b>{breakingLine}Record cannot be saved with a fail error."
+    "record.save.error.failAndWarn": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Warn errors: <b>{warnCount}</b>{breakingLine}Fail errors: <b>{failCount}</b>{breakingLine}Record cannot be saved with a fail error.",
+    "sourceFileSelect.fieldLabel": "Authority file name",
+    "sourceFileSelect.placeholder": "Select authority file"
 }
