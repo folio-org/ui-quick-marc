@@ -888,6 +888,6 @@
     "record.save.error.warn": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Warn errors: <b>{warnCount}</b>",
     "record.save.error.fail": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Fail errors: <b>{failCount}</b>{breakingLine}Record cannot be saved with a fail error.",
     "record.save.error.failAndWarn": "<b>Please scroll to view the entire record. Resolve issues as needed and save to revalidate the record.</b>{breakingLine}Warn errors: <b>{warnCount}</b>{breakingLine}Fail errors: <b>{failCount}</b>{breakingLine}Record cannot be saved with a fail error.",
-    "sourceFileSelect.fieldLabel": "Authority file name",
-    "sourceFileSelect.placeholder": "Select authority file"
+    "sourceFileSelect.fieldLabel": "Název souboru autority",
+    "sourceFileSelect.placeholder": "Vybrat soubor autority"
 }
