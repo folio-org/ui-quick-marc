@@ -30,7 +30,8 @@
           "marc-records-editor.item.get",
           "inventory.instances.item.get",
           "instance-authority-links.instances.collection.get",
-          "instance-authority.linking-rules.collection.get"
+          "instance-authority.linking-rules.collection.get",
+          "audit.config.groups.settings.collection.get"
         ],
         "visible": true
       },
