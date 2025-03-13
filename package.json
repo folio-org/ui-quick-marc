@@ -31,7 +31,8 @@
           "inventory.instances.item.get",
           "instance-authority-links.instances.collection.get",
           "instance-authority.linking-rules.collection.get",
-          "audit.config.groups.settings.collection.get"
+          "audit.config.groups.settings.collection.get",
+          "audit.config.groups.settings.audit.inventory.collection.get"
         ],
         "visible": true
       },
