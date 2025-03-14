@@ -1,6 +1,6 @@
 # Change history for ui-quick-marc
 
-## [10.0.0] (IN PROGRESS)
+## [10.0.0] (https://github.com/folio-org/ui-quick-marc/tree/v10.0.0) (2025-03-13)
 
 * [UIQM-716](https://issues.folio.org/browse/UIQM-716) *BREAKING* Consolidate routes based on MARC type for bib and authority records to avoid page refresh after redirecting from the create page to the edit one.
 * [UIQM-730](https://issues.folio.org/browse/UIQM-730) Create/Edit/Derive MARC record - Retain focus when MARC record validation rules error display. Show validation issues toasts.
