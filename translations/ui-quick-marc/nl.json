@@ -882,12 +882,12 @@
     "record.errorMessage.help": "Help",
     "Inventory": "Collectiebezit",
     "MARC-authority": "MARC Authority",
-    "record.error.fixedField.invalidLength": "Invalid {name} field length, must be {length} characters.",
-    "permission.quick-marc-editor.derive.execute": "quickMARC: Derive new MARC bibliographic record",
-    "permission.quick-marc-authority-records.link-unlink.execute": "quickMARC: Can Link/unlink authority records to bib records",
+    "record.error.fixedField.invalidLength": "Ongeldig {name} field lengte, must be {length} tekens.",
+    "permission.quick-marc-editor.derive.execute": "quickMARC: Nieuwe MARC bibliographic record afleiden",
+    "permission.quick-marc-authority-records.link-unlink.execute": "quickMARC: Kan authority records aan bib records linken/ontkoppelen",
     "record.save.error.warn": "<b>Scroll alstublieft om het volledige Record te bekijken. Los eventuele Nummers op en sla op om het Record opnieuw te valideren.</b>{breakingLine}Waarschuwingsfouten: <b>{warnCount}</b>",
     "record.save.error.fail": "<b>Scroll alstublieft om het volledige Record te bekijken. Los eventuele Nummers op en sla op om het Record opnieuw te valideren.</b>{breakingLine}Foutmeldingen: <b>{failCount}</b>{breakingLine}Record kan niet worden opgeslagen met een foutmelding.",
     "record.save.error.failAndWarn": "<b>Scroll alstublieft om het volledige Record te bekijken. Los problemen op indien nodig en sla op om het Record opnieuw te valideren.</b>{breakingLine}Waarschuwingsfouten: <b>{warnCount}</b>{breakingLine}Foutfouten: <b>{failCount}</b>{breakingLine}Record kan niet worden opgeslagen met een foutfout.",
-    "sourceFileSelect.fieldLabel": "Authority file name",
-    "sourceFileSelect.placeholder": "Select authority file"
+    "sourceFileSelect.fieldLabel": "Auteur bestandsnaam",
+    "sourceFileSelect.placeholder": "Auteur selecteren"
 }
