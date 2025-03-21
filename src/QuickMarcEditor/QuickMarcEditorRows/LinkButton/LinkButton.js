@@ -10,6 +10,7 @@ import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import flatten from 'lodash/flatten';
 import isNil from 'lodash/isNil';
+import uniq from 'lodash/uniq';
 
 import {
   checkIfUserInCentralTenant,
@@ -25,9 +26,11 @@ import {
   Loading,
   ADVANCED_SEARCH_MATCH_OPTIONS,
 } from '@folio/stripes/components';
+import { useAuthorityLinkingRules } from '@folio/stripes-marc-components';
 
 import { useMarcSource } from '../../../queries';
 import { getContentSubfieldValue } from '../../utils';
+import { MarcFieldContent } from '../../../common';
 import {
   DEFAULT_LOOKUP_OPTIONS,
   searchableIndexesValues,
@@ -112,6 +115,8 @@ const LinkButton = ({
     },
   });
 
+  const { linkingRules } = useAuthorityLinkingRules();
+
   const onLinkRecord = (_authority) => {
     if (_authority.id === authority?.id) {
       refetchSource();
@@ -150,6 +155,10 @@ const LinkButton = ({
 
   const initialValues = useMemo(() => {
     const { dropdownValue: dropdownValueByTag } = DEFAULT_LOOKUP_OPTIONS[tag];
+    const linkableBibSubfields = uniq(linkingRules
+      .filter(linkingRule => linkingRule.bibField === tag)
+      .map(linkingRule => linkingRule.authoritySubfields)
+      .flat());
 
     let initialDropdownValue = dropdownValueByTag;
     let initialSearchInputValue = '';
@@ -165,18 +174,23 @@ const LinkButton = ({
       segment: initialSegment,
     };
 
-    // To get the desired search result, the search query must contain `$` instead of `{dollar}`.
-    // BE returns `{dollar}` because the field content already uses the `$` sign and there is no way
-    // to distinguish whether `$` is the start of the subfield or just some value in the subfield.
-    const fieldContent = Object.entries(getContentSubfieldValue(content))
-      .reduce((acc, [subfield, subfieldContent]) => {
-        acc[subfield] = subfieldContent.map(value => value.replaceAll('{dollar}', '$'));
+    const fieldContent = new MarcFieldContent(content);
 
-        return acc;
-      }, {});
+    const bibContentToSearchBy = fieldContent.reduce((searchValue, subfield) => {
+      const subfieldCode = subfield.code;
+
+      if (linkableBibSubfields.includes(subfieldCode.replace('$', ''))) {
+        // To get the desired search result, the search query must contain `$` instead of `{dollar}`.
+        // BE returns `{dollar}` because the field content already uses the `$` sign and there is no way
+        // to distinguish whether `$` is the start of the subfield or just some value in the subfield.
+        return `${searchValue} ${subfield.value.replaceAll('{dollar}', '$')}`;
+      }
+
+      return searchValue;
+    }, '').trim();
 
     if (fieldContent.$0?.length) {
-      const keywordValue = [fieldContent.$a, fieldContent.$d, fieldContent.$t].flat().filter(Boolean).join(' ');
+      const keywordValue = bibContentToSearchBy;
       const keywordQuery = keywordValue
         ? `${searchableIndexesValues.KEYWORD} ${EXACT_PHRASE} ${keywordValue}`
         : '';
@@ -201,11 +215,9 @@ const LinkButton = ({
         searchIndex: dropdownValueByTag,
         filters: initialFilters,
       };
-    } else if (fieldContent.$a?.length || fieldContent.$d?.length || fieldContent.$t?.length) {
+    } else if (bibContentToSearchBy) {
       initialSegment = navigationSegments.browse;
-      initialSearchInputValue = flatten([fieldContent.$a, fieldContent.$d, fieldContent.$t])
-        .filter(value => !isNil(value))
-        .join(' ');
+      initialSearchInputValue = bibContentToSearchBy;
       initialSearchQuery = initialSearchInputValue;
 
       _initialValues[navigationSegments.browse] = {
@@ -238,7 +250,7 @@ const LinkButton = ({
     _initialValues.segment = initialSegment;
 
     return _initialValues;
-  }, [content, tag, showSharedRecordsOnly]);
+  }, [content, tag, showSharedRecordsOnly, linkingRules]);
 
   const renderButton = () => {
     if (isLoading) {

@@ -1,5 +1,9 @@
 # Change history for ui-quick-marc
 
+## [11.1.0] (IN PROGRESS)
+
+* [UIQM-762](https://issues.folio.org/browse/UIQM-762) Select a MARC authority record - Update auto-populate Advanced search and Browse queries with all controlled subfields.
+
 ## [10.0.0] (https://github.com/folio-org/ui-quick-marc/tree/v10.0.0) (2025-03-13)
 
 * [UIQM-716](https://issues.folio.org/browse/UIQM-716) *BREAKING* Consolidate routes based on MARC type for bib and authority records to avoid page refresh after redirecting from the create page to the edit one.
