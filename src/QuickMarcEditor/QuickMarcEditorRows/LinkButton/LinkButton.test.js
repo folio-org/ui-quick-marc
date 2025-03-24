@@ -20,9 +20,17 @@ import { QUICK_MARC_ACTIONS } from '../../constants';
 
 import Harness from '../../../../test/jest/helpers/harness';
 
-const {
-  EXACT_PHRASE,
-} = ADVANCED_SEARCH_MATCH_OPTIONS;
+jest.mock('@folio/stripes-marc-components', () => ({
+  ...jest.requireActual('@folio/stripes-marc-components'),
+  useAuthorityLinkingRules: jest.fn().mockReturnValue({
+    linkingRules: [{
+      bibField: '100',
+      authoritySubfields: ['a', 'd'],
+    }],
+  }),
+}));
+
+const { EXACT_PHRASE } = ADVANCED_SEARCH_MATCH_OPTIONS;
 
 const mockOnClick = jest.fn();
 const mockGetMarcSource = jest.fn(() => ({ json: () => {} }));
@@ -91,6 +99,7 @@ describe('Given LinkButton', () => {
           id: 'authority-id',
         };
 
+        mockGetMarcSource.mockClear(); // clear linking rules call
         await act(async () => { Pluggable.mock.calls[0][0].onLinkRecord(authority); });
         act(() => { Pluggable.mock.calls[1][0].onLinkRecord(authority); });
 
@@ -128,7 +137,37 @@ describe('Given LinkButton', () => {
           content: '$a {dollar}{dollar}{dollar} 50.00{dollar} $d currency ({dollar}) $0 n123456789 $t test{dollar}',
         });
 
-        const searchInputValue = `keyword ${EXACT_PHRASE} $$$ 50.00$ currency ($) test$ or identifiers.value ${EXACT_PHRASE} n123456789`;
+        const searchInputValue = `keyword ${EXACT_PHRASE} $$$ 50.00$ currency ($) or identifiers.value ${EXACT_PHRASE} n123456789`;
+
+        const initialValues = {
+          search: {
+            dropdownValue: 'advancedSearch',
+            searchIndex: 'advancedSearch',
+            searchInputValue,
+            searchQuery: searchInputValue,
+            filters: null,
+          },
+          browse: {
+            dropdownValue: 'personalNameTitle',
+            searchIndex: 'personalNameTitle',
+            filters: null,
+          },
+          segment: 'search',
+        };
+
+        fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
+
+        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
+      });
+    });
+
+    describe('when linking Authority', () => {
+      it('should use all controlled subfields for search', () => {
+        const { getAllByTestId } = renderComponent({
+          content: '$a test1 $d test2 $0 n123456789 $t test3',
+        });
+
+        const searchInputValue = `keyword ${EXACT_PHRASE} test1 test2 or identifiers.value ${EXACT_PHRASE} n123456789`;
 
         const initialValues = {
           search: {
@@ -192,62 +231,6 @@ describe('Given LinkButton', () => {
             searchIndex: 'advancedSearch',
             searchInputValue: `identifiers.value ${EXACT_PHRASE} n123456789 or identifiers.value ${EXACT_PHRASE} n987654321`,
             searchQuery: `identifiers.value ${EXACT_PHRASE} n123456789 or identifiers.value ${EXACT_PHRASE} n987654321`,
-            filters: null,
-          },
-          browse: {
-            dropdownValue: 'personalNameTitle',
-            searchIndex: 'personalNameTitle',
-            filters: null,
-          },
-          segment: 'search',
-        };
-
-        fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
-
-        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
-      });
-    });
-
-    describe('when linking Authority to a field with $a, $d or $t', () => {
-      it('should pass initial values to plugin', async () => {
-        const { getAllByTestId } = renderComponent({
-          content: '$a value1 $d value2 $t value3',
-        });
-
-        const initialValues = {
-          search: {
-            dropdownValue: 'personalNameTitle',
-            searchIndex: 'personalNameTitle',
-            filters: null,
-          },
-          browse: {
-            dropdownValue: 'personalNameTitle',
-            searchIndex: 'personalNameTitle',
-            searchInputValue: 'value1 value2 value3',
-            searchQuery: 'value1 value2 value3',
-            filters: null,
-          },
-          segment: 'browse',
-        };
-
-        fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
-
-        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
-      });
-    });
-
-    describe('when linking Authority to a field with $a, $d or $t and with multiple $0', () => {
-      it('should pass initial values to plugin', async () => {
-        const { getAllByTestId } = renderComponent({
-          content: '$a value1 $d value2 $t value3 $0 value4 $0 http://id.workldcat.org/fast/value5',
-        });
-
-        const initialValues = {
-          search: {
-            dropdownValue: 'advancedSearch',
-            searchIndex: 'advancedSearch',
-            searchInputValue: `keyword ${EXACT_PHRASE} value1 value2 value3 or identifiers.value ${EXACT_PHRASE} value4 or identifiers.value ${EXACT_PHRASE} value5`,
-            searchQuery: `keyword ${EXACT_PHRASE} value1 value2 value3 or identifiers.value ${EXACT_PHRASE} value4 or identifiers.value ${EXACT_PHRASE} value5`,
             filters: null,
           },
           browse: {
