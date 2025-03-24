@@ -8,8 +8,6 @@ import {
 } from 'react-intl';
 import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import flatten from 'lodash/flatten';
-import isNil from 'lodash/isNil';
 import uniq from 'lodash/uniq';
 
 import {
@@ -29,7 +27,6 @@ import {
 import { useAuthorityLinkingRules } from '@folio/stripes-marc-components';
 
 import { useMarcSource } from '../../../queries';
-import { getContentSubfieldValue } from '../../utils';
 import { MarcFieldContent } from '../../../common';
 import {
   DEFAULT_LOOKUP_OPTIONS,
