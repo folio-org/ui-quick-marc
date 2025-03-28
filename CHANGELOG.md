@@ -17,6 +17,7 @@
 * [UIQM-752](https://issues.folio.org/browse/UIQM-752) *BREAKING* migrate react-intl to v7.
 * [UIQM-659](https://issues.folio.org/browse/UIQM-659) React v19: refactor away from default props for functional components.
 * [UIQM-761](https://issues.folio.org/browse/UIQM-761) Add `audit.config.groups.settings.collection.get` permission for `quickMARC: View MARC bibliographic record`.
+* [UIQM-763](https://folio-org.atlassian.net/browse/UIQM-763) Enable settings menu if `ui-quick-marc.settings.lccn-duplicate-check.edit` is enabled (possible in Eureka which allows invisible permission sets).
 
 ## [9.0.2] (IN PROGRESS)
 
