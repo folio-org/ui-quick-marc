@@ -11,7 +11,10 @@ import {
 import noop from 'lodash/noop';
 import isNil from 'lodash/isNil';
 
-import { useStripes } from '@folio/stripes/core';
+import {
+  useStripes,
+  checkIfUserInCentralTenant,
+} from '@folio/stripes/core';
 import { useShowCallout } from '@folio/stripes-acq-components';
 import { getHeaders } from '@folio/stripes-marc-components';
 
@@ -79,6 +82,14 @@ const useSubmitRecord = ({
     const fieldIds = getFieldIds(formValues);
     const searchParams = new URLSearchParams(location.search);
 
+    const isInCentralTenant = checkIfUserInCentralTenant(stripes);
+
+    // when a user creates a new Bib or Authority in a central tenant - it becomes shared
+    // so we need to append this parameter to the URL to tell quickMARC it is now a shared record
+    if (isInCentralTenant && marcType !== MARC_TYPES.HOLDINGS) {
+      searchParams.append('shared', true);
+    }
+
     const routes = {
       [MARC_TYPES.BIB]: `${basePath}/edit-bibliographic/${externalId}`,
       [MARC_TYPES.AUTHORITY]: `${basePath}/edit-authority/${externalId}`,
@@ -91,7 +102,7 @@ const useSubmitRecord = ({
       pathname: routes[marcType],
       search: searchParams.toString(),
     });
-  }, [basePath, marcType, location, history, refreshPageData]);
+  }, [basePath, marcType, location, history, refreshPageData, stripes]);
 
   const onCreate = useCallback(async (formValues, _api) => {
     const formValuesToProcess = prepareForSubmit(formValues);
