@@ -35,11 +35,6 @@ jest.mock('react-router-dom', () => ({
   useParams: jest.fn(() => ({})),
 }));
 
-jest.mock('@folio/stripes/core', () => ({
-  ...jest.requireActual('@folio/stripes/core'),
-  checkIfUserInCentralTenant: jest.fn().mockReturnValue(false),
-}));
-
 jest.mock('@folio/stripes-acq-components', () => ({
   ...jest.requireActual('@folio/stripes-acq-components'),
   useShowCallout: jest.fn(() => mockShowCallout),
