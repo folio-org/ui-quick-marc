@@ -4,6 +4,7 @@
 
 * [UIQM-762](https://issues.folio.org/browse/UIQM-762) Select a MARC authority record - Update auto-populate Advanced search and Browse queries with all controlled subfields.
 * [UIQM-744](https://issues.folio.org/browse/UIQM-744) Remove "Create a" text from the paneheader when creating new authority, bib, and holdings records.
+* [UIQM-744](https://issues.folio.org/browse/UIQM-765) Add `shared=true` parameter to url when a user saves and keeps editing a Bib/Authority record on a central tenant.
 
 ## [10.0.0] (https://github.com/folio-org/ui-quick-marc/tree/v10.0.0) (2025-03-13)
 

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import faker from 'faker';
 
+import { checkIfUserInCentralTenant } from '@folio/stripes/core';
 import { renderHook } from '@folio/jest-config-stripes/testing-library/react';
 
 import { QUICK_MARC_ACTIONS } from '../constants';
@@ -693,6 +694,8 @@ describe('useSaveRecord', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
+    checkIfUserInCentralTenant.mockClear().mockReturnValue(false);
+
     useAuthorityLinking.mockReturnValue({
       linkableBibFields: [],
       actualizeLinks: mockActualizeLinks,
@@ -1105,6 +1108,37 @@ describe('useSaveRecord', () => {
 
         expect(history.location.pathname).toBe(`${basePath}/edit-bibliographic/externalId-1`);
         expect(history.location.search).toBe('?sort=title');
+      });
+    });
+
+    describe('when a user is in a central tenant', () => {
+      beforeEach(() => {
+        checkIfUserInCentralTenant.mockClear().mockReturnValue(true);
+      });
+
+      it('should add "shared=true" parameter to the url', async () => {
+        const action = QUICK_MARC_ACTIONS.CREATE;
+        const marcType = MARC_TYPES.BIB;
+        const history = createMemoryHistory({
+          initialEntries: [`${basePath}?sort=title`],
+        });
+
+        const { result } = renderHook(useSaveRecord, {
+          initialProps: getInitialProps(marcType),
+          wrapper: getWrapper({
+            quickMarcContext: {
+              action,
+              marcType,
+              continueAfterSave: { current: true },
+            },
+            history,
+          }),
+        });
+
+        await act(async () => result.current.onSubmit(getFormValues(action, marcType)));
+
+        expect(history.location.pathname).toBe(`${basePath}/edit-bibliographic/externalId-1`);
+        expect(history.location.search).toBe('?sort=title&shared=true');
       });
     });
 
