@@ -8,7 +8,10 @@ import { renderHook } from '@folio/jest-config-stripes/testing-library/react';
 
 import { QUICK_MARC_ACTIONS } from '../constants';
 import { ERROR_TYPES, MARC_TYPES } from '../../common';
-import { useAuthorityLinking } from '../../hooks';
+import {
+  useAuthorityLinking,
+  useValidation,
+} from '../../hooks';
 import {
   useMarcRecordMutation,
   useValidate,
@@ -49,6 +52,7 @@ jest.mock('../utils', () => ({
 jest.mock('../../hooks', () => ({
   ...jest.requireActual('../../hooks'),
   useAuthorityLinking: jest.fn(),
+  useValidation: jest.fn((...params) => jest.requireActual('../../hooks').useValidation(...params)),
 }));
 
 jest.mock('../../queries', () => ({
@@ -1956,6 +1960,27 @@ describe('useSaveRecord', () => {
 
         expect(history.location.pathname).toBe(`${basePath}/edit-bibliographic/externalId-1`);
         expect(history.location.search).toBe('?sort=title');
+      });
+    });
+
+    describe('when the record is shared and the user is a member tenant', () => {
+      it('should not call useValidation with the central tenant id', async () => {
+        const action = QUICK_MARC_ACTIONS.DERIVE;
+        const marcType = MARC_TYPES.BIB;
+
+        const { result } = renderHook(useSaveRecord, {
+          initialProps: getInitialProps(marcType),
+          wrapper: getWrapper({
+            quickMarcContext: {
+              action,
+              marcType,
+            },
+          }),
+        });
+
+        await result.current.onSubmit(getFormValues(action, marcType));
+
+        expect(useValidation).toHaveBeenCalledWith(expect.anything(), null);
       });
     });
   });
