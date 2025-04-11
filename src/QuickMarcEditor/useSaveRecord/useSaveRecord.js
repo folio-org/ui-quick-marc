@@ -77,7 +77,10 @@ const useSaveRecord = ({
     instance?.id,
   ]);
 
-  const { validate } = useValidation(validationContext, tenantId);
+  const validationTenantId = isRequestToCentralTenantFromMember && action !== QUICK_MARC_ACTIONS.DERIVE
+    ? centralTenantId
+    : null;
+  const { validate } = useValidation(validationContext, validationTenantId);
 
   const prepareForSubmit = useCallback((formValues) => {
     let handlers = [];
