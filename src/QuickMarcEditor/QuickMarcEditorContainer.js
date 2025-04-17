@@ -47,7 +47,6 @@ const propTypes = {
   onSave: PropTypes.func.isRequired,
   externalRecordPath: PropTypes.string.isRequired,
   history: ReactRouterPropTypes.history.isRequired,
-  location: ReactRouterPropTypes.location.isRequired,
   mutator: PropTypes.object.isRequired,
   match: ReactRouterPropTypes.match.isRequired,
   stripes: PropTypes.object.isRequired,

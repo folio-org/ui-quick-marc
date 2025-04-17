@@ -9,10 +9,7 @@ import {
   useFormState,
 } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
-import {
-  Link,
-  useLocation,
-} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import isEqual from 'lodash/isEqual';
 import defer from 'lodash/defer';

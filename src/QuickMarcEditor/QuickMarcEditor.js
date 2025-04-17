@@ -6,7 +6,6 @@ import React, {
   useEffect,
   useContext,
 } from 'react';
-import { useLocation } from 'react-router';
 import { FormSpy } from 'react-final-form';
 import PropTypes from 'prop-types';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -115,7 +114,6 @@ const QuickMarcEditor = ({
   const stripes = useStripes();
   const intl = useIntl();
   const formValues = getState().values;
-  const location = useLocation();
   const showCallout = useShowCallout();
   const [records, setRecords] = useState([]);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);

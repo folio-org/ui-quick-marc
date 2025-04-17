@@ -5,7 +5,6 @@ import {
 } from 'react';
 import {
   useHistory,
-  useLocation,
   useParams,
 } from 'react-router-dom';
 import noop from 'lodash/noop';
@@ -48,7 +47,6 @@ const useSubmitRecord = ({
     instanceId: _instanceId,
   } = useParams();
   const history = useHistory();
-  const location = useLocation();
   const showCallout = useShowCallout();
   const stripes = useStripes();
 
@@ -81,7 +79,6 @@ const useSubmitRecord = ({
 
   const processEditingAfterCreation = useCallback(async (formValues, externalId) => {
     const fieldIds = getFieldIds(formValues);
-    const searchParams = new URLSearchParams(location.search);
 
     const isInCentralTenant = checkIfUserInCentralTenant(stripes);
 
@@ -101,13 +98,15 @@ const useSubmitRecord = ({
       [MARC_TYPES.HOLDINGS]: `${basePath}/edit-holdings/${externalId}`,
     };
 
+    // use `history.location.search` instead of `location.search` because `setIsShared` also
+    // sets `shared` url parameter so we need to keep it here without overriding
     await history.push({
       pathname: routes[marcType],
-      search: searchParams.toString(),
+      search: history.location.search,
     });
 
     await refreshPageData(fieldIds, QUICK_MARC_ACTIONS.EDIT, externalId);
-  }, [basePath, marcType, location, history, refreshPageData, stripes, action, setIsShared]);
+  }, [basePath, marcType, history, refreshPageData, stripes, action, setIsShared]);
 
   const onCreate = useCallback(async (formValues, _api) => {
     const formValuesToProcess = prepareForSubmit(formValues);

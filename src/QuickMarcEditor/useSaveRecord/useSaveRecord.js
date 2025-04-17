@@ -3,7 +3,6 @@ import {
   useContext,
   useMemo,
 } from 'react';
-import { useLocation } from 'react-router-dom';
 import flow from 'lodash/flow';
 
 import { useStripes } from '@folio/stripes/core';

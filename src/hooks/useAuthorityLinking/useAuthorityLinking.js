@@ -3,7 +3,6 @@ import {
   useContext,
   useMemo,
 } from 'react';
-import { useLocation } from 'react-router-dom';
 import get from 'lodash/get';
 import pick from 'lodash/pick';
 
