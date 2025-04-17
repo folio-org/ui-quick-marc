@@ -118,12 +118,11 @@ const QuickMarcEditorContainer = ({
     return `${externalRecordPath}/${externalId}`;
   }, [externalRecordPath, marcType, externalId, instanceId, action]);
 
-  const loadData = useCallback(async (fieldIds, nextAction, nextExternalId, nextIsShared) => {
+  const loadData = useCallback(async (fieldIds, nextAction, nextExternalId) => {
     const _action = nextAction || action;
     const _externalId = nextExternalId || externalId;
-    const _isShared = nextIsShared || isSharedRef.current;
 
-    const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(_isShared, stripes, marcType)
+    const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(isSharedRef.current, stripes, marcType)
       && _action !== QUICK_MARC_ACTIONS.CREATE;
 
     const path = _action === QUICK_MARC_ACTIONS.CREATE && marcType === MARC_TYPES.HOLDINGS
