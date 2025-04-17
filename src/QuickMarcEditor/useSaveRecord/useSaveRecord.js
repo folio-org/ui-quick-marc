@@ -41,13 +41,22 @@ const useSaveRecord = ({
   onClose,
   onSave,
 }) => {
-  const location = useLocation();
   const stripes = useStripes();
 
-  const { action, marcType, initialValues, instance } = useContext(QuickMarcContext);
-  const { linkableBibFields, linkingRules, sourceFiles } = useAuthorityLinking({ marcType, action });
+  const {
+    action,
+    marcType,
+    initialValues,
+    instance,
+    isSharedRef,
+  } = useContext(QuickMarcContext);
+  const {
+    linkableBibFields,
+    linkingRules,
+    sourceFiles,
+  } = useAuthorityLinking({ marcType, action });
 
-  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType);
+  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(isSharedRef.current, stripes, marcType);
   const centralTenantId = stripes.user.user.consortium?.centralTenantId;
   const tenantId = isRequestToCentralTenantFromMember ? centralTenantId : '';
 

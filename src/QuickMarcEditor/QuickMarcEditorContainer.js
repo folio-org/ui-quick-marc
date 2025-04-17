@@ -66,7 +66,6 @@ const QuickMarcEditorContainer = ({
   onClose,
   onSave,
   history,
-  location,
   externalRecordPath,
   stripes,
   onCheckCentralTenantPerm = noop,
@@ -84,6 +83,7 @@ const QuickMarcEditorContainer = ({
     setInstance,
     setMarcRecord,
     setRelatedRecordVersion,
+    isSharedRef,
   } = useContext(QuickMarcContext);
   const [locations, setLocations] = useState();
   const [isLoading, setIsLoading] = useState(true);
@@ -93,9 +93,6 @@ const QuickMarcEditorContainer = ({
 
   const { token, locale } = stripes.okapi;
   const centralTenantId = stripes.user.user.consortium?.centralTenantId;
-
-  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType)
-    && action !== QUICK_MARC_ACTIONS.CREATE;
 
   const getCloseEditorParams = useCallback((id) => {
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
@@ -121,9 +118,13 @@ const QuickMarcEditorContainer = ({
     return `${externalRecordPath}/${externalId}`;
   }, [externalRecordPath, marcType, externalId, instanceId, action]);
 
-  const loadData = useCallback(async (fieldIds, nextAction, nextExternalId) => {
+  const loadData = useCallback(async (fieldIds, nextAction, nextExternalId, nextIsShared) => {
     const _action = nextAction || action;
     const _externalId = nextExternalId || externalId;
+    const _isShared = nextIsShared || isSharedRef.current;
+
+    const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(_isShared, stripes, marcType)
+      && _action !== QUICK_MARC_ACTIONS.CREATE;
 
     const path = _action === QUICK_MARC_ACTIONS.CREATE && marcType === MARC_TYPES.HOLDINGS
       ? EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]
@@ -212,7 +213,6 @@ const QuickMarcEditorContainer = ({
     centralTenantId,
     token,
     locale,
-    isRequestToCentralTenantFromMember,
     setRelatedRecordVersion,
   ]);
 

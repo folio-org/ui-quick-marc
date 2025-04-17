@@ -5,6 +5,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const QuickMarcContext = createContext();
@@ -25,12 +26,16 @@ const QuickMarcProvider = ({
   marcType,
   basePath,
 }) => {
+  const location = useLocation();
   const [instance, setInstance] = useState(null);
   const [marcRecord, setMarcRecord] = useState(null);
   const [selectedSourceFile, setSelectedSourceFile] = useState(null);
   const [_relatedRecordVersion, setRelatedRecordVersion] = useState();
   const validationErrors = useRef({});
   const continueAfterSave = useRef(false);
+  const isSharedRef = useRef(new URLSearchParams(location.search).get('shared') === 'true');
+
+  const setIsShared = useCallback((_isShared) => { isSharedRef.current = _isShared; }, []);
 
   const setValidationErrors = useCallback((newValidationErrors) => {
     validationErrors.current = newValidationErrors;
@@ -51,6 +56,8 @@ const QuickMarcProvider = ({
     initialValues: marcRecord,
     setMarcRecord,
     basePath,
+    isSharedRef,
+    setIsShared,
   }), [
     selectedSourceFile,
     setSelectedSourceFile,
@@ -66,6 +73,8 @@ const QuickMarcProvider = ({
     marcRecord,
     setMarcRecord,
     basePath,
+    isSharedRef,
+    setIsShared,
   ]);
 
   return (

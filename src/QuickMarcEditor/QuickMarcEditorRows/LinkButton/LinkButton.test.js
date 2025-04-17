@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMemoryHistory } from 'history';
 
 import {
   act,
@@ -39,7 +38,7 @@ const mockHandleLinkAuthority = jest.fn();
 const mockHandleUnlinkAuthority = jest.fn();
 
 const renderComponent = (props = {}) => render(
-  <Harness history={props.history}>
+  <Harness quickMarcContext={props.quickMarcContext}>
     <LinkButton
       action={QUICK_MARC_ACTIONS.EDIT}
       handleLinkAuthority={mockHandleLinkAuthority}
@@ -301,10 +300,6 @@ describe('Given LinkButton', () => {
     it('should pass correct props', () => {
       checkIfUserInMemberTenant.mockReturnValue(true);
 
-      const history = createMemoryHistory({
-        initialEntries: [{ search: '?shared=true' }],
-      });
-
       const centralTenantId = 'consortia';
       const initialValues = expect.objectContaining({
         browse: expect.objectContaining({
@@ -323,7 +318,11 @@ describe('Given LinkButton', () => {
         browse: ['shared'],
       };
 
-      renderComponent({ history });
+      renderComponent({
+        quickMarcContext: {
+          isSharedRef: { current: true },
+        },
+      });
 
       expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
         tenantId: centralTenantId,
@@ -336,10 +335,6 @@ describe('Given LinkButton', () => {
   describe('when member tenant derives a shared bib record', () => {
     it('should pass correct props', () => {
       checkIfUserInMemberTenant.mockReturnValue(true);
-
-      const history = createMemoryHistory({
-        initialEntries: [{ search: '?shared=true' }],
-      });
 
       const initialValues = expect.objectContaining({
         browse: expect.objectContaining({
@@ -356,7 +351,9 @@ describe('Given LinkButton', () => {
 
       renderComponent({
         action: QUICK_MARC_ACTIONS.DERIVE,
-        history,
+        quickMarcContext: {
+          isSharedRef: { current: true },
+        },
       });
 
       expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
@@ -375,10 +372,6 @@ describe('Given LinkButton', () => {
   `('should pass correct props when member tenant $action a not shared bib record', ({ action }) => {
     checkIfUserInMemberTenant.mockReturnValue(true);
 
-    const history = createMemoryHistory({
-      initialEntries: [{ search: '?shared=false' }],
-    });
-
     const initialValues = expect.objectContaining({
       browse: expect.objectContaining({
         filters: null,
@@ -394,7 +387,9 @@ describe('Given LinkButton', () => {
 
     renderComponent({
       action,
-      history,
+      quickMarcContext: {
+        isSharedRef: { current: false },
+      },
     });
 
     expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({

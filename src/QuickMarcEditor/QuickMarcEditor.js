@@ -131,12 +131,11 @@ const QuickMarcEditor = ({
     setValidationErrors,
     continueAfterSave,
     validationErrorsRef,
+    isSharedRef,
   } = useContext(QuickMarcContext);
   const { hasErrorIssues, isBackEndValidationMarcType } = useValidation();
 
   const isConsortiaEnv = stripes.hasInterface('consortia');
-  const searchParameters = new URLSearchParams(location.search);
-  const isShared = searchParameters.get('shared') === 'true';
 
   const saveLastFocusedInput = useCallback((e) => {
     lastFocusedInput.current = e.target;
@@ -411,7 +410,7 @@ const QuickMarcEditor = ({
   const getPaneTitle = () => {
     let formattedMessageValues = {
       title: instance.title,
-      shared: isConsortiaEnv ? isShared : null,
+      shared: isConsortiaEnv ? isSharedRef.current : null,
     };
 
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
@@ -427,7 +426,7 @@ const QuickMarcEditor = ({
 
       const headingContent = initialHeading?.content;
       const shared = isConsortiaEnv
-        ? checkIfUserInCentralTenant(stripes) || isShared
+        ? checkIfUserInCentralTenant(stripes) || isSharedRef.current
         : null;
 
       formattedMessageValues = {
