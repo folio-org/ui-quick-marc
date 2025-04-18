@@ -176,7 +176,7 @@
     "record.fixedField.Rept date": "报告日期",
     "record.error.bib.leader.invalid005PositionValue": "记录无法保存。为位置 5 输入的值无效。",
     "record.error.location.empty": "记录无法保存。852字段必备。",
-    "holdings-record.create.title": "创建新MARC馆藏记录",
+    "holdings-record.create.title": "新建MARC馆藏记录",
     "record.lastUpdated": "最后更新 :  {date} {time}",
     "record.error.instanceHrid.multiple": "记录无法保存。只能有一个MARC 004。",
     "record.error.location.multiple": "记录无法保存。只能有一个MARC 852字段。",
@@ -260,7 +260,7 @@
     "record.error.008.empty": "没有008字段记录无法保存",
     "record.error.008.multiple": "无法保存超过 1 个008字段的记录",
     "permission.quick-marc-authorities-editor.create": "QuickMARC : 创建新的MARC规范记录",
-    "bibliographic-record.create.title": "创建新的{shared, select, true { 已共享 } false { 本地 } other {}} MARC 书目记录",
+    "bibliographic-record.create.title": "新建{shared, select, true { 已共享 } false { 本地 } other {}} MARC 书目记录",
     "bibliographic-record.edit.title": "编辑{shared, select, true { 已共享 } false { 本地 } other {}} MARC 记录 - {title}",
     "bibliographic-record.derive.title": "派生新的{shared, select, true { 已共享 } false { 本地 } other {}} MARC 书目记录",
     "record.error.leader.forbiddenBytes.bibliographic": "记录无法保存。请检查头标。头标中只能编辑位置5、6、7、8、17、18和/或19。",
@@ -391,7 +391,7 @@
     "record.fixedField.tip.Deterioration stage": "劣化阶段",
     "record.fixedField.tip.Kind of color stock or print": "彩色纸或印刷品种类",
     "record.fixedField.tip.Refined categories of color": "细化颜色类别",
-    "authority-record.create.title": "创建新的{shared, select, true { shared } false { local } other {}} MARC 规范记录",
+    "authority-record.create.title": "新建{shared, select, true { 已共享} false { 本地 } other {}} MARC 规范记录",
     "record.error.fieldIsControlled": "由于子字段受规范标题控制，因此无法更新。",
     "record.error.controlField.content.empty": "记录无法保存。需要规范档",
     "record.error.010.absent": "如果没有010字段，则无法保存记录。",
@@ -888,6 +888,6 @@
     "record.save.error.warn": "<b>请滚动查看整个记录。根据需要解决问题并保存以重新验证记录。 </b> {breakingLine}警告错误 :  <b> {warnCount} </b>",
     "record.save.error.fail": "<b>请滚动查看整个记录。根据需要解决问题并保存以重新验证记录。 </b> {breakingLine}失败错误 :  <b> {failCount} </b> {breakingLine}记录因失败错误而无法保存。",
     "record.save.error.failAndWarn": "<b>请滚动查看整个记录。根据需要解决问题并保存以重新验证记录。 </b> {breakingLine}警告错误 :  <b> {warnCount} </b> {breakingLine}失败错误 :  <b> {failCount} </b> {breakingLine}记录无法保存，并出现失败错误。",
-    "sourceFileSelect.fieldLabel": "Authority file name",
-    "sourceFileSelect.placeholder": "Select authority file"
+    "sourceFileSelect.fieldLabel": "规范档名称",
+    "sourceFileSelect.placeholder": "选择规范档"
 }
