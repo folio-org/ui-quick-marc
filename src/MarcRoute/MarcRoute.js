@@ -33,7 +33,14 @@ const MarcRoute = ({
     action,
   } = routeProps;
   const centralTenantId = stripes.user.user?.consortium?.centralTenantId;
-  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType)
+
+  const searchParams = new URLSearchParams(location.search);
+
+  // in the rest of the code we get `isShared` from context, but this components is where we first
+  // use the QuickMarcProvider, so we can't access it yet. just get the value from the url
+  const isSharedRecord = searchParams.get('shared') === 'true';
+
+  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(isSharedRecord, stripes, marcType)
     && action !== QUICK_MARC_ACTIONS.CREATE;
 
   const {

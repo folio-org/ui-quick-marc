@@ -1200,12 +1200,9 @@ export const hydrateForLinkSuggestions = (marcRecord, marcType, fields) => {
   });
 };
 
-export const applyCentralTenantInHeaders = (location, stripes, marcType) => {
-  const searchParams = new URLSearchParams(location.search);
-  const isSharedRecord = searchParams.get('shared') === 'true';
-
+export const applyCentralTenantInHeaders = (isShared, stripes, marcType) => {
   return (
-    isSharedRecord
+    isShared
     && [MARC_TYPES.BIB, MARC_TYPES.AUTHORITY].includes(marcType)
     && checkIfUserInMemberTenant(stripes)
   );

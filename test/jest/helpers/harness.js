@@ -29,6 +29,8 @@ const defaultQuickMarcContextValue = {
   setSelectedSourceFile: jest.fn(),
   basePath: '/base-path',
   continueAfterSave: { current: false },
+  isSharedRef: { current: false },
+  setIsShared: jest.fn(),
 };
 
 const QuickMarcProviderMock = ({ ctxValue, children }) => (

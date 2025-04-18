@@ -6,7 +6,6 @@ import React, {
   useEffect,
   useContext,
 } from 'react';
-import { useLocation } from 'react-router';
 import { FormSpy } from 'react-final-form';
 import PropTypes from 'prop-types';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -115,7 +114,6 @@ const QuickMarcEditor = ({
   const stripes = useStripes();
   const intl = useIntl();
   const formValues = getState().values;
-  const location = useLocation();
   const showCallout = useShowCallout();
   const [records, setRecords] = useState([]);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
@@ -131,12 +129,11 @@ const QuickMarcEditor = ({
     setValidationErrors,
     continueAfterSave,
     validationErrorsRef,
+    isSharedRef,
   } = useContext(QuickMarcContext);
   const { hasErrorIssues, isBackEndValidationMarcType } = useValidation();
 
   const isConsortiaEnv = stripes.hasInterface('consortia');
-  const searchParameters = new URLSearchParams(location.search);
-  const isShared = searchParameters.get('shared') === 'true';
 
   const saveLastFocusedInput = useCallback((e) => {
     lastFocusedInput.current = e.target;
@@ -411,7 +408,7 @@ const QuickMarcEditor = ({
   const getPaneTitle = () => {
     let formattedMessageValues = {
       title: instance.title,
-      shared: isConsortiaEnv ? isShared : null,
+      shared: isConsortiaEnv ? isSharedRef.current : null,
     };
 
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
@@ -427,7 +424,7 @@ const QuickMarcEditor = ({
 
       const headingContent = initialHeading?.content;
       const shared = isConsortiaEnv
-        ? checkIfUserInCentralTenant(stripes) || isShared
+        ? checkIfUserInCentralTenant(stripes) || isSharedRef.current
         : null;
 
       formattedMessageValues = {

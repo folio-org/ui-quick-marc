@@ -3,7 +3,10 @@ import { useParams } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import faker from 'faker';
 
-import { checkIfUserInCentralTenant } from '@folio/stripes/core';
+import {
+  checkIfUserInCentralTenant,
+  checkIfUserInMemberTenant,
+} from '@folio/stripes/core';
 import { renderHook } from '@folio/jest-config-stripes/testing-library/react';
 
 import { QUICK_MARC_ACTIONS } from '../constants';
@@ -26,10 +29,7 @@ import {
   bibLeaderString,
   holdingsLeader,
 } from '../../../test/jest/fixtures/leaders';
-import {
-  applyCentralTenantInHeaders,
-  saveLinksToNewRecord,
-} from '../utils';
+import { saveLinksToNewRecord } from '../utils';
 
 const mockShowCallout = jest.fn();
 
@@ -45,7 +45,6 @@ jest.mock('@folio/stripes-acq-components', () => ({
 
 jest.mock('../utils', () => ({
   ...jest.requireActual('../utils'),
-  applyCentralTenantInHeaders: jest.fn(() => false),
   saveLinksToNewRecord: jest.fn().mockResolvedValue(),
 }));
 
@@ -699,6 +698,7 @@ describe('useSaveRecord', () => {
     jest.clearAllMocks();
 
     checkIfUserInCentralTenant.mockClear().mockReturnValue(false);
+    checkIfUserInMemberTenant.mockClear().mockReturnValue(true);
 
     useAuthorityLinking.mockReturnValue({
       linkableBibFields: [],
@@ -719,7 +719,6 @@ describe('useSaveRecord', () => {
       validate: mockValidateFetch,
     });
 
-    applyCentralTenantInHeaders.mockReturnValue(false);
     useParams.mockReturnValue({});
   });
 
@@ -1120,7 +1119,8 @@ describe('useSaveRecord', () => {
         checkIfUserInCentralTenant.mockClear().mockReturnValue(true);
       });
 
-      it('should add "shared=true" parameter to the url', async () => {
+      it('should mark record as shared', async () => {
+        const mockSetIsShared = jest.fn();
         const action = QUICK_MARC_ACTIONS.CREATE;
         const marcType = MARC_TYPES.BIB;
         const history = createMemoryHistory({
@@ -1134,6 +1134,7 @@ describe('useSaveRecord', () => {
               action,
               marcType,
               continueAfterSave: { current: true },
+              setIsShared: mockSetIsShared,
             },
             history,
           }),
@@ -1142,7 +1143,7 @@ describe('useSaveRecord', () => {
         await act(async () => result.current.onSubmit(getFormValues(action, marcType)));
 
         expect(history.location.pathname).toBe(`${basePath}/edit-bibliographic/externalId-1`);
-        expect(history.location.search).toBe('?sort=title&shared=true');
+        expect(mockSetIsShared).toHaveBeenCalledWith(true);
       });
     });
 
@@ -1572,7 +1573,7 @@ describe('useSaveRecord', () => {
 
     describe('when a member tenant edits a shared record', () => {
       it('should apply the central tenant id for all authority linking ', async () => {
-        applyCentralTenantInHeaders.mockReturnValue(true);
+        checkIfUserInMemberTenant.mockClear().mockReturnValue(true);
 
         const marcType = MARC_TYPES.BIB;
         const action = QUICK_MARC_ACTIONS.EDIT;
@@ -1588,6 +1589,7 @@ describe('useSaveRecord', () => {
               marcType,
               initialValues: getInitialValues(action, marcType),
               instance: getInstance(),
+              isSharedRef: { current: true },
             },
           }),
         });

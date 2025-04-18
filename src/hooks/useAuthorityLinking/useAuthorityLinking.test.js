@@ -16,6 +16,7 @@ import {
   bibLeader,
   bibLeaderString,
 } from '../../../test/jest/fixtures/leaders';
+import Harness from '../../../test/jest/helpers/harness';
 
 const mockFetchLinkSuggestions = jest.fn().mockResolvedValue({ fields: [] });
 
@@ -46,7 +47,9 @@ const queryClient = new QueryClient();
 
 const wrapper = ({ children }) => (
   <QueryClientProvider client={queryClient}>
-    {children}
+    <Harness>
+      {children}
+    </Harness>
   </QueryClientProvider>
 );
 

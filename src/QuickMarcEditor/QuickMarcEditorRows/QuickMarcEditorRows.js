@@ -9,10 +9,7 @@ import {
   useFormState,
 } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
-import {
-  Link,
-  useLocation,
-} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import isEqual from 'lodash/isEqual';
 import defer from 'lodash/defer';
@@ -96,7 +93,6 @@ const QuickMarcEditorRows = ({
   onCheckCentralTenantPerm = noop,
   onInputFocus,
 }) => {
-  const location = useLocation();
   const stripes = useStripes();
   const intl = useIntl();
   const { initialValues } = useFormState();
@@ -105,7 +101,10 @@ const QuickMarcEditorRows = ({
   const newRowRef = useRef(null);
   const rowContentWidth = useRef(null); // for max-width of resizable textareas
   const childCalloutRef = useRef(null);
-  const { validationErrorsRef } = useContext(QuickMarcContext);
+  const {
+    validationErrorsRef,
+    isSharedRef,
+  } = useContext(QuickMarcContext);
 
   const {
     linkAuthority,
@@ -114,7 +113,7 @@ const QuickMarcEditorRows = ({
     autoLinkableBibFields,
   } = useAuthorityLinking({ marcType, action });
 
-  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType)
+  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(isSharedRef.current, stripes, marcType)
     && action === QUICK_MARC_ACTIONS.EDIT;
 
   const fixedFieldInitialValues = () => {

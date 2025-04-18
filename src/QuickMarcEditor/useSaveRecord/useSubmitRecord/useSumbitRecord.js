@@ -5,7 +5,6 @@ import {
 } from 'react';
 import {
   useHistory,
-  useLocation,
   useParams,
 } from 'react-router-dom';
 import noop from 'lodash/noop';
@@ -48,7 +47,6 @@ const useSubmitRecord = ({
     instanceId: _instanceId,
   } = useParams();
   const history = useHistory();
-  const location = useLocation();
   const showCallout = useShowCallout();
   const stripes = useStripes();
 
@@ -60,6 +58,7 @@ const useSubmitRecord = ({
     instance,
     continueAfterSave,
     relatedRecordVersion,
+    setIsShared,
   } = useContext(QuickMarcContext);
 
   const { actualizeLinks } = useAuthorityLinking({ marcType, action });
@@ -80,14 +79,17 @@ const useSubmitRecord = ({
 
   const processEditingAfterCreation = useCallback(async (formValues, externalId) => {
     const fieldIds = getFieldIds(formValues);
-    const searchParams = new URLSearchParams(location.search);
 
     const isInCentralTenant = checkIfUserInCentralTenant(stripes);
 
     // when a user creates a new Bib or Authority in a central tenant - it becomes shared
     // so we need to append this parameter to the URL to tell quickMARC it is now a shared record
     if (isInCentralTenant && marcType !== MARC_TYPES.HOLDINGS) {
-      searchParams.append('shared', true);
+      setIsShared(true);
+    }
+
+    if (action === QUICK_MARC_ACTIONS.DERIVE) {
+      setIsShared(false);
     }
 
     const routes = {
@@ -96,13 +98,15 @@ const useSubmitRecord = ({
       [MARC_TYPES.HOLDINGS]: `${basePath}/edit-holdings/${externalId}`,
     };
 
-    await refreshPageData(fieldIds, QUICK_MARC_ACTIONS.EDIT, externalId);
-
-    history.push({
+    // use `history.location.search` instead of `location.search` because `setIsShared` also
+    // sets `shared` url parameter so we need to keep it here without overriding
+    await history.push({
       pathname: routes[marcType],
-      search: searchParams.toString(),
+      search: history.location.search,
     });
-  }, [basePath, marcType, location, history, refreshPageData, stripes]);
+
+    await refreshPageData(fieldIds, QUICK_MARC_ACTIONS.EDIT, externalId);
+  }, [basePath, marcType, history, refreshPageData, stripes, action, setIsShared]);
 
   const onCreate = useCallback(async (formValues, _api) => {
     const formValuesToProcess = prepareForSubmit(formValues);
