@@ -22,6 +22,7 @@ import QuickMarcEditor from './QuickMarcEditor';
 import { useAuthorityLinksCount } from '../queries';
 import { QuickMarcContext } from '../contexts';
 import { useSaveRecord } from './useSaveRecord';
+import { useIsShared } from '../hooks';
 import {
   EXTERNAL_INSTANCE_APIS,
   MARC_RECORD_API,
@@ -82,13 +83,13 @@ const QuickMarcEditorContainer = ({
     setInstance,
     setMarcRecord,
     setRelatedRecordVersion,
-    isSharedRef,
   } = useContext(QuickMarcContext);
   const [locations, setLocations] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [fixedFieldSpec, setFixedFieldSpec] = useState();
   const showCallout = useShowCallout();
   const { linksCount } = useAuthorityLinksCount({ id: marcType === MARC_TYPES.AUTHORITY && externalId });
+  const { getIsShared } = useIsShared();
 
   const { token, locale } = stripes.okapi;
   const centralTenantId = stripes.user.user.consortium?.centralTenantId;
@@ -121,7 +122,7 @@ const QuickMarcEditorContainer = ({
     const _action = nextAction || action;
     const _externalId = nextExternalId || externalId;
 
-    const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(isSharedRef.current, stripes, marcType)
+    const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(getIsShared(), stripes, marcType)
       && _action !== QUICK_MARC_ACTIONS.CREATE;
 
     const path = _action === QUICK_MARC_ACTIONS.CREATE && marcType === MARC_TYPES.HOLDINGS

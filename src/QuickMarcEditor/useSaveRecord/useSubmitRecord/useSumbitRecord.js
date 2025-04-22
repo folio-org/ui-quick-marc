@@ -28,7 +28,10 @@ import {
 } from '../../utils';
 import getQuickMarcRecordStatus from '../../getQuickMarcRecordStatus';
 import { QuickMarcContext } from '../../../contexts';
-import { useAuthorityLinking } from '../../../hooks';
+import {
+  useAuthorityLinking,
+  useIsShared,
+} from '../../../hooks';
 import { useMarcRecordMutation } from '../../../queries';
 import { QUICK_MARC_ACTIONS } from '../../constants';
 
@@ -49,6 +52,10 @@ const useSubmitRecord = ({
   const history = useHistory();
   const showCallout = useShowCallout();
   const stripes = useStripes();
+  const [httpError, setHttpError] = useState(null);
+
+  const { token, locale } = stripes.okapi;
+  const centralTenantId = stripes.user.user.consortium?.centralTenantId;
 
   const {
     action,
@@ -58,16 +65,11 @@ const useSubmitRecord = ({
     instance,
     continueAfterSave,
     relatedRecordVersion,
-    setIsShared,
   } = useContext(QuickMarcContext);
 
   const { actualizeLinks } = useAuthorityLinking({ marcType, action });
   const { updateMarcRecord } = useMarcRecordMutation({ tenantId });
-
-  const [httpError, setHttpError] = useState(null);
-
-  const { token, locale } = stripes.okapi;
-  const centralTenantId = stripes.user.user.consortium?.centralTenantId;
+  const { setIsShared } = useIsShared();
 
   const redirectToRecord = useCallback(async (externalId, instanceId) => {
     if (marcType === MARC_TYPES.HOLDINGS) {

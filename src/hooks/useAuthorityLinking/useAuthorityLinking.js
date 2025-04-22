@@ -1,6 +1,5 @@
 import {
   useCallback,
-  useContext,
   useMemo,
 } from 'react';
 import get from 'lodash/get';
@@ -9,6 +8,7 @@ import pick from 'lodash/pick';
 import { useStripes } from '@folio/stripes/core';
 import { useAuthorityLinkingRules } from '@folio/stripes-marc-components';
 
+import { useIsShared } from '../useIsShared';
 import {
   useAuthoritySourceFiles,
   useLinkSuggestions,
@@ -30,16 +30,15 @@ import {
   UNCONTROLLED_NUMBER,
   QUICK_MARC_ACTIONS,
 } from '../../QuickMarcEditor/constants';
-import { QuickMarcContext } from '../../contexts';
 
 const formatSubfieldCode = (code) => { return code.startsWith('$') ? code : `$${code}`; };
 
 const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
   const stripes = useStripes();
-  const { isSharedRef } = useContext(QuickMarcContext);
+  const { isShared } = useIsShared();
 
   const centralTenantId = stripes.user.user.consortium?.centralTenantId;
-  const isCentralTenantInHeaders = applyCentralTenantInHeaders(isSharedRef.current, stripes, marcType)
+  const isCentralTenantInHeaders = applyCentralTenantInHeaders(isShared, stripes, marcType)
     && action === QUICK_MARC_ACTIONS.EDIT;
 
   // tenantId for linking functionality must be with the member tenant id when user derives shared record

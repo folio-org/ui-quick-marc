@@ -26,7 +26,7 @@ import {
 } from '@folio/stripes/components';
 import { useAuthorityLinkingRules } from '@folio/stripes-marc-components';
 
-import { QuickMarcContext } from '../../../contexts';
+import { useIsShared } from '../../../hooks';
 import { useMarcSource } from '../../../queries';
 import { MarcFieldContent } from '../../../common';
 import {
@@ -72,7 +72,9 @@ const LinkButton = ({
   const [authority, setAuthority] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const callout = useCallout();
-  const { isSharedRef } = useContext(QuickMarcContext);
+
+  const { isShared } = useIsShared();
+
   const centralTenantId = stripes.user.user?.consortium?.centralTenantId;
 
   let showSharedFilter = false;
@@ -84,7 +86,7 @@ const LinkButton = ({
       showSharedRecordsOnly = true;
     }
   } else if (checkIfUserInMemberTenant(stripes)) {
-    if (isSharedRef.current) {
+    if (isShared) {
       if (action === QUICK_MARC_ACTIONS.EDIT) {
         showSharedRecordsOnly = true;
         pluginTenantId = centralTenantId;

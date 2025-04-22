@@ -14,6 +14,7 @@ import { ERROR_TYPES, MARC_TYPES } from '../../common';
 import {
   useAuthorityLinking,
   useValidation,
+  useIsShared,
 } from '../../hooks';
 import {
   useMarcRecordMutation,
@@ -52,6 +53,11 @@ jest.mock('../../hooks', () => ({
   ...jest.requireActual('../../hooks'),
   useAuthorityLinking: jest.fn(),
   useValidation: jest.fn((...params) => jest.requireActual('../../hooks').useValidation(...params)),
+  useIsShared: jest.fn().mockReturnValue({
+    isShared: false,
+    getIsShared: () => false,
+    setIsShared: jest.fn(),
+  }),
 }));
 
 jest.mock('../../queries', () => ({
@@ -1115,12 +1121,17 @@ describe('useSaveRecord', () => {
     });
 
     describe('when a user is in a central tenant', () => {
+      const mockSetIsShared = jest.fn();
+
       beforeEach(() => {
         checkIfUserInCentralTenant.mockClear().mockReturnValue(true);
+        useIsShared.mockReturnValue({
+          isShared: false,
+          setIsShared: mockSetIsShared,
+        });
       });
 
       it('should mark record as shared', async () => {
-        const mockSetIsShared = jest.fn();
         const action = QUICK_MARC_ACTIONS.CREATE;
         const marcType = MARC_TYPES.BIB;
         const history = createMemoryHistory({
@@ -1134,7 +1145,6 @@ describe('useSaveRecord', () => {
               action,
               marcType,
               continueAfterSave: { current: true },
-              setIsShared: mockSetIsShared,
             },
             history,
           }),
@@ -1574,6 +1584,11 @@ describe('useSaveRecord', () => {
     describe('when a member tenant edits a shared record', () => {
       it('should apply the central tenant id for all authority linking ', async () => {
         checkIfUserInMemberTenant.mockClear().mockReturnValue(true);
+        useIsShared.mockReturnValue({
+          isShared: true,
+          getIsShared: () => true,
+          setIsShared: jest.fn(),
+        });
 
         const marcType = MARC_TYPES.BIB;
         const action = QUICK_MARC_ACTIONS.EDIT;
@@ -1589,7 +1604,6 @@ describe('useSaveRecord', () => {
               marcType,
               initialValues: getInitialValues(action, marcType),
               instance: getInstance(),
-              isSharedRef: { current: true },
             },
           }),
         });

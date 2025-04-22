@@ -45,6 +45,7 @@ import {
   MISSING_FIELD_ID,
   SEVERITY,
   useAuthorityLinking,
+  useIsShared,
   useValidation,
 } from '../hooks';
 import {
@@ -129,9 +130,9 @@ const QuickMarcEditor = ({
     setValidationErrors,
     continueAfterSave,
     validationErrorsRef,
-    isSharedRef,
   } = useContext(QuickMarcContext);
   const { hasErrorIssues, isBackEndValidationMarcType } = useValidation();
+  const { isShared } = useIsShared();
 
   const isConsortiaEnv = stripes.hasInterface('consortia');
 
@@ -393,22 +394,22 @@ const QuickMarcEditor = ({
     />
   );
 
-  const recordInfoProps = {
+  const recordInfoProps = useMemo(() => ({
     status: initialValues?.updateInfo?.recordState,
     updateDate: initialValues?.updateInfo?.updateDate,
     updatedBy: initialValues?.updateInfo?.updatedBy,
     isEditAction: action === QUICK_MARC_ACTIONS.EDIT,
     marcType,
-  };
+  }), [action, initialValues, marcType]);
 
   if ((marcType === MARC_TYPES.AUTHORITY) && records.length) {
     recordInfoProps.correspondingMarcTag = getCorrespondingMarcTag(initialValues.records);
   }
 
-  const getPaneTitle = () => {
+  const getPaneTitle = useCallback(() => {
     let formattedMessageValues = {
       title: instance.title,
-      shared: isConsortiaEnv ? isSharedRef.current : null,
+      shared: isConsortiaEnv ? isShared : null,
     };
 
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
@@ -424,7 +425,7 @@ const QuickMarcEditor = ({
 
       const headingContent = initialHeading?.content;
       const shared = isConsortiaEnv
-        ? checkIfUserInCentralTenant(stripes) || isSharedRef.current
+        ? checkIfUserInCentralTenant(stripes) || isShared
         : null;
 
       formattedMessageValues = {
@@ -443,7 +444,18 @@ const QuickMarcEditor = ({
         values={formattedMessageValues}
       />
     );
-  };
+  }, [
+    action,
+    isShared,
+    initialValues,
+    instance,
+    isConsortiaEnv,
+    locations,
+    marcType,
+    recordInfoProps,
+    records,
+    stripes,
+  ]);
 
   const restoreDeletedRecords = () => {
     deletedRecords.forEach(mutators.restoreRecord);
