@@ -104,7 +104,7 @@ const useSubmitRecord = ({
 
     // use `history.location.search` instead of `location.search` because `setIsShared` also
     // sets `shared` url parameter so we need to keep it here without overriding
-    await history.push({
+    history.push({
       pathname: routes[marcType],
       search: history.location.search,
     });
