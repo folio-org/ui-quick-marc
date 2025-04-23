@@ -1,7 +1,6 @@
 import {
   useState,
   useMemo,
-  useContext,
 } from 'react';
 import {
   useIntl,
