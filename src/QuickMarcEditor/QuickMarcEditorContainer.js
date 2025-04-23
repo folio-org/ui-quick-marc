@@ -213,6 +213,8 @@ const QuickMarcEditorContainer = ({
     token,
     locale,
     setRelatedRecordVersion,
+    getIsShared,
+    stripes,
   ]);
 
   const { onSubmit, httpError, runValidation } = useSaveRecord({
