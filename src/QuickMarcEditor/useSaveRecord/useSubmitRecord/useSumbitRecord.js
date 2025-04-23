@@ -13,6 +13,7 @@ import isNil from 'lodash/isNil';
 import {
   useStripes,
   checkIfUserInCentralTenant,
+  checkIfUserInMemberTenant,
 } from '@folio/stripes/core';
 import { useShowCallout } from '@folio/stripes-acq-components';
 import { getHeaders } from '@folio/stripes-marc-components';
@@ -83,6 +84,7 @@ const useSubmitRecord = ({
     const fieldIds = getFieldIds(formValues);
 
     const isInCentralTenant = checkIfUserInCentralTenant(stripes);
+    const isInMemberTenant = checkIfUserInMemberTenant(stripes);
 
     // when a user creates a new Bib or Authority in a central tenant - it becomes shared
     // so we need to append this parameter to the URL to tell quickMARC it is now a shared record
@@ -90,7 +92,7 @@ const useSubmitRecord = ({
       setIsShared(true);
     }
 
-    if (action === QUICK_MARC_ACTIONS.DERIVE) {
+    if (isInMemberTenant && action === QUICK_MARC_ACTIONS.DERIVE) {
       setIsShared(false);
     }
 
