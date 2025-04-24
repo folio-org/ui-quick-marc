@@ -2,13 +2,13 @@ import {
   useCallback,
   useMemo,
 } from 'react';
-import { useLocation } from 'react-router-dom';
 import get from 'lodash/get';
 import pick from 'lodash/pick';
 
 import { useStripes } from '@folio/stripes/core';
 import { useAuthorityLinkingRules } from '@folio/stripes-marc-components';
 
+import { useIsShared } from '../useIsShared';
 import {
   useAuthoritySourceFiles,
   useLinkSuggestions,
@@ -35,10 +35,10 @@ const formatSubfieldCode = (code) => { return code.startsWith('$') ? code : `$${
 
 const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
   const stripes = useStripes();
-  const location = useLocation();
+  const { isShared } = useIsShared();
 
   const centralTenantId = stripes.user.user.consortium?.centralTenantId;
-  const isCentralTenantInHeaders = applyCentralTenantInHeaders(location, stripes, marcType)
+  const isCentralTenantInHeaders = applyCentralTenantInHeaders(isShared, stripes, marcType)
     && action === QUICK_MARC_ACTIONS.EDIT;
 
   // tenantId for linking functionality must be with the member tenant id when user derives shared record

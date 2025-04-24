@@ -1,8 +1,5 @@
 import { useCallback } from 'react';
-import {
-  Route,
-  useLocation,
-} from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { LoadingPane } from '@folio/stripes/components';
@@ -15,6 +12,7 @@ import { QuickMarcEditorContainer } from '../QuickMarcEditor';
 import { applyCentralTenantInHeaders } from '../QuickMarcEditor/utils';
 import { QUICK_MARC_ACTIONS } from '../QuickMarcEditor/constants';
 import { QuickMarcProvider } from '../contexts';
+import { useIsShared } from '../hooks';
 
 const MarcRoute = ({
   externalRecordPath,
@@ -26,14 +24,16 @@ const MarcRoute = ({
   onSave,
 }) => {
   const stripes = useStripes();
-  const location = useLocation();
+
+  const { isShared } = useIsShared();
 
   const {
     marcType,
     action,
   } = routeProps;
   const centralTenantId = stripes.user.user?.consortium?.centralTenantId;
-  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType)
+
+  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(isShared, stripes, marcType)
     && action !== QUICK_MARC_ACTIONS.CREATE;
 
   const {

@@ -3,13 +3,13 @@ import {
   useContext,
   useMemo,
 } from 'react';
-import { useLocation } from 'react-router-dom';
 import flow from 'lodash/flow';
 
 import { useStripes } from '@folio/stripes/core';
 
 import {
   useAuthorityLinking,
+  useIsShared,
   useValidation,
 } from '../../hooks';
 import { QUICK_MARC_ACTIONS } from '../constants';
@@ -41,13 +41,22 @@ const useSaveRecord = ({
   onClose,
   onSave,
 }) => {
-  const location = useLocation();
   const stripes = useStripes();
 
-  const { action, marcType, initialValues, instance } = useContext(QuickMarcContext);
-  const { linkableBibFields, linkingRules, sourceFiles } = useAuthorityLinking({ marcType, action });
+  const {
+    action,
+    marcType,
+    initialValues,
+    instance,
+  } = useContext(QuickMarcContext);
+  const {
+    linkableBibFields,
+    linkingRules,
+    sourceFiles,
+  } = useAuthorityLinking({ marcType, action });
+  const { isShared } = useIsShared();
 
-  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType);
+  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(isShared, stripes, marcType);
   const centralTenantId = stripes.user.user.consortium?.centralTenantId;
   const tenantId = isRequestToCentralTenantFromMember ? centralTenantId : '';
 
