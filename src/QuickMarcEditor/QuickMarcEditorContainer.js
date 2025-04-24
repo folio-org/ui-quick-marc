@@ -22,6 +22,7 @@ import QuickMarcEditor from './QuickMarcEditor';
 import { useAuthorityLinksCount } from '../queries';
 import { QuickMarcContext } from '../contexts';
 import { useSaveRecord } from './useSaveRecord';
+import { useIsShared } from '../hooks';
 import {
   EXTERNAL_INSTANCE_APIS,
   MARC_RECORD_API,
@@ -47,7 +48,6 @@ const propTypes = {
   onSave: PropTypes.func.isRequired,
   externalRecordPath: PropTypes.string.isRequired,
   history: ReactRouterPropTypes.history.isRequired,
-  location: ReactRouterPropTypes.location.isRequired,
   mutator: PropTypes.object.isRequired,
   match: ReactRouterPropTypes.match.isRequired,
   stripes: PropTypes.object.isRequired,
@@ -66,7 +66,6 @@ const QuickMarcEditorContainer = ({
   onClose,
   onSave,
   history,
-  location,
   externalRecordPath,
   stripes,
   onCheckCentralTenantPerm = noop,
@@ -90,12 +89,10 @@ const QuickMarcEditorContainer = ({
   const [fixedFieldSpec, setFixedFieldSpec] = useState();
   const showCallout = useShowCallout();
   const { linksCount } = useAuthorityLinksCount({ id: marcType === MARC_TYPES.AUTHORITY && externalId });
+  const { getIsShared } = useIsShared();
 
   const { token, locale } = stripes.okapi;
   const centralTenantId = stripes.user.user.consortium?.centralTenantId;
-
-  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType)
-    && action !== QUICK_MARC_ACTIONS.CREATE;
 
   const getCloseEditorParams = useCallback((id) => {
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
@@ -124,6 +121,9 @@ const QuickMarcEditorContainer = ({
   const loadData = useCallback(async (fieldIds, nextAction, nextExternalId) => {
     const _action = nextAction || action;
     const _externalId = nextExternalId || externalId;
+
+    const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(getIsShared(), stripes, marcType)
+      && _action !== QUICK_MARC_ACTIONS.CREATE;
 
     const path = _action === QUICK_MARC_ACTIONS.CREATE && marcType === MARC_TYPES.HOLDINGS
       ? EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]
@@ -212,8 +212,9 @@ const QuickMarcEditorContainer = ({
     centralTenantId,
     token,
     locale,
-    isRequestToCentralTenantFromMember,
     setRelatedRecordVersion,
+    getIsShared,
+    stripes,
   ]);
 
   const { onSubmit, httpError, runValidation } = useSaveRecord({

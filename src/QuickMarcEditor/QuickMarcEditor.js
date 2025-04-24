@@ -6,7 +6,6 @@ import React, {
   useEffect,
   useContext,
 } from 'react';
-import { useLocation } from 'react-router';
 import { FormSpy } from 'react-final-form';
 import PropTypes from 'prop-types';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -46,6 +45,7 @@ import {
   MISSING_FIELD_ID,
   SEVERITY,
   useAuthorityLinking,
+  useIsShared,
   useValidation,
 } from '../hooks';
 import {
@@ -115,7 +115,6 @@ const QuickMarcEditor = ({
   const stripes = useStripes();
   const intl = useIntl();
   const formValues = getState().values;
-  const location = useLocation();
   const showCallout = useShowCallout();
   const [records, setRecords] = useState([]);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
@@ -133,10 +132,9 @@ const QuickMarcEditor = ({
     validationErrorsRef,
   } = useContext(QuickMarcContext);
   const { hasErrorIssues, isBackEndValidationMarcType } = useValidation();
+  const { isShared } = useIsShared();
 
   const isConsortiaEnv = stripes.hasInterface('consortia');
-  const searchParameters = new URLSearchParams(location.search);
-  const isShared = searchParameters.get('shared') === 'true';
 
   const saveLastFocusedInput = useCallback((e) => {
     lastFocusedInput.current = e.target;
@@ -396,19 +394,19 @@ const QuickMarcEditor = ({
     />
   );
 
-  const recordInfoProps = {
+  const recordInfoProps = useMemo(() => ({
     status: initialValues?.updateInfo?.recordState,
     updateDate: initialValues?.updateInfo?.updateDate,
     updatedBy: initialValues?.updateInfo?.updatedBy,
     isEditAction: action === QUICK_MARC_ACTIONS.EDIT,
     marcType,
-  };
+  }), [action, initialValues, marcType]);
 
   if ((marcType === MARC_TYPES.AUTHORITY) && records.length) {
     recordInfoProps.correspondingMarcTag = getCorrespondingMarcTag(initialValues.records);
   }
 
-  const getPaneTitle = () => {
+  const getPaneTitle = useCallback(() => {
     let formattedMessageValues = {
       title: instance.title,
       shared: isConsortiaEnv ? isShared : null,
@@ -446,7 +444,18 @@ const QuickMarcEditor = ({
         values={formattedMessageValues}
       />
     );
-  };
+  }, [
+    action,
+    isShared,
+    initialValues,
+    instance,
+    isConsortiaEnv,
+    locations,
+    marcType,
+    recordInfoProps,
+    records,
+    stripes,
+  ]);
 
   const restoreDeletedRecords = () => {
     deletedRecords.forEach(mutators.restoreRecord);

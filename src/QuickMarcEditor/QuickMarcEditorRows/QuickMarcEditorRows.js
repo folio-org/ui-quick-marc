@@ -9,10 +9,7 @@ import {
   useFormState,
 } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
-import {
-  Link,
-  useLocation,
-} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import isEqual from 'lodash/isEqual';
 import defer from 'lodash/defer';
@@ -60,7 +57,10 @@ import {
   isControlNumberRow,
   isLeaderRow,
 } from '../utils';
-import { useAuthorityLinking } from '../../hooks';
+import {
+  useAuthorityLinking,
+  useIsShared,
+} from '../../hooks';
 import { QuickMarcContext } from '../../contexts';
 import {
   QUICK_MARC_ACTIONS,
@@ -96,7 +96,6 @@ const QuickMarcEditorRows = ({
   onCheckCentralTenantPerm = noop,
   onInputFocus,
 }) => {
-  const location = useLocation();
   const stripes = useStripes();
   const intl = useIntl();
   const { initialValues } = useFormState();
@@ -113,8 +112,9 @@ const QuickMarcEditorRows = ({
     linkableBibFields,
     autoLinkableBibFields,
   } = useAuthorityLinking({ marcType, action });
+  const { isShared } = useIsShared();
 
-  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType)
+  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(isShared, stripes, marcType)
     && action === QUICK_MARC_ACTIONS.EDIT;
 
   const fixedFieldInitialValues = () => {

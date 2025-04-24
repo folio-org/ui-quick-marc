@@ -5,7 +5,6 @@ import {
 } from 'react';
 import {
   useHistory,
-  useLocation,
   useParams,
 } from 'react-router-dom';
 import noop from 'lodash/noop';
@@ -14,6 +13,7 @@ import isNil from 'lodash/isNil';
 import {
   useStripes,
   checkIfUserInCentralTenant,
+  checkIfUserInMemberTenant,
 } from '@folio/stripes/core';
 import { useShowCallout } from '@folio/stripes-acq-components';
 import { getHeaders } from '@folio/stripes-marc-components';
@@ -29,7 +29,10 @@ import {
 } from '../../utils';
 import getQuickMarcRecordStatus from '../../getQuickMarcRecordStatus';
 import { QuickMarcContext } from '../../../contexts';
-import { useAuthorityLinking } from '../../../hooks';
+import {
+  useAuthorityLinking,
+  useIsShared,
+} from '../../../hooks';
 import { useMarcRecordMutation } from '../../../queries';
 import { QUICK_MARC_ACTIONS } from '../../constants';
 
@@ -48,9 +51,12 @@ const useSubmitRecord = ({
     instanceId: _instanceId,
   } = useParams();
   const history = useHistory();
-  const location = useLocation();
   const showCallout = useShowCallout();
   const stripes = useStripes();
+  const [httpError, setHttpError] = useState(null);
+
+  const { token, locale } = stripes.okapi;
+  const centralTenantId = stripes.user.user.consortium?.centralTenantId;
 
   const {
     action,
@@ -64,11 +70,7 @@ const useSubmitRecord = ({
 
   const { actualizeLinks } = useAuthorityLinking({ marcType, action });
   const { updateMarcRecord } = useMarcRecordMutation({ tenantId });
-
-  const [httpError, setHttpError] = useState(null);
-
-  const { token, locale } = stripes.okapi;
-  const centralTenantId = stripes.user.user.consortium?.centralTenantId;
+  const { setIsShared } = useIsShared();
 
   const redirectToRecord = useCallback(async (externalId, instanceId) => {
     if (marcType === MARC_TYPES.HOLDINGS) {
@@ -80,14 +82,18 @@ const useSubmitRecord = ({
 
   const processEditingAfterCreation = useCallback(async (formValues, externalId) => {
     const fieldIds = getFieldIds(formValues);
-    const searchParams = new URLSearchParams(location.search);
 
     const isInCentralTenant = checkIfUserInCentralTenant(stripes);
+    const isInMemberTenant = checkIfUserInMemberTenant(stripes);
 
     // when a user creates a new Bib or Authority in a central tenant - it becomes shared
     // so we need to append this parameter to the URL to tell quickMARC it is now a shared record
     if (isInCentralTenant && marcType !== MARC_TYPES.HOLDINGS) {
-      searchParams.append('shared', true);
+      setIsShared(true);
+    }
+
+    if (isInMemberTenant && action === QUICK_MARC_ACTIONS.DERIVE) {
+      setIsShared(false);
     }
 
     const routes = {
@@ -96,13 +102,15 @@ const useSubmitRecord = ({
       [MARC_TYPES.HOLDINGS]: `${basePath}/edit-holdings/${externalId}`,
     };
 
-    await refreshPageData(fieldIds, QUICK_MARC_ACTIONS.EDIT, externalId);
-
+    // use `history.location.search` instead of `location.search` because `setIsShared` also
+    // sets `shared` url parameter so we need to keep it here without overriding
     history.push({
       pathname: routes[marcType],
-      search: searchParams.toString(),
+      search: history.location.search,
     });
-  }, [basePath, marcType, location, history, refreshPageData, stripes]);
+
+    await refreshPageData(fieldIds, QUICK_MARC_ACTIONS.EDIT, externalId);
+  }, [basePath, marcType, history, refreshPageData, stripes, action, setIsShared]);
 
   const onCreate = useCallback(async (formValues, _api) => {
     const formValuesToProcess = prepareForSubmit(formValues);

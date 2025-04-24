@@ -6,7 +6,6 @@ import {
   useIntl,
   FormattedMessage,
 } from 'react-intl';
-import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import flatten from 'lodash/flatten';
 import isNil from 'lodash/isNil';
@@ -26,6 +25,7 @@ import {
   ADVANCED_SEARCH_MATCH_OPTIONS,
 } from '@folio/stripes/components';
 
+import { useIsShared } from '../../../hooks';
 import { useMarcSource } from '../../../queries';
 import { getContentSubfieldValue } from '../../utils';
 import {
@@ -68,12 +68,13 @@ const LinkButton = ({
 }) => {
   const stripes = useStripes();
   const intl = useIntl();
-  const location = useLocation();
   const [authority, setAuthority] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const callout = useCallout();
+
+  const { isShared } = useIsShared();
+
   const centralTenantId = stripes.user.user?.consortium?.centralTenantId;
-  const isSharedBibRecord = new URLSearchParams(location.search).get('shared') === 'true';
 
   let showSharedFilter = false;
   let showSharedRecordsOnly = false;
@@ -84,7 +85,7 @@ const LinkButton = ({
       showSharedRecordsOnly = true;
     }
   } else if (checkIfUserInMemberTenant(stripes)) {
-    if (isSharedBibRecord) {
+    if (isShared) {
       if (action === QUICK_MARC_ACTIONS.EDIT) {
         showSharedRecordsOnly = true;
         pluginTenantId = centralTenantId;
