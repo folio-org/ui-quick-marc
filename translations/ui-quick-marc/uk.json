@@ -881,7 +881,7 @@
     "validation.modal.message": "There might be a slight delay while the system is checking against the library's validation rules. You can continue to work with {appName} in a different browser tab if needed.",
     "record.errorMessage.help": "Help",
     "Inventory": "Облік фонду",
-    "MARC-authority": "MARC authority",
+    "MARC-authority": "MARC-авторитетні дані",
     "record.error.fixedField.invalidLength": "Invalid {name} field length, must be {length} characters.",
     "permission.quick-marc-editor.derive.execute": "quickMARC: Derive new MARC bibliographic record",
     "permission.quick-marc-authority-records.link-unlink.execute": "quickMARC: Can Link/unlink authority records to bib records",
