@@ -1,10 +1,13 @@
 # Change history for ui-quick-marc
 
+## [10.0.2] (https://github.com/folio-org/ui-quick-marc/tree/v10.0.2) (2025-04-29)
+
+* [UIQM-768](https://issues.folio.org/browse/UIQM-768) Switch to local record when deriving a shared MARC Bib record in a member tenant.
+
 ## [10.0.1] (https://github.com/folio-org/ui-quick-marc/tree/v10.0.1) (2025-04-16)
 
 * [UIQM-765](https://issues.folio.org/browse/UIQM-765) Add `shared=true` parameter to url when a user saves and keeps editing a Bib/Authority record on a central tenant.
 * [UIQM-766](https://issues.folio.org/browse/UIQM-766) useSaveRecord - do not use central tenant id when deriving a shared record from a member tenant.
-* [UIQM-768](https://issues.folio.org/browse/UIQM-768) Switch to local record when deriving a shared MARC Bib record in a member tenant.
 
 ## [10.0.0] (https://github.com/folio-org/ui-quick-marc/tree/v10.0.0) (2025-03-13)
 
