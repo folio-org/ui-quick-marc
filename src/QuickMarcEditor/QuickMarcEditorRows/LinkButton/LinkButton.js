@@ -113,7 +113,7 @@ const LinkButton = ({
     },
   });
 
-  const { linkingRules } = useAuthorityLinkingRules();
+  const { linkingRules } = useAuthorityLinkingRules({ tenantId: isShared ? centralTenantId : null });
 
   const onLinkRecord = (_authority) => {
     if (_authority.id === authority?.id) {
