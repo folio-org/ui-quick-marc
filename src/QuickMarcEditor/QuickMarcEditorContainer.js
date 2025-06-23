@@ -10,7 +10,10 @@ import { withRouter } from 'react-router';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import noop from 'lodash/noop';
 
-import { stripesConnect } from '@folio/stripes/core';
+import {
+  stripesConnect,
+  checkIfUserInMemberTenant,
+} from '@folio/stripes/core';
 import { LoadingView } from '@folio/stripes/components';
 import {
   baseManifest,
@@ -125,6 +128,11 @@ const QuickMarcEditorContainer = ({
     const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(getIsShared(), stripes, marcType)
       && _action !== QUICK_MARC_ACTIONS.CREATE;
 
+    const isRequestInstanceFromCentralTenant = isRequestToCentralTenantFromMember || (
+      getIsShared() && checkIfUserInMemberTenant(stripes)
+      && marcType === MARC_TYPES.HOLDINGS && _action === QUICK_MARC_ACTIONS.CREATE
+    );
+
     const path = _action === QUICK_MARC_ACTIONS.CREATE && marcType === MARC_TYPES.HOLDINGS
       ? EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]
       : EXTERNAL_INSTANCE_APIS[marcType];
@@ -133,11 +141,19 @@ const QuickMarcEditorContainer = ({
       ? { headers: getHeaders(centralTenantId, token, locale) }
       : {};
 
+    // need to use `isRequestInstanceFromCentralTenant` for instance requests because
+    // when we're creating a MARC Holdings record for a shared Instance
+    // we need to only send the Instance request to the central tenant.
+    // the rest of the requests should go to a member tenant.
+    // `isRequestToCentralTenantFromMember` doesn't check for a specific condition that we're creating
+    // a MARC Holdings record for a shared Instance from a member tenant, so it would send an Instance request
+    // to a member tenant
+
     const instancePromise = _action === QUICK_MARC_ACTIONS.CREATE && marcType !== MARC_TYPES.HOLDINGS
       ? Promise.resolve({})
       : mutator.quickMarcEditInstance.GET({
         path: `${path}/${_externalId}`,
-        ...headers,
+        ...(isRequestInstanceFromCentralTenant ? { headers: getHeaders(centralTenantId, token, locale) } : {}),
       });
 
     const marcRecordPromise = _action === QUICK_MARC_ACTIONS.CREATE

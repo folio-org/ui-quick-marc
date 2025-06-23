@@ -1,6 +1,10 @@
 # Change history for ui-quick-marc
 
-## [10.0.2] (https://github.com/folio-org/ui-quick-marc/tree/v10.0.2) (2025-04-29)
+## [10.0.3] (IN PROGRESS)
+
+* [UIQM-771](https://issues.folio.org/browse/UIQM-771) FE | Support Create/Update action for MARC holdings record on shared Instance from member tenant on ECS environment.
+
+## [10.0.2]  (https://github.com/folio-org/ui-quick-marc/tree/v10.0.2) (2025-04-29)
 
 * [UIQM-768](https://issues.folio.org/browse/UIQM-768) Switch to local record when deriving a shared MARC Bib record in a member tenant.
 
