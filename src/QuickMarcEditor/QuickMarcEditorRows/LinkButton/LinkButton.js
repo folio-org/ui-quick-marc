@@ -113,7 +113,12 @@ const LinkButton = ({
     },
   });
 
-  const { linkingRules } = useAuthorityLinkingRules({ tenantId: isShared ? centralTenantId : null });
+  // override tenant to central tenant id only when editing a shared MARC Bib record
+  // in all other cases current tenant is what we need to use
+  // when creating or deriving a MARC record we need to use current tenant's linking rules
+  // regardless of if it's a shared record or no
+  const linkingRulesTenantId = action === QUICK_MARC_ACTIONS.EDIT && isShared ? centralTenantId : null;
+  const { linkingRules } = useAuthorityLinkingRules({ tenantId: linkingRulesTenantId });
 
   const onLinkRecord = (_authority) => {
     if (_authority.id === authority?.id) {
