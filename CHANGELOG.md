@@ -4,19 +4,22 @@
 
 * [UIQM-762](https://issues.folio.org/browse/UIQM-762) Select a MARC authority record - Update auto-populate Advanced search and Browse queries with all controlled subfields.
 * [UIQM-744](https://issues.folio.org/browse/UIQM-744) Remove "Create a" text from the paneheader when creating new authority, bib, and holdings records.
-* [UIQM-771](https://issues.folio.org/browse/UIQM-771) FE | Support Create/Update action for MARC holdings record on shared Instance from member tenant on ECS environment.
 * [UIQM-773](https://issues.folio.org/browse/UIQM-773) Use Central tenant linking rules when user editing Shared MARC bib from Central or Member tenant.
 
-## [10.0.2]  (https://github.com/folio-org/ui-quick-marc/tree/v10.0.2) (2025-04-29)
+## [10.0.3](https://github.com/folio-org/ui-quick-marc/tree/v10.0.3) (2025-06-30)
+
+* [UIQM-771](https://issues.folio.org/browse/UIQM-771) FE | Support Create/Update action for MARC holdings record on shared Instance from member tenant on ECS environment.
+
+## [10.0.2](https://github.com/folio-org/ui-quick-marc/tree/v10.0.2) (2025-04-29)
 
 * [UIQM-768](https://issues.folio.org/browse/UIQM-768) Switch to local record when deriving a shared MARC Bib record in a member tenant.
 
-## [10.0.1] (https://github.com/folio-org/ui-quick-marc/tree/v10.0.1) (2025-04-16)
+## [10.0.1](https://github.com/folio-org/ui-quick-marc/tree/v10.0.1) (2025-04-16)
 
 * [UIQM-765](https://issues.folio.org/browse/UIQM-765) Add `shared=true` parameter to url when a user saves and keeps editing a Bib/Authority record on a central tenant.
 * [UIQM-766](https://issues.folio.org/browse/UIQM-766) useSaveRecord - do not use central tenant id when deriving a shared record from a member tenant.
 
-## [10.0.0] (https://github.com/folio-org/ui-quick-marc/tree/v10.0.0) (2025-03-13)
+## [10.0.0](https://github.com/folio-org/ui-quick-marc/tree/v10.0.0) (2025-03-13)
 
 * [UIQM-716](https://issues.folio.org/browse/UIQM-716) *BREAKING* Consolidate routes based on MARC type for bib and authority records to avoid page refresh after redirecting from the create page to the edit one.
 * [UIQM-730](https://issues.folio.org/browse/UIQM-730) Create/Edit/Derive MARC record - Retain focus when MARC record validation rules error display. Show validation issues toasts.
