@@ -555,9 +555,9 @@ export const addNewRecord = (index, state) => {
 };
 
 export const getLocationValue = (value) => {
-  const matches = value?.match(/\$b\s+([^$\s]+\/?)+/) || [];
+  const fieldContent = new MarcFieldContent(value);
 
-  return matches[0] || '';
+  return fieldContent.$b?.[0] || '';
 };
 
 export const checkIsEmptyContent = (field) => {
