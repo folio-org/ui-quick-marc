@@ -13,6 +13,8 @@ const locations = [{
   code: 'VA/LI/D',
 }, {
   code: 'LO/CA/TI/ON',
+}, {
+  code: 'WITH SPACE',
 }];
 
 describe('validators', () => {
@@ -574,6 +576,17 @@ describe('validators', () => {
       const marcRecords = [{
         tag: '852',
         content: '$b VA/LI/D',
+      }];
+
+      validators.validateLocation({ marcRecords, locations }, rule);
+
+      expect(rule.message).not.toHaveBeenCalled();
+    });
+
+    it('should not return an error when field contains a whitespace', () => {
+      const marcRecords = [{
+        tag: '852',
+        content: '$b WITH SPACE',
       }];
 
       validators.validateLocation({ marcRecords, locations }, rule);

@@ -29,10 +29,10 @@ const LocationField = ({
 
   const handleSelectLocation = (location) => {
     const permanentLocation = `$b ${location.code}`;
-    const locationSubfield = getLocationValue(input.value);
+    const locationValue = getLocationValue(input.value);
 
-    const newInputValue = locationSubfield
-      ? input.value.replace(locationSubfield, permanentLocation)
+    const newInputValue = locationValue
+      ? input.value.replace(`$b ${locationValue}`, permanentLocation)
       : `${permanentLocation} ${input.value.trim()}`;
 
     input.onChange(newInputValue);

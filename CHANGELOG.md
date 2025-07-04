@@ -1,5 +1,9 @@
 # Change history for ui-quick-marc
 
+## [10.0.4] (IN PROGRESS)
+
+* [UIQM-777](https://issues.folio.org/browse/UIQM-777) Support validation of MARC Holdings records with location codes that have a whitespace.
+
 ## [10.0.3](https://github.com/folio-org/ui-quick-marc/tree/v10.0.3) (2025-06-30)
 
 * [UIQM-771](https://issues.folio.org/browse/UIQM-771) FE | Support Create/Update action for MARC holdings record on shared Instance from member tenant on ECS environment.
