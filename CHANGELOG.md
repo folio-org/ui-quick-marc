@@ -1,11 +1,12 @@
 # Change history for ui-quick-marc
 
-## [10.1.0] (IN PROGRESS)
+## [11.0.0] (IN PROGRESS)
 
 * [UIQM-762](https://issues.folio.org/browse/UIQM-762) Select a MARC authority record - Update auto-populate Advanced search and Browse queries with all controlled subfields.
 * [UIQM-744](https://issues.folio.org/browse/UIQM-744) Remove "Create a" text from the paneheader when creating new authority, bib, and holdings records.
 * [UIQM-773](https://issues.folio.org/browse/UIQM-773) Use Central tenant linking rules when user editing Shared MARC bib from Central or Member tenant.
 * [UIQM-777](https://issues.folio.org/browse/UIQM-777) Support validation of MARC Holdings records with location codes that have a whitespace.
+* [UIQM-778](https://issues.folio.org/browse/UIQM-778) *BREAKING* Update for Split Search & Browse APIs.
 
 ## [10.0.3](https://github.com/folio-org/ui-quick-marc/tree/v10.0.3) (2025-06-30)
 
