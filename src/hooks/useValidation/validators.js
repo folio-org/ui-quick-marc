@@ -393,7 +393,7 @@ export const validateFixedFieldPositions = ({ marcRecords, fixedFieldSpec, marcT
       const contents = field008Content[subField.code];
 
       if (!contents) {
-        return acc;
+        continue; // eslint-disable-line no-continue
       }
 
       const subFieldContentArray = Array.isArray(contents) ? contents : [contents];
