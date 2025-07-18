@@ -161,7 +161,12 @@ const renderSubField = (name, config, intl) => {
                                 aria-label={ariaLabel}
                                 aria-labelledby={ariaIds.text}
                                 name={`${fieldName}[${idx}]`}
-                                initialValue={initialValue}
+                                /*
+                                  should not use `initialValueProp` because it will cause a mutation of the form's `initialValues`,
+                                  inserting an empty object in the array
+                                  instead, use `defaultValue`
+                                */
+                                defaultValue={initialValue}
                                 component={Select}
                                 disabled={config.disabled}
                                 dataOptions={options}
@@ -210,7 +215,12 @@ const renderSubField = (name, config, intl) => {
                   name={fieldName}
                   aria-label={ariaLabel}
                   aria-labelledby={ariaIds.text}
-                  initialValue={config.initialValue}
+                  /*
+                    should not use `initialValueProp` because it will cause a mutation of the form's `initialValues`,
+                    inserting an empty object in the array
+                    instead, use `defaultValue`
+                  */
+                  defaultValue={config.initialValue}
                   component={Select}
                   disabled={config.disabled}
                   dataOptions={options}

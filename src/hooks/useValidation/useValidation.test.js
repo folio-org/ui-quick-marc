@@ -1003,42 +1003,6 @@ describe('useValidation', () => {
           [MISSING_FIELD_ID]: [{ message: 'error message', severity: 'error', tag: '245[0]' }],
         });
       });
-
-      describe('when the length of the subfields of field 008 exceeds the limit', () => {
-        it('should return error messages', async () => {
-          const { result } = renderHook(() => useValidation(marcContext), {
-            wrapper: getWrapper(),
-          });
-
-          const validationErrors = await result.current.validate([
-            ...record.records,
-            {
-              id: 4,
-              content: {
-                'Geo Subd': 'test',
-                'Lang': 'test',
-              },
-              tag: '008',
-            },
-          ]);
-
-          expect(validationErrors[4]).toEqual([{
-            id: 'ui-quick-marc.record.error.fixedField.invalidLength',
-            severity: 'error',
-            values: {
-              length: 1,
-              name: 'ui-quick-marc.record.fixedField.Geo Subd',
-            },
-          }, {
-            id: 'ui-quick-marc.record.error.fixedField.invalidLength',
-            severity: 'error',
-            values: {
-              length: 1,
-              name: 'ui-quick-marc.record.fixedField.Lang',
-            },
-          }]);
-        });
-      });
     });
 
     describe('when action is CREATE', () => {
@@ -1088,7 +1052,9 @@ describe('useValidation', () => {
           },
           {
             id: 2,
-            content: {},
+            content: {
+              RefEval: '\\',
+            },
             tag: '008',
           },
           {
@@ -1112,9 +1078,23 @@ describe('useValidation', () => {
 
           const validationErrors = await result.current.validate(record.records);
 
-          expect(validationErrors).toEqual({
+          expect(validationErrors).toEqual(expect.objectContaining({
             4: [expect.objectContaining({ id: 'ui-quick-marc.record.error.controlField.content.empty' })],
+          }));
+        });
+      });
+
+      describe('and 008 field content is not valid', () => {
+        it('should return an error message', async () => {
+          const { result } = renderHook(() => useValidation(marcContext), {
+            wrapper: getWrapper(),
           });
+
+          const validationErrors = await result.current.validate(record.records);
+
+          expect(validationErrors).toEqual(expect.objectContaining({
+            2: [expect.objectContaining({ id: 'ui-quick-marc.record.error.008.invalidValue' })],
+          }));
         });
       });
     });

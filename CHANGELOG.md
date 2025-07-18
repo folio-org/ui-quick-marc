@@ -7,6 +7,7 @@
 * [UIQM-773](https://issues.folio.org/browse/UIQM-773) Use Central tenant linking rules when user editing Shared MARC bib from Central or Member tenant.
 * [UIQM-777](https://issues.folio.org/browse/UIQM-777) Support validation of MARC Holdings records with location codes that have a whitespace.
 * [UIQM-778](https://issues.folio.org/browse/UIQM-778) *BREAKING* Update for Split Search & Browse APIs.
+* [UIQM-398](https://issues.folio.org/browse/UIQM-398) Create\Edit quickMARC Authority: Add 008 position dropdowns to display available values.
 
 ## [10.0.3](https://github.com/folio-org/ui-quick-marc/tree/v10.0.3) (2025-06-30)
 
