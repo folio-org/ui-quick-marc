@@ -157,6 +157,7 @@ const LinkButton = ({
   }
 
   const initialValues = useMemo(() => {
+    const isNameTitleBrowseTag = tag.match(/[678]\d\d$/);
     const { dropdownValue: dropdownValueByTag } = DEFAULT_LOOKUP_OPTIONS[tag];
     const linkableBibSubfields = uniq(linkingRules
       .filter(linkingRule => linkingRule.bibField === tag)
@@ -216,6 +217,23 @@ const LinkButton = ({
       _initialValues[navigationSegments.browse] = {
         dropdownValue: dropdownValueByTag,
         searchIndex: dropdownValueByTag,
+        filters: initialFilters,
+      };
+    } else if (isNameTitleBrowseTag && fieldContent.$t?.length) {
+      initialSegment = navigationSegments.browse;
+      initialSearchInputValue = bibContentToSearchBy;
+      initialSearchQuery = initialSearchInputValue;
+
+      _initialValues[navigationSegments.browse] = {
+        dropdownValue: searchableIndexesValues.NAME_TITLE,
+        searchIndex: searchableIndexesValues.NAME_TITLE,
+        searchInputValue: initialSearchInputValue,
+        searchQuery: initialSearchQuery,
+        filters: initialFilters,
+      };
+      _initialValues[navigationSegments.search] = {
+        dropdownValue: searchableIndexesValues.NAME_TITLE,
+        searchIndex: searchableIndexesValues.NAME_TITLE,
         filters: initialFilters,
       };
     } else if (bibContentToSearchBy) {

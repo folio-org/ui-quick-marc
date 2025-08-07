@@ -26,6 +26,12 @@ jest.mock('@folio/stripes-marc-components', () => ({
     linkingRules: [{
       bibField: '100',
       authoritySubfields: ['a', 'd'],
+    }, {
+      bibField: '110',
+      authoritySubfields: ['a', 'd', 't'],
+    }, {
+      bibField: '700',
+      authoritySubfields: ['a', 'd', 't'],
     }],
   }),
 }));
@@ -247,6 +253,64 @@ describe('Given LinkButton', () => {
             filters: null,
           },
           segment: 'search',
+        };
+
+        fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
+
+        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
+      });
+    });
+
+    describe('when linking an Authority to a 6XX/7XX/8XX field with a $t', () => {
+      it('should use Browse Name-Title by default', async () => {
+        const { getAllByTestId } = renderComponent({
+          tag: '700',
+          content: '$a testing $t with t',
+        });
+
+        const initialValues = {
+          search: {
+            dropdownValue: 'nameTitle',
+            searchIndex: 'nameTitle',
+            filters: null,
+          },
+          browse: {
+            dropdownValue: 'nameTitle',
+            searchIndex: 'nameTitle',
+            searchInputValue: 'testing with t',
+            searchQuery: 'testing with t',
+            filters: null,
+          },
+          segment: 'browse',
+        };
+
+        fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
+
+        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
+      });
+    });
+
+    describe('when linking an Authority to a non-6XX/7XX/8XX field with a $t', () => {
+      it('should use Browse by regular lookup config by default', async () => {
+        const { getAllByTestId } = renderComponent({
+          tag: '110',
+          content: '$a testing $t with t',
+        });
+
+        const initialValues = {
+          search: {
+            dropdownValue: 'corporateNameTitle',
+            searchIndex: 'corporateNameTitle',
+            filters: null,
+          },
+          browse: {
+            dropdownValue: 'corporateNameTitle',
+            searchIndex: 'corporateNameTitle',
+            searchInputValue: 'testing with t',
+            searchQuery: 'testing with t',
+            filters: null,
+          },
+          segment: 'browse',
         };
 
         fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
