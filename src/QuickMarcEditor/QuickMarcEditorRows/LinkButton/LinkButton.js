@@ -157,7 +157,8 @@ const LinkButton = ({
   }
 
   const initialValues = useMemo(() => {
-    const isNameTitleBrowseTag = tag.match(/[678]\d\d$/);
+    const nameTitleBrowseTags = [600, 610, 611, 700, 710, 711, 800, 810, 811];
+    const isNameTitleBrowseTag = nameTitleBrowseTags.includes(parseInt(tag, 10));
     const { dropdownValue: dropdownValueByTag } = DEFAULT_LOOKUP_OPTIONS[tag];
     const linkableBibSubfields = uniq(linkingRules
       .filter(linkingRule => linkingRule.bibField === tag)
