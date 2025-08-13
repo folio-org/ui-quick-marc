@@ -71,10 +71,11 @@ const QuickMarcEditorContainer = ({
   history,
   externalRecordPath,
   stripes,
+  externalId,
   onCheckCentralTenantPerm = noop,
+  initialValue: initialValueProp,
 }) => {
   const {
-    externalId,
     instanceId,
   } = match.params;
 
@@ -112,6 +113,14 @@ const QuickMarcEditorContainer = ({
   const handleSave = useCallback(async (id) => {
     await onSave(getCloseEditorParams(id));
   }, [getCloseEditorParams, onSave]);
+
+  const formatInitialValues = (marcRecord, _action, linkingRulesResponse) => {
+    const formattedMarcRecord = formatMarcRecordByQuickMarcAction(marcRecord, _action, marcType);
+    const marcRecordWithInternalProps = addInternalFieldProperties(formattedMarcRecord);
+    const marcRecordWithSplitFields = splitFields(marcRecordWithInternalProps, linkingRulesResponse);
+
+    return marcRecordWithSplitFields;
+  };
 
   const externalRecordUrl = useMemo(() => {
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
@@ -192,7 +201,8 @@ const QuickMarcEditorContainer = ({
         let dehydratedMarcRecord;
 
         if (_action === QUICK_MARC_ACTIONS.CREATE) {
-          dehydratedMarcRecord = createRecordDefaults[marcType](instanceResponse, fixedFieldSpecResponse);
+          dehydratedMarcRecord =
+            initialValueProp || createRecordDefaults[marcType](instanceResponse, fixedFieldSpecResponse);
         } else {
           dehydratedMarcRecord = dehydrateMarcRecordResponse(
             marcRecordResponse,
@@ -202,16 +212,18 @@ const QuickMarcEditorContainer = ({
           );
         }
 
-        const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, _action, marcType);
-        const marcRecordWithInternalProps = addInternalFieldProperties(formattedMarcRecord);
-        const marcRecordWithSplitFields = splitFields(marcRecordWithInternalProps, linkingRulesResponse);
+        console.log(dehydratedMarcRecord);
 
         setRelatedRecordVersion(instanceResponse?._version);
         setInstance(instanceResponse);
-        setMarcRecord(marcRecordWithSplitFields);
+        setMarcRecord(formatInitialValues(dehydratedMarcRecord, _action, linkingRulesResponse));
         setLocations(locationsResponse);
         setFixedFieldSpec(fixedFieldSpecResponse);
         setIsLoading(false);
+
+        setTimeout(() => {
+          setMarcRecord(formatInitialValues(initialValueProp, _action, linkingRulesResponse));
+        }, 3000);
       })
       .catch((err) => {
         // eslint-disable-next-line no-console
