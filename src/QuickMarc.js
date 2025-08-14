@@ -13,10 +13,12 @@ import {
   MARC_TYPES,
   keyboardCommands,
 } from './common/constants';
+import { QuickMarcSettings } from './settings';
 
 const QuickMarc = ({
   basePath,
   externalRecordPath,
+  showSettings,
   onClose,
   onSave,
 }) => {
@@ -68,6 +70,10 @@ const QuickMarc = ({
     },
   ];
 
+  if (showSettings) {
+    return <QuickMarcSettings />;
+  }
+
   return (
     <div data-test-quick-marc>
       <CommandList
@@ -101,6 +107,7 @@ const QuickMarc = ({
 QuickMarc.propTypes = {
   basePath: PropTypes.string.isRequired,
   externalRecordPath: PropTypes.string,
+  showSettings: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
 };

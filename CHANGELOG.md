@@ -9,6 +9,7 @@
 * [UIQM-778](https://issues.folio.org/browse/UIQM-778) *BREAKING* Update for Split Search & Browse APIs.
 * [UIQM-398](https://issues.folio.org/browse/UIQM-398) Create\Edit quickMARC Authority: Add 008 position dropdowns to display available values.
 * [UIQM-785](https://issues.folio.org/browse/UIQM-785) Default to Name-title browse if the MARC bib field contains a subfield "t".
+* [UIQM-677](https://issues.folio.org/browse/UIQM-677) Add MARC Settings page.
 
 ## [10.0.3](https://github.com/folio-org/ui-quick-marc/tree/v10.0.3) (2025-06-30)
 
