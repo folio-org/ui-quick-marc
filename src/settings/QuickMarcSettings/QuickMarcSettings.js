@@ -1,4 +1,7 @@
-import { useLocation, useRouteMatch } from 'react-router-dom';
+import {
+  useLocation,
+  useRouteMatch,
+} from 'react-router-dom';
 import { useIntl } from 'react-intl';
 
 import { TitleManager } from '@folio/stripes/core';
@@ -8,12 +11,19 @@ import {
 } from '@folio/stripes/components';
 import { Settings } from '@folio/stripes/smart-components';
 
+import { ValidationRulesSettings } from '../ValidationRulesSettings';
+
 const QuickMarcSettings = () => {
   const match = useRouteMatch();
   const location = useLocation();
   const { formatMessage } = useIntl();
 
-  const pages = [];
+  const pages = [{
+    route: 'validation-rules',
+    label: formatMessage({ id: 'ui-quick-marc.settings.marcValidationRules.pane.title' }),
+    component: ValidationRulesSettings,
+    perm: undefined,
+  }];
 
   return (
     <CommandList commands={defaultKeyboardShortcuts}>

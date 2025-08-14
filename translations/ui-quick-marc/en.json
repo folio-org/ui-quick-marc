@@ -14,7 +14,7 @@
   "permission.quick-marc-authority-records.link-unlink.execute": "quickMARC: Can Link/unlink authority records to bib records",
 
   "settings.heading": "MARC",
-  "settings.marcBibTemplates.pane.title": "MARC bibliographic templates",
+  "settings.marcValidationRules.pane.title": "MARC Validation Rule",
   "settings.html.page.title": "MARC settings",
 
   "holdings-record.create.title": "New MARC holdings record",

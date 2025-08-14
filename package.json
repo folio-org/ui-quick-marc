@@ -191,7 +191,7 @@
         "subPermissions": [
           "settings.enabled"
         ],
-        "visible": false 
+        "visible": true 
       }
     ]
   },
