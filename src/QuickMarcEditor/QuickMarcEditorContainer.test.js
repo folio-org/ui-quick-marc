@@ -12,8 +12,6 @@ import faker from 'faker';
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcEditorContainer from './QuickMarcEditorContainer';
-import QuickMarcEditWrapper from './QuickMarcEditWrapper';
-import QuickMarcDeriveWrapper from './QuickMarcDeriveWrapper';
 import { QUICK_MARC_ACTIONS } from './constants';
 import {
   MARC_TYPES,
@@ -81,6 +79,10 @@ jest.mock('../queries', () => ({
     fetchLinkSuggestions: jest.fn(),
     isLoading: false,
   }),
+  useLccnDuplicateConfig: jest.fn().mockReturnValue({
+    isLoading: false,
+    duplicateLccnCheckingEnabled: false,
+  }),
 }));
 
 const getInstance = () => ({
@@ -96,8 +98,6 @@ const record = {
   fields: [],
 };
 
-const resources = {};
-
 const locations = [];
 
 const externalRecordPath = '/external/record/path';
@@ -105,14 +105,21 @@ const externalRecordPath = '/external/record/path';
 const mockOnClose = jest.fn();
 const mockOnSave = jest.fn();
 
-const renderQuickMarcEditorContainer = ({ history, ...props } = {}) => (render(
-  <Harness history={history}>
+const renderQuickMarcEditorContainer = ({
+  history,
+  action = QUICK_MARC_ACTIONS.EDIT,
+  marcType = MARC_TYPES.BIB,
+  ...props
+} = {}) => (render(
+  <Harness
+    history={history}
+    action={action}
+    marcType={marcType}
+  >
     <QuickMarcEditorContainer
-      marcType={MARC_TYPES.BIB}
       externalRecordPath={externalRecordPath}
       onClose={mockOnClose}
       onSave={mockOnSave}
-      resources={resources}
       {...props}
       onCheckCentralTenantPerm={() => false}
     />
@@ -156,8 +163,6 @@ describe('Given Quick Marc Editor Container', () => {
       await renderQuickMarcEditorContainer({
         mutator,
         onClose: jest.fn(),
-        action: QUICK_MARC_ACTIONS.EDIT,
-        wrapper: QuickMarcEditWrapper,
       });
     });
 
@@ -171,7 +176,6 @@ describe('Given Quick Marc Editor Container', () => {
           mutator,
           onClose: jest.fn(),
           action: QUICK_MARC_ACTIONS.EDIT,
-          wrapper: QuickMarcEditWrapper,
           marcType: MARC_TYPES.AUTHORITY,
         });
       });
@@ -191,7 +195,6 @@ describe('Given Quick Marc Editor Container', () => {
           mutator,
           onClose,
           action: QUICK_MARC_ACTIONS.DERIVE,
-          wrapper: QuickMarcEditWrapper,
         });
       });
     });
@@ -212,51 +215,12 @@ describe('Given Quick Marc Editor Container', () => {
       const renderer = await renderQuickMarcEditorContainer({
         mutator,
         onClose: jest.fn(),
-        action: QUICK_MARC_ACTIONS.EDIT,
-        wrapper: QuickMarcEditWrapper,
       });
 
       getByText = renderer.getByText;
     });
 
     expect(getByText(instance.title)).toBeDefined();
-  });
-
-  describe('when the action is not CREATE', () => {
-    it('should append the relatedRecordVersion parameter to URL', async () => {
-      const spyHistory = jest.spyOn(mockHistory, 'replace');
-
-      await act(async () => {
-        await renderQuickMarcEditorContainer({
-          mutator,
-          onClose: jest.fn(),
-          action: QUICK_MARC_ACTIONS.EDIT,
-          wrapper: QuickMarcEditWrapper,
-        });
-      });
-
-      expect(spyHistory).toHaveBeenCalledWith({ search: expect.stringContaining('relatedRecordVersion=1') });
-    });
-  });
-
-  describe('when the action is CREATE', () => {
-    it('should not append the relatedRecordVersion parameter to URL', async () => {
-      const history = createMemoryHistory();
-
-      history.replace = jest.fn();
-
-      await act(async () => {
-        await renderQuickMarcEditorContainer({
-          mutator,
-          onClose: jest.fn(),
-          action: QUICK_MARC_ACTIONS.CREATE,
-          wrapper: QuickMarcEditWrapper,
-          history,
-        });
-      });
-
-      expect(history.replace).not.toHaveBeenCalled();
-    });
   });
 
   describe('Leader field', () => {
@@ -278,20 +242,19 @@ describe('Given Quick Marc Editor Container', () => {
             mutator,
             onClose: jest.fn(),
             action: QUICK_MARC_ACTIONS.CREATE,
-            wrapper: QuickMarcEditWrapper,
           });
         });
 
-        recordLengthField = screen.getByRole('textbox', { name: 'ui-quick-marc.record.fixedField.Record length' });
-        statusField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.Status' });
-        typeField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.Type' });
-        blvlField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.BLvl' });
-        ctrlField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.Ctrl' });
-        positions9to16Field = screen.getByRole('textbox', { name: 'ui-quick-marc.record.fixedField.9-16 positions' });
-        elvlField = screen.getByRole('textbox', { name: 'ui-quick-marc.record.fixedField.tip.ELvl' });
-        descField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.Desc' });
-        multiLvlField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.MultiLvl' });
-        positions20to23Field = screen.getByRole('textbox', { name: 'ui-quick-marc.record.fixedField.20-23 positions' });
+        recordLengthField = screen.getByRole('textbox', { name: /ui-quick-marc.record.fixedField.Record length/ });
+        statusField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.Status/ });
+        typeField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.Type/ });
+        blvlField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.BLvl/ });
+        ctrlField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.Ctrl/ });
+        positions9to16Field = screen.getByRole('textbox', { name: /ui-quick-marc.record.fixedField.9-16 positions/ });
+        elvlField = screen.getByRole('textbox', { name: /ui-quick-marc.record.fixedField.tip.ELvl/ });
+        descField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.Desc/ });
+        multiLvlField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.MultiLvl/ });
+        positions20to23Field = screen.getByRole('textbox', { name: /ui-quick-marc.record.fixedField.20-23 positions/ });
       });
 
       it('should display correct default values', () => {
@@ -404,17 +367,16 @@ describe('Given Quick Marc Editor Container', () => {
             onClose: jest.fn(),
             action: QUICK_MARC_ACTIONS.CREATE,
             marcType: MARC_TYPES.AUTHORITY,
-            wrapper: QuickMarcEditWrapper,
           });
         });
 
-        recordLengthField = screen.getByRole('textbox', { name: 'ui-quick-marc.record.fixedField.Record length' });
-        statusField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.Status' });
-        typeField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.Type' });
-        positions7to16Field = screen.getByRole('textbox', { name: 'ui-quick-marc.record.fixedField.7-16 positions' });
-        elvlField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.ELvl' });
-        punctField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.Punct' });
-        positions19to23Field = screen.getByRole('textbox', { name: 'ui-quick-marc.record.fixedField.19-23 positions' });
+        recordLengthField = screen.getByRole('textbox', { name: /ui-quick-marc.record.fixedField.Record length/ });
+        statusField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.Status/ });
+        typeField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.Type/ });
+        positions7to16Field = screen.getByRole('textbox', { name: /ui-quick-marc.record.fixedField.7-16 positions/ });
+        elvlField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.ELvl/ });
+        punctField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.Punct/ });
+        positions19to23Field = screen.getByRole('textbox', { name: /ui-quick-marc.record.fixedField.19-23 positions/ });
       });
 
       it('should display correct default values', () => {
@@ -488,17 +450,16 @@ describe('Given Quick Marc Editor Container', () => {
             onClose: jest.fn(),
             action: QUICK_MARC_ACTIONS.CREATE,
             marcType: MARC_TYPES.HOLDINGS,
-            wrapper: QuickMarcEditWrapper,
           });
         });
 
-        recordLengthField = screen.getByRole('textbox', { name: 'ui-quick-marc.record.fixedField.Record length' });
-        statusField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.Status' });
-        typeField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.Type' });
-        positions7to16Field = screen.getByRole('textbox', { name: 'ui-quick-marc.record.fixedField.7-16 positions' });
-        elvlField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.ELvl' });
-        itemField = screen.getByRole('combobox', { name: 'ui-quick-marc.record.fixedField.tip.Item' });
-        positions19to23Field = screen.getByRole('textbox', { name: 'ui-quick-marc.record.fixedField.19-23 positions' });
+        recordLengthField = screen.getByRole('textbox', { name: /ui-quick-marc.record.fixedField.Record length/ });
+        statusField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.Status/ });
+        typeField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.Type/ });
+        positions7to16Field = screen.getByRole('textbox', { name: /ui-quick-marc.record.fixedField.7-16 positions/ });
+        elvlField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.ELvl/ });
+        itemField = screen.getByRole('combobox', { name: /ui-quick-marc.record.fixedField.tip.Item/ });
+        positions19to23Field = screen.getByRole('textbox', { name: /ui-quick-marc.record.fixedField.19-23 positions/ });
       });
 
       it('should display correct default values', async () => {
@@ -560,7 +521,6 @@ describe('Given Quick Marc Editor Container', () => {
           mutator,
           onClose,
           action: QUICK_MARC_ACTIONS.EDIT,
-          wrapper: QuickMarcEditWrapper,
           marcType: MARC_TYPES.BIB,
         });
 
@@ -594,7 +554,6 @@ describe('Given Quick Marc Editor Container', () => {
           mutator,
           onClose: jest.fn(),
           action: QUICK_MARC_ACTIONS.DERIVE,
-          wrapper: QuickMarcDeriveWrapper,
           stripes,
         });
       });
@@ -640,7 +599,6 @@ describe('Given Quick Marc Editor Container', () => {
           mutator: newMutator,
           onClose: jest.fn(),
           action: QUICK_MARC_ACTIONS.DERIVE,
-          wrapper: QuickMarcDeriveWrapper,
           stripes,
           location: newLocation,
         });

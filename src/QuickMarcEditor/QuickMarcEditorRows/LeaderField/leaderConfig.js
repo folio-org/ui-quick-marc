@@ -356,7 +356,7 @@ export const leaderConfig = {
       type: SUBFIELD_TYPES.STRING,
       disabled: true,
       noLabel: true,
-      width72: true,
+      width82: true,
       defaultValue: '\\\\\\2200000',
     },
     {

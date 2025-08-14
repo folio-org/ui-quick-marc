@@ -1,4 +1,9 @@
-import { LEADER_DOCUMENTATION_LINKS, LEADER_TAG, FIXED_FIELD_TAG } from '../../QuickMarcEditor/constants';
+import {
+  LEADER_DOCUMENTATION_LINKS,
+  LEADER_TAG,
+  FIXED_FIELD_TAG,
+  QUICK_MARC_ACTIONS,
+} from '../../QuickMarcEditor/constants';
 import { MARC_TYPES } from '../../common/constants';
 import * as validators from './validators';
 import fixedFieldSpecBib from '../../../test/mocks/fixedFieldSpecBib';
@@ -8,6 +13,8 @@ const locations = [{
   code: 'VA/LI/D',
 }, {
   code: 'LO/CA/TI/ON',
+}, {
+  code: 'WITH SPACE',
 }];
 
 describe('validators', () => {
@@ -576,6 +583,17 @@ describe('validators', () => {
       expect(rule.message).not.toHaveBeenCalled();
     });
 
+    it('should not return an error when field contains a whitespace', () => {
+      const marcRecords = [{
+        tag: '852',
+        content: '$b WITH SPACE',
+      }];
+
+      validators.validateLocation({ marcRecords, locations }, rule);
+
+      expect(rule.message).not.toHaveBeenCalled();
+    });
+
     it('should return an error when field does not contain a valid location', () => {
       const marcRecords = [{
         tag: '852',
@@ -626,7 +644,7 @@ describe('validators', () => {
 
       validators.validateSubfieldIsControlled({ marcRecords, linkingRules }, rule);
 
-      expect(rule.message).toHaveBeenCalledWith(['600']);
+      expect(rule.message).toHaveBeenCalled();
     });
   });
 
@@ -707,6 +725,121 @@ describe('validators', () => {
       validators.validateFixedFieldPositions({ marcRecords, fixedFieldSpec, marcType }, rule);
 
       expect(rule.message).toHaveBeenCalledWith('Ills');
+    });
+
+    it('should return all errors instead of one', () => {
+      const marcRecords = [{
+        tag: LEADER_TAG,
+        content: bibLeader,
+      }, {
+        id: 'id-008',
+        tag: FIXED_FIELD_TAG,
+        content: {
+          DtSt: '_',
+          Ills: '_',
+        },
+      }];
+      const marcType = MARC_TYPES.BIB;
+
+      const errors = validators.validateFixedFieldPositions({ marcRecords, fixedFieldSpec, marcType }, rule);
+
+      expect(errors['id-008'].length).toBe(2);
+    });
+  });
+
+  describe('validateLccnDuplication', () => {
+    const rule = {
+      tag: '010',
+      message: jest.fn(),
+    };
+
+    describe('when 010 $a is not duplicated', () => {
+      it('should not return an error', async () => {
+        const marcRecords = [{
+          tag: LEADER_TAG,
+          content: bibLeader,
+        }, {
+          tag: '010',
+          content: '$a test',
+        }];
+        const ky = {
+          get: jest.fn().mockReturnValue({
+            json: jest.fn().mockResolvedValue({ instances: [] }),
+          }),
+        };
+
+        const marcType = MARC_TYPES.BIB;
+        const action = QUICK_MARC_ACTIONS.EDIT;
+        const duplicateLccnCheckingEnabled = true;
+
+        await validators.validateLccnDuplication({
+          ky,
+          marcRecords,
+          marcType,
+          action,
+          duplicateLccnCheckingEnabled,
+        }, rule);
+
+        expect(rule.message).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when 010 $a is duplicated', () => {
+      it('should return an error', async () => {
+        const marcRecords = [{
+          tag: LEADER_TAG,
+          content: bibLeader,
+        }, {
+          tag: '010',
+          content: '$a test',
+        }];
+        const ky = {
+          get: jest.fn().mockReturnValue({
+            json: jest.fn().mockResolvedValue({ instances: [{}] }),
+          }),
+        };
+        const marcType = MARC_TYPES.BIB;
+        const action = QUICK_MARC_ACTIONS.EDIT;
+        const duplicateLccnCheckingEnabled = true;
+
+        await validators.validateLccnDuplication({
+          ky,
+          marcRecords,
+          marcType,
+          action,
+          duplicateLccnCheckingEnabled,
+        }, rule);
+
+        expect(rule.message).toHaveBeenCalled();
+      });
+    });
+
+    it('should call the bib record with the `staffSuppress` and `discoverySuppress` parameters', async () => {
+      const marcRecords = [{
+        tag: LEADER_TAG,
+        content: bibLeader,
+      }, {
+        tag: '010',
+        content: '$a test',
+      }];
+      const ky = {
+        get: jest.fn().mockResolvedValue({}),
+      };
+
+      await validators.validateLccnDuplication({
+        ky,
+        marcRecords,
+        marcType: MARC_TYPES.BIB,
+        action: QUICK_MARC_ACTIONS.EDIT,
+        duplicateLccnCheckingEnabled: true,
+        instanceId: 'instanceId-1',
+      }, rule);
+
+      expect(ky.get).toHaveBeenCalledWith('search/instances', {
+        searchParams: expect.objectContaining({
+          query: expect.stringContaining(' not (staffSuppress=="true" and discoverySuppress=="true")'),
+        }),
+      });
     });
   });
 });

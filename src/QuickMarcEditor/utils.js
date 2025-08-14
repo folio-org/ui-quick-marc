@@ -6,9 +6,9 @@ import omit from 'lodash/omit';
 import compact from 'lodash/compact';
 import isString from 'lodash/isString';
 import isNumber from 'lodash/isNumber';
-import toPairs from 'lodash/toPairs';
 import flatten from 'lodash/flatten';
 import flow from 'lodash/flow';
+import assignWith from 'lodash/assignWith';
 
 import {
   checkIfUserInMemberTenant,
@@ -37,6 +37,7 @@ import { SUBFIELD_TYPES } from './QuickMarcEditorRows/BytesField';
 import getMaterialCharsFieldConfig from './QuickMarcEditorRows/MaterialCharsField/getMaterialCharsFieldConfig';
 import getPhysDescriptionFieldConfig from './QuickMarcEditorRows/PhysDescriptionField/getPhysDescriptionFieldConfig';
 import { FixedFieldFactory } from './QuickMarcEditorRows/FixedField';
+import { MarcFieldContent } from '../common';
 import {
   MARC_TYPES,
   ERROR_TYPES,
@@ -68,6 +69,9 @@ export const isContentRow = (recordRow, marcType) => {
     || isPhysDescriptionRecord(recordRow)
     || isControlNumberRow(recordRow));
 };
+
+// returns an object with subfields values. order of subfields is not kept
+// '$a valueA1 $a value A2 $b valueB' -> { '$a': ['valueA1', 'valueA2'], '$b': ['valueB'] }
 
 export const getContentSubfieldValue = (content = '') => {
   return content.split(/\$/)
@@ -497,8 +501,14 @@ export const convertLeaderToString = (marcType, leaderField) => {
     return '';
   }
 
+  if (typeof leaderField.content === 'string') {
+    return leaderField.content;
+  }
+
   return leaderConfig[marcType].reduce((acc, fieldConfig) => {
-    return `${acc}${leaderField.content[fieldConfig.name]}`;
+    const value = leaderField.content[fieldConfig.name] || fieldConfig.defaultValue;
+
+    return `${acc}${value}`;
   }, '');
 };
 
@@ -514,11 +524,10 @@ export const getLeaderPositions = (marcType, records) => {
 
 export const hydrateMarcRecord = marcRecord => {
   const leader = marcRecord.records[0];
-  const marcType = marcRecord.marcFormat.toLowerCase();
 
   return ({
     ...marcRecord,
-    leader: convertLeaderToString(marcType, leader),
+    leader: leader.content,
     fields: marcRecord.records.slice(1).map(record => ({
       tag: record.tag,
       content: record.content,
@@ -546,9 +555,9 @@ export const addNewRecord = (index, state) => {
 };
 
 export const getLocationValue = (value) => {
-  const matches = value?.match(/\$b\s+([^$\s]+\/?)+/) || [];
+  const fieldContent = new MarcFieldContent(value);
 
-  return matches[0] || '';
+  return fieldContent.$b?.[0] || '';
 };
 
 export const checkIsEmptyContent = (field) => {
@@ -592,7 +601,7 @@ export const isRecordForManualLinking = (
   isRequestToCentralTenantFromMember,
   onCheckCentralTenantPerm,
 ) => {
-  const permission = 'ui-quick-marc.quick-marc-authority-records.linkUnlink';
+  const permission = 'ui-quick-marc.quick-marc-authority-records.link-unlink.execute';
 
   return (
     marcType === MARC_TYPES.BIB
@@ -715,6 +724,25 @@ export const updateRecordAtIndex = (index, field, state) => {
   records[index] = field;
 
   return records;
+};
+
+export const formatLeaderForSubmit = (marcType, formValues) => {
+  const { records } = formValues;
+
+  return {
+    ...formValues,
+    leader: convertLeaderToString(marcType, records.find(isLeaderRow)),
+    records: formValues.records.map(record => {
+      if (!isLeaderRow(record)) {
+        return record;
+      }
+
+      return {
+        ...record,
+        content: convertLeaderToString(marcType, record),
+      };
+    }),
+  };
 };
 
 export const removeDeletedRecords = (formValues) => {
@@ -983,47 +1011,42 @@ export const getCorrespondingMarcTag = (records) => {
 };
 
 export const groupSubfields = (field, authorityControlledSubfields = []) => {
-  const subfields = toPairs(getContentSubfieldValue(field.content));
+  const subfields = new MarcFieldContent(field.content);
 
   return subfields.reduce((groups, subfield) => {
-    const isControlled = authorityControlledSubfields.includes(subfield[0].replace('$', ''));
-    const isNum = /\$\d/.test(subfield[0]);
-    const isZero = /\$0/.test(subfield[0]);
-    const isNine = /\$9/.test(subfield[0]);
+    const isControlled = authorityControlledSubfields.includes(subfield.code.replace('$', ''));
+    const isNum = /\$\d/.test(subfield.code);
+    const isZero = /\$0/.test(subfield.code);
+    const isNine = /\$9/.test(subfield.code);
 
-    const fieldContent = subfield[1].reduce((content, value) => [content, `${subfield[0]} ${value}`].join(' ').trimStart(), '');
-
-    const formattedSubfield = {
-      content: fieldContent,
-      code: subfield[0],
-    };
+    const subfieldCodeAndValue = `${subfield.code} ${subfield.value}`;
 
     if (isControlled) {
-      groups.controlled = [groups.controlled, formattedSubfield.content].join(' ').trim();
+      groups.controlled = [groups.controlled, subfieldCodeAndValue].join(' ').trim();
 
       return groups;
     }
 
     if (!isControlled && !isNum) {
-      groups[UNCONTROLLED_ALPHA] = [groups[UNCONTROLLED_ALPHA], formattedSubfield.content].join(' ').trim();
+      groups[UNCONTROLLED_ALPHA] = [groups[UNCONTROLLED_ALPHA], subfieldCodeAndValue].join(' ').trim();
 
       return groups;
     }
 
     if (isZero) {
-      groups.zeroSubfield = [groups.zeroSubfield, formattedSubfield.content].join(' ').trim();
+      groups.zeroSubfield = [groups.zeroSubfield, subfieldCodeAndValue].join(' ').trim();
 
       return groups;
     }
 
     if (isNine) {
-      groups.nineSubfield = [groups.nineSubfield, formattedSubfield.content].join(' ').trim();
+      groups.nineSubfield = [groups.nineSubfield, subfieldCodeAndValue].join(' ').trim();
 
       return groups;
     }
 
     if (isNum) {
-      groups[UNCONTROLLED_NUMBER] = [groups[UNCONTROLLED_NUMBER], formattedSubfield.content].join(' ').trim();
+      groups[UNCONTROLLED_NUMBER] = [groups[UNCONTROLLED_NUMBER], subfieldCodeAndValue].join(' ').trim();
 
       return groups;
     }
@@ -1134,7 +1157,7 @@ export const isReadOnly = (
   return rows.has(recordRow.tag) || isLastRecord(recordRow);
 };
 
-const addLeaderFieldAndIdToRecords = (marcRecordResponse) => {
+const addLeaderFieldAndIdToRecords = (marcRecordResponse, fieldIds) => {
   const marcType = marcRecordResponse.marcFormat.toLowerCase();
   const leader = convertLeaderToObject(marcType, marcRecordResponse.leader);
 
@@ -1148,29 +1171,26 @@ const addLeaderFieldAndIdToRecords = (marcRecordResponse) => {
         content: leader,
         id: LEADER_TAG,
       },
-      ...marcRecordResponse.fields.map(record => ({
+      ...marcRecordResponse.fields.map((record, index) => ({
         ...record,
-        id: uuidv4(),
+        id: fieldIds?.[index] || uuidv4(),
       })),
     ],
   };
 };
 
-export const dehydrateMarcRecordResponse = (marcRecordResponse, marcType, fixedFieldSpec) => (
+export const dehydrateMarcRecordResponse = (marcRecordResponse, marcType, fixedFieldSpec, fieldIds) => (
   flow(
-    addLeaderFieldAndIdToRecords,
+    marcRecord => addLeaderFieldAndIdToRecords(marcRecord, fieldIds),
     marcRecord => autopopulateFixedField(marcRecord, marcType, fixedFieldSpec),
     autopopulatePhysDescriptionField,
     autopopulateMaterialCharsField,
   )(marcRecordResponse)
 );
 
-export const hydrateForLinkSuggestions = (marcRecord, fields) => {
-  const leaderField = marcRecord.records[0];
-  const marcType = marcRecord.marcFormat.toLowerCase();
-
+export const hydrateForLinkSuggestions = (marcRecord, marcType, fields) => {
   return ({
-    leader: convertLeaderToString(marcType, leaderField),
+    leader: convertLeaderToString(marcType, marcRecord.records.find(isLeaderRow)),
     fields: fields.map(record => ({
       tag: record.tag,
       content: record.content,
@@ -1180,12 +1200,9 @@ export const hydrateForLinkSuggestions = (marcRecord, fields) => {
   });
 };
 
-export const applyCentralTenantInHeaders = (location, stripes, marcType) => {
-  const searchParams = new URLSearchParams(location.search);
-  const isSharedRecord = searchParams.get('shared') === 'true';
-
+export const applyCentralTenantInHeaders = (isShared, stripes, marcType) => {
   return (
-    isSharedRecord
+    isShared
     && [MARC_TYPES.BIB, MARC_TYPES.AUTHORITY].includes(marcType)
     && checkIfUserInMemberTenant(stripes)
   );
@@ -1193,4 +1210,56 @@ export const applyCentralTenantInHeaders = (location, stripes, marcType) => {
 
 export const isFolioSourceFileNotSelected = ({ selectedSourceFile }) => {
   return selectedSourceFile?.source !== SOURCES.FOLIO;
+};
+
+export const joinErrors = (errorsA, errorsB) => {
+  return assignWith({}, errorsA, errorsB, (objValue = [], srcValue = []) => objValue.concat(srcValue));
+};
+
+export const isDiacritic = (char) => {
+  const specialDiactrics = 'łŁøß';
+
+  if (specialDiactrics.includes(char)) return true;
+
+  return char.normalize('NFD') !== char;
+};
+
+export const getVisibleNonSelectable008Subfields = (fixedFieldType) => {
+  if (!fixedFieldType) {
+    return [];
+  }
+
+  return fixedFieldType.items
+    .filter(field => !field.readOnly)
+    .filter(field => !field.isArray);
+};
+
+export const getFixedFieldStringPositions = (type, subtype, field, fixedFieldSpec) => {
+  if (isFixedFieldRow(field)) {
+    const fixedFieldType = FixedFieldFactory.getFixedFieldType(fixedFieldSpec, type, subtype);
+    const nonSelectableSubfields = getVisibleNonSelectable008Subfields(fixedFieldType);
+
+    return nonSelectableSubfields;
+  }
+
+  if (isMaterialCharsRecord(field)) {
+    const materialCharsConfig = getMaterialCharsFieldConfig(field.content.Type);
+
+    return materialCharsConfig.filter(item => item.type === SUBFIELD_TYPES.STRING);
+  }
+
+  if (isPhysDescriptionRecord(field)) {
+    const materialCharsConfig = getPhysDescriptionFieldConfig(field.content.Category);
+
+    return materialCharsConfig.filter(item => item.type === SUBFIELD_TYPES.STRING);
+  }
+
+  return [];
+};
+
+export const getFieldIds = (formValues) => {
+  return formValues.records
+    .slice(1)
+    .filter(field => !field._isDeleted)
+    .map(field => field.id);
 };

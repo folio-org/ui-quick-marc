@@ -1,3 +1,10 @@
 .saveContinueBtn {
   margin-right: 0.8rem;
 }
+
+.validationModalContent {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

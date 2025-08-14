@@ -1,6 +1,51 @@
 # Change history for ui-quick-marc
 
-## [9.0.0] IN PROGRESS
+## [11.0.0] (IN PROGRESS)
+
+* [UIQM-762](https://issues.folio.org/browse/UIQM-762) Select a MARC authority record - Update auto-populate Advanced search and Browse queries with all controlled subfields.
+* [UIQM-744](https://issues.folio.org/browse/UIQM-744) Remove "Create a" text from the paneheader when creating new authority, bib, and holdings records.
+* [UIQM-773](https://issues.folio.org/browse/UIQM-773) Use Central tenant linking rules when user editing Shared MARC bib from Central or Member tenant.
+* [UIQM-777](https://issues.folio.org/browse/UIQM-777) Support validation of MARC Holdings records with location codes that have a whitespace.
+* [UIQM-778](https://issues.folio.org/browse/UIQM-778) *BREAKING* Update for Split Search & Browse APIs.
+* [UIQM-398](https://issues.folio.org/browse/UIQM-398) Create\Edit quickMARC Authority: Add 008 position dropdowns to display available values.
+* [UIQM-785](https://issues.folio.org/browse/UIQM-785) Default to Name-title browse if the MARC bib field contains a subfield "t".
+* [UIQM-677](https://issues.folio.org/browse/UIQM-677) Add MARC Settings page.
+
+## [10.0.3](https://github.com/folio-org/ui-quick-marc/tree/v10.0.3) (2025-06-30)
+
+* [UIQM-771](https://issues.folio.org/browse/UIQM-771) FE | Support Create/Update action for MARC holdings record on shared Instance from member tenant on ECS environment.
+
+## [10.0.2](https://github.com/folio-org/ui-quick-marc/tree/v10.0.2) (2025-04-29)
+
+* [UIQM-768](https://issues.folio.org/browse/UIQM-768) Switch to local record when deriving a shared MARC Bib record in a member tenant.
+
+## [10.0.1](https://github.com/folio-org/ui-quick-marc/tree/v10.0.1) (2025-04-16)
+
+* [UIQM-765](https://issues.folio.org/browse/UIQM-765) Add `shared=true` parameter to url when a user saves and keeps editing a Bib/Authority record on a central tenant.
+* [UIQM-766](https://issues.folio.org/browse/UIQM-766) useSaveRecord - do not use central tenant id when deriving a shared record from a member tenant.
+
+## [10.0.0](https://github.com/folio-org/ui-quick-marc/tree/v10.0.0) (2025-03-13)
+
+* [UIQM-716](https://issues.folio.org/browse/UIQM-716) *BREAKING* Consolidate routes based on MARC type for bib and authority records to avoid page refresh after redirecting from the create page to the edit one.
+* [UIQM-730](https://issues.folio.org/browse/UIQM-730) Create/Edit/Derive MARC record - Retain focus when MARC record validation rules error display. Show validation issues toasts.
+* [UIQM-740](https://issues.folio.org/browse/UIQM-740) Don't show warn/fail error toasts when there are no warns/fails.
+* [UIQM-728](https://issues.folio.org/browse/UIQM-728) Keep focus on last focused element when user cancels on confirmation modals.
+* [UIQM-743](https://issues.folio.org/browse/UIQM-743) Prevent `handleSubmit` from running if there is any validation issue, instead of using the `complete` form API.
+* [UIQM-754](https://issues.folio.org/browse/UIQM-754) Replace the source file lookup modal with a dropdown.
+* [UIQM-751](https://issues.folio.org/browse/UIQM-751) *BREAKING* migrate stripes dependencies to their Sunflower versions.
+* [UIQM-752](https://issues.folio.org/browse/UIQM-752) *BREAKING* migrate react-intl to v7.
+* [UIQM-659](https://issues.folio.org/browse/UIQM-659) React v19: refactor away from default props for functional components.
+* [UIQM-761](https://issues.folio.org/browse/UIQM-761) Add `audit.config.groups.settings.collection.get` permission for `quickMARC: View MARC bibliographic record`.
+
+## [9.0.2] (IN PROGRESS)
+
+* [UIQM-726](https://issues.folio.org/browse/UIQM-726) Use a larger width of 7-16 leader positions field.
+
+## [9.0.1](https://github.com/folio-org/ui-quick-marc/tree/v9.0.1) (2024-11-22)
+
+* [UIQM-725](https://issues.folio.org/browse/UIQM-725) Fix wrong error message while saving MARC Bib record with invalid LDR position values.
+
+## [9.0.0](https://github.com/folio-org/ui-quick-marc/tree/v9.0.0) (2024-11-01)
 
 * [UIQM-647](https://issues.folio.org/browse/UIQM-647) Import `useUserTenantPermissions` from `@folio/stripes/core`.
 * [UIQM-563](https://issues.folio.org/browse/UIQM-563) Allow a user to move 00X fields.
@@ -12,7 +57,41 @@
 * [UIQM-666](https://issues.folio.org/browse/UIQM-666) Make leader positions `Type` and `BLvl` required when creating a bib record.
 * [UIQM-672](https://issues.folio.org/browse/UIQM-672) Add a tooltip for the search link.
 * [UIQM-670](https://issues.folio.org/browse/UIQM-670) Allow saving local control fields without subfield.
-* [UIQM-677](https://issues.folio.org/browse/UIQM-677) Add MARC Settings page.
+* [UIQM-669](https://issues.folio.org/browse/UIQM-669) Display validation error messages inline.
+* [UIQM-658](https://issues.folio.org/browse/UIQM-658) Check for duplicate LCCN (010 $a) bib or authority records.
+* [UIQM-631](https://issues.folio.org/browse/UIQM-631) Create/Edit/Derive a MARC bib/authority/holdings record > Display MARC record validation errors inline.
+* [UIQM-632](https://issues.folio.org/browse/UIQM-632) Run timer on submit during backend validation, if it takes over 2s, show modal.
+* [UIQM-681](https://issues.folio.org/browse/UIQM-681) Return some validation rules for Bib and Authority records.
+* [UIQM-685](https://issues.folio.org/browse/UIQM-685) “ELvl” box (17th LDR position) validation when Creating/Editing/Deriving MARC bib.
+* [UIQM-688](https://issues.folio.org/browse/UIQM-688) Convert Leader from Object to string when fetching links autosuggestions.
+* [UIQM-687](https://issues.folio.org/browse/UIQM-687) Create/Derive MARC Bib records - remove field 001 error related to missing field during validation.
+* [UIQM-686](https://issues.folio.org/browse/UIQM-686) Return removed UI validation in "quickmarc".
+* [UIQM-690](https://issues.folio.org/browse/UIQM-690) Match payload formatting for submit and validate when editing.
+* [UIQM-668](https://issues.folio.org/browse/UIQM-668) Change "subfield" to "position" in 008 validation messages.
+* [UIQM-691](https://issues.folio.org/browse/UIQM-691) Show correct field and toast color when validation returns warnings.
+* [UIQM-665](https://issues.folio.org/browse/UIQM-665) Fix to generate array content in 008 after changing document type of MARC bib.
+* [UIQM-694](https://issues.folio.org/browse/UIQM-694) Separate error messages triggered by controlled subfields of different linked fields.
+* [UIQM-592](https://issues.folio.org/browse/UIQM-592) Fix to input polish special chars into fields.
+* [UIQM-697](https://issues.folio.org/browse/UIQM-697) Field 008: Validate the length of subfields. Add backslashes if the length of a subfield of field 008 is shorter, if longer - cut off the extra characters.
+* [UIQM-699](https://issues.folio.org/browse/UIQM-699) ECS - send validation request with central tenant id for shared Bib and Authority records.
+* [UIQM-693](https://issues.folio.org/browse/UIQM-693) Hide permission - Edit, View: Enable duplicate LCCN (010 $a) checking of MARC bibliographic and authority records.
+* [UIQM-695](https://issues.folio.org/browse/UIQM-695) Remove extra `$` from error messages when adding/removing `$t` from 1XX of linked MARC authority record.
+* [UIQM-706](https://issues.folio.org/browse/UIQM-706) *BREAKING* Upgrade `marc-records-editor` to `6.0`.
+* [UIQM-698](https://issues.folio.org/browse/UIQM-698) Validate 006/007 field lengths.
+* [UIQM-704](https://issues.folio.org/browse/UIQM-704) Linked fields - combine split fields before sending for validation.
+* [UIQM-708](https://issues.folio.org/browse/UIQM-708) Change 007 Microforms type to allow 4 characters in RRR/RR field.
+* [UIQM-714](https://issues.folio.org/browse/UIQM-714) *BREAKING* Upgrade `inventory` to `14.0`.
+* [UIQM-709](https://issues.folio.org/browse/UIQM-709) LCCN duplication: Update the bib request query to include only the non-suppressed record in the search results.
+* [UIQM-701](https://issues.folio.org/browse/UIQM-701) Use new GA workflows.
+* [UIQM-711](https://issues.folio.org/browse/UIQM-711) Update `validateFixedFieldPositions` to display all 008 field errors instead of one in Bibliographic records.
+* [UIQM-712](https://issues.folio.org/browse/UIQM-712) In field 007 for Projected Graphic type: change the `MfS` field type to `Byte` to allow only 1 character to be entered.
+* [UIQM-715](https://issues.folio.org/browse/UIQM-715) Reuse existing ids for fields after saving a record to avoid re-rendering and be able to focus on a field by ref.
+* [UIQM-723](https://issues.folio.org/browse/UIQM-723) Rename permissions.
+* [UIQM-724](https://issues.folio.org/browse/UIQM-724) Do not group together subfields during linking.
+
+## [8.0.2] (https://github.com/folio-org/ui-quick-marc/tree/v8.0.2) (2024-12-02)
+
+* [UIQM-735](https://issues.folio.org/browse/UIQM-735) Return also sub permissions in `useUserTenantPermissions` hook.
 
 ## [8.0.1] (https://github.com/folio-org/ui-quick-marc/tree/v8.0.1) (2024-04-18)
 

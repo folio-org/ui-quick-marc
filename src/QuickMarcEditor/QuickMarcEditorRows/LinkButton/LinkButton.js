@@ -6,10 +6,8 @@ import {
   useIntl,
   FormattedMessage,
 } from 'react-intl';
-import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import flatten from 'lodash/flatten';
-import isNil from 'lodash/isNil';
+import uniq from 'lodash/uniq';
 
 import {
   checkIfUserInCentralTenant,
@@ -25,9 +23,11 @@ import {
   Loading,
   ADVANCED_SEARCH_MATCH_OPTIONS,
 } from '@folio/stripes/components';
+import { useAuthorityLinkingRules } from '@folio/stripes-marc-components';
 
+import { useIsShared } from '../../../hooks';
 import { useMarcSource } from '../../../queries';
-import { getContentSubfieldValue } from '../../utils';
+import { MarcFieldContent } from '../../../common';
 import {
   DEFAULT_LOOKUP_OPTIONS,
   searchableIndexesValues,
@@ -68,12 +68,13 @@ const LinkButton = ({
 }) => {
   const stripes = useStripes();
   const intl = useIntl();
-  const location = useLocation();
   const [authority, setAuthority] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const callout = useCallout();
+
+  const { isShared } = useIsShared();
+
   const centralTenantId = stripes.user.user?.consortium?.centralTenantId;
-  const isSharedBibRecord = new URLSearchParams(location.search).get('shared') === 'true';
 
   let showSharedFilter = false;
   let showSharedRecordsOnly = false;
@@ -84,7 +85,7 @@ const LinkButton = ({
       showSharedRecordsOnly = true;
     }
   } else if (checkIfUserInMemberTenant(stripes)) {
-    if (isSharedBibRecord) {
+    if (isShared) {
       if (action === QUICK_MARC_ACTIONS.EDIT) {
         showSharedRecordsOnly = true;
         pluginTenantId = centralTenantId;
@@ -111,6 +112,13 @@ const LinkButton = ({
       }
     },
   });
+
+  // override tenant to central tenant id only when editing a shared MARC Bib record
+  // in all other cases current tenant is what we need to use
+  // when creating or deriving a MARC record we need to use current tenant's linking rules
+  // regardless of if it's a shared record or no
+  const linkingRulesTenantId = action === QUICK_MARC_ACTIONS.EDIT && isShared ? centralTenantId : null;
+  const { linkingRules } = useAuthorityLinkingRules({ tenantId: linkingRulesTenantId });
 
   const onLinkRecord = (_authority) => {
     if (_authority.id === authority?.id) {
@@ -149,7 +157,13 @@ const LinkButton = ({
   }
 
   const initialValues = useMemo(() => {
+    const nameTitleBrowseTags = [600, 610, 611, 700, 710, 711, 800, 810, 811];
+    const isNameTitleBrowseTag = nameTitleBrowseTags.includes(parseInt(tag, 10));
     const { dropdownValue: dropdownValueByTag } = DEFAULT_LOOKUP_OPTIONS[tag];
+    const linkableBibSubfields = uniq(linkingRules
+      .filter(linkingRule => linkingRule.bibField === tag)
+      .map(linkingRule => linkingRule.authoritySubfields)
+      .flat());
 
     let initialDropdownValue = dropdownValueByTag;
     let initialSearchInputValue = '';
@@ -165,18 +179,23 @@ const LinkButton = ({
       segment: initialSegment,
     };
 
-    // To get the desired search result, the search query must contain `$` instead of `{dollar}`.
-    // BE returns `{dollar}` because the field content already uses the `$` sign and there is no way
-    // to distinguish whether `$` is the start of the subfield or just some value in the subfield.
-    const fieldContent = Object.entries(getContentSubfieldValue(content))
-      .reduce((acc, [subfield, subfieldContent]) => {
-        acc[subfield] = subfieldContent.map(value => value.replaceAll('{dollar}', '$'));
+    const fieldContent = new MarcFieldContent(content);
 
-        return acc;
-      }, {});
+    const bibContentToSearchBy = fieldContent.reduce((searchValue, subfield) => {
+      const subfieldCode = subfield.code;
+
+      if (linkableBibSubfields.includes(subfieldCode.replace('$', ''))) {
+        // To get the desired search result, the search query must contain `$` instead of `{dollar}`.
+        // BE returns `{dollar}` because the field content already uses the `$` sign and there is no way
+        // to distinguish whether `$` is the start of the subfield or just some value in the subfield.
+        return `${searchValue} ${subfield.value.replaceAll('{dollar}', '$')}`;
+      }
+
+      return searchValue;
+    }, '').trim();
 
     if (fieldContent.$0?.length) {
-      const keywordValue = [fieldContent.$a, fieldContent.$d, fieldContent.$t].flat().filter(Boolean).join(' ');
+      const keywordValue = bibContentToSearchBy;
       const keywordQuery = keywordValue
         ? `${searchableIndexesValues.KEYWORD} ${EXACT_PHRASE} ${keywordValue}`
         : '';
@@ -201,11 +220,26 @@ const LinkButton = ({
         searchIndex: dropdownValueByTag,
         filters: initialFilters,
       };
-    } else if (fieldContent.$a?.length || fieldContent.$d?.length || fieldContent.$t?.length) {
+    } else if (isNameTitleBrowseTag && fieldContent.$t?.length) {
       initialSegment = navigationSegments.browse;
-      initialSearchInputValue = flatten([fieldContent.$a, fieldContent.$d, fieldContent.$t])
-        .filter(value => !isNil(value))
-        .join(' ');
+      initialSearchInputValue = bibContentToSearchBy;
+      initialSearchQuery = initialSearchInputValue;
+
+      _initialValues[navigationSegments.browse] = {
+        dropdownValue: searchableIndexesValues.NAME_TITLE,
+        searchIndex: searchableIndexesValues.NAME_TITLE,
+        searchInputValue: initialSearchInputValue,
+        searchQuery: initialSearchQuery,
+        filters: initialFilters,
+      };
+      _initialValues[navigationSegments.search] = {
+        dropdownValue: searchableIndexesValues.NAME_TITLE,
+        searchIndex: searchableIndexesValues.NAME_TITLE,
+        filters: initialFilters,
+      };
+    } else if (bibContentToSearchBy) {
+      initialSegment = navigationSegments.browse;
+      initialSearchInputValue = bibContentToSearchBy;
       initialSearchQuery = initialSearchInputValue;
 
       _initialValues[navigationSegments.browse] = {
@@ -238,7 +272,7 @@ const LinkButton = ({
     _initialValues.segment = initialSegment;
 
     return _initialValues;
-  }, [content, tag, showSharedRecordsOnly]);
+  }, [content, tag, showSharedRecordsOnly, linkingRules]);
 
   const renderButton = () => {
     if (isLoading) {

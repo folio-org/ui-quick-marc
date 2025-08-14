@@ -176,6 +176,7 @@ const getComponent = (props) => (
           }}
           subtype="m"
           isLoadingLinkSuggestions={false}
+          onInputFocus={jest.fn()}
           {...props}
         />
       )}

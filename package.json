@@ -1,6 +1,6 @@
 {
   "name": "@folio/quick-marc",
-  "version": "9.0.0",
+  "version": "10.1.0",
   "description": "Quick MARC editor",
   "main": "index.js",
   "repository": "",
@@ -14,9 +14,9 @@
     "pluginType": "quick-marc",
     "displayName": "ui-quick-marc.meta.title",
     "okapiInterfaces": {
-      "inventory": "13.0",
-      "marc-records-editor": "5.0",
-      "search": "1.2",
+      "inventory": "14.0",
+      "marc-records-editor": "6.0",
+      "search-authorities": "1.0",
       "marc-specifications": "1.0",
       "authority-source-files": "2.0",
       "instance-authority-links": "2.1"
@@ -32,7 +32,9 @@
           "marc-records-editor.item.get",
           "inventory.instances.item.get",
           "instance-authority-links.instances.collection.get",
-          "instance-authority.linking-rules.collection.get"
+          "instance-authority.linking-rules.collection.get",
+          "audit.config.groups.settings.collection.get",
+          "audit.config.groups.settings.audit.inventory.collection.get"
         ],
         "visible": true
       },
@@ -46,7 +48,10 @@
           "marc-records-editor.links.suggestion.post",
           "instance-authority-links.instances.collection.post",
           "marc-records-editor.status.item.get",
-          "marc-specifications.item.get"
+          "marc-specifications.item.get",
+          "mod-settings.entries.collection.get",
+          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check.manage",
+          "marc-records-editor.validate.post"
         ],
         "visible": true
       },
@@ -59,7 +64,10 @@
           "marc-records-editor.item.put",
           "marc-records-editor.links.suggestion.post",
           "instance-authority-links.instances.collection.put",
-          "marc-specifications.item.get"
+          "marc-specifications.item.get",
+          "mod-settings.entries.collection.get",
+          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check.manage",
+          "marc-records-editor.validate.post"
         ],
         "visible": true
       },
@@ -95,8 +103,9 @@
         "visible": true
       },
       {
-        "permissionName": "ui-quick-marc.quick-marc-editor.duplicate",
+        "permissionName": "ui-quick-marc.quick-marc-editor.derive.execute",
         "displayName": "quickMARC: Derive new MARC bibliographic record",
+        "replaces": ["ui-quick-marc.quick-marc-editor.duplicate"],
         "subPermissions": [
           "ui-quick-marc.quick-marc-editor.view",
           "marc-records-editor.status.item.get",
@@ -104,7 +113,10 @@
           "marc-records-editor.item.post",
           "marc-records-editor.links.suggestion.post",
           "instance-authority-links.instances.collection.put",
-          "marc-specifications.item.get"
+          "marc-specifications.item.get",
+          "mod-settings.entries.collection.get",
+          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check.manage",
+          "marc-records-editor.validate.post"
         ],
         "visible": true
       },
@@ -118,7 +130,10 @@
           "instance-authority-links.instances.collection.post",
           "instance-authority-links.authorities.bulk.post",
           "marc-records-editor.status.item.get",
-          "marc-specifications.item.get"
+          "marc-specifications.item.get",
+          "mod-settings.entries.collection.get",
+          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check.manage",
+          "marc-records-editor.validate.post"
         ],
         "visible": true
       },
@@ -130,13 +145,17 @@
           "marc-records-editor.item.put",
           "inventory-storage.locations.collection.get",
           "marc-specifications.item.get",
-          "search.authorities.collection.get"
+          "search.authorities.collection.get",
+          "mod-settings.entries.collection.get",
+          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check.manage",
+          "marc-records-editor.validate.post"
         ],
         "visible": true
       },
       {
-        "permissionName": "ui-quick-marc.quick-marc-authority-records.linkUnlink",
+        "permissionName": "ui-quick-marc.quick-marc-authority-records.link-unlink.execute",
         "displayName": "quickMARC: Can Link/unlink authority records to bib records",
+        "replaces": ["ui-quick-marc.quick-marc-authority-records.linkUnlink"],
         "subPermissions": [
           "instance-authority.linking-rules.collection.get",
           "inventory-storage.authority-source-files.collection.get",
@@ -145,12 +164,34 @@
         "visible": true
       },
       {
-        "permissionName": "settings.quick-marc.enabled",
+        "permissionName": "ui-quick-marc.settings.lccn-duplicate-check.edit",
+        "displayName": "Edit, View: Enable duplicate LCCN (010 $a) checking of MARC bibliographic and authority records",
+        "subPermissions": [
+          "mod-settings.entries.collection.get",
+          "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check.manage",
+          "mod-settings.entries.item.post",
+          "mod-settings.entries.item.put",
+          "mod-settings.global.write.ui-quick-marc.lccn-duplicate-check.manage"
+        ],
+        "visible": false
+      },
+      {
+        "permissionName": "mod-settings.global.read.ui-quick-marc.lccn-duplicate-check.manage",
+        "displayName": "Settings (MARC): read LCCN duplicate check settings",
+        "visible": false
+      },
+      {
+        "permissionName": "mod-settings.global.write.ui-quick-marc.lccn-duplicate-check.manage",
+        "displayName": "Settings (MARC): write LCCN duplicate check settings",
+        "visible": false
+      },
+      {
+       "permissionName": "settings.quick-marc.enabled",
         "displayName": "Settings (MARC): Module is enabled.",
         "subPermissions": [
           "settings.enabled"
         ],
-        "visible": false
+        "visible": false 
       }
     ]
   },
@@ -159,34 +200,33 @@
     "lint": "eslint .",
     "start": "yarn stripes serve",
     "test": "jest --ci --coverage",
-    "formatjs-compile": "formatjs compile-folder --ast --format simple ./translations/ui-quick-marc ./translations/ui-quick-marc/compiled",
+    "formatjs-compile": "stripes translate compile",
     "build-mod-descriptor": "stripes mod descriptor --full --strict | jq '.[]' > module-descriptor.json"
   },
   "devDependencies": {
-    "@folio/eslint-config-stripes": "^7.0.0",
-    "@folio/jest-config-stripes": "^2.0.0",
-    "@folio/stripes": "^9.0.0",
-    "@folio/stripes-cli": "^3.0.0",
-    "@folio/stripes-core": "^10.0.0",
-    "@folio/stripes-marc-components": "^1.0.0",
-    "@folio/stripes-inventory-components": "^1.0.0",
-    "@folio/stripes-testing": "^4.2.0",
-    "@formatjs/cli": "^6.1.3",
+    "@folio/eslint-config-stripes": "^8.0.0",
+    "@folio/jest-config-stripes": "^3.0.0",
+    "@folio/stripes": "^10.0.0",
+    "@folio/stripes-cli": "^4.0.0",
+    "@folio/stripes-core": "^11.0.0",
+    "@folio/stripes-marc-components": "^2.0.0",
+    "@folio/stripes-inventory-components": "^2.0.0",
+    "@folio/stripes-testing": "^5.0.0",
     "core-js": "^3.6.1",
     "eslint-plugin-filenames": "^1.3.2",
     "eslint-plugin-jest": "^23.0.4",
     "faker": "4.1.0",
-    "history": "^5.0.0",
+    "history": "^4.10.1",
     "identity-obj-proxy": "^3.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-intl": "^6.4.4",
+    "react-intl": "^7.1.5",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "regenerator-runtime": "^0.13.3"
   },
   "dependencies": {
-    "@folio/stripes-acq-components": "~5.1.0",
+    "@folio/stripes-acq-components": "^7.0.0",
     "classnames": "^2.5.1",
     "final-form": "^4.18.2",
     "final-form-arrays": "^3.0.1",
@@ -200,16 +240,16 @@
     "uuid": "^8.3.2"
   },
   "peerDependencies": {
-    "@folio/stripes": "^9.0.0",
-    "@folio/stripes-marc-components": "^1.0.0",
-    "@folio/stripes-inventory-components": "^1.0.0",
+    "@folio/stripes": "^10.0.0",
+    "@folio/stripes-marc-components": "^2.0.0",
+    "@folio/stripes-inventory-components": "^2.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-intl": "^6.4.4",
+    "react-intl": "^7.1.5",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0"
   },
   "optionalDependencies": {
-    "@folio/plugin-find-authority": "^4.0.0"
+    "@folio/plugin-find-authority": "^5.0.0"
   }
 }

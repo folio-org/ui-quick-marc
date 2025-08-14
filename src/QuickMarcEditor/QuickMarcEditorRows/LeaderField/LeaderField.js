@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
@@ -8,14 +9,20 @@ import {
 import { leaderConfig } from './leaderConfig';
 import { MARC_TYPES } from '../../../common/constants';
 import { QUICK_MARC_ACTIONS } from '../../constants';
+import { QuickMarcContext } from '../../../contexts';
 
 const LeaderField = ({
   name,
   marcType,
   leaderField,
   action,
+  fieldId,
 }) => {
   const intl = useIntl();
+  const { validationErrorsRef } = useContext(QuickMarcContext);
+
+  const errors = validationErrorsRef.current[fieldId];
+
   const fields = leaderConfig[marcType].map(config => {
     const { allowedValues, name: boxName, required } = config;
 
@@ -50,6 +57,7 @@ const LeaderField = ({
       config={{
         fields,
       }}
+      error={errors}
     />
   );
 };
@@ -59,6 +67,7 @@ LeaderField.propTypes = {
   name: PropTypes.string.isRequired,
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   leaderField: PropTypes.object.isRequired,
+  fieldId: PropTypes.string.isRequired,
 };
 
 export { LeaderField };

@@ -4,16 +4,14 @@ import React, {
   useState,
   useCallback,
   useEffect,
+  useContext,
 } from 'react';
-import {
-  useHistory,
-  useLocation,
-} from 'react-router';
+import { FormSpy } from 'react-final-form';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import find from 'lodash/find';
 import noop from 'lodash/noop';
-import { FormSpy } from 'react-final-form';
+import isEmpty from 'lodash/isEmpty';
 
 import {
   IfPermission,
@@ -33,6 +31,8 @@ import {
   HasCommand,
   checkScope,
   Layer,
+  Loading,
+  Modal,
 } from '@folio/stripes/components';
 import { useShowCallout } from '@folio/stripes-acq-components';
 
@@ -40,7 +40,18 @@ import { QuickMarcRecordInfo } from './QuickMarcRecordInfo';
 import { QuickMarcEditorRows } from './QuickMarcEditorRows';
 import { OptimisticLockingBanner } from './OptimisticLockingBanner';
 import { AutoLinkingButton } from './AutoLinkingButton';
-import { QUICK_MARC_ACTIONS } from './constants';
+import { QuickMarcContext } from '../contexts';
+import {
+  MISSING_FIELD_ID,
+  SEVERITY,
+  useAuthorityLinking,
+  useIsShared,
+  useValidation,
+} from '../hooks';
+import {
+  QUICK_MARC_ACTIONS,
+  VALIDATION_MODAL_DELAY,
+} from './constants';
 import {
   ERROR_TYPES,
   MARC_TYPES,
@@ -61,8 +72,8 @@ import {
   updateRecordAtIndex,
   markLinkedRecords,
   getLeaderPositions,
+  isDiacritic,
 } from './utils';
-import { useAuthorityLinking } from '../hooks';
 
 import css from './QuickMarcEditor.css';
 
@@ -82,7 +93,6 @@ const QuickMarcEditor = ({
   action,
   instance,
   onClose,
-  onSave,
   handleSubmit,
   submitting,
   pristine,
@@ -95,31 +105,50 @@ const QuickMarcEditor = ({
   marcType,
   fixedFieldSpec,
   locations,
-  httpError,
+  httpError = null,
   externalRecordPath,
-  confirmRemoveAuthorityLinking,
+  confirmRemoveAuthorityLinking = false,
   linksCount,
+  onCheckCentralTenantPerm = noop,
   validate,
-  onCheckCentralTenantPerm,
 }) => {
   const stripes = useStripes();
+  const intl = useIntl();
   const formValues = getState().values;
-  const history = useHistory();
-  const location = useLocation();
   const showCallout = useShowCallout();
   const [records, setRecords] = useState([]);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const [isUnlinkRecordsModalOpen, setIsUnlinkRecordsModalOpen] = useState(false);
   const [isUpdate0101xxfieldsAuthRecModalOpen, setIsUpdate0101xxfieldsAuthRecModalOpen] = useState(false);
+  const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
   const [isLoadingLinkSuggestions, setIsLoadingLinkSuggestions] = useState(false);
-  const continueAfterSave = useRef(false);
+  const [isValidatedCurrentValues, setIsValidatedCurrentValues] = useState(false);
   const formRef = useRef(null);
+  const lastFocusedInput = useRef(null);
   const confirmationChecks = useRef({ ...REQUIRED_CONFIRMATIONS });
+  const {
+    setValidationErrors,
+    continueAfterSave,
+    validationErrorsRef,
+  } = useContext(QuickMarcContext);
+  const { hasErrorIssues, isBackEndValidationMarcType } = useValidation();
+  const { isShared } = useIsShared();
+
   const isConsortiaEnv = stripes.hasInterface('consortia');
-  const searchParameters = new URLSearchParams(location.search);
-  const isShared = searchParameters.get('shared') === 'true';
+
+  const saveLastFocusedInput = useCallback((e) => {
+    lastFocusedInput.current = e.target;
+  }, [lastFocusedInput]);
+
+  const focusLastFocusedInput = useCallback(() => {
+    lastFocusedInput.current?.focus();
+  }, [lastFocusedInput]);
 
   const { unlinkAuthority } = useAuthorityLinking({ marcType, action });
+
+  useEffect(() => {
+    setIsValidatedCurrentValues(false);
+  }, [formValues, setIsValidatedCurrentValues]);
 
   const deletedRecords = useMemo(() => {
     return records
@@ -129,33 +158,14 @@ const QuickMarcEditor = ({
 
   const { type, position7 } = getLeaderPositions(marcType, records);
 
-  const saveFormDisabled = submitting ? true : pristine;
+  const saveFormDisabled = submitting || pristine;
 
-  const redirectToVersion = useCallback((updatedVersion) => {
-    const searchParams = new URLSearchParams(location.search);
-
-    searchParams.set('relatedRecordVersion', updatedVersion);
-
-    history.replace({
-      search: searchParams.toString(),
-    });
-  }, [history, location.search]);
-
-  const handleSubmitResponse = useCallback((updatedRecord) => {
-    if (!updatedRecord?.version) {
-      continueAfterSave.current = false;
-
-      return;
-    }
-
+  const handleSubmitResponse = useCallback(() => {
     if (continueAfterSave.current) {
-      redirectToVersion(updatedRecord.version);
-
-      return;
+      continueAfterSave.current = false;
+      focusLastFocusedInput();
     }
-
-    onSave();
-  }, [redirectToVersion, onSave]);
+  }, [continueAfterSave, focusLastFocusedInput]);
 
   const closeModals = () => {
     setIsDeleteModalOpened(false);
@@ -163,31 +173,18 @@ const QuickMarcEditor = ({
     setIsUnlinkRecordsModalOpen(false);
   };
 
-  const confirmSubmit = useCallback((e, isKeepEditing = false) => {
-    continueAfterSave.current = isKeepEditing;
-
-    const validationError = validate(getState().values);
-
-    if (validationError) {
-      showCallout({
-        message: validationError,
-        type: 'error',
-      });
-
-      return;
-    }
-
+  const runConfirmationChecks = useCallback(() => {
     if (confirmationChecks.current[CONFIRMATIONS.DELETE_RECORDS] && deletedRecords.length) {
       setIsDeleteModalOpened(true);
 
-      return;
+      return true;
     }
 
     if (confirmationChecks.current[CONFIRMATIONS.UPDATE_LINKED] && marcType === MARC_TYPES.AUTHORITY && linksCount) {
       if (is1XXUpdated(initialValues.records, records)) {
         setIsUpdate0101xxfieldsAuthRecModalOpen(true);
 
-        return;
+        return true;
       }
 
       if (
@@ -196,25 +193,147 @@ const QuickMarcEditor = ({
       ) {
         setIsUpdate0101xxfieldsAuthRecModalOpen(true);
 
+        return true;
+      }
+    }
+
+    return false;
+  }, [deletedRecords, initialValues, instance, linksCount, marcType, records]);
+
+  const manageBackendValidationModal = useCallback(() => {
+    let timerId;
+
+    if (isBackEndValidationMarcType(marcType)) {
+      timerId = setTimeout(() => setIsValidationModalOpen(true), VALIDATION_MODAL_DELAY);
+    }
+
+    return () => {
+      if (timerId) {
+        clearTimeout(timerId);
+        setIsValidationModalOpen(false);
+      }
+    };
+  }, [setIsValidationModalOpen, isBackEndValidationMarcType, marcType]);
+
+  const showErrorsForMissingFields = useCallback((issues) => {
+    issues.forEach((error) => {
+      showCallout({
+        message: error.message,
+        messageId: error.id,
+        values: error.values,
+        type: error.severity === SEVERITY.ERROR ? 'error' : 'warning',
+      });
+    });
+  }, [showCallout]);
+
+  const showValidationIssuesToasts = useCallback((validationErrors) => {
+    const allIssuesArray = Object.values(validationErrors).flat();
+    const failCount = allIssuesArray.filter(issue => issue.severity === SEVERITY.ERROR).length;
+    const warnCount = allIssuesArray.length - failCount;
+
+    if (!failCount && !warnCount) {
+      return;
+    }
+
+    const values = {
+      warnCount,
+      failCount,
+      breakingLine: <br />,
+    };
+
+    let messageId = null;
+
+    if (failCount && warnCount) {
+      messageId = 'ui-quick-marc.record.save.error.failAndWarn';
+    } else if (failCount) {
+      messageId = 'ui-quick-marc.record.save.error.fail';
+    } else {
+      messageId = 'ui-quick-marc.record.save.error.warn';
+    }
+
+    showCallout({
+      messageId,
+      values,
+      type: failCount ? 'error' : 'warning',
+    });
+  }, [showCallout]);
+
+  const confirmSubmit = useCallback(async (e, isKeepEditing = false) => {
+    continueAfterSave.current = isKeepEditing;
+    let skipValidation = false;
+
+    // if there are no error issues and user hasn't modified a record since last submit click
+    // then we can skip validation and save the record even if there are warnings
+    if (isValidatedCurrentValues && !hasErrorIssues) {
+      skipValidation = true;
+    }
+
+    // if made edits after last attempt to save then validate again
+    // otherwise save record
+
+    let newValidationErrors = {};
+
+    if (!skipValidation) {
+      const closeValidationModal = manageBackendValidationModal();
+
+      try {
+        newValidationErrors = await validate(getState().values);
+        closeValidationModal();
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(err);
+        closeValidationModal();
+
+        showCallout({
+          messageId: 'ui-quick-marc.record.save.error.generic',
+          type: 'error',
+        });
+
+        return;
+      }
+
+      const validationErrorsWithoutFieldId = newValidationErrors[MISSING_FIELD_ID] || [];
+
+      showErrorsForMissingFields(validationErrorsWithoutFieldId);
+      showValidationIssuesToasts(newValidationErrors);
+      focusLastFocusedInput();
+      setIsValidatedCurrentValues(true);
+    } else {
+      setValidationErrors({});
+    }
+
+    // run confirmations only when all validation errors had been fixed and user clicked save the second time or there are no issues in the first place
+    if ((isEmpty(newValidationErrors) || skipValidation)) {
+      if (runConfirmationChecks()) {
         return;
       }
     }
 
+    // if validation has any issues - cancel submit
+    if (!isEmpty(validationErrorsRef.current)) {
+      return;
+    }
+
     handleSubmit(e)
-      .then(handleSubmitResponse)
-      .finally(closeModals);
+      ?.then(handleSubmitResponse)
+      ?.finally(closeModals);
   }, [
-    deletedRecords,
     handleSubmit,
     handleSubmitResponse,
-    marcType,
-    initialValues,
-    linksCount,
-    records,
     getState,
-    validate,
+    hasErrorIssues,
+    setValidationErrors,
+    showErrorsForMissingFields,
     showCallout,
-    instance,
+    validate,
+    runConfirmationChecks,
+    isValidatedCurrentValues,
+    setIsValidatedCurrentValues,
+    manageBackendValidationModal,
+    focusLastFocusedInput,
+    showValidationIssuesToasts,
+    continueAfterSave,
+    validationErrorsRef,
   ]);
 
   const paneFooter = useMemo(() => {
@@ -230,15 +349,15 @@ const QuickMarcEditor = ({
 
     const end = (
       <>
-        {action === QUICK_MARC_ACTIONS.EDIT && (
+        {([MARC_TYPES.BIB, MARC_TYPES.AUTHORITY].includes(marcType) || action === QUICK_MARC_ACTIONS.EDIT) && (
           <Button
             buttonStyle="default mega"
             buttonClass={css.saveContinueBtn}
             disabled={saveFormDisabled}
             id="quick-marc-record-save-edit"
-            onClick={(event) => {
+            onClick={async (event) => {
               confirmationChecks.current = { ...REQUIRED_CONFIRMATIONS };
-              confirmSubmit(event, true);
+              await confirmSubmit(event, true);
             }}
             marginBottom0
           >
@@ -249,9 +368,9 @@ const QuickMarcEditor = ({
           buttonStyle="primary mega"
           disabled={saveFormDisabled}
           id="quick-marc-record-save"
-          onClick={(e) => {
+          onClick={async (e) => {
             confirmationChecks.current = { ...REQUIRED_CONFIRMATIONS };
-            confirmSubmit(e);
+            await confirmSubmit(e);
           }}
           marginBottom0
         >
@@ -266,7 +385,7 @@ const QuickMarcEditor = ({
         renderEnd={end}
       />
     );
-  }, [confirmSubmit, saveFormDisabled, onClose, action]);
+  }, [confirmSubmit, saveFormDisabled, onClose, action, marcType]);
 
   const getConfirmModalMessage = () => (
     <FormattedMessage
@@ -275,19 +394,19 @@ const QuickMarcEditor = ({
     />
   );
 
-  const recordInfoProps = {
+  const recordInfoProps = useMemo(() => ({
     status: initialValues?.updateInfo?.recordState,
     updateDate: initialValues?.updateInfo?.updateDate,
     updatedBy: initialValues?.updateInfo?.updatedBy,
     isEditAction: action === QUICK_MARC_ACTIONS.EDIT,
     marcType,
-  };
+  }), [action, initialValues, marcType]);
 
   if ((marcType === MARC_TYPES.AUTHORITY) && records.length) {
     recordInfoProps.correspondingMarcTag = getCorrespondingMarcTag(initialValues.records);
   }
 
-  const getPaneTitle = () => {
+  const getPaneTitle = useCallback(() => {
     let formattedMessageValues = {
       title: instance.title,
       shared: isConsortiaEnv ? isShared : null,
@@ -325,7 +444,18 @@ const QuickMarcEditor = ({
         values={formattedMessageValues}
       />
     );
-  };
+  }, [
+    action,
+    isShared,
+    initialValues,
+    instance,
+    isConsortiaEnv,
+    locations,
+    marcType,
+    recordInfoProps,
+    records,
+    stripes,
+  ]);
 
   const restoreDeletedRecords = () => {
     deletedRecords.forEach(mutators.restoreRecord);
@@ -333,27 +463,33 @@ const QuickMarcEditor = ({
 
   const cancelUpdateLinks = () => {
     setIsUpdate0101xxfieldsAuthRecModalOpen(false);
+    setTimeout(() => {
+      focusLastFocusedInput();
+    });
   };
 
-  const confirmUpdateLinks = (e) => {
+  const confirmUpdateLinks = async (e) => {
     confirmationChecks.current[CONFIRMATIONS.UPDATE_LINKED] = false;
-    confirmSubmit(e, continueAfterSave.current);
+    await confirmSubmit(e, continueAfterSave.current);
   };
 
-  const confirmDeleteFields = (e) => {
+  const confirmDeleteFields = async (e) => {
     setIsDeleteModalOpened(false);
     confirmationChecks.current[CONFIRMATIONS.DELETE_RECORDS] = false;
-    confirmSubmit(e, continueAfterSave.current);
+    await confirmSubmit(e, continueAfterSave.current);
   };
 
   const cancelDeleteFields = () => {
-    setIsDeleteModalOpened(false);
-
     if (deletedRecords.length) {
       restoreDeletedRecords();
     } else {
       reset();
     }
+
+    setIsDeleteModalOpened(false);
+    setTimeout(() => {
+      focusLastFocusedInput();
+    });
   };
 
   const cancelRemoveLinking = () => {
@@ -378,7 +514,9 @@ const QuickMarcEditor = ({
   const shortcuts = useMemo(() => ([{
     name: 'save',
     shortcut: 'mod+s',
-    handler: (e) => {
+    handler: async (e) => {
+      if (isDiacritic(e.key)) return;
+
       if (!saveFormDisabled) {
         e.preventDefault();
         confirmationChecks.current = { ...REQUIRED_CONFIRMATIONS };
@@ -392,7 +530,7 @@ const QuickMarcEditor = ({
       e.preventDefault();
       onClose();
     },
-  }]), [saveFormDisabled, confirmSubmit, onClose]);
+  }]), [saveFormDisabled, confirmSubmit, onClose, continueAfterSave]);
 
   useEffect(() => {
     if (!httpError) {
@@ -433,7 +571,7 @@ const QuickMarcEditor = ({
         <Paneset>
           <Layer
             isOpen
-            contentLabel="ui-quick-marc.record.quickMarcEditorLabel"
+            contentLabel={intl.formatMessage({ id: 'ui-quick-marc.record.quickMarcEditorLabel' })}
           >
             <Pane
               id="quick-marc-editor-pane"
@@ -479,6 +617,7 @@ const QuickMarcEditor = ({
                     linksCount={linksCount}
                     isLoadingLinkSuggestions={isLoadingLinkSuggestions}
                     onCheckCentralTenantPerm={onCheckCentralTenantPerm}
+                    onInputFocus={saveLastFocusedInput}
                   />
                 </Col>
               </Row>
@@ -498,7 +637,7 @@ const QuickMarcEditor = ({
       />
       {
         confirmRemoveAuthorityLinking && (
-          <IfPermission perm="ui-quick-marc.quick-marc-authority-records.linkUnlink">
+          <IfPermission perm="ui-quick-marc.quick-marc-authority-records.link-unlink.execute">
             <ConfirmationModal
               id="quick-marc-remove-authority-linking-confirm-modal"
               open={isUnlinkRecordsModalOpen}
@@ -528,6 +667,25 @@ const QuickMarcEditor = ({
         onConfirm={confirmUpdateLinks}
         onCancel={cancelUpdateLinks}
       />
+      <Modal
+        open={isValidationModalOpen}
+        id="quick-marc-validation-modal"
+        label={<FormattedMessage id="ui-quick-marc.validation.modal.heading" />}
+        scope="module"
+        size="small"
+      >
+        <span className={css.validationModalContent}>
+          <FormattedMessage
+            id="ui-quick-marc.validation.modal.message"
+            values={{
+              appName: marcType === MARC_TYPES.BIB
+                ? intl.formatMessage({ id: 'ui-quick-marc.Inventory' })
+                : intl.formatMessage({ id: 'ui-quick-marc.MARC-authority' }),
+            }}
+          />
+          <Loading size="large" />
+        </span>
+      </Modal>
       <FormSpy
         subscription={spySubscription}
         onChange={changeRecords}
@@ -541,7 +699,6 @@ QuickMarcEditor.propTypes = {
   externalRecordPath: PropTypes.string,
   instance: PropTypes.object,
   onClose: PropTypes.func.isRequired,
-  onSave: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   submitting: PropTypes.bool,
   pristine: PropTypes.bool,
@@ -562,14 +719,8 @@ QuickMarcEditor.propTypes = {
     httpStatus: PropTypes.number,
   }),
   confirmRemoveAuthorityLinking: PropTypes.bool,
-  validate: PropTypes.func.isRequired,
   onCheckCentralTenantPerm: PropTypes.func,
-};
-
-QuickMarcEditor.defaultProps = {
-  httpError: null,
-  confirmRemoveAuthorityLinking: false,
-  onCheckCentralTenantPerm: noop,
+  validate: PropTypes.func.isRequired,
 };
 
 export default stripesFinalForm({

@@ -19,11 +19,11 @@ import styles from './QuickMarcRecordInfo.css';
 
 export const QuickMarcRecordInfo = ({
   isEditAction,
-  status,
+  status = RECORD_STATUS_CURRENT,
   updateDate,
   updatedBy,
   marcType,
-  correspondingMarcTag,
+  correspondingMarcTag = '',
 }) => {
   const getSourceLabel = () => {
     let source;
@@ -96,9 +96,4 @@ QuickMarcRecordInfo.propTypes = {
     lastName: PropTypes.string,
     username: PropTypes.string,
   }),
-};
-
-QuickMarcRecordInfo.defaultProps = {
-  correspondingMarcTag: '',
-  status: RECORD_STATUS_CURRENT,
 };

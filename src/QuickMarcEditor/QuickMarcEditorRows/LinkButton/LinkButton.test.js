@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMemoryHistory } from 'history';
 
 import {
   act,
@@ -15,14 +14,37 @@ import {
 import { ADVANCED_SEARCH_MATCH_OPTIONS } from '@folio/stripes/components';
 import { runAxeTest } from '@folio/stripes-testing';
 
+import { useIsShared } from '../../../hooks';
 import { LinkButton } from './LinkButton';
 import { QUICK_MARC_ACTIONS } from '../../constants';
 
 import Harness from '../../../../test/jest/helpers/harness';
 
-const {
-  EXACT_PHRASE,
-} = ADVANCED_SEARCH_MATCH_OPTIONS;
+jest.mock('@folio/stripes-marc-components', () => ({
+  ...jest.requireActual('@folio/stripes-marc-components'),
+  useAuthorityLinkingRules: jest.fn().mockReturnValue({
+    linkingRules: [{
+      bibField: '100',
+      authoritySubfields: ['a', 'd'],
+    }, {
+      bibField: '110',
+      authoritySubfields: ['a', 'd', 't'],
+    }, {
+      bibField: '700',
+      authoritySubfields: ['a', 'd', 't'],
+    }],
+  }),
+}));
+
+jest.mock('../../../hooks', () => ({
+  useIsShared: jest.fn().mockReturnValue({
+    isShared: false,
+    getIsShared: () => false,
+    setIsShared: jest.fn(),
+  }),
+}));
+
+const { EXACT_PHRASE } = ADVANCED_SEARCH_MATCH_OPTIONS;
 
 const mockOnClick = jest.fn();
 const mockGetMarcSource = jest.fn(() => ({ json: () => {} }));
@@ -31,7 +53,7 @@ const mockHandleLinkAuthority = jest.fn();
 const mockHandleUnlinkAuthority = jest.fn();
 
 const renderComponent = (props = {}) => render(
-  <Harness history={props.history}>
+  <Harness quickMarcContext={props.quickMarcContext}>
     <LinkButton
       action={QUICK_MARC_ACTIONS.EDIT}
       handleLinkAuthority={mockHandleLinkAuthority}
@@ -91,6 +113,7 @@ describe('Given LinkButton', () => {
           id: 'authority-id',
         };
 
+        mockGetMarcSource.mockClear(); // clear linking rules call
         await act(async () => { Pluggable.mock.calls[0][0].onLinkRecord(authority); });
         act(() => { Pluggable.mock.calls[1][0].onLinkRecord(authority); });
 
@@ -128,7 +151,37 @@ describe('Given LinkButton', () => {
           content: '$a {dollar}{dollar}{dollar} 50.00{dollar} $d currency ({dollar}) $0 n123456789 $t test{dollar}',
         });
 
-        const searchInputValue = `keyword ${EXACT_PHRASE} $$$ 50.00$ currency ($) test$ or identifiers.value ${EXACT_PHRASE} n123456789`;
+        const searchInputValue = `keyword ${EXACT_PHRASE} $$$ 50.00$ currency ($) or identifiers.value ${EXACT_PHRASE} n123456789`;
+
+        const initialValues = {
+          search: {
+            dropdownValue: 'advancedSearch',
+            searchIndex: 'advancedSearch',
+            searchInputValue,
+            searchQuery: searchInputValue,
+            filters: null,
+          },
+          browse: {
+            dropdownValue: 'personalNameTitle',
+            searchIndex: 'personalNameTitle',
+            filters: null,
+          },
+          segment: 'search',
+        };
+
+        fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
+
+        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
+      });
+    });
+
+    describe('when linking Authority', () => {
+      it('should use all controlled subfields for search', () => {
+        const { getAllByTestId } = renderComponent({
+          content: '$a test1 $d test2 $0 n123456789 $t test3',
+        });
+
+        const searchInputValue = `keyword ${EXACT_PHRASE} test1 test2 or identifiers.value ${EXACT_PHRASE} n123456789`;
 
         const initialValues = {
           search: {
@@ -208,23 +261,24 @@ describe('Given LinkButton', () => {
       });
     });
 
-    describe('when linking Authority to a field with $a, $d or $t', () => {
-      it('should pass initial values to plugin', async () => {
+    describe('when linking an Authority to a 6XX/7XX/8XX field with a $t', () => {
+      it('should use Browse Name-Title by default', async () => {
         const { getAllByTestId } = renderComponent({
-          content: '$a value1 $d value2 $t value3',
+          tag: '700',
+          content: '$a testing $t with t',
         });
 
         const initialValues = {
           search: {
-            dropdownValue: 'personalNameTitle',
-            searchIndex: 'personalNameTitle',
+            dropdownValue: 'nameTitle',
+            searchIndex: 'nameTitle',
             filters: null,
           },
           browse: {
-            dropdownValue: 'personalNameTitle',
-            searchIndex: 'personalNameTitle',
-            searchInputValue: 'value1 value2 value3',
-            searchQuery: 'value1 value2 value3',
+            dropdownValue: 'nameTitle',
+            searchIndex: 'nameTitle',
+            searchInputValue: 'testing with t',
+            searchQuery: 'testing with t',
             filters: null,
           },
           segment: 'browse',
@@ -236,26 +290,27 @@ describe('Given LinkButton', () => {
       });
     });
 
-    describe('when linking Authority to a field with $a, $d or $t and with multiple $0', () => {
-      it('should pass initial values to plugin', async () => {
+    describe('when linking an Authority to a non-6XX/7XX/8XX field with a $t', () => {
+      it('should use Browse by regular lookup config by default', async () => {
         const { getAllByTestId } = renderComponent({
-          content: '$a value1 $d value2 $t value3 $0 value4 $0 http://id.workldcat.org/fast/value5',
+          tag: '110',
+          content: '$a testing $t with t',
         });
 
         const initialValues = {
           search: {
-            dropdownValue: 'advancedSearch',
-            searchIndex: 'advancedSearch',
-            searchInputValue: `keyword ${EXACT_PHRASE} value1 value2 value3 or identifiers.value ${EXACT_PHRASE} value4 or identifiers.value ${EXACT_PHRASE} value5`,
-            searchQuery: `keyword ${EXACT_PHRASE} value1 value2 value3 or identifiers.value ${EXACT_PHRASE} value4 or identifiers.value ${EXACT_PHRASE} value5`,
+            dropdownValue: 'corporateNameTitle',
+            searchIndex: 'corporateNameTitle',
             filters: null,
           },
           browse: {
-            dropdownValue: 'personalNameTitle',
-            searchIndex: 'personalNameTitle',
+            dropdownValue: 'corporateNameTitle',
+            searchIndex: 'corporateNameTitle',
+            searchInputValue: 'testing with t',
+            searchQuery: 'testing with t',
             filters: null,
           },
-          segment: 'search',
+          segment: 'browse',
         };
 
         fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
@@ -300,7 +355,7 @@ describe('Given LinkButton', () => {
       });
 
       fireEvent.click(getAllByTestId('unlink-authority-button-fakeId')[0]);
-      fireEvent.click(getByText('ui-quick-marc.record.unlink.confirm.confirm'));
+      fireEvent.click(getByText('confirm'));
 
       expect(mockHandleUnlinkAuthority).toHaveBeenCalled();
     });
@@ -315,12 +370,14 @@ describe('Given LinkButton', () => {
   });
 
   describe('when member tenant edits a shared bib record', () => {
+    beforeEach(() => {
+      useIsShared.mockClear().mockReturnValue({
+        isShared: true,
+      });
+    });
+
     it('should pass correct props', () => {
       checkIfUserInMemberTenant.mockReturnValue(true);
-
-      const history = createMemoryHistory({
-        initialEntries: [{ search: '?shared=true' }],
-      });
 
       const centralTenantId = 'consortia';
       const initialValues = expect.objectContaining({
@@ -340,7 +397,7 @@ describe('Given LinkButton', () => {
         browse: ['shared'],
       };
 
-      renderComponent({ history });
+      renderComponent();
 
       expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
         tenantId: centralTenantId,
@@ -351,12 +408,14 @@ describe('Given LinkButton', () => {
   });
 
   describe('when member tenant derives a shared bib record', () => {
+    beforeEach(() => {
+      useIsShared.mockClear().mockReturnValue({
+        isShared: true,
+      });
+    });
+
     it('should pass correct props', () => {
       checkIfUserInMemberTenant.mockReturnValue(true);
-
-      const history = createMemoryHistory({
-        initialEntries: [{ search: '?shared=true' }],
-      });
 
       const initialValues = expect.objectContaining({
         browse: expect.objectContaining({
@@ -373,7 +432,6 @@ describe('Given LinkButton', () => {
 
       renderComponent({
         action: QUICK_MARC_ACTIONS.DERIVE,
-        history,
       });
 
       expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
@@ -391,9 +449,8 @@ describe('Given LinkButton', () => {
   ${QUICK_MARC_ACTIONS.DERIVE}
   `('should pass correct props when member tenant $action a not shared bib record', ({ action }) => {
     checkIfUserInMemberTenant.mockReturnValue(true);
-
-    const history = createMemoryHistory({
-      initialEntries: [{ search: '?shared=false' }],
+    useIsShared.mockClear().mockReturnValue({
+      isShared: false,
     });
 
     const initialValues = expect.objectContaining({
@@ -411,7 +468,6 @@ describe('Given LinkButton', () => {
 
     renderComponent({
       action,
-      history,
     });
 
     expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({

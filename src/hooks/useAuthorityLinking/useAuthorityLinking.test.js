@@ -16,6 +16,7 @@ import {
   bibLeader,
   bibLeaderString,
 } from '../../../test/jest/fixtures/leaders';
+import Harness from '../../../test/jest/helpers/harness';
 
 const mockFetchLinkSuggestions = jest.fn().mockResolvedValue({ fields: [] });
 
@@ -46,7 +47,9 @@ const queryClient = new QueryClient();
 
 const wrapper = ({ children }) => (
   <QueryClientProvider client={queryClient}>
-    {children}
+    <Harness>
+      {children}
+    </Harness>
   </QueryClientProvider>
 );
 
@@ -61,7 +64,7 @@ const marcFormat = MARC_TYPES.BIB.toUpperCase();
 
 const leaderField = {
   tag: LEADER_TAG,
-  content: bibLeader,
+  content: bibLeaderString,
   id: LEADER_TAG,
 };
 
@@ -305,7 +308,7 @@ describe('Given useAuthorityLinking', () => {
         };
 
         expect(result.current.linkAuthority(authority, _authoritySource, field)).toMatchObject({
-          content: '$a field for modification $f ff $g gg $h hh $k kk $0 some.url/n0001 $9 authority-id',
+          content: '$a field for modification $f ff $h hh $g gg $k kk $0 some.url/n0001 $9 authority-id',
           linkDetails: {
             authorityId: 'authority-id',
             authorityNaturalId: 'n0001',
@@ -336,6 +339,35 @@ describe('Given useAuthorityLinking', () => {
 
       expect(result.current.linkAuthority(authority, _authoritySource, field)).toMatchObject({
         content: '$a Black Panther $c (Fictitious character) $2 fast $0 some.url/n0001 $9 authority-id',
+        linkDetails: {
+          authorityId: 'authority-id',
+          authorityNaturalId: 'n0001',
+          linkingRuleId: 8,
+        },
+      });
+    });
+
+    it('should not group subfields together', () => {
+      const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+
+      const authority = {
+        id: 'authority-id',
+        sourceFileId: '1',
+        naturalId: 'n0001',
+      };
+      const field = {
+        tag: '600',
+        content: '$c (Fictitious character) $x x1 $y y $x x2 $a Black Panther $2 fast $0 (OCoLC)fst02000849',
+      };
+      const _authoritySource = {
+        fields: [{
+          tag: '100',
+          content: '$a Black Panther $c (Fictitious character)',
+        }],
+      };
+
+      expect(result.current.linkAuthority(authority, _authoritySource, field)).toMatchObject({
+        content: '$a Black Panther $c (Fictitious character) $x x1 $y y $x x2 $2 fast $0 some.url/n0001 $9 authority-id',
         linkDetails: {
           authorityId: 'authority-id',
           authorityNaturalId: 'n0001',
@@ -1305,7 +1337,7 @@ describe('Given useAuthorityLinking', () => {
         const formValues = {
           externalHrid: 'in00000000001',
           externalId: '4c95c27d-51fc-4ae1-892d-11347377bdd4',
-          leader: bibLeader,
+          leader: bibLeaderString,
           marcFormat,
           _actionType: 'view',
           records: [
@@ -1433,7 +1465,7 @@ describe('Given useAuthorityLinking', () => {
           fetchLinkSuggestions: mockFetchLinkSuggestions.mockResolvedValue(linkSuggestionsResponse),
         });
 
-        const { result } = renderHook(() => useAuthorityLinking(), { wrapper });
+        const { result } = renderHook(() => useAuthorityLinking({ marcType: MARC_TYPES.BIB }), { wrapper });
 
         const values = await result.current.actualizeLinks(formValues);
 

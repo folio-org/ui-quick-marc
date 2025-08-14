@@ -15,6 +15,7 @@ import {
   Select,
 } from '@folio/stripes/components';
 
+import { ErrorMessages } from '../ErrorMessages';
 import { FIXED_FIELD_MAX_LENGTH } from '../../../common/constants';
 
 import styles from './BytesField.css';
@@ -160,7 +161,12 @@ const renderSubField = (name, config, intl) => {
                                 aria-label={ariaLabel}
                                 aria-labelledby={ariaIds.text}
                                 name={`${fieldName}[${idx}]`}
-                                initialValue={initialValue}
+                                /*
+                                  should not use `initialValueProp` because it will cause a mutation of the form's `initialValues`,
+                                  inserting an empty object in the array
+                                  instead, use `defaultValue`
+                                */
+                                defaultValue={initialValue}
                                 component={Select}
                                 disabled={config.disabled}
                                 dataOptions={options}
@@ -209,7 +215,12 @@ const renderSubField = (name, config, intl) => {
                   name={fieldName}
                   aria-label={ariaLabel}
                   aria-labelledby={ariaIds.text}
-                  initialValue={config.initialValue}
+                  /*
+                    should not use `initialValueProp` because it will cause a mutation of the form's `initialValues`,
+                    inserting an empty object in the array
+                    instead, use `defaultValue`
+                  */
+                  defaultValue={config.initialValue}
                   component={Select}
                   disabled={config.disabled}
                   dataOptions={options}
@@ -273,27 +284,37 @@ const renderSubField = (name, config, intl) => {
   );
 };
 
-export const BytesField = ({ config, name, id }) => {
+export const BytesField = ({
+  config,
+  name,
+  id = '',
+  error,
+}) => {
   const intl = useIntl();
 
   return (
-    <div
-      className={styles.bytesFieldRow}
-      data-testid={id || `row-${name}`}
-    >
-      {
-        config.fields.map((field, fieldIdx) => {
-          return (
-            <div
-              key={fieldIdx}
-              data-testid="bytes-field-col"
-            >
-              {renderSubField(name, field, intl)}
-            </div>
-          );
-        })
-      }
-    </div>
+    <>
+      <div
+        className={styles.bytesFieldRow}
+        data-testid={id || `row-${name}`}
+      >
+        {
+          config.fields.map((field, fieldIdx) => {
+            return (
+              <div
+                key={fieldIdx}
+                data-testid="bytes-field-col"
+              >
+                {renderSubField(name, field, intl)}
+              </div>
+            );
+          })
+        }
+      </div>
+      <div role="alert">
+        <ErrorMessages errors={error} />
+      </div>
+    </>
   );
 };
 
@@ -301,8 +322,5 @@ BytesField.propTypes = {
   name: PropTypes.string.isRequired,
   config: PropTypes.object.isRequired,
   id: PropTypes.string,
-};
-
-BytesField.defaultProps = {
-  id: '',
+  error: PropTypes.element,
 };

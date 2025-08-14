@@ -1,7 +1,8 @@
 /* eslint-disable max-lines */
 import faker from 'faker';
-
 import { v4 as uuid } from 'uuid';
+
+import { FixedFieldFactory } from './QuickMarcEditorRows/FixedField';
 import {
   LEADER_TAG,
   QUICK_MARC_ACTIONS,
@@ -19,6 +20,7 @@ import {
   bibLeaderString,
   holdingsLeader,
 } from '../../test/jest/fixtures/leaders';
+import { SUBFIELD_TYPES } from './QuickMarcEditorRows/BytesField';
 
 jest.mock('uuid', () => {
   return {
@@ -118,6 +120,56 @@ describe('QuickMarcEditor utils', () => {
         Date2: '\\\\\\\\',
       });
     });
+
+    it('should reuse existing ids for fields if they are available', () => {
+      const marcRecord = {
+        id: faker.random.uuid(),
+        marcFormat: MARC_TYPES.BIB.toUpperCase(),
+        leader: bibLeaderString,
+        fields: [
+          {
+            id: 'id-1',
+            tag: '001',
+            content: '$a fss $b asd',
+          },
+          {
+            id: 'id-2',
+            tag: '006',
+            content: {
+              Type: 'c',
+            },
+          },
+          {
+            tag: '007',
+            content: {
+              Category: 'c',
+            },
+          },
+          {
+            tag: '008',
+            content: {},
+          },
+        ],
+      };
+
+      const fieldIds = ['id-1', 'id-2'];
+
+      const dehydratedMarcRecord = utils.dehydrateMarcRecordResponse(
+        marcRecord,
+        MARC_TYPES.BIB,
+        fixedFieldSpecBib,
+        fieldIds,
+      );
+      const field001 = dehydratedMarcRecord.records[1];
+      const field006 = dehydratedMarcRecord.records[2];
+      const field007 = dehydratedMarcRecord.records[3];
+      const field008 = dehydratedMarcRecord.records[4];
+
+      expect(field001.id).toBe('id-1');
+      expect(field006.id).toBe('id-2');
+      expect(field007.id).toBe('uuid');
+      expect(field008.id).toBe('uuid');
+    });
   });
 
   describe('hydrateMarcRecord', () => {
@@ -139,7 +191,7 @@ describe('QuickMarcEditor utils', () => {
 
       expect(hydratedMarcRecord.records).not.toBeDefined();
 
-      expect(hydratedMarcRecord.leader).toBe(bibLeaderString);
+      expect(hydratedMarcRecord.leader).toBe(bibLeader);
 
       expect(hydratedMarcRecord.fields).toBeDefined();
       expect(hydratedMarcRecord.fields.length).toBe(marcRecord.records.length - 1);
@@ -1470,7 +1522,7 @@ describe('QuickMarcEditor utils', () => {
   describe('getLocationValue', () => {
     describe('when has matches', () => {
       it('should return matched location value', () => {
-        expect(utils.getLocationValue('$b KU/CC/DI/A $t 3 $h M3')).toEqual('$b KU/CC/DI/A');
+        expect(utils.getLocationValue('$b KU/CC/DI/A $t 3 $h M3')).toEqual('KU/CC/DI/A');
       });
     });
 
@@ -1720,13 +1772,13 @@ describe('QuickMarcEditor utils', () => {
         records: [
           {
             tag: 'LDR',
-            content: bibLeader,
+            content: bibLeaderString,
           },
           ...fields,
         ],
       };
 
-      expect(utils.hydrateForLinkSuggestions(marcRecord, fields)).toEqual({
+      expect(utils.hydrateForLinkSuggestions(marcRecord, MARC_TYPES.BIB, fields)).toEqual({
         leader: bibLeaderString,
         marcFormat: MARC_TYPES.BIB.toUpperCase(),
         _actionType: 'view',
@@ -1790,6 +1842,88 @@ describe('QuickMarcEditor utils', () => {
         const linksCount = 1;
 
         expect(utils.is010LinkedToBibRecord(initialRecords, naturalId, linksCount)).toEqual(true);
+      });
+    });
+  });
+
+  describe('isDiacritic', () => {
+    it('should all chars to be detected as diacritics', () => {
+      const diacriticArray = 'ąćęłńóśźżĄĆĘŁŃÓŚŹŻøãéžŽšŠşŞß';
+
+      [...diacriticArray].forEach(c => {
+        expect(utils.isDiacritic(c)).toBeTruthy();
+      });
+    });
+
+    it('should all chars to be detected as not diacritics', () => {
+      const diacriticArray = 'acelnoszACELNOSZ';
+
+      [...diacriticArray].forEach(c => {
+        expect(utils.isDiacritic(c)).toBeFalsy();
+      });
+    });
+  });
+
+  describe('getFixedFieldStringPositions', () => {
+    describe('when a field is an 008', () => {
+      it('should return an 008 config', () => {
+        jest.spyOn(FixedFieldFactory, 'getFixedFieldType').mockReturnValueOnce({
+          items: [{
+            code: 'test1',
+            isArray: true,
+          }, {
+            code: 'test2',
+            isArray: false,
+            readOnly: false,
+          }],
+        });
+
+        const field = { tag: '008' };
+
+        expect(utils.getFixedFieldStringPositions('a', 'm', field, fixedFieldSpecBib)).toEqual([
+          {
+            code: 'test2',
+            isArray: false,
+            readOnly: false,
+          },
+        ]);
+      });
+
+      describe('when type or subtype are invalid', () => {
+        it('should return an empty array', () => {
+          const field = { tag: '008' };
+
+          expect(utils.getFixedFieldStringPositions('|', '|', field, fixedFieldSpecBib)).toEqual([]);
+        });
+      });
+    });
+
+    describe('when a field is an 007', () => {
+      it('should return an 007 config', () => {
+        const field = { tag: '007', content: { Category: 'c' } };
+
+        expect(utils.getFixedFieldStringPositions('a', 'm', field, fixedFieldSpecBib)).toEqual([
+          {
+            name: 'Image bit depth',
+            type: SUBFIELD_TYPES.STRING,
+            length: 3,
+          },
+        ]);
+      });
+    });
+
+    describe('when a field is an 006', () => {
+      it('should return an 006 config', () => {
+        const field = { tag: '006', content: { Type: 'f' } };
+
+        expect(utils.getFixedFieldStringPositions('f', 'm', field, fixedFieldSpecBib)).toEqual([
+          {
+            name: 'Proj',
+            hint: 'Projection',
+            type: SUBFIELD_TYPES.STRING,
+            length: 2,
+          },
+        ]);
       });
     });
   });

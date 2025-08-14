@@ -6,6 +6,7 @@ import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 
 import { LocationField } from './LocationField';
+import Harness from '../../../../test/jest/helpers/harness';
 
 const newLocation = { code: 'NEWLOCATION' };
 
@@ -25,20 +26,22 @@ jest.mock('@folio/stripes/smart-components', () => ({
 }));
 
 const getLocationField = (initialValues) => (
-  <Form
-    onSubmit={jest.fn()}
-    mutators={{ ...arrayMutators }}
-    initialValues={{
-      location: '$b KU/CC/DI/A $t 3 $h M3',
-    }}
-    {...initialValues}
-    render={() => (
-      <LocationField
-        id="id-1"
-        name="location"
-      />
-    )}
-  />
+  <Harness>
+    <Form
+      onSubmit={jest.fn()}
+      mutators={{ ...arrayMutators }}
+      initialValues={{
+        location: '$b KU/CC/DI/A $t 3 $h M3',
+      }}
+      {...initialValues}
+      render={() => (
+        <LocationField
+          id="id-1"
+          name="location"
+        />
+      )}
+    />
+  </Harness>
 );
 
 const renderLocationField = (props = {}) => render(getLocationField(props));

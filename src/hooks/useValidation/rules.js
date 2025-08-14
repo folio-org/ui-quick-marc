@@ -1,4 +1,3 @@
-import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 
 import {
@@ -26,6 +25,8 @@ import {
   validateSubfieldValueMatch,
   validateContentExistence,
   validateFixedFieldPositions,
+  validateLccnDuplication,
+  validateFixedFieldLength,
 } from './validators';
 import {
   is010LinkedToBibRecord,
@@ -52,151 +53,174 @@ const RULES = {
   SUBFIELD_VALUE_MATCH: validateSubfieldValueMatch,
   SUBFIELD_CHANGED: validateSubfieldChanged,
   FIXED_FIELD_POSITIONS: validateFixedFieldPositions,
+  FIXED_FIELD_LENGTH: validateFixedFieldLength,
+  DUPLICATE_LCCN: validateLccnDuplication,
 };
 
-const COMMON_VALIDATORS = [
-  {
-    validator: RULES.LEADER_LENGTH,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.leader.length" />,
-  }, {
-    validator: RULES.LEADER_EDITABLE_BYTES,
-    message: (marcType) => <FormattedMessage id={`ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}`} />,
-  }, {
-    validator: RULES.LEADER_POSITIONS,
-    message: (positions, link) => (
-      <FormattedMessage
-        id="ui-quick-marc.record.error.leader.invalidPositionValue"
-        values={{
-          positions,
-          link: (
-            <Link
-              to={{
-                pathname: link,
-              }}
-              target="_blank"
-            >
-              {link}
-            </Link>
-          ),
-        }}
-      />
-    ),
-  },
-  {
-    tag: '001',
-    validator: RULES.NON_REPEATABLE,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.controlField.multiple" />,
-  },
-  {
-    validator: RULES.TAG_LENGTH,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.tag.length" />,
-  },
-  {
-    validator: RULES.TAG_CHARACTERS,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.tag.nonDigits" />,
-  },
-  {
-    validator: RULES.EMPTY_SUBFIELDS,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.subfield" />,
-  },
-  {
-    tag: '008',
-    validator: RULES.EXISTS,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.008.empty" />,
-  }, {
-    tag: '008',
-    validator: RULES.NON_REPEATABLE,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.008.multiple" />,
-  },
-];
-
 const BASE_BIB_VALIDATORS = [
-  ...COMMON_VALIDATORS,
+  {
+    validator: RULES.LEADER_EDITABLE_BYTES,
+    message: (marcType) => ({ id: `ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}` }),
+  },
+  {
+    validator: RULES.LEADER_POSITIONS,
+    message: (positions, link) => ({
+      id: 'ui-quick-marc.record.error.leader.invalidPositionValue',
+      values: {
+        positions,
+        link: (
+          <Link
+            to={{
+              pathname: link,
+            }}
+            target="_blank"
+          >
+            {link}
+          </Link>
+        ),
+      },
+    }),
+  },
   {
     tag: '008',
     validator: RULES.FIXED_FIELD_POSITIONS,
-    message: (name) => <FormattedMessage id="ui-quick-marc.record.error.008.invalidValue" values={{ name }} />,
+    message: (name) => ({ id: 'ui-quick-marc.record.error.008.invalidValue', values: { name } }),
   },
   {
-    tag: '010',
-    validator: RULES.NON_REPEATABLE,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.010.multiple" />,
+    tag: '006',
+    validator: RULES.FIXED_FIELD_LENGTH,
+    message: (name, length) => ({ id: 'ui-quick-marc.record.error.fixedField.invalidLength', values: { name, length } }),
   },
   {
-    tag: '245',
-    validator: RULES.EXISTS,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.title.empty" />,
+    tag: '007',
+    validator: RULES.FIXED_FIELD_LENGTH,
+    message: (name, length) => ({ id: 'ui-quick-marc.record.error.fixedField.invalidLength', values: { name, length } }),
   },
   {
-    tag: '245',
-    validator: RULES.NON_REPEATABLE,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.title.multiple" />,
+    tag: '008',
+    validator: RULES.FIXED_FIELD_LENGTH,
+    message: (name, length) => ({ id: 'ui-quick-marc.record.error.fixedField.invalidLength', values: { name, length } }),
   },
   {
     validator: RULES.$9IN_LINKABLE,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.$9" />,
+    message: () => ({ id: 'ui-quick-marc.record.error.$9' }),
   },
   {
     validator: RULES.CONTROLLED_SUBFIELD,
-    message: (uniqueTags) => {
-      if (uniqueTags.length === 1) {
-        return (
-          <FormattedMessage
-            id="ui-quick-marc.record.error.fieldIsControlled"
-            values={{
-              count: 1,
-              fieldTags: `MARC ${uniqueTags[0]}`,
-            }}
-          />
-        );
-      }
-
-      return (
-        <FormattedMessage
-          id="ui-quick-marc.record.error.fieldsAreControlled"
-          values={{
-            count: uniqueTags.length,
-            fieldTags: uniqueTags.slice(0, -1).map(tag => `MARC ${tag}`).join(', '),
-            lastFieldTag: `MARC ${uniqueTags[uniqueTags.length - 1]}`,
-          }}
-        />
-      );
-    },
+    message: () => ({ id: 'ui-quick-marc.record.error.fieldIsControlled' }),
+  },
+  {
+    tag: '010',
+    validator: RULES.DUPLICATE_LCCN,
+    message: () => ({ id: 'ui-quick-marc.record.error.010.lccnDuplicated' }),
   },
 ];
 
 const BASE_HOLDINGS_VALIDATORS = [
-  ...COMMON_VALIDATORS,
+  {
+    validator: RULES.LEADER_LENGTH,
+    message: () => ({ id: 'ui-quick-marc.record.error.leader.length' }),
+  },
+  {
+    validator: RULES.LEADER_EDITABLE_BYTES,
+    message: (marcType) => ({ id: `ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}` }),
+  },
+  {
+    validator: RULES.LEADER_POSITIONS,
+    message: (positions, link) => ({
+      id: 'ui-quick-marc.record.error.leader.invalidPositionValue',
+      values: {
+        positions,
+        link: (
+          <Link
+            to={{
+              pathname: link,
+            }}
+            target="_blank"
+          >
+            {link}
+          </Link>
+        ),
+      },
+    }),
+  },
+  {
+    tag: '001',
+    validator: RULES.NON_REPEATABLE,
+    message: () => ({ id: 'ui-quick-marc.record.error.controlField.multiple' }),
+  },
+  {
+    validator: RULES.TAG_LENGTH,
+    message: () => ({ id: 'ui-quick-marc.record.error.tag.length' }),
+  },
+  {
+    validator: RULES.TAG_CHARACTERS,
+    message: () => ({ id: 'ui-quick-marc.record.error.tag.nonDigits' }),
+  },
   {
     tag: '004',
     validator: RULES.NON_REPEATABLE,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.instanceHrid.multiple" />,
+    message: () => ({ id: 'ui-quick-marc.record.error.instanceHrid.multiple' }),
+  },
+  {
+    tag: '008',
+    validator: RULES.EXISTS,
+    message: () => ({ id: 'ui-quick-marc.record.error.008.empty' }),
+  }, {
+    tag: '008',
+    validator: RULES.NON_REPEATABLE,
+    message: () => ({ id: 'ui-quick-marc.record.error.008.multiple' }),
   },
   {
     tag: '852',
     validator: RULES.EXISTS,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.location.empty" />,
+    message: () => ({ id: 'ui-quick-marc.record.error.location.empty' }),
   },
   {
     tag: '852',
     validator: RULES.NON_REPEATABLE,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.location.multiple" />,
+    message: () => ({ id: 'ui-quick-marc.record.error.location.multiple' }),
   },
   {
     tag: '852',
     subfield: '$b',
     validator: RULES.NON_REPEATABLE_SUBFIELD,
-    message: (fieldTag, subField) => <FormattedMessage id="ui-quick-marc.record.error.field.onlyOneSubfield" values={{ fieldTag, subField }} />,
+    message: (fieldTag, subField) => ({
+      id: 'ui-quick-marc.record.error.field.onlyOneSubfield',
+      values: { fieldTag, subField },
+    }),
   },
   {
     tag: '852',
     validator: RULES.VALID_LOCATION,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.location.invalid" />,
+    message: () => ({ id: 'ui-quick-marc.record.error.location.invalid' }),
   },
 ];
 
 const BASE_AUTHORITY_VALIDATORS = [
-  ...COMMON_VALIDATORS,
+  {
+    validator: RULES.LEADER_EDITABLE_BYTES,
+    message: (marcType) => ({ id: `ui-quick-marc.record.error.leader.forbiddenBytes.${marcType}` }),
+  },
+  {
+    validator: RULES.LEADER_POSITIONS,
+    message: (positions, link) => ({
+      id: 'ui-quick-marc.record.error.leader.invalidPositionValue',
+      values: {
+        positions,
+        link: (
+          <Link
+            to={{
+              pathname: link,
+            }}
+            target="_blank"
+          >
+            {link}
+          </Link>
+        ),
+      },
+    }),
+  },
   {
     tag: '010',
     subfield: '$a',
@@ -204,7 +228,7 @@ const BASE_AUTHORITY_VALIDATORS = [
       return !is010LinkedToBibRecord(initialValues.records, naturalId, linksCount);
     },
     validator: RULES.SUBFIELD_VALUE_EXISTS,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.010.$aRemoved" />,
+    message: () => ({ id: 'ui-quick-marc.record.error.010.$aRemoved' }),
   },
   {
     tag: '010',
@@ -212,34 +236,16 @@ const BASE_AUTHORITY_VALIDATORS = [
       return !is010LinkedToBibRecord(initialValues.records, naturalId, linksCount);
     },
     validator: RULES.EXISTS,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.010.removed" />,
-  },
-  {
-    tag: '010',
-    validator: RULES.NON_REPEATABLE,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.010.multiple" />,
-  },
-  {
-    tag: '010',
-    subfield: '$a',
-    validator: RULES.NON_REPEATABLE_SUBFIELD,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.010.$aOnlyOne" />,
-  },
-  {
-    tag: new RegExp(`${CORRESPONDING_HEADING_TYPE_TAGS.join('|')}`),
-    validator: RULES.EXISTS,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.heading.empty" />,
-  },
-  {
-    tag: new RegExp(/1\d\d/),
-    validator: RULES.NON_REPEATABLE,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.heading.multiple" />,
+    message: () => ({ id: 'ui-quick-marc.record.error.010.removed' }),
   },
   {
     tag: new RegExp(`${CORRESPONDING_HEADING_TYPE_TAGS.join('|')}`),
     validator: RULES.TAG_CHANGED,
     ignore: ({ linksCount }) => !linksCount,
-    message: (initialTag) => <FormattedMessage id="ui-quick-marc.record.error.1xx.change" values={{ tag: initialTag }} />,
+    message: (initialTag) => ({
+      id: 'ui-quick-marc.record.error.1xx.change',
+      values: { tag: initialTag },
+    }),
   },
   {
     tag: new RegExp(`${CORRESPONDING_HEADING_TYPE_TAGS.join('|')}`),
@@ -248,15 +254,46 @@ const BASE_AUTHORITY_VALIDATORS = [
     validator: RULES.SUBFIELD_CHANGED,
     message: (changes, initialTag) => {
       if (changes.added) {
-        return <FormattedMessage id="ui-quick-marc.record.error.1xx.add$t" values={{ tag: initialTag }} />;
+        return {
+          id: 'ui-quick-marc.record.error.1xx.add$t',
+          values: { tag: initialTag },
+        };
       }
 
       if (changes.removed) {
-        return <FormattedMessage id="ui-quick-marc.record.error.1xx.remove$t" values={{ tag: initialTag }} />;
+        return {
+          id: 'ui-quick-marc.record.error.1xx.remove$t',
+          values: { tag: initialTag },
+        };
       }
 
       return null;
     },
+  },
+  {
+    tag: '010',
+    validator: RULES.DUPLICATE_LCCN,
+    message: () => ({ id: 'ui-quick-marc.record.error.010.lccnDuplicated' }),
+  },
+  {
+    tag: '006',
+    validator: RULES.FIXED_FIELD_LENGTH,
+    message: (name, length) => ({ id: 'ui-quick-marc.record.error.fixedField.invalidLength', values: { name, length } }),
+  },
+  {
+    tag: '007',
+    validator: RULES.FIXED_FIELD_LENGTH,
+    message: (name, length) => ({ id: 'ui-quick-marc.record.error.fixedField.invalidLength', values: { name, length } }),
+  },
+  {
+    tag: '008',
+    validator: RULES.FIXED_FIELD_LENGTH,
+    message: (name, length) => ({ id: 'ui-quick-marc.record.error.fixedField.invalidLength', values: { name, length } }),
+  },
+  {
+    tag: '008',
+    validator: RULES.FIXED_FIELD_POSITIONS,
+    message: (name) => ({ id: 'ui-quick-marc.record.error.008.invalidValue', values: { name } }),
   },
 ];
 
@@ -266,7 +303,7 @@ const CREATE_AUTHORITY_VALIDATORS = [
     tag: '010',
     validator: RULES.EXISTS,
     ignore: isFolioSourceFileNotSelected,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.010.absent" />,
+    message: () => ({ id: 'ui-quick-marc.record.error.010.absent' }),
   },
   {
     tag: '010',
@@ -274,7 +311,7 @@ const CREATE_AUTHORITY_VALIDATORS = [
     ignore: isFolioSourceFileNotSelected,
     pattern: () => /^[a-zA-Z]/,
     validator: RULES.SUBFIELD_VALUE_MATCH,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.010.prefix.absent" />,
+    message: () => ({ id: 'ui-quick-marc.record.error.010.prefix.absent' }),
   },
   {
     tag: '010',
@@ -286,12 +323,12 @@ const CREATE_AUTHORITY_VALIDATORS = [
       return new RegExp(`^(${codes.join('|')})([^a-zA-Z].*|$)`);
     },
     validator: RULES.SUBFIELD_VALUE_MATCH,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.010.prefix.invalid" />,
+    message: () => ({ id: 'ui-quick-marc.record.error.010.prefix.invalid' }),
   },
   {
     tag: '001',
     validator: RULES.CONTENT_EXISTS,
-    message: () => <FormattedMessage id="ui-quick-marc.record.error.controlField.content.empty" />,
+    message: () => ({ id: 'ui-quick-marc.record.error.controlField.content.empty' }),
   },
 ];
 

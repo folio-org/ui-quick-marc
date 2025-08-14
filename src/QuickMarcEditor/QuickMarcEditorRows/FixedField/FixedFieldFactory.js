@@ -1,9 +1,7 @@
 import React from 'react';
 
 import { LEADER_TAG } from '../../constants';
-import {
-  SUBFIELD_TYPES,
-} from '../BytesField';
+import { SUBFIELD_TYPES } from '../BytesField';
 
 import FixedField from './FixedField';
 
@@ -46,6 +44,13 @@ export const FixedFieldFactory = {
     config.fields = fixedFieldType.items.filter(x => !x.readOnly).map((item) => {
       const getInitialValue = () => {
         if (content[item.code]) {
+          if (item.isArray) {
+            return content[item.code]
+              .slice(0, item.length)
+              .concat(new Array(item.length).fill('\\'))
+              .slice(0, item.length);
+          }
+
           return content[item.code];
         }
 
@@ -130,6 +135,6 @@ export const FixedFieldFactory = {
     const configFixedField = this.getConfigFixedField(fixedFieldSpec, type, subtype, content);
     const config = this.getConfigWithOptions(intl, configFixedField);
 
-    return <FixedField name={name} config={config} />;
+    return (props) => <FixedField name={name} config={config} {...props} />;
   },
 };

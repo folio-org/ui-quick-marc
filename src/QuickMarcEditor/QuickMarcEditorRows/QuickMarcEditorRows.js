@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useContext,
   useRef,
 } from 'react';
 import PropTypes from 'prop-types';
@@ -8,14 +9,12 @@ import {
   useFormState,
 } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
-import {
-  Link,
-  useLocation,
-} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import isEqual from 'lodash/isEqual';
 import defer from 'lodash/defer';
 import noop from 'lodash/noop';
+import classNames from 'classnames';
 
 import { useStripes } from '@folio/stripes/core';
 import {
@@ -37,10 +36,12 @@ import { LinkButton } from './LinkButton';
 import { SplitField } from './SplitField';
 import { ControlNumberField } from './ControlNumberField';
 import { SearchLink } from './SearchLink';
+import { ErrorMessages } from './ErrorMessages';
 import {
   hasIndicatorException,
   hasAddException,
   hasMoveException,
+  separateValidationErrorsAndWarnings,
 } from './utils';
 import {
   isRecordForManualLinking,
@@ -56,7 +57,11 @@ import {
   isControlNumberRow,
   isLeaderRow,
 } from '../utils';
-import { useAuthorityLinking } from '../../hooks';
+import {
+  useAuthorityLinking,
+  useIsShared,
+} from '../../hooks';
+import { QuickMarcContext } from '../../contexts';
 import {
   QUICK_MARC_ACTIONS,
   FIXED_FIELD_TAG,
@@ -88,9 +93,9 @@ const QuickMarcEditorRows = ({
   instance,
   linksCount,
   isLoadingLinkSuggestions,
-  onCheckCentralTenantPerm,
+  onCheckCentralTenantPerm = noop,
+  onInputFocus,
 }) => {
-  const location = useLocation();
   const stripes = useStripes();
   const intl = useIntl();
   const { initialValues } = useFormState();
@@ -99,6 +104,7 @@ const QuickMarcEditorRows = ({
   const newRowRef = useRef(null);
   const rowContentWidth = useRef(null); // for max-width of resizable textareas
   const childCalloutRef = useRef(null);
+  const { validationErrorsRef } = useContext(QuickMarcContext);
 
   const {
     linkAuthority,
@@ -106,8 +112,9 @@ const QuickMarcEditorRows = ({
     linkableBibFields,
     autoLinkableBibFields,
   } = useAuthorityLinking({ marcType, action });
+  const { isShared } = useIsShared();
 
-  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(location, stripes, marcType)
+  const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(isShared, stripes, marcType)
     && action === QUICK_MARC_ACTIONS.EDIT;
 
   const fixedFieldInitialValues = () => {
@@ -256,6 +263,7 @@ const QuickMarcEditorRows = ({
       id="quick-marc-editor-rows"
       data-testid="quick-marc-editor-rows"
       ref={containerRef}
+      onFocus={onInputFocus}
     >
       <FieldArray
         name="records"
@@ -281,6 +289,9 @@ const QuickMarcEditorRows = ({
 
             const isLeader = isLeaderRow(recordRow);
             const isDisabled = isReadOnly(recordRow, action, marcType);
+            const fieldValidationIssues = separateValidationErrorsAndWarnings(
+              validationErrorsRef.current[recordRow.id],
+            );
             const withIndicators = !hasIndicatorException(recordRow);
             const withAddRowAction = hasAddException(recordRow, marcType, action);
             const withDeleteRowAction = hasDeleteException(recordRow, marcType, instance, initialValues, linksCount);
@@ -307,6 +318,11 @@ const QuickMarcEditorRows = ({
 
             const canViewAuthorityRecord = stripes.hasPerm('ui-marc-authorities.authority-record.view') && recordRow._isLinked;
             const canSearchInInventory = [MARC_TYPES.AUTHORITY, MARC_TYPES.BIB].includes(marcType) && recordRow.tag === '010';
+            const canSelectSourceFile = marcType === MARC_TYPES.AUTHORITY && action === QUICK_MARC_ACTIONS.CREATE;
+
+            const tagClassName = classNames(styles.quickMarcEditorRowTag, {
+              [styles.marginTopAuto]: isControlNumberField && canSelectSourceFile,
+            });
 
             return (
               <div
@@ -314,6 +330,7 @@ const QuickMarcEditorRows = ({
                 className={styles.quickMarcEditorRow}
                 data-testid="quick-marc-editorid"
                 data-row={`record-row[${idx}]`}
+                data-fieldid={recordRow.id}
               >
                 <div className={styles.quickMarcEditorMovingRow}>
                   {
@@ -404,7 +421,7 @@ const QuickMarcEditorRows = ({
                   }
                 </div>
 
-                <div className={styles.quickMarcEditorRowTag}>
+                <div className={tagClassName}>
                   <Field
                     inputRef={processTagRef}
                     data-index={idx}
@@ -464,10 +481,10 @@ const QuickMarcEditorRows = ({
                     isControlNumberField && (
                       <ControlNumberField
                         id={`control-number-field-${idx}`}
+                        fieldId={recordRow.id}
                         name={`${name}.content`}
-                        marcType={marcType}
-                        action={action}
                         recordRows={records.value}
+                        canSelectSourceFile={canSelectSourceFile}
                       />
                     )
                   }
@@ -475,6 +492,7 @@ const QuickMarcEditorRows = ({
                   {
                     isMaterialCharsField && (
                       <MaterialCharsField
+                        fieldId={recordRow.id}
                         name={`${name}.content`}
                         type={recordRow.content.Type}
                       />
@@ -482,6 +500,7 @@ const QuickMarcEditorRows = ({
                   }
                   {isLeader && (
                     <LeaderField
+                      fieldId={recordRow.id}
                       name={`${name}.content`}
                       marcType={marcType}
                       leaderField={recordRow}
@@ -491,6 +510,7 @@ const QuickMarcEditorRows = ({
                   {
                     isPhysDescriptionField && (
                       <PhysDescriptionField
+                        fieldId={recordRow.id}
                         name={`${name}.content`}
                         type={recordRow.content.Category}
                       />
@@ -501,12 +521,16 @@ const QuickMarcEditorRows = ({
                     isFixedField && (
                       FixedFieldFactory.getFixedField(
                         intl, `${name}.content`, fixedFieldSpec, type, subtype, fixedFieldInitialValues(),
-                      )
+                      )({
+                        error: fieldValidationIssues,
+                        fieldId: recordRow.id,
+                      })
                     )
                   }
 
                   {isLocationField && (
                     <LocationField
+                      fieldId={recordRow.id}
                       id={`location-field-${idx}`}
                       name={`${name}.content`}
                     />
@@ -517,6 +541,7 @@ const QuickMarcEditorRows = ({
                       recordRow._isLinked
                         ? (
                           <SplitField
+                            fieldId={recordRow.id}
                             name={name}
                             maxWidth={rowContentWidth.current}
                           />
@@ -532,6 +557,10 @@ const QuickMarcEditorRows = ({
                             id={`content-field-${idx}`}
                             component={ContentField}
                             data-testid={`content-field-${idx}`}
+                            error={fieldValidationIssues.errors
+                              && <ErrorMessages errors={fieldValidationIssues.errors} />}
+                            warning={fieldValidationIssues.warnings
+                              && <ErrorMessages errors={fieldValidationIssues.warnings} />}
                           />
                         )
                     )
@@ -633,10 +662,7 @@ QuickMarcEditorRows.propTypes = {
   marcType: PropTypes.oneOf(Object.values(MARC_TYPES)).isRequired,
   fixedFieldSpec: PropTypes.object.isRequired,
   onCheckCentralTenantPerm: PropTypes.func,
-};
-
-QuickMarcEditorRows.defaultProps = {
-  onCheckCentralTenantPerm: noop,
+  onInputFocus: PropTypes.func.isRequired,
 };
 
 export default QuickMarcEditorRows;
