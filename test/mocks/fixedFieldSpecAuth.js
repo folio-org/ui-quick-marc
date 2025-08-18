@@ -680,7 +680,7 @@ const fixedFieldSpecAuth = {
             ],
           },
           {
-            'code': 'Mod Rec Est',
+            'code': 'Mod Rec',
             'name': 'Modified record',
             'order': 18,
             'position': 38,

@@ -106,7 +106,7 @@
   "record.fixedField.RecUpd": "RecUpd",
   "record.fixedField.Pers Name": "Pers Name",
   "record.fixedField.Level Est": "Level Est",
-  "record.fixedField.Mod Rec Est": "Mod Rec Est",
+  "record.fixedField.Mod Rec": "Mod Rec",
   "record.fixedField.Source": "Source",
 
   "record.fixedField.Category": "Type",
