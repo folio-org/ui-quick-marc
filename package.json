@@ -34,7 +34,8 @@
           "instance-authority-links.instances.collection.get",
           "instance-authority.linking-rules.collection.get",
           "audit.config.groups.settings.collection.get",
-          "audit.config.groups.settings.audit.inventory.collection.get"
+          "audit.config.groups.settings.audit.inventory.collection.get",
+          "settings.quick-marc.enabled"
         ],
         "visible": true
       },
@@ -191,7 +192,7 @@
         "subPermissions": [
           "settings.enabled"
         ],
-        "visible": true 
+        "visible": false 
       }
     ]
   },
