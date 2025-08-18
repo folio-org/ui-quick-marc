@@ -237,7 +237,7 @@
     "remove-authority-linking.modal.remove-linking": "Remover a vinculação",
     "remove-authority-linking.modal.keep-linking": "Mantenha a vinculação",
     "remove-authority-linking.modal.message": "Você quer remover a vinculação de autoridade para este novo registro bibliográfico?",
-    "record.save.error.derive": "A instância não pode ser atualizada. Versão de instância obsoleta.",
+    "record.save.error.derive": "A instância não pode ser atualizada. Versão de instância descontinuada.",
     "linkedToMarcAuthority": "Link para registro MARC de Autoridade",
     "record.link.validation.invalidHeading": "Você selecionou um cabeçalho inválido com base no campo bibliográfico que você deseja controlar. Por favor, revise sua seleção.",
     "record.error.1xx.change": "Não é possível alterar o <b> campo MARC de autoridade salvo {tag} </b> porque ele controla um(s) campo(s) bibliográfico(s). Para alterar este 1XX, você deve desvincular todos os campos bibliográficos controlados.",
