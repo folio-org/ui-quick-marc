@@ -1,5 +1,5 @@
 {
-  "meta.title": "Quick MARC",
+  "meta.title": "MARC",
   "meta.source.system": "System",
 
   "permission.quick-marc-editor.all": "quickMARC: View, edit MARC bibliographic record",
@@ -12,6 +12,10 @@
   "permission.quick-marc-authorities-editor.create": "quickMARC: Create a new MARC authority record",
   "permission.quick-marc-authorities-editor.all": "quickMARC: View, edit MARC authorities record",
   "permission.quick-marc-authority-records.link-unlink.execute": "quickMARC: Can Link/unlink authority records to bib records",
+
+  "settings.heading": "MARC",
+  "settings.marcValidationRules.pane.title": "MARC Validation Rule",
+  "settings.html.page.title": "MARC settings",
 
   "holdings-record.create.title": "New MARC holdings record",
   "bibliographic-record.create.title": "New {shared, select, true {shared} false {local} other {}} MARC bib record",

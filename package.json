@@ -7,8 +7,10 @@
   "license": "Apache-2.0",
   "stripes": {
     "actsAs": [
-      "plugin"
+      "plugin",
+      "settings"
     ],
+    "route": "/quick-marc",
     "pluginType": "quick-marc",
     "displayName": "ui-quick-marc.meta.title",
     "okapiInterfaces": {
@@ -32,7 +34,8 @@
           "instance-authority-links.instances.collection.get",
           "instance-authority.linking-rules.collection.get",
           "audit.config.groups.settings.collection.get",
-          "audit.config.groups.settings.audit.inventory.collection.get"
+          "audit.config.groups.settings.audit.inventory.collection.get",
+          "settings.quick-marc.enabled"
         ],
         "visible": true
       },
@@ -182,6 +185,14 @@
         "permissionName": "mod-settings.global.write.ui-quick-marc.lccn-duplicate-check.manage",
         "displayName": "Settings (MARC): write LCCN duplicate check settings",
         "visible": false
+      },
+      {
+       "permissionName": "settings.quick-marc.enabled",
+        "displayName": "Settings (MARC): Module is enabled.",
+        "subPermissions": [
+          "settings.enabled"
+        ],
+        "visible": false 
       }
     ]
   },
