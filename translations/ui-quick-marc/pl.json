@@ -54,7 +54,7 @@
     "record.error.leader.length": "Nie można zapisać rekordu. Nagłówek musi zawierać 24 znaki, w tym puste miejsca.",
     "record.collapseRow": "Zwiń wiersz",
     "record.error.tag.length": "Rekord nie może zostać zapisany. Każde pole musi zawierać trzy znaki w pierwszym polu tekstowym każdego wiersza.",
-    "record.fixedField.Time": "Czas",
+    "record.fixedField.Time": "Godzina",
     "record.fixedField.TMat": "Typ dokumentu wizualnego",
     "record.fixedField.Tech": "Technika",
     "record.fixedField.Category": "Rodzaj",
@@ -205,7 +205,6 @@
     "record.fixedField.RecUpd": "RecUpd",
     "record.fixedField.Pers Name": "Pers Name",
     "record.fixedField.Level Est": "Level Est",
-    "record.fixedField.Mod Rec Est": "Mod Rec Est",
     "record.fixedField.Source": "Źródło",
     "record.error.location.invalid": "852 $b zawiera nieprawidłowy kod lokalizacji. Proszę, spróbuj ponownie.",
     "permanentLocationLookup": "Wyszukiwanie stałej lokalizacji",
@@ -946,5 +945,6 @@
     "record.fixedField.Fully established": "Hasło ujednolicone (może być użyte w rekordzie bibliograficznym)",
     "record.fixedField.Memorandum": "Memorandum",
     "record.fixedField.Provisional": "Provisional",
-    "record.fixedField.Preliminary": "Preliminary"
+    "record.fixedField.Preliminary": "Preliminary",
+    "record.fixedField.Mod Rec": "Mod Rec"
 }

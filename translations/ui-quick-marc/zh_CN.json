@@ -205,7 +205,6 @@
     "record.fixedField.RecUpd": "更新记录",
     "record.fixedField.Pers Name": "个人姓名",
     "record.fixedField.Level Est": "层级建立",
-    "record.fixedField.Mod Rec Est": "修改记录建立",
     "record.fixedField.Source": "来源",
     "record.error.location.invalid": "852$b包含无效的馆藏地代码。请再试一次。",
     "permanentLocationLookup": "永久馆藏地查询",
@@ -946,5 +945,6 @@
     "record.fixedField.Fully established": "完整的",
     "record.fixedField.Memorandum": "备忘",
     "record.fixedField.Provisional": "临时的",
-    "record.fixedField.Preliminary": "初步的"
+    "record.fixedField.Preliminary": "初步的",
+    "record.fixedField.Mod Rec": "Mod Rec"
 }

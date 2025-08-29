@@ -205,7 +205,6 @@
     "record.fixedField.RecUpd": "RecUpd",
     "record.fixedField.Pers Name": "Nombre",
     "record.fixedField.Level Est": "Nivel Est",
-    "record.fixedField.Mod Rec Est": "Mod Rec Est",
     "record.fixedField.Source": "Fuente",
     "record.error.location.invalid": "Etiqueta MARC inválida. Por favor, intente de nuevo.",
     "permanentLocationLookup": "Búsqueda permanente de emplazamientos",
@@ -946,5 +945,6 @@
     "record.fixedField.Fully established": "Fully established",
     "record.fixedField.Memorandum": "Memorandum",
     "record.fixedField.Provisional": "Provisional",
-    "record.fixedField.Preliminary": "Preliminary"
+    "record.fixedField.Preliminary": "Preliminary",
+    "record.fixedField.Mod Rec": "Mod Rec"
 }

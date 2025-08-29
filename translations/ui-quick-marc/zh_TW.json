@@ -205,7 +205,6 @@
     "record.fixedField.RecUpd": "更新紀錄",
     "record.fixedField.Pers Name": "個人姓名",
     "record.fixedField.Level Est": "層級建立",
-    "record.fixedField.Mod Rec Est": "修改紀錄建立",
     "record.fixedField.Source": "來源",
     "record.error.location.invalid": "852$b包含無效的位置代碼。請再試一次。",
     "permanentLocationLookup": "永久館藏地查詢",
@@ -946,5 +945,6 @@
     "record.fixedField.Fully established": "Fully established",
     "record.fixedField.Memorandum": "Memorandum",
     "record.fixedField.Provisional": "Provisional",
-    "record.fixedField.Preliminary": "Preliminary"
+    "record.fixedField.Preliminary": "Preliminary",
+    "record.fixedField.Mod Rec": "Mod Rec"
 }
