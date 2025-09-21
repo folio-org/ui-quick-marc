@@ -155,7 +155,7 @@
     "record.physDescription.categoryOfMaterial.r": "Remote-sensing image",
     "record.physDescription.categoryOfMaterial.s": "Enregistrement sonore",
     "record.physDescription.categoryOfMaterial.t": "Texte",
-    "record.physDescription.categoryOfMaterial.v": "Enregistrement video",
+    "record.physDescription.categoryOfMaterial.v": "Enregistrement vidéo",
     "record.physDescription.categoryOfMaterial.z": "Non renseigné",
     "record.error.tag.nonDigits": "Balise MARC non valide. Veuillez réessayer.",
     "record.error.subfield": "Missing a subfield value for a MARC tag",
