@@ -205,7 +205,6 @@
     "record.fixedField.RecUpd": "تحديث التسجيلة",
     "record.fixedField.Pers Name": "الاسم الشخصي",
     "record.fixedField.Level Est": "مستوى التأسيس",
-    "record.fixedField.Mod Rec Est": "تأسيس التسجيلة المعدلة",
     "record.fixedField.Source": "المصدر",
     "record.error.location.invalid": "يحتوي الحقل 852 $b على رمز موقع غير صالح. يرجى إعادة المحاولة.",
     "permanentLocationLookup": "بحث الموقع الدائم",
@@ -946,5 +945,6 @@
     "record.fixedField.Fully established": "Fully established",
     "record.fixedField.Memorandum": "Memorandum",
     "record.fixedField.Provisional": "Provisional",
-    "record.fixedField.Preliminary": "Preliminary"
+    "record.fixedField.Preliminary": "Preliminary",
+    "record.fixedField.Mod Rec": "Mod Rec"
 }

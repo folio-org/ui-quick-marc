@@ -587,7 +587,7 @@ describe('QuickMarcEditor utils', () => {
           RecUpd: '\\',
           'Pers Name': '\\',
           'Level Est': '\\',
-          'Mod Rec Est': '\\',
+          'Mod Rec': '\\',
           Source: '\\',
           Roman: 'n',
           Lang: '\\',

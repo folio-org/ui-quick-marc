@@ -205,7 +205,6 @@
     "record.fixedField.RecUpd": "RecUpd",
     "record.fixedField.Pers Name": "Pers Name",
     "record.fixedField.Level Est": "Level Est",
-    "record.fixedField.Mod Rec Est": "Mod Rec Est",
     "record.fixedField.Source": "Bron",
     "record.error.location.invalid": "852 $b bevat een ongeldige locatiecode. Probeer het opnieuw.",
     "permanentLocationLookup": "Permanente locatie opzoeken",
@@ -946,5 +945,6 @@
     "record.fixedField.Fully established": "Volledig gevestigd",
     "record.fixedField.Memorandum": "Memorandum",
     "record.fixedField.Provisional": "Voorlopig",
-    "record.fixedField.Preliminary": "Voorlopig"
+    "record.fixedField.Preliminary": "Voorlopig",
+    "record.fixedField.Mod Rec": "Mod Rec"
 }

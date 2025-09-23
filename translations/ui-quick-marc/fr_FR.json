@@ -155,7 +155,7 @@
     "record.physDescription.categoryOfMaterial.r": "Remote-sensing image",
     "record.physDescription.categoryOfMaterial.s": "Enregistrement sonore",
     "record.physDescription.categoryOfMaterial.t": "Texte",
-    "record.physDescription.categoryOfMaterial.v": "Enregistrement video",
+    "record.physDescription.categoryOfMaterial.v": "Enregistrement vidéo",
     "record.physDescription.categoryOfMaterial.z": "Non renseigné",
     "record.error.tag.nonDigits": "Balise MARC non valide. Veuillez réessayer.",
     "record.error.subfield": "Missing a subfield value for a MARC tag",
@@ -205,7 +205,6 @@
     "record.fixedField.RecUpd": "RecUpd",
     "record.fixedField.Pers Name": "Pers Name",
     "record.fixedField.Level Est": "Level Est",
-    "record.fixedField.Mod Rec Est": "Mod Rec Est",
     "record.fixedField.Source": "Source",
     "record.error.location.invalid": "852 $b contains an invalid Location code. Please try again.",
     "permanentLocationLookup": "Permanent location look-up",
@@ -946,5 +945,6 @@
     "record.fixedField.Fully established": "Fully established",
     "record.fixedField.Memorandum": "Memorandum",
     "record.fixedField.Provisional": "Provisional",
-    "record.fixedField.Preliminary": "Preliminary"
+    "record.fixedField.Preliminary": "Preliminary",
+    "record.fixedField.Mod Rec": "Mod Rec"
 }
