@@ -202,7 +202,9 @@ const QuickMarcEditorContainer = ({
 
         if (_action === QUICK_MARC_ACTIONS.CREATE) {
           dehydratedMarcRecord =
-            initialValueProp || createRecordDefaults[marcType](instanceResponse, fixedFieldSpecResponse);
+            dehydrateMarcRecordResponse(initialValueProp, marcType, fixedFieldSpecResponse, fieldIds)
+            ||
+            createRecordDefaults[marcType](instanceResponse, fixedFieldSpecResponse);
         } else {
           dehydratedMarcRecord = dehydrateMarcRecordResponse(
             marcRecordResponse,
@@ -222,7 +224,14 @@ const QuickMarcEditorContainer = ({
         setIsLoading(false);
 
         setTimeout(() => {
-          setMarcRecord(formatInitialValues(initialValueProp, _action, linkingRulesResponse));
+          const dehydratedInitialMarcValues = dehydrateMarcRecordResponse(
+            initialValueProp,
+            marcType,
+            fixedFieldSpecResponse,
+            fieldIds,
+          );
+
+          setMarcRecord(formatInitialValues(dehydratedInitialMarcValues, _action, linkingRulesResponse));
         }, 3000);
       })
       .catch((err) => {
