@@ -23,8 +23,9 @@ const QuickMarc = ({
   externalRecordPath,
   onClose,
   onSave,
+  instanceId,
   externalId,
-  initialValue,
+  isShared,
 }) => {
   const location = useLocation();
 
@@ -107,6 +108,7 @@ const QuickMarc = ({
             action={action}
             marcType={marcType}
             basePath={basePath}
+            isShared={isShared}
           >
             <QuickMarcEditorContainer
               onClose={onClose}
@@ -114,7 +116,7 @@ const QuickMarc = ({
               externalRecordPath={externalRecordPath}
               onCheckCentralTenantPerm={() => true}
               externalId={externalId}
-              initialValue={initialValue}
+              instanceId={instanceId}
             />
           </QuickMarcProvider>
         )}
@@ -128,6 +130,11 @@ QuickMarc.propTypes = {
   externalRecordPath: PropTypes.string,
   onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
+  action: PropTypes.string,
+  marcType: PropTypes.string,
+  instanceId: PropTypes.string,
+  externalId: PropTypes.string,
+  isShared: PropTypes.bool,
 };
 
 export default QuickMarc;

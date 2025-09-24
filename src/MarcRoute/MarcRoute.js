@@ -1,5 +1,8 @@
 import { useCallback } from 'react';
-import { Route } from 'react-router-dom';
+import {
+  Route,
+  useHistory,
+} from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { LoadingPane } from '@folio/stripes/components';
@@ -12,7 +15,7 @@ import { QuickMarcEditorContainer } from '../QuickMarcEditor';
 import { applyCentralTenantInHeaders } from '../QuickMarcEditor/utils';
 import { QUICK_MARC_ACTIONS } from '../QuickMarcEditor/constants';
 import { QuickMarcProvider } from '../contexts';
-import { useIsShared } from '../hooks';
+import { getIsSharedFromUrl } from '../contexts/QuickMarcContext/utils';
 
 const MarcRoute = ({
   externalRecordPath,
@@ -24,8 +27,9 @@ const MarcRoute = ({
   onSave,
 }) => {
   const stripes = useStripes();
+  const history = useHistory();
 
-  const { isShared } = useIsShared();
+  const isShared = getIsSharedFromUrl(history.location.search);
 
   const {
     marcType,
@@ -70,12 +74,14 @@ const MarcRoute = ({
           action={action}
           marcType={marcType}
           basePath={basePath}
+          isUsingRouter
         >
           <QuickMarcEditorContainer
             onClose={onClose}
             onSave={onSave}
             externalRecordPath={externalRecordPath}
             onCheckCentralTenantPerm={checkCentralTenantPerm}
+            // TODO: pass instanceId and externalId
           />
         </QuickMarcProvider>
       )}

@@ -25,7 +25,6 @@ import QuickMarcEditor from './QuickMarcEditor';
 import { useAuthorityLinksCount } from '../queries';
 import { QuickMarcContext } from '../contexts';
 import { useSaveRecord } from './useSaveRecord';
-import { useIsShared } from '../hooks';
 import {
   EXTERNAL_INSTANCE_APIS,
   MARC_RECORD_API,
@@ -65,20 +64,15 @@ const createRecordDefaults = {
 
 const QuickMarcEditorContainer = ({
   mutator,
-  match,
   onClose,
   onSave,
   history,
   externalRecordPath,
   stripes,
   externalId,
+  instanceId,
   onCheckCentralTenantPerm = noop,
-  initialValue: initialValueProp,
 }) => {
-  const {
-    instanceId,
-  } = match.params;
-
   const {
     action,
     marcType,
@@ -87,13 +81,13 @@ const QuickMarcEditorContainer = ({
     setInstance,
     setMarcRecord,
     setRelatedRecordVersion,
+    getIsShared,
   } = useContext(QuickMarcContext);
   const [locations, setLocations] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [fixedFieldSpec, setFixedFieldSpec] = useState();
   const showCallout = useShowCallout();
   const { linksCount } = useAuthorityLinksCount({ id: marcType === MARC_TYPES.AUTHORITY && externalId });
-  const { getIsShared } = useIsShared();
 
   const { token, locale } = stripes.okapi;
   const centralTenantId = stripes.user.user.consortium?.centralTenantId;
@@ -201,10 +195,7 @@ const QuickMarcEditorContainer = ({
         let dehydratedMarcRecord;
 
         if (_action === QUICK_MARC_ACTIONS.CREATE) {
-          dehydratedMarcRecord =
-            dehydrateMarcRecordResponse(initialValueProp, marcType, fixedFieldSpecResponse, fieldIds)
-            ||
-            createRecordDefaults[marcType](instanceResponse, fixedFieldSpecResponse);
+          dehydratedMarcRecord = createRecordDefaults[marcType](instanceResponse, fixedFieldSpecResponse);
         } else {
           dehydratedMarcRecord = dehydrateMarcRecordResponse(
             marcRecordResponse,
@@ -214,25 +205,12 @@ const QuickMarcEditorContainer = ({
           );
         }
 
-        console.log(dehydratedMarcRecord);
-
         setRelatedRecordVersion(instanceResponse?._version);
         setInstance(instanceResponse);
         setMarcRecord(formatInitialValues(dehydratedMarcRecord, _action, linkingRulesResponse));
         setLocations(locationsResponse);
         setFixedFieldSpec(fixedFieldSpecResponse);
         setIsLoading(false);
-
-        setTimeout(() => {
-          const dehydratedInitialMarcValues = dehydrateMarcRecordResponse(
-            initialValueProp,
-            marcType,
-            fixedFieldSpecResponse,
-            fieldIds,
-          );
-
-          setMarcRecord(formatInitialValues(dehydratedInitialMarcValues, _action, linkingRulesResponse));
-        }, 3000);
       })
       .catch((err) => {
         // eslint-disable-next-line no-console
