@@ -51,7 +51,6 @@ const propTypes = {
   externalRecordPath: PropTypes.string.isRequired,
   history: ReactRouterPropTypes.history.isRequired,
   mutator: PropTypes.object.isRequired,
-  match: ReactRouterPropTypes.match.isRequired,
   stripes: PropTypes.object.isRequired,
   onCheckCentralTenantPerm: PropTypes.func,
 };

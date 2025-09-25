@@ -15,6 +15,7 @@ import {
 } from './common/constants';
 import { QuickMarcProvider } from './contexts';
 import { QuickMarcEditorContainer } from './QuickMarcEditor';
+import { useCheckCentralTenantPermission } from './hooks';
 
 const QuickMarc = ({
   action,
@@ -26,8 +27,20 @@ const QuickMarc = ({
   instanceId,
   externalId,
   isShared,
+  useRoutes = true,
 }) => {
   const location = useLocation();
+
+  // this call is only neede for non-route approach.
+  // for route-based quickMARC this hook will be called in <MarcRoute>
+  const {
+    checkCentralTenantPerm,
+  } = useCheckCentralTenantPermission({
+    isShared,
+    marcType,
+    action,
+    enabled: !useRoutes,
+  });
 
   const permissionsMap = {
     'create-bibliographic': 'ui-quick-marc.quick-marc-editor.create',
@@ -75,14 +88,12 @@ const QuickMarc = ({
     },
   ];
 
-  const useRouting = false;
-
   return (
     <div data-test-quick-marc>
       <CommandList
         commands={keyboardCommands}
       >
-        {useRouting ? (
+        {useRoutes ? (
           <Switch>
             {
               editorRoutesConfig.map(({
@@ -114,7 +125,7 @@ const QuickMarc = ({
               onClose={onClose}
               onSave={onSave}
               externalRecordPath={externalRecordPath}
-              onCheckCentralTenantPerm={() => true}
+              onCheckCentralTenantPerm={checkCentralTenantPerm}
               externalId={externalId}
               instanceId={instanceId}
             />
@@ -135,6 +146,7 @@ QuickMarc.propTypes = {
   instanceId: PropTypes.string,
   externalId: PropTypes.string,
   isShared: PropTypes.bool,
+  useRoutes: PropTypes.bool,
 };
 
 export default QuickMarc;
