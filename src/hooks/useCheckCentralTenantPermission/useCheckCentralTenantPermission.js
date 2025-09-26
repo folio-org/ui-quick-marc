@@ -15,6 +15,7 @@ export const useCheckCentralTenantPermission = ({ enabled, isShared, marcType, a
 
   const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(isShared, stripes, marcType)
     && action !== QUICK_MARC_ACTIONS.CREATE;
+
   const {
     userPermissions: centralTenantPermissions,
     isFetching: isCentralTenantPermissionsLoading,

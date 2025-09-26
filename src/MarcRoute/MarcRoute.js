@@ -50,6 +50,7 @@ const MarcRoute = ({
     isShared,
     marcType,
     action,
+    enabled: true,
   });
 
   if (isCentralTenantPermissionsLoading) {

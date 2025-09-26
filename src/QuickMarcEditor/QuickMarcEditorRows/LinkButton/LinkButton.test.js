@@ -14,7 +14,6 @@ import {
 import { ADVANCED_SEARCH_MATCH_OPTIONS } from '@folio/stripes/components';
 import { runAxeTest } from '@folio/stripes-testing';
 
-import { useIsShared } from '../../../hooks';
 import { LinkButton } from './LinkButton';
 import { QUICK_MARC_ACTIONS } from '../../constants';
 
@@ -33,14 +32,6 @@ jest.mock('@folio/stripes-marc-components', () => ({
       bibField: '700',
       authoritySubfields: ['a', 'd', 't'],
     }],
-  }),
-}));
-
-jest.mock('../../../hooks', () => ({
-  useIsShared: jest.fn().mockReturnValue({
-    isShared: false,
-    getIsShared: () => false,
-    setIsShared: jest.fn(),
   }),
 }));
 
@@ -370,12 +361,6 @@ describe('Given LinkButton', () => {
   });
 
   describe('when member tenant edits a shared bib record', () => {
-    beforeEach(() => {
-      useIsShared.mockClear().mockReturnValue({
-        isShared: true,
-      });
-    });
-
     it('should pass correct props', () => {
       checkIfUserInMemberTenant.mockReturnValue(true);
 
@@ -397,7 +382,9 @@ describe('Given LinkButton', () => {
         browse: ['shared'],
       };
 
-      renderComponent();
+      renderComponent({
+        quickMarcContext: { isShared: true },
+      });
 
       expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
         tenantId: centralTenantId,
@@ -408,12 +395,6 @@ describe('Given LinkButton', () => {
   });
 
   describe('when member tenant derives a shared bib record', () => {
-    beforeEach(() => {
-      useIsShared.mockClear().mockReturnValue({
-        isShared: true,
-      });
-    });
-
     it('should pass correct props', () => {
       checkIfUserInMemberTenant.mockReturnValue(true);
 
@@ -432,6 +413,7 @@ describe('Given LinkButton', () => {
 
       renderComponent({
         action: QUICK_MARC_ACTIONS.DERIVE,
+        quickMarcContext: { isShared: true },
       });
 
       expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
@@ -449,9 +431,6 @@ describe('Given LinkButton', () => {
   ${QUICK_MARC_ACTIONS.DERIVE}
   `('should pass correct props when member tenant $action a not shared bib record', ({ action }) => {
     checkIfUserInMemberTenant.mockReturnValue(true);
-    useIsShared.mockClear().mockReturnValue({
-      isShared: false,
-    });
 
     const initialValues = expect.objectContaining({
       browse: expect.objectContaining({
@@ -468,6 +447,7 @@ describe('Given LinkButton', () => {
 
     renderComponent({
       action,
+      quickMarcContext: { isShared: false },
     });
 
     expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
