@@ -29,7 +29,7 @@ const defaultQuickMarcContextValue = {
   setSelectedSourceFile: jest.fn(),
   basePath: '/base-path',
   continueAfterSave: { current: false },
-  isSharedRef: { current: false },
+  isShared: false,
   setIsShared: jest.fn(),
 };
 

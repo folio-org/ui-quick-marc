@@ -57,10 +57,7 @@ import {
   isControlNumberRow,
   isLeaderRow,
 } from '../utils';
-import {
-  useAuthorityLinking,
-  useIsShared,
-} from '../../hooks';
+import { useAuthorityLinking } from '../../hooks';
 import { QuickMarcContext } from '../../contexts';
 import {
   QUICK_MARC_ACTIONS,
@@ -104,7 +101,10 @@ const QuickMarcEditorRows = ({
   const newRowRef = useRef(null);
   const rowContentWidth = useRef(null); // for max-width of resizable textareas
   const childCalloutRef = useRef(null);
-  const { validationErrorsRef } = useContext(QuickMarcContext);
+  const {
+    validationErrorsRef,
+    isShared,
+  } = useContext(QuickMarcContext);
 
   const {
     linkAuthority,
@@ -112,7 +112,6 @@ const QuickMarcEditorRows = ({
     linkableBibFields,
     autoLinkableBibFields,
   } = useAuthorityLinking({ marcType, action });
-  const { isShared } = useIsShared();
 
   const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(isShared, stripes, marcType)
     && action === QUICK_MARC_ACTIONS.EDIT;

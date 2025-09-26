@@ -13,14 +13,34 @@ import {
   MARC_TYPES,
   keyboardCommands,
 } from './common/constants';
+import { QuickMarcProvider } from './contexts';
+import { QuickMarcEditorContainer } from './QuickMarcEditor';
+import { useCheckCentralTenantPermission } from './hooks';
 
 const QuickMarc = ({
+  action,
+  marcType,
   basePath,
   externalRecordPath,
   onClose,
   onSave,
+  instanceId,
+  externalId,
+  isShared,
+  useRoutes = true,
 }) => {
   const location = useLocation();
+
+  // this call is only neede for non-route approach.
+  // for route-based quickMARC this hook will be called in <MarcRoute>
+  const {
+    checkCentralTenantPerm,
+  } = useCheckCentralTenantPermission({
+    isShared,
+    marcType,
+    action,
+    enabled: !useRoutes,
+  });
 
   const permissionsMap = {
     'create-bibliographic': 'ui-quick-marc.quick-marc-editor.create',
@@ -31,14 +51,14 @@ const QuickMarc = ({
   };
 
   // .../some-path/create-bibliographic => [, create-bibliographic, create, bibliographic]
-  const [, page, action] = location.pathname.match(/\/((edit|create|derive)-(bibliographic|authority|holdings))/) || [];
+  const [, page, actionFromRoute] = location.pathname.match(/\/((edit|create|derive)-(bibliographic|authority|holdings))/) || [];
 
   const editorRoutesConfig = [
     {
       path: `${basePath}/:action-bibliographic/:externalId?`,
       permission: permissionsMap[page],
       props: {
-        action,
+        action: actionFromRoute,
         marcType: MARC_TYPES.BIB,
       },
     },
@@ -46,7 +66,7 @@ const QuickMarc = ({
       path: `${basePath}/:action-authority/:externalId?`,
       permission: permissionsMap[page],
       props: {
-        action,
+        action: actionFromRoute,
         marcType: MARC_TYPES.AUTHORITY,
       },
     },
@@ -73,26 +93,44 @@ const QuickMarc = ({
       <CommandList
         commands={keyboardCommands}
       >
-        <Switch>
-          {
-            editorRoutesConfig.map(({
-              path,
-              permission,
-              props: routeProps = {},
-            }) => (
-              <MarcRoute
-                externalRecordPath={externalRecordPath}
-                key={path}
-                path={path}
-                permission={permission}
-                routeProps={routeProps}
-                basePath={basePath}
-                onClose={onClose}
-                onSave={onSave}
-              />
-            ))
-          }
-        </Switch>
+        {useRoutes ? (
+          <Switch>
+            {
+              editorRoutesConfig.map(({
+                path,
+                permission,
+                props: routeProps = {},
+              }) => (
+                <MarcRoute
+                  externalRecordPath={externalRecordPath}
+                  key={path}
+                  path={path}
+                  permission={permission}
+                  routeProps={routeProps}
+                  basePath={basePath}
+                  onClose={onClose}
+                  onSave={onSave}
+                />
+              ))
+            }
+          </Switch>
+        ) : (
+          <QuickMarcProvider
+            action={action}
+            marcType={marcType}
+            basePath={basePath}
+            isShared={isShared}
+          >
+            <QuickMarcEditorContainer
+              onClose={onClose}
+              onSave={onSave}
+              externalRecordPath={externalRecordPath}
+              onCheckCentralTenantPerm={checkCentralTenantPerm}
+              externalId={externalId}
+              instanceId={instanceId}
+            />
+          </QuickMarcProvider>
+        )}
       </CommandList>
     </div>
   );
@@ -103,6 +141,12 @@ QuickMarc.propTypes = {
   externalRecordPath: PropTypes.string,
   onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
+  action: PropTypes.string,
+  marcType: PropTypes.string,
+  instanceId: PropTypes.string,
+  externalId: PropTypes.string,
+  isShared: PropTypes.bool,
+  useRoutes: PropTypes.bool,
 };
 
 export default QuickMarc;

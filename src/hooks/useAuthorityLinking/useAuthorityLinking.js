@@ -1,5 +1,6 @@
 import {
   useCallback,
+  useContext,
   useMemo,
 } from 'react';
 import get from 'lodash/get';
@@ -8,11 +9,11 @@ import pick from 'lodash/pick';
 import { useStripes } from '@folio/stripes/core';
 import { useAuthorityLinkingRules } from '@folio/stripes-marc-components';
 
-import { useIsShared } from '../useIsShared';
 import {
   useAuthoritySourceFiles,
   useLinkSuggestions,
 } from '../../queries';
+import { QuickMarcContext } from '../../contexts';
 import {
   getContentSubfieldValue,
   groupSubfields,
@@ -35,7 +36,7 @@ const formatSubfieldCode = (code) => { return code.startsWith('$') ? code : `$${
 
 const useAuthorityLinking = ({ tenantId, marcType, action } = {}) => {
   const stripes = useStripes();
-  const { isShared } = useIsShared();
+  const { isShared } = useContext(QuickMarcContext);
 
   const centralTenantId = stripes.user.user.consortium?.centralTenantId;
   const isCentralTenantInHeaders = applyCentralTenantInHeaders(isShared, stripes, marcType)

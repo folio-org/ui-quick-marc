@@ -9,7 +9,6 @@ import { useStripes } from '@folio/stripes/core';
 
 import {
   useAuthorityLinking,
-  useIsShared,
   useValidation,
 } from '../../hooks';
 import { QUICK_MARC_ACTIONS } from '../constants';
@@ -48,13 +47,13 @@ const useSaveRecord = ({
     marcType,
     initialValues,
     instance,
+    isShared,
   } = useContext(QuickMarcContext);
   const {
     linkableBibFields,
     linkingRules,
     sourceFiles,
   } = useAuthorityLinking({ marcType, action });
-  const { isShared } = useIsShared();
 
   const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(isShared, stripes, marcType);
   const centralTenantId = stripes.user.user.consortium?.centralTenantId;

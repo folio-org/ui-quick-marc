@@ -1,6 +1,7 @@
 import {
   useState,
   useMemo,
+  useContext,
 } from 'react';
 import {
   useIntl,
@@ -25,7 +26,7 @@ import {
 } from '@folio/stripes/components';
 import { useAuthorityLinkingRules } from '@folio/stripes-marc-components';
 
-import { useIsShared } from '../../../hooks';
+import { QuickMarcContext } from '../../../contexts';
 import { useMarcSource } from '../../../queries';
 import { MarcFieldContent } from '../../../common';
 import {
@@ -68,11 +69,10 @@ const LinkButton = ({
 }) => {
   const stripes = useStripes();
   const intl = useIntl();
+  const callout = useCallout();
   const [authority, setAuthority] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const callout = useCallout();
-
-  const { isShared } = useIsShared();
+  const { isShared } = useContext(QuickMarcContext);
 
   const centralTenantId = stripes.user.user?.consortium?.centralTenantId;
 

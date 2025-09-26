@@ -45,7 +45,6 @@ import {
   MISSING_FIELD_ID,
   SEVERITY,
   useAuthorityLinking,
-  useIsShared,
   useValidation,
 } from '../hooks';
 import {
@@ -130,9 +129,9 @@ const QuickMarcEditor = ({
     setValidationErrors,
     continueAfterSave,
     validationErrorsRef,
+    isShared,
   } = useContext(QuickMarcContext);
   const { hasErrorIssues, isBackEndValidationMarcType } = useValidation();
-  const { isShared } = useIsShared();
 
   const isConsortiaEnv = stripes.hasInterface('consortia');
 
@@ -725,6 +724,7 @@ QuickMarcEditor.propTypes = {
 
 export default stripesFinalForm({
   navigationCheck: true,
+  keepDirtyOnReinitialize: true,
   mutators: {
     addRecord: ([{ index }], state, tools) => {
       const records = addNewRecord(index, state);
