@@ -22,7 +22,7 @@ export const useCheckCentralTenantPermission = ({ enabled, isShared, marcType, a
   } = useUserTenantPermissions({
     tenantId: centralTenantId,
   }, {
-    enabled: enabled && isRequestToCentralTenantFromMember,
+    enabled: Boolean(enabled && isRequestToCentralTenantFromMember),
   });
 
   const checkCentralTenantPerm = useCallback((perm) => {
