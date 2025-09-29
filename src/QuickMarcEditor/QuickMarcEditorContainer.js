@@ -52,6 +52,8 @@ const propTypes = {
   history: ReactRouterPropTypes.history.isRequired,
   mutator: PropTypes.object.isRequired,
   stripes: PropTypes.object.isRequired,
+  externalId: PropTypes.string.isRequired,
+  instanceId: PropTypes.string.isRequired,
   onCheckCentralTenantPerm: PropTypes.func,
 };
 
