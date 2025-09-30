@@ -19,16 +19,16 @@ import { QuickMarcEditorContainer } from './QuickMarcEditor';
 import { useCheckCentralTenantPermission } from './hooks';
 
 const QuickMarc = ({
-  action,
-  marcType,
   basePath,
   externalRecordPath,
-  onClose,
-  onSave,
-  onCreateAndKeepEditing = noop,
+  action,
+  marcType,
   instanceId,
   externalId,
   isShared,
+  onClose,
+  onSave,
+  onCreateAndKeepEditing = noop,
   useRoutes = true,
 }) => {
   const location = useLocation();

@@ -13,11 +13,25 @@ type="quick-marc">` element. See [the *Plugins*
 section](https://github.com/folio-org/stripes-core/blob/master/doc/dev-guide.md#plugins)
 of the Module Developer's Guide.
 
+## Terminology
+
+*External record* - a record that is created based on a MARC record. For example for MARC Bibliographic records an external record would be an Inventory Instance record. For MARC Holdings - an external record is an Inventory Holdings record etc.
+
 ## Props
 
 | Name | Type | Description | Required |
 --- | --- | --- | --- |
-| `baseRoute` | string | Base route of MARC editor | Yes |
+| `basePath` | string | Base route of MARC editor | Yes, when quickMARC pre-defined routes. Otherwise No. More on pre-defined and route-less approaches later. |
+| `externalRecordPath` | string | Pathname to fetch an external record. Used for Optimistic Locking | No |
+| `action` | string | One of quickMARC actions: "create", "edit" or "derive" | Yes for route-less, No for pre-defined routes |
+| `marcType` | string | Type of MARC record. "bibliographic", "holdings" or "authority" | Yes for route-less, No for pre-defined routes |
+| `instanceId` | string | UUID of an Inventory Instance record. This prop is only needed for MARC Holdings. MARC Holdings is defined by 2 UUIDs: Holdings and the Instance that the Holdings belongs to. This means that for MARC Holdings `externalId` is Holdings UUID, and `instanceId` is Instance UUID. | Yes for route-less and when `marcType` is "holdings", No for pre-defined routes. |
+| `externalId` | string | UUID of an external record. See "Terminology" section above. | Yes for route-less, No for pre-defined routes |
+| `isShared` | bool | Tells quickMARC if the edited MARC record shared or not. | Yes for route-less and when `action` is "edit", No for pre-defined routes |
+| `onClose` | function | Called when closing quickMARC. Called with `externalId` when `marcType` is "bibliographic" or "authority". For `marcType` "holdings" it's called with `instanceId/externalId` | Yes |
+| `onSave` | function | Called after saving and closing a record. Called with `externalId` when `marcType` is "bibliographic" or "authority". For `marcType` "holdings" it's called with `instanceId/externalId` | Yes |
+| `onCreateAndKeepEditing` | function | Called after creating/deriving a record via "Save and keep editing" button. Called with `externalId` when `marcType` is "bibliographic" or "authority". For `marcType` "holdings" it's called with `instanceId/externalId` | Yes for route-less, No for pre-defined routes |
+| `useRoutes` | bool | When `true` - quickMARC will create it's own routes that the consuming application will have to redirect to. When `false` - quickMARC will act like a regular plug-in and simply render a view, and the consuming application will have to define it's own routes and provide some props to quickMARC. | No |
 
 This is a [Stripes](https://github.com/folio-org/stripes-core/) UI module to edit MARC records.
 
