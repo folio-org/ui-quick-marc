@@ -7,7 +7,10 @@ import {
   checkIfUserInCentralTenant,
   checkIfUserInMemberTenant,
 } from '@folio/stripes/core';
-import { renderHook } from '@folio/jest-config-stripes/testing-library/react';
+import {
+  renderHook,
+  waitFor,
+} from '@folio/jest-config-stripes/testing-library/react';
 
 import { QUICK_MARC_ACTIONS } from '../constants';
 import {
@@ -98,6 +101,7 @@ const getMutator = (instance) => ({
 const mockRefreshPageData = jest.fn().mockResolvedValue(null);
 const mockOnClose = jest.fn();
 const mockOnSave = jest.fn();
+const mockOnCreateAndKeepEditing = jest.fn();
 const mockActualizeLinks = jest.fn((formValuesToProcess) => Promise.resolve(formValuesToProcess));
 const mockUpdateMarcRecord = jest.fn().mockResolvedValue();
 const mockValidateFetch = jest.fn().mockResolvedValue({});
@@ -1079,6 +1083,7 @@ describe('useSaveRecord', () => {
               action,
               marcType,
               continueAfterSave: { current: true },
+              isUsingRouter: true,
             },
             history,
           }),
@@ -1089,6 +1094,33 @@ describe('useSaveRecord', () => {
         const fieldIds = getIdsOfFields(action, marcType);
 
         expect(mockRefreshPageData).toHaveBeenCalledWith(fieldIds, QUICK_MARC_ACTIONS.EDIT, 'externalId-1');
+      });
+
+      describe('when not using routing', () => {
+        it('should call onCreateAndKeepEditing', async () => {
+          const action = QUICK_MARC_ACTIONS.CREATE;
+          const marcType = MARC_TYPES.BIB;
+          const history = createMemoryHistory({
+            initialEntries: [`${basePath}?sort=title`],
+          });
+
+          const { result } = renderHook(useSaveRecord, {
+            initialProps: getInitialProps(marcType),
+            wrapper: getWrapper({
+              quickMarcContext: {
+                action,
+                marcType,
+                continueAfterSave: { current: true },
+                isUsingRouter: false,
+              },
+              history,
+            }),
+          });
+
+          await result.current.onSubmit(getFormValues(action, marcType));
+
+          waitFor(() => expect(mockOnCreateAndKeepEditing).toHaveBeenCalledWith('externalId-1'));
+        });
       });
 
       it('should redirect to the edit page', async () => {
@@ -1105,6 +1137,7 @@ describe('useSaveRecord', () => {
               action,
               marcType,
               continueAfterSave: { current: true },
+              isUsingRouter: true,
             },
             history,
           }),
@@ -1140,6 +1173,7 @@ describe('useSaveRecord', () => {
               continueAfterSave: { current: true },
               isShared: false,
               setIsShared: mockSetIsShared,
+              isUsingRouter: true,
             },
             history,
           }),
@@ -1635,6 +1669,33 @@ describe('useSaveRecord', () => {
 
         expect(mockRefreshPageData).toHaveBeenCalledWith(fieldIds);
       });
+
+      describe('when not using routing', () => {
+        it('should call onCreateAndKeepEditing', async () => {
+          const marcType = MARC_TYPES.BIB;
+          const action = QUICK_MARC_ACTIONS.EDIT;
+
+          const { result } = renderHook(useSaveRecord, {
+            initialProps: {
+              ...getInitialProps(marcType),
+              mutator: getMutator(getInstance()),
+            },
+            wrapper: getWrapper({
+              quickMarcContext: {
+                action,
+                marcType,
+                initialValues: getInitialValues(action, marcType),
+                instance: getInstance(),
+                continueAfterSave: { current: true },
+              },
+            }),
+          });
+
+          await result.current.onSubmit(getFormValues(action, marcType));
+
+          waitFor(() => expect(mockOnCreateAndKeepEditing).toHaveBeenCalledWith('externalId-1'));
+        });
+      });
     });
 
     describe('when hitting save&close', () => {
@@ -1934,6 +1995,7 @@ describe('useSaveRecord', () => {
               action,
               marcType,
               continueAfterSave: { current: true },
+              isUsingRouter: true,
             },
           }),
         });
@@ -1959,6 +2021,7 @@ describe('useSaveRecord', () => {
               action,
               marcType,
               continueAfterSave: { current: true },
+              isUsingRouter: true,
             },
             history,
           }),
