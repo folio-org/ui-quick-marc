@@ -42,6 +42,7 @@ const useSubmitRecord = ({
   refreshPageData,
   onClose,
   onSave,
+  onCreateAndKeepEditing,
 }) => {
   const {
     externalId: _externalId,
@@ -64,6 +65,7 @@ const useSubmitRecord = ({
     continueAfterSave,
     relatedRecordVersion,
     setIsShared,
+    isUsingRouter,
   } = useContext(QuickMarcContext);
 
   const { actualizeLinks } = useAuthorityLinking({ marcType, action });
@@ -93,21 +95,35 @@ const useSubmitRecord = ({
       setIsShared(false);
     }
 
-    const routes = {
-      [MARC_TYPES.BIB]: `${basePath}/edit-bibliographic/${externalId}`,
-      [MARC_TYPES.AUTHORITY]: `${basePath}/edit-authority/${externalId}`,
-      [MARC_TYPES.HOLDINGS]: `${basePath}/edit-holdings/${externalId}`,
-    };
+    if (isUsingRouter) {
+      const routes = {
+        [MARC_TYPES.BIB]: `${basePath}/edit-bibliographic/${externalId}`,
+        [MARC_TYPES.AUTHORITY]: `${basePath}/edit-authority/${externalId}`,
+        [MARC_TYPES.HOLDINGS]: `${basePath}/edit-holdings/${externalId}`,
+      };
 
-    // use `history.location.search` instead of `location.search` because `setIsShared` also
-    // sets `shared` url parameter so we need to keep it here without overriding
-    history.push({
-      pathname: routes[marcType],
-      search: history.location.search,
-    });
+      // use `history.location.search` instead of `location.search` because `setIsShared` also
+      // sets `shared` url parameter so we need to keep it here without overriding
+      history.push({
+        pathname: routes[marcType],
+        search: history.location.search,
+      });
+    } else {
+      onCreateAndKeepEditing(externalId);
+    }
 
     await refreshPageData(fieldIds, QUICK_MARC_ACTIONS.EDIT, externalId);
-  }, [basePath, marcType, history, refreshPageData, stripes, action, setIsShared]);
+  }, [
+    basePath,
+    marcType,
+    history,
+    refreshPageData,
+    stripes,
+    action,
+    setIsShared,
+    isUsingRouter,
+    onCreateAndKeepEditing,
+  ]);
 
   const onCreate = useCallback(async (formValues, _api) => {
     const formValuesToProcess = prepareForSubmit(formValues);

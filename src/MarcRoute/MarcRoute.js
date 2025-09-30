@@ -4,6 +4,7 @@ import {
   useRouteMatch,
 } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import noop from 'lodash/noop';
 
 import { LoadingPane } from '@folio/stripes/components';
 import { useStripes } from '@folio/stripes/core';
@@ -23,6 +24,7 @@ const MarcRoute = ({
   basePath,
   onClose,
   onSave,
+  onCreateAndKeepEditing = noop,
 }) => {
   const stripes = useStripes();
   const history = useHistory();
@@ -79,6 +81,7 @@ const MarcRoute = ({
           <QuickMarcEditorContainer
             onClose={onClose}
             onSave={onSave}
+            onCreateAndKeepEditing={onCreateAndKeepEditing}
             externalRecordPath={externalRecordPath}
             onCheckCentralTenantPerm={checkCentralTenantPerm}
             instanceId={instanceId}
@@ -101,6 +104,7 @@ MarcRoute.propTypes = {
   basePath: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
+  onCreateAndKeepEditing: PropTypes.func,
 };
 
 export default MarcRoute;

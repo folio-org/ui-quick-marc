@@ -4,6 +4,7 @@ import {
   Switch,
   useLocation,
 } from 'react-router-dom';
+import noop from 'lodash/noop';
 
 import { CommandList } from '@folio/stripes/components';
 
@@ -24,6 +25,7 @@ const QuickMarc = ({
   externalRecordPath,
   onClose,
   onSave,
+  onCreateAndKeepEditing = noop,
   instanceId,
   externalId,
   isShared,
@@ -110,6 +112,7 @@ const QuickMarc = ({
                   basePath={basePath}
                   onClose={onClose}
                   onSave={onSave}
+                  onCreateAndKeepEditing={onCreateAndKeepEditing}
                 />
               ))
             }
@@ -124,6 +127,7 @@ const QuickMarc = ({
             <QuickMarcEditorContainer
               onClose={onClose}
               onSave={onSave}
+              onCreateAndKeepEditing={onCreateAndKeepEditing}
               externalRecordPath={externalRecordPath}
               onCheckCentralTenantPerm={checkCentralTenantPerm}
               externalId={externalId}

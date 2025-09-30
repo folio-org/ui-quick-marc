@@ -48,6 +48,7 @@ import { QUICK_MARC_ACTIONS } from './constants';
 const propTypes = {
   onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
+  onCreateAndKeepEditing: PropTypes.func.isRequired,
   externalRecordPath: PropTypes.string.isRequired,
   history: ReactRouterPropTypes.history.isRequired,
   mutator: PropTypes.object.isRequired,
@@ -67,6 +68,7 @@ const QuickMarcEditorContainer = ({
   mutator,
   onClose,
   onSave,
+  onCreateAndKeepEditing,
   history,
   externalRecordPath,
   stripes,
@@ -108,6 +110,10 @@ const QuickMarcEditorContainer = ({
   const handleSave = useCallback(async (id) => {
     await onSave(getCloseEditorParams(id));
   }, [getCloseEditorParams, onSave]);
+
+  const handleCreateAndKeepEditing = useCallback(async (id) => {
+    await onCreateAndKeepEditing(getCloseEditorParams(id));
+  }, [getCloseEditorParams, onCreateAndKeepEditing]);
 
   const formatInitialValues = (marcRecord, _action, linkingRulesResponse) => {
     const formattedMarcRecord = formatMarcRecordByQuickMarcAction(marcRecord, _action, marcType);
@@ -241,6 +247,7 @@ const QuickMarcEditorContainer = ({
     refreshPageData: loadData,
     onClose: handleClose,
     onSave: handleSave,
+    onCreateAndKeepEditing: handleCreateAndKeepEditing,
   });
 
   useEffect(() => {

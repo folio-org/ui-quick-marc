@@ -39,6 +39,7 @@ const useSaveRecord = ({
   refreshPageData,
   onClose,
   onSave,
+  onCreateAndKeepEditing,
 }) => {
   const stripes = useStripes();
 
@@ -154,6 +155,7 @@ const useSaveRecord = ({
     refreshPageData,
     onClose,
     onSave,
+    onCreateAndKeepEditing,
   });
 
   const runValidation = useCallback(async (formValues) => {
