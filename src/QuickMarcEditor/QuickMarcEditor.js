@@ -724,7 +724,7 @@ QuickMarcEditor.propTypes = {
 
 export default stripesFinalForm({
   navigationCheck: true,
-  keepDirtyOnReinitialize: true,
+  keepDirtyOnReinitialize: false,
   mutators: {
     addRecord: ([{ index }], state, tools) => {
       const records = addNewRecord(index, state);
