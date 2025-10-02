@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMemoryHistory } from 'history';
 import {
   render,
   act,
@@ -28,32 +27,9 @@ import {
 import { useAuthorityLinksCount } from '../queries';
 import { applyCentralTenantInHeaders } from './utils';
 
-const match = {
-  path: '/marc-authorities/quick-marc/edit-authority/:externalId',
-  url: '/marc-authorities/quick-marc/edit-authority/external-id',
-  params: {
-    externalId: 'external-id',
-    instanceId: 'instance-id',
-  },
-};
-
-const location = {
-  pathname: '/marc-authorities/quick-marc/edit-authority/external-id',
-  search: '?authRefType=Authorized&headingRef=Beatles&segment=search&relatedRecordVersion=3',
-  hash: '',
-  key: 'vepmmg',
-};
-
-const mockHistory = createMemoryHistory();
-
 jest.mock('./utils', () => ({
   ...jest.requireActual('./utils'),
   applyCentralTenantInHeaders: jest.fn(),
-}));
-
-jest.mock('react-router', () => ({
-  ...jest.requireActual('react-router'),
-  withRouter: Component => props => <Component match={match} location={location} history={mockHistory} {...props} />,
 }));
 
 jest.mock('@folio/stripes-marc-components', () => ({
@@ -101,18 +77,18 @@ const record = {
 const locations = [];
 
 const externalRecordPath = '/external/record/path';
+const externalId = 'external-id';
+const instanceId = 'instance-id';
 
 const mockOnClose = jest.fn();
 const mockOnSave = jest.fn();
 
 const renderQuickMarcEditorContainer = ({
-  history,
   action = QUICK_MARC_ACTIONS.EDIT,
   marcType = MARC_TYPES.BIB,
   ...props
 } = {}) => (render(
   <Harness
-    history={history}
     action={action}
     marcType={marcType}
   >
@@ -120,8 +96,10 @@ const renderQuickMarcEditorContainer = ({
       externalRecordPath={externalRecordPath}
       onClose={mockOnClose}
       onSave={mockOnSave}
-      {...props}
+      externalId={externalId}
+      instanceId={instanceId}
       onCheckCentralTenantPerm={() => false}
+      {...props}
     />
   </Harness>,
 ));
@@ -180,7 +158,7 @@ describe('Given Quick Marc Editor Container', () => {
         });
       });
 
-      expect(useAuthorityLinksCount).toHaveBeenCalledWith({ id: match.params.externalId });
+      expect(useAuthorityLinksCount).toHaveBeenCalledWith({ id: externalId });
     });
   });
 

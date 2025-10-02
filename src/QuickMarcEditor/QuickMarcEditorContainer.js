@@ -25,7 +25,6 @@ import QuickMarcEditor from './QuickMarcEditor';
 import { useAuthorityLinksCount } from '../queries';
 import { QuickMarcContext } from '../contexts';
 import { useSaveRecord } from './useSaveRecord';
-import { useIsShared } from '../hooks';
 import {
   EXTERNAL_INSTANCE_APIS,
   MARC_RECORD_API,
@@ -49,11 +48,13 @@ import { QUICK_MARC_ACTIONS } from './constants';
 const propTypes = {
   onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
+  onCreateAndKeepEditing: PropTypes.func.isRequired,
   externalRecordPath: PropTypes.string.isRequired,
   history: ReactRouterPropTypes.history.isRequired,
   mutator: PropTypes.object.isRequired,
-  match: ReactRouterPropTypes.match.isRequired,
   stripes: PropTypes.object.isRequired,
+  externalId: PropTypes.string.isRequired,
+  instanceId: PropTypes.string.isRequired,
   onCheckCentralTenantPerm: PropTypes.func,
 };
 
@@ -65,19 +66,16 @@ const createRecordDefaults = {
 
 const QuickMarcEditorContainer = ({
   mutator,
-  match,
   onClose,
   onSave,
+  onCreateAndKeepEditing,
   history,
   externalRecordPath,
   stripes,
+  externalId,
+  instanceId,
   onCheckCentralTenantPerm = noop,
 }) => {
-  const {
-    externalId,
-    instanceId,
-  } = match.params;
-
   const {
     action,
     marcType,
@@ -86,13 +84,13 @@ const QuickMarcEditorContainer = ({
     setInstance,
     setMarcRecord,
     setRelatedRecordVersion,
+    getIsShared,
   } = useContext(QuickMarcContext);
   const [locations, setLocations] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [fixedFieldSpec, setFixedFieldSpec] = useState();
   const showCallout = useShowCallout();
   const { linksCount } = useAuthorityLinksCount({ id: marcType === MARC_TYPES.AUTHORITY && externalId });
-  const { getIsShared } = useIsShared();
 
   const { token, locale } = stripes.okapi;
   const centralTenantId = stripes.user.user.consortium?.centralTenantId;
@@ -112,6 +110,18 @@ const QuickMarcEditorContainer = ({
   const handleSave = useCallback(async (id) => {
     await onSave(getCloseEditorParams(id));
   }, [getCloseEditorParams, onSave]);
+
+  const handleCreateAndKeepEditing = useCallback(async (id) => {
+    await onCreateAndKeepEditing(getCloseEditorParams(id));
+  }, [getCloseEditorParams, onCreateAndKeepEditing]);
+
+  const formatInitialValues = (marcRecord, _action, linkingRulesResponse) => {
+    const formattedMarcRecord = formatMarcRecordByQuickMarcAction(marcRecord, _action, marcType);
+    const marcRecordWithInternalProps = addInternalFieldProperties(formattedMarcRecord);
+    const marcRecordWithSplitFields = splitFields(marcRecordWithInternalProps, linkingRulesResponse);
+
+    return marcRecordWithSplitFields;
+  };
 
   const externalRecordUrl = useMemo(() => {
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
@@ -202,13 +212,9 @@ const QuickMarcEditorContainer = ({
           );
         }
 
-        const formattedMarcRecord = formatMarcRecordByQuickMarcAction(dehydratedMarcRecord, _action, marcType);
-        const marcRecordWithInternalProps = addInternalFieldProperties(formattedMarcRecord);
-        const marcRecordWithSplitFields = splitFields(marcRecordWithInternalProps, linkingRulesResponse);
-
         setRelatedRecordVersion(instanceResponse?._version);
         setInstance(instanceResponse);
-        setMarcRecord(marcRecordWithSplitFields);
+        setMarcRecord(formatInitialValues(dehydratedMarcRecord, _action, linkingRulesResponse));
         setLocations(locationsResponse);
         setFixedFieldSpec(fixedFieldSpecResponse);
         setIsLoading(false);
@@ -241,6 +247,7 @@ const QuickMarcEditorContainer = ({
     refreshPageData: loadData,
     onClose: handleClose,
     onSave: handleSave,
+    onCreateAndKeepEditing: handleCreateAndKeepEditing,
   });
 
   useEffect(() => {

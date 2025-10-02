@@ -21,10 +21,7 @@ import '@folio/stripes-acq-components/test/jest/__mock__';
 import QuickMarcEditor from './QuickMarcEditor';
 import { QUICK_MARC_ACTIONS } from './constants';
 import { MARC_TYPES } from '../common/constants';
-import {
-  MISSING_FIELD_ID,
-  useIsShared,
-} from '../hooks';
+import { MISSING_FIELD_ID } from '../hooks';
 
 import Harness from '../../test/jest/helpers/harness';
 import buildStripes from '../../test/jest/__mock__/stripesCore.mock';
@@ -33,15 +30,6 @@ import { bibLeader } from '../../test/jest/fixtures/leaders';
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
   useLocation: jest.fn(),
-}));
-
-jest.mock('../hooks', () => ({
-  ...jest.requireActual('../hooks'),
-  useIsShared: jest.fn().mockReturnValue({
-    isShared: false,
-    getIsShared: () => false,
-    setIsShared: jest.fn(),
-  }),
 }));
 
 jest.mock('../queries', () => ({
@@ -217,16 +205,12 @@ describe('Given QuickMarcEditor', () => {
 
         describe('when the record is bib', () => {
           describe('when action is CREATE', () => {
-            beforeEach(() => {
-              useIsShared.mockClear().mockReturnValue({
-                isShared: true,
-              });
-            });
-
             it('should have "shared" in title', () => {
               renderQuickMarcEditor({
                 marcType: MARC_TYPES.BIB,
                 action: QUICK_MARC_ACTIONS.CREATE,
+              }, {
+                quickMarcContext: { isShared: true },
               });
 
               expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
@@ -237,16 +221,12 @@ describe('Given QuickMarcEditor', () => {
           });
 
           describe('when action is EDIT', () => {
-            beforeEach(() => {
-              useIsShared.mockClear().mockReturnValue({
-                isShared: true,
-              });
-            });
-
             it('should have "shared" in title', () => {
               renderQuickMarcEditor({
                 marcType: MARC_TYPES.BIB,
                 action: QUICK_MARC_ACTIONS.EDIT,
+              }, {
+                quickMarcContext: { isShared: true },
               });
 
               expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
@@ -257,16 +237,12 @@ describe('Given QuickMarcEditor', () => {
           });
 
           describe('when action is DERIVE', () => {
-            beforeEach(() => {
-              useIsShared.mockClear().mockReturnValue({
-                isShared: true,
-              });
-            });
-
             it('should have "shared" in title', () => {
               renderQuickMarcEditor({
                 marcType: MARC_TYPES.BIB,
                 action: QUICK_MARC_ACTIONS.DERIVE,
+              }, {
+                quickMarcContext: { isShared: true },
               });
 
               expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
@@ -279,17 +255,13 @@ describe('Given QuickMarcEditor', () => {
 
         describe('when the record is authority', () => {
           describe('when action is CREATE', () => {
-            beforeEach(() => {
-              useIsShared.mockClear().mockReturnValue({
-                isShared: true,
-              });
-            });
-
             it('should have "shared" in title', () => {
               renderQuickMarcEditor({
                 action: QUICK_MARC_ACTIONS.CREATE,
                 marcType: MARC_TYPES.AUTHORITY,
                 initialValues: { records: [{ id: 'LDR' }] },
+              }, {
+                quickMarcContext: { isShared: true },
               });
 
               expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
@@ -300,17 +272,13 @@ describe('Given QuickMarcEditor', () => {
           });
 
           describe('when action is EDIT', () => {
-            beforeEach(() => {
-              useIsShared.mockClear().mockReturnValue({
-                isShared: true,
-              });
-            });
-
             it('should have "shared" in title', () => {
               renderQuickMarcEditor({
                 action: QUICK_MARC_ACTIONS.EDIT,
                 marcType: MARC_TYPES.AUTHORITY,
                 initialValues: { records: [{ id: 'LDR' }] },
+              }, {
+                quickMarcContext: { isShared: true },
               });
 
               expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
@@ -344,16 +312,12 @@ describe('Given QuickMarcEditor', () => {
 
           describe('when action is EDIT', () => {
             describe('when the record is shared', () => {
-              beforeEach(() => {
-                useIsShared.mockClear().mockReturnValue({
-                  isShared: true,
-                });
-              });
-
               it('should have the "shared" in title', () => {
                 renderQuickMarcEditor({
                   marcType: MARC_TYPES.BIB,
                   action: QUICK_MARC_ACTIONS.EDIT,
+                }, {
+                  quickMarcContext: { isShared: true },
                 });
 
                 expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
@@ -364,18 +328,14 @@ describe('Given QuickMarcEditor', () => {
             });
 
             describe('when the record is local', () => {
-              beforeEach(() => {
-                useIsShared.mockClear().mockReturnValue({
-                  isShared: false,
-                });
-              });
-
               it('should have the "local" in title', () => {
                 useLocation.mockReturnValue({ search: '?shared=false' });
 
                 renderQuickMarcEditor({
                   marcType: MARC_TYPES.BIB,
                   action: QUICK_MARC_ACTIONS.EDIT,
+                }, {
+                  quickMarcContext: { isShared: false },
                 });
 
                 expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
@@ -388,16 +348,12 @@ describe('Given QuickMarcEditor', () => {
 
           describe('when action is DERIVE', () => {
             describe('when the record is shared', () => {
-              beforeEach(() => {
-                useIsShared.mockClear().mockReturnValue({
-                  isShared: true,
-                });
-              });
-
               it('should have the "local" in title', () => {
                 renderQuickMarcEditor({
                   marcType: MARC_TYPES.BIB,
                   action: QUICK_MARC_ACTIONS.DERIVE,
+                }, {
+                  quickMarcContext: { isShared: true },
                 });
 
                 expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
@@ -408,18 +364,14 @@ describe('Given QuickMarcEditor', () => {
             });
 
             describe('whe the record is local', () => {
-              beforeEach(() => {
-                useIsShared.mockClear().mockReturnValue({
-                  isShared: false,
-                });
-              });
-
               it('should have the "local" in title', () => {
                 useLocation.mockReturnValue({ search: '?shared=false' });
 
                 renderQuickMarcEditor({
                   marcType: MARC_TYPES.BIB,
                   action: QUICK_MARC_ACTIONS.DERIVE,
+                }, {
+                  quickMarcContext: { isShared: false },
                 });
 
                 expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
@@ -437,6 +389,8 @@ describe('Given QuickMarcEditor', () => {
               renderQuickMarcEditor({
                 action: QUICK_MARC_ACTIONS.CREATE,
                 marcType: MARC_TYPES.AUTHORITY,
+              }, {
+                quickMarcContext: { isShared: false },
               });
 
               expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
@@ -448,16 +402,12 @@ describe('Given QuickMarcEditor', () => {
 
           describe('when action is EDIT', () => {
             describe('when the record is shared', () => {
-              beforeEach(() => {
-                useIsShared.mockClear().mockReturnValue({
-                  isShared: true,
-                });
-              });
-
               it('should have the "shared" in title', () => {
                 renderQuickMarcEditor({
                   action: QUICK_MARC_ACTIONS.EDIT,
                   marcType: MARC_TYPES.AUTHORITY,
+                }, {
+                  quickMarcContext: { isShared: true },
                 });
 
                 expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
@@ -468,12 +418,6 @@ describe('Given QuickMarcEditor', () => {
             });
 
             describe('when the record is local', () => {
-              beforeEach(() => {
-                useIsShared.mockClear().mockReturnValue({
-                  isShared: false,
-                });
-              });
-
               it('should have the "local" in title', () => {
                 useLocation.mockReturnValue({ search: '?shared=false' });
 
@@ -481,6 +425,8 @@ describe('Given QuickMarcEditor', () => {
                   action: QUICK_MARC_ACTIONS.EDIT,
                   marcType: MARC_TYPES.AUTHORITY,
                   initialValues: { records: [{ id: 'LDR' }] },
+                }, {
+                  quickMarcContext: { isShared: false },
                 });
 
                 expect(Pane.render.mock.lastCall[0].paneTitle.props).toEqual({
