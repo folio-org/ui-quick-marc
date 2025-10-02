@@ -47,7 +47,7 @@ const MarcRoute = ({
 
   const {
     isCentralTenantPermissionsLoading,
-    checkCentralTenantPerm,
+    checkCentralTenantPermission,
   } = useCheckCentralTenantPermission({
     isShared,
     marcType,
@@ -60,7 +60,7 @@ const MarcRoute = ({
   }
 
   const hasPermission = permission
-    ? isRequestToCentralTenantFromMember ? checkCentralTenantPerm(permission) : stripes.hasPerm(permission)
+    ? isRequestToCentralTenantFromMember ? checkCentralTenantPermission(permission) : stripes.hasPerm(permission)
     : true;
 
   if (!hasPermission) {
@@ -83,7 +83,7 @@ const MarcRoute = ({
             onSave={onSave}
             onCreateAndKeepEditing={onCreateAndKeepEditing}
             externalRecordPath={externalRecordPath}
-            onCheckCentralTenantPerm={checkCentralTenantPerm}
+            onCheckCentralTenantPerm={checkCentralTenantPermission}
             instanceId={instanceId}
             externalId={externalId}
           />

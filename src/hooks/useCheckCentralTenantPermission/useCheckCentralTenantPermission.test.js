@@ -77,19 +77,19 @@ describe('useCheckCentralTenantPermission', () => {
 
         await waitFor(() => !result.current.isCentralTenantPermissionsLoading);
 
-        expect(result.current.checkCentralTenantPerm('test-permission')).toEqual(true);
+        expect(result.current.checkCentralTenantPermission('test-permission')).toEqual(true);
       });
     });
 
     describe('and permission is not present', () => {
-      it('should return true', async () => {
+      it('should return false', async () => {
         const { result } = renderHook(() => useCheckCentralTenantPermission({
           enabled: true,
         }), { wrapper });
 
         await waitFor(() => !result.current.isCentralTenantPermissionsLoading);
 
-        expect(result.current.checkCentralTenantPerm('missing-permission')).toEqual(false);
+        expect(result.current.checkCentralTenantPermission('missing-permission')).toEqual(false);
       });
     });
   });

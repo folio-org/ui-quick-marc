@@ -25,13 +25,13 @@ export const useCheckCentralTenantPermission = ({ enabled, isShared, marcType, a
     enabled: Boolean(enabled && isRequestToCentralTenantFromMember),
   });
 
-  const checkCentralTenantPerm = useCallback((perm) => {
+  const checkCentralTenantPermission = useCallback((perm) => {
     return centralTenantPermissions.some(({ permissionName }) => permissionName === perm);
   }, [centralTenantPermissions]);
 
   return {
     isCentralTenantPermissionsLoading,
     centralTenantPermissions,
-    checkCentralTenantPerm,
+    checkCentralTenantPermission,
   };
 };

@@ -33,11 +33,9 @@ const QuickMarc = ({
 }) => {
   const location = useLocation();
 
-  // this call is only neede for non-route approach.
+  // this call is only needed for non-route approach.
   // for route-based quickMARC this hook will be called in <MarcRoute>
-  const {
-    checkCentralTenantPerm,
-  } = useCheckCentralTenantPermission({
+  const { checkCentralTenantPermission } = useCheckCentralTenantPermission({
     isShared,
     marcType,
     action,
@@ -129,7 +127,7 @@ const QuickMarc = ({
               onSave={onSave}
               onCreateAndKeepEditing={onCreateAndKeepEditing}
               externalRecordPath={externalRecordPath}
-              onCheckCentralTenantPerm={checkCentralTenantPerm}
+              onCheckCentralTenantPerm={checkCentralTenantPermission}
               externalId={externalId}
               instanceId={instanceId}
             />

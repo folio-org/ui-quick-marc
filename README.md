@@ -21,7 +21,7 @@ of the Module Developer's Guide.
 
 | Name | Type | Description | Required |
 --- | --- | --- | --- |
-| `basePath` | string | Base route of MARC editor | Yes, when quickMARC pre-defined routes. Otherwise No. More on pre-defined and route-less approaches later. |
+| `basePath` | string | Base route of MARC editor | Yes, when quickMARC pre-defined routes. Otherwise No. See `useRoutes` prop for additional details about pre-defined vs. route-less approaches. |
 | `externalRecordPath` | string | Pathname to fetch an external record. Used for Optimistic Locking | No |
 | `action` | string | One of quickMARC actions: "create", "edit" or "derive" | Yes for route-less, No for pre-defined routes |
 | `marcType` | string | Type of MARC record. "bibliographic", "holdings" or "authority" | Yes for route-less, No for pre-defined routes |
@@ -31,7 +31,7 @@ of the Module Developer's Guide.
 | `onClose` | function | Called when closing quickMARC. Called with `externalId` when `marcType` is "bibliographic" or "authority". For `marcType` "holdings" it's called with `instanceId/externalId` | Yes |
 | `onSave` | function | Called after saving and closing a record. Called with `externalId` when `marcType` is "bibliographic" or "authority". For `marcType` "holdings" it's called with `instanceId/externalId` | Yes |
 | `onCreateAndKeepEditing` | function | Called after creating/deriving a record via "Save and keep editing" button. Called with `externalId` when `marcType` is "bibliographic" or "authority". For `marcType` "holdings" it's called with `instanceId/externalId` | Yes for route-less, No for pre-defined routes |
-| `useRoutes` | bool | When `true` - quickMARC will create it's own routes that the consuming application will have to redirect to. When `false` - quickMARC will act like a regular plug-in and simply render a view, and the consuming application will have to define it's own routes and provide some props to quickMARC. | No |
+| `useRoutes` | bool | When `true` - quickMARC will define it's own routes that the consuming application will have to redirect to. When `false` - quickMARC will act like a regular plug-in and simply render a view, and the consuming application will have to define it's own routes and provide some props to quickMARC. | No |
 
 This is a [Stripes](https://github.com/folio-org/stripes-core/) UI module to edit MARC records.
 
