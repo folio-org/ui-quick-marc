@@ -1,7 +1,6 @@
 import {
   Route,
   useHistory,
-  useRouteMatch,
 } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import noop from 'lodash/noop';
@@ -28,12 +27,6 @@ const MarcRoute = ({
 }) => {
   const stripes = useStripes();
   const history = useHistory();
-  const match = useRouteMatch();
-
-  const {
-    instanceId,
-    externalId,
-  } = match;
 
   const isShared = getIsSharedFromUrl(history.location.search);
 
@@ -84,8 +77,6 @@ const MarcRoute = ({
             onCreateAndKeepEditing={onCreateAndKeepEditing}
             externalRecordPath={externalRecordPath}
             onCheckCentralTenantPerm={checkCentralTenantPermission}
-            instanceId={instanceId}
-            externalId={externalId}
           />
         </QuickMarcProvider>
       )}

@@ -51,6 +51,7 @@ const propTypes = {
   onCreateAndKeepEditing: PropTypes.func.isRequired,
   externalRecordPath: PropTypes.string.isRequired,
   history: ReactRouterPropTypes.history.isRequired,
+  match: ReactRouterPropTypes.match.isRequired,
   mutator: PropTypes.object.isRequired,
   stripes: PropTypes.object.isRequired,
   externalId: PropTypes.string.isRequired,
@@ -72,9 +73,10 @@ const QuickMarcEditorContainer = ({
   history,
   externalRecordPath,
   stripes,
-  externalId,
-  instanceId,
+  externalId: externalIdProp,
+  instanceId: instanceIdProp,
   onCheckCentralTenantPerm = noop,
+  match,
 }) => {
   const {
     action,
@@ -90,6 +92,10 @@ const QuickMarcEditorContainer = ({
   const [isLoading, setIsLoading] = useState(true);
   const [fixedFieldSpec, setFixedFieldSpec] = useState();
   const showCallout = useShowCallout();
+
+  const externalId = externalIdProp || match.params.externalId;
+  const instanceId = instanceIdProp || match.params.instanceId;
+
   const { linksCount } = useAuthorityLinksCount({ id: marcType === MARC_TYPES.AUTHORITY && externalId });
 
   const { token, locale } = stripes.okapi;
