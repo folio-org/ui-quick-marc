@@ -660,7 +660,7 @@
     "record.fixedField.Updating database": "更新数据库",
     "record.fixedField.Magazine": "杂志",
     "record.fixedField.Blog": "博客",
-    "record.fixedField.Journal": "杂志",
+    "record.fixedField.Journal": "期刊",
     "record.fixedField.Updating loose-leaf": "更新活页",
     "record.fixedField.Monographic series": "专著丛编",
     "record.fixedField.Newspaper": "报纸",
@@ -946,5 +946,5 @@
     "record.fixedField.Memorandum": "备忘",
     "record.fixedField.Provisional": "临时的",
     "record.fixedField.Preliminary": "初步的",
-    "record.fixedField.Mod Rec": "Mod Rec"
+    "record.fixedField.Mod Rec": "修改记录"
 }
