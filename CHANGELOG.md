@@ -6,6 +6,10 @@
 * [UIQM-744](https://issues.folio.org/browse/UIQM-744) Remove "Create a" text from the paneheader when creating new authority, bib, and holdings records.
 * [UIQM-773](https://issues.folio.org/browse/UIQM-773) Use Central tenant linking rules when user editing Shared MARC bib from Central or Member tenant.
 * [UIQM-778](https://issues.folio.org/browse/UIQM-778) *BREAKING* Update for Split Search & Browse APIs.
+* [UIQM-398](https://issues.folio.org/browse/UIQM-398) Create\Edit quickMARC Authority: Add 008 position dropdowns to display available values.
+* [UIQM-785](https://issues.folio.org/browse/UIQM-785) Default to Name-title browse if the MARC bib field contains a subfield "t".
+* [UIQM-783](https://issues.folio.org/browse/UIQM-783) Update label for 38 position of MARC authority "008" field to "Mod Rec".
+* [UIQM-788](https://issues.folio.org/browse/UIQM-788) Add new props to quickMARC to make it usable without having to define routes.
 
 ## [10.0.4](https://github.com/folio-org/ui-quick-marc/tree/v10.0.4) (2025-07-14)
 

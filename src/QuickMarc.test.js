@@ -9,6 +9,7 @@ import QuickMarc from './QuickMarc';
 
 import Harness from '../test/jest/helpers/harness';
 import { QuickMarcProvider } from './contexts';
+import { QuickMarcEditorContainer } from './QuickMarcEditor';
 import { QUICK_MARC_ACTIONS } from './QuickMarcEditor/constants';
 import { MARC_TYPES } from './common';
 
@@ -20,11 +21,9 @@ jest.mock('@folio/stripes/core', () => ({
   }),
 }));
 
-jest.mock('./QuickMarcEditor', () => {
-  return {
-    QuickMarcEditorContainer: () => <span>QuickMarcEditorContainer</span>,
-  };
-});
+jest.mock('./QuickMarcEditor', () => ({
+  QuickMarcEditorContainer: jest.fn(),
+}));
 
 jest.mock('./contexts', () => ({
   QuickMarcProvider: jest.fn(({ children }) => <div>{children}</div>),
@@ -51,6 +50,9 @@ describe('Given Quick Marc', () => {
 
   beforeEach(() => {
     history = createMemoryHistory();
+    jest.clearAllMocks();
+
+    QuickMarcEditorContainer.mockReturnValue(<span>QuickMarcEditorContainer</span>);
   });
 
   describe('When visiting "derive" route', () => {
@@ -110,6 +112,32 @@ describe('Given Quick Marc', () => {
 
       expect(getByText('QuickMarcEditorContainer')).toBeDefined();
       expect(QuickMarcProvider).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
+    });
+  });
+
+  describe('when using a non-route approach', () => {
+    it('should display correct route', () => {
+      const { getByText } = renderQuickMarc({
+        action: QUICK_MARC_ACTIONS.EDIT,
+        marcType: MARC_TYPES.BIB,
+        externalId: 'some-id',
+        isShared: true,
+        useRoutes: false,
+      });
+
+      const expectedContextProps = {
+        action: QUICK_MARC_ACTIONS.EDIT,
+        marcType: MARC_TYPES.BIB,
+        basePath,
+        isShared: true,
+        children: expect.anything(),
+      };
+
+      expect(getByText('QuickMarcEditorContainer')).toBeDefined();
+      expect(QuickMarcProvider).toHaveBeenCalledWith(expect.objectContaining(expectedContextProps), {});
+      expect(QuickMarcEditorContainer).toHaveBeenCalledWith(expect.objectContaining({
+        externalId: 'some-id',
+      }), expect.any(Object));
     });
   });
 });

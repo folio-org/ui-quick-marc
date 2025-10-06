@@ -14,7 +14,6 @@ import {
 import { ADVANCED_SEARCH_MATCH_OPTIONS } from '@folio/stripes/components';
 import { runAxeTest } from '@folio/stripes-testing';
 
-import { useIsShared } from '../../../hooks';
 import { LinkButton } from './LinkButton';
 import { QUICK_MARC_ACTIONS } from '../../constants';
 
@@ -26,15 +25,13 @@ jest.mock('@folio/stripes-marc-components', () => ({
     linkingRules: [{
       bibField: '100',
       authoritySubfields: ['a', 'd'],
+    }, {
+      bibField: '110',
+      authoritySubfields: ['a', 'd', 't'],
+    }, {
+      bibField: '700',
+      authoritySubfields: ['a', 'd', 't'],
     }],
-  }),
-}));
-
-jest.mock('../../../hooks', () => ({
-  useIsShared: jest.fn().mockReturnValue({
-    isShared: false,
-    getIsShared: () => false,
-    setIsShared: jest.fn(),
   }),
 }));
 
@@ -254,6 +251,64 @@ describe('Given LinkButton', () => {
         expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
       });
     });
+
+    describe('when linking an Authority to a 6XX/7XX/8XX field with a $t', () => {
+      it('should use Browse Name-Title by default', async () => {
+        const { getAllByTestId } = renderComponent({
+          tag: '700',
+          content: '$a testing $t with t',
+        });
+
+        const initialValues = {
+          search: {
+            dropdownValue: 'nameTitle',
+            searchIndex: 'nameTitle',
+            filters: null,
+          },
+          browse: {
+            dropdownValue: 'nameTitle',
+            searchIndex: 'nameTitle',
+            searchInputValue: 'testing with t',
+            searchQuery: 'testing with t',
+            filters: null,
+          },
+          segment: 'browse',
+        };
+
+        fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
+
+        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
+      });
+    });
+
+    describe('when linking an Authority to a non-6XX/7XX/8XX field with a $t', () => {
+      it('should use Browse by regular lookup config by default', async () => {
+        const { getAllByTestId } = renderComponent({
+          tag: '110',
+          content: '$a testing $t with t',
+        });
+
+        const initialValues = {
+          search: {
+            dropdownValue: 'corporateNameTitle',
+            searchIndex: 'corporateNameTitle',
+            filters: null,
+          },
+          browse: {
+            dropdownValue: 'corporateNameTitle',
+            searchIndex: 'corporateNameTitle',
+            searchInputValue: 'testing with t',
+            searchQuery: 'testing with t',
+            filters: null,
+          },
+          segment: 'browse',
+        };
+
+        fireEvent.click(getAllByTestId('link-authority-button-fakeId')[0]);
+
+        expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({ initialValues }), {});
+      });
+    });
   });
 
   describe('when field is linked', () => {
@@ -306,12 +361,6 @@ describe('Given LinkButton', () => {
   });
 
   describe('when member tenant edits a shared bib record', () => {
-    beforeEach(() => {
-      useIsShared.mockClear().mockReturnValue({
-        isShared: true,
-      });
-    });
-
     it('should pass correct props', () => {
       checkIfUserInMemberTenant.mockReturnValue(true);
 
@@ -333,7 +382,9 @@ describe('Given LinkButton', () => {
         browse: ['shared'],
       };
 
-      renderComponent();
+      renderComponent({
+        quickMarcContext: { isShared: true },
+      });
 
       expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
         tenantId: centralTenantId,
@@ -344,12 +395,6 @@ describe('Given LinkButton', () => {
   });
 
   describe('when member tenant derives a shared bib record', () => {
-    beforeEach(() => {
-      useIsShared.mockClear().mockReturnValue({
-        isShared: true,
-      });
-    });
-
     it('should pass correct props', () => {
       checkIfUserInMemberTenant.mockReturnValue(true);
 
@@ -368,6 +413,7 @@ describe('Given LinkButton', () => {
 
       renderComponent({
         action: QUICK_MARC_ACTIONS.DERIVE,
+        quickMarcContext: { isShared: true },
       });
 
       expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({
@@ -385,9 +431,6 @@ describe('Given LinkButton', () => {
   ${QUICK_MARC_ACTIONS.DERIVE}
   `('should pass correct props when member tenant $action a not shared bib record', ({ action }) => {
     checkIfUserInMemberTenant.mockReturnValue(true);
-    useIsShared.mockClear().mockReturnValue({
-      isShared: false,
-    });
 
     const initialValues = expect.objectContaining({
       browse: expect.objectContaining({
@@ -404,6 +447,7 @@ describe('Given LinkButton', () => {
 
     renderComponent({
       action,
+      quickMarcContext: { isShared: false },
     });
 
     expect(Pluggable).toHaveBeenLastCalledWith(expect.objectContaining({

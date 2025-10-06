@@ -1,18 +1,19 @@
-import { useCallback } from 'react';
-import { Route } from 'react-router-dom';
+import {
+  Route,
+  useHistory,
+} from 'react-router-dom';
 import PropTypes from 'prop-types';
+import noop from 'lodash/noop';
 
 import { LoadingPane } from '@folio/stripes/components';
-import {
-  useStripes,
-  useUserTenantPermissions,
-} from '@folio/stripes/core';
+import { useStripes } from '@folio/stripes/core';
 
 import { QuickMarcEditorContainer } from '../QuickMarcEditor';
 import { applyCentralTenantInHeaders } from '../QuickMarcEditor/utils';
 import { QUICK_MARC_ACTIONS } from '../QuickMarcEditor/constants';
 import { QuickMarcProvider } from '../contexts';
-import { useIsShared } from '../hooks';
+import { getIsSharedFromUrl } from '../contexts/QuickMarcContext/utils';
+import { useCheckCentralTenantPermission } from '../hooks';
 
 const MarcRoute = ({
   externalRecordPath,
@@ -22,39 +23,37 @@ const MarcRoute = ({
   basePath,
   onClose,
   onSave,
+  onCreateAndKeepEditing = noop,
 }) => {
   const stripes = useStripes();
+  const history = useHistory();
 
-  const { isShared } = useIsShared();
+  const isShared = getIsSharedFromUrl(history.location.search);
 
   const {
     marcType,
     action,
   } = routeProps;
-  const centralTenantId = stripes.user.user?.consortium?.centralTenantId;
 
   const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(isShared, stripes, marcType)
     && action !== QUICK_MARC_ACTIONS.CREATE;
 
   const {
-    userPermissions: centralTenantPermissions,
-    isFetching: isCentralTenantPermissionsLoading,
-  } = useUserTenantPermissions({
-    tenantId: centralTenantId,
-  }, {
-    enabled: isRequestToCentralTenantFromMember,
+    isCentralTenantPermissionsLoading,
+    checkCentralTenantPermission,
+  } = useCheckCentralTenantPermission({
+    isShared,
+    marcType,
+    action,
+    enabled: true,
   });
-
-  const checkCentralTenantPerm = useCallback((perm) => {
-    return centralTenantPermissions.some(({ permissionName }) => permissionName === perm);
-  }, [centralTenantPermissions]);
 
   if (isCentralTenantPermissionsLoading) {
     return <LoadingPane />;
   }
 
   const hasPermission = permission
-    ? isRequestToCentralTenantFromMember ? checkCentralTenantPerm(permission) : stripes.hasPerm(permission)
+    ? isRequestToCentralTenantFromMember ? checkCentralTenantPermission(permission) : stripes.hasPerm(permission)
     : true;
 
   if (!hasPermission) {
@@ -70,12 +69,14 @@ const MarcRoute = ({
           action={action}
           marcType={marcType}
           basePath={basePath}
+          isUsingRouter
         >
           <QuickMarcEditorContainer
             onClose={onClose}
             onSave={onSave}
+            onCreateAndKeepEditing={onCreateAndKeepEditing}
             externalRecordPath={externalRecordPath}
-            onCheckCentralTenantPerm={checkCentralTenantPerm}
+            onCheckCentralTenantPerm={checkCentralTenantPermission}
           />
         </QuickMarcProvider>
       )}
@@ -87,10 +88,14 @@ MarcRoute.propTypes = {
   externalRecordPath: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
   permission: PropTypes.string,
-  routeProps: PropTypes.object.isRequired,
+  routeProps: PropTypes.shape({
+    marcType: PropTypes.string.isRequired,
+    action: PropTypes.string.isRequired,
+  }).isRequired,
   basePath: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
+  onCreateAndKeepEditing: PropTypes.func,
 };
 
 export default MarcRoute;

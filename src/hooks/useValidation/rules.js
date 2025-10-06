@@ -290,6 +290,11 @@ const BASE_AUTHORITY_VALIDATORS = [
     validator: RULES.FIXED_FIELD_LENGTH,
     message: (name, length) => ({ id: 'ui-quick-marc.record.error.fixedField.invalidLength', values: { name, length } }),
   },
+  {
+    tag: '008',
+    validator: RULES.FIXED_FIELD_POSITIONS,
+    message: (name) => ({ id: 'ui-quick-marc.record.error.008.invalidValue', values: { name } }),
+  },
 ];
 
 const CREATE_AUTHORITY_VALIDATORS = [

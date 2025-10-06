@@ -1,6 +1,7 @@
 import {
   useState,
   useMemo,
+  useContext,
 } from 'react';
 import {
   useIntl,
@@ -25,7 +26,7 @@ import {
 } from '@folio/stripes/components';
 import { useAuthorityLinkingRules } from '@folio/stripes-marc-components';
 
-import { useIsShared } from '../../../hooks';
+import { QuickMarcContext } from '../../../contexts';
 import { useMarcSource } from '../../../queries';
 import { MarcFieldContent } from '../../../common';
 import {
@@ -68,11 +69,10 @@ const LinkButton = ({
 }) => {
   const stripes = useStripes();
   const intl = useIntl();
+  const callout = useCallout();
   const [authority, setAuthority] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const callout = useCallout();
-
-  const { isShared } = useIsShared();
+  const { isShared } = useContext(QuickMarcContext);
 
   const centralTenantId = stripes.user.user?.consortium?.centralTenantId;
 
@@ -157,6 +157,8 @@ const LinkButton = ({
   }
 
   const initialValues = useMemo(() => {
+    const nameTitleBrowseTags = [600, 610, 611, 700, 710, 711, 800, 810, 811];
+    const isNameTitleBrowseTag = nameTitleBrowseTags.includes(parseInt(tag, 10));
     const { dropdownValue: dropdownValueByTag } = DEFAULT_LOOKUP_OPTIONS[tag];
     const linkableBibSubfields = uniq(linkingRules
       .filter(linkingRule => linkingRule.bibField === tag)
@@ -216,6 +218,23 @@ const LinkButton = ({
       _initialValues[navigationSegments.browse] = {
         dropdownValue: dropdownValueByTag,
         searchIndex: dropdownValueByTag,
+        filters: initialFilters,
+      };
+    } else if (isNameTitleBrowseTag && fieldContent.$t?.length) {
+      initialSegment = navigationSegments.browse;
+      initialSearchInputValue = bibContentToSearchBy;
+      initialSearchQuery = initialSearchInputValue;
+
+      _initialValues[navigationSegments.browse] = {
+        dropdownValue: searchableIndexesValues.NAME_TITLE,
+        searchIndex: searchableIndexesValues.NAME_TITLE,
+        searchInputValue: initialSearchInputValue,
+        searchQuery: initialSearchQuery,
+        filters: initialFilters,
+      };
+      _initialValues[navigationSegments.search] = {
+        dropdownValue: searchableIndexesValues.NAME_TITLE,
+        searchIndex: searchableIndexesValues.NAME_TITLE,
         filters: initialFilters,
       };
     } else if (bibContentToSearchBy) {

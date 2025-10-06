@@ -7,14 +7,19 @@ import {
   checkIfUserInCentralTenant,
   checkIfUserInMemberTenant,
 } from '@folio/stripes/core';
-import { renderHook } from '@folio/jest-config-stripes/testing-library/react';
+import {
+  renderHook,
+  waitFor,
+} from '@folio/jest-config-stripes/testing-library/react';
 
 import { QUICK_MARC_ACTIONS } from '../constants';
-import { ERROR_TYPES, MARC_TYPES } from '../../common';
+import {
+  ERROR_TYPES,
+  MARC_TYPES,
+} from '../../common';
 import {
   useAuthorityLinking,
   useValidation,
-  useIsShared,
 } from '../../hooks';
 import {
   useMarcRecordMutation,
@@ -53,11 +58,6 @@ jest.mock('../../hooks', () => ({
   ...jest.requireActual('../../hooks'),
   useAuthorityLinking: jest.fn(),
   useValidation: jest.fn((...params) => jest.requireActual('../../hooks').useValidation(...params)),
-  useIsShared: jest.fn().mockReturnValue({
-    isShared: false,
-    getIsShared: () => false,
-    setIsShared: jest.fn(),
-  }),
 }));
 
 jest.mock('../../queries', () => ({
@@ -101,6 +101,7 @@ const getMutator = (instance) => ({
 const mockRefreshPageData = jest.fn().mockResolvedValue(null);
 const mockOnClose = jest.fn();
 const mockOnSave = jest.fn();
+const mockOnCreateAndKeepEditing = jest.fn();
 const mockActualizeLinks = jest.fn((formValuesToProcess) => Promise.resolve(formValuesToProcess));
 const mockUpdateMarcRecord = jest.fn().mockResolvedValue();
 const mockValidateFetch = jest.fn().mockResolvedValue({});
@@ -267,7 +268,7 @@ const recordsMap = {
           'RecUpd': '\\',
           'Pers Name': '\\',
           'Level Est': '\\',
-          'Mod Rec Est': '\\',
+          'Mod Rec': '\\',
           'Source': '\\',
         },
       },
@@ -440,7 +441,7 @@ const recordsMap = {
           'Pers Name': 'n',
           'Level Est': 'a',
           Undef_34: '\\\\\\\\',
-          'Mod Rec Est': '\\',
+          'Mod Rec': '\\',
           Source: '\\',
         },
       },
@@ -1022,7 +1023,7 @@ describe('useSaveRecord', () => {
               'RecUpd': '\\',
               'Pers Name': '\\',
               'Level Est': '\\',
-              'Mod Rec Est': '\\',
+              'Mod Rec': '\\',
               'Source': '\\',
             },
             indicators: undefined,
@@ -1082,6 +1083,7 @@ describe('useSaveRecord', () => {
               action,
               marcType,
               continueAfterSave: { current: true },
+              isUsingRouter: true,
             },
             history,
           }),
@@ -1092,6 +1094,33 @@ describe('useSaveRecord', () => {
         const fieldIds = getIdsOfFields(action, marcType);
 
         expect(mockRefreshPageData).toHaveBeenCalledWith(fieldIds, QUICK_MARC_ACTIONS.EDIT, 'externalId-1');
+      });
+
+      describe('when not using routing', () => {
+        it('should call onCreateAndKeepEditing', async () => {
+          const action = QUICK_MARC_ACTIONS.CREATE;
+          const marcType = MARC_TYPES.BIB;
+          const history = createMemoryHistory({
+            initialEntries: [`${basePath}?sort=title`],
+          });
+
+          const { result } = renderHook(useSaveRecord, {
+            initialProps: getInitialProps(marcType),
+            wrapper: getWrapper({
+              quickMarcContext: {
+                action,
+                marcType,
+                continueAfterSave: { current: true },
+                isUsingRouter: false,
+              },
+              history,
+            }),
+          });
+
+          await result.current.onSubmit(getFormValues(action, marcType));
+
+          waitFor(() => expect(mockOnCreateAndKeepEditing).toHaveBeenCalledWith('externalId-1'));
+        });
       });
 
       it('should redirect to the edit page', async () => {
@@ -1108,6 +1137,7 @@ describe('useSaveRecord', () => {
               action,
               marcType,
               continueAfterSave: { current: true },
+              isUsingRouter: true,
             },
             history,
           }),
@@ -1125,10 +1155,6 @@ describe('useSaveRecord', () => {
 
       beforeEach(() => {
         checkIfUserInCentralTenant.mockClear().mockReturnValue(true);
-        useIsShared.mockReturnValue({
-          isShared: false,
-          setIsShared: mockSetIsShared,
-        });
       });
 
       it('should mark record as shared', async () => {
@@ -1145,6 +1171,9 @@ describe('useSaveRecord', () => {
               action,
               marcType,
               continueAfterSave: { current: true },
+              isShared: false,
+              setIsShared: mockSetIsShared,
+              isUsingRouter: true,
             },
             history,
           }),
@@ -1584,11 +1613,6 @@ describe('useSaveRecord', () => {
     describe('when a member tenant edits a shared record', () => {
       it('should apply the central tenant id for all authority linking ', async () => {
         checkIfUserInMemberTenant.mockClear().mockReturnValue(true);
-        useIsShared.mockReturnValue({
-          isShared: true,
-          getIsShared: () => true,
-          setIsShared: jest.fn(),
-        });
 
         const marcType = MARC_TYPES.BIB;
         const action = QUICK_MARC_ACTIONS.EDIT;
@@ -1604,6 +1628,8 @@ describe('useSaveRecord', () => {
               marcType,
               initialValues: getInitialValues(action, marcType),
               instance: getInstance(),
+              isShared: true,
+              setIsShared: jest.fn(),
             },
           }),
         });
@@ -1642,6 +1668,33 @@ describe('useSaveRecord', () => {
         const fieldIds = getIdsOfFields(action, marcType);
 
         expect(mockRefreshPageData).toHaveBeenCalledWith(fieldIds);
+      });
+
+      describe('when not using routing', () => {
+        it('should call onCreateAndKeepEditing', async () => {
+          const marcType = MARC_TYPES.BIB;
+          const action = QUICK_MARC_ACTIONS.EDIT;
+
+          const { result } = renderHook(useSaveRecord, {
+            initialProps: {
+              ...getInitialProps(marcType),
+              mutator: getMutator(getInstance()),
+            },
+            wrapper: getWrapper({
+              quickMarcContext: {
+                action,
+                marcType,
+                initialValues: getInitialValues(action, marcType),
+                instance: getInstance(),
+                continueAfterSave: { current: true },
+              },
+            }),
+          });
+
+          await result.current.onSubmit(getFormValues(action, marcType));
+
+          waitFor(() => expect(mockOnCreateAndKeepEditing).toHaveBeenCalledWith('externalId-1'));
+        });
       });
     });
 
@@ -1942,6 +1995,7 @@ describe('useSaveRecord', () => {
               action,
               marcType,
               continueAfterSave: { current: true },
+              isUsingRouter: true,
             },
           }),
         });
@@ -1967,6 +2021,7 @@ describe('useSaveRecord', () => {
               action,
               marcType,
               continueAfterSave: { current: true },
+              isUsingRouter: true,
             },
             history,
           }),
