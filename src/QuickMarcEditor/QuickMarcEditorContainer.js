@@ -88,6 +88,7 @@ const QuickMarcEditorContainer = ({
     setMarcRecord,
     setRelatedRecordVersion,
     getIsShared,
+    isUsingRouter,
   } = useContext(QuickMarcContext);
   const [locations, setLocations] = useState();
   const [isLoading, setIsLoading] = useState(true);
@@ -208,8 +209,10 @@ const QuickMarcEditorContainer = ({
       ]) => {
         let dehydratedMarcRecord;
 
+        const isShouldUseInitialValuesProp = initialValuesProp && isUsingRouter;
+
         if (_action === QUICK_MARC_ACTIONS.CREATE) {
-          if (initialValuesProp) {
+          if (isShouldUseInitialValuesProp) {
             dehydratedMarcRecord = dehydrateMarcRecordResponse(
               initialValuesProp,
               marcType,
@@ -223,9 +226,13 @@ const QuickMarcEditorContainer = ({
 
           // if we just saved a record - then we need to ignore `initialValuesProp` to not initialize with old data
           // otherwise if we're just entering Edit mode - initialize with initial values or values from response
-          const dataToInitializeWith = isLoadingDataAfterKeepEditing
-            ? marcRecordResponse
-            : initialValuesProp || marcRecordResponse;
+          let dataToInitializeWith = null;
+
+          if (isLoadingDataAfterKeepEditing || !isShouldUseInitialValuesProp) {
+            dataToInitializeWith = marcRecordResponse;
+          } else {
+            dataToInitializeWith = initialValuesProp;
+          }
 
           dehydratedMarcRecord = dehydrateMarcRecordResponse(
             dataToInitializeWith,
