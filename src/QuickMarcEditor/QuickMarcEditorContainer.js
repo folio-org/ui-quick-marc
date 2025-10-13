@@ -77,6 +77,7 @@ const QuickMarcEditorContainer = ({
   instanceId: instanceIdProp,
   onCheckCentralTenantPerm = noop,
   match,
+  initialValues: initialValuesProp,
 }) => {
   const {
     action,
@@ -208,10 +209,26 @@ const QuickMarcEditorContainer = ({
         let dehydratedMarcRecord;
 
         if (_action === QUICK_MARC_ACTIONS.CREATE) {
-          dehydratedMarcRecord = createRecordDefaults[marcType](instanceResponse, fixedFieldSpecResponse);
+          if (initialValuesProp) {
+            dehydratedMarcRecord = dehydrateMarcRecordResponse(
+              initialValuesProp,
+              marcType,
+              fixedFieldSpecResponse,
+            );
+          } else {
+            dehydratedMarcRecord = createRecordDefaults[marcType](instanceResponse, fixedFieldSpecResponse);
+          }
         } else {
+          const isLoadingDataAfterKeepEditing = Boolean(fieldIds);
+
+          // if we just saved a record - then we need to ignore `initialValuesProp` to not initialize with old data
+          // otherwise if we're just entering Edit mode - initialize with initial values or values from response
+          const dataToInitializeWith = isLoadingDataAfterKeepEditing
+            ? marcRecordResponse
+            : initialValuesProp || marcRecordResponse;
+
           dehydratedMarcRecord = dehydrateMarcRecordResponse(
-            marcRecordResponse,
+            dataToInitializeWith,
             marcType,
             fixedFieldSpecResponse,
             fieldIds,

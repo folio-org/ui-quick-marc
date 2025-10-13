@@ -28,6 +28,7 @@ const QuickMarc = ({
   isShared,
   onClose,
   onSave,
+  initialValues,
   onCreateAndKeepEditing = noop,
   useRoutes = true,
 }) => {
@@ -130,6 +131,7 @@ const QuickMarc = ({
               onCheckCentralTenantPerm={checkCentralTenantPermission}
               externalId={externalId}
               instanceId={instanceId}
+              initialValues={initialValues}
             />
           </QuickMarcProvider>
         )}
@@ -149,6 +151,28 @@ QuickMarc.propTypes = {
   externalId: PropTypes.string,
   isShared: PropTypes.bool,
   useRoutes: PropTypes.bool,
+  initialValues: PropTypes.shape({
+    leader: PropTypes.string.isRequired,
+    fields: PropTypes.arrayOf(PropTypes.shape({
+      tag: PropTypes.string.isRequired,
+      indicators: PropTypes.arrayOf(PropTypes.string),
+      content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+      isProtected: PropTypes.bool.isRequired,
+    })).isRequired,
+    marcFormat: PropTypes.string.isRequired,
+    sourceVersion: PropTypes.number.isRequired,
+    externalId: PropTypes.string.isRequired,
+    updateInfo: PropTypes.shape({
+      recordState: PropTypes.string.isRequired,
+      updatedDate: PropTypes.string.isRequired,
+      updatedBy: PropTypes.shape({
+        userId: PropTypes.string.isRequired,
+        username: PropTypes.string,
+        lastName: PropTypes.string,
+        firstName: PropTypes.string,
+      }).isRequired,
+    }).isRequired,
+  }),
 };
 
 export default QuickMarc;
