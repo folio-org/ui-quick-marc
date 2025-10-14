@@ -48,6 +48,7 @@ const Harness = ({
   action,
   marcType,
   basePath,
+  isUsingRouter,
 }) => {
   const QuickMarcProviderComponent = quickMarcContext
     ? QuickMarcProviderMock
@@ -63,6 +64,7 @@ const Harness = ({
               marcType={marcType}
               basePath={basePath}
               ctxValue={quickMarcContext}
+              isUsingRouter={isUsingRouter}
             >
               {children}
             </QuickMarcProviderComponent>

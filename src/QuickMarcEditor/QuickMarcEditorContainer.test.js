@@ -5,6 +5,7 @@ import {
   fireEvent,
   screen,
   within,
+  waitFor,
 } from '@folio/jest-config-stripes/testing-library/react';
 import faker from 'faker';
 
@@ -71,7 +72,10 @@ const record = {
   id: faker.random.uuid(),
   leader: bibLeaderString,
   marcFormat: MARC_TYPES.BIB.toUpperCase(),
-  fields: [],
+  fields: [{
+    tag: '245',
+    content: '$a value from API',
+  }],
 };
 
 const locations = [];
@@ -86,11 +90,13 @@ const mockOnSave = jest.fn();
 const renderQuickMarcEditorContainer = ({
   action = QUICK_MARC_ACTIONS.EDIT,
   marcType = MARC_TYPES.BIB,
+  isUsingRouter,
   ...props
 } = {}) => (render(
   <Harness
     action={action}
     marcType={marcType}
+    isUsingRouter={isUsingRouter}
   >
     <QuickMarcEditorContainer
       externalRecordPath={externalRecordPath}
@@ -594,6 +600,54 @@ describe('Given Quick Marc Editor Container', () => {
             [OKAPI_TENANT_HEADER]: 'consortium',
           },
         }));
+      });
+    });
+  });
+
+  describe('when using initialValues prop', () => {
+    describe('when using routes', () => {
+      beforeEach(() => {
+        renderQuickMarcEditorContainer({
+          mutator,
+          action: QUICK_MARC_ACTIONS.EDIT,
+          marcType: MARC_TYPES.BIB,
+          isUsingRouter: true,
+          initialValues: {
+            marcFormat: 'BIBLIOGRAPHIC',
+            leader: '03109cas\\a2200841\\a\\4500',
+            fields: [{
+              tag: '245',
+              content: '$a value from initial values',
+            }],
+          },
+        });
+      });
+
+      it('should use fetched data to initialize the form', async () => {
+        await waitFor(() => expect(screen.getByRole('textbox', { name: 'ui-quick-marc.record.subfield' })).toHaveValue('$a value from API'));
+      });
+    });
+
+    describe('when action is CREATE', () => {
+      beforeEach(() => {
+        renderQuickMarcEditorContainer({
+          mutator,
+          action: QUICK_MARC_ACTIONS.CREATE,
+          marcType: MARC_TYPES.BIB,
+          isUsingRouter: false,
+          initialValues: {
+            marcFormat: 'BIBLIOGRAPHIC',
+            leader: '03109cas\\a2200841\\a\\4500',
+            fields: [{
+              tag: '245',
+              content: '$a value from initial values',
+            }],
+          },
+        });
+      });
+
+      it('should use initialValues', async () => {
+        await waitFor(() => expect(screen.getByRole('textbox', { name: 'ui-quick-marc.record.subfield' })).toHaveValue('$a value from initial values'));
       });
     });
   });

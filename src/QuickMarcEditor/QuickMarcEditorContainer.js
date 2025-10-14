@@ -209,7 +209,7 @@ const QuickMarcEditorContainer = ({
       ]) => {
         let dehydratedMarcRecord;
 
-        const isShouldUseInitialValuesProp = initialValuesProp && isUsingRouter;
+        const isShouldUseInitialValuesProp = initialValuesProp && !isUsingRouter;
 
         if (_action === QUICK_MARC_ACTIONS.CREATE) {
           if (isShouldUseInitialValuesProp) {
