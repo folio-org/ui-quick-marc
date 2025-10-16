@@ -59,12 +59,10 @@ const propTypes = {
   onCheckCentralTenantPerm: PropTypes.func,
   initialValues: PropTypes.shape({
     leader: PropTypes.string.isRequired,
-    // eslint-disable-next-line react/forbid-prop-types
     fields: PropTypes.arrayOf(object).isRequired,
     marcFormat: PropTypes.string.isRequired,
     sourceVersion: PropTypes.number.isRequired,
     externalId: PropTypes.string.isRequired,
-    // eslint-disable-next-line react/forbid-prop-types
     updateInfo: PropTypes.object.isRequired,
   }),
 };
