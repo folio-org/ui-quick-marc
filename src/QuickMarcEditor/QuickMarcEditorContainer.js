@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useContext,
 } from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { object } from 'prop-types';
 import { withRouter } from 'react-router';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import noop from 'lodash/noop';
@@ -57,6 +57,14 @@ const propTypes = {
   externalId: PropTypes.string.isRequired,
   instanceId: PropTypes.string.isRequired,
   onCheckCentralTenantPerm: PropTypes.func,
+  initialValues: PropTypes.shape({
+    leader: PropTypes.string.isRequired,
+    fields: PropTypes.arrayOf(object).isRequired,
+    marcFormat: PropTypes.string.isRequired,
+    sourceVersion: PropTypes.number.isRequired,
+    externalId: PropTypes.string.isRequired,
+    updateInfo: PropTypes.object.isRequired,
+  }),
 };
 
 const createRecordDefaults = {
@@ -77,6 +85,7 @@ const QuickMarcEditorContainer = ({
   instanceId: instanceIdProp,
   onCheckCentralTenantPerm = noop,
   match,
+  initialValues: initialValuesProp,
 }) => {
   const {
     action,
@@ -87,6 +96,7 @@ const QuickMarcEditorContainer = ({
     setMarcRecord,
     setRelatedRecordVersion,
     getIsShared,
+    isUsingRouter,
   } = useContext(QuickMarcContext);
   const [locations, setLocations] = useState();
   const [isLoading, setIsLoading] = useState(true);
@@ -207,11 +217,33 @@ const QuickMarcEditorContainer = ({
       ]) => {
         let dehydratedMarcRecord;
 
+        const isShouldUseInitialValuesProp = initialValuesProp && !isUsingRouter;
+
         if (_action === QUICK_MARC_ACTIONS.CREATE) {
-          dehydratedMarcRecord = createRecordDefaults[marcType](instanceResponse, fixedFieldSpecResponse);
+          if (isShouldUseInitialValuesProp) {
+            dehydratedMarcRecord = dehydrateMarcRecordResponse(
+              initialValuesProp,
+              marcType,
+              fixedFieldSpecResponse,
+            );
+          } else {
+            dehydratedMarcRecord = createRecordDefaults[marcType](instanceResponse, fixedFieldSpecResponse);
+          }
         } else {
+          const isLoadingDataAfterKeepEditing = Boolean(fieldIds);
+
+          // if we just saved a record - then we need to ignore `initialValuesProp` to not initialize with old data
+          // otherwise if we're just entering Edit mode - initialize with initial values or values from response
+          let dataToInitializeWith = null;
+
+          if (isLoadingDataAfterKeepEditing || !isShouldUseInitialValuesProp) {
+            dataToInitializeWith = marcRecordResponse;
+          } else {
+            dataToInitializeWith = initialValuesProp;
+          }
+
           dehydratedMarcRecord = dehydrateMarcRecordResponse(
-            marcRecordResponse,
+            dataToInitializeWith,
             marcType,
             fixedFieldSpecResponse,
             fieldIds,

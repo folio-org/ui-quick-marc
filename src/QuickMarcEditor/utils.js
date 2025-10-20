@@ -1179,7 +1179,7 @@ const addLeaderFieldAndIdToRecords = (marcRecordResponse, fieldIds) => {
   };
 };
 
-export const dehydrateMarcRecordResponse = (marcRecordResponse, marcType, fixedFieldSpec, fieldIds) => (
+export const dehydrateMarcRecordResponse = (marcRecordResponse, marcType, fixedFieldSpec, fieldIds = []) => (
   flow(
     marcRecord => addLeaderFieldAndIdToRecords(marcRecord, fieldIds),
     marcRecord => autopopulateFixedField(marcRecord, marcType, fixedFieldSpec),

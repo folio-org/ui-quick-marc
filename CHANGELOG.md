@@ -10,6 +10,7 @@
 * [UIQM-785](https://issues.folio.org/browse/UIQM-785) Default to Name-title browse if the MARC bib field contains a subfield "t".
 * [UIQM-783](https://issues.folio.org/browse/UIQM-783) Update label for 38 position of MARC authority "008" field to "Mod Rec".
 * [UIQM-788](https://issues.folio.org/browse/UIQM-788) Add new props to quickMARC to make it usable without having to define routes.
+* [UIQM-789](https://issues.folio.org/browse/UIQM-789) Add new `initialValues` prop to quickMARC to initialize it with some pre-existing values.
 
 ## [10.0.4](https://github.com/folio-org/ui-quick-marc/tree/v10.0.4) (2025-07-14)
 
