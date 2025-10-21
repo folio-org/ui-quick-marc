@@ -85,6 +85,7 @@ const onCloseMock = jest.fn();
 const onSubmitMock = jest.fn(() => Promise.resolve({ version: 1 }));
 const mockShowCallout = jest.fn();
 const mockValidate = jest.fn().mockReturnValue({});
+const mockInitializeWithPreEditedValues = jest.fn();
 
 useShowCallout.mockClear().mockReturnValue(mockShowCallout);
 
@@ -157,6 +158,7 @@ const renderQuickMarcEditor = (props = {}, { quickMarcContext } = {}) => (render
         addRecord: jest.fn(),
         deleteRecord: jest.fn(),
         moveRecord: jest.fn(),
+        initializeWithPreEditedValues: mockInitializeWithPreEditedValues,
       }}
       initialValues={initialValues}
       marcType={MARC_TYPES.BIB}
@@ -683,7 +685,7 @@ describe('Given QuickMarcEditor', () => {
 
         expect(screen.getByText('ui-quick-marc.validation.modal.heading')).toBeInTheDocument();
 
-        jest.clearAllTimers();
+        jest.useRealTimers();
       });
     });
 
@@ -702,6 +704,8 @@ describe('Given QuickMarcEditor', () => {
         await act(async () => jest.advanceTimersByTime(2100));
 
         expect(screen.queryByText('ui-quick-marc.validation.modal.heading')).not.toBeInTheDocument();
+
+        jest.useRealTimers();
       });
     });
 
@@ -722,6 +726,8 @@ describe('Given QuickMarcEditor', () => {
 
         expect(screen.queryByText('ui-quick-marc.validation.modal.heading')).not.toBeInTheDocument();
         expect(onSubmitMock).not.toHaveBeenCalled();
+
+        jest.useRealTimers();
       });
     });
   });
@@ -1625,6 +1631,32 @@ describe('Given QuickMarcEditor', () => {
       );
 
       expect(queryByText('Confirmation modal')).toBeNull();
+    });
+  });
+
+  describe('when QuickMarcContext has preEditedValues', () => {
+    it('should call initializeWithPreEditedValues', async () => {
+      renderQuickMarcEditor({
+        quickMarcContext: {
+          preEditedValues: {
+            records: [{ tag: '245' }],
+          },
+        },
+      });
+
+      waitFor(() => expect(mockInitializeWithPreEditedValues).toHaveBeenCalledWith([{ tag: '245' }]));
+    });
+  });
+
+  describe('when QuickMarcContext does not have preEditedValues', () => {
+    it('should call initializeWithPreEditedValues', async () => {
+      renderQuickMarcEditor({
+        quickMarcContext: {
+          preEditedValues: null,
+        },
+      });
+
+      waitFor(() => expect(mockInitializeWithPreEditedValues).not.toHaveBeenCalled());
     });
   });
 });
