@@ -43,7 +43,7 @@ const AutoLinkingButton = ({
     autoLinkAuthority,
   } = useAuthorityLinking({ marcType, action });
 
-  const hasAutoLinkableRecord = formValues.records.some(field => isRecordForAutoLinking(field, autoLinkableBibFields));
+  const hasAutoLinkableRecord = formValues.records?.some(field => isRecordForAutoLinking(field, autoLinkableBibFields));
 
   const getAutoLinkingToasts = (fields) => {
     const toasts = [];

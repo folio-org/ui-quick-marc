@@ -1649,7 +1649,7 @@ describe('Given QuickMarcEditor', () => {
   });
 
   describe('when QuickMarcContext does not have preEditedValues', () => {
-    it('should call initializeWithPreEditedValues', async () => {
+    it('should not call initializeWithPreEditedValues', async () => {
       renderQuickMarcEditor({
         quickMarcContext: {
           preEditedValues: null,

@@ -91,12 +91,14 @@ const renderQuickMarcEditorContainer = ({
   action = QUICK_MARC_ACTIONS.EDIT,
   marcType = MARC_TYPES.BIB,
   isUsingRouter,
+  quickMarcContext,
   ...props
 } = {}) => (render(
   <Harness
     action={action}
     marcType={marcType}
     isUsingRouter={isUsingRouter}
+    quickMarcContext={quickMarcContext}
   >
     <QuickMarcEditorContainer
       externalRecordPath={externalRecordPath}
@@ -649,6 +651,38 @@ describe('Given Quick Marc Editor Container', () => {
       it('should use initialValues', async () => {
         await waitFor(() => expect(screen.getByRole('textbox', { name: 'ui-quick-marc.record.subfield' })).toHaveValue('$a value from initial values'));
       });
+    });
+  });
+
+  describe('when using isPreEdited prop', () => {
+    const mockSetPreEditedValues = jest.fn();
+
+    beforeEach(() => {
+      mockSetPreEditedValues.mockClear();
+
+      renderQuickMarcEditorContainer({
+        mutator,
+        quickMarcContext: {
+          instance,
+          action: QUICK_MARC_ACTIONS.EDIT,
+          marcType: MARC_TYPES.BIB,
+          isUsingRouter: false,
+          setPreEditedValues: mockSetPreEditedValues,
+        },
+        initialValues: {
+          marcFormat: 'BIBLIOGRAPHIC',
+          leader: '03109cas\\a2200841\\a\\4500',
+          fields: [{
+            tag: '245',
+            content: '$a value from initial values',
+          }],
+        },
+        isPreEdited: true,
+      });
+    });
+
+    it('should set preEditedValues in QuickMarcContext', async () => {
+      await waitFor(() => expect(mockSetPreEditedValues).toHaveBeenCalled());
     });
   });
 });

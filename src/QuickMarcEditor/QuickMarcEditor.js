@@ -156,7 +156,7 @@ const QuickMarcEditor = ({
     if (preEditedValues) {
       mutators.initializeWithPreEditedValues(preEditedValues.records);
     }
-  }, [preEditedValues]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [preEditedValues, mutators]);
 
   useEffect(() => {
     setIsValidatedCurrentValues(false);
