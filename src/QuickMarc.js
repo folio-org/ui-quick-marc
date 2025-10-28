@@ -175,6 +175,7 @@ QuickMarc.propTypes = {
       }).isRequired,
     }).isRequired,
   }),
+  isPreEdited: PropTypes.bool,
 };
 
 export default QuickMarc;
