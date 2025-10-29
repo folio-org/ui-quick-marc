@@ -207,7 +207,7 @@
     "record.fixedField.Level Est": "Level Est",
     "record.fixedField.Source": "Fonte",
     "record.error.location.invalid": "Subcampo $b do campo 852 contém um código de localização inválido. Por favor, tente novamente.",
-    "permanentLocationLookup": "Pesquisa de localização permanente",
+    "permanentLocationLookup": "Consultar localização permanente",
     "record.error.heading.empty": "O registro não pode ser salvo sem campo 1XX.",
     "record.error.heading.multiple": "O registro não pode ser salvo. Não pode ter vários 1XXs",
     "record.fixedField.Gen ret": "Gen ret",
