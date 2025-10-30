@@ -31,6 +31,9 @@ const defaultQuickMarcContextValue = {
   continueAfterSave: { current: false },
   isShared: false,
   setIsShared: jest.fn(),
+  getIsShared: jest.fn(),
+  preEditedValues: null,
+  setPreEditedValues: jest.fn(),
 };
 
 const QuickMarcProviderMock = ({ ctxValue, children }) => (

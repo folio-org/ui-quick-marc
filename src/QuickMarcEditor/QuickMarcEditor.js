@@ -8,7 +8,10 @@ import React, {
 } from 'react';
 import { FormSpy } from 'react-final-form';
 import PropTypes from 'prop-types';
-import { FormattedMessage, useIntl } from 'react-intl';
+import {
+  FormattedMessage,
+  useIntl,
+} from 'react-intl';
 import find from 'lodash/find';
 import noop from 'lodash/noop';
 import isEmpty from 'lodash/isEmpty';
@@ -130,6 +133,7 @@ const QuickMarcEditor = ({
     continueAfterSave,
     validationErrorsRef,
     isShared,
+    preEditedValues,
   } = useContext(QuickMarcContext);
   const { hasErrorIssues, isBackEndValidationMarcType } = useValidation();
 
@@ -144,6 +148,15 @@ const QuickMarcEditor = ({
   }, [lastFocusedInput]);
 
   const { unlinkAuthority } = useAuthorityLinking({ marcType, action });
+
+  useEffect(() => {
+    // final-form doesn't allow us to initialize a form with some values and make it not pristine
+    // so this is a work-around for that: initialize the form with data from BE
+    // and then replace fields in the form with fields from `initialValues` prop
+    if (preEditedValues) {
+      mutators.initializeWithPreEditedValues(preEditedValues.records);
+    }
+  }, [preEditedValues, mutators]);
 
   useEffect(() => {
     setIsValidatedCurrentValues(false);
@@ -725,6 +738,9 @@ QuickMarcEditor.propTypes = {
 export default stripesFinalForm({
   navigationCheck: true,
   mutators: {
+    initializeWithPreEditedValues: ([records], state, tools) => {
+      tools.changeValue(state, 'records', () => records);
+    },
     addRecord: ([{ index }], state, tools) => {
       const records = addNewRecord(index, state);
 

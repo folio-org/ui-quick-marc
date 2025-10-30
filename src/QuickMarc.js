@@ -31,6 +31,7 @@ const QuickMarc = ({
   initialValues,
   onCreateAndKeepEditing = noop,
   useRoutes = true,
+  isPreEdited = false,
 }) => {
   const location = useLocation();
 
@@ -132,6 +133,7 @@ const QuickMarc = ({
               externalId={externalId}
               instanceId={instanceId}
               initialValues={initialValues}
+              isPreEdited={isPreEdited}
             />
           </QuickMarcProvider>
         )}
@@ -173,6 +175,7 @@ QuickMarc.propTypes = {
       }).isRequired,
     }).isRequired,
   }),
+  isPreEdited: PropTypes.bool,
 };
 
 export default QuickMarc;

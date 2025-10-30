@@ -65,6 +65,7 @@ const propTypes = {
     externalId: PropTypes.string.isRequired,
     updateInfo: PropTypes.object.isRequired,
   }),
+  isPreEdited: PropTypes.bool.isRequired,
 };
 
 const createRecordDefaults = {
@@ -86,6 +87,7 @@ const QuickMarcEditorContainer = ({
   onCheckCentralTenantPerm = noop,
   match,
   initialValues: initialValuesProp,
+  isPreEdited,
 }) => {
   const {
     action,
@@ -94,6 +96,7 @@ const QuickMarcEditorContainer = ({
     instance,
     setInstance,
     setMarcRecord,
+    setPreEditedValues,
     setRelatedRecordVersion,
     getIsShared,
     isUsingRouter,
@@ -217,7 +220,8 @@ const QuickMarcEditorContainer = ({
       ]) => {
         let dehydratedMarcRecord;
 
-        const isShouldUseInitialValuesProp = initialValuesProp && !isUsingRouter;
+        const isShouldUseInitialValuesProp = initialValuesProp && !isUsingRouter && !isPreEdited;
+        const isLoadingDataAfterKeepEditing = Boolean(fieldIds);
 
         if (_action === QUICK_MARC_ACTIONS.CREATE) {
           if (isShouldUseInitialValuesProp) {
@@ -230,9 +234,7 @@ const QuickMarcEditorContainer = ({
             dehydratedMarcRecord = createRecordDefaults[marcType](instanceResponse, fixedFieldSpecResponse);
           }
         } else {
-          const isLoadingDataAfterKeepEditing = Boolean(fieldIds);
-
-          // if we just saved a record - then we need to ignore `initialValuesProp` to not initialize with old data
+          // if we're initializing after Save&keep editing - then we need to ignore `initialValuesProp` to not initialize with old data
           // otherwise if we're just entering Edit mode - initialize with initial values or values from response
           let dataToInitializeWith = null;
 
@@ -253,6 +255,20 @@ const QuickMarcEditorContainer = ({
         setRelatedRecordVersion(instanceResponse?._version);
         setInstance(instanceResponse);
         setMarcRecord(formatInitialValues(dehydratedMarcRecord, _action, linkingRulesResponse));
+
+        // if using pre-edited initial values - then format them the same way and save in quickMARC context
+        // so we can then update form values with them
+        if (!isLoadingDataAfterKeepEditing && isPreEdited) {
+          const dehydratedPreEditedMarcRecord = dehydrateMarcRecordResponse(
+            initialValuesProp,
+            marcType,
+            fixedFieldSpecResponse,
+            [],
+          );
+
+          setPreEditedValues(formatInitialValues(dehydratedPreEditedMarcRecord, _action, linkingRulesResponse));
+        }
+
         setLocations(locationsResponse);
         setFixedFieldSpec(fixedFieldSpecResponse);
         setIsLoading(false);

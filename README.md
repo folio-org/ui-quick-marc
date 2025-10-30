@@ -33,6 +33,8 @@ of the Module Developer's Guide.
 | `onCreateAndKeepEditing` | function | Called after creating/deriving a record via "Save and keep editing" button. Called with `externalId` when `marcType` is "bibliographic" or "authority". For `marcType` "holdings" it's called with `instanceId/externalId` | Yes for route-less, No for pre-defined routes |
 | `useRoutes` | bool | When `true` - quickMARC will define it's own routes that the consuming application will have to redirect to. When `false` - quickMARC will act like a regular plug-in and simply render a view, and the consuming application will have to define it's own routes and provide some props to quickMARC. | No |
 | `initialValues` | object | Values to initialize quickMARC with. Shape should match the response from `records-editor/records` endpoint. Will only be applied when `useRoutes` is `false`. | No |
+| `isPreEdited` | bool | Tells quickMARC that `initialValues` is a pre-edited MARC record. In this case quickMARC will fetch a MARC record from BE and first initialize with it, and then replace fields with fields from `initialValues`. This prop will only be applied when `useRoutes` is `false`. | No |
+
 
 
 This is a [Stripes](https://github.com/folio-org/stripes-core/) UI module to edit MARC records.

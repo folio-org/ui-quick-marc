@@ -117,12 +117,12 @@ const QuickMarcEditorRows = ({
     && action === QUICK_MARC_ACTIONS.EDIT;
 
   const fixedFieldInitialValues = () => {
-    return initialValues.records.find(record => record.tag === FIXED_FIELD_TAG)?.content || {};
+    return initialValues?.records.find(record => record.tag === FIXED_FIELD_TAG)?.content || {};
   };
 
   const isNewRow = useCallback((row) => {
-    return !initialValues.records.find(record => record.id === row.id);
-  }, [initialValues.records]);
+    return !initialValues?.records.find(record => record.id === row.id);
+  }, [initialValues?.records]);
 
   const addNewRow = useCallback(({ target }) => {
     const index = parseInt(target.dataset.index, 10);

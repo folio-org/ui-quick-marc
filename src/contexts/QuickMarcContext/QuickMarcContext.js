@@ -37,6 +37,7 @@ const QuickMarcProvider = ({
   const location = useLocation();
   const [instance, setInstance] = useState(null);
   const [marcRecord, setMarcRecord] = useState(null);
+  const [preEditedValues, setPreEditedValues] = useState(null);
   const [selectedSourceFile, setSelectedSourceFile] = useState(null);
   const [_relatedRecordVersion, setRelatedRecordVersion] = useState();
   const validationErrors = useRef({});
@@ -90,6 +91,8 @@ const QuickMarcProvider = ({
     isShared: isSharedRef.current,
     setIsShared,
     getIsShared,
+    preEditedValues,
+    setPreEditedValues,
   }), [
     selectedSourceFile,
     setSelectedSourceFile,
@@ -108,6 +111,8 @@ const QuickMarcProvider = ({
     isUsingRouter,
     setIsShared,
     getIsShared,
+    preEditedValues,
+    setPreEditedValues,
   ]);
 
   return (
