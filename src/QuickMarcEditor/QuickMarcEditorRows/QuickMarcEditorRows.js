@@ -56,6 +56,7 @@ import {
   applyCentralTenantInHeaders,
   isControlNumberRow,
   isLeaderRow,
+  isReadOnlyTag,
 } from '../utils';
 import { useAuthorityLinking } from '../../hooks';
 import { QuickMarcContext } from '../../contexts';
@@ -288,6 +289,7 @@ const QuickMarcEditorRows = ({
 
             const isLeader = isLeaderRow(recordRow);
             const isDisabled = isReadOnly(recordRow, action, marcType);
+            const isTagDisabled = isReadOnlyTag(recordRow, marcType);
             const fieldValidationIssues = separateValidationErrorsAndWarnings(
               validationErrorsRef.current[recordRow.id],
             );
@@ -431,7 +433,7 @@ const QuickMarcEditorRows = ({
                     maxLength={TAG_FIELD_MAX_LENGTH}
                     marginBottom0
                     fullWidth
-                    disabled={isDisabled || !idx}
+                    disabled={isTagDisabled || !idx}
                     hasClearIcon={false}
                     onChange={onTagChange}
                     data-testid={`tag-field-${idx}`}

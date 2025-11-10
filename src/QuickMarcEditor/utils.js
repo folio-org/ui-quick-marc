@@ -1125,6 +1125,16 @@ export const hasDeleteException = (recordRow, marcType = MARC_TYPES.BIB, authori
   return rows.has(recordRow.tag) || isLastRecord(recordRow);
 };
 
+const READ_ONLY_TAGS = {
+  [MARC_TYPES.BIB]: ['001'],
+  [MARC_TYPES.HOLDINGS]: ['001', '004'],
+  [MARC_TYPES.AUTHORITY]: ['001'],
+};
+
+export const isReadOnlyTag = (recordRow, marcType) => {
+  return READ_ONLY_TAGS[marcType].includes(recordRow.tag) || isLastRecord(recordRow);
+};
+
 const READ_ONLY_ROWS = new Set(['001', '005']);
 
 const READ_ONLY_ROWS_FOR_DERIVE = new Set(['001', '005']);
