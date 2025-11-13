@@ -12,6 +12,7 @@
 * [UIQM-788](https://issues.folio.org/browse/UIQM-788) Add new props to quickMARC to make it usable without having to define routes.
 * [UIQM-789](https://issues.folio.org/browse/UIQM-789) Add new `initialValues` prop to quickMARC to initialize it with some pre-existing values.
 * [UIQM-790](https://issues.folio.org/browse/UIQM-790) Allow to initialize quickMARC with pre-edited values.
+* [UIQM-781](https://issues.folio.org/browse/UIQM-781) Allow editing 005 field tags.
 
 ## [10.0.4](https://github.com/folio-org/ui-quick-marc/tree/v10.0.4) (2025-07-14)
 
