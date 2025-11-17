@@ -150,7 +150,6 @@ const useSaveRecord = ({
     prepareForSubmit,
     mutator,
     linksCount,
-    isRequestToCentralTenantFromMember,
     tenantId,
     refreshPageData,
     onClose,

@@ -39,7 +39,6 @@ const QuickMarcProvider = ({
   const [marcRecord, setMarcRecord] = useState(null);
   const [preEditedValues, setPreEditedValues] = useState(null);
   const [selectedSourceFile, setSelectedSourceFile] = useState(null);
-  const [_relatedRecordVersion, setRelatedRecordVersion] = useState();
   const validationErrors = useRef({});
   const continueAfterSave = useRef(false);
 
@@ -77,8 +76,6 @@ const QuickMarcProvider = ({
     setSelectedSourceFile,
     validationErrorsRef: validationErrors,
     setValidationErrors,
-    relatedRecordVersion: _relatedRecordVersion,
-    setRelatedRecordVersion,
     continueAfterSave,
     action,
     marcType,
@@ -98,8 +95,6 @@ const QuickMarcProvider = ({
     setSelectedSourceFile,
     validationErrors,
     setValidationErrors,
-    _relatedRecordVersion,
-    setRelatedRecordVersion,
     continueAfterSave,
     action,
     marcType,

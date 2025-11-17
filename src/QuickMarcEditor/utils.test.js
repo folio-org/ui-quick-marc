@@ -800,7 +800,6 @@ describe('QuickMarcEditor utils', () => {
 
         const expectedRecord = {
           ...record,
-          relatedRecordVersion: 1,
           marcFormat: 'HOLDINGS',
           suppressDiscovery: false,
           updateInfo: {

@@ -91,9 +91,6 @@ const getMutator = (instance) => ({
   quickMarcRecordStatus: {
     GET: jest.fn(() => Promise.resolve({})),
   },
-  quickMarcEditInstance: {
-    GET: jest.fn(() => Promise.resolve(instance)),
-  },
   locations: {
     GET: () => Promise.resolve({}),
   },
@@ -622,7 +619,6 @@ const getInitialValues = (action, marcType) => {
     [QUICK_MARC_ACTIONS.EDIT]: () => ({
       leader: leadersMap[marcType],
       records: recordsMap[action]()[marcType],
-      relatedRecordVersion: 1,
     }),
     [QUICK_MARC_ACTIONS.DERIVE]: () => ({
       leader: bibLeader,
@@ -661,7 +657,6 @@ const getFormValues = (action, marcType) => {
       marcFormat: marcType.toUpperCase(),
       parsedRecordDtoId: '00000000-0000-0000-0000-000000000000',
       records: recordsMap[action]()[marcType],
-      relatedRecordVersion: 1,
       suppressDiscovery: false,
       updateInfo: { recordState: 'NEW' },
     }),
@@ -924,7 +919,6 @@ describe('useSaveRecord', () => {
           },
         ],
         'parsedRecordDtoId': '00000000-0000-0000-0000-000000000000',
-        'relatedRecordVersion': 1,
         'marcFormat': 'BIBLIOGRAPHIC',
         'suppressDiscovery': false,
         'updateInfo': {
@@ -967,7 +961,6 @@ describe('useSaveRecord', () => {
           },
         ],
         'parsedRecordDtoId': '00000000-0000-0000-0000-000000000000',
-        'relatedRecordVersion': 1,
         'marcFormat': 'BIBLIOGRAPHIC',
         'suppressDiscovery': false,
         'updateInfo': {
@@ -989,7 +982,6 @@ describe('useSaveRecord', () => {
         marcFormat: MARC_TYPES.AUTHORITY.toUpperCase(),
         parsedRecordDtoId: '00000000-0000-0000-0000-000000000000',
         records: undefined,
-        relatedRecordVersion: 1,
         suppressDiscovery: false,
         updateInfo: { recordState: 'NEW' },
         _actionType: 'create',
@@ -1507,42 +1499,6 @@ describe('useSaveRecord', () => {
       });
     });
 
-    describe('when there is a record returned with different version', () => {
-      it('should return the optimistic locking error', async () => {
-        const marcType = MARC_TYPES.BIB;
-        const action = QUICK_MARC_ACTIONS.EDIT;
-
-        const { result } = renderHook(useSaveRecord, {
-          initialProps: {
-            ...getInitialProps(marcType),
-            mutator: getMutator({
-              ...getInstance(),
-              _version: '2',
-            }),
-          },
-          wrapper: getWrapper({
-            quickMarcContext: {
-              action,
-              marcType,
-              initialValues: getInitialValues(action, marcType),
-              instance: {
-                ...getInstance(),
-                _version: '1',
-              },
-            },
-          }),
-        });
-
-        await act(async () => result.current.onSubmit(getFormValues(QUICK_MARC_ACTIONS.EDIT, marcType)));
-
-        expect(result.current.httpError).toEqual({
-          errorType: ERROR_TYPES.OPTIMISTIC_LOCKING,
-          message: 'ui-quick-marc.record.save.error.derive',
-        });
-        expect(mockUpdateMarcRecord).not.toHaveBeenCalled();
-      });
-    });
-
     describe('when there is an error during PUT request due to optimistic locking', () => {
       it('should return the error', async () => {
         const marcType = MARC_TYPES.BIB;
@@ -1574,38 +1530,6 @@ describe('useSaveRecord', () => {
         expect(result.current.httpError).toEqual({
           errorType: ERROR_TYPES.OPTIMISTIC_LOCKING,
           message: 'optimistic locking',
-        });
-      });
-    });
-
-    describe('when record not found (already deleted)', () => {
-      it('should return the error', async () => {
-        const marcType = MARC_TYPES.BIB;
-        const action = QUICK_MARC_ACTIONS.EDIT;
-
-        const { result } = renderHook(useSaveRecord, {
-          initialProps: {
-            ...getInitialProps(marcType),
-            mutator: {
-              ...getMutator(getInstance()),
-              quickMarcEditInstance: { GET: jest.fn().mockRejectedValue({ httpStatus: 404 }) },
-            },
-          },
-          wrapper: getWrapper({
-            quickMarcContext: {
-              action,
-              marcType,
-              initialValues: getInitialValues(action, marcType),
-              instance: getInstance(),
-            },
-          }),
-        });
-
-        await act(async () => result.current.onSubmit(getFormValues(QUICK_MARC_ACTIONS.EDIT, marcType)));
-
-        expect(result.current.httpError).toEqual({
-          errorType: 'other',
-          httpStatus: 404,
         });
       });
     });
@@ -1952,7 +1876,6 @@ describe('useSaveRecord', () => {
         'parsedRecordDtoId': '2b56625f-1ca0-4ada-a32d-2667be1bd509',
         'externalId': 'e72f49c9-9bbf-4d2b-89eb-3d2ee5878530',
         'externalHrid': 'in00000000035',
-        'relatedRecordVersion': 1,
       };
 
       await result.current.onSubmit(formValues);

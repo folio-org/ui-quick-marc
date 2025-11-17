@@ -65,7 +65,6 @@ jest.mock('../queries', () => ({
 const getInstance = () => ({
   id: faker.random.uuid(),
   title: `ui-quick-marc.${MARC_TYPES.BIB}-record.edit.title`,
-  _version: '1',
 });
 
 const record = {

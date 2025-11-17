@@ -13,6 +13,7 @@
 * [UIQM-789](https://issues.folio.org/browse/UIQM-789) Add new `initialValues` prop to quickMARC to initialize it with some pre-existing values.
 * [UIQM-790](https://issues.folio.org/browse/UIQM-790) Allow to initialize quickMARC with pre-edited values.
 * [UIQM-781](https://issues.folio.org/browse/UIQM-781) Allow editing 005 field tags.
+* [UIQM-791](https://issues.folio.org/browse/UIQM-791) show "Optimistic locking" message when an non-mapped Instance fields have been updated.
 
 ## [10.0.4](https://github.com/folio-org/ui-quick-marc/tree/v10.0.4) (2025-07-14)
 

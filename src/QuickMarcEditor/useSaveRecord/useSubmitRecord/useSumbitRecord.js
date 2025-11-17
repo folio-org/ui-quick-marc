@@ -8,7 +8,6 @@ import {
   useParams,
 } from 'react-router-dom';
 import noop from 'lodash/noop';
-import isNil from 'lodash/isNil';
 
 import {
   useStripes,
@@ -16,9 +15,8 @@ import {
   checkIfUserInMemberTenant,
 } from '@folio/stripes/core';
 import { useShowCallout } from '@folio/stripes-acq-components';
-import { getHeaders } from '@folio/stripes-marc-components';
 
-import { ERROR_TYPES, EXTERNAL_INSTANCE_APIS, MARC_TYPES } from '../../../common';
+import { MARC_TYPES } from '../../../common';
 import {
   are010Or1xxUpdated,
   getFieldIds,
@@ -37,7 +35,6 @@ const useSubmitRecord = ({
   prepareForSubmit,
   mutator,
   linksCount,
-  isRequestToCentralTenantFromMember,
   tenantId,
   refreshPageData,
   onClose,
@@ -53,17 +50,12 @@ const useSubmitRecord = ({
   const stripes = useStripes();
   const [httpError, setHttpError] = useState(null);
 
-  const { token, locale } = stripes.okapi;
-  const centralTenantId = stripes.user.user.consortium?.centralTenantId;
-
   const {
     action,
     marcType,
     basePath,
     initialValues,
-    instance,
     continueAfterSave,
-    relatedRecordVersion,
     setIsShared,
     isUsingRouter,
   } = useContext(QuickMarcContext);
@@ -209,35 +201,16 @@ const useSubmitRecord = ({
 
     const formValuesToProcess = prepareForSubmit(formValues);
 
-    const path = EXTERNAL_INSTANCE_APIS[marcType];
-
-    const fetchInstance = async () => {
-      const fetchedInstance = await mutator.quickMarcEditInstance.GET({
-        path: `${path}/${formValuesToProcess.externalId}`,
-        ...(isRequestToCentralTenantFromMember && { headers: getHeaders(centralTenantId, token, locale) }),
-      });
-
-      return fetchedInstance;
-    };
-
     let formValuesToHydrate;
-    let instanceResponse;
 
     try {
       const actualizeLinksPromise = marcType === MARC_TYPES.BIB
         ? actualizeLinks(formValuesToProcess)
         : Promise.resolve(formValuesToProcess);
 
-      const [
-        formValuesWithActualizedLinkedFields,
-        instanceData,
-      ] = await Promise.all([
-        actualizeLinksPromise,
-        fetchInstance(),
-      ]);
+      const formValuesWithActualizedLinkedFields = await actualizeLinksPromise;
 
       formValuesToHydrate = formValuesWithActualizedLinkedFields;
-      instanceResponse = instanceData;
     } catch (errorResponse) {
       const parsedError = await parseHttpError(errorResponse);
 
@@ -246,22 +219,7 @@ const useSubmitRecord = ({
       return undefined;
     }
 
-    const prevVersion = instance._version;
-    const lastVersion = instanceResponse._version;
-
-    if (!isNil(prevVersion) && !isNil(lastVersion) && prevVersion !== lastVersion) {
-      setHttpError({
-        errorType: ERROR_TYPES.OPTIMISTIC_LOCKING,
-        message: 'ui-quick-marc.record.save.error.derive',
-      });
-
-      return null;
-    }
-
     formValuesToHydrate._actionType = 'edit';
-    formValuesToHydrate.relatedRecordVersion = marcType === MARC_TYPES.AUTHORITY
-      ? instance._version
-      : relatedRecordVersion;
 
     const formValuesToSave = hydrateMarcRecord(formValuesToHydrate);
 
@@ -301,18 +259,11 @@ const useSubmitRecord = ({
     showCallout,
     refreshPageData,
     initialValues,
-    instance,
     marcType,
-    mutator,
     linksCount,
     prepareForSubmit,
     actualizeLinks,
-    centralTenantId,
-    token,
-    locale,
     updateMarcRecord,
-    isRequestToCentralTenantFromMember,
-    relatedRecordVersion,
     _externalId,
     _instanceId,
     continueAfterSave,
@@ -336,7 +287,6 @@ const useSubmitRecord = ({
       return null;
     }
 
-    formValuesToHydrate.relatedRecordVersion = 1;
     formValuesToHydrate._actionType = 'create';
 
     const formValuesForDerive = hydrateMarcRecord(formValuesToHydrate);
