@@ -41,7 +41,6 @@ import { MarcFieldContent } from '../common';
 import {
   MARC_TYPES,
   ERROR_TYPES,
-  EXTERNAL_INSTANCE_APIS,
   SOURCES,
 } from '../common/constants';
 import { leaderConfig } from './QuickMarcEditorRows/LeaderField/leaderConfig';
