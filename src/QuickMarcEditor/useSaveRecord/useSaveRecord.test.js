@@ -84,7 +84,7 @@ const getWrapper = ({ quickMarcContext, history }) => ({ children }) => (
   </Harness>
 );
 
-const getMutator = (instance) => ({
+const getMutator = () => ({
   quickMarcEditMarcRecord: {
     POST: jest.fn().mockResolvedValue({}),
   },
@@ -119,11 +119,11 @@ const getInstance = () => ({
   title: 'ui-quick-marc.record.edit.title',
 });
 
-const getInitialProps = (marcType, instance) => ({
+const getInitialProps = (marcType) => ({
   linksCount: 0,
   locations,
   fixedFieldSpec: mockSpecs[marcType],
-  mutator: getMutator(instance),
+  mutator: getMutator(),
   refreshPageData: mockRefreshPageData,
   onClose: mockOnClose,
   onSave: mockOnSave,
@@ -1209,7 +1209,7 @@ describe('useSaveRecord', () => {
         const { result } = renderHook(useSaveRecord, {
           initialProps: {
             ...getInitialProps(marcType),
-            mutator: getMutator(getInstance()),
+            mutator: getMutator(),
           },
           wrapper: getWrapper({
             quickMarcContext: {
@@ -1234,7 +1234,7 @@ describe('useSaveRecord', () => {
       const { result } = renderHook(useSaveRecord, {
         initialProps: {
           ...getInitialProps(marcType),
-          mutator: getMutator(getInstance()),
+          mutator: getMutator(),
         },
         wrapper: getWrapper({
           quickMarcContext: {
@@ -1289,7 +1289,7 @@ describe('useSaveRecord', () => {
       const { result } = renderHook(useSaveRecord, {
         initialProps: {
           ...getInitialProps(marcType),
-          mutator: getMutator(getInstance()),
+          mutator: getMutator(),
         },
         wrapper: getWrapper({
           quickMarcContext: {
@@ -1438,7 +1438,7 @@ describe('useSaveRecord', () => {
         const { result } = renderHook(useSaveRecord, {
           initialProps: {
             ...getInitialProps(marcType),
-            mutator: getMutator(getInstance()),
+            mutator: getMutator(),
           },
           wrapper: getWrapper({
             quickMarcContext: {
@@ -1507,7 +1507,7 @@ describe('useSaveRecord', () => {
         const { result } = renderHook(useSaveRecord, {
           initialProps: {
             ...getInitialProps(marcType),
-            mutator: getMutator(getInstance()),
+            mutator: getMutator(),
           },
           wrapper: getWrapper({
             quickMarcContext: {
@@ -1544,7 +1544,7 @@ describe('useSaveRecord', () => {
         renderHook(useSaveRecord, {
           initialProps: {
             ...getInitialProps(marcType),
-            mutator: getMutator(getInstance()),
+            mutator: getMutator(),
           },
           wrapper: getWrapper({
             quickMarcContext: {
@@ -1574,7 +1574,7 @@ describe('useSaveRecord', () => {
         const { result } = renderHook(useSaveRecord, {
           initialProps: {
             ...getInitialProps(marcType),
-            mutator: getMutator(getInstance()),
+            mutator: getMutator(),
           },
           wrapper: getWrapper({
             quickMarcContext: {
@@ -1602,7 +1602,7 @@ describe('useSaveRecord', () => {
           const { result } = renderHook(useSaveRecord, {
             initialProps: {
               ...getInitialProps(marcType),
-              mutator: getMutator(getInstance()),
+              mutator: getMutator(),
             },
             wrapper: getWrapper({
               quickMarcContext: {
@@ -1634,7 +1634,7 @@ describe('useSaveRecord', () => {
         const { result } = renderHook(useSaveRecord, {
           initialProps: {
             ...getInitialProps(marcType),
-            mutator: getMutator(getInstance()),
+            mutator: getMutator(),
           },
           wrapper: getWrapper({
             quickMarcContext: {

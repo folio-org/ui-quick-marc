@@ -565,7 +565,6 @@ describe('Given Quick Marc Editor Container', () => {
   describe('when a user is in a member tenant and derives a local record', () => {
     it('should take the record data from the member tenant', async () => {
       const newLocation = {
-        ...location,
         search: '?shared=false',
       };
       const newMutator = {
