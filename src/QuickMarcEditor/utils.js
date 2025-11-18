@@ -1126,6 +1126,10 @@ const READ_ONLY_TAGS = {
 };
 
 export const isReadOnlyTag = (recordRow, marcType) => {
+  if (marcType === MARC_TYPES.BIB && recordRow._isLinked) {
+    return true;
+  }
+
   return READ_ONLY_TAGS[marcType].includes(recordRow.tag) || isLastRecord(recordRow);
 };
 
