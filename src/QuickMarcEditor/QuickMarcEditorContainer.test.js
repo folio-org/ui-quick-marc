@@ -65,7 +65,6 @@ jest.mock('../queries', () => ({
 const getInstance = () => ({
   id: faker.random.uuid(),
   title: `ui-quick-marc.${MARC_TYPES.BIB}-record.edit.title`,
-  _version: '1',
 });
 
 const record = {
@@ -566,7 +565,6 @@ describe('Given Quick Marc Editor Container', () => {
   describe('when a user is in a member tenant and derives a local record', () => {
     it('should take the record data from the member tenant', async () => {
       const newLocation = {
-        ...location,
         search: '?shared=false',
       };
       const newMutator = {

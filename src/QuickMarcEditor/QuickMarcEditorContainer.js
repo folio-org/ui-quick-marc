@@ -97,7 +97,6 @@ const QuickMarcEditorContainer = ({
     setInstance,
     setMarcRecord,
     setPreEditedValues,
-    setRelatedRecordVersion,
     getIsShared,
     isUsingRouter,
   } = useContext(QuickMarcContext);
@@ -252,7 +251,6 @@ const QuickMarcEditorContainer = ({
           );
         }
 
-        setRelatedRecordVersion(instanceResponse?._version);
         setInstance(instanceResponse);
         setMarcRecord(formatInitialValues(dehydratedMarcRecord, _action, linkingRulesResponse));
 
@@ -288,7 +286,6 @@ const QuickMarcEditorContainer = ({
     centralTenantId,
     token,
     locale,
-    setRelatedRecordVersion,
     getIsShared,
     stripes,
   ]);

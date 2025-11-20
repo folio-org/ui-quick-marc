@@ -41,7 +41,6 @@ import { MarcFieldContent } from '../common';
 import {
   MARC_TYPES,
   ERROR_TYPES,
-  EXTERNAL_INSTANCE_APIS,
   SOURCES,
 } from '../common/constants';
 import { leaderConfig } from './QuickMarcEditorRows/LeaderField/leaderConfig';
@@ -145,11 +144,8 @@ export const parseHttpError = async (httpError) => {
 
 export const saveLinksToNewRecord = async (mutator, externalId, marcRecord) => {
   // request derived Instance record
-  const instancePromise = mutator.quickMarcEditInstance.GET({ path: `${EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]}/${externalId}` });
   // request derived MARC Bib record
-  const marcPromise = mutator.quickMarcEditMarcRecord.GET({ params: { externalId } });
-
-  return Promise.all([instancePromise, marcPromise]).then(([{ _version }, derivedRecord]) => {
+  return mutator.quickMarcEditMarcRecord.GET({ params: { externalId } }).then(derivedRecord => {
     // copy linking data to new record
     derivedRecord.fields = derivedRecord.fields.map((field) => {
       // matching field from POST request
@@ -169,7 +165,6 @@ export const saveLinksToNewRecord = async (mutator, externalId, marcRecord) => {
       return field;
     });
 
-    derivedRecord.relatedRecordVersion = parseInt(_version, 10);
     derivedRecord._actionType = 'edit';
 
     return mutator.quickMarcEditMarcRecord.PUT(derivedRecord);
@@ -458,7 +453,6 @@ export const formatMarcRecordByQuickMarcAction = (marcRecord, action, marcType) 
   if (action === QUICK_MARC_ACTIONS.CREATE) {
     return {
       ...marcRecord,
-      relatedRecordVersion: 1,
       marcFormat: marcType.toUpperCase(),
       suppressDiscovery: false,
       updateInfo: {
