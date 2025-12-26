@@ -30,6 +30,7 @@ const QuickMarc = ({
   onSave,
   initialValues,
   onCreateAndKeepEditing = noop,
+  fetchExternalRecord,
   useRoutes = true,
   isPreEdited = false,
 }) => {
@@ -113,6 +114,7 @@ const QuickMarc = ({
                   onClose={onClose}
                   onSave={onSave}
                   onCreateAndKeepEditing={onCreateAndKeepEditing}
+                  fetchExternalRecord={fetchExternalRecord}
                 />
               ))
             }
@@ -132,6 +134,7 @@ const QuickMarc = ({
               onCheckCentralTenantPerm={checkCentralTenantPermission}
               externalId={externalId}
               instanceId={instanceId}
+              fetchExternalRecord={fetchExternalRecord}
               initialValues={initialValues}
               isPreEdited={isPreEdited}
             />
@@ -176,6 +179,7 @@ QuickMarc.propTypes = {
     }).isRequired,
   }),
   isPreEdited: PropTypes.bool,
+  fetchExternalRecord: PropTypes.func.isRequired,
 };
 
 export default QuickMarc;

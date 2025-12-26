@@ -100,11 +100,11 @@ const useSubmitRecord = ({
         pathname: routes[marcType],
         search: history.location.search,
       });
+
+      await refreshPageData(fieldIds, QUICK_MARC_ACTIONS.EDIT, externalId);
     } else {
       onCreateAndKeepEditing(externalId);
     }
-
-    await refreshPageData(fieldIds, QUICK_MARC_ACTIONS.EDIT, externalId);
   }, [
     basePath,
     marcType,

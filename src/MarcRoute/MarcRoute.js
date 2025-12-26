@@ -24,6 +24,7 @@ const MarcRoute = ({
   onClose,
   onSave,
   onCreateAndKeepEditing = noop,
+  fetchExternalRecord,
 }) => {
   const stripes = useStripes();
   const history = useHistory();
@@ -77,6 +78,7 @@ const MarcRoute = ({
             onCreateAndKeepEditing={onCreateAndKeepEditing}
             externalRecordPath={externalRecordPath}
             onCheckCentralTenantPerm={checkCentralTenantPermission}
+            fetchExternalRecord={fetchExternalRecord}
           />
         </QuickMarcProvider>
       )}
@@ -93,6 +95,7 @@ MarcRoute.propTypes = {
     action: PropTypes.string.isRequired,
   }).isRequired,
   basePath: PropTypes.string.isRequired,
+  fetchExternalRecord: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   onCreateAndKeepEditing: PropTypes.func,
