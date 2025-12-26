@@ -10,10 +10,7 @@ import { withRouter } from 'react-router';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import noop from 'lodash/noop';
 
-import {
-  stripesConnect,
-  checkIfUserInMemberTenant,
-} from '@folio/stripes/core';
+import { stripesConnect } from '@folio/stripes/core';
 import { LoadingView } from '@folio/stripes/components';
 import {
   baseManifest,
@@ -26,7 +23,6 @@ import { useAuthorityLinksCount } from '../queries';
 import { QuickMarcContext } from '../contexts';
 import { useSaveRecord } from './useSaveRecord';
 import {
-  EXTERNAL_INSTANCE_APIS,
   MARC_RECORD_API,
   MARC_RECORD_STATUS_API,
   MARC_TYPES,
@@ -50,7 +46,6 @@ const propTypes = {
   onSave: PropTypes.func.isRequired,
   onCreateAndKeepEditing: PropTypes.func.isRequired,
   externalRecordPath: PropTypes.string.isRequired,
-  history: ReactRouterPropTypes.history.isRequired,
   match: ReactRouterPropTypes.match.isRequired,
   mutator: PropTypes.object.isRequired,
   stripes: PropTypes.object.isRequired,
@@ -66,6 +61,7 @@ const propTypes = {
     updateInfo: PropTypes.object.isRequired,
   }),
   isPreEdited: PropTypes.bool.isRequired,
+  fetchExternalRecord: PropTypes.func.isRequired,
 };
 
 const createRecordDefaults = {
@@ -79,12 +75,12 @@ const QuickMarcEditorContainer = ({
   onClose,
   onSave,
   onCreateAndKeepEditing,
-  history,
   externalRecordPath,
   stripes,
   externalId: externalIdProp,
   instanceId: instanceIdProp,
   onCheckCentralTenantPerm = noop,
+  fetchExternalRecord,
   match,
   initialValues: initialValuesProp,
   isPreEdited,
@@ -133,13 +129,13 @@ const QuickMarcEditorContainer = ({
     await onCreateAndKeepEditing(getCloseEditorParams(id));
   }, [getCloseEditorParams, onCreateAndKeepEditing]);
 
-  const formatInitialValues = (marcRecord, _action, linkingRulesResponse) => {
+  const formatInitialValues = useCallback((marcRecord, _action, linkingRulesResponse) => {
     const formattedMarcRecord = formatMarcRecordByQuickMarcAction(marcRecord, _action, marcType);
     const marcRecordWithInternalProps = addInternalFieldProperties(formattedMarcRecord);
     const marcRecordWithSplitFields = splitFields(marcRecordWithInternalProps, linkingRulesResponse);
 
     return marcRecordWithSplitFields;
-  };
+  }, [marcType]);
 
   const externalRecordUrl = useMemo(() => {
     if (marcType === MARC_TYPES.HOLDINGS && action !== QUICK_MARC_ACTIONS.CREATE) {
@@ -156,15 +152,6 @@ const QuickMarcEditorContainer = ({
     const isRequestToCentralTenantFromMember = applyCentralTenantInHeaders(getIsShared(), stripes, marcType)
       && _action !== QUICK_MARC_ACTIONS.CREATE;
 
-    const isRequestInstanceFromCentralTenant = isRequestToCentralTenantFromMember || (
-      getIsShared() && checkIfUserInMemberTenant(stripes)
-      && marcType === MARC_TYPES.HOLDINGS && _action === QUICK_MARC_ACTIONS.CREATE
-    );
-
-    const path = _action === QUICK_MARC_ACTIONS.CREATE && marcType === MARC_TYPES.HOLDINGS
-      ? EXTERNAL_INSTANCE_APIS[MARC_TYPES.BIB]
-      : EXTERNAL_INSTANCE_APIS[marcType];
-
     const headers = isRequestToCentralTenantFromMember
       ? { headers: getHeaders(centralTenantId, token, locale) }
       : {};
@@ -179,10 +166,7 @@ const QuickMarcEditorContainer = ({
 
     const instancePromise = _action === QUICK_MARC_ACTIONS.CREATE && marcType !== MARC_TYPES.HOLDINGS
       ? Promise.resolve({})
-      : mutator.quickMarcEditInstance.GET({
-        path: `${path}/${_externalId}`,
-        ...(isRequestInstanceFromCentralTenant ? { headers: getHeaders(centralTenantId, token, locale) } : {}),
-      });
+      : fetchExternalRecord();
 
     const marcRecordPromise = _action === QUICK_MARC_ACTIONS.CREATE
       ? Promise.resolve({})
@@ -277,10 +261,8 @@ const QuickMarcEditorContainer = ({
         showCallout({ messageId: 'ui-quick-marc.record.load.error', type: 'error' });
         handleClose();
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     externalId,
-    history,
     action,
     marcType,
     centralTenantId,
@@ -288,6 +270,17 @@ const QuickMarcEditorContainer = ({
     locale,
     getIsShared,
     stripes,
+    fetchExternalRecord,
+    handleClose,
+    mutator,
+    formatInitialValues,
+    initialValuesProp,
+    isPreEdited,
+    isUsingRouter,
+    setInstance,
+    setMarcRecord,
+    setPreEditedValues,
+    showCallout,
   ]);
 
   const { onSubmit, httpError, runValidation } = useSaveRecord({
