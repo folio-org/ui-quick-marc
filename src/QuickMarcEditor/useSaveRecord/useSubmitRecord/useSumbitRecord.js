@@ -101,6 +101,9 @@ const useSubmitRecord = ({
         search: history.location.search,
       });
 
+      // when quickMARC defines its routes - it also needs to fetch fresh data from BE
+      // we don't need to make this call when quickMARC mounts without routes because
+      // then the parent application will redirect to a different page which will re-initialize quickMARC
       await refreshPageData(fieldIds, QUICK_MARC_ACTIONS.EDIT, externalId);
     } else {
       onCreateAndKeepEditing(externalId);
