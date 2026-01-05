@@ -1,6 +1,6 @@
 {
     "meta.title": "クイックMARC",
-    "record.fixedField.Type": "種類",
+    "record.fixedField.Type": "タイプ",
     "record.fixedField.Srce": "Srce",
     "record.fixedField.Audn": "Audn",
     "record.fixedField.Ctrl": "Ctrl",
