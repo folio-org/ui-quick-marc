@@ -19,7 +19,8 @@
     "optionalOkapiInterfaces": {
       "search-authorities": "1.0",
       "authority-source-files": "2.0",
-      "instance-authority-links": "2.1"
+      "instance-authority-links": "2.1",
+      "instance-authority-linking-rules": "1.1"
     },
     "stripesDeps": [
       "@folio/stripes-acq-components"
