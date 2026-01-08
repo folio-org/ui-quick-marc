@@ -10,6 +10,7 @@ import {
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
+import { useStripes } from '@folio/stripes/core';
 import {
   Col,
   Loading,
@@ -39,6 +40,7 @@ const ControlNumberField = ({
   fieldId,
   canSelectSourceFile,
 }) => {
+  const stripes = useStripes();
   const intl = useIntl();
   const { input } = useField(name);
   const {
@@ -53,6 +55,8 @@ const ControlNumberField = ({
 
   const contentOf010Row = recordRows.find(row => row.tag === '010')?.content;
   const valueOf010$a = getContentSubfieldValue(contentOf010Row).$a?.[0];
+
+  const showSourceFileSelect = canSelectSourceFile && stripes.hasInterface('authority-source-files');
 
   const handleSourceFileSelection = useCallback(async (sourceFile) => {
     const {
@@ -82,7 +86,7 @@ const ControlNumberField = ({
 
   return (
     <>
-      {canSelectSourceFile && (
+      {showSourceFileSelect && (
         <Row>
           <Col xs={4}>
             <SourceFileSelect
