@@ -158,7 +158,7 @@
     "record.physDescription.categoryOfMaterial.v": "Nagranie wideo",
     "record.physDescription.categoryOfMaterial.z": "Unspecified",
     "record.error.tag.nonDigits": "Nieprawidłowa etykieta MARC. Spróbuj ponownie.",
-    "record.error.subfield": "Missing a subfield value for a MARC tag",
+    "record.error.subfield": "Brakuje wartości podpola MARC",
     "holdings-record.edit.title": "Edit MARC holdings - Location: {location} - [{callNumber}]",
     "record.fixedField.AcqStatus": "AcqStatus",
     "record.fixedField.AcqMethod": "AcqMethod",
