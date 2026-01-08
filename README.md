@@ -34,6 +34,10 @@ of the Module Developer's Guide.
 | `useRoutes` | bool | When `true` - quickMARC will define it's own routes that the consuming application will have to redirect to. When `false` - quickMARC will act like a regular plug-in and simply render a view, and the consuming application will have to define it's own routes and provide some props to quickMARC. | No |
 | `initialValues` | object | Values to initialize quickMARC with. Shape should match the response from `records-editor/records` endpoint. Will only be applied when `useRoutes` is `false`. | No |
 | `isPreEdited` | bool | Tells quickMARC that `initialValues` is a pre-edited MARC record. In this case quickMARC will fetch a MARC record from BE and first initialize with it, and then replace fields with fields from `initialValues`. This prop will only be applied when `useRoutes` is `false`. | No |
+| `fetchExternalRecord` | func | Should resolve an Edited/Derived Instance/Holding/Authority record depending on marcType | Yes |
+| `locations` | array | Array of location objects. | Yes for MARC Holdings |
+
+
 
 
 
