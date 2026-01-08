@@ -25,6 +25,7 @@ const MarcRoute = ({
   onSave,
   onCreateAndKeepEditing = noop,
   fetchExternalRecord,
+  locations,
 }) => {
   const stripes = useStripes();
   const history = useHistory();
@@ -79,6 +80,7 @@ const MarcRoute = ({
             externalRecordPath={externalRecordPath}
             onCheckCentralTenantPerm={checkCentralTenantPermission}
             fetchExternalRecord={fetchExternalRecord}
+            locations={locations}
           />
         </QuickMarcProvider>
       )}

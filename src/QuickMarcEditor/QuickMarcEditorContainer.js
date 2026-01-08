@@ -62,6 +62,11 @@ const propTypes = {
   }),
   isPreEdited: PropTypes.bool.isRequired,
   fetchExternalRecord: PropTypes.func.isRequired,
+  locations: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    code: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+  })),
 };
 
 const createRecordDefaults = {
@@ -79,6 +84,7 @@ const QuickMarcEditorContainer = ({
   stripes,
   externalId: externalIdProp,
   instanceId: instanceIdProp,
+  locations = [],
   onCheckCentralTenantPerm = noop,
   fetchExternalRecord,
   match,
@@ -96,7 +102,6 @@ const QuickMarcEditorContainer = ({
     getIsShared,
     isUsingRouter,
   } = useContext(QuickMarcContext);
-  const [locations, setLocations] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [fixedFieldSpec, setFixedFieldSpec] = useState();
   const showCallout = useShowCallout();
@@ -175,10 +180,6 @@ const QuickMarcEditorContainer = ({
         ...headers,
       });
 
-    const locationsPromise = marcType === MARC_TYPES.HOLDINGS
-      ? mutator.locations.GET(headers)
-      : Promise.resolve();
-
     // must be with the central tenant id when user derives shared record
     const linkingRulesPromise = mutator.linkingRules.GET(headers);
 
@@ -190,14 +191,12 @@ const QuickMarcEditorContainer = ({
     await Promise.all([
       instancePromise,
       marcRecordPromise,
-      locationsPromise,
       linkingRulesPromise,
       fixedFieldSpecPromise,
     ])
       .then(([
         instanceResponse,
         marcRecordResponse,
-        locationsResponse,
         linkingRulesResponse,
         fixedFieldSpecResponse,
       ]) => {
@@ -251,7 +250,6 @@ const QuickMarcEditorContainer = ({
           setPreEditedValues(formatInitialValues(dehydratedPreEditedMarcRecord, _action, linkingRulesResponse));
         }
 
-        setLocations(locationsResponse);
         setFixedFieldSpec(fixedFieldSpecResponse);
         setIsLoading(false);
       })
@@ -330,11 +328,6 @@ const QuickMarcEditorContainer = ({
 };
 
 QuickMarcEditorContainer.manifest = Object.freeze({
-  quickMarcEditInstance: {
-    ...baseManifest,
-    fetch: false,
-    accumulate: true,
-  },
   quickMarcEditMarcRecord: {
     ...baseManifest,
     fetch: false,
@@ -350,13 +343,6 @@ QuickMarcEditorContainer.manifest = Object.freeze({
     fetch: false,
     path: MARC_RECORD_STATUS_API,
     accumulate: true,
-  },
-  locations: {
-    type: 'okapi',
-    records: 'locations',
-    path: 'locations?limit=1000',
-    accumulate: true,
-    fetch: false,
   },
   linkingRules: {
     type: 'okapi',
