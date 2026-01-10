@@ -85,6 +85,7 @@ const instanceId = 'instance-id';
 
 const mockOnClose = jest.fn();
 const mockOnSave = jest.fn();
+const mockFetchExternalRecord = jest.fn();
 
 const renderQuickMarcEditorContainer = ({
   action = QUICK_MARC_ACTIONS.EDIT,
@@ -106,6 +107,7 @@ const renderQuickMarcEditorContainer = ({
       externalId={externalId}
       instanceId={instanceId}
       onCheckCentralTenantPerm={() => false}
+      fetchExternalRecord={mockFetchExternalRecord}
       {...props}
     />
   </Harness>,
@@ -118,12 +120,10 @@ describe('Given Quick Marc Editor Container', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     instance = getInstance();
+    mockFetchExternalRecord.mockResolvedValue(instance);
     mutator = {
       externalInstanceApi: {
         update: jest.fn(),
-      },
-      quickMarcEditInstance: {
-        GET: jest.fn(() => Promise.resolve(instance)),
       },
       quickMarcEditMarcRecord: {
         GET: jest.fn(() => Promise.resolve(record)),
@@ -544,7 +544,6 @@ describe('Given Quick Marc Editor Container', () => {
       });
 
       const requests = [
-        mutator.quickMarcEditInstance.GET,
         mutator.quickMarcEditMarcRecord.GET,
         mutator.linkingRules.GET,
       ];
@@ -567,12 +566,6 @@ describe('Given Quick Marc Editor Container', () => {
       const newLocation = {
         search: '?shared=false',
       };
-      const newMutator = {
-        ...mutator,
-        quickMarcEditInstance: {
-          GET: jest.fn(() => Promise.resolve({ ...instance, source: 'FOLIO' })),
-        },
-      };
       const stripes = buildStripes({
         okapi: { tenant: 'university' },
         user: { user: { consortium: { centralTenantId: 'consortium' } } },
@@ -580,7 +573,7 @@ describe('Given Quick Marc Editor Container', () => {
 
       await act(async () => {
         renderQuickMarcEditorContainer({
-          mutator: newMutator,
+          mutator,
           onClose: jest.fn(),
           action: QUICK_MARC_ACTIONS.DERIVE,
           stripes,
@@ -589,9 +582,8 @@ describe('Given Quick Marc Editor Container', () => {
       });
 
       const requests = [
-        newMutator.quickMarcEditInstance.GET,
-        newMutator.quickMarcEditMarcRecord.GET,
-        newMutator.linkingRules.GET,
+        mutator.quickMarcEditMarcRecord.GET,
+        mutator.linkingRules.GET,
       ];
 
       requests.forEach(request => {
