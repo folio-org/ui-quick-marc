@@ -3,9 +3,11 @@ import { useQuery } from 'react-query';
 import {
   useNamespace,
   useOkapiKy,
+  useStripes,
 } from '@folio/stripes/core';
 
 const useAuthorityLinksCount = ({ id } = {}) => {
+  const stripes = useStripes();
   const ky = useOkapiKy();
   const [namespace] = useNamespace();
 
@@ -18,7 +20,7 @@ const useAuthorityLinksCount = ({ id } = {}) => {
     () => ky.get('search/authorities', { searchParams }).json(),
     {
       keepPreviousData: true,
-      enabled: Boolean(id),
+      enabled: Boolean(id) && stripes.hasInterface('search-authorities'),
     },
   );
 

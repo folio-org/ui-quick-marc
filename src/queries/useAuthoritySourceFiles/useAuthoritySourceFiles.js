@@ -3,11 +3,13 @@ import { useQuery } from 'react-query';
 import {
   useNamespace,
   useOkapiKy,
+  useStripes,
 } from '@folio/stripes/core';
 
 const CQL_ALL = 'cql.allRecords=1';
 
 const useAuthoritySourceFiles = ({ searchParams, tenantId } = {}) => {
+  const stripes = useStripes();
   const ky = useOkapiKy({ tenant: tenantId });
   const [namespace] = useNamespace({ key: 'authority-source-files' });
 
@@ -22,6 +24,9 @@ const useAuthoritySourceFiles = ({ searchParams, tenantId } = {}) => {
     [namespace, tenantId, queryString],
     async () => {
       return ky.get('authority-source-files', { searchParams: _searchParams }).json();
+    },
+    {
+      enabled: stripes.hasInterface('authority-source-files'),
     },
   );
 

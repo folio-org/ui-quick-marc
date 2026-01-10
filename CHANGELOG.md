@@ -15,6 +15,7 @@
 * [UIQM-781](https://issues.folio.org/browse/UIQM-781) Allow editing 005 field tags.
 * [UIQM-791](https://issues.folio.org/browse/UIQM-791) show "Optimistic locking" message when an non-mapped Instance fields have been updated.
 * [UIQM-808](https://issues.folio.org/browse/UIQM-808) *BREAKING* Require consumer modules to fetch Instance/Holdings/Authority records outside of quickMARC.
+* [UIQM-804](https://issues.folio.org/browse/UIQM-804) Make ui-quick-marc dependencies optional without impacting functionality.
 
 ## [10.0.4](https://github.com/folio-org/ui-quick-marc/tree/v10.0.4) (2025-07-14)
 
