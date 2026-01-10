@@ -1,6 +1,6 @@
 {
   "name": "@folio/quick-marc",
-  "version": "10.1.0",
+  "version": "11.0.0",
   "description": "Quick MARC editor",
   "main": "index.js",
   "repository": "",
@@ -12,7 +12,6 @@
     "pluginType": "quick-marc",
     "displayName": "ui-quick-marc.meta.title",
     "okapiInterfaces": {
-      "inventory": "14.0",
       "marc-records-editor": "6.0",
       "marc-specifications": "1.0"
     },
