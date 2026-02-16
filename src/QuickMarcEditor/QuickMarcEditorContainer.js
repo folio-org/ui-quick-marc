@@ -24,7 +24,6 @@ import { QuickMarcContext } from '../contexts';
 import { useSaveRecord } from './useSaveRecord';
 import {
   MARC_RECORD_API,
-  MARC_RECORD_STATUS_API,
   MARC_TYPES,
   LINKING_RULES_API,
   MARC_SPEC_API,
@@ -337,12 +336,6 @@ QuickMarcEditorContainer.manifest = Object.freeze({
     headers: {
       accept: 'application/json',
     },
-  },
-  quickMarcRecordStatus: {
-    ...baseManifest,
-    fetch: false,
-    path: MARC_RECORD_STATUS_API,
-    accumulate: true,
   },
   linkingRules: {
     type: 'okapi',
