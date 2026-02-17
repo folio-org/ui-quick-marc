@@ -16,7 +16,7 @@
 * [UIQM-791](https://issues.folio.org/browse/UIQM-791) show "Optimistic locking" message when an non-mapped Instance fields have been updated.
 * [UIQM-808](https://issues.folio.org/browse/UIQM-808) *BREAKING* Require consumer modules to fetch Instance/Holdings/Authority records outside of quickMARC.
 * [UIQM-804](https://issues.folio.org/browse/UIQM-804) Make ui-quick-marc dependencies optional without impacting functionality.
-* [UIQM-806](https://issues.folio.org/browse/UIQM-806) Remove request to mod-quick-marc `status` endpoint and use data from records-editor POST response directly.
+* [UIQM-806](https://issues.folio.org/browse/UIQM-806) *BREAKING* Remove request to mod-quick-marc `status` endpoint and use data from records-editor POST response directly.
 
 ## [10.0.4](https://github.com/folio-org/ui-quick-marc/tree/v10.0.4) (2025-07-14)
 
