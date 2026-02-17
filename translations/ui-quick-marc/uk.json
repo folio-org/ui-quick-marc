@@ -182,7 +182,7 @@
     "record.error.location.multiple": "Запис не може бути збережений. Дозволене лише одне поле 852 MARC.",
     "permission.quick-marc-authorities-editor.all": "Редактор quickMARC: Перегляд, редагування авторитетного запису MARC",
     "authority-record.edit.title": "Редагувати {shared, select, true {спільний} false {локальний} other {}} авторитетний запис MARC - {title}",
-    "record.headingType.100": "Особисте ім'я",
+    "record.headingType.100": "Ім'я особи",
     "record.headingType.110": "Назва організації",
     "record.headingType.111": "Назва конференції",
     "record.headingType.151": "Географічна назва",
