@@ -80,6 +80,7 @@ export const FIELDS_TAGS_WITHOUT_DEFAULT_SUBFIELDS = {
     { tag: LEADER_TAG },
     { tag: '001' },
     { tag: '002' },
+    { tag: '003' },
     { tag: '004' },
     { tag: '005' },
     { tag: '008' },
