@@ -17,6 +17,7 @@
 * [UIQM-808](https://issues.folio.org/browse/UIQM-808) *BREAKING* Require consumer modules to fetch Instance/Holdings/Authority records outside of quickMARC.
 * [UIQM-804](https://issues.folio.org/browse/UIQM-804) Make ui-quick-marc dependencies optional without impacting functionality.
 * [UIQM-787](https://issues.folio.org/browse/UIQM-787) MARC authority - Do not auto add a subfield "a" to standard control field if the MARC validation rule does not require one.
+* [UIQM-807](https://issues.folio.org/browse/UIQM-807) Create/Edit/Derive a MARC bib record: Add an infotip popover to the right of Link Headings button.
 
 ## [10.0.4](https://github.com/folio-org/ui-quick-marc/tree/v10.0.4) (2025-07-14)
 
