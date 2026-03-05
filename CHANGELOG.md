@@ -18,6 +18,7 @@
 * [UIQM-804](https://issues.folio.org/browse/UIQM-804) Make ui-quick-marc dependencies optional without impacting functionality.
 * [UIQM-787](https://issues.folio.org/browse/UIQM-787) MARC authority - Do not auto add a subfield "a" to standard control field if the MARC validation rule does not require one.
 * [UIQM-807](https://issues.folio.org/browse/UIQM-807) Create/Edit/Derive a MARC bib record: Add an infotip popover to the right of Link Headings button.
+* [UIQM-804](https://issues.folio.org/browse/UIQM-804) include global permissions in package.json base permissions.
 
 ## [10.0.4](https://github.com/folio-org/ui-quick-marc/tree/v10.0.4) (2025-07-14)
 

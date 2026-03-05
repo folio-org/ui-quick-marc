@@ -26,6 +26,13 @@
     ],
     "permissionSets": [
       {
+        "permissionName": "module.ui-quick-marc.enabled",
+        "displayName": "UI: quickMARC plugin is enabled",
+        "subPermissions": [
+          "stripes-core.settings.read"
+        ]
+      },
+      {
         "permissionName": "ui-quick-marc.quick-marc-editor.view",
         "displayName": "quickMARC: View MARC bibliographic record",
         "subPermissions": [
