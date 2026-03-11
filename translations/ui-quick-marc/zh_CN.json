@@ -946,5 +946,7 @@
     "record.fixedField.Memorandum": "备忘",
     "record.fixedField.Provisional": "临时的",
     "record.fixedField.Preliminary": "初步的",
-    "record.fixedField.Mod Rec": "修改记录"
+    "record.fixedField.Mod Rec": "修改记录",
+    "autoLinkingButton.infotip": "“链接标题”按钮会将所有包含 $0 的检索点书目字段链接到规范标题。如果某个字段不包含 $0，可以通过选择字段本身的“链接”按钮，手动将该字段链接到规范标题。",
+    "autoLinkingButton.infotip.learnMore": "了解更多信息"
 }
