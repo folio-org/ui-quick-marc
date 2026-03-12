@@ -12,8 +12,8 @@
     "pluginType": "quick-marc",
     "displayName": "ui-quick-marc.meta.title",
     "okapiInterfaces": {
-      "marc-records-editor": "7.0",
-      "marc-specifications": "1.2"
+      "marc-records-editor": "6.0 7.0",
+      "marc-specifications": "1.0 1.2"
     },
     "optionalOkapiInterfaces": {
       "search-authorities": "1.0",
