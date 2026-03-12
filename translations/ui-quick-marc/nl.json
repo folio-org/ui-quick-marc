@@ -946,5 +946,7 @@
     "record.fixedField.Memorandum": "Memorandum",
     "record.fixedField.Provisional": "Voorlopig",
     "record.fixedField.Preliminary": "Voorlopig",
-    "record.fixedField.Mod Rec": "Mod Rec"
+    "record.fixedField.Mod Rec": "Mod Rec",
+    "autoLinkingButton.infotip": "The Link headings button links all access point bibliographic fields that contain a $0 to authority heading. If a field does not have a $0, you can manually link the field to an authority heading by selecting the Link button on the field itself.",
+    "autoLinkingButton.infotip.learnMore": "Learn more"
 }
