@@ -70,10 +70,6 @@ jest.mock('../../queries', () => ({
   useValidate: jest.fn(),
 }));
 
-jest.mock('../getQuickMarcRecordStatus', () => {
-  return jest.fn().mockResolvedValue({ externalId: 'externalId-1' });
-});
-
 const getWrapper = ({ quickMarcContext, history }) => ({ children }) => (
   <Harness
     translations={[]}
@@ -86,10 +82,7 @@ const getWrapper = ({ quickMarcContext, history }) => ({ children }) => (
 
 const getMutator = () => ({
   quickMarcEditMarcRecord: {
-    POST: jest.fn().mockResolvedValue({}),
-  },
-  quickMarcRecordStatus: {
-    GET: jest.fn(() => Promise.resolve({})),
+    POST: jest.fn().mockResolvedValue({ externalId: 'externalId-1' }),
   },
   locations: {
     GET: () => Promise.resolve({}),
@@ -972,6 +965,9 @@ describe('useSaveRecord', () => {
       await result.current.onSubmit(formValues);
 
       expect(mutator.quickMarcEditMarcRecord.POST).toHaveBeenCalledWith(formValuesForCreate);
+      expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.success.processing' });
+      expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.saveNew.success' });
+      expect(mockOnSave).toHaveBeenCalled();
     });
 
     it('should create authority record with correct payload and call onSave', async () => {

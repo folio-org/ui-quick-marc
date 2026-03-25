@@ -25,7 +25,6 @@ import {
   recordHasLinks,
   saveLinksToNewRecord,
 } from '../../utils';
-import getQuickMarcRecordStatus from '../../getQuickMarcRecordStatus';
 import { QuickMarcContext } from '../../../contexts';
 import { useAuthorityLinking } from '../../../hooks';
 import { useMarcRecordMutation } from '../../../queries';
@@ -143,43 +142,35 @@ const useSubmitRecord = ({
 
     const formValuesForCreate = hydrateMarcRecord(formValuesToHydrate);
 
+    showCallout({ messageId: 'ui-quick-marc.record.save.success.processing' });
+
     return mutator.quickMarcEditMarcRecord.POST(formValuesForCreate)
-      .then(async ({ qmRecordId }) => {
+      .then(async ({ externalId }) => {
+        // for MARC Bib records instanceId and externalId are the same
+        // for MARC Holdings record externalId is the id of a Holding record
         const instanceId = formValues.externalId;
 
-        showCallout({ messageId: 'ui-quick-marc.record.save.success.processing' });
+        showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
 
-        try {
-          const { externalId } = await getQuickMarcRecordStatus({
-            quickMarcRecordStatusGETRequest: mutator.quickMarcRecordStatus.GET,
-            qmRecordId,
-            showCallout,
-          });
-
-          showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
-
-          if (marcType === MARC_TYPES.BIB && recordHasLinks(formValuesForCreate.fields)) {
-            await saveLinksToNewRecord(mutator, externalId, formValuesForCreate)
-              .catch(noop);
-          }
-
-          if (continueAfterSave.current) {
-            await processEditingAfterCreation(formValues, externalId);
-
-            return;
-          }
-
-          await redirectToRecord(externalId, instanceId);
-        } catch (err) {
-          // eslint-disable-next-line no-console
-          console.error(err);
-          showCallout({
-            messageId: 'ui-quick-marc.record.saveNew.error',
-            type: 'error',
-          });
+        if (marcType === MARC_TYPES.BIB && recordHasLinks(formValuesForCreate.fields)) {
+          await saveLinksToNewRecord(mutator, externalId, formValuesForCreate)
+            .catch(noop);
         }
+
+        if (continueAfterSave.current) {
+          await processEditingAfterCreation(formValues, externalId);
+
+          return;
+        }
+
+        await redirectToRecord(externalId, instanceId);
       })
       .catch(async (errorResponse) => {
+        showCallout({
+          messageId: 'ui-quick-marc.record.saveNew.error',
+          type: 'error',
+        });
+
         const parsedError = await parseHttpError(errorResponse);
 
         setHttpError(parsedError);
@@ -295,47 +286,37 @@ const useSubmitRecord = ({
     const formValuesForDerive = hydrateMarcRecord(formValuesToHydrate);
 
     return mutator.quickMarcEditMarcRecord.POST(formValuesForDerive)
-      .then(async ({ qmRecordId }) => {
+      .then(async ({ externalId }) => {
         if (!continueAfterSave.current) {
           onClose('id'); // https://issues.folio.org/browse/UIQM-82
         }
 
-        try {
-          const { externalId } = await getQuickMarcRecordStatus({
-            quickMarcRecordStatusGETRequest: mutator.quickMarcRecordStatus.GET,
-            qmRecordId,
-            showCallout,
-          });
+        showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
 
-          showCallout({ messageId: 'ui-quick-marc.record.saveNew.success' });
-
-          if (continueAfterSave.current) {
-            if (recordHasLinks(formValuesForDerive.fields)) {
-              await saveLinksToNewRecord(mutator, externalId, formValuesForDerive)
-                .catch(noop);
-            }
-
-            await processEditingAfterCreation(formValues, externalId);
-
-            return;
-          }
-
+        if (continueAfterSave.current) {
           if (recordHasLinks(formValuesForDerive.fields)) {
-            saveLinksToNewRecord(mutator, externalId, formValuesForDerive)
-              .finally(() => onClose(externalId));
-          } else {
-            onClose(externalId);
+            await saveLinksToNewRecord(mutator, externalId, formValuesForDerive)
+              .catch(noop);
           }
-        } catch (err) {
-          // eslint-disable-next-line no-console
-          console.error(err);
-          showCallout({
-            messageId: 'ui-quick-marc.record.saveNew.error',
-            type: 'error',
-          });
+
+          await processEditingAfterCreation(formValues, externalId);
+
+          return;
+        }
+
+        if (recordHasLinks(formValuesForDerive.fields)) {
+          saveLinksToNewRecord(mutator, externalId, formValuesForDerive)
+            .finally(() => onClose(externalId));
+        } else {
+          onClose(externalId);
         }
       })
       .catch(async (errorResponse) => {
+        showCallout({
+          messageId: 'ui-quick-marc.record.saveNew.error',
+          type: 'error',
+        });
+
         const parsedError = await parseHttpError(errorResponse);
 
         setHttpError(parsedError);
