@@ -1,16 +1,18 @@
-import { useIntl } from 'react-intl';
+import {
+  useIntl,
+  FormattedMessage,
+} from 'react-intl';
 import PropTypes from 'prop-types';
 
+import { IfPermission } from '@folio/stripes/core';
 import {
-  IfPermission,
-} from '@folio/stripes/core';
-import { Button } from '@folio/stripes/components';
+  Button,
+  InfoPopover,
+} from '@folio/stripes/components';
 import { useShowCallout } from '@folio/stripes-acq-components';
 
 import { useAuthorityLinking } from '../../hooks';
-import {
-  isRecordForAutoLinking,
-} from '../utils';
+import { isRecordForAutoLinking } from '../utils';
 import { MARC_TYPES } from '../../common/constants';
 import {
   AUTOLINKING_STATUSES,
@@ -143,6 +145,15 @@ const AutoLinkingButton = ({
       >
         {intl.formatMessage({ id: 'ui-quick-marc.autoLinkingButton' })}
       </Button>
+      <InfoPopover
+        allowAnchorClick
+        hideOnButtonClick
+        iconSize="medium"
+        content={<FormattedMessage id="ui-quick-marc.autoLinkingButton.infotip" />}
+        buttonLabel={intl.formatMessage({ id: 'ui-quick-marc.autoLinkingButton.infotip.learnMore' })}
+        buttonTarget="_blank"
+        buttonHref="https://docs.folio.org/docs/metadata/inventory/quickmarc/#linking-to-authority-records"
+      />
     </IfPermission>
   );
 };

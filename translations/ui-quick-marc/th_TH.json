@@ -793,11 +793,11 @@
     "record.fixedField.Loose-leaf": "Loose-leaf",
     "record.fixedField.invalid.value": "invalid value",
     "record.error.008.invalidValue": "Record cannot be saved. Field 008 contains an invalid value in \"{name}\" position.",
-    "record.fixedField.Status": "Status",
+    "record.fixedField.Status": "สถานะ",
     "record.fixedField.ELvl": "ELvl",
     "record.fixedField.MultiLvl": "MultiLvl",
     "record.fixedField.Punct": "Punct",
-    "record.fixedField.Item": "Item",
+    "record.fixedField.Item": "รายการทรัพยากร",
     "leader.Increase in encoding level": "Increase in encoding level",
     "leader.Corrected or revised": "Corrected or revised",
     "leader.Deleted": "Deleted",
@@ -879,8 +879,8 @@
     "validation.modal.heading": "MARC validation rules check",
     "validation.modal.message": "There might be a slight delay while the system is checking against the library's validation rules. You can continue to work with {appName} in a different browser tab if needed.",
     "record.errorMessage.help": "Help",
-    "Inventory": "Inventory",
-    "MARC-authority": "MARC authority",
+    "Inventory": "คลังทรัพยากร",
+    "MARC-authority": "ข้อมูล authority ของ MARC",
     "record.error.fixedField.invalidLength": "Invalid {name} field length, must be {length} characters.",
     "permission.quick-marc-editor.derive.execute": "quickMARC: Derive new MARC bibliographic record",
     "permission.quick-marc-authority-records.link-unlink.execute": "quickMARC: Can Link/unlink authority records to bib records",
@@ -946,5 +946,7 @@
     "record.fixedField.Memorandum": "Memorandum",
     "record.fixedField.Provisional": "Provisional",
     "record.fixedField.Preliminary": "Preliminary",
-    "record.fixedField.Mod Rec": "Mod Rec"
+    "record.fixedField.Mod Rec": "Mod Rec",
+    "autoLinkingButton.infotip": "The Link headings button links all access point bibliographic fields that contain a $0 to authority heading. If a field does not have a $0, you can manually link the field to an authority heading by selecting the Link button on the field itself.",
+    "autoLinkingButton.infotip.learnMore": "Learn more"
 }

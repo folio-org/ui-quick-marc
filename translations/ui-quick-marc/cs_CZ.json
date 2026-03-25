@@ -946,5 +946,7 @@
     "record.fixedField.Memorandum": "Memorandum",
     "record.fixedField.Provisional": "Provizorní",
     "record.fixedField.Preliminary": "Předběžný",
-    "record.fixedField.Mod Rec": "Modul Rec"
+    "record.fixedField.Mod Rec": "Modul Rec",
+    "autoLinkingButton.infotip": "Tlačítko Propojit záhlaví propojuje všechna bibliografická pole přístupového bodu, která obsahují $0, se záhlavím autority. Pokud pole neobsahuje $0, můžete pole ručně propojit se záhlavím autority výběrem tlačítka Propojit na samotném poli.",
+    "autoLinkingButton.infotip.learnMore": "Zjistit více"
 }

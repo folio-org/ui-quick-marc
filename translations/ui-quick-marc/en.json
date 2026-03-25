@@ -966,6 +966,8 @@
   "records.autoLink.notLinkedFields": "Field <b>{fieldTags}</b>{count, plural, one {} =2 { and <b>{lastFieldTag}</b>} other {, and <b>{lastFieldTag}</b>}} must be set manually by selecting the link icon.",
   "records.autoLink.notLinkedFields.multiple": "Field <b>{fieldTags}</b>{count, plural, one {} =2 { and <b>{lastFieldTag}</b>} other {, and <b>{lastFieldTag}</b>}} must be set manually by selecting the link icon. There are multiple authority records that can be matched to this bibliographic field.",
   "autoLinkingButton": "Link headings",
+  "autoLinkingButton.infotip": "The Link headings button links all access point bibliographic fields that contain a $0 to authority heading. If a field does not have a $0, you can manually link the field to an authority heading by selecting the Link button on the field itself.",
+  "autoLinkingButton.infotip.learnMore": "Learn more",
   "records.error.autoLinking": "Unable to link record(s) due to system error. Please try again or contact support.",
   "record.searchLink": "Search for records by 010 value(s)",
 

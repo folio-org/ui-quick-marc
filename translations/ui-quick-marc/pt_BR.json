@@ -946,5 +946,7 @@
     "record.fixedField.Memorandum": "Memorando",
     "record.fixedField.Provisional": "Provisório",
     "record.fixedField.Preliminary": "Preliminar",
-    "record.fixedField.Mod Rec": "Mod Rec"
+    "record.fixedField.Mod Rec": "Mod Rec",
+    "autoLinkingButton.infotip": "O botão \"Vincular cabeçalhos\" vincula todos os campos bibliográficos de pontos de acesso que contêm um $0 a um cabeçalho de autoridade. Se um campo não tiver um $0, você pode vinculá-lo manualmente a um cabeçalho de autoridade selecionando o botão \"Vincular\" no próprio campo.",
+    "autoLinkingButton.infotip.learnMore": "Saiba mais"
 }
