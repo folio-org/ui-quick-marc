@@ -20,6 +20,7 @@
 * [UIQM-807](https://issues.folio.org/browse/UIQM-807) Create/Edit/Derive a MARC bib record: Add an infotip popover to the right of Link Headings button.
 * [UIQM-804](https://issues.folio.org/browse/UIQM-804) include global permissions in package.json base permissions.
 * [UIQM-806](https://issues.folio.org/browse/UIQM-806) *BREAKING* Remove request to mod-quick-marc `status` endpoint and use data from records-editor POST response directly.
+* [UIQM-816](https://issues.folio.org/browse/UIQM-816) Keep polling mod-search until it returns a record or we exceed max attempts.
 
 ## [10.0.4](https://github.com/folio-org/ui-quick-marc/tree/v10.0.4) (2025-07-14)
 
