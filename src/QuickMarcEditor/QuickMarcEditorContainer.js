@@ -226,6 +226,10 @@ const QuickMarcEditorContainer = ({
         linkingRulesResponse,
         fixedFieldSpecResponse,
       ]) => {
+        if (!instanceResponse) {
+          throw new Error();
+        }
+
         let dehydratedMarcRecord;
 
         const isShouldUseInitialValuesProp = initialValuesProp && !isUsingRouter && !isPreEdited;
