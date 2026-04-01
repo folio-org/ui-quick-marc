@@ -675,4 +675,42 @@ describe('Given Quick Marc Editor Container', () => {
       await waitFor(() => expect(mockSetPreEditedValues).toHaveBeenCalled());
     });
   });
+
+  describe('when fetchExternalRecord does not return a record on first attempt', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+      mockFetchExternalRecord.mockResolvedValue(null);
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('should keep polling the endpoint until it returns a record', async () => {
+      renderQuickMarcEditorContainer({
+        mutator,
+        quickMarcContext: {
+          instance,
+          action: QUICK_MARC_ACTIONS.EDIT,
+          marcType: MARC_TYPES.BIB,
+          isUsingRouter: false,
+        },
+      });
+
+      expect(screen.getByText('LoadingView')).toBeInTheDocument();
+
+      await jest.advanceTimersByTimeAsync(2000);
+
+      expect(mockFetchExternalRecord).toHaveBeenCalledTimes(2);
+
+      mockFetchExternalRecord.mockResolvedValue({});
+
+      await jest.advanceTimersByTimeAsync(2000);
+
+      expect(mockFetchExternalRecord).toHaveBeenCalledTimes(3);
+
+      await jest.advanceTimersByTimeAsync(2000);
+      expect(screen.queryByText('LoadingView')).toBeNull();
+    });
+  });
 });
