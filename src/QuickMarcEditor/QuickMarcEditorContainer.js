@@ -227,7 +227,7 @@ const QuickMarcEditorContainer = ({
         fixedFieldSpecResponse,
       ]) => {
         if (!instanceResponse) {
-          throw new Error();
+          throw new Error('External record not loaded');
         }
 
         let dehydratedMarcRecord;
