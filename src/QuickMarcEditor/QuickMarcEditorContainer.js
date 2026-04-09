@@ -149,6 +149,33 @@ const QuickMarcEditorContainer = ({
     return `${externalRecordPath}/${externalId}`;
   }, [externalRecordPath, marcType, externalId, instanceId, action]);
 
+  // when creating a new record, /records-editor/records returns a 201 status, but that only indicates that
+  // a MARC record has been created. There may be some delay between MARC record creation and when mod-search
+  // completes indexing of the new record so it becomes available in search
+  // this delay becomes apparent when creating a new record via "Save & keep editing" button, when
+  // after creating a record we get an error due to a missing record in mod-search
+  // we can avoid this by making a few attemts to find the new record
+  const retryFetchingExternalRecord = useCallback(async () => {
+    const RETRY_TIMEOUT = 2000;
+    const FETCH_ATTEMPTS = 10;
+    let currentAttempt = 1;
+
+    let externalRecord = null;
+
+    do {
+      externalRecord = await fetchExternalRecord();
+
+      if (externalRecord) {
+        return externalRecord;
+      }
+
+      await new Promise(resolve => setTimeout(resolve, RETRY_TIMEOUT));
+      currentAttempt++;
+    } while (!externalRecord && currentAttempt <= FETCH_ATTEMPTS);
+
+    return null;
+  }, [fetchExternalRecord]);
+
   const loadData = useCallback(async (fieldIds, nextAction, nextExternalId) => {
     const _action = nextAction || action;
     const _externalId = nextExternalId || externalId;
@@ -170,7 +197,7 @@ const QuickMarcEditorContainer = ({
 
     const instancePromise = _action === QUICK_MARC_ACTIONS.CREATE && marcType !== MARC_TYPES.HOLDINGS
       ? Promise.resolve({})
-      : fetchExternalRecord();
+      : retryFetchingExternalRecord();
 
     const marcRecordPromise = _action === QUICK_MARC_ACTIONS.CREATE
       ? Promise.resolve({})
@@ -199,6 +226,10 @@ const QuickMarcEditorContainer = ({
         linkingRulesResponse,
         fixedFieldSpecResponse,
       ]) => {
+        if (!instanceResponse) {
+          throw new Error('External record not loaded');
+        }
+
         let dehydratedMarcRecord;
 
         const isShouldUseInitialValuesProp = initialValuesProp && !isUsingRouter && !isPreEdited;
@@ -267,7 +298,7 @@ const QuickMarcEditorContainer = ({
     locale,
     getIsShared,
     stripes,
-    fetchExternalRecord,
+    retryFetchingExternalRecord,
     handleClose,
     mutator,
     formatInitialValues,
