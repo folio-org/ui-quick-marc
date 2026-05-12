@@ -1,5 +1,9 @@
 # Change history for ui-quick-marc
 
+## [11.1.0] (IN PROGRESS)
+
+* [UIQM-818](https://issues.folio.org/browse/UIQM-818) Update the label of the new option for position 25 of the 008 field in a MARC bibliographic record.
+
 ## [11.0.0](https://github.com/folio-org/ui-quick-marc/tree/v11.0.0) (2026-04-17)
 
 * [UIQM-762](https://issues.folio.org/browse/UIQM-762) Select a MARC authority record - Update auto-populate Advanced search and Browse queries with all controlled subfields.
