@@ -2,6 +2,8 @@
 
 ## [11.1.0] (IN PROGRESS)
 
+## [11.0.1](https://github.com/folio-org/ui-quick-marc/tree/v11.0.1) (2026-05-20)
+
 * [UIQM-818](https://issues.folio.org/browse/UIQM-818) Update the label of the new option for position 25 of the 008 field in a MARC bibliographic record.
 
 ## [11.0.0](https://github.com/folio-org/ui-quick-marc/tree/v11.0.0) (2026-04-17)
