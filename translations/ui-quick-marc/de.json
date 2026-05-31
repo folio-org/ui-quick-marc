@@ -948,5 +948,6 @@
     "record.fixedField.Preliminary": "Vorläufig",
     "record.fixedField.Mod Rec": "Änderungsdatensatz",
     "autoLinkingButton.infotip": "Die Schaltfläche Überschriften verknüpfen verknüpft alle bibliografischen Felder des Zugriffspunkts, die eine $0 enthalten, mit der Überschrift einer Autorität. Wenn ein Feld keine $0 enthält, können Sie das Feld manuell mit einer Überschrift verknüpfen, indem Sie die Schaltfläche Verknüpfung auf dem Feld selbst auswählen.",
-    "autoLinkingButton.infotip.learnMore": "Mehr erfahren"
+    "autoLinkingButton.infotip.learnMore": "Mehr erfahren",
+    "record.fixedField.Remote sensing image": "Remote sensing image"
 }
