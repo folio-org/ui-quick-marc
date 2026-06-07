@@ -948,5 +948,6 @@
     "record.fixedField.Preliminary": "Sākotnēja",
     "record.fixedField.Mod Rec": "Mod Ier",
     "autoLinkingButton.infotip": "Poga “Saistīt virsrakstus” savieno visus piekļuves punkta bibliogrāfiskos laukus, kuros ir $0 uz autoritatīvā ieraksta virsrakstu. Ja laukam nav $0, varat manuāli saistīt lauku ar autoritatīvā ieraksta virsrakstu, spiežot pogu “Saistīt” pašā laukā.",
-    "autoLinkingButton.infotip.learnMore": "Uzzināt vairāk"
+    "autoLinkingButton.infotip.learnMore": "Uzzināt vairāk",
+    "record.fixedField.Remote sensing image": "Remote sensing image"
 }
