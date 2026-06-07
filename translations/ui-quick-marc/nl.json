@@ -948,5 +948,6 @@
     "record.fixedField.Preliminary": "Voorlopig",
     "record.fixedField.Mod Rec": "Mod Rec",
     "autoLinkingButton.infotip": "De knop Link kopteksten Linkt alle toegangspunt bibliografische velden die een $0 bevatten aan een authority heading. Als een veld geen $0 heeft, kunt u het veld handmatig aan een authority heading linken door de knop Link op het veld zelf te selecteren.",
-    "autoLinkingButton.infotip.learnMore": "Meer informatie"
+    "autoLinkingButton.infotip.learnMore": "Meer informatie",
+    "record.fixedField.Remote sensing image": "Remote sensing image"
 }
