@@ -750,6 +750,44 @@ describe('Given QuickMarcEditor', () => {
     });
   });
 
+  describe('when there is an httpError', () => {
+    describe('when it is a NOT_FOUND code', () => {
+      it('should show a correct toast message', () => {
+        renderQuickMarcEditor({
+          httpError: {
+            code: 'NOT_FOUND',
+          },
+        });
+
+        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.error.notFound', type: 'error' });
+      });
+    });
+
+    describe('when it is a ILLEGAL_FIXED_LENGTH_CONTROL_FIELD code', () => {
+      it('should show a correct toast message', () => {
+        renderQuickMarcEditor({
+          httpError: {
+            code: 'ILLEGAL_FIXED_LENGTH_CONTROL_FIELD',
+          },
+        });
+
+        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.error.illegalFixedLength', type: 'error' });
+      });
+    });
+
+    describe('when it is an unknown code', () => {
+      it('should show a generic toast message', () => {
+        renderQuickMarcEditor({
+          httpError: {
+            code: 'SOME_UNKNOWN_CODE',
+          },
+        });
+
+        expect(mockShowCallout).toHaveBeenCalledWith({ messageId: 'ui-quick-marc.record.save.error.generic', type: 'error' });
+      });
+    });
+  });
+
   describe('when there are deleted fields', () => {
     it('should display ConfirmationModal', async () => {
       const {
