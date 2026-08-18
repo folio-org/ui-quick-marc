@@ -1785,6 +1785,7 @@ describe('QuickMarcEditor utils', () => {
           {
             tag: '100',
             content: '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 4808f6ae-8379-41e9-a795-915ac4751668',
+            indicators: ['1', '\\'],
           },
         ],
       });
