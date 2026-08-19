@@ -100,6 +100,33 @@ export const CREATE_BIB_RECORD_DEFAULT_FIELD_TAGS = ['001', '005', '008', '245',
 
 export const CREATE_AUTHORITY_RECORD_DEFAULT_FIELD_TAGS = ['001', '005', '008', '999'];
 
+export const CREATE_AUTHORITY_RECORD_DEFAULT_008_VALUES = {
+  content: {
+    'Undef_18': '\\\\\\\\\\\\\\\\\\\\',
+    'Undef_30': '\\',
+    'Undef_34': '\\\\\\\\',
+    'Geo Subd': '\\',
+    'Roman': 'a',
+    'Lang': '|',
+    'Kind rec': 'a',
+    'Cat Rules': 'd',
+    'SH Sys': 'z',
+    'Series': '|',
+    'Numb Series': '|',
+    'Main use': 'a',
+    'Subj use': 'a',
+    'Series use': '|',
+    'Type Subd': 'a',
+    'Govt Ag': '|',
+    'RefEval': '|',
+    'RecUpd': 'a',
+    'Pers Name': '|',
+    'Level Est': '|',
+    'Mod Rec': '|',
+    'Source': 'd',
+  },
+};
+
 export const QM_RECORD_STATUS_TIMEOUT = 5000;
 
 export const QM_RECORD_STATUS_BAIL_TIME = 20000;

@@ -7,6 +7,7 @@ import {
   LEADER_TAG,
   QUICK_MARC_ACTIONS,
   HOLDINGS_FIXED_FIELD_DEFAULT_VALUES,
+  CREATE_AUTHORITY_RECORD_DEFAULT_008_VALUES,
 } from './constants';
 import { MARC_TYPES } from '../common/constants';
 import { RECORD_STATUS_NEW } from './QuickMarcRecordInfo/constants';
@@ -16,6 +17,7 @@ import fixedFieldSpecBib from '../../test/mocks/fixedFieldSpecBib';
 import fixedFieldSpecAuth from '../../test/mocks/fixedFieldSpecAuth';
 import fixedFieldSpecHold from '../../test/mocks/fixedFieldSpecHold';
 import {
+  authorityLeader,
   bibLeader,
   bibLeaderString,
   holdingsLeader,
@@ -1476,6 +1478,47 @@ describe('QuickMarcEditor utils', () => {
       };
 
       expect(utils.getCreateHoldingsMarcRecordResponse(instanceResponse)).toEqual(expectedResult);
+    });
+  });
+
+  describe('getCreateAuthorityMarcRecordResponse', () => {
+    it('should return correct response for creating MARC Authority record', () => {
+      const instanceResponse = {
+        id: '00000000-0000-0000-0000-000000000000',
+      };
+
+      const defaultFields = [{
+        tag: '001',
+        id: uuid(),
+      }, {
+        tag: '005',
+        id: uuid(),
+      }, {
+        tag: '008',
+        id: uuid(),
+        content: CREATE_AUTHORITY_RECORD_DEFAULT_008_VALUES.content,
+      }, {
+        tag: '999',
+        id: uuid(),
+        indicators: ['f', 'f'],
+      }];
+
+      const expectedResult = {
+        externalId: instanceResponse.id,
+        leader: authorityLeader,
+        fields: undefined,
+        records: [
+          {
+            tag: LEADER_TAG,
+            content: authorityLeader,
+            id: LEADER_TAG,
+          },
+          ...defaultFields,
+        ],
+        parsedRecordDtoId: instanceResponse.id,
+      };
+
+      expect(utils.getCreateAuthorityMarcRecordResponse(instanceResponse)).toEqual(expectedResult);
     });
   });
 

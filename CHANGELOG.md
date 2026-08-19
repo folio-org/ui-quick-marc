@@ -3,6 +3,7 @@
 ## [11.1.0] (IN PROGRESS)
 
 * [UIQM-825](https://issues.folio.org/browse/UIQM-825) Show correct error toast when editing a record deleted by another user.
+* [UIQM-835](https://issues.folio.org/browse/UIQM-835) Set default field 008 values when creating a new authority.
 
 ## [11.0.1](https://github.com/folio-org/ui-quick-marc/tree/v11.0.1) (2026-05-20)
 
