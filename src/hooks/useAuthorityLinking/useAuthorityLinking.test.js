@@ -1395,18 +1395,22 @@ describe('Given useAuthorityLinking', () => {
             {
               'tag': '700',
               'content': '$a Wang, Shifu, $d 1260-1316 $0 id.loc.gov/authorities/names/n81003794 $9 3929e600-5efb-4427-abf6-a963b01c9c37',
+              'indicators': ['\\', '\\'],
             },
             {
               'tag': '100',
               'content': '$a Coates, Ta-Nehisi $e author. $0 id.loc.gov/authorities/names/n2008001084 $9 541539bf-7e1f-468e-a817-a551c6b63d7d',
+              'indicators': ['1', '\\'],
             },
             {
               'tag': '700',
               'content': '$a Yuan, Bing $0 id.loc.gov/authorities/names/n93100664 $9 a2803a7b-d479-46cd-b744-1305d2a7a29b',
+              'indicators': ['\\', '\\'],
             },
             {
               'tag': '700',
               'content': '$a Zhang, Xuejing $0 id.loc.gov/authorities/names/no2005093867 $9 68927bf9-e78f-48b9-a45a-947408caff6e',
+              'indicators': ['\\', '\\'],
             },
           ],
           marcFormat,
