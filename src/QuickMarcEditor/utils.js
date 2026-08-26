@@ -28,6 +28,7 @@ import {
   BIB_FIXED_FIELD_DEFAULT_BLVL,
   ENTERED_KEY,
   CREATE_AUTHORITY_RECORD_DEFAULT_FIELD_TAGS,
+  CREATE_AUTHORITY_RECORD_DEFAULT_008_VALUES,
   UNCONTROLLED_ALPHA,
   UNCONTROLLED_NUMBER,
   AUTHORITY_FIXED_FIELD_DEFAULT_TYPE,
@@ -289,7 +290,7 @@ const getCreateHoldingsMarcRecordDefaultFields = (instanceRecord) => {
 const getCreateAuthorityMarcRecordDefaultFields = (instanceRecord, fixedFieldSpec) => {
   const contentMap = {
     '001': instanceRecord.hrid,
-    '008': fillEmptyFixedFieldValues(MARC_TYPES.AUTHORITY, fixedFieldSpec, AUTHORITY_FIXED_FIELD_DEFAULT_TYPE),
+    '008': fillEmptyFixedFieldValues(MARC_TYPES.AUTHORITY, fixedFieldSpec, AUTHORITY_FIXED_FIELD_DEFAULT_TYPE, '', CREATE_AUTHORITY_RECORD_DEFAULT_008_VALUES),
     '999': '',
   };
 
