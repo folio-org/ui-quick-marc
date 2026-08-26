@@ -1203,6 +1203,7 @@ export const hydrateForLinkSuggestions = (marcRecord, marcType, fields) => {
     fields: fields.map(record => ({
       tag: record.tag,
       content: record.content,
+      indicators: record.indicators,
     })),
     marcFormat: marcRecord.marcFormat,
     _actionType: 'view',
