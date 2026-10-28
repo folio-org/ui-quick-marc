@@ -1,14 +1,13 @@
 import React from 'react';
-import {
-  render,
-  fireEvent,
-} from '@folio/jest-config-stripes/testing-library/react';
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import defer from 'lodash/defer';
 
 import { runAxeTest } from '@folio/stripes-testing';
-
+import {
+  render,
+  fireEvent,
+} from '@folio/jest-config-stripes/testing-library/react';
 import '@folio/stripes-acq-components/test/jest/__mock__';
 
 import QuickMarcEditorRows from './QuickMarcEditorRows';
@@ -61,6 +60,16 @@ jest.mock('../../queries', () => ({
     sourceFiles: [],
     isLoading: false,
   }),
+}));
+
+jest.mock('./utils', () => ({
+  __esModule: true,
+  ...jest.requireActual('./utils'),
+}));
+
+jest.mock('../utils', () => ({
+  __esModule: true,
+  ...jest.requireActual('../utils'),
 }));
 
 const initValues = [

@@ -6,6 +6,11 @@ import '@folio/stripes-acq-components/test/jest/__mock__';
 import { ContentField } from './ContentField';
 import * as utils from './utils';
 
+jest.mock('./utils', () => ({
+  __esModule: true,
+  ...jest.requireActual('./utils'),
+}));
+
 const getComponent = (value) => (
   <ContentField
     name="content"
