@@ -1,9 +1,10 @@
+import { Form } from 'react-final-form';
+import arrayMutators from 'final-form-arrays';
+
 import {
   render,
   act,
 } from '@folio/jest-config-stripes/testing-library/react';
-import { Form } from 'react-final-form';
-import arrayMutators from 'final-form-arrays';
 
 import { SourceFileSelect } from '../../SourceFileSelect';
 import { ControlNumberField } from './ControlNumberField';
@@ -31,7 +32,7 @@ jest.mock('@folio/stripes/components', () => ({
 jest.mock('../../../queries', () => ({
   ...jest.requireActual('../../../queries'),
   useAuthorityFileNextHrid: jest.fn().mockReturnValue({
-    getAuthorityFileNextHrid: jest.fn().mockResolvedValue({ hrid }),
+    getAuthorityFileNextHrid: jest.fn().mockResolvedValue({ hrid: 'n1' }),
     isLoading: false,
   }),
 }));
