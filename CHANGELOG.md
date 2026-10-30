@@ -6,6 +6,7 @@
 * [UIQM-829](https://issues.folio.org/browse/UIQM-829) Send indicator values when using linking autosuggest endpoint.
 * [UIQM-835](https://issues.folio.org/browse/UIQM-835) Set default field 008 values when creating a new authority.
 * [UIQM-839](https://issues.folio.org/browse/UIQM-839) Upgrade to jest-config-stripes v5.
+* [UIQM-838](https://issues.folio.org/browse/UIQM-838) FE: Update LoC MARC bib specification for field 008 (Continuing resources).
 
 ## [11.0.1](https://github.com/folio-org/ui-quick-marc/tree/v11.0.1) (2026-05-20)
 
