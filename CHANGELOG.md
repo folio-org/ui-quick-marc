@@ -1,5 +1,9 @@
 # Change history for ui-quick-marc
 
+## [11.0.2] (IN PROGRESS)
+
+* [UIQM-838](https://issues.folio.org/browse/UIQM-838) FE: Update LoC MARC bib specification for field 008 (Continuing resources).
+
 ## [11.0.1](https://github.com/folio-org/ui-quick-marc/tree/v11.0.1) (2026-05-20)
 
 * [UIQM-818](https://issues.folio.org/browse/UIQM-818) Update the label of the new option for position 25 of the 008 field in a MARC bibliographic record.
