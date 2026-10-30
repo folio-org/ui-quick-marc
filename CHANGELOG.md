@@ -1,5 +1,9 @@
 # Change history for ui-quick-marc
 
+## [10.0.5] (IN PROGRESS)
+
+* [UIQM-838](https://issues.folio.org/browse/UIQM-838) FE: Update LoC MARC bib specification for field 008 (Continuing resources).
+
 ## [10.0.4](https://github.com/folio-org/ui-quick-marc/tree/v10.0.4) (2025-07-14)
 
 * [UIQM-777](https://issues.folio.org/browse/UIQM-777) Support validation of MARC Holdings records with location codes that have a whitespace.
