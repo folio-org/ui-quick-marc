@@ -8,6 +8,10 @@
 * [UIQM-839](https://issues.folio.org/browse/UIQM-839) Upgrade to jest-config-stripes v5.
 * [UIQM-838](https://issues.folio.org/browse/UIQM-838) FE: Update LoC MARC bib specification for field 008 (Continuing resources).
 
+## [11.0.2](https://github.com/folio-org/ui-quick-marc/tree/v11.0.2) (2026-11-06)
+
+* [UIQM-838](https://issues.folio.org/browse/UIQM-838) FE: Update LoC MARC bib specification for field 008 (Continuing resources).
+
 ## [11.0.1](https://github.com/folio-org/ui-quick-marc/tree/v11.0.1) (2026-05-20)
 
 * [UIQM-818](https://issues.folio.org/browse/UIQM-818) Update the label of the new option for position 25 of the 008 field in a MARC bibliographic record.
@@ -33,6 +37,10 @@
 * [UIQM-804](https://issues.folio.org/browse/UIQM-804) include global permissions in package.json base permissions.
 * [UIQM-806](https://issues.folio.org/browse/UIQM-806) *BREAKING* Remove request to mod-quick-marc `status` endpoint and use data from records-editor POST response directly.
 * [UIQM-816](https://issues.folio.org/browse/UIQM-816) Keep polling mod-search until it returns a record or we exceed max attempts.
+
+## [10.0.5](https://github.com/folio-org/ui-quick-marc/tree/v10.0.5) (2026-11-06)
+
+* [UIQM-838](https://issues.folio.org/browse/UIQM-838) FE: Update LoC MARC bib specification for field 008 (Continuing resources).
 
 ## [10.0.4](https://github.com/folio-org/ui-quick-marc/tree/v10.0.4) (2025-07-14)
 
