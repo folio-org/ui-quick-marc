@@ -1,6 +1,6 @@
 # Change history for ui-quick-marc
 
-## [11.0.2] (IN PROGRESS)
+## [11.0.2](https://github.com/folio-org/ui-quick-marc/tree/v11.0.2) (2026-11-06)
 
 * [UIQM-838](https://issues.folio.org/browse/UIQM-838) FE: Update LoC MARC bib specification for field 008 (Continuing resources).
 
